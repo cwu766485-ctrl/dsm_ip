@@ -1,0 +1,7 @@
+"Layer","Test","Pass","Detail"
+"TB","tb_p0_lp1","1","samples=65536; errors=0"
+"TB","tb_p0_ef1","1","samples=65536; errors=0"
+"TB","tb_p0_ef2","1","samples=65536; errors=0"
+"TIMING","p0_ooc_lp1","1","WNS=+6.557ns; Fmax_est=290.44MHz"
+"TIMING","p0_ooc_ef1","1","WNS=+2.221ns; Fmax_est=128.55MHz"
+"TIMING","p0_ooc_ef2","1","WNS=+0.080ns; Fmax_est=100.81MHz"

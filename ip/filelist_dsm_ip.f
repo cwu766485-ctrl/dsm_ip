@@ -1,0 +1,13 @@
+../rtl/dsm/dsm_core.sv
+../rtl/dsm/dsm_core_dsm2.sv
+../rtl/dsm/dsm_core_ef1.sv
+../rtl/dsm/dsm_core_ef2.sv
+../rtl/dsm/dsm_core_mash11.sv
+../rtl/dsm/dsm_core_mash111.sv
+../rtl/dsm/dsm_core_mash22.sv
+../rtl/duc/duc_fs4_merge.sv
+../rtl/duc/duc_fs4_merge_signed.sv
+../rtl/duc/duc_nco_mix_signed.v
+../rtl/ip/dsm_ip_core.sv
+../rtl/ip/dsm_ip_top.v
+../rtl/axi/dsm_ip_axi_top.v

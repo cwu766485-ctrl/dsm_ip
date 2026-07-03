@@ -1,0 +1,33 @@
+* text=auto eol=lf
+
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+*.sv text linguist-language=SystemVerilog
+*.svh text linguist-language=SystemVerilog
+*.v text linguist-language=Verilog
+*.vh text linguist-language=Verilog
+*.tcl text
+*.m text
+*.py text
+*.md text
+*.csv text
+*.mem text
+*.coe text
+*.f text
+*.xdc text
+
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.mat binary
+*.xlsx binary
+*.zip binary
+*.xci text
+
+ip/ip_repo/** linguist-generated=true
+syn/reports/** linguist-generated=true
+matlab/out/** linguist-generated=true
+verif/out_xsim_p0/** linguist-generated=true

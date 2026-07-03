@@ -1,0 +1,83 @@
+name: Repository hygiene
+
+on:
+  pull_request:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  hygiene:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required files
+        shell: pwsh
+        run: |
+          $required = @(
+            "README.md",
+            "LICENSE",
+            "CONTRIBUTING.md",
+            "SECURITY.md",
+            "AGENTS.md",
+            "docs/STATUS_AND_LIMITS.md",
+            "docs/IP_SPEC.md",
+            "docs/IP_HANDOFF.md",
+            "docs/PROJECT_MAP.md",
+            "docs/UPDATE_LOG.md",
+            "rtl/filelist_p0.f"
+          )
+          foreach ($p in $required) {
+            if (!(Test-Path $p)) {
+              throw "Missing required file: $p"
+            }
+          }
+
+      - name: Check for forbidden public markers
+        shell: pwsh
+        run: |
+          $patterns = @(
+            "15036307410",
+            "stu_wck",
+            "101\.254\.99\.137"
+          )
+          $files = Get-ChildItem -Recurse -File |
+            Where-Object {
+              $_.FullName -notmatch '\\syn\\reports\\' -and
+              $_.FullName -notmatch '\\ip\\ip_repo\\'
+            }
+          foreach ($pat in $patterns) {
+            $hit = $files | Select-String -Pattern $pat -CaseSensitive:$false
+            if ($hit) {
+              $hit | Select-Object -First 20
+              throw "Forbidden marker found: $pat"
+            }
+          }
+
+      - name: Check public text is English-only
+        shell: pwsh
+        run: |
+          $exts = @(".md", ".m", ".py", ".sv", ".svh", ".v", ".vh", ".tcl", ".ps1", ".cmd", ".f", ".xdc", ".yml", ".yaml")
+          $files = Get-ChildItem -Recurse -File |
+            Where-Object {
+              $exts -contains $_.Extension -and
+              $_.FullName -notmatch '\\syn\\reports\\' -and
+              $_.FullName -notmatch '\\ip\\ip_repo\\'
+            }
+          $hit = $files | Select-String -Pattern '\p{IsCJKUnifiedIdeographs}'
+          if ($hit) {
+            $hit | Select-Object -First 20
+            throw "Non-English CJK text found in public text files"
+          }
+
+      - name: Check generated temp files are not tracked
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Recurse -File | ForEach-Object {
+            $_.FullName.Replace((Get-Location).Path + "\", "").Replace("\", "/")
+          }
+          $bad = $files | Select-String -Pattern '(^|/)(\.Xil|xsim\.dir)(/|$)|\.jou$|\.log$|\.backup\.(jou|log)$|^ip/build/|^verif/out_xsim_ip_smoke/'
+          if ($bad) {
+            $bad
+            throw "Generated temp files should not be tracked"
+          }
