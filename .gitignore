@@ -10,6 +10,14 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 *.asv
+*.m~
+*.tmp
+*.bak
+
+# MATLAB generated outputs
+matlab/out/
+matlab/**/out/
+*.mat
 
 # Vivado/Xilinx generated files
 .Xil/
@@ -19,36 +27,60 @@ __pycache__/
 *.wdb
 *.wcfg
 *.pb
-*.rpt~
 *.backup.jou
 *.backup.log
 vivado_pid*.str
-
-# XSim generated files
-xsim.dir/
-*.vcd
-*.fst
-*.ghw
 webtalk*.jou
 webtalk*.log
 
-# Project-local generated folders
-ip/build/
+# XSim generated files
+xsim.dir/
+verif/out_xsim_p0/
 verif/out_xsim_ip_smoke/
-verif/out_xsim_p0/xsim.dir/
+*.vcd
+*.fst
+*.ghw
+*.saif
 
-# Restricted RFSoC board collateral.
-# Do not publish third-party PDFs, schematics, BOMs, board files, or vendor
-# board packages unless redistribution rights are explicitly confirmed.
+# Vivado project/build/package outputs
+ip/build/
+ip/ip_repo/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.gen/
+*.srcs/
+*.xpr
+
+# Synthesis/report generated outputs
+syn/reports/**/*.rpt
+syn/reports/ooc_*/
+syn/reports/ooc_xc*/
+*.dcp
+*.edf
+*.edn
+*.ngc
+*.bit
+*.bin
+*.ltx
+*.mcs
+*.mmi
+
+# Raw board validation / scope captures
+data/board_validation/
+*.Wfm.csv
+
+# Restricted RFSoC board collateral
 fpga/hardware/
 
-# Local server/license configuration
+# Local server/license/secrets
 .env
 .env.*
 server*.txt
 license*.txt
 secrets/
-
-# Temporary archives
-*.tmp
-*.bak
+*password*
+*passwd*
+*token*
