@@ -1,0 +1,15 @@
+Part,Top,Status,LUT,FF,DSP,WNS_ns,Fmax_est_MHz
+xczu15eg-ffvb1156-1-i,p0_ooc_lp1,PASS,103,71,0,8.955,956.94
+xczu15eg-ffvb1156-1-i,p0_ooc_lp2,PASS,269,87,0,5.818,239.12
+xczu15eg-ffvb1156-1-i,p0_ooc_ef1,PASS,181,63,0,7.150,350.88
+xczu15eg-ffvb1156-1-i,p0_ooc_ef2,PASS,315,119,0,5.449,219.73
+xczu15eg-ffvb1156-1-i,p0_ooc_mash11,PASS,246,90,0,6.926,325.31
+xczu15eg-ffvb1156-1-i,p0_ooc_mash111,PASS,373,138,0,7.122,347.46
+xczu15eg-ffvb1156-1-i,p0_ooc_mash22,PASS,251,169,72,5.107,204.37
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_lp1,PASS,468,50,0,6.263,267.59
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_lp2,PASS,584,82,0,5.283,212.00
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_ef1,PASS,480,50,0,6.453,281.93
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_ef2,PASS,570,82,0,5.176,207.30
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_mash11,PASS,964,105,0,5.884,242.95
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_mash111,PASS,1466,171,0,5.725,233.92
+xczu15eg-ffvb1156-1-i,p0_ooc_mb_mash22,PASS,1168,179,0,4.896,195.92

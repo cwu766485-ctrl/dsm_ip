@@ -26,7 +26,7 @@ endmodule
 
 module p0_ooc_lp2 #(
   parameter int W = 16,
-  parameter int ACC_W = 40
+  parameter int ACC_W = 20
 ) (
   input  wire logic clk,
   input  wire logic rst_n,
@@ -169,6 +169,181 @@ module p0_ooc_mash22 #(
     .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data),
     .y_bit(q_bit), .y1_bit(q1_bit), .y2_bit(q2_bit), .y_mash_signed(yq), .v1_state(vq1), .v2_state(vq2));
   duc_fs4_merge_signed #(.W_IN(4), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_lp1 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_lp1 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_lp1 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_lp2 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_lp2 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_lp2 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_ef1 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_ef1 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_ef1 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_ef2 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_ef2 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_ef2 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_mash11 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_mash11 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_mash11 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_mash111 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_mash111 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_mash111 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
+    .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
+    .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
+endmodule
+
+module p0_ooc_mb_mash22 #(
+  parameter int W = 16,
+  parameter int ACC_W = 16,
+  parameter int OUT_W = 8,
+  parameter int Q_BITS = 4
+) (
+  input  wire logic clk,
+  input  wire logic rst_n,
+  input  wire logic in_valid,
+  input  wire logic signed [W-1:0] i_data,
+  input  wire logic signed [W-1:0] q_data,
+  output      logic rf_valid,
+  output      logic signed [W-1:0] rf_signed
+);
+  logic i_bit, q_bit;
+  logic signed [OUT_W-1:0] yi, yq;
+  dsm_core_multibit_mash22 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_i (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_data), .y_bit(i_bit), .y_code(yi), .v1_state(), .v2_state());
+  dsm_core_multibit_mash22 #(.W_IN(W), .ACC_W(ACC_W), .OUT_W(OUT_W), .Q_BITS(Q_BITS)) u_q (
+    .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_data), .y_bit(q_bit), .y_code(yq), .v1_state(), .v2_state());
+  duc_fs4_merge_signed #(.W_IN(OUT_W), .W_OUT(W)) u_duc (
     .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .i_data(yi), .q_data(yq),
     .rf_valid(rf_valid), .rf_signed(rf_signed), .phase());
 endmodule

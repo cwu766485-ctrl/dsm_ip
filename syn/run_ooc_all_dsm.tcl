@@ -14,13 +14,21 @@ set out_root [file normalize [file join $script_dir "reports" "ooc_${part_tag}_[
 file mkdir $out_root
 
 set rtl_files [list \
-  [file join $ip_root rtl dsm dsm_core.sv] \
-  [file join $ip_root rtl dsm dsm_core_dsm2.sv] \
-  [file join $ip_root rtl dsm dsm_core_ef1.sv] \
-  [file join $ip_root rtl dsm dsm_core_ef2.sv] \
-  [file join $ip_root rtl dsm dsm_core_mash11.sv] \
-  [file join $ip_root rtl dsm dsm_core_mash111.sv] \
-  [file join $ip_root rtl dsm dsm_core_mash22.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core_dsm2.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core_ef1.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core_ef2.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core_mash11.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core_mash111.sv] \
+  [file join $ip_root rtl dsm singlebit dsm_core_mash22.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_lp1.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_lp2.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_ef1.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_ef2.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_mash11.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_mash111.sv] \
+  [file join $ip_root rtl dsm multibit dsm_core_multibit_mash22.sv] \
   [file join $ip_root rtl duc duc_fs4_merge.sv] \
   [file join $ip_root rtl duc duc_fs4_merge_signed.sv] \
   [file join $ip_root syn rtl p0_ooc_tops.sv] \
@@ -34,6 +42,13 @@ set tops [list \
   p0_ooc_mash11 \
   p0_ooc_mash111 \
   p0_ooc_mash22 \
+  p0_ooc_mb_lp1 \
+  p0_ooc_mb_lp2 \
+  p0_ooc_mb_ef1 \
+  p0_ooc_mb_ef2 \
+  p0_ooc_mb_mash11 \
+  p0_ooc_mb_mash111 \
+  p0_ooc_mb_mash22 \
 ]
 
 set summary_csv [file join $out_root "summary_all.csv"]
@@ -61,7 +76,9 @@ foreach top $tops {
     synth_design -top $top -part $part -mode out_of_context
     opt_design
     place_design
+    phys_opt_design
     route_design
+    phys_opt_design
 
     report_utilization -file [file join $run_dir utilization.rpt]
     report_timing_summary -file [file join $run_dir timing_summary.rpt]
