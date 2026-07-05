@@ -10,13 +10,21 @@ file mkdir $ip_dir
 
 set part "xc7z020clg400-1"
 set files [list \
-  [file join $repo_root rtl dsm dsm_core.sv] \
-  [file join $repo_root rtl dsm dsm_core_dsm2.sv] \
-  [file join $repo_root rtl dsm dsm_core_ef1.sv] \
-  [file join $repo_root rtl dsm dsm_core_ef2.sv] \
-  [file join $repo_root rtl dsm dsm_core_mash11.sv] \
-  [file join $repo_root rtl dsm dsm_core_mash111.sv] \
-  [file join $repo_root rtl dsm dsm_core_mash22.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core_dsm2.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core_ef1.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core_ef2.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core_mash11.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core_mash111.sv] \
+  [file join $repo_root rtl dsm singlebit dsm_core_mash22.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_lp1.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_lp2.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_ef1.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_ef2.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_mash11.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_mash111.sv] \
+  [file join $repo_root rtl dsm multibit dsm_core_multibit_mash22.sv] \
   [file join $repo_root rtl duc duc_fs4_merge.sv] \
   [file join $repo_root rtl duc duc_fs4_merge_signed.sv] \
   [file join $repo_root rtl duc duc_nco_mix_signed.v] \
@@ -34,7 +42,7 @@ ipx::package_project -root_dir $ip_dir -vendor dsm.local -library communication 
 set core [ipx::current_core]
 set_property name dsm_ip $core
 set_property display_name {DSM All-Digital Transmitter IP} $core
-set_property description {AXI-Lite controlled, AXI-Stream input all-digital Cartesian DSM transmitter IP with LPDSM, EFDSM, and MASH variants. Default target clock 100 MHz.} $core
+set_property description {AXI-Lite controlled, AXI-Stream input all-digital Cartesian DSM transmitter IP with LPDSM, EFDSM, MASH, and exploratory multibit Cartesian DSM variants. Default target clock 100 MHz.} $core
 set_property version 1.0 $core
 set_property supported_families {zynq Production zynquplus Production artix7 Production kintex7 Production} $core
 

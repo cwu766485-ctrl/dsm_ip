@@ -12,6 +12,7 @@
 //   1 NCO mixer, fc = cfg_phase_inc / 2^PHASE_W * clk
 module dsm_ip_core #(
   parameter int W = 16,
+  parameter int DSM_OUT_W = 8,
   parameter int RF_W = 16,
   parameter int PHASE_W = 24,
   parameter int LUT_AW = 10,
@@ -22,9 +23,11 @@ module dsm_ip_core #(
   parameter int BB_SAMPLE_RATE_HZ = 3125000,
   parameter int SIGNAL_BW_HZ = 2539062,
   parameter int ACC_W_LP1 = 32,
-  parameter int ACC_W_LP2 = 40,
+  parameter int ACC_W_LP2 = 20,
   parameter int ACC_W_EF = 28,
   parameter int ACC_W_MASH = 18,
+  parameter int ACC_W_MB = 16,
+  parameter int MB_Q_BITS = 4,
   parameter int IN_SHIFT = 0,
   parameter bit SATURATE = 1'b1,
   parameter int COEFF_W = 8,
@@ -42,14 +45,17 @@ module dsm_ip_core #(
   output logic dsm_valid,
   output logic i_bit,
   output logic q_bit,
-  output logic signed [3:0] i_yout,
-  output logic signed [3:0] q_yout,
+  output logic signed [DSM_OUT_W-1:0] i_yout,
+  output logic signed [DSM_OUT_W-1:0] q_yout,
 
   output logic rf_valid,
   output logic rf_bit,
   output logic signed [RF_W-1:0] rf_signed,
   output logic [PHASE_W-1:0] phase_acc_dbg
 );
+
+  localparam logic signed [DSM_OUT_W-1:0] DSM_POS_ONE = {{(DSM_OUT_W-1){1'b0}}, 1'b1};
+  localparam logic signed [DSM_OUT_W-1:0] DSM_NEG_ONE = -DSM_POS_ONE;
 
   assign dsm_valid = in_valid;
 
@@ -62,8 +68,8 @@ module dsm_ip_core #(
       dsm_core #(.W_IN(W), .ACC_W(ACC_W_LP1), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
         .y_bit(q_bit), .y_signed(yq_signed), .v_state());
-      assign i_yout = i_bit ? 4'sd1 : -4'sd1;
-      assign q_yout = q_bit ? 4'sd1 : -4'sd1;
+      assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
+      assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
     end else if (ALGORITHM == 1) begin : g_lp2
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core_dsm2 #(.W_IN(W), .ACC_W(ACC_W_LP2), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
@@ -72,8 +78,8 @@ module dsm_ip_core #(
       dsm_core_dsm2 #(.W_IN(W), .ACC_W(ACC_W_LP2), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
         .y_bit(q_bit), .y_signed(yq_signed), .v1_state(), .v2_state());
-      assign i_yout = i_bit ? 4'sd1 : -4'sd1;
-      assign q_yout = q_bit ? 4'sd1 : -4'sd1;
+      assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
+      assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
     end else if (ALGORITHM == 2) begin : g_ef1
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core_ef1 #(.W_IN(W), .ACC_W(ACC_W_EF), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
@@ -82,8 +88,8 @@ module dsm_ip_core #(
       dsm_core_ef1 #(.W_IN(W), .ACC_W(ACC_W_EF), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
         .y_bit(q_bit), .y_signed(yq_signed), .v_state());
-      assign i_yout = i_bit ? 4'sd1 : -4'sd1;
-      assign q_yout = q_bit ? 4'sd1 : -4'sd1;
+      assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
+      assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
     end else if (ALGORITHM == 3) begin : g_ef2
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core_ef2 #(.W_IN(W), .ACC_W(ACC_W_EF), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE),
@@ -94,8 +100,8 @@ module dsm_ip_core #(
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
         .y_bit(q_bit), .y_signed(yq_signed), .v_state());
-      assign i_yout = i_bit ? 4'sd1 : -4'sd1;
-      assign q_yout = q_bit ? 4'sd1 : -4'sd1;
+      assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
+      assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
     end else if (ALGORITHM == 4) begin : g_mash11
       logic y1i, y2i, y1q, y2q;
       logic signed [2:0] yi3, yq3;
@@ -105,28 +111,73 @@ module dsm_ip_core #(
       dsm_core_mash11 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
         .y_bit(q_bit), .y1_bit(y1q), .y2_bit(y2q), .y_mash_signed(yq3), .v1_state(), .v2_state());
-      assign i_yout = {{1{yi3[2]}}, yi3};
-      assign q_yout = {{1{yq3[2]}}, yq3};
+      assign i_yout = {{(DSM_OUT_W-3){yi3[2]}}, yi3};
+      assign q_yout = {{(DSM_OUT_W-3){yq3[2]}}, yq3};
     end else if (ALGORITHM == 5) begin : g_mash111
       logic y1i, y2i, y3i, y1q, y2q, y3q;
+      logic signed [3:0] yi4, yq4;
       dsm_core_mash111 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in),
         .y_bit(i_bit), .y1_bit(y1i), .y2_bit(y2i), .y3_bit(y3i),
-        .y_mash_signed(i_yout), .v1_state(), .v2_state(), .v3_state());
+        .y_mash_signed(yi4), .v1_state(), .v2_state(), .v3_state());
       dsm_core_mash111 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
         .y_bit(q_bit), .y1_bit(y1q), .y2_bit(y2q), .y3_bit(y3q),
-        .y_mash_signed(q_yout), .v1_state(), .v2_state(), .v3_state());
-    end else begin : g_mash22
+        .y_mash_signed(yq4), .v1_state(), .v2_state(), .v3_state());
+      assign i_yout = {{(DSM_OUT_W-4){yi4[3]}}, yi4};
+      assign q_yout = {{(DSM_OUT_W-4){yq4[3]}}, yq4};
+    end else if (ALGORITHM == 6) begin : g_mash22
       logic y1i, y2i, y1q, y2q;
+      logic signed [3:0] yi4, yq4;
       dsm_core_mash22 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE),
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in),
-        .y_bit(i_bit), .y1_bit(y1i), .y2_bit(y2i), .y_mash_signed(i_yout), .v1_state(), .v2_state());
+        .y_bit(i_bit), .y1_bit(y1i), .y2_bit(y2i), .y_mash_signed(yi4), .v1_state(), .v2_state());
       dsm_core_mash22 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE),
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in),
-        .y_bit(q_bit), .y1_bit(y1q), .y2_bit(y2q), .y_mash_signed(q_yout), .v1_state(), .v2_state());
+        .y_bit(q_bit), .y1_bit(y1q), .y2_bit(y2q), .y_mash_signed(yq4), .v1_state(), .v2_state());
+      assign i_yout = {{(DSM_OUT_W-4){yi4[3]}}, yi4};
+      assign q_yout = {{(DSM_OUT_W-4){yq4[3]}}, yq4};
+    end else if (ALGORITHM == 7) begin : g_mb_lp1
+      dsm_core_multibit_lp1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_lp1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    end else if (ALGORITHM == 8) begin : g_mb_lp2
+      dsm_core_multibit_lp2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_lp2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    end else if (ALGORITHM == 9) begin : g_mb_ef1
+      dsm_core_multibit_ef1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_ef1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    end else if (ALGORITHM == 10) begin : g_mb_ef2
+      dsm_core_multibit_ef2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
+        .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_ef2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
+        .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    end else if (ALGORITHM == 11) begin : g_mb_mash11
+      dsm_core_multibit_mash11 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_mash11 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    end else if (ALGORITHM == 12) begin : g_mb_mash111
+      dsm_core_multibit_mash111 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_mash111 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    end else begin : g_mb_mash22
+      dsm_core_multibit_mash22 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
+        .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_i (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
+      dsm_core_multibit_mash22 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
+        .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_q (
+        .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
     end
   endgenerate
 
@@ -147,7 +198,7 @@ module dsm_ip_core #(
           .phase(fs4_phase)
         );
       end else begin : g_multibit_fs4
-        duc_fs4_merge_signed #(.W_IN(4), .W_OUT(RF_W)) u_duc (
+        duc_fs4_merge_signed #(.W_IN(DSM_OUT_W), .W_OUT(RF_W)) u_duc (
           .clk(clk),
           .rst_n(rst_n),
           .in_valid(in_valid),
@@ -163,7 +214,7 @@ module dsm_ip_core #(
       assign phase_acc_dbg = {{(PHASE_W-2){1'b0}}, fs4_phase};
     end else begin : g_nco_duc
       duc_nco_mix_signed #(
-        .W_IN(4),
+        .W_IN(DSM_OUT_W),
         .W_OUT(RF_W),
         .PHASE_W(PHASE_W),
         .LUT_AW(LUT_AW),

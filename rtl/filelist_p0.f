@@ -5,13 +5,21 @@
 # comparison paths.
 
 ../rtl/mem/rom_reader.sv
-../rtl/dsm/dsm_core.sv
-../rtl/dsm/dsm_core_dsm2.sv
-../rtl/dsm/dsm_core_ef1.sv
-../rtl/dsm/dsm_core_ef2.sv
-../rtl/dsm/dsm_core_mash11.sv
-../rtl/dsm/dsm_core_mash111.sv
-../rtl/dsm/dsm_core_mash22.sv
+../rtl/dsm/singlebit/dsm_core.sv
+../rtl/dsm/singlebit/dsm_core_dsm2.sv
+../rtl/dsm/singlebit/dsm_core_ef1.sv
+../rtl/dsm/singlebit/dsm_core_ef2.sv
+../rtl/dsm/singlebit/dsm_core_mash11.sv
+../rtl/dsm/singlebit/dsm_core_mash111.sv
+../rtl/dsm/singlebit/dsm_core_mash22.sv
+../rtl/dsm/multibit/dsm_core_multibit.sv
+../rtl/dsm/multibit/dsm_core_multibit_lp1.sv
+../rtl/dsm/multibit/dsm_core_multibit_lp2.sv
+../rtl/dsm/multibit/dsm_core_multibit_ef1.sv
+../rtl/dsm/multibit/dsm_core_multibit_ef2.sv
+../rtl/dsm/multibit/dsm_core_multibit_mash11.sv
+../rtl/dsm/multibit/dsm_core_multibit_mash111.sv
+../rtl/dsm/multibit/dsm_core_multibit_mash22.sv
 ../rtl/duc/duc_fs4_merge.sv
 ../rtl/duc/duc_fs4_merge_signed.sv
 

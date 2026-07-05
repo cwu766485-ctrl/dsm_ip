@@ -8,7 +8,7 @@ function y = p0_dsm_bittrue(x, alg)
     case "lp1"
       y = model_lp1(x, 32, false);
     case "lp2"
-      y = model_lp2(x, 40, true);
+      y = model_lp2(x, 20, true);
     case "ef1"
       y = model_ef1(x, 28, true);
     case "ef2"
@@ -86,6 +86,8 @@ end
 function y = model_mash11(x, acc_w, saturate)
   qpos = int64(32767); qneg = -qpos;
   e1 = int64(0); e2 = int64(0);
+  e1_reg = int64(0);
+  y1_pm_reg = int64(1);
   y2_prev = int64(0);
   yreg = int64(1);
   y = zeros(numel(x), 1, 'int64');
@@ -96,13 +98,15 @@ function y = model_mash11(x, acc_w, saturate)
     q1 = tern(y1 >= 0, qpos, qneg);
     e1n = y1 - q1;
 
-    y2 = sat_or_wrap(e1n + e2, acc_w, saturate);
+    y2 = sat_or_wrap(e1_reg + e2, acc_w, saturate);
     y2_pm = tern(y2 >= 0, int64(1), int64(-1));
     q2 = tern(y2 >= 0, qpos, qneg);
     e2n = y2 - q2;
 
-    yreg = y1_pm + (y2_pm - y2_prev);
+    yreg = y1_pm_reg + (y2_pm - y2_prev);
     y2_prev = y2_pm;
+    y1_pm_reg = y1_pm;
+    e1_reg = e1n;
     e1 = e1n; e2 = e2n;
   end
 end
@@ -110,6 +114,9 @@ end
 function y = model_mash111(x, acc_w, saturate)
   qpos = int64(32767); qneg = -qpos;
   e1 = int64(0); e2 = int64(0); e3 = int64(0);
+  e1_reg = int64(0); e2_reg = int64(0);
+  y1_pm_reg1 = int64(1); y1_pm_reg2 = int64(1);
+  y2_pm_reg = int64(0);
   y2_prev = int64(0); y3_prev1 = int64(0); y3_prev2 = int64(0);
   yreg = int64(1);
   y = zeros(numel(x), 1, 'int64');
@@ -120,20 +127,25 @@ function y = model_mash111(x, acc_w, saturate)
     q1 = tern(y1 >= 0, qpos, qneg);
     e1n = y1 - q1;
 
-    y2 = sat_or_wrap(e1n + e2, acc_w, saturate);
+    y2 = sat_or_wrap(e1_reg + e2, acc_w, saturate);
     y2_pm = tern(y2 >= 0, int64(1), int64(-1));
     q2 = tern(y2 >= 0, qpos, qneg);
     e2n = y2 - q2;
 
-    y3 = sat_or_wrap(e2n + e3, acc_w, saturate);
+    y3 = sat_or_wrap(e2_reg + e3, acc_w, saturate);
     y3_pm = tern(y3 >= 0, int64(1), int64(-1));
     q3 = tern(y3 >= 0, qpos, qneg);
     e3n = y3 - q3;
 
-    yreg = y1_pm + (y2_pm - y2_prev) + (y3_pm - 2 * y3_prev1 + y3_prev2);
-    y2_prev = y2_pm;
+    yreg = y1_pm_reg2 + (y2_pm_reg - y2_prev) + (y3_pm - 2 * y3_prev1 + y3_prev2);
+    y2_prev = y2_pm_reg;
     y3_prev2 = y3_prev1;
     y3_prev1 = y3_pm;
+    y1_pm_reg2 = y1_pm_reg1;
+    y1_pm_reg1 = y1_pm;
+    y2_pm_reg = y2_pm;
+    e1_reg = e1n;
+    e2_reg = e2n;
     e1 = e1n; e2 = e2n; e3 = e3n;
   end
 end
@@ -141,6 +153,8 @@ end
 function y = model_mash22(x, acc_w, saturate, b1, b2, coeff_shift)
   qpos = int64(32767); qneg = -qpos;
   e11 = int64(0); e12 = int64(0); e21 = int64(0); e22 = int64(0);
+  e10_reg = int64(0);
+  y1_pm_reg = int64(1);
   y2_prev1 = int64(0); y2_prev2 = int64(0);
   yreg = int64(1);
   y = zeros(numel(x), 1, 'int64');
@@ -151,13 +165,15 @@ function y = model_mash22(x, acc_w, saturate, b1, b2, coeff_shift)
     q1 = tern(y1 >= 0, qpos, qneg);
     e10 = y1 - q1;
 
-    y2 = sat_or_wrap(e10 + round_shift(b1 * e21, coeff_shift) + round_shift(b2 * e22, coeff_shift), acc_w, saturate);
+    y2 = sat_or_wrap(e10_reg + round_shift(b1 * e21, coeff_shift) + round_shift(b2 * e22, coeff_shift), acc_w, saturate);
     y2_pm = tern(y2 >= 0, int64(1), int64(-1));
     q2 = tern(y2 >= 0, qpos, qneg);
     e20 = y2 - q2;
 
-    yreg = y1_pm + y2_pm - 2 * y2_prev1 + y2_prev2;
+    yreg = y1_pm_reg + y2_pm - 2 * y2_prev1 + y2_prev2;
     e12 = e11; e11 = e10;
+    e10_reg = e10;
+    y1_pm_reg = y1_pm;
     e22 = e21; e21 = e20;
     y2_prev2 = y2_prev1;
     y2_prev1 = y2_pm;

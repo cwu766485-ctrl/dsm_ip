@@ -3,6 +3,7 @@
 
 module dsm_ip_top #(
   parameter integer W = 16,
+  parameter integer DSM_OUT_W = 8,
   parameter integer RF_W = 16,
   parameter integer PHASE_W = 24,
   parameter integer LUT_AW = 10,
@@ -13,9 +14,11 @@ module dsm_ip_top #(
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
   parameter integer ACC_W_LP1 = 32,
-  parameter integer ACC_W_LP2 = 40,
+  parameter integer ACC_W_LP2 = 20,
   parameter integer ACC_W_EF = 28,
   parameter integer ACC_W_MASH = 18,
+  parameter integer ACC_W_MB = 16,
+  parameter integer MB_Q_BITS = 4,
   parameter integer IN_SHIFT = 0,
   parameter integer SATURATE = 1,
   parameter integer COEFF_W = 8,
@@ -33,8 +36,8 @@ module dsm_ip_top #(
   output wire dsm_valid,
   output wire i_bit,
   output wire q_bit,
-  output wire signed [3:0] i_yout,
-  output wire signed [3:0] q_yout,
+  output wire signed [DSM_OUT_W-1:0] i_yout,
+  output wire signed [DSM_OUT_W-1:0] q_yout,
 
   output wire rf_valid,
   output wire rf_bit,
@@ -44,6 +47,7 @@ module dsm_ip_top #(
 
   dsm_ip_core #(
     .W(W),
+    .DSM_OUT_W(DSM_OUT_W),
     .RF_W(RF_W),
     .PHASE_W(PHASE_W),
     .LUT_AW(LUT_AW),
@@ -57,6 +61,8 @@ module dsm_ip_top #(
     .ACC_W_LP2(ACC_W_LP2),
     .ACC_W_EF(ACC_W_EF),
     .ACC_W_MASH(ACC_W_MASH),
+    .ACC_W_MB(ACC_W_MB),
+    .MB_Q_BITS(MB_Q_BITS),
     .IN_SHIFT(IN_SHIFT),
     .SATURATE(SATURATE[0]),
     .COEFF_W(COEFF_W),

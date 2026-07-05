@@ -174,7 +174,7 @@ module dsm_core_mash22 #(
     s2_b1_term = round_shift(s2_b1_prod);
     s2_b2_term = round_shift(s2_b2_prod);
 
-    y2_sum = $signed({{(SUM_W-ACC_W){e10_next[ACC_W-1]}}, e10_next}) +
+    y2_sum = $signed({{(SUM_W-ACC_W){e10_reg[ACC_W-1]}}, e10_reg}) +
              $signed({{(SUM_W-MUL_W){s2_b1_term[MUL_W-1]}}, s2_b1_term}) +
              $signed({{(SUM_W-MUL_W){s2_b2_term[MUL_W-1]}}, s2_b2_term});
 
@@ -197,7 +197,7 @@ module dsm_core_mash22 #(
     e20_next = y2_int - q2_ext;
 
     // y = y1[n] + (1 - 2 z^-1 + z^-2) y2[n]
-    y_mash_c = y1_pm_c + y2_pm_c - (y2_pm_prev1 <<< 1) + y2_pm_prev2;
+    y_mash_c = y1_pm_reg + y2_pm_c - (y2_pm_prev1 <<< 1) + y2_pm_prev2;
     y_bit_c = (y_mash_c >= 0);
   end
 
@@ -237,7 +237,7 @@ module dsm_core_mash22 #(
       y2_pm_prev2    <= y2_pm_prev1;
       y2_pm_prev1    <= y2_pm_c;
       y_bit          <= y_bit_c;
-      y1_bit         <= y1_bit_c;
+      y1_bit         <= y1_bit_reg;
       y2_bit         <= y2_bit_c;
       y_mash_signed  <= y_mash_c;
       v1_state       <= y1_int;

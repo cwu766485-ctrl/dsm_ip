@@ -6,7 +6,7 @@ module p0_top_lp2 #(
   parameter integer W = 16,
   parameter integer ADDR_W = 16,
   parameter integer DEPTH = 65536,
-  parameter integer ACC_W = 40,
+  parameter integer ACC_W = 20,
   parameter integer IN_SHIFT = 0,
   parameter         DSM_SATURATE = 1'b1,
   parameter integer PHASE_W = 24,
