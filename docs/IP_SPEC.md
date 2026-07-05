@@ -12,6 +12,22 @@ This IP release contains the seven P0 DSM comparison paths:
 - MASH111
 - MASH22
 
+The current RTL/bit-true release scope is single-bit sign-domain DSM for LPDSM,
+LPDSM2, EFDSM, EFDSM2 and native signed MASH outputs for MASH11, MASH111, and
+MASH22.
+
+Exploratory multibit Cartesian DSM models are provided under:
+
+```text
+matlab/cartesian_dsm/dsm_multibit
+rtl/dsm/multibit
+```
+
+The multibit RTL is covered by MATLAB/RTL bit-true comparison over the P0
+65536-sample vectors. It closes the 100 MHz OOC target on the conservative
+`xczu15eg-ffvb1156-1-i` target, while two multibit modes still miss timing on
+the smaller `xc7z020clg400-1` proxy target.
+
 ## Interfaces
 
 Common RTL wrapper interface:
@@ -35,7 +51,7 @@ Reusable IP top:
 - `in_valid` input
 - `rf_valid`, `rf_bit`, `rf_signed` output
 - `ALGORITHM` parameter selects LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11,
-  MASH111, or MASH22
+  MASH111, MASH22, or exploratory multibit Cartesian modes
 - `DUC_MODE=0`: fixed Fs/4 upconversion
 - `DUC_MODE=1`: NCO upconversion, controlled by `cfg_phase_inc`
 - `phase_acc_dbg` exposes the Fs/4 phase or NCO phase accumulator
@@ -46,6 +62,97 @@ The packaged IP now includes the SoC/RFSoC wrapper:
 - AXI-Stream `s_axis` feeds packed Q1.15 I/Q samples
 - a downstream 1-bit PA driver, DAC-facing logic, serializer, or RF digital
   backend consuming `rf_signed/rf_bit`
+
+## AXI-Lite Register Map
+
+| Offset | Name | Access | Description |
+|---:|---|---|---|
+| `0x00` | `CTRL` | RW | bit0 `enable`, bit1 software reset trigger, bit2 clear status |
+| `0x04` | `STATUS` | RO | enable/reset/valid/ready/error status |
+| `0x08` | `CFG_PHASE_INC` | RW | NCO phase increment |
+| `0x0C` | `ALGORITHM` | RO | compiled DSM algorithm ID |
+| `0x10` | `DUC_MODE` | RO | compiled DUC mode |
+| `0x14` | `VERSION` | RO | wrapper version |
+| `0x18` | `INPUT_SAMPLE_COUNT` | RO | accepted AXI-Stream sample count |
+| `0x1C` | `OUTPUT_SAMPLE_COUNT` | RO | emitted RF sample count |
+| `0x20` | `SOFTWARE_RESET_COUNT` | RO | software reset trigger count |
+| `0x24` | `ERROR_STATUS` | RW1C | sticky error bits |
+
+`ERROR_STATUS[0]` is set when AXI-Stream input is asserted while
+`s_axis_tready` is low. Writing `1` to an `ERROR_STATUS` bit clears that bit.
+
+## DSM Mode Roadmap
+
+Current RTL modes:
+
+| DSM_MODE | Algorithm | Quantizer domain | Status |
+|---:|---|---|---|
+| 0 | LPDSM | 1-bit | RTL + MATLAB bit-true |
+| 1 | LPDSM2 | 1-bit | RTL + MATLAB bit-true |
+| 2 | EFDSM | 1-bit | RTL + MATLAB bit-true |
+| 3 | EFDSM2 | 1-bit | RTL + MATLAB bit-true |
+| 4 | MASH11 | native signed output | RTL + MATLAB bit-true |
+| 5 | MASH111 | native signed output | RTL + MATLAB bit-true |
+| 6 | MASH22 | native signed output | RTL + MATLAB bit-true |
+
+Exploratory multibit modes:
+
+| DSM_MODE | Algorithm | Quantizer domain | Status |
+|---:|---|---|---|
+| 7 | LPDSM | multibit Cartesian | MATLAB exploration + RTL smoke |
+| 8 | LPDSM2 | multibit Cartesian | MATLAB exploration + RTL smoke |
+| 9 | EFDSM | multibit Cartesian | MATLAB exploration + RTL smoke |
+| 10 | EFDSM2 | multibit Cartesian | MATLAB exploration + RTL smoke |
+| 11 | MASH11 | multibit Cartesian | MATLAB exploration + RTL smoke |
+| 12 | MASH111 | multibit Cartesian | MATLAB exploration + RTL smoke |
+| 13 | MASH22 | multibit Cartesian | MATLAB exploration + RTL smoke |
+
+Multibit parameters:
+
+| Parameter | Default | Description |
+|---|---:|---|
+| `DSM_OUT_W` | 8 | Native DSM output code width exposed by `i_yout/q_yout` |
+| `MB_Q_BITS` | 4 | Compile-time multibit quantizer resolution |
+| `ACC_W_MB` | 16 | Multibit DSM state width |
+
+`MB_Q_BITS` is intentionally a compile-time parameter. Changing it changes the
+quantizer level count, feedback scaling, output range, and downstream interface
+requirements. Runtime bit-depth switching should be implemented later as an
+explicit mux between separately verified quantizers if it is required.
+
+Current multibit bit-true status:
+
+| DSM_MODE | Algorithm | MATLAB/RTL bit-true |
+|---:|---|---|
+| 7 | LPDSM multibit | 65536 samples, 0 mismatch |
+| 8 | LPDSM2 multibit | 65536 samples, 0 mismatch |
+| 9 | EFDSM multibit | 65536 samples, 0 mismatch |
+| 10 | EFDSM2 multibit | 65536 samples, 0 mismatch |
+| 11 | MASH11 multibit | 65536 samples, 0 mismatch |
+| 12 | MASH111 multibit | 65536 samples, 0 mismatch |
+| 13 | MASH22 multibit | 65536 samples, 0 mismatch |
+
+Current multibit OOC status on `xc7z020clg400-1`:
+
+| DSM_MODE | Algorithm | OOC 100 MHz status |
+|---:|---|---|
+| 7 | LPDSM multibit | PASS |
+| 8 | LPDSM2 multibit | PASS |
+| 9 | EFDSM multibit | PASS |
+| 10 | EFDSM2 multibit | FAIL_TIMING, WNS -0.093 ns |
+| 11 | MASH11 multibit | PASS |
+| 12 | MASH111 multibit | PASS |
+| 13 | MASH22 multibit | FAIL_TIMING, WNS -0.688 ns |
+
+Current single-bit/native and multibit OOC status on `xczu15eg-ffvb1156-1-i`:
+
+| Mode group | Count | OOC 100 MHz status | Worst WNS |
+|---|---:|---|---:|
+| Single-bit/native DSM | 7 | PASS | 5.107 ns |
+| Multibit Cartesian DSM | 7 | PASS | 4.896 ns |
+
+The multibit RTL does not yet replace the seven verified single-bit/native MASH
+modes.
 
 ## Frequency and Bandwidth Configuration
 
@@ -95,10 +202,19 @@ The IP separates three related but different quantities:
 
 ## Timing Evidence Boundary
 
-The current Zynq-7020 proxy OOC evidence shows `p0_ooc_lp1`, `p0_ooc_ef1`,
-and `p0_ooc_ef2` pass 100 MHz. `p0_ooc_lp2`, `p0_ooc_mash11`,
-`p0_ooc_mash111`, and `p0_ooc_mash22` synthesize but do not meet 100 MHz
-timing on that target in the current run.
+The current Zynq-7020 proxy OOC evidence from 2026-07-03 shows all seven
+retained paths meeting the 100 MHz target. LPDSM2 uses the P0 timing-closure
+configuration with a 20-bit accumulator.
 
 The current ZU48DR proxy OOC evidence shows all seven retained paths meeting
 the 100 MHz target.
+
+The current multibit OOC evidence from 2026-07-05 shows five of seven multibit
+modes meeting the 100 MHz target on `xc7z020clg400-1`. EFDSM2 multibit and
+MASH22 multibit require additional timing closure before they can be claimed as
+100 MHz closed on this target.
+
+The current ZU15EG OOC evidence from 2026-07-05 uses
+`xczu15eg-ffvb1156-1-i` and shows all 14 single-bit/native and multibit DSM
+tops meeting the 100 MHz target. This is OOC module evidence only; it is not a
+board-level implementation, bitstream, or ILA validation result.

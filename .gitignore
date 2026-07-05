@@ -32,10 +32,12 @@ matlab/**/out/
 vivado_pid*.str
 webtalk*.jou
 webtalk*.log
+clockInfo.txt
 
 # XSim generated files
 xsim.dir/
 verif/out_xsim_p0/
+verif/out_xsim_p0_multibit/
 verif/out_xsim_ip_smoke/
 *.vcd
 *.fst
@@ -74,6 +76,10 @@ data/board_validation/
 
 # Restricted RFSoC board collateral
 fpga/hardware/
+
+# Third-party papers and downloaded references
+docs/papers/
+*.pdf
 
 # Local server/license/secrets
 .env

@@ -10,13 +10,13 @@ The current release keeps seven DSM structures:
 
 | ID | Algorithm | RTL core |
 |---:|---|---|
-| 0 | LPDSM | `rtl/dsm/dsm_core.sv` |
-| 1 | LPDSM2 | `rtl/dsm/dsm_core_dsm2.sv` |
-| 2 | EFDSM | `rtl/dsm/dsm_core_ef1.sv` |
-| 3 | EFDSM2 | `rtl/dsm/dsm_core_ef2.sv` |
-| 4 | MASH11 | `rtl/dsm/dsm_core_mash11.sv` |
-| 5 | MASH111 | `rtl/dsm/dsm_core_mash111.sv` |
-| 6 | MASH22 | `rtl/dsm/dsm_core_mash22.sv` |
+| 0 | LPDSM | `rtl/dsm/singlebit/dsm_core.sv` |
+| 1 | LPDSM2 | `rtl/dsm/singlebit/dsm_core_dsm2.sv` |
+| 2 | EFDSM | `rtl/dsm/singlebit/dsm_core_ef1.sv` |
+| 3 | EFDSM2 | `rtl/dsm/singlebit/dsm_core_ef2.sv` |
+| 4 | MASH11 | `rtl/dsm/singlebit/dsm_core_mash11.sv` |
+| 5 | MASH111 | `rtl/dsm/singlebit/dsm_core_mash111.sv` |
+| 6 | MASH22 | `rtl/dsm/singlebit/dsm_core_mash22.sv` |
 
 The default P0 profile is a 16-QAM OFDM stream at a 100 MHz DSM clock. The
 fixed Fs/4 DUC path places the default IF center at 25 MHz.

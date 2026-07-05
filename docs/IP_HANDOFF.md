@@ -39,13 +39,21 @@ s_axis_tdata[31:16] = signed Q1.15 Q
 | Offset | Name | Access | Description |
 |---:|---|---|---|
 | `0x00` | `CTRL` | RW | bit0 `enable`, bit1 `soft_reset` |
-| `0x04` | `STATUS` | RO | enable/reset/valid/ready status |
+| `0x04` | `STATUS` | RO | enable/reset/valid/ready/error status |
 | `0x08` | `CFG_PHASE_INC` | RW | NCO phase increment |
 | `0x0C` | `ALGORITHM` | RO | compiled DSM algorithm ID |
 | `0x10` | `DUC_MODE` | RO | compiled DUC mode |
 | `0x14` | `VERSION` | RO | wrapper version |
+| `0x18` | `INPUT_SAMPLE_COUNT` | RO | accepted AXI-Stream samples |
+| `0x1C` | `OUTPUT_SAMPLE_COUNT` | RO | emitted RF samples |
+| `0x20` | `SOFTWARE_RESET_COUNT` | RO | software reset trigger count |
+| `0x24` | `ERROR_STATUS` | RW1C | sticky error bits |
 
 `ALGORITHM` and `DUC_MODE` are compile-time parameters in this release.
+
+`CTRL[1]` is a software reset trigger pulse. `CTRL[2]` clears status counters
+and sticky errors. `ERROR_STATUS[0]` is set when AXI-Stream input is asserted
+while the IP is not ready.
 
 ## Default Configuration
 

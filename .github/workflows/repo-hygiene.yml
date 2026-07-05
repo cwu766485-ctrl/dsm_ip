@@ -37,14 +37,18 @@ jobs:
         shell: pwsh
         run: |
           $patterns = @(
-            "15036307410",
-            "stu_wck",
-            "101\.254\.99\.137"
+            "password\s*[:=]",
+            "passwd\s*[:=]",
+            "secret\s*[:=]",
+            "api[_-]?key\s*[:=]",
+            "private[_-]?key",
+            "license[_-]?server\s*[:=]",
+            "vnc[_-]?server\s*[:=]"
           )
-          $files = Get-ChildItem -Recurse -File |
+          $files = git ls-files |
             Where-Object {
-              $_.FullName -notmatch '\\syn\\reports\\' -and
-              $_.FullName -notmatch '\\ip\\ip_repo\\'
+              $_ -notmatch '^syn/reports/' -and
+              $_ -notmatch '^ip/ip_repo/'
             }
           foreach ($pat in $patterns) {
             $hit = $files | Select-String -Pattern $pat -CaseSensitive:$false
@@ -58,11 +62,11 @@ jobs:
         shell: pwsh
         run: |
           $exts = @(".md", ".m", ".py", ".sv", ".svh", ".v", ".vh", ".tcl", ".ps1", ".cmd", ".f", ".xdc", ".yml", ".yaml")
-          $files = Get-ChildItem -Recurse -File |
+          $files = git ls-files |
             Where-Object {
-              $exts -contains $_.Extension -and
-              $_.FullName -notmatch '\\syn\\reports\\' -and
-              $_.FullName -notmatch '\\ip\\ip_repo\\'
+              $exts -contains [System.IO.Path]::GetExtension($_) -and
+              $_ -notmatch '^syn/reports/' -and
+              $_ -notmatch '^ip/ip_repo/'
             }
           $hit = $files | Select-String -Pattern '\p{IsCJKUnifiedIdeographs}'
           if ($hit) {
@@ -73,9 +77,7 @@ jobs:
       - name: Check generated temp files are not tracked
         shell: pwsh
         run: |
-          $files = Get-ChildItem -Recurse -File | ForEach-Object {
-            $_.FullName.Replace((Get-Location).Path + "\", "").Replace("\", "/")
-          }
+          $files = git ls-files
           $bad = $files | Select-String -Pattern '(^|/)(\.Xil|xsim\.dir)(/|$)|\.jou$|\.log$|\.backup\.(jou|log)$|^ip/build/|^verif/out_xsim_ip_smoke/'
           if ($bad) {
             $bad

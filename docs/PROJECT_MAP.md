@@ -32,6 +32,8 @@ This repository is a reusable DSM IP handoff tree.
 | `docs/evidence` | Compact 100 MHz pass evidence |
 | `docs/GITHUB_RELEASE_CHECKLIST.md` | Checklist for public GitHub release review |
 | `docs/IP_HANDOFF.md` | Reusable DSM IP handoff and integration notes |
+| `docs/METRIC_DEFINITIONS.md` | Native and RF-recovered metric definitions |
+| `docs/AI_COMMUNICATION_IP_ROADMAP.md` | XCZU15EG-oriented AI-assisted communication IP roadmap |
 
 The seven P0 comparison paths are retained. Other exploratory EFDSM4/MASH
 bundles and broad research workspaces remain outside this handoff tree.
@@ -40,13 +42,14 @@ bundles and broad research workspaces remain outside this handoff tree.
 
 | File | Purpose |
 |---|---|
-| `rtl/dsm/dsm_core.sv` | First-order LPDSM core |
-| `rtl/dsm/dsm_core_dsm2.sv` | Second-order LPDSM core |
-| `rtl/dsm/dsm_core_ef1.sv` | First-order EFDSM core |
-| `rtl/dsm/dsm_core_ef2.sv` | Second-order EFDSM core |
-| `rtl/dsm/dsm_core_mash11.sv` | MASH 1-1 core |
-| `rtl/dsm/dsm_core_mash111.sv` | MASH 1-1-1 core |
-| `rtl/dsm/dsm_core_mash22.sv` | MASH 2-2 core |
+| `rtl/dsm/singlebit/dsm_core.sv` | First-order LPDSM core |
+| `rtl/dsm/singlebit/dsm_core_dsm2.sv` | Second-order LPDSM core |
+| `rtl/dsm/singlebit/dsm_core_ef1.sv` | First-order EFDSM core |
+| `rtl/dsm/singlebit/dsm_core_ef2.sv` | Second-order EFDSM core |
+| `rtl/dsm/singlebit/dsm_core_mash11.sv` | MASH 1-1 core |
+| `rtl/dsm/singlebit/dsm_core_mash111.sv` | MASH 1-1-1 core |
+| `rtl/dsm/singlebit/dsm_core_mash22.sv` | MASH 2-2 core |
+| `rtl/dsm/multibit/dsm_core_multibit_*.sv` | Per-algorithm multibit DSM wrappers |
 | `rtl/duc/duc_fs4_merge.sv` | Fixed Fs/4 merge for 1-bit I/Q outputs |
 | `rtl/duc/duc_fs4_merge_signed.sv` | Fixed Fs/4 merge for signed multibit I/Q outputs |
 | `rtl/duc/duc_nco_mix_signed.v` | Optional NCO mixer for non-Fs/4 experiments |
