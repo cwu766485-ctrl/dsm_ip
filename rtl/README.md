@@ -18,6 +18,8 @@ Directory layout:
 |---|---|
 | `dsm/singlebit/` | Existing single-bit and native MASH baseline DSM cores |
 | `dsm/multibit/` | Multibit Cartesian DSM RTL cores and per-algorithm wrappers |
+| `axis/` | Small AXI-Stream helper blocks |
+| `interp/` | Standalone interpolation/filter frontend RTL |
 | `duc/` | Fs/4 merge and NCO upconversion blocks |
 | `mem/` | ROM reader used by simulation and ROM-backed tops |
 | `top/` | P0 wrapper tops |
@@ -39,6 +41,10 @@ Included cores and support blocks:
 - `dsm/multibit/dsm_core_multibit_mash11.sv`
 - `dsm/multibit/dsm_core_multibit_mash111.sv`
 - `dsm/multibit/dsm_core_multibit_mash22.sv`
+- `axis/axis_skid_buffer.sv`
+- `interp/dsm_interp2_halfband.sv`
+- `interp/dsm_interp_fir_fixed.sv`
+- `interp/dsm_interp_frontend.sv`
 - `duc/duc_fs4_merge.sv`
 - `duc/duc_fs4_merge_signed.sv`
 - `duc/duc_nco_mix_signed.v`
@@ -65,3 +71,29 @@ Multibit controls:
 The default 4-bit multibit modes are MATLAB/RTL bit-true over the current
 65536-sample P0 vector set. Timing/resource OOC signoff for these modes is still
 separate from the seven original P0 signoff paths.
+
+Interpolation frontend:
+
+- `INTERP_MODE=0`: bypass
+- `INTERP_MODE=1`: x4 halfband FIR cascade
+- `INTERP_MODE=2`: x8 halfband FIR cascade
+- `INTERP_MODE=3`: x16 halfband FIR cascade
+- `INTERP_MODE=4`: x32 CIC + compensation FIR
+
+The RTL uses a single-clock valid/ready interface. One low-rate input sample is
+accepted when `in_ready` is high; the frontend emits the interpolated output
+stream over subsequent cycles. Modes 0 through 4 are MATLAB/RTL bit-true in the
+standalone `tb_interp_frontend` regression. The frontend is inserted before
+`dsm_ip_core` in `dsm_ip_top`; `INTERP_MODE` remains a compile-time parameter.
+The halfband and FIR helper blocks use symmetric-coefficient pre-adds and skip
+zero coefficients to reduce arithmetic cost without changing the bit-true
+latency contract.
+
+AXI wrapper flow control:
+
+- `rtl/axis/axis_skid_buffer.sv` provides a one-entry AXI-Stream register slice
+  ahead of the interpolation/DSM frontend.
+- `s_axis_tready` can deassert when the frontend is busy. This is legal
+  backpressure and increments `INPUT_STALL_COUNT`.
+- `ERROR_STATUS[0]` is reserved for input asserted while the IP is disabled or
+  held in reset.

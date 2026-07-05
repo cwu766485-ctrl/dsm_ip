@@ -10,6 +10,7 @@ module dsm_ip_axi_top #(
   parameter integer TW_W = 16,
   parameter integer ALGORITHM = 2,
   parameter integer DUC_MODE = 0,
+  parameter integer INTERP_MODE = 0,
   parameter integer CLK_FREQ_HZ = 100000000,
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
@@ -65,12 +66,16 @@ module dsm_ip_axi_top #(
   localparam [3:0] ADDR_OUT_COUNT  = 4'h7;
   localparam [3:0] ADDR_RESET_CNT  = 4'h8;
   localparam [3:0] ADDR_ERROR      = 4'h9;
+  localparam [3:0] ADDR_FRONT_COUNT = 4'ha;
+  localparam [3:0] ADDR_STALL_COUNT = 4'hb;
 
   reg [31:0] ctrl_reg;
   reg [PHASE_W-1:0] phase_inc_reg;
   reg soft_reset_pulse;
   reg [31:0] input_sample_count;
+  reg [31:0] frontend_sample_count;
   reg [31:0] output_sample_count;
+  reg [31:0] input_stall_count;
   reg [31:0] software_reset_count;
   reg [31:0] error_status_reg;
 
@@ -78,15 +83,39 @@ module dsm_ip_axi_top #(
   wire soft_reset = soft_reset_pulse;
   wire core_rst_n = aresetn & ~soft_reset;
   wire axis_fire = s_axis_tvalid & s_axis_tready;
+  wire frontend_fire;
   wire clear_status_req = s_axi_awvalid & s_axi_wvalid &
                           (s_axi_awaddr[5:2] == 4'h0) &
                           s_axi_wstrb[0] & s_axi_wdata[2];
-  wire stream_while_disabled = s_axis_tvalid & ~s_axis_tready;
+  wire stream_while_disabled = s_axis_tvalid & (!core_enable | !core_rst_n);
+  wire stream_stall = s_axis_tvalid & !s_axis_tready & core_enable & core_rst_n;
 
-  wire signed [W-1:0] axis_i = s_axis_tdata[W-1:0];
-  wire signed [W-1:0] axis_q = s_axis_tdata[(2*W)-1:W];
+  wire [C_S_AXIS_TDATA_WIDTH-1:0] axis_buf_tdata;
+  wire axis_buf_valid;
+  wire axis_buf_ready;
+  wire axis_buf_full;
+  wire signed [W-1:0] axis_i = axis_buf_tdata[W-1:0];
+  wire signed [W-1:0] axis_q = axis_buf_tdata[(2*W)-1:W];
 
-  assign s_axis_tready = core_enable & core_rst_n;
+  wire dsm_input_ready;
+
+  axis_skid_buffer #(
+    .DATA_W(C_S_AXIS_TDATA_WIDTH)
+  ) u_axis_skid (
+    .clk(aclk),
+    .rst_n(aresetn),
+    .clear(!core_rst_n),
+    .s_data(s_axis_tdata),
+    .s_valid(s_axis_tvalid & core_enable & core_rst_n),
+    .s_ready(axis_buf_ready),
+    .m_data(axis_buf_tdata),
+    .m_valid(axis_buf_valid),
+    .m_ready(dsm_input_ready & core_enable & core_rst_n),
+    .full(axis_buf_full)
+  );
+
+  assign s_axis_tready = core_enable & core_rst_n & axis_buf_ready;
+  assign frontend_fire = axis_buf_valid & dsm_input_ready & core_enable & core_rst_n;
 
   always @(posedge aclk or negedge aresetn) begin
     if (!aresetn) begin
@@ -98,7 +127,9 @@ module dsm_ip_axi_top #(
       phase_inc_reg <= {{(PHASE_W-24){1'b0}}, 24'h400000};
       soft_reset_pulse <= 1'b0;
       input_sample_count <= 32'd0;
+      frontend_sample_count <= 32'd0;
       output_sample_count <= 32'd0;
+      input_stall_count <= 32'd0;
       software_reset_count <= 32'd0;
       error_status_reg <= 32'd0;
     end else begin
@@ -110,8 +141,16 @@ module dsm_ip_axi_top #(
         input_sample_count <= input_sample_count + 32'd1;
       end
 
+      if (frontend_fire) begin
+        frontend_sample_count <= frontend_sample_count + 32'd1;
+      end
+
       if (rf_valid) begin
         output_sample_count <= output_sample_count + 32'd1;
+      end
+
+      if (stream_stall) begin
+        input_stall_count <= input_stall_count + 32'd1;
       end
 
       if (stream_while_disabled) begin
@@ -120,7 +159,9 @@ module dsm_ip_axi_top #(
 
       if (clear_status_req) begin
         input_sample_count <= 32'd0;
+        frontend_sample_count <= 32'd0;
         output_sample_count <= 32'd0;
+        input_stall_count <= 32'd0;
         error_status_reg <= 32'd0;
       end
 
@@ -175,7 +216,7 @@ module dsm_ip_axi_top #(
         s_axi_rresp <= 2'b00;
         case (s_axi_araddr[5:2])
           ADDR_CTRL:      s_axi_rdata <= ctrl_reg;
-          ADDR_STATUS:    s_axi_rdata <= {26'b0, |error_status_reg, s_axis_tready, rf_valid, dsm_valid, soft_reset, core_enable};
+          ADDR_STATUS:    s_axi_rdata <= {25'b0, axis_buf_full, |error_status_reg, s_axis_tready, rf_valid, dsm_valid, soft_reset, core_enable};
           ADDR_PHASE_INC: s_axi_rdata <= {{(32-PHASE_W){1'b0}}, phase_inc_reg};
           ADDR_ALGORITHM: s_axi_rdata <= ALGORITHM[31:0];
           ADDR_DUC_MODE:  s_axi_rdata <= DUC_MODE[31:0];
@@ -184,6 +225,8 @@ module dsm_ip_axi_top #(
           ADDR_OUT_COUNT: s_axi_rdata <= output_sample_count;
           ADDR_RESET_CNT: s_axi_rdata <= software_reset_count;
           ADDR_ERROR:     s_axi_rdata <= error_status_reg;
+          ADDR_FRONT_COUNT: s_axi_rdata <= frontend_sample_count;
+          ADDR_STALL_COUNT: s_axi_rdata <= input_stall_count;
           default: s_axi_rdata <= 32'h0000_0000;
         endcase
       end else if (s_axi_rvalid && s_axi_rready) begin
@@ -201,16 +244,18 @@ module dsm_ip_axi_top #(
     .TW_W(TW_W),
     .ALGORITHM(ALGORITHM),
     .DUC_MODE(DUC_MODE),
+    .INTERP_MODE(INTERP_MODE),
     .CLK_FREQ_HZ(CLK_FREQ_HZ),
     .BB_SAMPLE_RATE_HZ(BB_SAMPLE_RATE_HZ),
     .SIGNAL_BW_HZ(SIGNAL_BW_HZ)
   ) u_dsm_ip_top (
     .clk(aclk),
     .rst_n(core_rst_n),
-    .in_valid(axis_fire),
+    .in_valid(frontend_fire),
     .cfg_phase_inc(phase_inc_reg),
     .i_in(axis_i),
     .q_in(axis_q),
+    .in_ready(dsm_input_ready),
     .dsm_valid(dsm_valid),
     .i_bit(i_bit),
     .q_bit(q_bit),

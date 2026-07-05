@@ -5,6 +5,7 @@
 # comparison paths.
 
 ../rtl/mem/rom_reader.sv
+../rtl/axis/axis_skid_buffer.sv
 ../rtl/dsm/singlebit/dsm_core.sv
 ../rtl/dsm/singlebit/dsm_core_dsm2.sv
 ../rtl/dsm/singlebit/dsm_core_ef1.sv
@@ -20,6 +21,9 @@
 ../rtl/dsm/multibit/dsm_core_multibit_mash11.sv
 ../rtl/dsm/multibit/dsm_core_multibit_mash111.sv
 ../rtl/dsm/multibit/dsm_core_multibit_mash22.sv
+../rtl/interp/dsm_interp_fir_fixed.sv
+../rtl/interp/dsm_interp2_halfband.sv
+../rtl/interp/dsm_interp_frontend.sv
 ../rtl/duc/duc_fs4_merge.sv
 ../rtl/duc/duc_fs4_merge_signed.sv
 

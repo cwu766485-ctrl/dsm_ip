@@ -38,6 +38,7 @@ clockInfo.txt
 xsim.dir/
 verif/out_xsim_p0/
 verif/out_xsim_p0_multibit/
+verif/out_xsim_interp_frontend/
 verif/out_xsim_ip_smoke/
 *.vcd
 *.fst

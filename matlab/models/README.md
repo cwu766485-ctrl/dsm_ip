@@ -9,6 +9,7 @@ cd matlab
 path_setup
 interp_frontend_float
 interp_frontend_fixed
+prepare_interp_frontend_bittrue_vectors
 ```
 
 Supported modes:
@@ -20,6 +21,22 @@ Supported modes:
 | 2 | x8 halfband FIR cascade |
 | 3 | x16 halfband FIR cascade |
 | 4 | x32 halfband x4 + CIC x8 + compensation FIR |
+
+RTL bit-true coverage:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_interp_frontend.ps1
+```
+
+```matlab
+cd matlab
+path_setup
+T = compare_interp_frontend_rtl_xsim;
+disp(T)
+```
+
+Current RTL bit-true scope covers modes 0 through 4. Mode 4 uses the MATLAB
+fixed-point CIC-equivalent FIR impulse and compensation FIR coefficients.
 
 Generated outputs are written to `matlab/out/interp_frontend/`:
 

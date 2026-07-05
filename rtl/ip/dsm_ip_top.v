@@ -10,6 +10,7 @@ module dsm_ip_top #(
   parameter integer TW_W = 16,
   parameter integer ALGORITHM = 2,
   parameter integer DUC_MODE = 0,
+  parameter integer INTERP_MODE = 0,
   parameter integer CLK_FREQ_HZ = 100000000,
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
@@ -33,6 +34,7 @@ module dsm_ip_top #(
   input wire signed [W-1:0] i_in,
   input wire signed [W-1:0] q_in,
 
+  output wire in_ready,
   output wire dsm_valid,
   output wire i_bit,
   output wire q_bit,
@@ -44,6 +46,28 @@ module dsm_ip_top #(
   output wire signed [RF_W-1:0] rf_signed,
   output wire [PHASE_W-1:0] phase_acc_dbg
 );
+
+  wire signed [W-1:0] interp_i;
+  wire signed [W-1:0] interp_q;
+  wire interp_valid;
+
+  dsm_interp_frontend #(
+    .W_IN(W),
+    .W_OUT(W),
+    .INTERP_MODE(INTERP_MODE)
+  ) u_interp_frontend (
+    .clk(clk),
+    .rst_n(rst_n),
+    .enable(1'b1),
+    .i_in(i_in),
+    .q_in(q_in),
+    .in_valid(in_valid),
+    .in_ready(in_ready),
+    .i_out(interp_i),
+    .q_out(interp_q),
+    .out_valid(interp_valid),
+    .out_ready(1'b1)
+  );
 
   dsm_ip_core #(
     .W(W),
@@ -72,10 +96,10 @@ module dsm_ip_top #(
   ) u_core (
     .clk(clk),
     .rst_n(rst_n),
-    .in_valid(in_valid),
+    .in_valid(interp_valid),
     .cfg_phase_inc(cfg_phase_inc),
-    .i_in(i_in),
-    .q_in(q_in),
+    .i_in(interp_i),
+    .q_in(interp_q),
     .dsm_valid(dsm_valid),
     .i_bit(i_bit),
     .q_bit(q_bit),

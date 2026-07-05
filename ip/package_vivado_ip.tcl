@@ -10,6 +10,7 @@ file mkdir $ip_dir
 
 set part "xc7z020clg400-1"
 set files [list \
+  [file join $repo_root rtl axis axis_skid_buffer.sv] \
   [file join $repo_root rtl dsm singlebit dsm_core.sv] \
   [file join $repo_root rtl dsm singlebit dsm_core_dsm2.sv] \
   [file join $repo_root rtl dsm singlebit dsm_core_ef1.sv] \
@@ -25,6 +26,9 @@ set files [list \
   [file join $repo_root rtl dsm multibit dsm_core_multibit_mash11.sv] \
   [file join $repo_root rtl dsm multibit dsm_core_multibit_mash111.sv] \
   [file join $repo_root rtl dsm multibit dsm_core_multibit_mash22.sv] \
+  [file join $repo_root rtl interp dsm_interp_fir_fixed.sv] \
+  [file join $repo_root rtl interp dsm_interp2_halfband.sv] \
+  [file join $repo_root rtl interp dsm_interp_frontend.sv] \
   [file join $repo_root rtl duc duc_fs4_merge.sv] \
   [file join $repo_root rtl duc duc_fs4_merge_signed.sv] \
   [file join $repo_root rtl duc duc_nco_mix_signed.v] \

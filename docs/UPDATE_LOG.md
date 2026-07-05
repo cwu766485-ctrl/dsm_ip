@@ -175,3 +175,74 @@ Remaining limitations:
 - The ZU15EG result is OOC module evidence only.
 - It is not a complete ZU15EG Vivado block design, bitstream, board timing
   closure, or ILA validation result.
+
+## 2026-07-05 22:00:00 +08:00
+
+Reason:
+
+- Promote the interpolation/filter frontend from MATLAB-only exploration to RTL
+  and connect it ahead of `dsm_ip_core` in `dsm_ip_top`.
+- Add AXI-Stream backpressure support through a one-entry skid buffer and
+  expose frontend/stall counters in the AXI register map.
+- Reduce interpolation FIR arithmetic cost with symmetric-coefficient pre-adds
+  and zero-coefficient pruning while preserving the existing latency and
+  bit-true contract.
+- Keep runtime interpolation switching out of the first RTL step so valid/ready,
+  latency, fixed-point rounding, and coefficient behavior can be verified
+  cleanly.
+
+Changed files:
+
+- `rtl/axis/axis_skid_buffer.sv`
+- `rtl/interp/dsm_interp2_halfband.sv`
+- `rtl/interp/dsm_interp_fir_fixed.sv`
+- `rtl/interp/dsm_interp_frontend.sv`
+- `rtl/filelist_p0.f`
+- `ip/filelist_dsm_ip.f`
+- `ip/package_vivado_ip.tcl`
+- `rtl/ip/dsm_ip_top.v`
+- `rtl/axi/dsm_ip_axi_top.v`
+- `verif/scripts/filelist_p0_abs.ps1`
+- `verif/scripts/run_xsim_ip_smoke.ps1`
+- `verif/scripts/run_xsim_interp_frontend.ps1`
+- `verif/tb/tb_interp_frontend.sv`
+- `verif/tb/tb_dsm_ip_top_smoke.sv`
+- `verif/tb/tb_dsm_ip_axi_smoke.sv`
+- `matlab/models/prepare_interp_frontend_bittrue_vectors.m`
+- `matlab/models/compare_interp_frontend_rtl_xsim.m`
+- `matlab/models/README.md`
+- `rtl/README.md`
+- `docs/IP_SPEC.md`
+- `docs/IP_HANDOFF.md`
+- `docs/STATUS_AND_LIMITS.md`
+
+Checks run:
+
+- `matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; prepare_interp_frontend_bittrue_vectors('n_input',128);"`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_interp_frontend.ps1 -SkipMatlabPrep`: passed.
+- `matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_interp_frontend_rtl_xsim; disp(T); assert(all(T.mismatch==0));"`: passed. Modes 0 through 4 reported zero mismatches.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_interp_frontend.ps1 -SkipMatlabPrep`: passed after FIR arithmetic optimization.
+- `matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_interp_frontend_rtl_xsim; disp(T); assert(all(T.mismatch==0));"`: passed after FIR arithmetic optimization. Modes 0 through 4 reported zero mismatches.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1 -SkipSummary`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`: passed. The top smoke includes an `INTERP_MODE=4` `dsm_ip_top` instance and reported `interp_valid=256`; the AXI smoke drives `INTERP_MODE=4` with backpressure and reported `rf_valid=2048`.
+- `.\scripts\run_matlab_p0_bittrue_check.cmd`: passed. Existing seven P0 modes reported zero mismatches over 65536 samples.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1`: passed.
+
+Current interpolation bit-true snapshot:
+
+| INTERP_MODE | Function | Compared samples | Mismatch |
+|---:|---|---:|---:|
+| 0 | bypass | 128 | 0 |
+| 1 | x4 halfband FIR cascade | 512 | 0 |
+| 2 | x8 halfband FIR cascade | 1024 | 0 |
+| 3 | x16 halfband FIR cascade | 2048 | 0 |
+| 4 | x32 CIC + compensation FIR | 4096 | 0 |
+
+Remaining limitations:
+
+- `INTERP_MODE` is compile-time configurable and is now connected into
+  `dsm_ip_top`.
+- Runtime interpolation mode switching is not implemented.
+- The interpolation frontend is arithmetic-optimized but not yet deeply
+  pipelined for maximum clock frequency. A latency-changing pipeline stage
+  should be added only with updated MATLAB/RTL alignment checks.

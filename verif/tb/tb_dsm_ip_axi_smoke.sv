@@ -48,7 +48,8 @@ module tb_dsm_ip_axi_smoke;
     .RF_W(RF_W),
     .PHASE_W(24),
     .ALGORITHM(2),
-    .DUC_MODE(0)
+    .DUC_MODE(0),
+    .INTERP_MODE(4)
   ) dut (
     .aclk(aclk),
     .aresetn(aresetn),
@@ -125,6 +126,21 @@ module tb_dsm_ip_axi_smoke;
     end
   endtask
 
+  task axis_send;
+    input signed [15:0] i_sample;
+    input signed [15:0] q_sample;
+    begin
+      @(posedge aclk);
+      s_axis_tdata <= {i_sample, q_sample};
+      s_axis_tvalid <= 1'b1;
+      while (!s_axis_tready) begin
+        @(posedge aclk);
+      end
+      @(posedge aclk);
+      s_axis_tvalid <= 1'b0;
+    end
+  endtask
+
   initial begin
     aresetn = 1'b0;
     s_axi_awaddr = 6'd0;
@@ -168,19 +184,18 @@ module tb_dsm_ip_axi_smoke;
     axi_write(6'h00, 32'h0000_0001);
 
     for (n = 0; n < 64; n++) begin
-      @(posedge aclk);
-      s_axis_tdata <= {$signed(16'sd512 + n), $signed(16'sd1024 + n)};
-      s_axis_tvalid <= 1'b1;
-      wait (s_axis_tready);
+      axis_send($signed(16'sd512 + n), $signed(16'sd1024 + n));
     end
 
-    @(posedge aclk);
-    s_axis_tvalid <= 1'b0;
-    repeat (8) @(posedge aclk);
+    repeat (2500) @(posedge aclk);
 
     if (valid_count == 0) $fatal(1, "dsm_ip_axi_top produced no rf_valid");
     axi_read(6'h18, rd);
     if (rd != 32'd64) $fatal(1, "input sample count mismatch");
+    axi_read(6'h28, rd);
+    if (rd != 32'd64) $fatal(1, "frontend sample count mismatch");
+    axi_read(6'h2c, rd);
+    if (rd == 32'd0) $fatal(1, "input stall count did not increment under INTERP_MODE=4 backpressure");
     axi_read(6'h1c, rd);
     if (rd == 32'd0) $fatal(1, "output sample count did not increment");
     $display("DSM IP AXI smoke PASS: rf_valid=%0d", valid_count);

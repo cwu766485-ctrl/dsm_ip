@@ -13,6 +13,12 @@
   `xczu15eg-ffvb1156-1-i`, and `xczu48dr-ffvg1517-2-e`.
 - Exploratory multibit Cartesian DSM modes are MATLAB/RTL bit-true over the P0
   65536-sample vector set with zero mismatches.
+- The interpolation/filter frontend supports bypass, x4, x8, x16, and x32
+  modes in RTL with MATLAB/RTL bit-true comparison, and is inserted before
+  `dsm_ip_core` in `dsm_ip_top`.
+- The AXI wrapper includes a one-entry AXI-Stream skid buffer. Legal
+  backpressure is counted in `INPUT_STALL_COUNT`; streaming while disabled or
+  in reset is reported through sticky error status.
 
 ## Timing Summary
 
@@ -92,6 +98,12 @@ target in the current evidence.
 - Do not claim all algorithms close timing on all FPGA targets unless the
   target has explicit retained OOC or implementation evidence.
 - Do not claim runtime algorithm switching unless it is implemented.
+- Do not claim runtime interpolation switching. The current interpolation mode
+  is a compile-time parameter.
+- Do not claim the interpolation frontend is deeply pipelined for maximum
+  frequency. The current RTL reduces FIR arithmetic cost with symmetric
+  pre-adds and zero-coefficient pruning while keeping the existing latency and
+  bit-true behavior.
 - Do not claim all multibit modes close at 100 MHz on `xc7z020clg400-1`; EFDSM2
   multibit and MASH22 multibit still need timing closure work.
 - Do not claim a complete ZU15EG board-level implementation or bitstream from

@@ -5,6 +5,7 @@
 
 $lines = @(
   "$RepoRoot\rtl\mem\rom_reader.sv",
+  "$RepoRoot\rtl\axis\axis_skid_buffer.sv",
   "$RepoRoot\rtl\dsm\singlebit\dsm_core.sv",
   "$RepoRoot\rtl\dsm\singlebit\dsm_core_dsm2.sv",
   "$RepoRoot\rtl\dsm\singlebit\dsm_core_ef1.sv",
@@ -20,6 +21,9 @@ $lines = @(
   "$RepoRoot\rtl\dsm\multibit\dsm_core_multibit_mash11.sv",
   "$RepoRoot\rtl\dsm\multibit\dsm_core_multibit_mash111.sv",
   "$RepoRoot\rtl\dsm\multibit\dsm_core_multibit_mash22.sv",
+  "$RepoRoot\rtl\interp\dsm_interp_fir_fixed.sv",
+  "$RepoRoot\rtl\interp\dsm_interp2_halfband.sv",
+  "$RepoRoot\rtl\interp\dsm_interp_frontend.sv",
   "$RepoRoot\rtl\duc\duc_fs4_merge.sv",
   "$RepoRoot\rtl\duc\duc_fs4_merge_signed.sv",
   "$RepoRoot\rtl\duc\duc_nco_mix_signed.v",

@@ -22,6 +22,7 @@ $tbTop = Join-Path $repo "verif\tb\tb_dsm_ip_top_smoke.sv"
 $tbAxi = Join-Path $repo "verif\tb\tb_dsm_ip_axi_smoke.sv"
 
 $rtlFiles = @(
+  "$repo\rtl\axis\axis_skid_buffer.sv",
   "$repo\rtl\dsm\singlebit\dsm_core.sv",
   "$repo\rtl\dsm\singlebit\dsm_core_dsm2.sv",
   "$repo\rtl\dsm\singlebit\dsm_core_ef1.sv",
@@ -37,6 +38,9 @@ $rtlFiles = @(
   "$repo\rtl\dsm\multibit\dsm_core_multibit_mash11.sv",
   "$repo\rtl\dsm\multibit\dsm_core_multibit_mash111.sv",
   "$repo\rtl\dsm\multibit\dsm_core_multibit_mash22.sv",
+  "$repo\rtl\interp\dsm_interp_fir_fixed.sv",
+  "$repo\rtl\interp\dsm_interp2_halfband.sv",
+  "$repo\rtl\interp\dsm_interp_frontend.sv",
   "$repo\rtl\duc\duc_fs4_merge.sv",
   "$repo\rtl\duc\duc_fs4_merge_signed.sv",
   "$repo\rtl\duc\duc_nco_mix_signed.v",
