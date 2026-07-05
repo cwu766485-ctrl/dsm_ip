@@ -7,16 +7,86 @@ IP handoff.
 
 | Path | Purpose |
 |---|---|
-| `bittrue/` | Fixed-point DSM reference models and RTL/XSim dump comparison |
-| `scripts/` | Entry scripts for vector export, metric evaluation, and plots |
-| `cartesian_dsm/` | Retained Cartesian I/Q DSM simulation pipeline and helper functions |
-| `board_validation/` | Scope-capture recovery and board-output comparison scripts |
+| `bittrue/` | Fixed-point DSM reference models and RTL/XSim dump comparison. This is the current source of truth for the seven RTL DSM algorithms. |
+| `models/` | Executable algorithm models for new IP blocks before RTL implementation, including interpolation frontend and system-level metric experiments. |
+| `scripts/` | User-facing entry scripts for vector export, metric evaluation, calibration sweeps, and plots. |
+| `cartesian_dsm/` | Cartesian I/Q DSM algorithm workspace, including retained legacy flow, single-bit wrappers, and exploratory multibit models. |
+| `board_validation/` | Scope-capture recovery and board-output comparison scripts retained for hardware validation. |
 | `out/` | Generated CSV, MAT, PDF, and PNG result files |
 | `path_setup.m` | Adds the retained MATLAB source folders to the MATLAB path |
 
-There are no `golden/` or `models/` folders in the cleaned handoff. Fixed-point
-reference behavior lives under `bittrue/`; the retained waveform-generation and
+Fixed-point DSM reference behavior lives under `bittrue/`; new pre-RTL
+algorithm models live under `models/`; the retained waveform-generation and
 metric helpers live under `cartesian_dsm/DSM_2nd/lp/core/`.
+Single-bit and exploratory multibit Cartesian DSM models live under
+`cartesian_dsm/dsm_singlebit/` and `cartesian_dsm/dsm_multibit/`.
+
+## Tree
+
+```text
+matlab/
+  README.md
+  path_setup.m
+
+  bittrue/
+    p0_dsm_bittrue.m
+    p0_compare_rtl_xsim.m
+    README.md
+
+  scripts/
+    entry_p0_export.m
+    entry_p0_eval.m
+    entry_p0_eval_seven.m
+    entry_p0_bittrue_check.m
+    entry_plot_qam16_64_256.m
+    entry_interp_frontend_model.m
+    entry_interp_frontend_system_eval.m
+    entry_interp_frontend_calibrate_system.m
+    export_p0_rom_mem.m
+    export_p1_rom_mem.m
+    eval_p0_seven_metrics_from_xsim.m
+    eval_profile_seven_metrics_from_xsim.m
+    run_p0_eval_from_xsim.m
+    run_p0_table52_compare.m
+    plot_qam16_64_256_compare.m
+
+  models/
+    interp_frontend_float.m
+    interp_frontend_fixed.m
+    interp_frontend_system_eval.m
+    interp_frontend_calibrate_system.m
+    README.md
+
+  cartesian_dsm/
+    dsm_singlebit/
+      dsm_singlebit_model.m
+      README.md
+    dsm_multibit/
+      dsm_multibit_model.m
+      run_dsm_multibit_smoke.m
+      run_dsm_multibit_metrics.m
+      README.md
+    DSM_2nd/
+      README.md
+      lp/
+        path_setup.m
+        README.md
+        core/
+          low-pass DSM waveform generation, reconstruction, metrics,
+          legacy comparison, and RF diagnostic helper scripts
+
+  board_validation/
+    README.md
+    scope/RTL alignment, bit recovery, spectrum comparison, and
+    board-capture diagnostic scripts
+
+  out/
+    generated outputs only; this folder is ignored by Git
+```
+
+The retained legacy file names under `cartesian_dsm/DSM_2nd/lp/core/` are kept
+for reproducibility. New top-level work should use the cleaner `entry_*` scripts
+under `matlab/scripts/`.
 
 ## Setup
 
@@ -38,6 +108,18 @@ T = p0_compare_rtl_xsim();
 This compares LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11, MASH111, and MASH22
 sample-for-sample against the RTL dumps.
 
+Current single-bit/native RTL algorithms:
+
+```text
+LPDSM
+LPDSM2
+EFDSM
+EFDSM2
+MASH11
+MASH111
+MASH22
+```
+
 ## Vector Export and Metrics
 
 Common entry scripts:
@@ -52,6 +134,69 @@ entry_plot_qam16_64_256
 
 Wrapper scripts in the repository root call these entry points through
 `scripts/run_matlab_*.cmd`.
+
+## Interpolation Frontend Model
+
+Run the pre-RTL interpolation frontend model:
+
+```matlab
+interp_frontend_float
+interp_frontend_fixed
+```
+
+or use the entry script:
+
+```matlab
+entry_interp_frontend_model
+```
+
+This exports frequency-response summaries, fixed-point metrics, coefficients,
+and bit-true vectors to:
+
+```text
+matlab/out/interp_frontend
+```
+
+The fixed-point metrics in this frontend model measure fixed-point error
+against the floating-point reference only. They are not end-to-end communication
+SNR/EVM results.
+
+Run the system-level behavioral metric check:
+
+```matlab
+entry_interp_frontend_system_eval
+```
+
+This produces `matlab/out/interp_frontend/interp_frontend_system_metrics.csv`.
+
+Run the reduced calibration sweep:
+
+```matlab
+entry_interp_frontend_calibrate_system
+```
+
+## Exploratory Multibit DSM
+
+The multibit models are MATLAB-only exploration models. They are not RTL
+bit-true yet.
+
+Run a smoke check:
+
+```matlab
+T = run_dsm_multibit_smoke
+```
+
+Run native complex-baseband EVM/SNDR:
+
+```matlab
+T = run_dsm_multibit_metrics
+```
+
+The generated CSV is:
+
+```text
+matlab/out/dsm_multibit/dsm_multibit_metrics.csv
+```
 
 ## Board Validation
 

@@ -3,6 +3,7 @@
 
 module tb_dsm_ip_top_smoke;
   localparam int W = 16;
+  localparam int DSM_OUT_W = 8;
   localparam int RF_W = 16;
   localparam int PHASE_W = 24;
   localparam int N_SAMPLES = 64;
@@ -17,8 +18,8 @@ module tb_dsm_ip_top_smoke;
   logic dsm_valid_fs4;
   logic i_bit_fs4;
   logic q_bit_fs4;
-  logic signed [3:0] i_yout_fs4;
-  logic signed [3:0] q_yout_fs4;
+  logic signed [DSM_OUT_W-1:0] i_yout_fs4;
+  logic signed [DSM_OUT_W-1:0] q_yout_fs4;
   logic rf_valid_fs4;
   logic rf_bit_fs4;
   logic signed [RF_W-1:0] rf_signed_fs4;
@@ -27,15 +28,26 @@ module tb_dsm_ip_top_smoke;
   logic dsm_valid_nco;
   logic i_bit_nco;
   logic q_bit_nco;
-  logic signed [3:0] i_yout_nco;
-  logic signed [3:0] q_yout_nco;
+  logic signed [DSM_OUT_W-1:0] i_yout_nco;
+  logic signed [DSM_OUT_W-1:0] q_yout_nco;
   logic rf_valid_nco;
   logic rf_bit_nco;
   logic signed [RF_W-1:0] rf_signed_nco;
   logic [PHASE_W-1:0] phase_acc_nco;
 
+  logic dsm_valid_mb;
+  logic i_bit_mb;
+  logic q_bit_mb;
+  logic signed [DSM_OUT_W-1:0] i_yout_mb;
+  logic signed [DSM_OUT_W-1:0] q_yout_mb;
+  logic rf_valid_mb;
+  logic rf_bit_mb;
+  logic signed [RF_W-1:0] rf_signed_mb;
+  logic [PHASE_W-1:0] phase_acc_mb;
+
   dsm_ip_top #(
     .W(W),
+    .DSM_OUT_W(DSM_OUT_W),
     .RF_W(RF_W),
     .PHASE_W(PHASE_W),
     .ALGORITHM(2),
@@ -60,6 +72,7 @@ module tb_dsm_ip_top_smoke;
 
   dsm_ip_top #(
     .W(W),
+    .DSM_OUT_W(DSM_OUT_W),
     .RF_W(RF_W),
     .PHASE_W(PHASE_W),
     .ALGORITHM(2),
@@ -82,12 +95,38 @@ module tb_dsm_ip_top_smoke;
     .phase_acc_dbg(phase_acc_nco)
   );
 
+  dsm_ip_top #(
+    .W(W),
+    .DSM_OUT_W(DSM_OUT_W),
+    .RF_W(RF_W),
+    .PHASE_W(PHASE_W),
+    .ALGORITHM(10),
+    .DUC_MODE(0)
+  ) dut_multibit (
+    .clk(clk),
+    .rst_n(rst_n),
+    .in_valid(in_valid),
+    .cfg_phase_inc(cfg_phase_inc),
+    .i_in(i_in),
+    .q_in(q_in),
+    .dsm_valid(dsm_valid_mb),
+    .i_bit(i_bit_mb),
+    .q_bit(q_bit_mb),
+    .i_yout(i_yout_mb),
+    .q_yout(q_yout_mb),
+    .rf_valid(rf_valid_mb),
+    .rf_bit(rf_bit_mb),
+    .rf_signed(rf_signed_mb),
+    .phase_acc_dbg(phase_acc_mb)
+  );
+
   initial clk = 1'b0;
   always #5 clk = ~clk;
 
   int sample_count;
   int fs4_valid_count;
   int nco_valid_count;
+  int mb_valid_count;
 
   initial begin
     rst_n = 1'b0;
@@ -116,7 +155,9 @@ module tb_dsm_ip_top_smoke;
 
     if (fs4_valid_count == 0) $fatal(1, "dsm_ip_top Fs/4 path produced no rf_valid");
     if (nco_valid_count == 0) $fatal(1, "dsm_ip_top NCO path produced no rf_valid");
-    $display("DSM IP top smoke PASS: fs4_valid=%0d nco_valid=%0d", fs4_valid_count, nco_valid_count);
+    if (mb_valid_count == 0) $fatal(1, "dsm_ip_top multibit path produced no rf_valid");
+    $display("DSM IP top smoke PASS: fs4_valid=%0d nco_valid=%0d mb_valid=%0d",
+             fs4_valid_count, nco_valid_count, mb_valid_count);
     $finish;
   end
 
@@ -124,9 +165,11 @@ module tb_dsm_ip_top_smoke;
     if (!rst_n) begin
       fs4_valid_count <= 0;
       nco_valid_count <= 0;
+      mb_valid_count <= 0;
     end else begin
       if (rf_valid_fs4) fs4_valid_count <= fs4_valid_count + 1;
       if (rf_valid_nco) nco_valid_count <= nco_valid_count + 1;
+      if (rf_valid_mb) mb_valid_count <= mb_valid_count + 1;
     end
   end
 endmodule

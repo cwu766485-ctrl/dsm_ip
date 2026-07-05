@@ -3,6 +3,7 @@
 
 module tb_dsm_ip_axi_smoke;
   localparam int W = 16;
+  localparam int DSM_OUT_W = 8;
   localparam int RF_W = 16;
 
   reg aclk;
@@ -34,8 +35,8 @@ module tb_dsm_ip_axi_smoke;
   wire dsm_valid;
   wire i_bit;
   wire q_bit;
-  wire signed [3:0] i_yout;
-  wire signed [3:0] q_yout;
+  wire signed [DSM_OUT_W-1:0] i_yout;
+  wire signed [DSM_OUT_W-1:0] q_yout;
   wire rf_valid;
   wire rf_bit;
   wire signed [RF_W-1:0] rf_signed;
@@ -43,6 +44,7 @@ module tb_dsm_ip_axi_smoke;
 
   dsm_ip_axi_top #(
     .W(W),
+    .DSM_OUT_W(DSM_OUT_W),
     .RF_W(RF_W),
     .PHASE_W(24),
     .ALGORITHM(2),
@@ -86,6 +88,7 @@ module tb_dsm_ip_axi_smoke;
 
   int valid_count;
   int n;
+  reg [31:0] rd;
 
   task axi_write;
     input [5:0] addr;
@@ -102,6 +105,22 @@ module tb_dsm_ip_axi_smoke;
       s_axi_awvalid <= 1'b0;
       s_axi_wvalid <= 1'b0;
       wait (s_axi_bvalid);
+      @(posedge aclk);
+    end
+  endtask
+
+  task axi_read;
+    input [5:0] addr;
+    output [31:0] data;
+    begin
+      @(posedge aclk);
+      s_axi_araddr <= addr;
+      s_axi_arvalid <= 1'b1;
+      wait (s_axi_arready);
+      @(posedge aclk);
+      s_axi_arvalid <= 1'b0;
+      wait (s_axi_rvalid);
+      data = s_axi_rdata;
       @(posedge aclk);
     end
   endtask
@@ -124,7 +143,28 @@ module tb_dsm_ip_axi_smoke;
     repeat (8) @(posedge aclk);
     aresetn = 1'b1;
 
+    s_axis_tdata <= {16'sd1, 16'sd2};
+    s_axis_tvalid <= 1'b1;
+    repeat (2) @(posedge aclk);
+    s_axis_tvalid <= 1'b0;
+
+    axi_read(6'h24, rd);
+    if (rd[0] !== 1'b1) $fatal(1, "sticky error was not set while stream was not ready");
+    axi_write(6'h24, 32'h0000_0001);
+    axi_read(6'h24, rd);
+    if (rd != 32'h0000_0000) $fatal(1, "sticky error did not clear");
+
     axi_write(6'h08, 32'h0040_0000);
+    axi_read(6'h08, rd);
+    if (rd[23:0] != 24'h400000) $fatal(1, "phase increment readback mismatch");
+
+    axi_write(6'h00, 32'h0000_0001);
+    axi_read(6'h00, rd);
+    if (rd[0] !== 1'b1) $fatal(1, "enable readback mismatch");
+
+    axi_write(6'h00, 32'h0000_0003);
+    axi_read(6'h20, rd);
+    if (rd != 32'd1) $fatal(1, "software reset count mismatch");
     axi_write(6'h00, 32'h0000_0001);
 
     for (n = 0; n < 64; n++) begin
@@ -139,6 +179,10 @@ module tb_dsm_ip_axi_smoke;
     repeat (8) @(posedge aclk);
 
     if (valid_count == 0) $fatal(1, "dsm_ip_axi_top produced no rf_valid");
+    axi_read(6'h18, rd);
+    if (rd != 32'd64) $fatal(1, "input sample count mismatch");
+    axi_read(6'h1c, rd);
+    if (rd == 32'd0) $fatal(1, "output sample count did not increment");
     $display("DSM IP AXI smoke PASS: rf_valid=%0d", valid_count);
     $finish;
   end

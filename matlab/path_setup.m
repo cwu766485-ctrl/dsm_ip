@@ -11,7 +11,10 @@ function path_setup()
   repo = fullfile(here, '..'); % matlab/.. = repo root
 
   addpath(genpath(fullfile(repo, 'matlab', 'scripts')));
+  addpath(genpath(fullfile(repo, 'matlab', 'models')));
   addpath(genpath(fullfile(repo, 'matlab', 'bittrue')));
   addpath(genpath(fullfile(repo, 'matlab', 'board_validation')));
+  addpath(genpath(fullfile(repo, 'matlab', 'cartesian_dsm', 'dsm_singlebit')));
+  addpath(genpath(fullfile(repo, 'matlab', 'cartesian_dsm', 'dsm_multibit')));
   addpath(genpath(fullfile(repo, 'matlab', 'cartesian_dsm', 'DSM_2nd', 'lp')));
 end
