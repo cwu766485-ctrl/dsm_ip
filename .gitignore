@@ -62,6 +62,7 @@ syn/reports/**/*.rpt
 syn/reports/ooc_*/
 syn/reports/ooc_xc*/
 syn/reports/synth_*/
+syn/reports/routed_*/
 *.dcp
 *.edf
 *.edn

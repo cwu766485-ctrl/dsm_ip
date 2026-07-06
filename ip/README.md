@@ -19,7 +19,7 @@ Interface summary:
 
 - `aclk`, `aresetn`
 - `s_axi` AXI-Lite style control/status slave
-- `s_axis` AXI-Stream I/Q sample input
+- `s_axis` AXI-Stream I/Q sample input with optional `tlast` and `tuser`
 - `dsm_valid`, `i_bit`, `q_bit`
 - native signed `i_yout`, `q_yout`
 - `rf_valid`, `rf_bit`, signed `rf_signed`
@@ -34,12 +34,17 @@ AXI-Lite register summary:
 - `0x10 DUC_MODE`
 - `0x14 VERSION`
 - `0x30 INTERP_MODE`
+- `0x34 INPUT_FRAME_COUNT`
+- `0x38 LAST_TUSER`
+- `0x3C USER_ERROR_COUNT`
 
 AXI-Stream packing:
 
 ```text
 s_axis_tdata[15:0]  = signed Q1.15 I
 s_axis_tdata[31:16] = signed Q1.15 Q
+s_axis_tlast        = optional input frame marker
+s_axis_tuser        = optional upstream error/tag field
 ```
 
 Clock and frequency contract:

@@ -14,6 +14,96 @@ Checks not run:
 Remaining limitations:
 ```
 
+## 2026-07-06 21:31:24 +08:00
+
+Reason:
+
+- Prepared the project for first ZU15EG board bring-up.
+- Added a PS-DMA-DSM-ILA validation plan and source-only helper scripts.
+- Added a DMA input-vector packer that reuses the existing P0 bit-true I/Q
+  vectors.
+- Updated handoff and verification documentation for the current ZU15EG board
+  validation target.
+
+Changed files:
+
+- `fpga/zu15eg/README.md`
+- `fpga/zu15eg/scripts/create_dsm_dma_ila_bd.tcl`
+- `fpga/zu15eg/scripts/pack_p0_iq_for_dma.py`
+- `fpga/README.md`
+- `docs/IP_HANDOFF.md`
+- `docs/PROJECT_MAP.md`
+- `docs/VERIFICATION_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `python fpga\zu15eg\scripts\pack_p0_iq_for_dma.py --limit 1024`: passed and generated an ignored local DMA binary.
+
+Checks not run:
+
+- The ZU15EG Vivado block-design script was not run because the board-specific
+  PS DDR/MIO preset must be created or imported first.
+- Complete ZU15EG bitstream generation was not run.
+
+Remaining limitations:
+
+- `fpga/zu15eg/scripts/create_dsm_dma_ila_bd.tcl` is a bring-up template, not a
+  finished board project.
+- Board-specific hardware collateral remains local-only and excluded from the
+  public repository.
+
+## 2026-07-06 19:59:19 +08:00
+
+Reason:
+
+- Strengthened the RTL toward ZU15EG-focused IP handoff.
+- Added AXI-Stream `tlast` and `tuser` handling to the AXI wrapper without
+  changing DSM numerical behavior.
+- Added interpolation first-output latency checks to the standalone frontend
+  regression.
+- Added a routed OOC subset flow and retained ZU15EG routed timing/resource
+  evidence for representative compile-time configurations.
+
+Changed files:
+
+- `rtl/axis/axis_skid_buffer.sv`
+- `rtl/axi/dsm_ip_axi_top.v`
+- `verif/tb/tb_interp_frontend.sv`
+- `verif/tb/tb_dsm_ip_axi_smoke.sv`
+- `syn/run_ooc_dsm_ip_axi_routed_subset.ps1`
+- `syn/run_ooc_dsm_ip_axi_routed_subset.tcl`
+- `docs/evidence/ooc/dsm_ip_axi_routed_subset_xczu15eg_ffvb1156_1_i_20260706_summary.csv`
+- `.gitignore`
+- `rtl/README.md`
+- `ip/README.md`
+- `docs/IP_SPEC.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_interp_frontend.ps1 -SkipMatlabPrep`: passed; first-output latency checks passed for `INTERP_MODE=0..4`.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1`: passed, 7 rows, 0 failures.
+- `.\scripts\run_matlab_p0_bittrue_check.cmd`: passed with zero mismatches for all seven baseline DSM modes.
+- `matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_interp_frontend_rtl_xsim; disp(T); assert(all(T.mismatch==0));"`: passed for all five interpolation modes.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dsm_ip_axi_routed_subset.ps1 -Part xczu15eg-ffvb1156-1-i`: passed for 3 routed OOC representative combinations.
+
+Checks not run:
+
+- Full 70-combination routed OOC matrix was not run because it is too slow for
+  routine iteration.
+- Complete ZU15EG board bitstream timing closure was not run.
+
+Remaining limitations:
+
+- The routed subset is IP-level OOC evidence and does not prove complete board
+  timing closure.
+- `tlast` and `tuser` are currently tracked as input metadata/status; the DSM
+  output is still a sample stream rather than an AXI-Stream output interface.
+
 ## 2026-07-03 19:11:35 +08:00
 
 Reason:

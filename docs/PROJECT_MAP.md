@@ -29,6 +29,7 @@ This repository is a reusable DSM IP handoff tree.
 | `matlab/board_validation` | Board capture recovery and comparison scripts |
 | `data/board_validation` | Preserved board validation data |
 | `fpga/hardware` | Local-only RFSoC 4x2 board collateral ignored for public release |
+| `fpga/zu15eg` | ZU15EG PS-DMA-DSM-ILA bring-up notes and helper scripts |
 | `docs/evidence` | Compact 100 MHz pass evidence |
 | `docs/GITHUB_RELEASE_CHECKLIST.md` | Checklist for public GitHub release review |
 | `docs/IP_HANDOFF.md` | Reusable DSM IP handoff and integration notes |
@@ -63,18 +64,17 @@ These directories are temporary and can be regenerated:
 
 - `.Xil/`
 - `ip/build/`
+- `ip/ip_repo/`
 - `verif/out_xsim_ip_smoke/`
 - `verif/out_xsim_p0/xsim.dir/`
 - `vivado*.log`
 - `vivado*.jou`
 
-These directories contain current evidence or packaging outputs and are normally
-kept with the handoff:
+These directories contain compact evidence or simulation summaries and are
+normally kept with the handoff when intentionally curated:
 
-- `ip/ip_repo/`
-- `matlab/out/`
+- `matlab/out/*.csv`
 - `verif/out_xsim_p0/summary*.csv`
-- `syn/reports/`
 - `docs/evidence/`
 
 ## GitHub Files

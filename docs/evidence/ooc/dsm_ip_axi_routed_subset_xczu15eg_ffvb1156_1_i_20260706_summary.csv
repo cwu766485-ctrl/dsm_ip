@@ -1,0 +1,4 @@
+Part,Top,Algorithm,AlgorithmName,InterpMode,InterpName,DucMode,Status,LUT,FF,DSP,WNS_ns,TNS_ns,Fmax_est_MHz
+xczu15eg-ffvb1156-1-i,dsm_ip_axi_ef_dsm_bypass_default,2,EFDSM_1b,0,bypass,0,PASS,534,410,0,6.714,NA,304.32
+xczu15eg-ffvb1156-1-i,dsm_ip_axi_mash22_native_x32_worst_dsp,6,MASH22_native,4,x32_hb_cic_equiv_comp_fir,0,PASS,8080,8301,1350,4.490,NA,181.49
+xczu15eg-ffvb1156-1-i,dsm_ip_axi_mash111_multibit_x32_max_lut,12,MASH111_multibit,4,x32_hb_cic_equiv_comp_fir,0,PASS,9283,8335,1278,4.263,NA,174.31

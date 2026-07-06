@@ -24,8 +24,23 @@ module tb_interp_frontend;
 
   int unsigned in_count [0:4];
   int unsigned out_count [0:4];
+  int first_in_cycle [0:4];
+  int first_out_cycle [0:4];
   int unsigned cycle_count;
   integer fout [0:4];
+
+  function automatic int expected_latency(input int mode);
+    begin
+      case (mode)
+        0: expected_latency = 0;
+        1: expected_latency = 8;
+        2: expected_latency = 12;
+        3: expected_latency = 16;
+        4: expected_latency = 16;
+        default: expected_latency = -1;
+      endcase
+    end
+  endfunction
 
   initial clk = 1'b0;
   always #5 clk = ~clk;
@@ -98,6 +113,13 @@ module tb_interp_frontend;
 
     repeat (4) @(posedge clk);
     for (int m = 0; m < 5; m = m + 1) begin
+      if ((first_out_cycle[m] - first_in_cycle[m]) != expected_latency(m)) begin
+        $fatal(1, "mode %0d first-output latency mismatch: got %0d expected %0d",
+               m, first_out_cycle[m] - first_in_cycle[m], expected_latency(m));
+      end
+      $display("interp mode %0d latency PASS: %0d cycles", m, expected_latency(m));
+    end
+    for (int m = 0; m < 5; m = m + 1) begin
       $fclose(fout[m]);
     end
     $display("TB interp frontend done");
@@ -118,6 +140,8 @@ module tb_interp_frontend;
       for (int m = 0; m < 5; m = m + 1) begin
         in_count[m] <= 0;
         out_count[m] <= 0;
+        first_in_cycle[m] <= -1;
+        first_out_cycle[m] <= -1;
       end
     end else begin
       cycle_count <= cycle_count + 1;
@@ -127,10 +151,16 @@ module tb_interp_frontend;
 
       for (int m = 0; m < 5; m = m + 1) begin
         if (in_valid[m] && in_ready[m]) begin
+          if (first_in_cycle[m] < 0) begin
+            first_in_cycle[m] <= int'(cycle_count);
+          end
           in_count[m] <= in_count[m] + 1;
         end
         if (out_valid[m]) begin
           if (out_count[m] >= MAX_OUT) $fatal(1, "too many outputs for mode %0d", m);
+          if (first_out_cycle[m] < 0) begin
+            first_out_cycle[m] <= int'(cycle_count);
+          end
           $fwrite(fout[m], "%0d,%0d,%0d\n", out_count[m], i_out[m], q_out[m]);
           out_count[m] <= out_count[m] + 1;
         end

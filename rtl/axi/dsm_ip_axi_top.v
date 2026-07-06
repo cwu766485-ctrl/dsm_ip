@@ -16,7 +16,8 @@ module dsm_ip_axi_top #(
   parameter integer SIGNAL_BW_HZ = 2539062,
   parameter integer C_S_AXI_ADDR_WIDTH = 6,
   parameter integer C_S_AXI_DATA_WIDTH = 32,
-  parameter integer C_S_AXIS_TDATA_WIDTH = 32
+  parameter integer C_S_AXIS_TDATA_WIDTH = 32,
+  parameter integer C_S_AXIS_TUSER_WIDTH = 1
 ) (
   input wire aclk,
   input wire aresetn,
@@ -41,6 +42,8 @@ module dsm_ip_axi_top #(
   input wire s_axi_rready,
 
   input wire [C_S_AXIS_TDATA_WIDTH-1:0] s_axis_tdata,
+  input wire s_axis_tlast,
+  input wire [C_S_AXIS_TUSER_WIDTH-1:0] s_axis_tuser,
   input wire s_axis_tvalid,
   output wire s_axis_tready,
 
@@ -69,6 +72,9 @@ module dsm_ip_axi_top #(
   localparam [3:0] ADDR_FRONT_COUNT = 4'ha;
   localparam [3:0] ADDR_STALL_COUNT = 4'hb;
   localparam [3:0] ADDR_INTERP_MODE = 4'hc;
+  localparam [3:0] ADDR_FRAME_COUNT = 4'hd;
+  localparam [3:0] ADDR_LAST_TUSER  = 4'he;
+  localparam [3:0] ADDR_USER_ERR_COUNT = 4'hf;
 
   reg [31:0] ctrl_reg;
   reg [PHASE_W-1:0] phase_inc_reg;
@@ -79,6 +85,9 @@ module dsm_ip_axi_top #(
   reg [31:0] input_stall_count;
   reg [31:0] software_reset_count;
   reg [31:0] error_status_reg;
+  reg [31:0] input_frame_count;
+  reg [31:0] user_error_count;
+  reg [C_S_AXIS_TUSER_WIDTH-1:0] last_tuser_reg;
 
   wire core_enable = ctrl_reg[0];
   wire soft_reset = soft_reset_pulse;
@@ -92,24 +101,32 @@ module dsm_ip_axi_top #(
   wire stream_stall = s_axis_tvalid & !s_axis_tready & core_enable & core_rst_n;
 
   wire [C_S_AXIS_TDATA_WIDTH-1:0] axis_buf_tdata;
+  wire axis_buf_tlast;
+  wire [C_S_AXIS_TUSER_WIDTH-1:0] axis_buf_tuser;
   wire axis_buf_valid;
   wire axis_buf_ready;
   wire axis_buf_full;
+  wire axis_user_error = |s_axis_tuser;
   wire signed [W-1:0] axis_i = axis_buf_tdata[W-1:0];
   wire signed [W-1:0] axis_q = axis_buf_tdata[(2*W)-1:W];
 
   wire dsm_input_ready;
 
   axis_skid_buffer #(
-    .DATA_W(C_S_AXIS_TDATA_WIDTH)
+    .DATA_W(C_S_AXIS_TDATA_WIDTH),
+    .USER_W(C_S_AXIS_TUSER_WIDTH)
   ) u_axis_skid (
     .clk(aclk),
     .rst_n(aresetn),
     .clear(!core_rst_n),
     .s_data(s_axis_tdata),
+    .s_last(s_axis_tlast),
+    .s_user(s_axis_tuser),
     .s_valid(s_axis_tvalid & core_enable & core_rst_n),
     .s_ready(axis_buf_ready),
     .m_data(axis_buf_tdata),
+    .m_last(axis_buf_tlast),
+    .m_user(axis_buf_tuser),
     .m_valid(axis_buf_valid),
     .m_ready(dsm_input_ready & core_enable & core_rst_n),
     .full(axis_buf_full)
@@ -133,6 +150,9 @@ module dsm_ip_axi_top #(
       input_stall_count <= 32'd0;
       software_reset_count <= 32'd0;
       error_status_reg <= 32'd0;
+      input_frame_count <= 32'd0;
+      user_error_count <= 32'd0;
+      last_tuser_reg <= {C_S_AXIS_TUSER_WIDTH{1'b0}};
     end else begin
       s_axi_awready <= 1'b0;
       s_axi_wready <= 1'b0;
@@ -140,6 +160,14 @@ module dsm_ip_axi_top #(
 
       if (axis_fire) begin
         input_sample_count <= input_sample_count + 32'd1;
+        last_tuser_reg <= s_axis_tuser;
+        if (s_axis_tlast) begin
+          input_frame_count <= input_frame_count + 32'd1;
+        end
+        if (axis_user_error) begin
+          error_status_reg[1] <= 1'b1;
+          user_error_count <= user_error_count + 32'd1;
+        end
       end
 
       if (frontend_fire) begin
@@ -164,6 +192,9 @@ module dsm_ip_axi_top #(
         output_sample_count <= 32'd0;
         input_stall_count <= 32'd0;
         error_status_reg <= 32'd0;
+        input_frame_count <= 32'd0;
+        user_error_count <= 32'd0;
+        last_tuser_reg <= {C_S_AXIS_TUSER_WIDTH{1'b0}};
       end
 
       if (!s_axi_bvalid && s_axi_awvalid && s_axi_wvalid) begin
@@ -229,6 +260,9 @@ module dsm_ip_axi_top #(
           ADDR_FRONT_COUNT: s_axi_rdata <= frontend_sample_count;
           ADDR_STALL_COUNT: s_axi_rdata <= input_stall_count;
           ADDR_INTERP_MODE: s_axi_rdata <= INTERP_MODE[31:0];
+          ADDR_FRAME_COUNT: s_axi_rdata <= input_frame_count;
+          ADDR_LAST_TUSER:  s_axi_rdata <= {{(32-C_S_AXIS_TUSER_WIDTH){1'b0}}, last_tuser_reg};
+          ADDR_USER_ERR_COUNT: s_axi_rdata <= user_error_count;
           default: s_axi_rdata <= 32'h0000_0000;
         endcase
       end else if (s_axi_rvalid && s_axi_rready) begin

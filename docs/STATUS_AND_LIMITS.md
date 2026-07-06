@@ -22,6 +22,12 @@
 - The AXI wrapper includes a one-entry AXI-Stream skid buffer. Legal
   backpressure is counted in `INPUT_STALL_COUNT`; streaming while disabled or
   in reset is reported through sticky error status.
+- The AXI wrapper preserves AXI-Stream `tlast` and `tuser`, exposes frame and
+  `tuser` counters, and reports nonzero accepted `tuser` through sticky error
+  status.
+- The current personal board target for new FPGA validation is
+  `xczu15eg-ffvb1156-1-i`; older `xc7z020clg400-1` evidence remains historical
+  proxy evidence.
 
 ## Timing Summary
 
@@ -125,6 +131,21 @@ Worst resource/timing summary by DSM algorithm across all interpolation modes:
 
 The full 70-row matrix is retained in
 `docs/evidence/ooc/dsm_ip_axi_matrix_xczu15eg_ffvb1156_1_i_20260706_post_synth_summary.csv`.
+
+The 2026-07-06 routed OOC subset on `xczu15eg-ffvb1156-1-i` covers three
+representative `dsm_ip_axi_top` combinations after synthesis, placement,
+routing, and post-route physical optimization:
+
+| Top | Algorithm | INTERP_MODE | Status | LUT | FF | DSP | WNS ns | Fmax est MHz |
+|---|---|---:|---|---:|---:|---:|---:|---:|
+| `dsm_ip_axi_ef_dsm_bypass_default` | EFDSM 1-bit | 0 | PASS | 534 | 410 | 0 | 6.714 | 304.32 |
+| `dsm_ip_axi_mash22_native_x32_worst_dsp` | MASH22 native | 4 | PASS | 8080 | 8301 | 1350 | 4.490 | 181.49 |
+| `dsm_ip_axi_mash111_multibit_x32_max_lut` | MASH111 multibit | 4 | PASS | 9283 | 8335 | 1278 | 4.263 | 174.31 |
+
+The routed subset evidence is retained in
+`docs/evidence/ooc/dsm_ip_axi_routed_subset_xczu15eg_ffvb1156_1_i_20260706_summary.csv`.
+This is stronger than post-synthesis OOC evidence, but it is still IP-level OOC
+evidence, not complete ZU15EG board bitstream timing closure.
 
 On `xczu48dr-ffvg1517-2-e`, all seven retained paths meet the 100 MHz proxy OOC
 target in the current evidence.

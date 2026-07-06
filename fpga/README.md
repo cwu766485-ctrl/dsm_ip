@@ -6,6 +6,7 @@
 | `hardware` | Local-only RFSoC 4x2 board collateral. This path is ignored for public GitHub release unless redistribution rights are confirmed. |
 | `rfsoc4x2` | Preserved source-only RFSoC 4x2 board fragments for the historical Cartesian DSM path. |
 | `rtl` | Legacy board helper RTL fragments mirrored from the RFSoC path. |
+| `zu15eg` | Public ZU15EG PS-DMA-DSM-ILA bring-up notes and source-only helper scripts. |
 
 This folder contains board-integration collateral. The reusable IP package is
 generated from `rtl/ip` and `ip`.

@@ -97,13 +97,25 @@ Each FIR helper has a four-stage registered compute pipeline:
 
 The pipeline increases cycle latency through each FIR stage, but it preserves
 the output sample sequence and MATLAB/RTL bit-true values. The standalone
-regression compares valid output samples rather than absolute cycle numbers.
+regression checks both valid output samples and first-output latency:
+
+| INTERP_MODE | First-output latency |
+|---:|---:|
+| 0 | 0 cycles |
+| 1 | 8 cycles |
+| 2 | 12 cycles |
+| 3 | 16 cycles |
+| 4 | 16 cycles |
 
 AXI wrapper flow control:
 
 - `rtl/axis/axis_skid_buffer.sv` provides a one-entry AXI-Stream register slice
-  ahead of the interpolation/DSM frontend.
+  ahead of the interpolation/DSM frontend. It preserves `tdata`, `tlast`, and
+  `tuser` together under backpressure.
 - `s_axis_tready` can deassert when the frontend is busy. This is legal
   backpressure and increments `INPUT_STALL_COUNT`.
 - `ERROR_STATUS[0]` is reserved for input asserted while the IP is disabled or
   held in reset.
+- `ERROR_STATUS[1]` is set when an accepted AXI-Stream sample has nonzero
+  `tuser`; this supports upstream error tagging without changing the DSM
+  numerical datapath.

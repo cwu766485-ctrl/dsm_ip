@@ -59,7 +59,8 @@ Reusable IP top:
 The packaged IP now includes the SoC/RFSoC wrapper:
 
 - AXI-Lite style `s_axi` controls enable, soft reset, and `cfg_phase_inc`
-- AXI-Stream `s_axis` feeds packed Q1.15 I/Q samples
+- AXI-Stream `s_axis` feeds packed Q1.15 I/Q samples and preserves `tlast`
+  and `tuser` through the input skid buffer
 - a downstream 1-bit PA driver, DAC-facing logic, serializer, or RF digital
   backend consuming `rf_signed/rf_bit`
 
@@ -80,6 +81,9 @@ The packaged IP now includes the SoC/RFSoC wrapper:
 | `0x28` | `FRONTEND_SAMPLE_COUNT` | RO | samples accepted by the interpolation/DSM frontend |
 | `0x2C` | `INPUT_STALL_COUNT` | RO | AXI-Stream backpressure stall cycles |
 | `0x30` | `INTERP_MODE` | RO | compiled interpolation mode |
+| `0x34` | `INPUT_FRAME_COUNT` | RO | accepted AXI-Stream samples with `tlast=1` |
+| `0x38` | `LAST_TUSER` | RO | last accepted AXI-Stream `tuser` value |
+| `0x3C` | `USER_ERROR_COUNT` | RO | accepted AXI-Stream samples with nonzero `tuser` |
 
 `STATUS[0]` is `enable`, `STATUS[1]` is the one-cycle software reset pulse,
 `STATUS[2]` is `dsm_valid`, `STATUS[3]` is `rf_valid`, `STATUS[4]` is
@@ -90,7 +94,9 @@ AXI-Stream backpressure is a legal flow-control condition. When `s_axis_tvalid`
 is high and `s_axis_tready` is low while the IP is enabled and out of reset,
 the wrapper increments `INPUT_STALL_COUNT`; it does not set a sticky error.
 `ERROR_STATUS[0]` is set only when AXI-Stream input is asserted while the IP is
-disabled or held in reset. Writing `1` to an `ERROR_STATUS` bit clears that bit.
+disabled or held in reset. `ERROR_STATUS[1]` is set when an accepted
+AXI-Stream sample has nonzero `tuser`. Writing `1` to an `ERROR_STATUS` bit
+clears that bit.
 
 ## DSM Mode Roadmap
 
@@ -178,19 +184,21 @@ rtl/interp/dsm_interp_frontend.sv
 
 Current RTL-supported interpolation modes:
 
-| INTERP_MODE | Function | RTL/MATLAB bit-true |
-|---:|---|---|
-| 0 | bypass | 128 samples, 0 mismatch |
-| 1 | x4 halfband FIR cascade | 512 samples, 0 mismatch |
-| 2 | x8 halfband FIR cascade | 1024 samples, 0 mismatch |
-| 3 | x16 halfband FIR cascade | 2048 samples, 0 mismatch |
-| 4 | x32 halfband + CIC-equivalent FIR + compensation FIR | 4096 samples, 0 mismatch |
+| INTERP_MODE | Function | First-output latency | RTL/MATLAB bit-true |
+|---:|---|---:|---|
+| 0 | bypass | 0 cycles | 128 samples, 0 mismatch |
+| 1 | x4 halfband FIR cascade | 8 cycles | 512 samples, 0 mismatch |
+| 2 | x8 halfband FIR cascade | 12 cycles | 1024 samples, 0 mismatch |
+| 3 | x16 halfband FIR cascade | 16 cycles | 2048 samples, 0 mismatch |
+| 4 | x32 halfband + CIC-equivalent FIR + compensation FIR | 16 cycles | 4096 samples, 0 mismatch |
 
 The frontend uses Q1.15 I/Q samples and a single-clock valid/ready interface.
 It is inserted before `dsm_ip_core` in `dsm_ip_top` and is exposed as a
 compile-time `INTERP_MODE` parameter through the top-level RTL. AXI-Stream
 `s_axis_tready` is driven through a one-entry skid buffer and follows the
 frontend `in_ready` signal without dropping samples during legal backpressure.
+The skid buffer stores `tdata`, `tlast`, and `tuser` together so sideband
+metadata remains aligned with the accepted input sample.
 The FIR implementation uses symmetric-coefficient pre-adds and skips zero
 coefficients to reduce arithmetic cost. Each halfband/CIC-equivalent/
 compensation FIR helper uses a four-stage registered compute pipeline:

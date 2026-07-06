@@ -42,5 +42,27 @@ LPDSM2 and MASH currently fail the 100 MHz timing criterion.
 
 ## Board Evidence
 
-Use `matlab/board_validation` with the preserved DSM000 capture to reproduce the
-board-output consistency checks.
+First ZU15EG board target:
+
+```text
+PS DDR
+-> AXI DMA MM2S
+-> DSM IP s_axis
+-> rf_valid / rf_signed
+-> ILA capture
+```
+
+Minimum board checks:
+
+- AXI-Lite register readback for `VERSION`, `ALGORITHM`, `DUC_MODE`, and
+  `INTERP_MODE`.
+- Software reset and counter clear behavior.
+- AXI DMA MM2S transfer of packed Q1.15 I/Q vectors.
+- ILA visibility of `s_axis_tvalid`, `s_axis_tready`, `s_axis_tdata`,
+  `rf_valid`, and `rf_signed`.
+- Counter consistency for `INPUT_SAMPLE_COUNT`, `FRONTEND_SAMPLE_COUNT`, and
+  `OUTPUT_SAMPLE_COUNT`.
+
+Use `fpga/zu15eg` for current ZU15EG bring-up notes and helper scripts. Use
+`matlab/board_validation` for later captured-waveform analysis when board data
+is exported from ILA, scope, or another capture path.
