@@ -20,7 +20,7 @@ Supported modes:
 | 1 | x4 halfband FIR cascade |
 | 2 | x8 halfband FIR cascade |
 | 3 | x16 halfband FIR cascade |
-| 4 | x32 halfband x4 + CIC x8 + compensation FIR |
+| 4 | x32 halfband x4 + CIC-equivalent FIR x8 + compensation FIR |
 
 RTL bit-true coverage:
 

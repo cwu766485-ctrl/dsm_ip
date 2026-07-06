@@ -79,6 +79,7 @@ The packaged IP now includes the SoC/RFSoC wrapper:
 | `0x24` | `ERROR_STATUS` | RW1C | sticky error bits |
 | `0x28` | `FRONTEND_SAMPLE_COUNT` | RO | samples accepted by the interpolation/DSM frontend |
 | `0x2C` | `INPUT_STALL_COUNT` | RO | AXI-Stream backpressure stall cycles |
+| `0x30` | `INTERP_MODE` | RO | compiled interpolation mode |
 
 `STATUS[0]` is `enable`, `STATUS[1]` is the one-cycle software reset pulse,
 `STATUS[2]` is `dsm_valid`, `STATUS[3]` is `rf_valid`, `STATUS[4]` is
@@ -183,7 +184,7 @@ Current RTL-supported interpolation modes:
 | 1 | x4 halfband FIR cascade | 512 samples, 0 mismatch |
 | 2 | x8 halfband FIR cascade | 1024 samples, 0 mismatch |
 | 3 | x16 halfband FIR cascade | 2048 samples, 0 mismatch |
-| 4 | x32 CIC + compensation FIR | 4096 samples, 0 mismatch |
+| 4 | x32 halfband + CIC-equivalent FIR + compensation FIR | 4096 samples, 0 mismatch |
 
 The frontend uses Q1.15 I/Q samples and a single-clock valid/ready interface.
 It is inserted before `dsm_ip_core` in `dsm_ip_top` and is exposed as a
@@ -191,9 +192,25 @@ compile-time `INTERP_MODE` parameter through the top-level RTL. AXI-Stream
 `s_axis_tready` is driven through a one-entry skid buffer and follows the
 frontend `in_ready` signal without dropping samples during legal backpressure.
 The FIR implementation uses symmetric-coefficient pre-adds and skips zero
-coefficients to reduce arithmetic cost while preserving the current
-MATLAB/RTL bit-true vectors. Runtime interpolation mode switching is not
-implemented.
+coefficients to reduce arithmetic cost. Each halfband/CIC-equivalent/
+compensation FIR helper uses a four-stage registered compute pipeline:
+
+```text
+tap pre-add / multiply
+-> first-level partial sums
+-> second-level adder-tree reduction
+-> round / saturate / output register
+```
+
+This pipeline changes cycle latency but preserves the valid output sample
+sequence and current MATLAB/RTL bit-true vectors. Runtime interpolation mode
+switching is not implemented.
+
+`ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time select parameters.
+They are implemented with SystemVerilog `generate` blocks, so synthesis keeps
+only the selected DSM, DUC, and interpolation hardware. The corresponding
+AXI-Lite registers are read-only software-visible build identifiers, not
+runtime mux controls.
 
 ## Frequency and Bandwidth Configuration
 

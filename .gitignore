@@ -61,6 +61,7 @@ ip/ip_repo/
 syn/reports/**/*.rpt
 syn/reports/ooc_*/
 syn/reports/ooc_xc*/
+syn/reports/synth_*/
 *.dcp
 *.edf
 *.edn

@@ -50,8 +50,11 @@ s_axis_tdata[31:16] = signed Q1.15 Q
 | `0x24` | `ERROR_STATUS` | RW1C | sticky error bits |
 | `0x28` | `FRONTEND_SAMPLE_COUNT` | RO | samples accepted by the interpolation/DSM frontend |
 | `0x2C` | `INPUT_STALL_COUNT` | RO | AXI-Stream backpressure stall cycles |
+| `0x30` | `INTERP_MODE` | RO | compiled interpolation mode |
 
-`ALGORITHM` and `DUC_MODE` are compile-time parameters in this release.
+`ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time parameters in this
+release. Their read-only registers report the selected hardware build; they do
+not switch a runtime mux.
 
 `CTRL[1]` is a software reset trigger pulse. `CTRL[2]` clears status counters
 and sticky errors. Legal AXI-Stream backpressure increments

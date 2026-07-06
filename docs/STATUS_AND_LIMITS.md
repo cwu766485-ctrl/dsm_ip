@@ -16,6 +16,9 @@
 - The interpolation/filter frontend supports bypass, x4, x8, x16, and x32
   modes in RTL with MATLAB/RTL bit-true comparison, and is inserted before
   `dsm_ip_core` in `dsm_ip_top`.
+- The interpolation FIR helpers use a four-stage registered compute pipeline
+  with symmetric pre-add, grouped partial sums, adder-tree reduction, and
+  round/saturate output registration.
 - The AXI wrapper includes a one-entry AXI-Stream skid buffer. Legal
   backpressure is counted in `INPUT_STALL_COUNT`; streaming while disabled or
   in reset is reported through sticky error status.
@@ -79,6 +82,50 @@ target:
 The retained ZU15EG evidence file is
 `docs/evidence/ooc/p0_ooc_xczu15eg_ffvb1156_1_i_20260705_summary.csv`.
 
+The 2026-07-06 post-synthesis OOC matrix on `xczu15eg-ffvb1156-1-i` covers
+all 70 compile-time `dsm_ip_axi_top` combinations:
+
+```text
+ALGORITHM = 0..13
+INTERP_MODE = 0..4
+DUC_MODE = 0
+```
+
+All 70 post-synthesis OOC combinations pass the 100 MHz target. This matrix is
+post-synthesis evidence only; it is not routed timing closure.
+
+Summary by interpolation mode:
+
+| INTERP_MODE | Function | Count | Pass | Max LUT | Max FF | Max DSP | Worst WNS ns | Worst Fmax est MHz |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| 0 | bypass | 14 | 14 | 1706 | 461 | 72 | 5.720 | 233.64 |
+| 1 | x4 halfband | 14 | 14 | 5217 | 4093 | 540 | 5.546 | 224.52 |
+| 2 | x8 halfband | 14 | 14 | 6969 | 5911 | 774 | 5.546 | 224.52 |
+| 3 | x16 halfband | 14 | 14 | 8732 | 7729 | 1008 | 5.546 | 224.52 |
+| 4 | x32 halfband + CIC-equivalent FIR + compensation FIR | 14 | 14 | 9183 | 8276 | 1350 | 5.546 | 224.52 |
+
+Worst resource/timing summary by DSM algorithm across all interpolation modes:
+
+| ALGORITHM | Algorithm | Count | Pass | Max LUT | Max FF | Max DSP | Worst WNS ns | Worst Fmax est MHz |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| 0 | LPDSM 1-bit | 5 | 5 | 7827 | 8167 | 1278 | 5.847 | 240.79 |
+| 1 | LPDSM2 1-bit | 5 | 5 | 7991 | 8183 | 1278 | 5.847 | 240.79 |
+| 2 | EFDSM 1-bit | 5 | 5 | 7903 | 8159 | 1278 | 5.847 | 240.79 |
+| 3 | EFDSM2 1-bit | 5 | 5 | 8037 | 8215 | 1278 | 5.847 | 240.79 |
+| 4 | MASH11 native | 5 | 5 | 7968 | 8187 | 1278 | 5.847 | 240.79 |
+| 5 | MASH111 native | 5 | 5 | 8094 | 8235 | 1278 | 5.847 | 240.79 |
+| 6 | MASH22 native | 5 | 5 | 7970 | 8234 | 1350 | 5.546 | 224.52 |
+| 7 | LPDSM multibit | 5 | 5 | 8190 | 8147 | 1278 | 5.847 | 240.79 |
+| 8 | LPDSM2 multibit | 5 | 5 | 8304 | 8179 | 1278 | 5.847 | 240.79 |
+| 9 | EFDSM multibit | 5 | 5 | 8190 | 8147 | 1278 | 5.847 | 240.79 |
+| 10 | EFDSM2 multibit | 5 | 5 | 8300 | 8179 | 1278 | 5.847 | 240.79 |
+| 11 | MASH11 multibit | 5 | 5 | 8673 | 8204 | 1278 | 5.847 | 240.79 |
+| 12 | MASH111 multibit | 5 | 5 | 9183 | 8268 | 1278 | 5.847 | 240.79 |
+| 13 | MASH22 multibit | 5 | 5 | 8913 | 8276 | 1278 | 5.720 | 233.64 |
+
+The full 70-row matrix is retained in
+`docs/evidence/ooc/dsm_ip_axi_matrix_xczu15eg_ffvb1156_1_i_20260706_post_synth_summary.csv`.
+
 On `xczu48dr-ffvg1517-2-e`, all seven retained paths meet the 100 MHz proxy OOC
 target in the current evidence.
 
@@ -100,10 +147,9 @@ target in the current evidence.
 - Do not claim runtime algorithm switching unless it is implemented.
 - Do not claim runtime interpolation switching. The current interpolation mode
   is a compile-time parameter.
-- Do not claim the interpolation frontend is deeply pipelined for maximum
-  frequency. The current RTL reduces FIR arithmetic cost with symmetric
-  pre-adds and zero-coefficient pruning while keeping the existing latency and
-  bit-true behavior.
+- Do not claim final timing closure for the pipelined interpolation frontend
+  from post-synthesis evidence alone. The 2026-07-06 matrix is post-synthesis
+  OOC evidence, not routed timing closure.
 - Do not claim all multibit modes close at 100 MHz on `xc7z020clg400-1`; EFDSM2
   multibit and MASH22 multibit still need timing closure work.
 - Do not claim a complete ZU15EG board-level implementation or bitstream from

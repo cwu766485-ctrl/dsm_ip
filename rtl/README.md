@@ -78,7 +78,7 @@ Interpolation frontend:
 - `INTERP_MODE=1`: x4 halfband FIR cascade
 - `INTERP_MODE=2`: x8 halfband FIR cascade
 - `INTERP_MODE=3`: x16 halfband FIR cascade
-- `INTERP_MODE=4`: x32 CIC + compensation FIR
+- `INTERP_MODE=4`: x32 halfband + CIC-equivalent FIR + compensation FIR
 
 The RTL uses a single-clock valid/ready interface. One low-rate input sample is
 accepted when `in_ready` is high; the frontend emits the interpolated output
@@ -86,8 +86,18 @@ stream over subsequent cycles. Modes 0 through 4 are MATLAB/RTL bit-true in the
 standalone `tb_interp_frontend` regression. The frontend is inserted before
 `dsm_ip_core` in `dsm_ip_top`; `INTERP_MODE` remains a compile-time parameter.
 The halfband and FIR helper blocks use symmetric-coefficient pre-adds and skip
-zero coefficients to reduce arithmetic cost without changing the bit-true
-latency contract.
+zero coefficients to reduce arithmetic cost.
+
+Each FIR helper has a four-stage registered compute pipeline:
+
+1. symmetric tap pre-add and coefficient multiply
+2. first-level partial-sum grouping
+3. second-level adder-tree reduction
+4. round, saturate, and output register
+
+The pipeline increases cycle latency through each FIR stage, but it preserves
+the output sample sequence and MATLAB/RTL bit-true values. The standalone
+regression compares valid output samples rather than absolute cycle numbers.
 
 AXI wrapper flow control:
 

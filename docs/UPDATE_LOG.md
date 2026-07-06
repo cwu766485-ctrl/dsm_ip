@@ -236,7 +236,7 @@ Current interpolation bit-true snapshot:
 | 1 | x4 halfband FIR cascade | 512 | 0 |
 | 2 | x8 halfband FIR cascade | 1024 | 0 |
 | 3 | x16 halfband FIR cascade | 2048 | 0 |
-| 4 | x32 CIC + compensation FIR | 4096 | 0 |
+| 4 | x32 halfband + CIC-equivalent FIR + compensation FIR | 4096 | 0 |
 
 Remaining limitations:
 
@@ -246,3 +246,99 @@ Remaining limitations:
 - The interpolation frontend is arithmetic-optimized but not yet deeply
   pipelined for maximum clock frequency. A latency-changing pipeline stage
   should be added only with updated MATLAB/RTL alignment checks.
+
+## 2026-07-06 00:00:00 +08:00
+
+Reason:
+
+- Clarify that DSM algorithm selection and interpolation selection are
+  compile-time hardware generation parameters rather than runtime mux controls.
+- Expose the compiled interpolation mode through the AXI-Lite register map so
+  software can identify the selected hardware build.
+
+Changed files:
+
+- `rtl/axi/dsm_ip_axi_top.v`
+- `verif/tb/tb_dsm_ip_axi_smoke.sv`
+- `README.md`
+- `ip/README.md`
+- `docs/IP_SPEC.md`
+- `docs/IP_HANDOFF.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`: passed. AXI smoke checks `INTERP_MODE=4` readback at `0x30`.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1`: passed.
+
+Remaining limitations:
+
+- Runtime DSM/interpolation mode switching is still intentionally not
+  implemented.
+
+## 2026-07-06 14:35:00 +08:00
+
+Reason:
+
+- Convert the interpolation FIR helper arithmetic from a single-cycle
+  multiply/accumulate path into a registered compute pipeline.
+- Preserve the existing valid/ready interface, compile-time `INTERP_MODE`
+  selection, and MATLAB/RTL bit-true output sequence.
+
+Changed files:
+
+- `rtl/interp/dsm_interp2_halfband.sv`
+- `rtl/interp/dsm_interp_fir_fixed.sv`
+- `rtl/README.md`
+- `docs/IP_SPEC.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_interp_frontend.ps1 -SkipMatlabPrep`: passed.
+- `matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_interp_frontend_rtl_xsim; disp(T); assert(all(T.mismatch==0));"`: passed. Modes 0 through 4 reported zero mismatches after pipelining.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1 -SkipSummary`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`: passed. The `INTERP_MODE=4` top smoke reported `interp_valid=256`, and the AXI smoke reported `rf_valid=2048`.
+- `.\scripts\run_matlab_p0_bittrue_check.cmd`: passed. Existing seven P0 modes reported zero mismatches over 65536 samples.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1`: passed.
+
+Remaining limitations:
+
+- Dedicated OOC timing/resource evidence for each pipelined interpolation mode
+  has not yet been generated.
+- Runtime interpolation mode switching remains intentionally unsupported.
+
+## 2026-07-06 18:45:00 +08:00
+
+Reason:
+
+- Generate a ZU15EG post-synthesis OOC matrix for all compile-time DSM and
+  interpolation combinations in the packaged AXI/IP wrapper.
+- Clarify the `INTERP_MODE=4` naming as x32 halfband plus CIC-equivalent FIR
+  plus compensation FIR.
+
+Changed files:
+
+- `syn/run_ooc_dsm_ip_axi_matrix.ps1`
+- `syn/run_ooc_dsm_ip_axi_matrix.tcl`
+- `syn/run_ooc_dsm_ip_axi_matrix_synth.ps1`
+- `syn/run_ooc_dsm_ip_axi_matrix_synth.tcl`
+- `docs/evidence/ooc/dsm_ip_axi_matrix_xczu15eg_ffvb1156_1_i_20260706_post_synth_summary.csv`
+- `docs/STATUS_AND_LIMITS.md`
+- `.gitignore`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dsm_ip_axi_matrix_synth.ps1 -Part xczu15eg-ffvb1156-1-i`: completed. All 70 `ALGORITHM=0..13`, `INTERP_MODE=0..4`, `DUC_MODE=0` post-synthesis OOC combinations passed the 100 MHz target.
+
+Checks not completed:
+
+- Full placed/routed OOC matrix was started but stopped because runtime was too
+  long for the full 70-combination matrix.
+
+Remaining limitations:
+
+- The retained 70-combination matrix is post-synthesis OOC evidence only.
+  It is not routed timing closure or board-level timing closure.

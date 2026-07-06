@@ -68,6 +68,7 @@ module dsm_ip_axi_top #(
   localparam [3:0] ADDR_ERROR      = 4'h9;
   localparam [3:0] ADDR_FRONT_COUNT = 4'ha;
   localparam [3:0] ADDR_STALL_COUNT = 4'hb;
+  localparam [3:0] ADDR_INTERP_MODE = 4'hc;
 
   reg [31:0] ctrl_reg;
   reg [PHASE_W-1:0] phase_inc_reg;
@@ -227,6 +228,7 @@ module dsm_ip_axi_top #(
           ADDR_ERROR:     s_axi_rdata <= error_status_reg;
           ADDR_FRONT_COUNT: s_axi_rdata <= frontend_sample_count;
           ADDR_STALL_COUNT: s_axi_rdata <= input_stall_count;
+          ADDR_INTERP_MODE: s_axi_rdata <= INTERP_MODE[31:0];
           default: s_axi_rdata <= 32'h0000_0000;
         endcase
       end else if (s_axi_rvalid && s_axi_rready) begin

@@ -33,6 +33,7 @@ AXI-Lite register summary:
 - `0x0C ALGORITHM`
 - `0x10 DUC_MODE`
 - `0x14 VERSION`
+- `0x30 INTERP_MODE`
 
 AXI-Stream packing:
 
@@ -49,13 +50,16 @@ Clock and frequency contract:
 - `DUC_MODE=1` enables NCO upconversion.
 - NCO tuning word: `cfg_phase_inc = round(f_if / f_clk * 2^PHASE_W)`.
 - Example for 25 MHz at 100 MHz with `PHASE_W=24`: `cfg_phase_inc = 24'h400000`.
+- `ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time selected IP
+  parameters. Their registers are read-only build identifiers, not runtime
+  switching controls.
 
 Bandwidth contract:
 
 - `CLK_FREQ_HZ`, `BB_SAMPLE_RATE_HZ`, and `SIGNAL_BW_HZ` are integration
   metadata parameters.
-- The actual occupied bandwidth is determined by the input Q1.15 I/Q stream.
-  This IP does not yet include a programmable interpolation/filter chain.
+- The actual occupied bandwidth is determined by the input Q1.15 I/Q stream
+  and the compile-time selected interpolation/filter mode.
 
 Package with Vivado:
 

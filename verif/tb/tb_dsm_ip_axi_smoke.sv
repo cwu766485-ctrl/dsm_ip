@@ -173,6 +173,8 @@ module tb_dsm_ip_axi_smoke;
     axi_write(6'h08, 32'h0040_0000);
     axi_read(6'h08, rd);
     if (rd[23:0] != 24'h400000) $fatal(1, "phase increment readback mismatch");
+    axi_read(6'h30, rd);
+    if (rd != 32'd4) $fatal(1, "compiled INTERP_MODE readback mismatch");
 
     axi_write(6'h00, 32'h0000_0001);
     axi_read(6'h00, rd);

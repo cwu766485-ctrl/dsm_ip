@@ -57,6 +57,7 @@ stream interfaces used by the packaged IP.
 | `0x0C` | `ALGORITHM` | RO | compiled DSM algorithm ID |
 | `0x10` | `DUC_MODE` | RO | compiled DUC mode |
 | `0x14` | `VERSION` | RO | wrapper version, currently `0x00010000` |
+| `0x30` | `INTERP_MODE` | RO | compiled interpolation mode |
 
 Register behavior:
 
@@ -66,8 +67,9 @@ Register behavior:
 - `STATUS` exposes the current enable/reset state and datapath ready/valid
   flags.
 - `CFG_PHASE_INC` is used only when `DUC_MODE=1`.
-- `ALGORITHM` and `DUC_MODE` are read-only because they are compile-time
-  parameters in this release.
+- `ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are read-only because they are
+  compile-time parameters in this release. Synthesis keeps only the selected
+  hardware paths.
 
 For an NCO DUC with `PHASE_W=24`:
 
@@ -126,8 +128,9 @@ experiments; the fixed Fs/4 path is the primary low-resource configuration.
 | Subcarrier spacing | 48.828125 kHz |
 | Default Fs/4 IF center | 25 MHz |
 
-The IP does not include a programmable interpolation or channel-filter chain.
-The input stream is expected to already be at the DSM sample rate.
+The IP includes a compile-time selected interpolation/filter frontend. Runtime
+interpolation switching is intentionally not implemented in this release; the
+selected mode is exposed through the read-only `INTERP_MODE` register.
 
 ## Verification
 
