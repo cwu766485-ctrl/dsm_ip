@@ -29,9 +29,20 @@ if {[llength $ps] == 0} {
 }
 
 set clk_pin [get_bd_pins -quiet $ps/pl_clk0]
-set rst_pin [get_bd_pins -quiet $ps/pl_resetn0]
+set raw_rst_pin [get_bd_pins -quiet $ps/pl_resetn0]
+set rst_pin [get_bd_pins -quiet rst_ps8_0_96M/peripheral_aresetn]
+if {[llength $rst_pin] == 0} {
+  set rst_pin $raw_rst_pin
+}
 set hpm_pin [get_bd_intf_pins -quiet $ps/M_AXI_HPM0_FPD]
-set hpc_pin [get_bd_intf_pins -quiet $ps/S_AXI_HPC0_FPD]
+set ps_slave_pin ""
+foreach candidate {S_AXI_HPC0_FPD S_AXI_HP0_FPD S_AXI_HPC1_FPD S_AXI_HP1_FPD S_AXI_HP2_FPD S_AXI_HP3_FPD} {
+  set pin [get_bd_intf_pins -quiet $ps/$candidate]
+  if {[llength $pin] > 0} {
+    set ps_slave_pin $pin
+    break
+  }
+}
 
 if {[llength $clk_pin] == 0 || [llength $rst_pin] == 0} {
   error "PS pl_clk0/pl_resetn0 pins are required."
@@ -39,22 +50,40 @@ if {[llength $clk_pin] == 0 || [llength $rst_pin] == 0} {
 if {[llength $hpm_pin] == 0} {
   error "Enable PS M_AXI_HPM0_FPD for AXI-Lite register access."
 }
-if {[llength $hpc_pin] == 0} {
-  puts "WARNING: Enable PS S_AXI_HPC0_FPD or another PS slave HP/HPC port for AXI DMA memory reads."
+if {$ps_slave_pin eq ""} {
+  puts "WARNING: Enable a PS S_AXI_HP*_FPD or S_AXI_HPC*_FPD slave port for AXI DMA memory reads."
 }
 
 create_bd_cell -type ip -vlnv dsm.local:communication:dsm_ip:1.0 dsm_ip_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_dma_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila ila_dsm_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant axis_tuser_zero
+
+set clk_freq [get_property CONFIG.FREQ_HZ $clk_pin]
+if {$clk_freq eq ""} {
+  set clk_freq [get_property FREQ_HZ $clk_pin]
+}
+if {$clk_freq ne ""} {
+  foreach obj [list \
+    [get_bd_pins dsm_ip_0/aclk] \
+    [get_bd_intf_pins dsm_ip_0/s_axis] \
+    [get_bd_intf_pins dsm_ip_0/s_axi] \
+  ] {
+    catch {set_property CONFIG.FREQ_HZ $clk_freq $obj}
+    catch {set_property FREQ_HZ $clk_freq $obj}
+  }
+}
 
 set_property -dict [list \
   CONFIG.c_include_sg {0} \
   CONFIG.c_include_mm2s {1} \
   CONFIG.c_include_s2mm {0} \
+  CONFIG.c_sg_length_width {23} \
   CONFIG.c_m_axis_mm2s_tdata_width {32} \
 ] [get_bd_cells axi_dma_0]
 
 set_property -dict [list \
+  CONFIG.C_MONITOR_TYPE {Native} \
   CONFIG.C_NUM_OF_PROBES {10} \
   CONFIG.C_PROBE0_WIDTH {1} \
   CONFIG.C_PROBE1_WIDTH {1} \
@@ -68,16 +97,25 @@ set_property -dict [list \
   CONFIG.C_PROBE9_WIDTH {8} \
 ] [get_bd_cells ila_dsm_0]
 
+set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {0}] [get_bd_cells axis_tuser_zero]
+
 connect_bd_net $clk_pin [get_bd_pins dsm_ip_0/aclk]
 connect_bd_net $clk_pin [get_bd_pins axi_dma_0/s_axi_lite_aclk]
 connect_bd_net $clk_pin [get_bd_pins axi_dma_0/m_axi_mm2s_aclk]
-connect_bd_net $clk_pin [get_bd_pins axi_dma_0/m_axis_mm2s_aclk]
+set dma_axis_clk [get_bd_pins -quiet axi_dma_0/m_axis_mm2s_aclk]
+if {[llength $dma_axis_clk] > 0} {
+  connect_bd_net $clk_pin $dma_axis_clk
+}
 connect_bd_net $clk_pin [get_bd_pins ila_dsm_0/clk]
 
 connect_bd_net $rst_pin [get_bd_pins dsm_ip_0/aresetn]
 connect_bd_net $rst_pin [get_bd_pins axi_dma_0/axi_resetn]
 
-connect_bd_intf_net [get_bd_intf_pins axi_dma_0/M_AXIS_MM2S] [get_bd_intf_pins dsm_ip_0/s_axis]
+connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tdata]  [get_bd_pins dsm_ip_0/s_axis_tdata]
+connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tvalid] [get_bd_pins dsm_ip_0/s_axis_tvalid]
+connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tready] [get_bd_pins dsm_ip_0/s_axis_tready]
+connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tlast]  [get_bd_pins dsm_ip_0/s_axis_tlast]
+connect_bd_net [get_bd_pins axis_tuser_zero/dout]         [get_bd_pins dsm_ip_0/s_axis_tuser]
 
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 \
   -config [list Clk_master $clk_pin Clk_slave $clk_pin Clk_xbar $clk_pin Master $hpm_pin Slave [get_bd_intf_pins dsm_ip_0/s_axi]] \
@@ -87,10 +125,13 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 \
   -config [list Clk_master $clk_pin Clk_slave $clk_pin Clk_xbar $clk_pin Master $hpm_pin Slave [get_bd_intf_pins axi_dma_0/S_AXI_LITE]] \
   [get_bd_intf_pins axi_dma_0/S_AXI_LITE]
 
-if {[llength $hpc_pin] > 0} {
-  apply_bd_automation -rule xilinx.com:bd_rule:axi4 \
-    -config [list Clk_master $clk_pin Clk_slave $clk_pin Clk_xbar $clk_pin Master [get_bd_intf_pins axi_dma_0/M_AXI_MM2S] Slave $hpc_pin] \
-    [get_bd_intf_pins axi_dma_0/M_AXI_MM2S]
+if {$ps_slave_pin ne ""} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect dma_mem_smc
+  set_property -dict [list CONFIG.NUM_SI {1} CONFIG.NUM_MI {1}] [get_bd_cells dma_mem_smc]
+  connect_bd_net $clk_pin [get_bd_pins dma_mem_smc/aclk]
+  connect_bd_net $rst_pin [get_bd_pins dma_mem_smc/aresetn]
+  connect_bd_intf_net [get_bd_intf_pins axi_dma_0/M_AXI_MM2S] [get_bd_intf_pins dma_mem_smc/S00_AXI]
+  connect_bd_intf_net [get_bd_intf_pins dma_mem_smc/M00_AXI] $ps_slave_pin
 }
 
 connect_bd_net [get_bd_pins dsm_ip_0/s_axis_tvalid] [get_bd_pins ila_dsm_0/probe0]

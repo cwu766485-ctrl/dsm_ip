@@ -41,6 +41,9 @@ $rtlFiles = @(
   "$repo\rtl\interp\dsm_interp_fir_fixed.sv",
   "$repo\rtl\interp\dsm_interp2_halfband.sv",
   "$repo\rtl\interp\dsm_interp_frontend.sv",
+  "$repo\rtl\dpd\dpd_poly.v",
+  "$repo\rtl\dpd\dpd_lut.v",
+  "$repo\rtl\dpd\dpd_frontend.v",
   "$repo\rtl\duc\duc_fs4_merge.sv",
   "$repo\rtl\duc\duc_fs4_merge_signed.sv",
   "$repo\rtl\duc\duc_nco_mix_signed.v",
@@ -75,6 +78,10 @@ function Invoke-VivadoCmd($cmd) {
       $errors = Select-String -LiteralPath $log -Pattern "ERROR:" -SimpleMatch
       if ($errors) {
         throw "Vivado reported errors while running: $cmd"
+      }
+      $fatals = Select-String -LiteralPath $log -Pattern "Fatal:" -SimpleMatch
+      if ($fatals) {
+        throw "Simulation reported fatal failures while running: $cmd"
       }
     }
   } finally {

@@ -17,6 +17,7 @@ __pycache__/
 # MATLAB generated outputs
 matlab/out/
 matlab/**/out/
+fpga/zu15eg/out/
 *.mat
 
 # Vivado/Xilinx generated files
@@ -36,10 +37,12 @@ clockInfo.txt
 
 # XSim generated files
 xsim.dir/
+.slang/
 verif/out_xsim_p0/
 verif/out_xsim_p0_multibit/
 verif/out_xsim_interp_frontend/
 verif/out_xsim_ip_smoke/
+verif/out_xsim_dpd/
 *.vcd
 *.fst
 *.ghw
@@ -76,6 +79,7 @@ syn/reports/routed_*/
 # Raw board validation / scope captures
 data/board_validation/
 *.Wfm.csv
+fpga/zu15eg/local_hw/
 
 # Restricted RFSoC board collateral
 fpga/hardware/

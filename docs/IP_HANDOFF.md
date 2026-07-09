@@ -56,6 +56,26 @@ s_axis_tuser        = optional upstream error/tag field
 | `0x34` | `INPUT_FRAME_COUNT` | RO | accepted AXI-Stream samples with `tlast=1` |
 | `0x38` | `LAST_TUSER` | RO | last accepted AXI-Stream `tuser` value |
 | `0x3C` | `USER_ERROR_COUNT` | RO | accepted AXI-Stream samples with nonzero `tuser` |
+| `0x40` | `DPD_CTRL` | RW | `DPD_CTRL[1:0]`: 0 bypass, 1 polynomial DPD, 2 LUT DPD, 3 reserved |
+| `0x44` | `DPD_C1` | RW | packed Q2.14 coefficient `{c1_im, c1_re}` |
+| `0x48` | `DPD_C3` | RW | packed Q2.14 coefficient `{c3_im, c3_re}` |
+| `0x4C` | `DPD_C5` | RW | packed Q2.14 coefficient `{c5_im, c5_re}` |
+| `0x50` | `DPD_SAMPLE_COUNT` | RO | samples accepted by the DPD frontend |
+| `0x54` | `DPD_SATURATION_COUNT` | RO | DPD output saturation count |
+| `0x58` | `DPD_LUT_ADDR` | RW | LUT DPD table address |
+| `0x5C` | `DPD_LUT_DATA` | RW | packed Q2.14 LUT gain `{gain_im, gain_re}` |
+| `0x60` | `DPD_LUT_COMMIT` | RW/RO | write bit0 to swap LUT bank, read bit0 active bank |
+| `0x64` | `MON_INPUT_POWER` | RO | accumulated input magnitude-power proxy |
+| `0x68` | `MON_OUTPUT_POWER` | RO | accumulated RF output magnitude-power proxy |
+| `0x6C` | `MON_CLIP_COUNT` | RO | input near-full-scale clipping proxy count |
+| `0x70` | `MON_PEAK` | RO | packed `{output_peak[15:0], input_peak[15:0]}` |
+| `0x74` | `MON_AVG_MAG` | RO | packed EWMA `{output_avg[15:0], input_avg[15:0]}` |
+| `0x78` | `MON_EVM_PROXY` | RO | accumulated DPD correction-magnitude proxy |
+| `0x7C` | `MON_ACPR_PROXY` | RO | accumulated RF slew proxy |
+| `0x80` | `MON_SPEC_BIN0` | RO | fixed-bin spectral proxy at DC/leakage bin |
+| `0x84` | `MON_SPEC_BIN1` | RO | fixed-bin spectral proxy at Fs/4 carrier bin |
+| `0x88` | `MON_SPEC_BIN2` | RO | fixed-bin spectral proxy at Fs/2 high-frequency bin |
+| `0x8C` | `MON_SPEC_ADJ` | RO | adjacent/out-of-band spectral proxy, `BIN0 + BIN2` |
 
 `ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time parameters in this
 release. Their read-only registers report the selected hardware build; they do
@@ -66,6 +86,40 @@ and sticky errors. Legal AXI-Stream backpressure increments
 `INPUT_STALL_COUNT`; it is not a sticky error. `ERROR_STATUS[0]` is set when
 AXI-Stream input is asserted while the IP is disabled or held in reset.
 `ERROR_STATUS[1]` is set when an accepted input sample has nonzero `tuser`.
+
+The DPD frontend is inserted before `dsm_ip_top` in the AXI wrapper. It is in
+bypass mode by default and uses identity coefficients/LUT entries, so existing
+DSM behavior is preserved unless software selects another `DPD_CTRL[1:0]`
+mode. DPD input/output samples are signed Q1.15 complex I/Q; DPD coefficients
+and LUT gains are signed Q2.14 complex values.
+
+Current DPD modes:
+
+```text
+0: bypass
+1: memoryless polynomial DPD
+2: amplitude-indexed LUT DPD
+3: reserved for memory polynomial DPD
+```
+
+The DPD frontend is internally pipelined. The polynomial path registers the
+square, radius, coefficient multiply, gain accumulation, complex multiply, and
+saturation stages. Bypass and LUT modes are delayed to match the polynomial
+path so the mode-selected output remains sample-aligned under AXI-Stream
+backpressure. This changes latency only; the fixed-point output sequence is
+kept bit-true against the MATLAB DPD reference.
+
+LUT updates are single-buffered. Software should update `DPD_LUT_ADDR` and
+`DPD_LUT_DATA` while the stream is idle or after software reset.
+
+The monitor registers are low-cost PL observability metrics for PS-side
+calibration. They are intended to rank DPD packages and catch clipping,
+saturation, spectral leakage, and abnormal activity on board. The spectral
+proxy uses multiplier-free fixed-bin accumulators over `rf_signed`: `BIN0`
+tracks DC/leakage, `BIN1` tracks the Fs/4 carrier bin, `BIN2` tracks the Fs/2
+bin, and `MON_SPEC_ADJ` combines `BIN0 + BIN2` as a lightweight adjacent-band
+penalty. These registers are not a replacement for offline EVM/ACLR/SNDR
+measurement with a defined reconstruction or receiver chain.
 
 ## ZU15EG Bring-Up
 

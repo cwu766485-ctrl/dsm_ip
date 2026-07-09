@@ -23,9 +23,19 @@ Run after XSim:
 Pass when all rows in `matlab/out/p0_bittrue_compare.csv` have
 `Mismatches == 0`.
 
+Run DPD RTL/MATLAB bit-true comparison:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1
+matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_dpd_rtl_xsim; disp(T); assert(all(T.mismatch==0));"
+```
+
+Pass when the comparison table reports `mismatch == 0`.
+
 ## Timing
 
-Run OOC proxy synthesis for:
+Run OOC synthesis for representative ZU15EG configurations and IP-wrapper
+matrices:
 
 - `p0_ooc_lp1`
 - `p0_ooc_lp2`
@@ -35,10 +45,9 @@ Run OOC proxy synthesis for:
 - `p0_ooc_mash111`
 - `p0_ooc_mash22`
 
-Pass when routed `WNS >= 0` at 100 MHz.
-
-The current seven-path OOC report shows LPDSM, EFDSM, and EFDSM2 pass 100 MHz;
-LPDSM2 and MASH currently fail the 100 MHz timing criterion.
+Pass when reported timing meets the selected 100 MHz target. Current project
+planning prioritizes the ZU15EG target; smaller xc7z020 proxy results are
+historical and not the main acceptance target.
 
 ## Board Evidence
 

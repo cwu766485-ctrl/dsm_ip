@@ -8,13 +8,14 @@ module dsm_ip_axi_top #(
   parameter integer PHASE_W = 24,
   parameter integer LUT_AW = 10,
   parameter integer TW_W = 16,
+  parameter integer DPD_LUT_AW = 4,
   parameter integer ALGORITHM = 2,
   parameter integer DUC_MODE = 0,
   parameter integer INTERP_MODE = 0,
   parameter integer CLK_FREQ_HZ = 100000000,
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
-  parameter integer C_S_AXI_ADDR_WIDTH = 6,
+  parameter integer C_S_AXI_ADDR_WIDTH = 8,
   parameter integer C_S_AXI_DATA_WIDTH = 32,
   parameter integer C_S_AXIS_TDATA_WIDTH = 32,
   parameter integer C_S_AXIS_TUSER_WIDTH = 1
@@ -59,22 +60,43 @@ module dsm_ip_axi_top #(
 );
 
   localparam [31:0] CORE_VERSION = 32'h0001_0000;
-  localparam [3:0] ADDR_CTRL       = 4'h0;
-  localparam [3:0] ADDR_STATUS     = 4'h1;
-  localparam [3:0] ADDR_PHASE_INC  = 4'h2;
-  localparam [3:0] ADDR_ALGORITHM  = 4'h3;
-  localparam [3:0] ADDR_DUC_MODE   = 4'h4;
-  localparam [3:0] ADDR_VERSION    = 4'h5;
-  localparam [3:0] ADDR_IN_COUNT   = 4'h6;
-  localparam [3:0] ADDR_OUT_COUNT  = 4'h7;
-  localparam [3:0] ADDR_RESET_CNT  = 4'h8;
-  localparam [3:0] ADDR_ERROR      = 4'h9;
-  localparam [3:0] ADDR_FRONT_COUNT = 4'ha;
-  localparam [3:0] ADDR_STALL_COUNT = 4'hb;
-  localparam [3:0] ADDR_INTERP_MODE = 4'hc;
-  localparam [3:0] ADDR_FRAME_COUNT = 4'hd;
-  localparam [3:0] ADDR_LAST_TUSER  = 4'he;
-  localparam [3:0] ADDR_USER_ERR_COUNT = 4'hf;
+  localparam [5:0] ADDR_CTRL       = 6'h00;
+  localparam [5:0] ADDR_STATUS     = 6'h01;
+  localparam [5:0] ADDR_PHASE_INC  = 6'h02;
+  localparam [5:0] ADDR_ALGORITHM  = 6'h03;
+  localparam [5:0] ADDR_DUC_MODE   = 6'h04;
+  localparam [5:0] ADDR_VERSION    = 6'h05;
+  localparam [5:0] ADDR_IN_COUNT   = 6'h06;
+  localparam [5:0] ADDR_OUT_COUNT  = 6'h07;
+  localparam [5:0] ADDR_RESET_CNT  = 6'h08;
+  localparam [5:0] ADDR_ERROR      = 6'h09;
+  localparam [5:0] ADDR_FRONT_COUNT = 6'h0a;
+  localparam [5:0] ADDR_STALL_COUNT = 6'h0b;
+  localparam [5:0] ADDR_INTERP_MODE = 6'h0c;
+  localparam [5:0] ADDR_FRAME_COUNT = 6'h0d;
+  localparam [5:0] ADDR_LAST_TUSER  = 6'h0e;
+  localparam [5:0] ADDR_USER_ERR_COUNT = 6'h0f;
+  localparam [5:0] ADDR_DPD_CTRL    = 6'h10;
+  localparam [5:0] ADDR_DPD_C1      = 6'h11;
+  localparam [5:0] ADDR_DPD_C3      = 6'h12;
+  localparam [5:0] ADDR_DPD_C5      = 6'h13;
+  localparam [5:0] ADDR_DPD_COUNT   = 6'h14;
+  localparam [5:0] ADDR_DPD_SAT_COUNT = 6'h15;
+  localparam [5:0] ADDR_DPD_LUT_ADDR = 6'h16;
+  localparam [5:0] ADDR_DPD_LUT_DATA = 6'h17;
+  localparam [5:0] ADDR_DPD_LUT_COMMIT = 6'h18;
+  localparam [5:0] ADDR_MON_IN_POWER = 6'h19;
+  localparam [5:0] ADDR_MON_OUT_POWER = 6'h1a;
+  localparam [5:0] ADDR_MON_CLIP_COUNT = 6'h1b;
+  localparam [5:0] ADDR_MON_PEAK = 6'h1c;
+  localparam [5:0] ADDR_MON_AVG_MAG = 6'h1d;
+  localparam [5:0] ADDR_MON_EVM_PROXY = 6'h1e;
+  localparam [5:0] ADDR_MON_ACPR_PROXY = 6'h1f;
+  localparam [5:0] ADDR_MON_SPEC_BIN0 = 6'h20;
+  localparam [5:0] ADDR_MON_SPEC_BIN1 = 6'h21;
+  localparam [5:0] ADDR_MON_SPEC_BIN2 = 6'h22;
+  localparam [5:0] ADDR_MON_SPEC_ADJ = 6'h23;
+  localparam [W-1:0] MON_CLIP_LEVEL = {1'b0, {(W-4){1'b1}}, 3'b000};
 
   reg [31:0] ctrl_reg;
   reg [PHASE_W-1:0] phase_inc_reg;
@@ -88,14 +110,46 @@ module dsm_ip_axi_top #(
   reg [31:0] input_frame_count;
   reg [31:0] user_error_count;
   reg [C_S_AXIS_TUSER_WIDTH-1:0] last_tuser_reg;
+  reg [31:0] dpd_ctrl_reg;
+  reg signed [15:0] dpd_c1_re_reg;
+  reg signed [15:0] dpd_c1_im_reg;
+  reg signed [15:0] dpd_c3_re_reg;
+  reg signed [15:0] dpd_c3_im_reg;
+  reg signed [15:0] dpd_c5_re_reg;
+  reg signed [15:0] dpd_c5_im_reg;
+  reg [DPD_LUT_AW-1:0] dpd_lut_addr_reg;
+  reg dpd_lut_we_pulse;
+  reg dpd_lut_commit_pulse;
+  reg signed [15:0] dpd_lut_wgain_re_reg;
+  reg signed [15:0] dpd_lut_wgain_im_reg;
+  reg [31:0] mon_input_power_acc;
+  reg [31:0] mon_output_power_acc;
+  reg [31:0] mon_input_clip_count;
+  reg [W-1:0] mon_input_peak;
+  reg [RF_W-1:0] mon_output_peak;
+  reg [W-1:0] mon_input_avg_mag;
+  reg [RF_W-1:0] mon_output_avg_mag;
+  reg [31:0] mon_evm_proxy_acc;
+  reg [31:0] mon_acpr_proxy_acc;
+  reg signed [RF_W-1:0] mon_rf_prev;
+  reg mon_rf_prev_valid;
+  reg [1:0] mon_spec_phase;
+  reg signed [31:0] mon_spec_bin0_acc;
+  reg signed [31:0] mon_spec_bin1_i_acc;
+  reg signed [31:0] mon_spec_bin1_q_acc;
+  reg signed [31:0] mon_spec_bin2_acc;
 
   wire core_enable = ctrl_reg[0];
   wire soft_reset = soft_reset_pulse;
   wire core_rst_n = aresetn & ~soft_reset;
+  wire [7:0] s_axi_awaddr_ext = {{(8-C_S_AXI_ADDR_WIDTH){1'b0}}, s_axi_awaddr};
+  wire [7:0] s_axi_araddr_ext = {{(8-C_S_AXI_ADDR_WIDTH){1'b0}}, s_axi_araddr};
+  wire [5:0] axi_aw_word_addr = s_axi_awaddr_ext[7:2];
+  wire [5:0] axi_ar_word_addr = s_axi_araddr_ext[7:2];
   wire axis_fire = s_axis_tvalid & s_axis_tready;
   wire frontend_fire;
   wire clear_status_req = s_axi_awvalid & s_axi_wvalid &
-                          (s_axi_awaddr[5:2] == 4'h0) &
+                          (axi_aw_word_addr == ADDR_CTRL) &
                           s_axi_wstrb[0] & s_axi_wdata[2];
   wire stream_while_disabled = s_axis_tvalid & (!core_enable | !core_rst_n);
   wire stream_stall = s_axis_tvalid & !s_axis_tready & core_enable & core_rst_n;
@@ -109,8 +163,111 @@ module dsm_ip_axi_top #(
   wire axis_user_error = |s_axis_tuser;
   wire signed [W-1:0] axis_i = axis_buf_tdata[W-1:0];
   wire signed [W-1:0] axis_q = axis_buf_tdata[(2*W)-1:W];
+  wire [W-1:0] axis_i_abs = abs_w(axis_i);
+  wire [W-1:0] axis_q_abs = abs_w(axis_q);
+  wire [W:0] axis_mag_sum = {1'b0, axis_i_abs} + {1'b0, axis_q_abs};
+  wire [W-1:0] axis_mag_sat = axis_mag_sum[W] ? {W{1'b1}} : axis_mag_sum[W-1:0];
+  wire axis_clip = (axis_i_abs >= MON_CLIP_LEVEL) | (axis_q_abs >= MON_CLIP_LEVEL);
+  wire signed [W:0] mon_input_avg_delta =
+      $signed({1'b0, axis_mag_sat}) - $signed({1'b0, mon_input_avg_mag});
+  wire signed [W-1:0] dpd_i;
+  wire signed [W-1:0] dpd_q;
+  wire dpd_valid;
+  wire dpd_ready;
+  wire [W-1:0] dpd_i_abs = abs_w(dpd_i);
+  wire [W-1:0] dpd_q_abs = abs_w(dpd_q);
+  wire [W:0] dpd_mag_sum = {1'b0, dpd_i_abs} + {1'b0, dpd_q_abs};
+  wire [W-1:0] dpd_mag_sat = dpd_mag_sum[W] ? {W{1'b1}} : dpd_mag_sum[W-1:0];
+  wire signed [W:0] dpd_i_delta = {dpd_i[W-1], dpd_i} - {axis_i[W-1], axis_i};
+  wire signed [W:0] dpd_q_delta = {dpd_q[W-1], dpd_q} - {axis_q[W-1], axis_q};
+  wire [W:0] dpd_i_delta_abs = abs_wp1(dpd_i_delta);
+  wire [W:0] dpd_q_delta_abs = abs_wp1(dpd_q_delta);
+  wire [W+1:0] evm_proxy_sum = {1'b0, dpd_i_delta_abs} + {1'b0, dpd_q_delta_abs};
+  wire [31:0] dpd_sample_count;
+  wire [31:0] dpd_saturation_count;
+  wire signed [15:0] dpd_lut_rgain_re;
+  wire signed [15:0] dpd_lut_rgain_im;
+  wire dpd_lut_active_bank;
+  wire [RF_W-1:0] rf_abs = abs_rf(rf_signed);
+  wire signed [RF_W:0] rf_delta = {rf_signed[RF_W-1], rf_signed} -
+                                  {mon_rf_prev[RF_W-1], mon_rf_prev};
+  wire [RF_W:0] rf_delta_abs = abs_rfp1(rf_delta);
+  wire signed [RF_W:0] mon_output_avg_delta =
+      $signed({1'b0, rf_abs}) - $signed({1'b0, mon_output_avg_mag});
+  wire signed [31:0] rf_spec_ext = {{(32-RF_W){rf_signed[RF_W-1]}}, rf_signed};
+  wire [31:0] mon_spec_bin0_mag = abs_s32(mon_spec_bin0_acc);
+  wire [31:0] mon_spec_bin1_i_mag = abs_s32(mon_spec_bin1_i_acc);
+  wire [31:0] mon_spec_bin1_q_mag = abs_s32(mon_spec_bin1_q_acc);
+  wire [31:0] mon_spec_bin2_mag = abs_s32(mon_spec_bin2_acc);
+  wire [32:0] mon_spec_bin1_sum = {1'b0, mon_spec_bin1_i_mag} + {1'b0, mon_spec_bin1_q_mag};
+  wire [32:0] mon_spec_adj_sum = {1'b0, mon_spec_bin0_mag} + {1'b0, mon_spec_bin2_mag};
+  wire [31:0] mon_spec_bin1_mag =
+      mon_spec_bin1_sum[32] ? 32'hffff_ffff : mon_spec_bin1_sum[31:0];
+  wire [31:0] mon_spec_adj_mag =
+      mon_spec_adj_sum[32] ? 32'hffff_ffff : mon_spec_adj_sum[31:0];
 
   wire dsm_input_ready;
+
+  function [W-1:0] abs_w;
+    input signed [W-1:0] value;
+    begin
+      if (value == {1'b1, {(W-1){1'b0}}}) begin
+        abs_w = {1'b0, {(W-1){1'b1}}};
+      end else if (value[W-1]) begin
+        abs_w = (~value) + {{(W-1){1'b0}}, 1'b1};
+      end else begin
+        abs_w = value;
+      end
+    end
+  endfunction
+
+  function [W:0] abs_wp1;
+    input signed [W:0] value;
+    begin
+      if (value[W]) begin
+        abs_wp1 = (~value) + {{W{1'b0}}, 1'b1};
+      end else begin
+        abs_wp1 = value;
+      end
+    end
+  endfunction
+
+  function [RF_W-1:0] abs_rf;
+    input signed [RF_W-1:0] value;
+    begin
+      if (value == {1'b1, {(RF_W-1){1'b0}}}) begin
+        abs_rf = {1'b0, {(RF_W-1){1'b1}}};
+      end else if (value[RF_W-1]) begin
+        abs_rf = (~value) + {{(RF_W-1){1'b0}}, 1'b1};
+      end else begin
+        abs_rf = value;
+      end
+    end
+  endfunction
+
+  function [RF_W:0] abs_rfp1;
+    input signed [RF_W:0] value;
+    begin
+      if (value[RF_W]) begin
+        abs_rfp1 = (~value) + {{RF_W{1'b0}}, 1'b1};
+      end else begin
+        abs_rfp1 = value;
+      end
+    end
+  endfunction
+
+  function [31:0] abs_s32;
+    input signed [31:0] value;
+    begin
+      if (value == 32'sh8000_0000) begin
+        abs_s32 = 32'h7fff_ffff;
+      end else if (value[31]) begin
+        abs_s32 = (~value) + 32'd1;
+      end else begin
+        abs_s32 = value[31:0];
+      end
+    end
+  endfunction
 
   axis_skid_buffer #(
     .DATA_W(C_S_AXIS_TDATA_WIDTH),
@@ -128,12 +285,12 @@ module dsm_ip_axi_top #(
     .m_last(axis_buf_tlast),
     .m_user(axis_buf_tuser),
     .m_valid(axis_buf_valid),
-    .m_ready(dsm_input_ready & core_enable & core_rst_n),
+    .m_ready(dpd_ready & core_enable & core_rst_n),
     .full(axis_buf_full)
   );
 
   assign s_axis_tready = core_enable & core_rst_n & axis_buf_ready;
-  assign frontend_fire = axis_buf_valid & dsm_input_ready & core_enable & core_rst_n;
+  assign frontend_fire = dpd_valid & dsm_input_ready & core_enable & core_rst_n;
 
   always @(posedge aclk or negedge aresetn) begin
     if (!aresetn) begin
@@ -153,13 +310,51 @@ module dsm_ip_axi_top #(
       input_frame_count <= 32'd0;
       user_error_count <= 32'd0;
       last_tuser_reg <= {C_S_AXIS_TUSER_WIDTH{1'b0}};
+      dpd_ctrl_reg <= 32'h0000_0000;
+      dpd_c1_re_reg <= 16'sd16384;
+      dpd_c1_im_reg <= 16'sd0;
+      dpd_c3_re_reg <= 16'sd0;
+      dpd_c3_im_reg <= 16'sd0;
+      dpd_c5_re_reg <= 16'sd0;
+      dpd_c5_im_reg <= 16'sd0;
+      dpd_lut_addr_reg <= {DPD_LUT_AW{1'b0}};
+      dpd_lut_we_pulse <= 1'b0;
+      dpd_lut_commit_pulse <= 1'b0;
+      dpd_lut_wgain_re_reg <= 16'sd16384;
+      dpd_lut_wgain_im_reg <= 16'sd0;
+      mon_input_power_acc <= 32'd0;
+      mon_output_power_acc <= 32'd0;
+      mon_input_clip_count <= 32'd0;
+      mon_input_peak <= {W{1'b0}};
+      mon_output_peak <= {RF_W{1'b0}};
+      mon_input_avg_mag <= {W{1'b0}};
+      mon_output_avg_mag <= {RF_W{1'b0}};
+      mon_evm_proxy_acc <= 32'd0;
+      mon_acpr_proxy_acc <= 32'd0;
+      mon_rf_prev <= {RF_W{1'b0}};
+      mon_rf_prev_valid <= 1'b0;
+      mon_spec_phase <= 2'd0;
+      mon_spec_bin0_acc <= 32'sd0;
+      mon_spec_bin1_i_acc <= 32'sd0;
+      mon_spec_bin1_q_acc <= 32'sd0;
+      mon_spec_bin2_acc <= 32'sd0;
     end else begin
       s_axi_awready <= 1'b0;
       s_axi_wready <= 1'b0;
       soft_reset_pulse <= 1'b0;
+      dpd_lut_we_pulse <= 1'b0;
+      dpd_lut_commit_pulse <= 1'b0;
 
       if (axis_fire) begin
         input_sample_count <= input_sample_count + 32'd1;
+        mon_input_power_acc <= mon_input_power_acc + {{(32-W){1'b0}}, axis_mag_sat};
+        if (axis_mag_sat > mon_input_peak) begin
+          mon_input_peak <= axis_mag_sat;
+        end
+        mon_input_avg_mag <= mon_input_avg_mag + (mon_input_avg_delta >>> 4);
+        if (axis_clip) begin
+          mon_input_clip_count <= mon_input_clip_count + 32'd1;
+        end
         last_tuser_reg <= s_axis_tuser;
         if (s_axis_tlast) begin
           input_frame_count <= input_frame_count + 32'd1;
@@ -172,10 +367,34 @@ module dsm_ip_axi_top #(
 
       if (frontend_fire) begin
         frontend_sample_count <= frontend_sample_count + 32'd1;
+        mon_evm_proxy_acc <= mon_evm_proxy_acc + {{(30-W){1'b0}}, evm_proxy_sum};
       end
 
       if (rf_valid) begin
         output_sample_count <= output_sample_count + 32'd1;
+        mon_output_power_acc <= mon_output_power_acc + {{(32-RF_W){1'b0}}, rf_abs};
+        if (rf_abs > mon_output_peak) begin
+          mon_output_peak <= rf_abs;
+        end
+        mon_output_avg_mag <= mon_output_avg_mag + (mon_output_avg_delta >>> 4);
+        if (mon_rf_prev_valid) begin
+          mon_acpr_proxy_acc <= mon_acpr_proxy_acc + {{(31-RF_W){1'b0}}, rf_delta_abs};
+        end
+        mon_spec_bin0_acc <= mon_spec_bin0_acc + rf_spec_ext;
+        if (mon_spec_phase[0]) begin
+          mon_spec_bin2_acc <= mon_spec_bin2_acc - rf_spec_ext;
+        end else begin
+          mon_spec_bin2_acc <= mon_spec_bin2_acc + rf_spec_ext;
+        end
+        case (mon_spec_phase)
+          2'd0: mon_spec_bin1_i_acc <= mon_spec_bin1_i_acc + rf_spec_ext;
+          2'd1: mon_spec_bin1_q_acc <= mon_spec_bin1_q_acc - rf_spec_ext;
+          2'd2: mon_spec_bin1_i_acc <= mon_spec_bin1_i_acc - rf_spec_ext;
+          default: mon_spec_bin1_q_acc <= mon_spec_bin1_q_acc + rf_spec_ext;
+        endcase
+        mon_spec_phase <= mon_spec_phase + 2'd1;
+        mon_rf_prev <= rf_signed;
+        mon_rf_prev_valid <= 1'b1;
       end
 
       if (stream_stall) begin
@@ -195,6 +414,22 @@ module dsm_ip_axi_top #(
         input_frame_count <= 32'd0;
         user_error_count <= 32'd0;
         last_tuser_reg <= {C_S_AXIS_TUSER_WIDTH{1'b0}};
+        mon_input_power_acc <= 32'd0;
+        mon_output_power_acc <= 32'd0;
+        mon_input_clip_count <= 32'd0;
+        mon_input_peak <= {W{1'b0}};
+        mon_output_peak <= {RF_W{1'b0}};
+        mon_input_avg_mag <= {W{1'b0}};
+        mon_output_avg_mag <= {RF_W{1'b0}};
+        mon_evm_proxy_acc <= 32'd0;
+        mon_acpr_proxy_acc <= 32'd0;
+        mon_rf_prev <= {RF_W{1'b0}};
+        mon_rf_prev_valid <= 1'b0;
+        mon_spec_phase <= 2'd0;
+        mon_spec_bin0_acc <= 32'sd0;
+        mon_spec_bin1_i_acc <= 32'sd0;
+        mon_spec_bin1_q_acc <= 32'sd0;
+        mon_spec_bin2_acc <= 32'sd0;
       end
 
       if (!s_axi_bvalid && s_axi_awvalid && s_axi_wvalid) begin
@@ -203,7 +438,7 @@ module dsm_ip_axi_top #(
         s_axi_bvalid <= 1'b1;
         s_axi_bresp <= 2'b00;
 
-        case (s_axi_awaddr[5:2])
+        case (axi_aw_word_addr)
           ADDR_CTRL: begin
             if (s_axi_wstrb[0]) begin
               ctrl_reg[0] <= s_axi_wdata[0];
@@ -223,6 +458,45 @@ module dsm_ip_axi_top #(
           end
           ADDR_ERROR: begin
             error_status_reg <= error_status_reg & ~s_axi_wdata;
+          end
+          ADDR_DPD_CTRL: begin
+            if (s_axi_wstrb[0]) dpd_ctrl_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) dpd_ctrl_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) dpd_ctrl_reg[23:16] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) dpd_ctrl_reg[31:24] <= s_axi_wdata[31:24];
+          end
+          ADDR_DPD_C1: begin
+            if (s_axi_wstrb[0]) dpd_c1_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) dpd_c1_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) dpd_c1_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) dpd_c1_im_reg[15:8] <= s_axi_wdata[31:24];
+          end
+          ADDR_DPD_C3: begin
+            if (s_axi_wstrb[0]) dpd_c3_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) dpd_c3_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) dpd_c3_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) dpd_c3_im_reg[15:8] <= s_axi_wdata[31:24];
+          end
+          ADDR_DPD_C5: begin
+            if (s_axi_wstrb[0]) dpd_c5_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) dpd_c5_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) dpd_c5_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) dpd_c5_im_reg[15:8] <= s_axi_wdata[31:24];
+          end
+          ADDR_DPD_LUT_ADDR: begin
+            if (s_axi_wstrb[0]) dpd_lut_addr_reg <= s_axi_wdata[DPD_LUT_AW-1:0];
+          end
+          ADDR_DPD_LUT_DATA: begin
+            if (s_axi_wstrb[0]) dpd_lut_wgain_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) dpd_lut_wgain_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) dpd_lut_wgain_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) dpd_lut_wgain_im_reg[15:8] <= s_axi_wdata[31:24];
+            dpd_lut_we_pulse <= 1'b1;
+          end
+          ADDR_DPD_LUT_COMMIT: begin
+            if (s_axi_wstrb[0] && s_axi_wdata[0]) begin
+              dpd_lut_commit_pulse <= 1'b1;
+            end
           end
           default: begin
           end
@@ -246,7 +520,7 @@ module dsm_ip_axi_top #(
         s_axi_arready <= 1'b1;
         s_axi_rvalid <= 1'b1;
         s_axi_rresp <= 2'b00;
-        case (s_axi_araddr[5:2])
+        case (axi_ar_word_addr)
           ADDR_CTRL:      s_axi_rdata <= ctrl_reg;
           ADDR_STATUS:    s_axi_rdata <= {25'b0, axis_buf_full, |error_status_reg, s_axis_tready, rf_valid, dsm_valid, soft_reset, core_enable};
           ADDR_PHASE_INC: s_axi_rdata <= {{(32-PHASE_W){1'b0}}, phase_inc_reg};
@@ -263,6 +537,26 @@ module dsm_ip_axi_top #(
           ADDR_FRAME_COUNT: s_axi_rdata <= input_frame_count;
           ADDR_LAST_TUSER:  s_axi_rdata <= {{(32-C_S_AXIS_TUSER_WIDTH){1'b0}}, last_tuser_reg};
           ADDR_USER_ERR_COUNT: s_axi_rdata <= user_error_count;
+          ADDR_DPD_CTRL:    s_axi_rdata <= dpd_ctrl_reg;
+          ADDR_DPD_C1:      s_axi_rdata <= {dpd_c1_im_reg, dpd_c1_re_reg};
+          ADDR_DPD_C3:      s_axi_rdata <= {dpd_c3_im_reg, dpd_c3_re_reg};
+          ADDR_DPD_C5:      s_axi_rdata <= {dpd_c5_im_reg, dpd_c5_re_reg};
+          ADDR_DPD_COUNT:   s_axi_rdata <= dpd_sample_count;
+          ADDR_DPD_SAT_COUNT: s_axi_rdata <= dpd_saturation_count;
+          ADDR_DPD_LUT_ADDR: s_axi_rdata <= {{(32-DPD_LUT_AW){1'b0}}, dpd_lut_addr_reg};
+          ADDR_DPD_LUT_DATA: s_axi_rdata <= {dpd_lut_rgain_im, dpd_lut_rgain_re};
+          ADDR_DPD_LUT_COMMIT: s_axi_rdata <= {31'b0, dpd_lut_active_bank};
+          ADDR_MON_IN_POWER: s_axi_rdata <= mon_input_power_acc;
+          ADDR_MON_OUT_POWER: s_axi_rdata <= mon_output_power_acc;
+          ADDR_MON_CLIP_COUNT: s_axi_rdata <= mon_input_clip_count;
+          ADDR_MON_PEAK: s_axi_rdata <= {{(16-RF_W){1'b0}}, mon_output_peak[RF_W-1:0], {(16-W){1'b0}}, mon_input_peak[W-1:0]};
+          ADDR_MON_AVG_MAG: s_axi_rdata <= {{(16-RF_W){1'b0}}, mon_output_avg_mag[RF_W-1:0], {(16-W){1'b0}}, mon_input_avg_mag[W-1:0]};
+          ADDR_MON_EVM_PROXY: s_axi_rdata <= mon_evm_proxy_acc;
+          ADDR_MON_ACPR_PROXY: s_axi_rdata <= mon_acpr_proxy_acc;
+          ADDR_MON_SPEC_BIN0: s_axi_rdata <= mon_spec_bin0_mag;
+          ADDR_MON_SPEC_BIN1: s_axi_rdata <= mon_spec_bin1_mag;
+          ADDR_MON_SPEC_BIN2: s_axi_rdata <= mon_spec_bin2_mag;
+          ADDR_MON_SPEC_ADJ:  s_axi_rdata <= mon_spec_adj_mag;
           default: s_axi_rdata <= 32'h0000_0000;
         endcase
       end else if (s_axi_rvalid && s_axi_rready) begin
@@ -270,6 +564,42 @@ module dsm_ip_axi_top #(
       end
     end
   end
+
+  dpd_frontend #(
+    .W(W),
+    .COEFF_W(16),
+    .COEFF_FRAC(14),
+    .LUT_AW(DPD_LUT_AW)
+  ) u_dpd_frontend (
+    .clk(aclk),
+    .rst_n(core_rst_n),
+    .mode(dpd_ctrl_reg[1:0]),
+    .c1_re(dpd_c1_re_reg),
+    .c1_im(dpd_c1_im_reg),
+    .c3_re(dpd_c3_re_reg),
+    .c3_im(dpd_c3_im_reg),
+    .c5_re(dpd_c5_re_reg),
+    .c5_im(dpd_c5_im_reg),
+    .lut_we(dpd_lut_we_pulse),
+    .lut_commit(dpd_lut_commit_pulse),
+    .lut_waddr(dpd_lut_addr_reg),
+    .lut_wgain_re(dpd_lut_wgain_re_reg),
+    .lut_wgain_im(dpd_lut_wgain_im_reg),
+    .lut_raddr(dpd_lut_addr_reg),
+    .lut_rgain_re(dpd_lut_rgain_re),
+    .lut_rgain_im(dpd_lut_rgain_im),
+    .lut_active_bank(dpd_lut_active_bank),
+    .i_in(axis_i),
+    .q_in(axis_q),
+    .in_valid(axis_buf_valid & core_enable & core_rst_n),
+    .in_ready(dpd_ready),
+    .i_out(dpd_i),
+    .q_out(dpd_q),
+    .out_valid(dpd_valid),
+    .out_ready(dsm_input_ready & core_enable & core_rst_n),
+    .sample_count(dpd_sample_count),
+    .saturation_count(dpd_saturation_count)
+  );
 
   dsm_ip_top #(
     .W(W),
@@ -289,8 +619,8 @@ module dsm_ip_axi_top #(
     .rst_n(core_rst_n),
     .in_valid(frontend_fire),
     .cfg_phase_inc(phase_inc_reg),
-    .i_in(axis_i),
-    .q_in(axis_q),
+    .i_in(dpd_i),
+    .q_in(dpd_q),
     .in_ready(dsm_input_ready),
     .dsm_valid(dsm_valid),
     .i_bit(i_bit),

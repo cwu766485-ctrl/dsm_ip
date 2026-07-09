@@ -34,6 +34,9 @@ set rtl_files [list \
   [file join $ip_root rtl interp dsm_interp_fir_fixed.sv] \
   [file join $ip_root rtl interp dsm_interp2_halfband.sv] \
   [file join $ip_root rtl interp dsm_interp_frontend.sv] \
+  [file join $ip_root rtl dpd dpd_poly.v] \
+  [file join $ip_root rtl dpd dpd_lut.v] \
+  [file join $ip_root rtl dpd dpd_frontend.v] \
   [file join $ip_root rtl duc duc_fs4_merge.sv] \
   [file join $ip_root rtl duc duc_fs4_merge_signed.sv] \
   [file join $ip_root rtl duc duc_nco_mix_signed.v] \

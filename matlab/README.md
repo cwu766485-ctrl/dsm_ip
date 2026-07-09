@@ -9,6 +9,7 @@ IP handoff.
 |---|---|
 | `bittrue/` | Fixed-point DSM reference models and RTL/XSim dump comparison. This is the current source of truth for the seven RTL DSM algorithms. |
 | `models/` | Executable algorithm models for new IP blocks before RTL implementation, including interpolation frontend and system-level metric experiments. |
+| `dpd/` | MATLAB-only DPD and PA-model baselines for the planned AI-assisted TX calibration path. |
 | `scripts/` | User-facing entry scripts for vector export, metric evaluation, calibration sweeps, and plots. |
 | `cartesian_dsm/` | Cartesian I/Q DSM algorithm workspace, including retained legacy flow, single-bit wrappers, and exploratory multibit models. |
 | `board_validation/` | Scope-capture recovery and board-output comparison scripts retained for hardware validation. |
@@ -42,6 +43,12 @@ matlab/
     entry_interp_frontend_model.m
     entry_interp_frontend_system_eval.m
     entry_interp_frontend_calibrate_system.m
+    entry_dpd_memoryless_baseline.m
+    entry_dpd_fixed_baseline.m
+    entry_dpd_bittrue_check.m
+    entry_ai_assisted_dpd_sweep.m
+    entry_dpd_memory_pa_observation_sweep.m
+    entry_export_dpd_coeff_header.m
     export_p0_rom_mem.m
     export_p1_rom_mem.m
     eval_p0_seven_metrics_from_xsim.m
@@ -55,6 +62,16 @@ matlab/
     interp_frontend_fixed.m
     interp_frontend_system_eval.m
     interp_frontend_calibrate_system.m
+    README.md
+
+  dpd/
+    run_dpd_memoryless_baseline.m
+    run_dpd_fixed_baseline.m
+    run_ai_assisted_dpd_sweep.m
+    run_dpd_memory_pa_observation_sweep.m
+    export_dpd_coeff_header.m
+    prepare_dpd_bittrue_vectors.m
+    compare_dpd_rtl_xsim.m
     README.md
 
   cartesian_dsm/
@@ -173,6 +190,57 @@ Run the reduced calibration sweep:
 
 ```matlab
 entry_interp_frontend_calibrate_system
+```
+
+## DPD Baseline
+
+Run the first MATLAB-only DPD baseline:
+
+```matlab
+entry_dpd_memoryless_baseline
+entry_dpd_fixed_baseline
+```
+
+This generates an OFDM/QAM source, applies a behavioral memoryless PA, trains a
+memoryless polynomial DPD with indirect learning, quantizes the DPD to a
+fixed-point Q1.15/Q2.14 datapath, and compares PA-only vs DPD-plus-PA
+EVM/SNDR/ACLR.
+
+Generated outputs:
+
+```text
+matlab/out/dpd/dpd_memoryless_baseline.csv
+matlab/out/dpd/dpd_memoryless_baseline.md
+matlab/out/dpd/dpd_memoryless_baseline.mat
+matlab/out/dpd/dpd_fixed_baseline.csv
+matlab/out/dpd/dpd_fixed_baseline.md
+matlab/out/dpd/dpd_fixed_baseline.mat
+matlab/out/dpd/bittrue
+```
+
+Run DPD RTL/MATLAB bit-true comparison after XSim:
+
+```matlab
+entry_dpd_bittrue_check
+```
+
+Run the software calibration sweep:
+
+```matlab
+entry_ai_assisted_dpd_sweep
+```
+
+This sweep evaluates multiple PA/input/OFDM scenarios, trains deterministic
+polynomial and LUT DPD corrections, quantizes them to the RTL Q2.14 format,
+and exports AXI-Lite coefficient words for `DPD_C1`, `DPD_C3`, `DPD_C5`, and
+LUT entries.
+
+Generated outputs:
+
+```text
+matlab/out/dpd/ai_assisted_dpd_sweep.csv
+matlab/out/dpd/ai_assisted_dpd_sweep.md
+matlab/out/dpd/ai_assisted_dpd_sweep.mat
 ```
 
 ## Exploratory Multibit DSM

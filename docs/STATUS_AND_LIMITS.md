@@ -19,6 +19,14 @@
 - The interpolation FIR helpers use a four-stage registered compute pipeline
   with symmetric pre-add, grouped partial sums, adder-tree reduction, and
   round/saturate output registration.
+- The DPD frontend now uses a deeper registered pipeline. The polynomial DPD
+  multiplier/add path is split across square, radius, coefficient multiply,
+  gain accumulation, complex multiply, and saturation stages. Bypass and LUT
+  DPD modes are latency-aligned to the polynomial path.
+- The ZU15EG bare-metal regression has been run after the DPD pipeline update.
+  It rebuilt the bitstream, exported XSA, rebuilt the ELF, programmed the
+  board, launched the PS-side calibration app, and passed post-run DSM/DPD
+  counter readback.
 - The AXI wrapper includes a one-entry AXI-Stream skid buffer. Legal
   backpressure is counted in `INPUT_STALL_COUNT`; streaming while disabled or
   in reset is reported through sticky error status.
@@ -63,6 +71,16 @@ post-route physical optimization:
 
 The retained multibit evidence file is
 `docs/evidence/ooc/p0_ooc_xc7z020_20260705_multibit_summary.csv`.
+
+After the DPD pipeline update, the dedicated DPD MATLAB/RTL comparison still
+passes with zero mismatches, and the integrated AXI smoke passes with matching
+input, DPD, frontend, and output sample counters under interpolation
+backpressure. The ZU15EG board implementation also rebuilt and generated a
+bitstream with 0 errors and 0 critical warnings; Vivado reported no setup
+violation. A previous partial ZU15EG post-synthesis matrix run completed the
+first nine `dsm_ip_axi_top` combinations at about 129.9 MHz estimated Fmax.
+The full matrix run timed out and is not treated as complete matrix timing
+evidence.
 
 On the conservative ZU15EG target `xczu15eg-ffvb1156-1-i`, the 2026-07-05 OOC
 run closes all 14 single-bit/native and multibit DSM tops at the 100 MHz proxy

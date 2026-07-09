@@ -1,5 +1,46 @@
 # IP Specification
 
+## Architecture
+
+The retained architecture is a Cartesian DSM transmitter comparison set.
+
+```text
+Q1.15 I/Q samples
+  -> I DSM + Q DSM
+  -> fixed Fs/4 merge or configurable NCO DUC
+  -> 1-bit sign-domain RF/IF output or native-multibit MASH output
+```
+
+Packaged SoC/RFSoC IP:
+
+```text
+AXI-Lite s_axi
+  -> control/status registers
+
+AXI-Stream s_axis
+  -> packed Q1.15 I/Q
+  -> dsm_ip_top
+  -> rf_bit/rf_signed
+```
+
+Retained DSM variants:
+
+- LPDSM first-order loop
+- LPDSM2 second-order loop
+- EFDSM first-order error-feedback loop
+- EFDSM2 second-order error-feedback loop
+- MASH11 native-multibit path
+- MASH111 native-multibit path
+- MASH22 native-multibit path
+
+The reusable IP clock is the DSM sample clock. For this release the aligned
+default clock is 100 MHz. In fixed Fs/4 mode the RF/IF output is centered at
+25 MHz. In NCO mode the carrier is set by `cfg_phase_inc`.
+
+The packaged IP now includes a lightweight AXI-Lite style control/status port
+and AXI-Stream sample input wrapper. The pure streaming datapath remains
+available as `dsm_ip_top`.
+
 ## Scope
 
 This IP release contains the seven P0 DSM comparison paths:
@@ -11,22 +52,6 @@ This IP release contains the seven P0 DSM comparison paths:
 - MASH11
 - MASH111
 - MASH22
-
-The current RTL/bit-true release scope is single-bit sign-domain DSM for LPDSM,
-LPDSM2, EFDSM, EFDSM2 and native signed MASH outputs for MASH11, MASH111, and
-MASH22.
-
-Exploratory multibit Cartesian DSM models are provided under:
-
-```text
-matlab/cartesian_dsm/dsm_multibit
-rtl/dsm/multibit
-```
-
-The multibit RTL is covered by MATLAB/RTL bit-true comparison over the P0
-65536-sample vectors. It closes the 100 MHz OOC target on the conservative
-`xczu15eg-ffvb1156-1-i` target, while two multibit modes still miss timing on
-the smaller `xc7z020clg400-1` proxy target.
 
 ## Interfaces
 
@@ -51,7 +76,7 @@ Reusable IP top:
 - `in_valid` input
 - `rf_valid`, `rf_bit`, `rf_signed` output
 - `ALGORITHM` parameter selects LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11,
-  MASH111, MASH22, or exploratory multibit Cartesian modes
+  MASH111, or MASH22
 - `DUC_MODE=0`: fixed Fs/4 upconversion
 - `DUC_MODE=1`: NCO upconversion, controlled by `cfg_phase_inc`
 - `phase_acc_dbg` exposes the Fs/4 phase or NCO phase accumulator
@@ -59,166 +84,33 @@ Reusable IP top:
 The packaged IP now includes the SoC/RFSoC wrapper:
 
 - AXI-Lite style `s_axi` controls enable, soft reset, and `cfg_phase_inc`
-- AXI-Stream `s_axis` feeds packed Q1.15 I/Q samples and preserves `tlast`
-  and `tuser` through the input skid buffer
+- AXI-Stream `s_axis` feeds packed Q1.15 I/Q samples
+- DPD coefficient/LUT registers support PS-side calibration
+- DPD bypass, polynomial, and LUT modes share a registered frontend pipeline;
+  bypass and LUT outputs are latency-aligned to the polynomial path
+- PL monitor registers expose input/output power proxy, clipping count, peak,
+  average magnitude, correction-magnitude proxy, RF-slew proxy, and
+  multiplier-free fixed-bin spectral proxies for low-rate calibration feedback
 - a downstream 1-bit PA driver, DAC-facing logic, serializer, or RF digital
   backend consuming `rf_signed/rf_bit`
 
-## AXI-Lite Register Map
+The PL monitor metrics are observability and calibration aids. They are useful
+for board-level package ranking and debug, but they are not formal EVM/ACLR
+signoff metrics without a defined reconstruction, PA, channel, and receiver
+chain.
 
-| Offset | Name | Access | Description |
-|---:|---|---|---|
-| `0x00` | `CTRL` | RW | bit0 `enable`, bit1 software reset trigger, bit2 clear status |
-| `0x04` | `STATUS` | RO | enable/reset/valid/ready/error status |
-| `0x08` | `CFG_PHASE_INC` | RW | NCO phase increment |
-| `0x0C` | `ALGORITHM` | RO | compiled DSM algorithm ID |
-| `0x10` | `DUC_MODE` | RO | compiled DUC mode |
-| `0x14` | `VERSION` | RO | wrapper version |
-| `0x18` | `INPUT_SAMPLE_COUNT` | RO | accepted AXI-Stream sample count |
-| `0x1C` | `OUTPUT_SAMPLE_COUNT` | RO | emitted RF sample count |
-| `0x20` | `SOFTWARE_RESET_COUNT` | RO | software reset trigger count |
-| `0x24` | `ERROR_STATUS` | RW1C | sticky error bits |
-| `0x28` | `FRONTEND_SAMPLE_COUNT` | RO | samples accepted by the interpolation/DSM frontend |
-| `0x2C` | `INPUT_STALL_COUNT` | RO | AXI-Stream backpressure stall cycles |
-| `0x30` | `INTERP_MODE` | RO | compiled interpolation mode |
-| `0x34` | `INPUT_FRAME_COUNT` | RO | accepted AXI-Stream samples with `tlast=1` |
-| `0x38` | `LAST_TUSER` | RO | last accepted AXI-Stream `tuser` value |
-| `0x3C` | `USER_ERROR_COUNT` | RO | accepted AXI-Stream samples with nonzero `tuser` |
-
-`STATUS[0]` is `enable`, `STATUS[1]` is the one-cycle software reset pulse,
-`STATUS[2]` is `dsm_valid`, `STATUS[3]` is `rf_valid`, `STATUS[4]` is
-`s_axis_tready`, `STATUS[5]` is the sticky error summary, and `STATUS[6]` is
-the internal AXI-Stream skid-buffer full flag.
-
-AXI-Stream backpressure is a legal flow-control condition. When `s_axis_tvalid`
-is high and `s_axis_tready` is low while the IP is enabled and out of reset,
-the wrapper increments `INPUT_STALL_COUNT`; it does not set a sticky error.
-`ERROR_STATUS[0]` is set only when AXI-Stream input is asserted while the IP is
-disabled or held in reset. `ERROR_STATUS[1]` is set when an accepted
-AXI-Stream sample has nonzero `tuser`. Writing `1` to an `ERROR_STATUS` bit
-clears that bit.
-
-## DSM Mode Roadmap
-
-Current RTL modes:
-
-| DSM_MODE | Algorithm | Quantizer domain | Status |
-|---:|---|---|---|
-| 0 | LPDSM | 1-bit | RTL + MATLAB bit-true |
-| 1 | LPDSM2 | 1-bit | RTL + MATLAB bit-true |
-| 2 | EFDSM | 1-bit | RTL + MATLAB bit-true |
-| 3 | EFDSM2 | 1-bit | RTL + MATLAB bit-true |
-| 4 | MASH11 | native signed output | RTL + MATLAB bit-true |
-| 5 | MASH111 | native signed output | RTL + MATLAB bit-true |
-| 6 | MASH22 | native signed output | RTL + MATLAB bit-true |
-
-Exploratory multibit modes:
-
-| DSM_MODE | Algorithm | Quantizer domain | Status |
-|---:|---|---|---|
-| 7 | LPDSM | multibit Cartesian | MATLAB exploration + RTL smoke |
-| 8 | LPDSM2 | multibit Cartesian | MATLAB exploration + RTL smoke |
-| 9 | EFDSM | multibit Cartesian | MATLAB exploration + RTL smoke |
-| 10 | EFDSM2 | multibit Cartesian | MATLAB exploration + RTL smoke |
-| 11 | MASH11 | multibit Cartesian | MATLAB exploration + RTL smoke |
-| 12 | MASH111 | multibit Cartesian | MATLAB exploration + RTL smoke |
-| 13 | MASH22 | multibit Cartesian | MATLAB exploration + RTL smoke |
-
-Multibit parameters:
-
-| Parameter | Default | Description |
-|---|---:|---|
-| `DSM_OUT_W` | 8 | Native DSM output code width exposed by `i_yout/q_yout` |
-| `MB_Q_BITS` | 4 | Compile-time multibit quantizer resolution |
-| `ACC_W_MB` | 16 | Multibit DSM state width |
-
-`MB_Q_BITS` is intentionally a compile-time parameter. Changing it changes the
-quantizer level count, feedback scaling, output range, and downstream interface
-requirements. Runtime bit-depth switching should be implemented later as an
-explicit mux between separately verified quantizers if it is required.
-
-Current multibit bit-true status:
-
-| DSM_MODE | Algorithm | MATLAB/RTL bit-true |
-|---:|---|---|
-| 7 | LPDSM multibit | 65536 samples, 0 mismatch |
-| 8 | LPDSM2 multibit | 65536 samples, 0 mismatch |
-| 9 | EFDSM multibit | 65536 samples, 0 mismatch |
-| 10 | EFDSM2 multibit | 65536 samples, 0 mismatch |
-| 11 | MASH11 multibit | 65536 samples, 0 mismatch |
-| 12 | MASH111 multibit | 65536 samples, 0 mismatch |
-| 13 | MASH22 multibit | 65536 samples, 0 mismatch |
-
-Current multibit OOC status on `xc7z020clg400-1`:
-
-| DSM_MODE | Algorithm | OOC 100 MHz status |
-|---:|---|---|
-| 7 | LPDSM multibit | PASS |
-| 8 | LPDSM2 multibit | PASS |
-| 9 | EFDSM multibit | PASS |
-| 10 | EFDSM2 multibit | FAIL_TIMING, WNS -0.093 ns |
-| 11 | MASH11 multibit | PASS |
-| 12 | MASH111 multibit | PASS |
-| 13 | MASH22 multibit | FAIL_TIMING, WNS -0.688 ns |
-
-Current single-bit/native and multibit OOC status on `xczu15eg-ffvb1156-1-i`:
-
-| Mode group | Count | OOC 100 MHz status | Worst WNS |
-|---|---:|---|---:|
-| Single-bit/native DSM | 7 | PASS | 5.107 ns |
-| Multibit Cartesian DSM | 7 | PASS | 4.896 ns |
-
-The multibit RTL does not yet replace the seven verified single-bit/native MASH
-modes.
-
-## Interpolation Frontend
-
-Standalone interpolation/filter frontend RTL is provided under:
+The spectral proxy monitors use simple fixed-bin accumulators on `rf_signed`:
 
 ```text
-rtl/axis/axis_skid_buffer.sv
-rtl/interp/dsm_interp_fir_fixed.sv
-rtl/interp/dsm_interp2_halfband.sv
-rtl/interp/dsm_interp_frontend.sv
+0x80 MON_SPEC_BIN0 : DC/leakage bin
+0x84 MON_SPEC_BIN1 : Fs/4 carrier bin
+0x88 MON_SPEC_BIN2 : Fs/2 high-frequency bin
+0x8C MON_SPEC_ADJ  : BIN0 + BIN2 adjacent/out-of-band proxy
 ```
 
-Current RTL-supported interpolation modes:
-
-| INTERP_MODE | Function | First-output latency | RTL/MATLAB bit-true |
-|---:|---|---:|---|
-| 0 | bypass | 0 cycles | 128 samples, 0 mismatch |
-| 1 | x4 halfband FIR cascade | 8 cycles | 512 samples, 0 mismatch |
-| 2 | x8 halfband FIR cascade | 12 cycles | 1024 samples, 0 mismatch |
-| 3 | x16 halfband FIR cascade | 16 cycles | 2048 samples, 0 mismatch |
-| 4 | x32 halfband + CIC-equivalent FIR + compensation FIR | 16 cycles | 4096 samples, 0 mismatch |
-
-The frontend uses Q1.15 I/Q samples and a single-clock valid/ready interface.
-It is inserted before `dsm_ip_core` in `dsm_ip_top` and is exposed as a
-compile-time `INTERP_MODE` parameter through the top-level RTL. AXI-Stream
-`s_axis_tready` is driven through a one-entry skid buffer and follows the
-frontend `in_ready` signal without dropping samples during legal backpressure.
-The skid buffer stores `tdata`, `tlast`, and `tuser` together so sideband
-metadata remains aligned with the accepted input sample.
-The FIR implementation uses symmetric-coefficient pre-adds and skips zero
-coefficients to reduce arithmetic cost. Each halfband/CIC-equivalent/
-compensation FIR helper uses a four-stage registered compute pipeline:
-
-```text
-tap pre-add / multiply
--> first-level partial sums
--> second-level adder-tree reduction
--> round / saturate / output register
-```
-
-This pipeline changes cycle latency but preserves the valid output sample
-sequence and current MATLAB/RTL bit-true vectors. Runtime interpolation mode
-switching is not implemented.
-
-`ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time select parameters.
-They are implemented with SystemVerilog `generate` blocks, so synthesis keeps
-only the selected DSM, DUC, and interpolation hardware. The corresponding
-AXI-Lite registers are read-only software-visible build identifiers, not
-runtime mux controls.
+This is intentionally lighter than a full FFT. It gives PS calibration a
+spectral-ranking signal while keeping the high-speed RTL deterministic and
+small.
 
 ## Frequency and Bandwidth Configuration
 
@@ -228,12 +120,15 @@ The IP separates three related but different quantities:
 - Upconversion frequency: generated by the DUC. In NCO mode:
   `cfg_phase_inc = round(f_if / f_clk * 2^PHASE_W)`.
 - Signal bandwidth: set by the incoming baseband stream and its sample rate.
-  The interpolation frontend supports bypass, x4, x8, x16, and x32 modes in
-  RTL. The selected mode is compile-time configurable through `INTERP_MODE`.
+  The RTL exposes `BB_SAMPLE_RATE_HZ` and `SIGNAL_BW_HZ` metadata parameters for
+  integration, but it does not yet include a programmable interpolator or
+  channel filter. To change occupied bandwidth, regenerate/feed a matching
+  baseband stream or add a DUC interpolation/filter stage ahead of the DSM.
 
 ## Timing Target
 
-- Proxy target: `xc7z020clg400-1`
+- Primary FPGA target: `xczu15eg-ffvb1156-1-i`
+- Legacy proxy target: `xc7z020clg400-1`
 - Clock: 100 MHz
 - Default Fs/4 output center: 25 MHz
 - Pass criterion: routed `WNS >= 0`
@@ -266,19 +161,18 @@ The IP separates three related but different quantities:
 
 ## Timing Evidence Boundary
 
-The current Zynq-7020 proxy OOC evidence from 2026-07-03 shows all seven
-retained paths meeting the 100 MHz target. LPDSM2 uses the P0 timing-closure
-configuration with a 20-bit accumulator.
+The current Zynq-7020 proxy OOC evidence shows `p0_ooc_lp1`, `p0_ooc_ef1`,
+and `p0_ooc_ef2` pass 100 MHz. `p0_ooc_lp2`, `p0_ooc_mash11`,
+`p0_ooc_mash111`, and `p0_ooc_mash22` synthesize but do not meet 100 MHz
+timing on that target in the current run.
 
 The current ZU48DR proxy OOC evidence shows all seven retained paths meeting
 the 100 MHz target.
 
-The current multibit OOC evidence from 2026-07-05 shows five of seven multibit
-modes meeting the 100 MHz target on `xc7z020clg400-1`. EFDSM2 multibit and
-MASH22 multibit require additional timing closure before they can be claimed as
-100 MHz closed on this target.
-
-The current ZU15EG OOC evidence from 2026-07-05 uses
-`xczu15eg-ffvb1156-1-i` and shows all 14 single-bit/native and multibit DSM
-tops meeting the 100 MHz target. This is OOC module evidence only; it is not a
-board-level implementation, bitstream, or ILA validation result.
+The DPD frontend has been retimed into a deeper registered pipeline. XSim
+confirms the pipelined RTL remains bit-true against the MATLAB fixed-point DPD
+model and that the AXI wrapper preserves sample counts under backpressure. A
+partial ZU15EG post-synthesis matrix run after the DPD pipeline change completed
+the first nine `dsm_ip_axi_top` combinations at about 129.9 MHz estimated Fmax,
+but the full matrix run timed out and is not counted as complete timing
+signoff.

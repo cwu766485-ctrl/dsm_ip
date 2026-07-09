@@ -29,6 +29,9 @@ set files [list \
   [file join $repo_root rtl interp dsm_interp_fir_fixed.sv] \
   [file join $repo_root rtl interp dsm_interp2_halfband.sv] \
   [file join $repo_root rtl interp dsm_interp_frontend.sv] \
+  [file join $repo_root rtl dpd dpd_poly.v] \
+  [file join $repo_root rtl dpd dpd_lut.v] \
+  [file join $repo_root rtl dpd dpd_frontend.v] \
   [file join $repo_root rtl duc duc_fs4_merge.sv] \
   [file join $repo_root rtl duc duc_fs4_merge_signed.sv] \
   [file join $repo_root rtl duc duc_nco_mix_signed.v] \
@@ -53,16 +56,6 @@ set_property supported_families {zynq Production zynquplus Production artix7 Pro
 set component_name_param [ipx::get_user_parameters Component_Name -of_objects $core]
 if {[llength $component_name_param] > 0} {
   set_property value dsm_ip $component_name_param
-}
-
-set clk_if [ipx::get_bus_interfaces aclk -of_objects $core]
-if {[llength $clk_if] > 0} {
-  set freq_param [ipx::get_bus_parameters FREQ_HZ -of_objects $clk_if]
-  if {[llength $freq_param] == 0} {
-    ipx::add_bus_parameter FREQ_HZ $clk_if
-    set freq_param [ipx::get_bus_parameters FREQ_HZ -of_objects $clk_if]
-  }
-  set_property value 100000000 $freq_param
 }
 
 ipx::update_checksums $core
