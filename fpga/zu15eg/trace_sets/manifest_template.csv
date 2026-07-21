@@ -1,0 +1,2 @@
+scenario_id,pa_profile,pa_strength_db,qam,bandwidth_mhz,used_subcarriers,input_backoff,waveform_id,calibration_profile,dsm_config_id,dsm_algorithm,dsm_quantizer_bits,dsm_interp_mode,dsm_osr,trace_csv,run_id
+board_ef2_1bit_osr32_interp0_nominal_qam16_bw20_bo58,nominal,0,16,20,48,0.58,qam16_ofdm_bw20,default_v1,ef2_1bit_osr32_interp0,3,1,0,32,../out/calibration_trace_jtag_<timestamp>.csv,<timestamp>

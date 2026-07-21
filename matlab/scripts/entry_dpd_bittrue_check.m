@@ -3,3 +3,6 @@ path_setup;
 T = compare_dpd_rtl_xsim;
 disp(T);
 assert(all(T.mismatch == 0));
+T_memory = compare_dpd_memory_poly_rtl_xsim;
+disp(T_memory);
+assert(all(T_memory.mismatch == 0));

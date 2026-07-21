@@ -24,6 +24,11 @@ if (-not (Test-Path $vivadoSettings)) {
 $work = Join-Path $repo "verif\out_xsim_p0"
 New-Item -ItemType Directory -Force -Path $work | Out-Null
 
+# Stale summaries must never satisfy a new regression run.
+Get-ChildItem -Path $work -Filter "summary_tb_*.csv" -ErrorAction SilentlyContinue |
+  Remove-Item -Force
+Remove-Item -LiteralPath (Join-Path $work "summary.csv") -Force -ErrorAction SilentlyContinue
+
 $vecDir = Join-Path $repo "verif\vectors\p0"
 Copy-Item (Join-Path $vecDir "rom_i.mem") (Join-Path $work "rom_i.mem") -Force
 Copy-Item (Join-Path $vecDir "rom_q.mem") (Join-Path $work "rom_q.mem") -Force
@@ -54,11 +59,16 @@ function Invoke-VivadoCmd($cmd) {
   try {
     cmd.exe /c $tmp
     if ($LASTEXITCODE -ne 0) { throw "Command failed: $cmd" }
-    if ($log -and (Test-Path -LiteralPath $log)) {
+    if ($log -and -not (Test-Path -LiteralPath $log)) {
+      throw "Vivado command returned without producing a log: $cmd"
+    }
+    if ($log) {
       $errors = Select-String -LiteralPath $log -Pattern "ERROR:" -SimpleMatch
       if ($errors) {
         throw "Vivado reported errors while running: $cmd"
       }
+      $fatals = Select-String -LiteralPath $log -Pattern "Fatal:" -SimpleMatch
+      if ($fatals) { throw "Simulation reported a fatal failure while running: $cmd" }
     }
   } finally {
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
@@ -80,11 +90,19 @@ $tops = @(
 )
 
 foreach ($t in $tops) {
+  Remove-Item -LiteralPath (Join-Path $work $t.out) -Force -ErrorAction SilentlyContinue
   Write-Host "[xsim] xelab $($t.top)"
   Invoke-VivadoCmd "xelab -debug typical $($t.top) -s sim_$($t.top)"
 
   Write-Host "[xsim] xsim $($t.top)"
   Invoke-VivadoCmd "xsim sim_$($t.top) -runall"
+  $summaryPath = Join-Path $work "summary_$($t.top).csv"
+  if (-not (Test-Path -LiteralPath $summaryPath)) {
+    throw "Testbench did not produce a fresh summary: $($t.top)"
+  }
+  if (-not (Test-Path -LiteralPath (Join-Path $work $t.out))) {
+    throw "Testbench did not produce a fresh output vector: $($t.top)"
+  }
 }
 
 if (-not $SkipSummary) {

@@ -202,6 +202,89 @@ Current baseline:
   (`DPD_CTRL=0x00000002`) after package evaluation, and completed with matching
   4096-sample input/frontend/DPD/output counters, zero stalls, zero sticky
   errors, and zero DPD saturation.
+- The next calibration-engine revision is now implemented in the bare-metal
+  source: cost weights and search limits can be overridden at build time,
+  package/search candidates emit CSV-style `CAL_TRACE` accept/reject records,
+  the polynomial search is multi-round coarse-to-fine, and the selected result
+  can be replayed through a replay-only ELF build or captured as a final XSDB
+  CSV counter snapshot.
+- The host-side post-processing path now has a calibration trace parser and a
+  deterministic DPD seed-table generator. The parser converts captured
+  `CAL_TRACE` / `CAL_SELECTED_REPLAY` text into CSV and Markdown summaries.
+  The seed generator combines MATLAB DPD sweep rows with the latest board
+  replay counters to produce a software lookup/nearest-neighbor seed artifact
+  for the next PS-side run. Its optional generated C header is now consumed by
+  the bare-metal app: the seed is measured on PL first and then competes with
+  every exported package and coordinate-search candidate under the same cost.
+  The first adaptive-seed ELF has completed a ZU15EG board regression with
+  matching 4096-sample counters and zero stall/error/saturation. Candidate-level
+  evidence is now available without UART: the A53 app publishes a cache-flushed
+  binary trace buffer and XSDB exports it through J2 using the symbol address
+  from the exact ELF. The first JTAG-only capture contains 50 records covering
+  the software seed, package ranking, three-round coordinate search, and final
+  replay selection.
+- The first trace-aware predictor is now implemented as a conservative weighted
+  k-NN mode/package policy over comparable board package costs. For the retained
+  16-QAM, 48-subcarrier, 0.58-backoff trace, it selected LUT package 3. A
+  J2-only one-candidate policy replay measured the same `3003709` cost as the
+  50-candidate full calibration, reducing the measured candidate count from 50
+  to 1. This is same-scenario reproduction, not unseen-scenario generalization.
+- The next software-validation step is defined as a multi-scenario trace set:
+  each full calibration trace must retain PA profile/strength, QAM, occupied
+  bandwidth, used-subcarrier count, input backoff, deterministic waveform ID,
+  calibration-cost profile, and run ID. The host evaluator holds every
+  replicate of one `scenario_id` out before selecting a mode/package, reports
+  action availability, package regret, candidate reduction, and aggregate
+  coverage. It must report insufficient coverage rather than extrapolate from
+  the current single-condition trace.
+- The bare-metal build can now embed a deterministic Q1.15 QAM-OFDM DMA
+  waveform whose QAM, used-subcarrier count, backoff, FFT size, and seed are
+  recorded in its generated header. This makes waveform dimensions real board
+  inputs instead of manifest-only labels. PA strength still requires a
+  controlled PA/emulator and feedback observation chain; internal PL monitor
+  proxies cannot establish RF PA generalization.
+- J2 board collection now has one real eight-condition waveform trace matrix:
+  QAM16/QAM64, 20/40 MHz occupied bandwidth, and 0.58/0.70 input backoff.
+  Each run retained 49 candidate records with complete/no-overflow status.
+  In strict leave-one-scenario-out evaluation, the weighted k-NN package
+  action matched the held package optimum in 6/8 runs; mean package regret was
+  `181.5` monitor-cost units and the offline candidate reduction was 49 to 1.
+  This is evidence for waveform-condition selection only because all captures
+  used one nominal, no-external-feedback PA profile.
+- The offline-to-board step is now closed for the matrix's worst LOSO regret
+  case. `board_nominal_qam64_bw40_bo58` was excluded from training, the
+  manifest-aware policy used the other seven scenarios (84 package rows), and
+  a J1-only policy ELF measured one mode 1/package 3 candidate at cost
+  `296375`. This exactly reproduced the held trace's package-action cost while
+  reducing execution from 49 candidates to 1. The next policy work is cost
+  calibration/uncertainty gating: the weighted prediction was `333170`, so a
+  confidence threshold should fall back to a short local search when nearest
+  scenario distance or predicted-cost uncertainty is high.
+- That confidence-gated fallback is now implemented and board-validated. The
+  generated policy header carries nearest-distance and weighted cost-dispersion
+  metrics plus thresholds. The normal `0.20` distance / `10%` dispersion gate
+  chooses the one-candidate path; a test threshold of `0.10` forces one local
+  coordinate round. The forced fallback produced 14 records and cost `294902`,
+  only `77` above the retained 49-candidate full search while reducing the
+  candidate count by 35.
+- Runtime safety fallback is now implemented after the first policy
+  measurement. It combines absolute predicted-cost residual with nonzero
+  stall, sticky error, or saturation. J1 accepted `110439 ppm` under the
+  default `150000 ppm` limit; lowering only that limit to `100000 ppm` forced
+  the 14-record search and retained cost `294902`. The next upgrade is
+  threshold calibration with repeated runs and a controlled second PA/feedback
+  condition.
+- Simulation-only PA robustness now exercises gain, saturation, memory taps,
+  observation noise, and gain/phase drift. The 63-run leave-one-profile study
+  found the current distance/dispersion/residual gate non-separable, so the
+  next work is monitor-feature-based confidence prediction rather than adopting
+  broad simulation ppm limits.
+- The first monitor-feature confidence path is now implemented: selected-action
+  trace centers cover input/output power, peak/average magnitude, EVM/ACPR and
+  spectral proxies, clip, and saturation. A post-replay state distance can
+  trigger the bounded search. The next upgrade is to generate corresponding
+  proxy features in the behavioral PA sweep and validate their held-profile
+  separation before tuning this new gate.
 - The AXI wrapper now exposes PL monitor metrics to the same PS-side
   calibration loop. Package ranking can combine MATLAB proxy scores with
   hardware saturation, clipping, stall, sticky error, correction-magnitude,
@@ -218,8 +301,10 @@ Current baseline:
   bare-metal app searches fixed-point coefficient words using PL monitor
   counters. This is a valid first AI-assisted calibration step, but it is not
   yet a neural-network PA model and it does not yet use real measured EVM/SNDR
-  feedback from an RF observation receiver. A tiny hardware ML accelerator is
-  still future work and should not replace the high-speed datapath.
+  feedback from an RF observation receiver. The new seed table is a
+  tiny-ML-ready software lookup artifact, not a trained neural model. A tiny
+  hardware ML accelerator is still future work and should not replace the
+  high-speed datapath.
 
 Current software calibration trend:
 

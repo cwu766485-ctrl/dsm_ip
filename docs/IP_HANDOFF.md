@@ -36,6 +36,18 @@ s_axis_tlast        = optional frame marker
 s_axis_tuser        = optional upstream error/tag field
 ```
 
+The optional observation input uses the same packing:
+
+```text
+s_axis_obs_tdata[15:0]  = signed Q1.15 observation I
+s_axis_obs_tdata[31:16] = signed Q1.15 observation Q
+s_axis_obs_tlast        = observation-window/frame marker
+s_axis_obs_tuser[0]     = invalid observation sample
+```
+
+Observation traffic never backpressures the TX input. The observation slave
+only asserts `tready` while an explicitly started training window is active.
+
 ## Register Map
 
 | Offset | Name | Access | Description |
@@ -56,7 +68,7 @@ s_axis_tuser        = optional upstream error/tag field
 | `0x34` | `INPUT_FRAME_COUNT` | RO | accepted AXI-Stream samples with `tlast=1` |
 | `0x38` | `LAST_TUSER` | RO | last accepted AXI-Stream `tuser` value |
 | `0x3C` | `USER_ERROR_COUNT` | RO | accepted AXI-Stream samples with nonzero `tuser` |
-| `0x40` | `DPD_CTRL` | RW | `DPD_CTRL[1:0]`: 0 bypass, 1 polynomial DPD, 2 LUT DPD, 3 reserved |
+| `0x40` | `DPD_CTRL` | RW | `DPD_CTRL[1:0]`: 0 bypass, 1 polynomial DPD, 2 LUT DPD, 3 memory-polynomial DPD |
 | `0x44` | `DPD_C1` | RW | packed Q2.14 coefficient `{c1_im, c1_re}` |
 | `0x48` | `DPD_C3` | RW | packed Q2.14 coefficient `{c3_im, c3_re}` |
 | `0x4C` | `DPD_C5` | RW | packed Q2.14 coefficient `{c5_im, c5_re}` |
@@ -76,6 +88,34 @@ s_axis_tuser        = optional upstream error/tag field
 | `0x84` | `MON_SPEC_BIN1` | RO | fixed-bin spectral proxy at Fs/4 carrier bin |
 | `0x88` | `MON_SPEC_BIN2` | RO | fixed-bin spectral proxy at Fs/2 high-frequency bin |
 | `0x8C` | `MON_SPEC_ADJ` | RO | adjacent/out-of-band spectral proxy, `BIN0 + BIN2` |
+| `0x90` | `MP_SELECT` | RW | tap `[1:0]`, order selector `[3:2]` (`0/1/2` = `C1/C3/C5`), active taps `[10:8]` (`2..4`) |
+| `0x94` | `MP_DATA` | RW | inactive-bank packed Q2.14 coefficient `{imag, real}` |
+| `0x98` | `MP_COMMIT` | RW/RO | write bit0 to atomically swap coefficient bank; read active bank |
+| `0x9C` | `OBS_CTRL` | RW | bit0 enable, bit1 start, bit2 clear, delay `[12:8]` (`0..31`) |
+| `0xA0` | `OBS_GAIN` | RW | programmed Q2.14 complex alignment gain `{imag, real}` |
+| `0xA4` | `OBS_WINDOW` | RW | paired-sample target; zero means run until software stops/clears |
+| `0xA8` | `OBS_STATUS` | RO | bit0 ready, bit1 active, bit2 done, bit3 `tlast` seen |
+| `0xAC` | `OBS_PAIR_COUNT` | RO | valid aligned reference/observation pairs |
+| `0xB0` | `OBS_DROP_COUNT` | RO | invalid or unavailable-reference observations |
+| `0xB4` | `OBS_ERROR_LO` | RO | aligned L1 error accumulator `[31:0]` |
+| `0xB8` | `OBS_ERROR_HI` | RO | aligned L1 error accumulator `[63:32]` |
+| `0xBC` | `CONDITION_CTRL` | RW | bit0 valid, condition ABI version `[15:8]` (current `1`) |
+| `0xC0` | `CONDITION_QAM` | RW | modulation order (`16` or `64` in the qualified table) |
+| `0xC4` | `CONDITION_BW_KHZ` | RW | occupied bandwidth in kHz (`20000` or `40000` trained anchors) |
+| `0xC8` | `CONDITION_BACKOFF_PPM` | RW | normalized input backoff in ppm (`580000` or `700000` anchors) |
+| `0xCC` | `CONDITION_ENV` | RW | signed Q8.8 `{temperature_degC, power_dB}` |
+| `0xD0` | `CONDITION_MONITOR` | RW | runtime fault/state bits; any of `[3:0]` forces fallback |
+| `0xD4` | `SEED_STATUS` | RO | seed `[2:0]`, known bit3, fallback bit4, local-search-required bit5 |
+| `0xD8` | `OBS_ENV` | RO | `{schema_version=2, reserved, latched_temperature_q8_8}` |
+| `0xDC` | `OBS_REF_MAG` | RO | aligned valid-reference `sum(|I|+|Q|)` |
+| `0xE0` | `OBS_MAG` | RO | saturated aligned-observation `sum(|I|+|Q|)` |
+| `0xE4` | `OBS_PEAK` | RO | peak saturated aligned-observation `|I|+|Q|` |
+| `0xE8` | `OBS_CLIP_SAT` | RO | packed `{saturation_count[15:0], clip_count[15:0]}` |
+| `0xEC` | `OBS_SLEW` | RO | complex first-difference proxy `sum(|dI|+|dQ|)` |
+| `0xF0` | `OBS_SPEC_BIN0` | RO | complex fixed-bin magnitude proxy at DC |
+| `0xF4` | `OBS_SPEC_BIN1` | RO | complex fixed-bin magnitude proxy at Fs/4 |
+| `0xF8` | `OBS_SPEC_BIN2` | RO | complex fixed-bin magnitude proxy at Fs/2 |
+| `0xFC` | `OBS_SPEC_ADJ` | RO | saturated `OBS_SPEC_BIN0 + OBS_SPEC_BIN2` |
 
 `ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time parameters in this
 release. Their read-only registers report the selected hardware build; they do
@@ -99,8 +139,14 @@ Current DPD modes:
 0: bypass
 1: memoryless polynomial DPD
 2: amplitude-indexed LUT DPD
-3: reserved for memory polynomial DPD
+3: 2-to-4-tap memory polynomial DPD
 ```
+
+Memory-polynomial mode implements
+`sum_m x[n-m]*(C1[m] + C3[m]|x[n-m]|^2 + C5[m]|x[n-m]|^4)`.
+Its four-tap coefficient table is double-buffered; software writes the inactive
+bank through `MP_SELECT/MP_DATA` and then commits once. Mode 0/1/2 arithmetic,
+latency, and register addresses remain unchanged.
 
 The DPD frontend is internally pipelined. The polynomial path registers the
 square, radius, coefficient multiply, gain accumulation, complex multiply, and
@@ -109,8 +155,38 @@ path so the mode-selected output remains sample-aligned under AXI-Stream
 backpressure. This changes latency only; the fixed-point output sequence is
 kept bit-true against the MATLAB DPD reference.
 
-LUT updates are single-buffered. Software should update `DPD_LUT_ADDR` and
-`DPD_LUT_DATA` while the stream is idle or after software reset.
+LUT and memory-polynomial coefficients use shadow banks and commit pulses, so a
+complete table can be prepared without exposing a partial update to streaming
+data.
+
+The observation block uses a 32-sample reference ring. `OBS_CTRL.delay=0`
+pairs a same-cycle TX reference; delay `N` selects the reference accepted `N`
+samples earlier. `OBS_GAIN` and delay are programmed by software. Automatic
+delay/gain estimation and formal EVM/ACLR calculation are not implemented in
+this block.
+
+Wrapper version `0x00010002` adds observation schema
+`aligned_complex_pa_monitor_v2`. On `OBS_CTRL.start`, the block clears all
+window statistics and latches the signed Q8.8 temperature from
+`CONDITION_ENV`. Only valid aligned pairs update the statistics. The complex
+gain result is saturated to Q1.15 before magnitude, clip, slew, and fixed-bin
+spectral proxies are calculated; `OBS_ERROR_LO/HI` retains its previous
+unsaturated wide-alignment L1 definition. Clip means either saturated aligned
+component has magnitude at least 31130. Saturation means either pre-saturation
+aligned component lies outside signed 16-bit range.
+
+`OBS_PAIR_COUNT` is the sample-count denominator and `OBS_MAG / OBS_PAIR_COUNT`
+is the arithmetic average-magnitude proxy. The 32-bit sum and spectral
+accumulators use finite-width hardware arithmetic, so software must select a
+bounded window that cannot overflow for the intended signal level. These
+multiplier-free fixed-bin and slew values are calibration features, not formal
+ACLR or EVM measurements.
+
+The runtime seed predictor accepts QAM, bandwidth, backoff, power, temperature,
+and monitor state. It reports the nearest trained seed package (`2` near 0.58
+backoff, `5` near 0.70) and fails closed for unknown/version-mismatched or
+faulted conditions. `local-search-required` is intentionally always one: the
+qualified AI policy still requires the 14-candidate bounded search.
 
 The monitor registers are low-cost PL observability metrics for PS-side
 calibration. They are intended to rank DPD packages and catch clipping,

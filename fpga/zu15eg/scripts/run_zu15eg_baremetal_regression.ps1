@@ -99,15 +99,20 @@ try {
 
     if ($CleanStaleHwProcesses) {
         Invoke-LoggedStep "Clean stale Xilinx hardware processes" {
-            Get-CimInstance Win32_Process |
-                Where-Object {
-                    $_.Name -match '^(hw_server|xsdb|cmd)\.exe$' -and
-                    $_.CommandLine -match 'hw_server|xsdb|xic\.bat'
-                } |
-                ForEach-Object {
-                    Write-Host "Stopping PID $($_.ProcessId): $($_.CommandLine)"
-                    Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
-                }
+            try {
+                Get-CimInstance Win32_Process -ErrorAction Stop |
+                    Where-Object {
+                        $_.Name -match '^(hw_server|xsdb|cmd)\.exe$' -and
+                        $_.CommandLine -match 'hw_server|xsdb|xic\.bat'
+                    } |
+                    ForEach-Object {
+                        Write-Host "Stopping PID $($_.ProcessId): $($_.CommandLine)"
+                        Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+                    }
+            } catch {
+                Write-Warning "Could not enumerate stale Xilinx hardware processes: $($_.Exception.Message)"
+                Write-Warning "Continuing without process cleanup."
+            }
             Start-Sleep -Seconds 2
         }
     }
@@ -159,6 +164,24 @@ try {
         if ($LASTEXITCODE -ne 0) {
             throw "DSM counter check failed with exit code $LASTEXITCODE"
         }
+    }
+
+    Invoke-LoggedStep "Capture replay counter CSV" {
+        $env:DSM_BASE = $DsmBase
+        $env:EXPECTED_SAMPLES = $ExpectedSamples
+        $env:EXPECTED_DPD_CTRL = $ExpectedDpdCtrl
+        $env:REPLAY_CSV = Join-Path $outDir "dsm_replay_counters_$timestamp.csv"
+        & $xsdb (Join-Path $scriptDir "capture_dsm_replay_counters.tcl")
+        if ($LASTEXITCODE -ne 0) {
+            throw "DSM replay counter capture failed with exit code $LASTEXITCODE"
+        }
+    }
+
+    Invoke-LoggedStep "Capture JTAG calibration trace" {
+        Invoke-PowerShellScript ".\fpga\zu15eg\scripts\capture_calibration_trace.ps1" @(
+            "-OutCsv", (Join-Path $outDir "calibration_trace_jtag_$timestamp.csv"),
+            "-OutMarkdown", (Join-Path $outDir "calibration_trace_jtag_$timestamp.md")
+        )
     }
 
     Write-Host ""

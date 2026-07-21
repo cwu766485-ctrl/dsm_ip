@@ -1,0 +1,364 @@
+{
+  "model": {
+    "model_version": 65536,
+    "feature_schema": "behavioral_pa_observation_v1",
+    "feature_source": "complex behavioral PA observation",
+    "format": "signed Q12.20 raw features",
+    "fractional_bits": 20,
+    "fallback_package": 6,
+    "fallback_candidate_count": 14,
+    "features": [
+      "qam",
+      "bandwidth_mhz",
+      "backoff",
+      "temperature_q8_8",
+      "gain_ratio",
+      "peak_to_average",
+      "evm_ratio",
+      "acpr_ratio",
+      "spectral_ratio",
+      "spectral_shape",
+      "clip_rate",
+      "saturation_rate",
+      "observation_error_ratio"
+    ],
+    "feature_bounds_q20": [
+      [
+        262144,
+        1048576
+      ],
+      [
+        524288,
+        1048576
+      ],
+      [
+        608174,
+        734003
+      ],
+      [
+        308405,
+        1048576
+      ],
+      [
+        799111,
+        1120722
+      ],
+      [
+        2178575,
+        3171000
+      ],
+      [
+        45165,
+        259950
+      ],
+      [
+        170521,
+        206056
+      ],
+      [
+        647779,
+        140632307
+      ],
+      [
+        78,
+        25140695
+      ],
+      [
+        0,
+        1820
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        45165,
+        259950
+      ]
+    ],
+    "tree": {
+      "feature": 2,
+      "feature_name": "backoff",
+      "threshold_q20": 608174,
+      "threshold_raw": 0.58,
+      "left": {
+        "leaf_id": 0,
+        "path": "0",
+        "samples": 144,
+        "raw_label": 1,
+        "action": 1,
+        "released": true,
+        "all_safe": true,
+        "all_oracle": true,
+        "envelope_q20": [
+          [
+            262144,
+            1048576
+          ],
+          [
+            524288,
+            1048576
+          ],
+          [
+            608174,
+            608174
+          ],
+          [
+            308405,
+            1048576
+          ],
+          [
+            822485,
+            1120722
+          ],
+          [
+            2316145,
+            3171000
+          ],
+          [
+            45165,
+            236528
+          ],
+          [
+            171663,
+            206056
+          ],
+          [
+            820778,
+            79591171
+          ],
+          [
+            78,
+            14621889
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            45165,
+            236528
+          ]
+        ]
+      },
+      "right": {
+        "feature": 10,
+        "feature_name": "clip_rate",
+        "threshold_q20": 455,
+        "threshold_raw": 0.00043402777777777775,
+        "left": {
+          "feature": 6,
+          "feature_name": "evm_ratio",
+          "threshold_q20": 230146,
+          "threshold_raw": 0.21948395577212343,
+          "left": {
+            "feature": 8,
+            "feature_name": "spectral_ratio",
+            "threshold_q20": 25746720,
+            "threshold_raw": 24.553985302430753,
+            "left": {
+              "leaf_id": 8,
+              "path": "1000",
+              "samples": 46,
+              "raw_label": 5,
+              "action": 5,
+              "released": true,
+              "all_safe": true,
+              "all_oracle": true,
+              "envelope_q20": [
+                [
+                  262144,
+                  1048576
+                ],
+                [
+                  524288,
+                  1048576
+                ],
+                [
+                  734003,
+                  734003
+                ],
+                [
+                  308405,
+                  1048576
+                ],
+                [
+                  821915,
+                  1104531
+                ],
+                [
+                  2386144,
+                  3006374
+                ],
+                [
+                  55705,
+                  230146
+                ],
+                [
+                  170882,
+                  189787
+                ],
+                [
+                  1535227,
+                  25746720
+                ],
+                [
+                  1940,
+                  385902
+                ],
+                [
+                  0,
+                  455
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  55705,
+                  230146
+                ]
+              ]
+            },
+            "right": {
+              "leaf_id": 9,
+              "path": "1001",
+              "samples": 27,
+              "raw_label": 5,
+              "action": 6,
+              "released": false,
+              "all_safe": false,
+              "all_oracle": false
+            }
+          },
+          "right": {
+            "leaf_id": 5,
+            "path": "101",
+            "samples": 11,
+            "raw_label": 6,
+            "action": 6,
+            "released": false,
+            "all_safe": false,
+            "all_oracle": false
+          }
+        },
+        "right": {
+          "feature": 10,
+          "feature_name": "clip_rate",
+          "threshold_q20": 910,
+          "threshold_raw": 0.0008680555555555555,
+          "left": {
+            "leaf_id": 6,
+            "path": "110",
+            "samples": 36,
+            "raw_label": 6,
+            "action": 6,
+            "released": false,
+            "all_safe": false,
+            "all_oracle": false
+          },
+          "right": {
+            "feature": 0,
+            "feature_name": "qam",
+            "threshold_q20": 262144,
+            "threshold_raw": 0.25,
+            "left": {
+              "leaf_id": 14,
+              "path": "1110",
+              "samples": 12,
+              "raw_label": 5,
+              "action": 6,
+              "released": false,
+              "all_safe": false,
+              "all_oracle": false
+            },
+            "right": {
+              "leaf_id": 15,
+              "path": "1111",
+              "samples": 12,
+              "raw_label": 4,
+              "action": 4,
+              "released": true,
+              "all_safe": true,
+              "all_oracle": true,
+              "envelope_q20": [
+                [
+                  1048576,
+                  1048576
+                ],
+                [
+                  524288,
+                  524288
+                ],
+                [
+                  734003,
+                  734003
+                ],
+                [
+                  308405,
+                  1048576
+                ],
+                [
+                  812617,
+                  1090861
+                ],
+                [
+                  2491715,
+                  2651146
+                ],
+                [
+                  65849,
+                  246800
+                ],
+                [
+                  182852,
+                  187027
+                ],
+                [
+                  713620,
+                  4532980
+                ],
+                [
+                  531107,
+                  25140695
+                ],
+                [
+                  1820,
+                  1820
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  65849,
+                  246800
+                ]
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "report": {
+    "conditions": 288,
+    "direct_decisions": 202,
+    "fallback_decisions": 86,
+    "training_safety_violations": 0,
+    "training_mean_regret": 0.0,
+    "float_fixed_path_mismatches": 0,
+    "label_histogram": {
+      "1": 144,
+      "4": 12,
+      "5": 77,
+      "6": 55
+    },
+    "qualification": "standalone inference artifact; only the hierarchical tree-then-LUT policy is LOSO-promoted; board replay required",
+    "equivalence_vectors": 330
+  }
+}

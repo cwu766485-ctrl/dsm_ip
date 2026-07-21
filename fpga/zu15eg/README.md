@@ -161,6 +161,14 @@ Expected first-pass behavior:
 | `scripts/program_bitstream_vivado.ps1` | Programs `top.bit` and `top.ltx` through Vivado Hardware Manager |
 | `scripts/run_zu15eg_baremetal_regression.ps1` | One-command board regression for bitstream/XSA/ELF/launch/counter checks |
 | `scripts/read_dsm_counters.tcl` | XSDB counter check used by the board regression |
+| `scripts/capture_dsm_replay_counters.ps1` | Captures final replay counters and monitor proxies to CSV |
+| `scripts/capture_dsm_replay_counters.tcl` | XSDB backend for replay counter CSV capture |
+| `scripts/capture_uart_log.ps1` | Captures PS UART text to a timestamped log for `xil_printf` calibration traces |
+| `scripts/parse_calibration_trace.py` | Parses `CAL_TRACE` and `CAL_SELECTED_REPLAY` UART/XSDB text into CSV and Markdown summaries |
+| `scripts/capture_calibration_trace.ps1` | Resolves the ELF trace-buffer symbol and exports cache-flushed calibration records through JTAG |
+| `scripts/capture_calibration_trace.tcl` | XSDB backend for the JTAG-only binary calibration trace export |
+| `scripts/generate_dpd_seed_table.py` | Builds a deterministic software lookup seed table from MATLAB DPD sweep results and board replay counters |
+| `scripts/train_dpd_trace_policy.py` | Fits a conservative trace-aware weighted k-NN mode/package policy and compares it with a full calibration trace |
 | `scripts/run_xsdb_dpd_dma_smoke.ps1` | Windows wrapper for JTAG/XSDB DPD register and DMA board smoke |
 | `scripts/xsdb_dpd_dma_smoke.tcl` | XSDB script that writes DPD coefficients, starts DMA, and checks DSM counters |
 | `scripts/export_hw_platform.ps1` | Exports the local ZU15EG Vivado design to XSA for Vitis |
@@ -187,14 +195,126 @@ The app performs the same core checks as the XSDB smoke:
 - iterates MATLAB-exported polynomial/LUT DPD packages,
 - combines MATLAB proxy EVM/SNDR with hardware saturation, clipping, stall,
   sticky error, correction-magnitude, and RF-slew proxy penalties,
-- selects the lowest-cost package and leaves the selected DPD mode/package
-  programmed in PL registers.
+- supports configurable cost weights through generated compile-time defines,
+- runs a multi-round coarse-to-fine polynomial coefficient search,
+- can evaluate a host-generated nearest-neighbor software seed against PL
+  monitors before normal package evaluation,
+- emits CSV-style `CAL_TRACE` lines for package and candidate accept/reject
+  decisions,
+- mirrors the same structured records into a cache-flushed in-memory trace
+  buffer that XSDB can export through JTAG without UART,
+- selects the lowest-cost package and leaves the selected DPD mode/package or
+  searched coefficient set programmed in PL registers.
 
 `matlab/dpd/export_dpd_coeff_header.m` generates
 `baremetal/src/dpd_coeffs.h` from the MATLAB AI-assisted DPD sweep. The C app
 includes this header when present, so MATLAB calibration output can directly
 feed the PS bare-metal control program. This is the first complete PS-side
 AI-assisted calibration loop; it does not require PS Linux.
+
+For a waveform-specific software seed, build the app with the three
+`-Seed*` arguments described in `baremetal/README.md`. The build invokes
+`generate_dpd_seed_table.py` and creates `baremetal/src/dpd_seed.h`. The app
+does not trust that seed blindly: it runs the seed through DMA and PL metrics,
+records a `software_seed` trace row, then allows all exported packages and
+search candidates to supersede it if their measured cost is lower.
+
+For a previously measured waveform scenario, the host can fit a trace-aware
+mode/package policy. The generated policy is a low-rate PS control decision;
+it does not alter the deterministic PL datapath. Build a one-candidate policy
+replay with retained trace evidence:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -PolicyQam 16 `
+  -PolicyUsedSubcarriers 48 `
+  -PolicyInputBackoff 0.58 `
+  -PolicyTraceCsv .\fpga\zu15eg\out\calibration_trace_jtag_<full_run>.csv `
+  -Define @("CAL_TRACE_POLICY_ONLY=1")
+```
+
+The policy generator chooses a mode/package from comparable historical package
+costs, not from coordinate-search costs. A policy replay still measures its
+selected candidate through DMA and PL monitors; it is not a blind register
+write. With one retained board scenario, it is a same-scenario memory policy.
+Collect multiple waveform/PA conditions and use held-out traces before claiming
+generalization.
+
+## Multi-Scenario Trace Collection
+
+The current policy proof is a same-scenario replay only. To test unknown
+communication conditions, bind each complete JTAG trace to the transmitted
+waveform and PA/feedback setup, then evaluate the policy with a strict
+leave-one-scenario-out split. The manifest schema and retention rules are in
+`trace_sets/README.md`.
+
+First build a full-calibration ELF with the actual QAM-OFDM input used for the
+scenario. The sample vector is deterministic and compiled into the bare-metal
+application, so `WaveformQam`, `WaveformUsedSubcarriers`,
+`WaveformInputBackoff`, `WaveformFftSize`, and `WaveformSeed` must become part
+of the waveform identifier recorded below:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -WaveformQam 16 `
+  -WaveformUsedSubcarriers 48 `
+  -WaveformInputBackoff 0.58 `
+  -WaveformFftSize 256 `
+  -WaveformSeed 1
+```
+
+Run a normal full calibration, then register its JTAG-exported trace. Do not
+use `CAL_TRACE_POLICY_ONLY` for collection: a registered trace must include
+both `package` and `final` stages.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\capture_calibration_trace.ps1 `
+  -ManifestCsv .\fpga\zu15eg\trace_sets\manifest.csv `
+  -ScenarioId pa_nominal_qam16_bw20_bo058 `
+  -PaProfile nominal `
+  -PaStrengthDb 0 `
+  -Qam 16 `
+  -BandwidthMhz 20 `
+  -UsedSubcarriers 48 `
+  -InputBackoff 0.58 `
+  -WaveformId qam16_ofdm_bw20_fft256_seed1 `
+  -CalibrationProfile default_v1
+```
+
+Repeat full calibrations across at least two PA strengths, QAM orders,
+bandwidths, and backoff values. Retain repeated runs under the same
+`ScenarioId`. PA metadata must come from a controlled PA/emulator or feedback
+receiver setup; the PL monitor proxies alone do not measure PA strength.
+
+For the second PA condition, use the MATLAB memory-PA and observation-receiver
+simulation rather than board collection. The board matrix remains useful for
+digital control-path regression, but does not establish PA strength.
+
+```powershell
+call .\scripts\run_matlab_dpd_policy_threshold_simulation.cmd
+python .\fpga\zu15eg\scripts\calibrate_dpd_policy_thresholds.py `
+  --simulation-feedback-csv .\matlab\out\dpd\dpd_policy_threshold_simulation.csv `
+  --min-repeats 2
+```
+
+The simulation covers nominal and strong memory-PA conditions plus a wider
+64-QAM diagnostic condition, each repeated across random seeds. The resulting
+limits are simulation-calibrated engineering settings only, not RF safety
+certification.
+
+After collection, evaluate one held scenario at a time:
+
+```powershell
+python .\fpga\zu15eg\scripts\evaluate_dpd_trace_loso.py `
+  --manifest-csv .\fpga\zu15eg\trace_sets\manifest.csv `
+  --prefix dpd_trace_policy_loso_<date>
+```
+
+The evaluator excludes every replicate of the held `ScenarioId` before
+selecting a mode/package. It reports package regret and the candidate reduction
+that a one-candidate policy replay could obtain. Treat this as an offline
+screen; confirm representative held-out decisions with a new policy-only board
+replay and an external RF observation path before claiming RF generalization.
 
 ## DPD Board Smoke
 
@@ -264,6 +384,29 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\run_zu
 Regression logs are written under `fpga/zu15eg/out/`, which is intentionally
 ignored by git.
 
+The regression now also resolves `g_cal_trace_buffer` from the downloaded ELF,
+checks its magic/version/layout/completion fields through XSDB, and writes
+`calibration_trace_jtag_<timestamp>.csv` plus a Markdown summary. J1 is now the
+preferred local connection because it provides both Xilinx JTAG and PS UART;
+the external J2 adapter should remain disconnected. UART capture remains useful
+for human-readable console diagnostics but is not required for candidate-level
+calibration evidence.
+
+The JTAG/XSDB path downloads and starts the ELF, but bare-metal `xil_printf`
+output normally goes to the PS UART selected by the Vitis BSP. Start UART
+capture before launching the regression if candidate-level `CAL_TRACE` output
+is needed:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\capture_uart_log.ps1 `
+  -PortName COM10 `
+  -DurationSeconds 300 `
+  -OutFile .\fpga\zu15eg\out\uart_cal_trace_<timestamp>.log
+```
+
+On boards exposing several USB virtual COM ports, capture each candidate VCP
+port once and parse the logs to identify which port carries the PS UART.
+
 The local validated address map is:
 
 ```text
@@ -282,6 +425,47 @@ check reported `DPD_CTRL=0x00000002`, indicating that the loop selected and
 retained LUT DPD mode after evaluating the exported packages. The run completed
 with 4096 input/frontend/DPD/output samples, zero input stalls, zero sticky
 errors, and zero DPD saturation.
+
+After a bare-metal run, capture a replayable final register snapshot as CSV:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\capture_dsm_replay_counters.ps1
+```
+
+The full board regression runs the same capture step automatically and writes
+`dsm_replay_counters_<timestamp>.csv` under `fpga/zu15eg/out/`.
+
+To convert a captured UART/XSDB transcript into machine-readable calibration
+history, run:
+
+```powershell
+python .\fpga\zu15eg\scripts\parse_calibration_trace.py `
+  .\fpga\zu15eg\out\zu15eg_baremetal_regression_<timestamp>.log `
+  --prefix calibration_trace_<timestamp>
+```
+
+This writes `calibration_trace_<timestamp>.csv`,
+`calibration_trace_<timestamp>_selected.csv`, and
+`calibration_trace_<timestamp>.md` under `fpga/zu15eg/out/`. If the run log
+does not include UART `CAL_TRACE` lines, the parser still writes empty CSVs and
+a Markdown note so automation can distinguish "no trace captured" from a tool
+failure.
+
+To build a software seed artifact for the next PS-side calibration run, combine
+the MATLAB DPD sweep and the latest board replay counters:
+
+```powershell
+python .\fpga\zu15eg\scripts\generate_dpd_seed_table.py `
+  --qam 16 `
+  --used-subcarriers 48 `
+  --input-backoff 0.58 `
+  --header .\fpga\zu15eg\baremetal\src\dpd_seed.h `
+  --prefix dpd_seed_table_<timestamp>
+```
+
+The result is a deterministic lookup/nearest-neighbor seed table, not a trained
+neural PA model. The optional header feeds the next PS-side calibration run
+while keeping the PL DPD datapath deterministic.
 
 ## First Hardware Evidence
 
@@ -359,6 +543,14 @@ Useful debug lessons:
   interface and lit the nearby LED, but Vivado/XSDB target discovery remained
   empty through that path. Using the external `J2` JTAG path with a Digilent
   JTAG-SMT2 exposed `xczu15`, `arm_dap`, PL, PMU, RPU, and APU targets.
+- The board schematic in `fpga/hardware/xczu15eg/XCZU15EG_SCH_0515.pdf` shows
+  that J1 is the intended combined interface: FTDI channel A connects to the
+  Zynq JTAG signals and PS UART0 uses MIO 38/39 through another FTDI channel.
+  Enabling `USB Serial Converter A` made J1 appear as `Xilinx/15051A`; Vivado
+  then detected `xczu15_0` and `arm_dap_1`. A direct UART0 FIFO probe identified
+  the PS UART as `COM11` at 115200 8N1 on this host. Use J1 alone for concurrent
+  JTAG and UART. Do not attach the external J2 adapter at the same time because
+  both paths share the Zynq JTAG nets without a software-controlled selector.
 
 ## Bare-Metal DPD Evidence
 

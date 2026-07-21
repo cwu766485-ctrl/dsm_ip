@@ -58,6 +58,8 @@ create_bd_cell -type ip -vlnv dsm.local:communication:dsm_ip:1.0 dsm_ip_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_dma_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila ila_dsm_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant axis_tuser_zero
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant obs_tdata_zero
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant obs_control_zero
 
 set clk_freq [get_property CONFIG.FREQ_HZ $clk_pin]
 if {$clk_freq eq ""} {
@@ -98,6 +100,8 @@ set_property -dict [list \
 ] [get_bd_cells ila_dsm_0]
 
 set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {0}] [get_bd_cells axis_tuser_zero]
+set_property -dict [list CONFIG.CONST_WIDTH {32} CONFIG.CONST_VAL {0}] [get_bd_cells obs_tdata_zero]
+set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {0}] [get_bd_cells obs_control_zero]
 
 connect_bd_net $clk_pin [get_bd_pins dsm_ip_0/aclk]
 connect_bd_net $clk_pin [get_bd_pins axi_dma_0/s_axi_lite_aclk]
@@ -116,6 +120,10 @@ connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tvalid] [get_bd_pins dsm_ip_0/
 connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tready] [get_bd_pins dsm_ip_0/s_axis_tready]
 connect_bd_net [get_bd_pins axi_dma_0/m_axis_mm2s_tlast]  [get_bd_pins dsm_ip_0/s_axis_tlast]
 connect_bd_net [get_bd_pins axis_tuser_zero/dout]         [get_bd_pins dsm_ip_0/s_axis_tuser]
+connect_bd_net [get_bd_pins obs_tdata_zero/dout]          [get_bd_pins dsm_ip_0/s_axis_obs_tdata]
+connect_bd_net [get_bd_pins obs_control_zero/dout]        [get_bd_pins dsm_ip_0/s_axis_obs_tlast]
+connect_bd_net [get_bd_pins obs_control_zero/dout]        [get_bd_pins dsm_ip_0/s_axis_obs_tuser]
+connect_bd_net [get_bd_pins obs_control_zero/dout]        [get_bd_pins dsm_ip_0/s_axis_obs_tvalid]
 
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 \
   -config [list Clk_master $clk_pin Clk_slave $clk_pin Clk_xbar $clk_pin Master $hpm_pin Slave [get_bd_intf_pins dsm_ip_0/s_axi]] \

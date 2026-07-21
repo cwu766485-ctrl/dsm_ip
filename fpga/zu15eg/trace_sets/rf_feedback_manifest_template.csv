@@ -1,0 +1,2 @@
+scenario_id,run_id,policy_report_csv,policy_trace_csv,feedback_csv,feedback_receiver,feedback_calibration_id
+pa_low_qam64_bw40_bo058,20260712_001,../out/policy_pa_low_20260712.csv,../out/policy_pa_low_20260712_jtag.csv,../out/feedback_pa_low_20260712.csv,receiver_model_or_emulator,calibration_certificate_or_run_id

@@ -31,6 +31,10 @@ set files [list \
   [file join $repo_root rtl interp dsm_interp_frontend.sv] \
   [file join $repo_root rtl dpd dpd_poly.v] \
   [file join $repo_root rtl dpd dpd_lut.v] \
+  [file join $repo_root rtl dpd dpd_memory_poly.v] \
+  [file join $repo_root rtl dpd dpd_observer.v] \
+  [file join $repo_root rtl dpd dpd_seed_predictor.v] \
+  [file join $repo_root rtl dpd dpd_tinyml_tree.v] \
   [file join $repo_root rtl dpd dpd_frontend.v] \
   [file join $repo_root rtl duc duc_fs4_merge.sv] \
   [file join $repo_root rtl duc duc_fs4_merge_signed.sv] \
@@ -52,6 +56,14 @@ set_property display_name {DSM All-Digital Transmitter IP} $core
 set_property description {AXI-Lite controlled, AXI-Stream input all-digital Cartesian DSM transmitter IP with LPDSM, EFDSM, MASH, and exploratory multibit Cartesian DSM variants. Default target clock 100 MHz.} $core
 set_property version 1.0 $core
 set_property supported_families {zynq Production zynquplus Production artix7 Production kintex7 Production} $core
+
+set aclk_intf [ipx::get_bus_interfaces aclk -of_objects $core]
+if {[llength $aclk_intf] > 0} {
+  set associated_busif [ipx::get_bus_parameters ASSOCIATED_BUSIF -of_objects $aclk_intf]
+  if {[llength $associated_busif] > 0} {
+    set_property value {s_axi:s_axis:s_axis_obs} $associated_busif
+  }
+}
 
 set component_name_param [ipx::get_user_parameters Component_Name -of_objects $core]
 if {[llength $component_name_param] > 0} {

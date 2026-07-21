@@ -13,6 +13,8 @@ __pycache__/
 *.m~
 *.tmp
 *.bak
+.tmp_matlab/
+codex-*.cmd
 
 # MATLAB generated outputs
 matlab/out/
@@ -43,6 +45,10 @@ verif/out_xsim_p0_multibit/
 verif/out_xsim_interp_frontend/
 verif/out_xsim_ip_smoke/
 verif/out_xsim_dpd/
+verif/out_xsim_v11_compile/
+verif/out_xsim_dpd_observer/
+verif/out_xsim_tinyml_tree/
+verif/out_safety_seed_policy/
 *.vcd
 *.fst
 *.ghw
@@ -66,6 +72,7 @@ syn/reports/ooc_*/
 syn/reports/ooc_xc*/
 syn/reports/synth_*/
 syn/reports/routed_*/
+syn/reports/axi_v11_*/
 *.dcp
 *.edf
 *.edn

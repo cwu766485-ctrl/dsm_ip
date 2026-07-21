@@ -17,6 +17,13 @@
 ../rtl/interp/dsm_interp_fir_fixed.sv
 ../rtl/interp/dsm_interp2_halfband.sv
 ../rtl/interp/dsm_interp_frontend.sv
+../rtl/dpd/dpd_poly.v
+../rtl/dpd/dpd_lut.v
+../rtl/dpd/dpd_memory_poly.v
+../rtl/dpd/dpd_observer.v
+../rtl/dpd/dpd_seed_predictor.v
+../rtl/dpd/dpd_tinyml_tree.v
+../rtl/dpd/dpd_frontend.v
 ../rtl/duc/duc_fs4_merge.sv
 ../rtl/duc/duc_fs4_merge_signed.sv
 ../rtl/duc/duc_nco_mix_signed.v

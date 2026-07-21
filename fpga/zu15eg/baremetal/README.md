@@ -55,6 +55,101 @@ The generated ELF is:
 fpga/zu15eg/out/vitis_baremetal/dsm_dpd_baremetal_smoke/build/dsm_dpd_baremetal_smoke.elf
 ```
 
+Optional calibration policy overrides can be passed as generated compile-time
+defines. For example, to run a shorter replay-only build that applies one fixed
+LUT package and emits a replay trace:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -Define @("CAL_REPLAY_ONLY=1","CAL_REPLAY_MODE=2","CAL_REPLAY_PACKAGE_IDX=0")
+```
+
+To generate and include a host-selected nearest-neighbor polynomial seed for a
+specific waveform scenario, provide all three scenario arguments at build time:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -SeedQam 16 `
+  -SeedUsedSubcarriers 48 `
+  -SeedInputBackoff 0.58
+```
+
+This creates the local generated header `src/dpd_seed.h`. At runtime the app
+evaluates that seed against PL counters first, records it as a `software_seed`
+trace stage, then still evaluates all exported packages and performs the
+fixed-point coordinate search. Define `CAL_USE_SOFTWARE_SEED=0` to exclude a
+present seed header without deleting it.
+
+To make the board input waveform match a QAM/bandwidth/backoff trace label,
+generate a deterministic Q1.15 QAM-OFDM DMA vector at build time. The command
+embeds exactly 4096 packed I/Q words in the ELF and records its configuration
+in the generated `dpd_tx_waveform.h` header:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -WaveformQam 16 `
+  -WaveformUsedSubcarriers 48 `
+  -WaveformInputBackoff 0.58 `
+  -WaveformFftSize 256 `
+  -WaveformSeed 1
+```
+
+This affects only the PS DMA source vector. It does not emulate a PA or create
+RF feedback; record the actual PA/observation setup separately in the trace
+manifest. A build without all three `-Waveform*` scenario arguments removes
+the generated waveform header and restores the synthetic smoke vector, so a
+previous scenario cannot be reused silently.
+
+Useful overrides include:
+
+```text
+CAL_WEIGHT_PROXY_EVM
+CAL_PENALTY_SATURATION
+CAL_PENALTY_CLIP
+CAL_PENALTY_ERROR
+CAL_PENALTY_STALL
+CAL_EVM_PROXY_SHIFT
+CAL_ACPR_PROXY_SHIFT
+CAL_SPEC_ADJ_SHIFT
+CAL_SEARCH_INITIAL_STEP_Q214
+CAL_SEARCH_MIN_STEP_Q214
+CAL_SEARCH_MAX_ROUNDS
+CAL_REPLAY_ONLY
+CAL_REPLAY_MODE
+CAL_REPLAY_PACKAGE_IDX
+CAL_REPLAY_USE_WORDS
+CAL_REPLAY_C1_WORD
+CAL_REPLAY_C3_WORD
+CAL_REPLAY_C5_WORD
+CAL_USE_SOFTWARE_SEED
+CAL_TRACE_POLICY_ONLY
+```
+
+The generated trace policy also carries a confidence gate. Host generation
+compares nearest scenario distance and selected-action cost dispersion against
+configurable thresholds. A trusted policy evaluates one package. An untrusted
+polynomial policy evaluates that package, performs a bounded local coefficient
+search, and replays the best result. The defaults are distance `0.20`, relative
+cost standard deviation `0.10`, one fallback round, and initial Q2.14 step 64.
+These are software control settings and do not change the deterministic PL
+datapath.
+
+After the first measured candidate, a runtime guard also compares absolute
+measured-versus-predicted cost residual against `--max-runtime-residual`
+(default `0.15`) and checks stall, sticky error, and saturation. Any violation
+forces bounded polynomial search even when the static gate is trusted. Sample
+count or DMA failures remain hard failures. A triggered non-polynomial policy
+also fails explicitly because no bounded LUT fallback is implemented yet.
+
+The generated policy now also carries a 12-element PL monitor-state reference:
+input/output power, peak, average magnitude, EVM/ACPR proxies, three spectral
+bins, adjacent spectral proxy, clip count, and saturation count. After the
+first replay, firmware computes the mean relative distance from that reference.
+`reason=monitor_distance` forces the same bounded polynomial search when the
+state is outside its generated limit. Nonzero clip or saturation remains an
+immediate safety fault. The current limit is derived from the nominal board
+trace set and is not a calibrated unknown-PA classifier.
+
 Vitis may print Windows PATH noise about missing MicroBlaze or `gnuwin`
 folders after the build. Treat the build as passed only when the script exits
 with code 0 and prints the final ELF path.
@@ -72,6 +167,27 @@ The run script optionally programs `top.bit`, runs `psu_init.tcl`, resets
 Cortex-A53 #0, downloads the ELF, and starts it. Application prints appear on
 the PS UART through `xil_printf`; they do not automatically appear in the XSDB
 console.
+
+For the local XCZU15EG board, use J1 by itself. Its FTDI channel A is the
+Xilinx JTAG cable (`Xilinx/15051A`) and the measured PS UART0 port is `COM11`
+at 115200 8N1. Windows must show `USB Serial Converter A` as enabled. Do not
+keep the external J2 JTAG adapter attached while using J1 because both paths
+share the same Zynq JTAG nets.
+
+To save the PS UART text for calibration-trace parsing, start the UART capture
+helper before the JTAG launch:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\capture_uart_log.ps1 `
+  -PortName COM10 `
+  -DurationSeconds 300 `
+  -OutFile .\fpga\zu15eg\out\uart_cal_trace_<timestamp>.log
+```
+
+Use the Windows device manager, `[System.IO.Ports.SerialPort]::GetPortNames()`,
+or the `HKLM:\HARDWARE\DEVICEMAP\SERIALCOMM` registry map to identify the
+USB-UART COM port. If the board exposes several virtual COM ports, capture the
+VCP candidates once and parse the logs to find the one carrying `CAL_TRACE`.
 
 If XSDB lists no targets, install the Xilinx cable drivers from an elevated
 PowerShell or administrator command prompt:
@@ -110,11 +226,12 @@ run adds hardware penalties from DPD saturation, clipping, sticky error,
 correction-magnitude, RF-slew, fixed-bin spectral adjacent proxy, and
 AXI-Stream stall counters.
 
-After package evaluation, the app runs a small PS-side coordinate-search loop
-around the best polynomial package. It perturbs the fixed-point Q2.14 `C1`,
-`C3`, and `C5` coefficient words, runs the DMA/datapath for each candidate,
-reads the same hardware counters, and accepts a candidate only when its cost is
-lower. The final selected configuration can therefore be either:
+After package evaluation, the app runs a PS-side coarse-to-fine coordinate
+search around the best polynomial package. It perturbs the fixed-point Q2.14
+`C1`, `C3`, and `C5` coefficient words, runs the DMA/datapath for each
+candidate, reads the same hardware counters, and accepts a candidate only when
+its cost is lower. The default search uses three rounds with a halved step size
+per round. The final selected configuration can therefore be either:
 
 - an exported polynomial package,
 - a searched polynomial coefficient set,
@@ -137,16 +254,108 @@ PASS INPUT_STALL_COUNT = 0x00000000
 PASS ERROR_STATUS = 0x00000000
 ```
 
+At the start of the run the app prints the cost weights and a CSV-style trace
+schema. Every evaluated package and search candidate then emits a `CAL_TRACE`
+line with:
+
+```text
+candidate id, round, stage, mode/package, C1/C3/C5, proxy scores,
+hardware monitor counters, cost, accept/reject decision, reason
+```
+
+The same information is stored in the global `g_cal_trace_buffer` as fixed
+32-bit fields. The buffer has a magic/version header, record size, capacity,
+count, completion flag, and overflow flag. Each record and header update is
+flushed from the A53 data cache before publication. The host resolves the
+buffer address from the exact ELF rather than relying on a fixed DDR address.
+
+For a J2-only run, export the completed trace without UART:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\capture_calibration_trace.ps1
+```
+
+The one-command ZU15EG regression performs this export automatically after
+the register counter and replay checks.
+
+The optional generated `dpd_trace_policy.h` selects one previously measured
+mode/package for a `CAL_TRACE_POLICY_ONLY=1` run. It is created by
+`train_dpd_trace_policy.py`, which uses comparable package-level board costs
+as a weighted nearest-neighbor policy. A policy-only run produces one JTAG
+trace record and is intended for measuring candidate-count and convergence
+reduction against a retained full-calibration trace.
+
+For measurement of the bounded branch, build with both
+`CAL_TRACE_POLICY_ONLY=1` and `CAL_FORCE_POLICY_LOCAL_SEARCH=1`. The latter is
+a test-only override: it retains the existing static policy mode/package as
+the first candidate, then forces its one-round 12-perturbation polynomial
+search and final replay. It does not consume or generate regret-predictor
+constants. A valid run exports exactly 14 trace records: one `policy`, twelve
+`search`, and one `final`.
+
+### Test-Only Safety-First Seed Replay
+
+The generated `dpd_safety_seed_policy.h` is separate from the blocked legacy
+tree/LUT hierarchy. Build its test-only replay ELF with:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& '.\fpga\zu15eg\baremetal\scripts\build_baremetal_direct.ps1' `
+  -OutDir '.\fpga\zu15eg\out\vitis_baremetal_safety_seed_policy' `
+  -WaveformQam 16 -WaveformUsedSubcarriers 48 -WaveformInputBackoff 0.58 `
+  -WaveformFftSize 256 -WaveformSeed 1 `
+  -Define 'CAL_SAFETY_SEED_POLICY_ONLY=1','CAL_USE_SOFTWARE_SEED=0'"
+```
+
+This mode requires a completed `aligned_complex_pa_monitor_v2` observation
+window before launch. It chooses only a safety-qualified memory-polynomial
+seed, then always records one seed, 12 local perturbations, and one final
+replay. It never enables direct execution. If the observer window is absent or
+the policy requests `fallback_14`, it fails closed and does not substitute the
+legacy tree/LUT policy. Capture a valid 14-record result with
+`capture_calibration_trace.ps1`.
+
 At the end it writes the selected package back to the DPD registers:
 
 ```text
-SEARCH seed package=<n> step=<q214_step> rounds=<n>
+SEARCH seed package=<n> initial_step=<q214_step> min_step=<q214_step> rounds=<n>
+SEARCH_ROUND round=<n> step=<q214_step> ...
 CAL_SEARCH_RESULT package=<n> evm_ppm=<score> ...
 SEARCH_ACCEPT coeff=<c> part=<real_or_imag> delta=<q214_step> ...
 SELECTED mode=<m> package=<n> searched=<0_or_1> evm_ppm=<score> sndr_mdB=<score> cost=<score>
 Re-running stream with selected DPD package to refresh final counters
+CAL_SELECTED_REPLAY mode=<m> package=<n> searched=<0_or_1> ...
 PASS selected DPD package is retained in PL registers
 ```
+
+For a machine-readable final replay snapshot after the ELF has run, use:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\capture_dsm_replay_counters.ps1
+```
+
+The one-command board regression also runs this capture step and writes
+`fpga/zu15eg/out/dsm_replay_counters_<timestamp>.csv`.
+
+Two host-side helpers turn these calibration artifacts into reusable inputs:
+
+```powershell
+python .\fpga\zu15eg\scripts\parse_calibration_trace.py `
+  .\fpga\zu15eg\out\zu15eg_baremetal_regression_<timestamp>.log `
+  --prefix calibration_trace_<timestamp>
+
+python .\fpga\zu15eg\scripts\generate_dpd_seed_table.py `
+  --qam 16 `
+  --used-subcarriers 48 `
+  --input-backoff 0.58 `
+  --prefix dpd_seed_table_<timestamp>
+```
+
+The first command extracts `CAL_TRACE` and `CAL_SELECTED_REPLAY` text into CSV
+and Markdown summaries. The second command builds a deterministic software
+lookup seed table from MATLAB sweep rows plus board replay counters. With its
+optional `--header` argument, it also emits the `dpd_seed.h` consumed by the
+next bare-metal build. This is a tiny-ML-ready data artifact; it is not a
+trained neural PA model.
 
 This is the first PS-side AI-assisted calibration loop. The "AI-assisted"
 boundary is the low-rate PS optimization/search engine; the PL remains a

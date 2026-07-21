@@ -1,0 +1,19 @@
+{
+  "policy": "safety_first_nearest_safe_package_v1",
+  "evidence_rows": 480,
+  "development_profiles": 8,
+  "base_profiles": 12,
+  "blind_profiles_excluded_from_constants": [
+    "blind_compression_noise",
+    "blind_gain_memory",
+    "blind_thermal_memory"
+  ],
+  "vectors": 552,
+  "quantized_blind_decisions_checked": 72,
+  "quantized_blind_decision_mismatches": 0,
+  "k": 7,
+  "max_distance_q20": 4194304,
+  "direct_execution_allowed": false,
+  "board_enable_allowed": false,
+  "mandatory_search_candidates": 14
+}

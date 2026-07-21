@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $zu15egDir = Resolve-Path (Join-Path $scriptDir "..\..")
 $repoRoot = Resolve-Path (Join-Path $scriptDir "..\..\..\..")
-$elfPath = Resolve-Path (Join-Path $repoRoot $Elf)
+$elfPath = Resolve-Path $(if ([System.IO.Path]::IsPathRooted($Elf)) { $Elf } else { Join-Path $repoRoot $Elf })
 
 if ([string]::IsNullOrWhiteSpace($ProjectDir)) {
     $ProjectDir = Join-Path $zu15egDir "local_hw\pl_ps_gpio_test"

@@ -1,0 +1,16 @@
+Model,Tap,Order,Q2_14_Real,Q2_14_Imag,PackedHex
+Memoryless DPD,0,1,16017,423,0x01A73E91
+Memoryless DPD,0,3,8060,-2996,0xF44C1F7C
+Memoryless DPD,0,5,19006,-13806,0xCA124A3E
+Memory-polynomial DPD,0,1,16268,357,0x01653F8C
+Memory-polynomial DPD,0,3,8233,-3136,0xF3C02029
+Memory-polynomial DPD,0,5,17659,-12760,0xCE2844FB
+Memory-polynomial DPD,1,1,-355,143,0x008FFE9D
+Memory-polynomial DPD,1,3,-19,82,0x0052FFED
+Memory-polynomial DPD,1,5,677,-488,0xFE1802A5
+Memory-polynomial DPD,2,1,103,-96,0xFFA00067
+Memory-polynomial DPD,2,3,-50,0,0x0000FFCE
+Memory-polynomial DPD,2,5,31,-100,0xFF9C001F
+Memory-polynomial DPD,3,1,-2,12,0x000CFFFE
+Memory-polynomial DPD,3,3,11,17,0x0011000B
+Memory-polynomial DPD,3,5,-75,-72,0xFFB8FFB5

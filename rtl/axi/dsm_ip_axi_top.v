@@ -18,7 +18,9 @@ module dsm_ip_axi_top #(
   parameter integer C_S_AXI_ADDR_WIDTH = 8,
   parameter integer C_S_AXI_DATA_WIDTH = 32,
   parameter integer C_S_AXIS_TDATA_WIDTH = 32,
-  parameter integer C_S_AXIS_TUSER_WIDTH = 1
+  parameter integer C_S_AXIS_TUSER_WIDTH = 1,
+  parameter integer C_S_AXIS_OBS_TDATA_WIDTH = 32,
+  parameter integer C_S_AXIS_OBS_TUSER_WIDTH = 1
 ) (
   input wire aclk,
   input wire aresetn,
@@ -48,6 +50,12 @@ module dsm_ip_axi_top #(
   input wire s_axis_tvalid,
   output wire s_axis_tready,
 
+  input wire [C_S_AXIS_OBS_TDATA_WIDTH-1:0] s_axis_obs_tdata,
+  input wire s_axis_obs_tlast,
+  input wire [C_S_AXIS_OBS_TUSER_WIDTH-1:0] s_axis_obs_tuser,
+  input wire s_axis_obs_tvalid,
+  output wire s_axis_obs_tready,
+
   output wire dsm_valid,
   output wire i_bit,
   output wire q_bit,
@@ -59,7 +67,7 @@ module dsm_ip_axi_top #(
   output wire [PHASE_W-1:0] phase_acc_dbg
 );
 
-  localparam [31:0] CORE_VERSION = 32'h0001_0000;
+  localparam [31:0] CORE_VERSION = 32'h0001_0002;
   localparam [5:0] ADDR_CTRL       = 6'h00;
   localparam [5:0] ADDR_STATUS     = 6'h01;
   localparam [5:0] ADDR_PHASE_INC  = 6'h02;
@@ -96,6 +104,34 @@ module dsm_ip_axi_top #(
   localparam [5:0] ADDR_MON_SPEC_BIN1 = 6'h21;
   localparam [5:0] ADDR_MON_SPEC_BIN2 = 6'h22;
   localparam [5:0] ADDR_MON_SPEC_ADJ = 6'h23;
+  localparam [5:0] ADDR_MP_SELECT = 6'h24;
+  localparam [5:0] ADDR_MP_DATA = 6'h25;
+  localparam [5:0] ADDR_MP_COMMIT = 6'h26;
+  localparam [5:0] ADDR_OBS_CTRL = 6'h27;
+  localparam [5:0] ADDR_OBS_GAIN = 6'h28;
+  localparam [5:0] ADDR_OBS_WINDOW = 6'h29;
+  localparam [5:0] ADDR_OBS_STATUS = 6'h2a;
+  localparam [5:0] ADDR_OBS_PAIR_COUNT = 6'h2b;
+  localparam [5:0] ADDR_OBS_DROP_COUNT = 6'h2c;
+  localparam [5:0] ADDR_OBS_ERROR_LO = 6'h2d;
+  localparam [5:0] ADDR_OBS_ERROR_HI = 6'h2e;
+  localparam [5:0] ADDR_COND_CTRL = 6'h2f;
+  localparam [5:0] ADDR_COND_QAM = 6'h30;
+  localparam [5:0] ADDR_COND_BW = 6'h31;
+  localparam [5:0] ADDR_COND_BACKOFF = 6'h32;
+  localparam [5:0] ADDR_COND_ENV = 6'h33;
+  localparam [5:0] ADDR_COND_MONITOR = 6'h34;
+  localparam [5:0] ADDR_SEED_STATUS = 6'h35;
+  localparam [5:0] ADDR_OBS_ENV = 6'h36;
+  localparam [5:0] ADDR_OBS_REF_MAG = 6'h37;
+  localparam [5:0] ADDR_OBS_MAG = 6'h38;
+  localparam [5:0] ADDR_OBS_PEAK = 6'h39;
+  localparam [5:0] ADDR_OBS_CLIP_SAT = 6'h3a;
+  localparam [5:0] ADDR_OBS_SLEW = 6'h3b;
+  localparam [5:0] ADDR_OBS_SPEC_BIN0 = 6'h3c;
+  localparam [5:0] ADDR_OBS_SPEC_BIN1 = 6'h3d;
+  localparam [5:0] ADDR_OBS_SPEC_BIN2 = 6'h3e;
+  localparam [5:0] ADDR_OBS_SPEC_ADJ = 6'h3f;
   localparam [W-1:0] MON_CLIP_LEVEL = {1'b0, {(W-4){1'b1}}, 3'b000};
 
   reg [31:0] ctrl_reg;
@@ -122,6 +158,28 @@ module dsm_ip_axi_top #(
   reg dpd_lut_commit_pulse;
   reg signed [15:0] dpd_lut_wgain_re_reg;
   reg signed [15:0] dpd_lut_wgain_im_reg;
+  reg [1:0] mp_coeff_tap_reg;
+  reg [1:0] mp_coeff_order_reg;
+  reg [2:0] mp_active_taps_reg;
+  reg signed [15:0] mp_coeff_re_reg;
+  reg signed [15:0] mp_coeff_im_reg;
+  reg mp_coeff_we_pulse;
+  reg mp_commit_pulse;
+  reg obs_enable_reg;
+  reg obs_start_pulse;
+  reg obs_clear_pulse;
+  reg [4:0] obs_delay_reg;
+  reg signed [15:0] obs_gain_re_reg;
+  reg signed [15:0] obs_gain_im_reg;
+  reg [31:0] obs_window_reg;
+  reg condition_valid_reg;
+  reg [7:0] condition_version_reg;
+  reg [15:0] condition_qam_reg;
+  reg [31:0] condition_bw_khz_reg;
+  reg [31:0] condition_backoff_ppm_reg;
+  reg signed [15:0] condition_power_reg;
+  reg signed [15:0] condition_temperature_reg;
+  reg [31:0] condition_monitor_reg;
   reg [31:0] mon_input_power_acc;
   reg [31:0] mon_output_power_acc;
   reg [31:0] mon_input_clip_count;
@@ -188,6 +246,30 @@ module dsm_ip_axi_top #(
   wire signed [15:0] dpd_lut_rgain_re;
   wire signed [15:0] dpd_lut_rgain_im;
   wire dpd_lut_active_bank;
+  wire signed [15:0] mp_coeff_rdata_re;
+  wire signed [15:0] mp_coeff_rdata_im;
+  wire mp_active_bank;
+  wire obs_active;
+  wire obs_done;
+  wire obs_last_seen;
+  wire [31:0] obs_paired_count;
+  wire [31:0] obs_dropped_count;
+  wire [63:0] obs_error_acc;
+  wire signed [15:0] obs_latched_temperature;
+  wire [31:0] obs_ref_mag_acc;
+  wire [31:0] obs_mag_acc;
+  wire [31:0] obs_peak;
+  wire [15:0] obs_clip_count;
+  wire [15:0] obs_saturation_count;
+  wire [31:0] obs_slew_acc;
+  wire [31:0] obs_spec_bin0;
+  wire [31:0] obs_spec_bin1;
+  wire [31:0] obs_spec_bin2;
+  wire [31:0] obs_spec_adj;
+  wire [2:0] seed_package;
+  wire condition_known;
+  wire seed_fallback_required;
+  wire seed_local_search_required;
   wire [RF_W-1:0] rf_abs = abs_rf(rf_signed);
   wire signed [RF_W:0] rf_delta = {rf_signed[RF_W-1], rf_signed} -
                                   {mon_rf_prev[RF_W-1], mon_rf_prev};
@@ -322,6 +404,28 @@ module dsm_ip_axi_top #(
       dpd_lut_commit_pulse <= 1'b0;
       dpd_lut_wgain_re_reg <= 16'sd16384;
       dpd_lut_wgain_im_reg <= 16'sd0;
+      mp_coeff_tap_reg <= 2'd0;
+      mp_coeff_order_reg <= 2'd0;
+      mp_active_taps_reg <= 3'd2;
+      mp_coeff_re_reg <= 16'sd0;
+      mp_coeff_im_reg <= 16'sd0;
+      mp_coeff_we_pulse <= 1'b0;
+      mp_commit_pulse <= 1'b0;
+      obs_enable_reg <= 1'b0;
+      obs_start_pulse <= 1'b0;
+      obs_clear_pulse <= 1'b0;
+      obs_delay_reg <= 5'd0;
+      obs_gain_re_reg <= 16'sd16384;
+      obs_gain_im_reg <= 16'sd0;
+      obs_window_reg <= 32'd0;
+      condition_valid_reg <= 1'b0;
+      condition_version_reg <= 8'd1;
+      condition_qam_reg <= 16'd16;
+      condition_bw_khz_reg <= 32'd20000;
+      condition_backoff_ppm_reg <= 32'd580000;
+      condition_power_reg <= 16'sd0;
+      condition_temperature_reg <= 16'sd6400;
+      condition_monitor_reg <= 32'd0;
       mon_input_power_acc <= 32'd0;
       mon_output_power_acc <= 32'd0;
       mon_input_clip_count <= 32'd0;
@@ -344,6 +448,10 @@ module dsm_ip_axi_top #(
       soft_reset_pulse <= 1'b0;
       dpd_lut_we_pulse <= 1'b0;
       dpd_lut_commit_pulse <= 1'b0;
+      mp_coeff_we_pulse <= 1'b0;
+      mp_commit_pulse <= 1'b0;
+      obs_start_pulse <= 1'b0;
+      obs_clear_pulse <= 1'b0;
 
       if (axis_fire) begin
         input_sample_count <= input_sample_count + 32'd1;
@@ -498,6 +606,50 @@ module dsm_ip_axi_top #(
               dpd_lut_commit_pulse <= 1'b1;
             end
           end
+          ADDR_MP_SELECT: begin
+            if (s_axi_wstrb[0]) begin
+              mp_coeff_tap_reg <= s_axi_wdata[1:0];
+              mp_coeff_order_reg <= s_axi_wdata[3:2];
+            end
+            if (s_axi_wstrb[1]) mp_active_taps_reg <= s_axi_wdata[10:8];
+          end
+          ADDR_MP_DATA: begin
+            if (s_axi_wstrb[0]) mp_coeff_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) mp_coeff_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) mp_coeff_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) mp_coeff_im_reg[15:8] <= s_axi_wdata[31:24];
+            mp_coeff_we_pulse <= 1'b1;
+          end
+          ADDR_MP_COMMIT: begin
+            if (s_axi_wstrb[0] && s_axi_wdata[0]) mp_commit_pulse <= 1'b1;
+          end
+          ADDR_OBS_CTRL: begin
+            if (s_axi_wstrb[0]) begin
+              obs_enable_reg <= s_axi_wdata[0];
+              if (s_axi_wdata[1]) obs_start_pulse <= 1'b1;
+              if (s_axi_wdata[2]) obs_clear_pulse <= 1'b1;
+            end
+            if (s_axi_wstrb[1]) obs_delay_reg <= s_axi_wdata[12:8];
+          end
+          ADDR_OBS_GAIN: begin
+            if (s_axi_wstrb[0]) obs_gain_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) obs_gain_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) obs_gain_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) obs_gain_im_reg[15:8] <= s_axi_wdata[31:24];
+          end
+          ADDR_OBS_WINDOW: obs_window_reg <= s_axi_wdata;
+          ADDR_COND_CTRL: begin
+            if (s_axi_wstrb[0]) condition_valid_reg <= s_axi_wdata[0];
+            if (s_axi_wstrb[1]) condition_version_reg <= s_axi_wdata[15:8];
+          end
+          ADDR_COND_QAM: condition_qam_reg <= s_axi_wdata[15:0];
+          ADDR_COND_BW: condition_bw_khz_reg <= s_axi_wdata;
+          ADDR_COND_BACKOFF: condition_backoff_ppm_reg <= s_axi_wdata;
+          ADDR_COND_ENV: begin
+            condition_power_reg <= s_axi_wdata[15:0];
+            condition_temperature_reg <= s_axi_wdata[31:16];
+          end
+          ADDR_COND_MONITOR: condition_monitor_reg <= s_axi_wdata;
           default: begin
           end
         endcase
@@ -557,6 +709,43 @@ module dsm_ip_axi_top #(
           ADDR_MON_SPEC_BIN1: s_axi_rdata <= mon_spec_bin1_mag;
           ADDR_MON_SPEC_BIN2: s_axi_rdata <= mon_spec_bin2_mag;
           ADDR_MON_SPEC_ADJ:  s_axi_rdata <= mon_spec_adj_mag;
+          ADDR_MP_SELECT: s_axi_rdata <= {21'd0, mp_active_taps_reg, 4'd0,
+                                           mp_coeff_order_reg, mp_coeff_tap_reg};
+          ADDR_MP_DATA: s_axi_rdata <= {mp_coeff_rdata_im, mp_coeff_rdata_re};
+          ADDR_MP_COMMIT: s_axi_rdata <= {31'd0, mp_active_bank};
+          ADDR_OBS_CTRL: s_axi_rdata <= {19'd0, obs_delay_reg, 5'd0,
+                                         obs_clear_pulse, obs_start_pulse,
+                                         obs_enable_reg};
+          ADDR_OBS_GAIN: s_axi_rdata <= {obs_gain_im_reg, obs_gain_re_reg};
+          ADDR_OBS_WINDOW: s_axi_rdata <= obs_window_reg;
+          ADDR_OBS_STATUS: s_axi_rdata <= {28'd0, obs_last_seen, obs_done,
+                                           obs_active, s_axis_obs_tready};
+          ADDR_OBS_PAIR_COUNT: s_axi_rdata <= obs_paired_count;
+          ADDR_OBS_DROP_COUNT: s_axi_rdata <= obs_dropped_count;
+          ADDR_OBS_ERROR_LO: s_axi_rdata <= obs_error_acc[31:0];
+          ADDR_OBS_ERROR_HI: s_axi_rdata <= obs_error_acc[63:32];
+          ADDR_COND_CTRL: s_axi_rdata <= {16'd0, condition_version_reg, 7'd0,
+                                          condition_valid_reg};
+          ADDR_COND_QAM: s_axi_rdata <= {16'd0, condition_qam_reg};
+          ADDR_COND_BW: s_axi_rdata <= condition_bw_khz_reg;
+          ADDR_COND_BACKOFF: s_axi_rdata <= condition_backoff_ppm_reg;
+          ADDR_COND_ENV: s_axi_rdata <= {condition_temperature_reg,
+                                         condition_power_reg};
+          ADDR_COND_MONITOR: s_axi_rdata <= condition_monitor_reg;
+          ADDR_SEED_STATUS: s_axi_rdata <= {26'd0, seed_local_search_required,
+                                            seed_fallback_required,
+                                            condition_known, seed_package};
+          ADDR_OBS_ENV: s_axi_rdata <= {8'd2, 8'd0, obs_latched_temperature};
+          ADDR_OBS_REF_MAG: s_axi_rdata <= obs_ref_mag_acc;
+          ADDR_OBS_MAG: s_axi_rdata <= obs_mag_acc;
+          ADDR_OBS_PEAK: s_axi_rdata <= obs_peak;
+          ADDR_OBS_CLIP_SAT: s_axi_rdata <= {obs_saturation_count,
+                                             obs_clip_count};
+          ADDR_OBS_SLEW: s_axi_rdata <= obs_slew_acc;
+          ADDR_OBS_SPEC_BIN0: s_axi_rdata <= obs_spec_bin0;
+          ADDR_OBS_SPEC_BIN1: s_axi_rdata <= obs_spec_bin1;
+          ADDR_OBS_SPEC_BIN2: s_axi_rdata <= obs_spec_bin2;
+          ADDR_OBS_SPEC_ADJ: s_axi_rdata <= obs_spec_adj;
           default: s_axi_rdata <= 32'h0000_0000;
         endcase
       end else if (s_axi_rvalid && s_axi_rready) begin
@@ -580,6 +769,16 @@ module dsm_ip_axi_top #(
     .c3_im(dpd_c3_im_reg),
     .c5_re(dpd_c5_re_reg),
     .c5_im(dpd_c5_im_reg),
+    .mp_active_taps(mp_active_taps_reg),
+    .mp_coeff_we(mp_coeff_we_pulse),
+    .mp_commit(mp_commit_pulse),
+    .mp_coeff_tap(mp_coeff_tap_reg),
+    .mp_coeff_order(mp_coeff_order_reg),
+    .mp_coeff_re(mp_coeff_re_reg),
+    .mp_coeff_im(mp_coeff_im_reg),
+    .mp_coeff_rdata_re(mp_coeff_rdata_re),
+    .mp_coeff_rdata_im(mp_coeff_rdata_im),
+    .mp_active_bank(mp_active_bank),
     .lut_we(dpd_lut_we_pulse),
     .lut_commit(dpd_lut_commit_pulse),
     .lut_waddr(dpd_lut_addr_reg),
@@ -599,6 +798,65 @@ module dsm_ip_axi_top #(
     .out_ready(dsm_input_ready & core_enable & core_rst_n),
     .sample_count(dpd_sample_count),
     .saturation_count(dpd_saturation_count)
+  );
+
+  dpd_observer #(
+    .W(W),
+    .GAIN_W(16),
+    .GAIN_FRAC(14),
+    .DELAY_AW(5)
+  ) u_dpd_observer (
+    .clk(aclk),
+    .rst_n(core_rst_n),
+    .enable(obs_enable_reg),
+    .start(obs_start_pulse),
+    .clear(obs_clear_pulse),
+    .delay_samples(obs_delay_reg),
+    .gain_re(obs_gain_re_reg),
+    .gain_im(obs_gain_im_reg),
+    .temperature_q8_8(condition_temperature_reg),
+    .window_samples(obs_window_reg),
+    .ref_i(axis_i),
+    .ref_q(axis_q),
+    .ref_valid(axis_buf_valid & dpd_ready & core_enable & core_rst_n),
+    .obs_i(s_axis_obs_tdata[W-1:0]),
+    .obs_q(s_axis_obs_tdata[(2*W)-1:W]),
+    .obs_last(s_axis_obs_tlast),
+    .obs_invalid(|s_axis_obs_tuser),
+    .obs_valid(s_axis_obs_tvalid),
+    .obs_ready(s_axis_obs_tready),
+    .active(obs_active),
+    .done(obs_done),
+    .last_seen(obs_last_seen),
+    .paired_count(obs_paired_count),
+    .dropped_count(obs_dropped_count),
+    .error_acc(obs_error_acc),
+    .latched_temperature_q8_8(obs_latched_temperature),
+    .ref_mag_acc(obs_ref_mag_acc),
+    .obs_mag_acc(obs_mag_acc),
+    .obs_peak(obs_peak),
+    .clip_count(obs_clip_count),
+    .saturation_count(obs_saturation_count),
+    .slew_acc(obs_slew_acc),
+    .spec_bin0(obs_spec_bin0),
+    .spec_bin1(obs_spec_bin1),
+    .spec_bin2(obs_spec_bin2),
+    .spec_adj(obs_spec_adj)
+  );
+
+  dpd_seed_predictor u_dpd_seed_predictor (
+    .condition_valid(condition_valid_reg),
+    .condition_version(condition_version_reg),
+    .qam_order(condition_qam_reg),
+    .bandwidth_khz(condition_bw_khz_reg),
+    .backoff_ppm(condition_backoff_ppm_reg),
+    .power_q8_8(condition_power_reg),
+    .temperature_q8_8(condition_temperature_reg),
+    .monitor_state(condition_monitor_reg),
+    .seed_package(seed_package),
+    .condition_known(condition_known),
+    .fallback_required(seed_fallback_required),
+    .local_search_required(seed_local_search_required)
   );
 
   dsm_ip_top #(

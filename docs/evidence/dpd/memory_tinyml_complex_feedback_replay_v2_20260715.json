@@ -1,0 +1,16 @@
+{
+  "feature_schema": "aligned_complex_pa_monitor_v2",
+  "model_version": 131072,
+  "traces": 288,
+  "direct_suggestions": 154,
+  "tree_fallbacks": 134,
+  "direct_safety_violations": 0,
+  "direct_mean_regret": 0.0,
+  "direct_max_regret": 0,
+  "raw_trace_monitor_matches": 288,
+  "raw_trace_monitor_mismatches": 0,
+  "all_features_in_domain": true,
+  "runtime_policy": "mandatory_14_candidate",
+  "tinyml_axi_integration_enabled": false,
+  "note": "Frozen-tree outputs are replayed as suggestions only. The deployed policy continues to execute the 14-candidate safety search."
+}

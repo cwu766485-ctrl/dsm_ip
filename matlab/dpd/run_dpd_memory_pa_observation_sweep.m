@@ -10,7 +10,7 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
   cfg = default_cfg();
   cfg = parse_kv(cfg, varargin{:});
 
-  scenarios = build_scenarios();
+  scenarios = build_scenarios(cfg);
   rows = repmat(empty_row(), numel(scenarios), 1);
   opt_trace = repmat(empty_trace_row(), 0, 1);
 
@@ -23,13 +23,19 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
     local_cfg.input_backoff = sc.input_backoff;
     local_cfg.nused = sc.nused;
     local_cfg.qam_order = sc.qam_order;
+    local_cfg = configure_observation_bandwidth(local_cfg);
 
     x = make_ofdm_source(local_cfg);
     x = local_cfg.input_backoff * x(:) / max(abs(x(:)) + eps);
 
     y_no = realistic_pa_observe(x, local_cfg);
-    coeff = fit_memoryless_poly(y_no, x, local_cfg.poly_order, local_cfg.ridge);
-    coeff_q_initial = quantize_signed(coeff, local_cfg.coeff_frac, local_cfg.coeff_w);
+    if isempty(local_cfg.seed_coeff_q)
+      coeff = fit_memoryless_poly(y_no, x, local_cfg.poly_order, local_cfg.ridge);
+      coeff_q_initial = quantize_signed(coeff, local_cfg.coeff_frac, local_cfg.coeff_w);
+    else
+      coeff_q_initial = validate_seed_coeff_q(local_cfg.seed_coeff_q, local_cfg);
+    end
+    coeff_q_initial = apply_seed_package(coeff_q_initial, local_cfg.seed_package_id, local_cfg);
     [coeff_q_opt, tr] = coordinate_search_poly(x, coeff_q_initial, local_cfg, k, sc.name);
     opt_trace = [opt_trace; tr(:)]; %#ok<AGROW>
 
@@ -39,9 +45,12 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
     x_poly_opt = dpd_poly_fixed_model(x, coeff_q_opt, local_cfg);
     x_lut = dpd_lut_fixed_model(x, lut_q, local_cfg);
 
-    y_poly_initial = realistic_pa_observe(limit_drive(x_poly_initial, local_cfg.dpd_drive_limit), local_cfg);
-    y_poly_opt = realistic_pa_observe(limit_drive(x_poly_opt, local_cfg.dpd_drive_limit), local_cfg);
-    y_lut = realistic_pa_observe(limit_drive(x_lut, local_cfg.dpd_drive_limit), local_cfg);
+    x_poly_initial_limited = limit_drive(x_poly_initial, local_cfg.dpd_drive_limit);
+    x_poly_opt_limited = limit_drive(x_poly_opt, local_cfg.dpd_drive_limit);
+    x_lut_limited = limit_drive(x_lut, local_cfg.dpd_drive_limit);
+    y_poly_initial = realistic_pa_observe(x_poly_initial_limited, local_cfg);
+    y_poly_opt = realistic_pa_observe(x_poly_opt_limited, local_cfg);
+    y_lut = realistic_pa_observe(x_lut_limited, local_cfg);
 
     native_no = eval_native(x, y_no, local_cfg);
     native_poly_initial = eval_native(x, y_poly_initial, local_cfg);
@@ -51,6 +60,10 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
     rf_poly_initial = eval_rf_recovered(x, y_poly_initial, local_cfg);
     rf_poly_opt = eval_rf_recovered(x, y_poly_opt, local_cfg);
     rf_lut = eval_rf_recovered(x, y_lut, local_cfg);
+    mon_no = behavioral_monitor_proxy(x, x, y_no, local_cfg);
+    mon_poly_initial = behavioral_monitor_proxy(x, x_poly_initial_limited, y_poly_initial, local_cfg);
+    mon_poly_opt = behavioral_monitor_proxy(x, x_poly_opt_limited, y_poly_opt, local_cfg);
+    mon_lut = behavioral_monitor_proxy(x, x_lut_limited, y_lut, local_cfg);
 
     rows(k) = empty_row();
     rows(k).Scenario = string(sc.name);
@@ -81,7 +94,36 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
     rows(k).RF_InitialPoly_ACLR_avg_dBc = rf_poly_initial.ACLR_avg_dBc;
     rows(k).RF_OptimizedPoly_ACLR_avg_dBc = rf_poly_opt.ACLR_avg_dBc;
     rows(k).RF_LUT_ACLR_avg_dBc = rf_lut.ACLR_avg_dBc;
+    rows(k).Mon_InitialPoly_InputPower = mon_poly_initial.input_power;
+    rows(k).Mon_InitialPoly_OutputPower = mon_poly_initial.output_power;
+    rows(k).Mon_InitialPoly_Peak = mon_poly_initial.peak;
+    rows(k).Mon_InitialPoly_AvgMag = mon_poly_initial.avg_mag;
+    rows(k).Mon_InitialPoly_EVMProxy = mon_poly_initial.evm_proxy;
+    rows(k).Mon_InitialPoly_ACPRProxy = mon_poly_initial.acpr_proxy;
+    rows(k).Mon_InitialPoly_SpecBin0 = mon_poly_initial.spec_bin0;
+    rows(k).Mon_InitialPoly_SpecBin1 = mon_poly_initial.spec_bin1;
+    rows(k).Mon_InitialPoly_SpecBin2 = mon_poly_initial.spec_bin2;
+    rows(k).Mon_InitialPoly_SpecAdj = mon_poly_initial.spec_adj;
+    rows(k).Mon_InitialPoly_Clip = mon_poly_initial.clip;
+    rows(k).Mon_InitialPoly_Saturation = mon_poly_initial.saturation;
+    rows(k).Mon_OptimizedPoly_InputPower = mon_poly_opt.input_power;
+    rows(k).Mon_OptimizedPoly_OutputPower = mon_poly_opt.output_power;
+    rows(k).Mon_OptimizedPoly_Peak = mon_poly_opt.peak;
+    rows(k).Mon_OptimizedPoly_AvgMag = mon_poly_opt.avg_mag;
+    rows(k).Mon_OptimizedPoly_EVMProxy = mon_poly_opt.evm_proxy;
+    rows(k).Mon_OptimizedPoly_ACPRProxy = mon_poly_opt.acpr_proxy;
+    rows(k).Mon_OptimizedPoly_SpecBin0 = mon_poly_opt.spec_bin0;
+    rows(k).Mon_OptimizedPoly_SpecBin1 = mon_poly_opt.spec_bin1;
+    rows(k).Mon_OptimizedPoly_SpecBin2 = mon_poly_opt.spec_bin2;
+    rows(k).Mon_OptimizedPoly_SpecAdj = mon_poly_opt.spec_adj;
+    rows(k).Mon_OptimizedPoly_Clip = mon_poly_opt.clip;
+    rows(k).Mon_OptimizedPoly_Saturation = mon_poly_opt.saturation;
     rows(k).OptimizedPoly_Loss = scalar_loss(native_poly_opt, local_cfg);
+    rows(k).SeedPackage = local_cfg.seed_package_id;
+    rows(k).InitialPoly_Loss = scalar_loss(native_poly_initial, local_cfg);
+    rows(k).Initial_C1_hex = packed_coeff_hex(coeff_q_initial(1));
+    rows(k).Initial_C3_hex = packed_coeff_hex(coeff_q_initial(2));
+    rows(k).Initial_C5_hex = packed_coeff_hex(coeff_q_initial(3));
     rows(k).C1_hex = packed_coeff_hex(coeff_q_opt(1));
     rows(k).C3_hex = packed_coeff_hex(coeff_q_opt(2));
     rows(k).C5_hex = packed_coeff_hex(coeff_q_opt(3));
@@ -91,13 +133,18 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
 
   T = struct2table(rows);
   Trace = struct2table(opt_trace);
-  out_dir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'out', 'dpd');
-  if ~exist(out_dir, 'dir'), mkdir(out_dir); end
-  writetable(T, fullfile(out_dir, 'dpd_memory_pa_observation_sweep.csv'));
-  writetable(Trace, fullfile(out_dir, 'dpd_memory_pa_observation_coordinate_trace.csv'));
-  write_summary_md(T, cfg, fullfile(out_dir, 'dpd_memory_pa_observation_sweep.md'));
-  save(fullfile(out_dir, 'dpd_memory_pa_observation_sweep.mat'), 'cfg', 'T', 'Trace', 'scenarios');
-  disp(T);
+  if cfg.write_outputs
+    out_dir = cfg.out_dir;
+    if isempty(out_dir)
+      out_dir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'out', 'dpd');
+    end
+    if ~exist(out_dir, 'dir'), mkdir(out_dir); end
+    writetable(T, fullfile(out_dir, 'dpd_memory_pa_observation_sweep.csv'));
+    writetable(Trace, fullfile(out_dir, 'dpd_memory_pa_observation_coordinate_trace.csv'));
+    write_summary_md(T, cfg, fullfile(out_dir, 'dpd_memory_pa_observation_sweep.md'));
+    save(fullfile(out_dir, 'dpd_memory_pa_observation_sweep.mat'), 'cfg', 'T', 'Trace', 'scenarios');
+  end
+  if cfg.verbose, disp(T); end
 end
 
 function cfg = default_cfg()
@@ -114,6 +161,8 @@ function cfg = default_cfg()
   cfg.rf_bp_bw_hz = 36e6;
   cfg.rx_lpf_bw_hz = 24e6;
   cfg.pa_linear_fir = [0.92+0.00j, 0.10-0.035j, -0.025+0.018j];
+  cfg.pa_gain_scale = 1.0;
+  cfg.pa_memory_taps = 3;
   cfg.pa_gain_drift_ppm = 1800;
   cfg.pa_phase_drift_deg = 1.8;
   cfg.pa_phase_ripple_deg = 0.45;
@@ -126,6 +175,7 @@ function cfg = default_cfg()
   cfg.ridge = 1e-7;
   cfg.input_w = 16;
   cfg.input_frac = 15;
+  cfg.monitor_clip_level = 31130;
   cfg.coeff_w = 16;
   cfg.coeff_frac = 14;
   cfg.lut_aw = 4;
@@ -137,33 +187,83 @@ function cfg = default_cfg()
   cfg.loss_sndr_weight = 50;
   cfg.loss_aclr_target_dBc = -45;
   cfg.loss_aclr_weight = 200;
+  cfg.out_dir = '';
+  cfg.write_outputs = true;
+  cfg.verbose = true;
+  cfg.scenario_set = 'baseline';
+  % Six deterministic Q2.14 perturbation packages for simulation-only policy
+  % benchmarking. Package zero preserves the fitted seed exactly.
+  cfg.seed_package_id = 0;
+  % A supplied seed is an externally generated Q2.14 starting package. It is
+  % used by the benchmark to avoid fitting separately to a held PA profile.
+  cfg.seed_coeff_q = [];
+  cfg.scenario_filter = '';
 end
 
-function scenarios = build_scenarios()
-  scenarios = repmat(struct('name', "", 'input_backoff', 0, 'nused', 0, ...
-    'qam_order', 0, 'pa', struct()), 3, 1);
-
-  scenarios(1).name = "memory_pa_nominal_16qam_48sc_bo058";
-  scenarios(1).input_backoff = 0.58;
-  scenarios(1).nused = 48;
-  scenarios(1).qam_order = 16;
-  scenarios(1).pa = make_memory_pa([1.0+0.00j, 0.04-0.015j, -0.012+0.008j], ...
+function scenarios = build_scenarios(cfg)
+  nominal_pa = make_memory_pa([1.0+0.00j, 0.04-0.015j, -0.012+0.008j], ...
     [-0.52+0.24j, -0.09+0.04j, 0.025-0.012j], ...
     [0.18-0.16j, 0.035-0.018j, -0.010+0.006j]);
-
-  scenarios(2).name = "memory_pa_strong_16qam_48sc_bo058";
-  scenarios(2).input_backoff = 0.58;
-  scenarios(2).nused = 48;
-  scenarios(2).qam_order = 16;
-  scenarios(2).pa = make_memory_pa([1.0+0.02j, 0.07-0.03j, -0.018+0.012j], ...
+  strong_pa = make_memory_pa([1.0+0.02j, 0.07-0.03j, -0.018+0.012j], ...
     [-0.72+0.34j, -0.13+0.06j, 0.035-0.018j], ...
     [0.26-0.23j, 0.055-0.030j, -0.016+0.010j]);
 
-  scenarios(3).name = "memory_pa_nominal_64qam_96sc_bo052";
-  scenarios(3).input_backoff = 0.52;
-  scenarios(3).nused = 96;
-  scenarios(3).qam_order = 64;
-  scenarios(3).pa = scenarios(1).pa;
+  if strcmp(cfg.scenario_set, 'extended')
+    scenarios = [ ...
+      scenario('memory_pa_nominal_16qam_48sc_bo058', 0.58, 48, 16, nominal_pa), ...
+      scenario('memory_pa_nominal_16qam_48sc_bo070', 0.70, 48, 16, nominal_pa), ...
+      scenario('memory_pa_nominal_16qam_96sc_bo058', 0.58, 96, 16, nominal_pa), ...
+      scenario('memory_pa_nominal_16qam_96sc_bo070', 0.70, 96, 16, nominal_pa), ...
+      scenario('memory_pa_nominal_64qam_48sc_bo058', 0.58, 48, 64, nominal_pa), ...
+      scenario('memory_pa_nominal_64qam_48sc_bo070', 0.70, 48, 64, nominal_pa), ...
+      scenario('memory_pa_nominal_64qam_96sc_bo058', 0.58, 96, 64, nominal_pa), ...
+      scenario('memory_pa_nominal_64qam_96sc_bo070', 0.70, 96, 64, nominal_pa) ...
+    ];
+  elseif strcmp(cfg.scenario_set, 'baseline')
+    scenarios = [ ...
+      scenario('memory_pa_nominal_16qam_48sc_bo058', 0.58, 48, 16, nominal_pa), ...
+      scenario('memory_pa_strong_16qam_48sc_bo058', 0.58, 48, 16, strong_pa), ...
+      scenario('memory_pa_nominal_64qam_96sc_bo052', 0.52, 96, 64, nominal_pa) ...
+    ];
+  else
+    error('Unknown scenario_set: %s', cfg.scenario_set);
+  end
+
+  for k = 1:numel(scenarios)
+    scenarios(k).pa = apply_pa_profile(scenarios(k).pa, cfg);
+  end
+  if ~isempty(cfg.scenario_filter)
+    scenarios = scenarios(string({scenarios.name}) == string(cfg.scenario_filter));
+    if isempty(scenarios), error('scenario_filter did not match a scenario.'); end
+  end
+end
+
+function sc = scenario(name, backoff, nused, qam, pa)
+  sc = struct('name', string(name), 'input_backoff', backoff, 'nused', nused, ...
+    'qam_order', qam, 'pa', pa);
+end
+
+function cfg = configure_observation_bandwidth(cfg)
+% Keep the modeled RF observation bandwidth matched to the OFDM occupancy.
+  if cfg.nused > 48
+    cfg.nfft = 512;
+    cfg.ncp = 64;
+    cfg.fs_hz = 200e6;
+    cfg.if_hz = 50e6;
+  end
+  occupied_bw_hz = cfg.fs_hz * cfg.nused / cfg.nfft;
+  cfg.channel_bw_hz = 1.10 * occupied_bw_hz;
+  cfg.adjacent_offset_hz = 1.20 * cfg.channel_bw_hz;
+  cfg.rf_bp_bw_hz = 1.25 * cfg.channel_bw_hz;
+  cfg.rx_lpf_bw_hz = 1.10 * cfg.channel_bw_hz;
+end
+
+function pa = apply_pa_profile(pa, cfg)
+  ntap = min(max(round(cfg.pa_memory_taps), 1), numel(pa.c1));
+  pa.c1 = pa.c1(1:ntap);
+  pa.c3 = pa.c3(1:ntap);
+  pa.c5 = pa.c5(1:ntap);
+  pa.c1 = pa.c1 * cfg.pa_gain_scale;
 end
 
 function pa = make_memory_pa(c1, c3, c5)
@@ -233,6 +333,88 @@ function m = eval_rf_recovered(ref, y, cfg)
   m.EVM_percent = ev.EVM_percent;
   m.SNDR_dB = ev.SNDR_dB;
   m.ACLR_avg_dBc = mean([ac.ACLR_L_dBc ac.ACLR_R_dBc]);
+end
+
+function m = behavioral_monitor_proxy(ref, dpd_in, observed, cfg)
+% Match the lightweight PL monitor operations with behavioral PA observations.
+% Output-related fields use the post-PA complex observation, so they are not a
+% bit-true replacement for the RTL DSM output-monitor data path. Saturation
+% follows the DPD Q1.15 output limit, matching the PL counter's meaning.
+  ref_q = quantize_complex_q15(ref, cfg);
+  in_q = quantize_complex_q15(dpd_in, cfg);
+  out_q = quantize_complex_q15(observed, cfg);
+  in_mag = mag_l1_q15(in_q, cfg);
+  out_scalar = out_q.i;
+  out_mag = abs_int64(out_scalar);
+  [in_peak, in_avg] = peak_and_avg(in_mag);
+  [out_peak, out_avg] = peak_and_avg(out_mag);
+  evm_proxy = sum(abs_int64(in_q.i - ref_q.i) + ...
+    abs_int64(in_q.q - ref_q.q));
+  acpr_proxy = sum(abs_int64(diff(out_scalar)));
+  [spec_bin0, spec_bin1, spec_bin2] = fixed_bin_proxy(out_scalar);
+
+  m = struct();
+  m.input_power = sat_u32(sum(in_mag));
+  m.output_power = sat_u32(sum(out_mag));
+  m.peak = pack_u16(out_peak, in_peak);
+  m.avg_mag = pack_u16(out_avg, in_avg);
+  m.evm_proxy = sat_u32(evm_proxy);
+  m.acpr_proxy = sat_u32(acpr_proxy);
+  m.spec_bin0 = spec_bin0;
+  m.spec_bin1 = spec_bin1;
+  m.spec_bin2 = spec_bin2;
+  m.spec_adj = sat_u32(int64(spec_bin0) + int64(spec_bin2));
+  m.clip = sat_u32(sum(abs_int64(in_q.i) >= cfg.monitor_clip_level | ...
+    abs_int64(in_q.q) >= cfg.monitor_clip_level));
+  m.saturation = sat_u32(sum(abs_int64(in_q.i) >= 32767 | ...
+    abs_int64(in_q.q) >= 32767));
+end
+
+function q = quantize_complex_q15(x, cfg)
+  scale = 2^cfg.input_frac;
+  limit = int64(2^(cfg.input_w - 1) - 1);
+  lower = -int64(2^(cfg.input_w - 1));
+  qr = min(max(int64(round(real(x(:)) * scale)), lower), limit);
+  qi = min(max(int64(round(imag(x(:)) * scale)), lower), limit);
+  q = struct('i', qr, 'q', qi);
+end
+
+function mag = mag_l1_q15(q, cfg)
+  mag = min(abs_int64(q.i) + abs_int64(q.q), ...
+    int64(2^(cfg.input_w - 1) - 1));
+end
+
+function [peak, avg] = peak_and_avg(values)
+  values = int64(values(:));
+  peak = min(max(values, [], 'omitnan'), int64(65535));
+  avg = int64(0);
+  for k = 1:numel(values)
+    avg = avg + floor((values(k) - avg) / 16);
+  end
+  avg = min(max(avg, int64(0)), int64(65535));
+end
+
+function [bin0, bin1, bin2] = fixed_bin_proxy(values)
+  values = int64(values(:));
+  phase = mod((0:numel(values)-1).', 4);
+  bin0 = sat_u32(abs_int64(sum(values)));
+  bin2 = sat_u32(abs_int64(sum(values .* int64(1 - 2 * mod(phase, 2)))));
+  bin1_i = sum(values(phase == 0)) - sum(values(phase == 2));
+  bin1_q = sum(values(phase == 3)) - sum(values(phase == 1));
+  bin1 = sat_u32(abs_int64(bin1_i) + abs_int64(bin1_q));
+end
+
+function y = abs_int64(x)
+  y = abs(int64(x));
+end
+
+function value = sat_u32(value)
+  value = double(min(max(int64(value), int64(0)), int64(2^32 - 1)));
+end
+
+function word = pack_u16(high, low)
+  word = double(bitshift(uint32(min(high, int64(65535))), 16) + ...
+    uint32(min(low, int64(65535))));
 end
 
 function rf = complex_to_real_rf(x, Fs, Fif)
@@ -355,6 +537,39 @@ function loss = scalar_loss(m, cfg)
   loss = m.EVM_percent * cfg.loss_evm_weight ...
        - m.SNDR_dB * cfg.loss_sndr_weight ...
        + aclr_penalty * cfg.loss_aclr_weight;
+end
+
+function coeff_q = apply_seed_package(coeff_q, package_id, cfg)
+% Keep package deltas in coefficient LSBs so they map directly to the
+% board-visible Q2.14 polynomial representation.
+  offsets = [ ...
+    0,   0,   0; ...
+    48, -32,  16; ...
+   -48,  32, -16; ...
+    24,  40, -24; ...
+   -24, -40,  24; ...
+    64,  16, -40 ...
+  ];
+  if ~isscalar(package_id) || package_id < 0 || package_id >= size(offsets, 1) || ...
+      package_id ~= floor(package_id)
+    error('seed_package_id must be an integer in [0, %d].', size(offsets, 1) - 1);
+  end
+  delta = offsets(package_id + 1, :);
+  coeff_q = coeff_q(:).';
+  for k = 1:numel(coeff_q)
+    coeff_q(k) = clamp_coeff(coeff_q(k) + complex(delta(k), 0), cfg.coeff_w);
+  end
+end
+
+function coeff_q = validate_seed_coeff_q(coeff_q, cfg)
+  if ~isnumeric(coeff_q) || numel(coeff_q) ~= 3 || any(~isfinite(real(coeff_q(:)))) || ...
+      any(~isfinite(imag(coeff_q(:))))
+    error('seed_coeff_q must contain three finite complex Q2.14 coefficients.');
+  end
+  coeff_q = coeff_q(:).';
+  for k = 1:numel(coeff_q)
+    coeff_q(k) = clamp_coeff(coeff_q(k), cfg.coeff_w);
+  end
 end
 
 function y = clamp_coeff(c, width)
@@ -543,7 +758,21 @@ function row = empty_row()
     'RF_OptimizedPoly_SNDR_dB', NaN, 'RF_LUT_SNDR_dB', NaN, ...
     'RF_NoDPD_ACLR_avg_dBc', NaN, 'RF_InitialPoly_ACLR_avg_dBc', NaN, ...
     'RF_OptimizedPoly_ACLR_avg_dBc', NaN, 'RF_LUT_ACLR_avg_dBc', NaN, ...
-    'OptimizedPoly_Loss', NaN, ...
+    'Mon_InitialPoly_InputPower', NaN, 'Mon_InitialPoly_OutputPower', NaN, ...
+    'Mon_InitialPoly_Peak', NaN, 'Mon_InitialPoly_AvgMag', NaN, ...
+    'Mon_InitialPoly_EVMProxy', NaN, 'Mon_InitialPoly_ACPRProxy', NaN, ...
+    'Mon_InitialPoly_SpecBin0', NaN, 'Mon_InitialPoly_SpecBin1', NaN, ...
+    'Mon_InitialPoly_SpecBin2', NaN, 'Mon_InitialPoly_SpecAdj', NaN, ...
+    'Mon_InitialPoly_Clip', NaN, 'Mon_InitialPoly_Saturation', NaN, ...
+    'Mon_OptimizedPoly_InputPower', NaN, 'Mon_OptimizedPoly_OutputPower', NaN, ...
+    'Mon_OptimizedPoly_Peak', NaN, 'Mon_OptimizedPoly_AvgMag', NaN, ...
+    'Mon_OptimizedPoly_EVMProxy', NaN, 'Mon_OptimizedPoly_ACPRProxy', NaN, ...
+    'Mon_OptimizedPoly_SpecBin0', NaN, 'Mon_OptimizedPoly_SpecBin1', NaN, ...
+    'Mon_OptimizedPoly_SpecBin2', NaN, 'Mon_OptimizedPoly_SpecAdj', NaN, ...
+    'Mon_OptimizedPoly_Clip', NaN, 'Mon_OptimizedPoly_Saturation', NaN, ...
+    'OptimizedPoly_Loss', NaN, 'InitialPoly_Loss', NaN, 'SeedPackage', NaN, ...
+    'Initial_C1_hex', string(""), 'Initial_C3_hex', string(""), ...
+    'Initial_C5_hex', string(""), ...
     'C1_hex', string(""), 'C3_hex', string(""), 'C5_hex', string(""), ...
     'LUT0_hex', string(""), 'LUT15_hex', string(""));
 end

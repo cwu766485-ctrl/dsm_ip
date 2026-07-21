@@ -14,13 +14,15 @@ $work = Join-Path $repo "verif\out_xsim_dpd"
 New-Item -ItemType Directory -Force -Path $work | Out-Null
 
 if (-not $SkipMatlabPrep) {
-  matlab -batch "cd('$($repo.Replace('\','/'))/matlab'); path_setup; prepare_dpd_bittrue_vectors('n_input',256);"
+  matlab -batch "cd('$($repo.Replace('\','/'))/matlab'); path_setup; prepare_dpd_bittrue_vectors('n_input',256); prepare_dpd_memory_poly_bittrue_vectors('n_input',256);"
   if ($LASTEXITCODE -ne 0) { throw "MATLAB DPD vector preparation failed" }
 }
 
 $vecDir = Join-Path $repo "matlab\out\dpd\bittrue"
 Copy-Item (Join-Path $vecDir "dpd_input_iq.csv") (Join-Path $work "dpd_input_iq.csv") -Force
 Copy-Item (Join-Path $vecDir "dpd_coefficients.csv") (Join-Path $work "dpd_coefficients.csv") -Force
+Copy-Item (Join-Path $vecDir "dpd_mp_input_iq.csv") (Join-Path $work "dpd_mp_input_iq.csv") -Force
+Copy-Item (Join-Path $vecDir "dpd_mp_coefficients.csv") (Join-Path $work "dpd_mp_coefficients.csv") -Force
 
 Set-Location $work
 
@@ -58,17 +60,25 @@ function Invoke-VivadoCmd($cmd) {
 
 $dpdPoly = Join-Path $repo "rtl\dpd\dpd_poly.v"
 $dpdLut = Join-Path $repo "rtl\dpd\dpd_lut.v"
+$dpdMemory = Join-Path $repo "rtl\dpd\dpd_memory_poly.v"
 $dpdFrontend = Join-Path $repo "rtl\dpd\dpd_frontend.v"
 $tb = Join-Path $repo "verif\tb\tb_dpd_frontend.sv"
+$tbMemory = Join-Path $repo "verif\tb\tb_dpd_memory_poly_bittrue.sv"
 
 Write-Host "[xsim] compile DPD bit-true"
-Invoke-VivadoCmd "xvlog -sv `"$dpdPoly`" `"$dpdLut`" `"$dpdFrontend`" `"$tb`""
+Invoke-VivadoCmd "xvlog -sv `"$dpdPoly`" `"$dpdLut`" `"$dpdMemory`" `"$dpdFrontend`" `"$tb`" `"$tbMemory`""
 
 Write-Host "[xsim] elaborate DPD bit-true"
 Invoke-VivadoCmd "xelab -debug typical tb_dpd_frontend -s sim_tb_dpd_frontend"
 
 Write-Host "[xsim] run DPD bit-true"
 Invoke-VivadoCmd "xsim sim_tb_dpd_frontend -runall"
+
+Write-Host "[xsim] elaborate DPD memory-polynomial bit-true"
+Invoke-VivadoCmd "xelab -debug typical tb_dpd_memory_poly_bittrue -s sim_tb_dpd_memory_poly_bittrue"
+
+Write-Host "[xsim] run DPD memory-polynomial bit-true"
+Invoke-VivadoCmd "xsim sim_tb_dpd_memory_poly_bittrue -runall"
 
 matlab -batch "cd('$($repo.Replace('\','/'))/matlab'); path_setup; entry_dpd_bittrue_check;"
 if ($LASTEXITCODE -ne 0) { throw "MATLAB DPD bit-true compare failed" }

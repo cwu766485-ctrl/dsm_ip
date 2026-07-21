@@ -1,0 +1,48 @@
+{
+  "feature_schema": "aligned_complex_pa_monitor_v2",
+  "model_version": 131072,
+  "training_conditions": 288,
+  "blind_conditions": 72,
+  "blind_profiles": 3,
+  "profiles": [
+    {
+      "profile": "blind_compression_noise",
+      "conditions": 24,
+      "tree_seeds": 10,
+      "lut_seeds": 11,
+      "fallback_default_seeds": 3,
+      "safety_violations": 5,
+      "mean_seed_regret": 718.0,
+      "mandatory_search_candidates": 14
+    },
+    {
+      "profile": "blind_gain_memory",
+      "conditions": 24,
+      "tree_seeds": 12,
+      "lut_seeds": 9,
+      "fallback_default_seeds": 3,
+      "safety_violations": 5,
+      "mean_seed_regret": 216.70833333333334,
+      "mandatory_search_candidates": 14
+    },
+    {
+      "profile": "blind_thermal_memory",
+      "conditions": 24,
+      "tree_seeds": 8,
+      "lut_seeds": 13,
+      "fallback_default_seeds": 3,
+      "safety_violations": 9,
+      "mean_seed_regret": 675.3333333333334,
+      "mandatory_search_candidates": 14
+    }
+  ],
+  "tree_seed_count": 30,
+  "lut_seed_count": 33,
+  "fallback_default_count": 9,
+  "seed_safety_violations": 19,
+  "mean_seed_regret": 536.6805555555555,
+  "mandatory_search_candidates": 14,
+  "tinyml_axi_integration_enabled": false,
+  "promotion_allowed": false,
+  "note": "Blind PA profiles are excluded from fitting and policy selection. This evaluates package-stage seed safety/regret only; every deployment action remains a 14-candidate local search."
+}

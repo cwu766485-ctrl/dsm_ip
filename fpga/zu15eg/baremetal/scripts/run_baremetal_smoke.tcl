@@ -75,5 +75,5 @@ after 100
 dow $elf_file
 puts "Starting ELF. Watch the PS UART terminal for xil_printf output."
 con
-after 3000
+after 8000
 puts "PASS ELF launched."

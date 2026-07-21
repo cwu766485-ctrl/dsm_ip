@@ -34,6 +34,12 @@ module tb_dsm_ip_axi_smoke;
   reg s_axis_tvalid;
   wire s_axis_tready;
 
+  reg [31:0] s_axis_obs_tdata;
+  reg s_axis_obs_tlast;
+  reg [0:0] s_axis_obs_tuser;
+  reg s_axis_obs_tvalid;
+  wire s_axis_obs_tready;
+
   wire dsm_valid;
   wire i_bit;
   wire q_bit;
@@ -78,6 +84,11 @@ module tb_dsm_ip_axi_smoke;
     .s_axis_tuser(s_axis_tuser),
     .s_axis_tvalid(s_axis_tvalid),
     .s_axis_tready(s_axis_tready),
+    .s_axis_obs_tdata(s_axis_obs_tdata),
+    .s_axis_obs_tlast(s_axis_obs_tlast),
+    .s_axis_obs_tuser(s_axis_obs_tuser),
+    .s_axis_obs_tvalid(s_axis_obs_tvalid),
+    .s_axis_obs_tready(s_axis_obs_tready),
     .dsm_valid(dsm_valid),
     .i_bit(i_bit),
     .q_bit(q_bit),
@@ -152,6 +163,25 @@ module tb_dsm_ip_axi_smoke;
     end
   endtask
 
+  task obs_send;
+    input signed [15:0] i_sample;
+    input signed [15:0] q_sample;
+    input last_sample;
+    input invalid_sample;
+    begin
+      @(posedge aclk);
+      s_axis_obs_tdata <= {q_sample, i_sample};
+      s_axis_obs_tlast <= last_sample;
+      s_axis_obs_tuser <= invalid_sample;
+      s_axis_obs_tvalid <= 1'b1;
+      while (!s_axis_obs_tready) @(posedge aclk);
+      @(posedge aclk);
+      s_axis_obs_tvalid <= 1'b0;
+      s_axis_obs_tlast <= 1'b0;
+      s_axis_obs_tuser <= 1'b0;
+    end
+  endtask
+
   initial begin
     aresetn = 1'b0;
     s_axi_awaddr = 8'd0;
@@ -167,6 +197,10 @@ module tb_dsm_ip_axi_smoke;
     s_axis_tlast = 1'b0;
     s_axis_tuser = 1'b0;
     s_axis_tvalid = 1'b0;
+    s_axis_obs_tdata = 32'd0;
+    s_axis_obs_tlast = 1'b0;
+    s_axis_obs_tuser = 1'b0;
+    s_axis_obs_tvalid = 1'b0;
     valid_count = 0;
 
     repeat (8) @(posedge aclk);
@@ -190,6 +224,8 @@ module tb_dsm_ip_axi_smoke;
     if (rd != 32'd4) $fatal(1, "compiled INTERP_MODE readback mismatch");
     axi_read(7'h40, rd);
     if (rd[1:0] !== 2'b00) $fatal(1, "DPD default mode mismatch");
+    axi_read(7'h14, rd);
+    if (rd != 32'h0001_0002) $fatal(1, "TX frontend v1.2 version mismatch");
     axi_read(7'h44, rd);
     if (rd != 32'h0000_4000) $fatal(1, "DPD default C1 coefficient mismatch");
     axi_write(7'h48, 32'hf1a4_1f6f);
@@ -209,6 +245,26 @@ module tb_dsm_ip_axi_smoke;
     axi_write(7'h40, 32'h0000_0002);
     axi_read(7'h40, rd);
     if (rd[1:0] !== 2'b10) $fatal(1, "DPD LUT mode readback mismatch");
+    axi_write(8'h90, 32'h0000_0201);
+    axi_write(8'h94, 32'h0000_2000);
+    axi_read(8'h94, rd);
+    if (rd != 32'h0000_2000) $fatal(1, "MP shadow coefficient mismatch");
+    axi_write(8'h98, 32'h0000_0001);
+    axi_read(8'h98, rd);
+    if (rd[0] != 1'b1) $fatal(1, "MP coefficient bank did not commit");
+
+    axi_write(8'hbc, 32'h0000_0101);
+    axi_write(8'hc0, 32'd16);
+    axi_write(8'hc4, 32'd20000);
+    axi_write(8'hc8, 32'd700000);
+    axi_write(8'hcc, {16'sd6400, 16'sd0});
+    axi_write(8'hd0, 32'd0);
+    axi_read(8'hd4, rd);
+    if (!rd[3] || rd[4] || !rd[5] || rd[2:0] != 3'd5)
+      $fatal(1, "runtime seed predictor known-condition mismatch: %08x", rd);
+    axi_write(8'hd0, 32'd1);
+    axi_read(8'hd4, rd);
+    if (!rd[4] || !rd[5]) $fatal(1, "monitor fault did not force search fallback");
 
     axi_write(7'h00, 32'h0000_0001);
     axi_read(7'h00, rd);
@@ -222,6 +278,38 @@ module tb_dsm_ip_axi_smoke;
     for (n = 0; n < 64; n++) begin
       axis_send($signed(16'sd512 + n), $signed(16'sd1024 + n), (n == 31) || (n == 63), (n == 7));
     end
+
+    axi_write(8'ha0, 32'h0000_4000);
+    axi_write(8'ha4, 32'd2);
+    axi_write(8'h9c, 32'h0000_0103);
+    obs_send(16'sd575, 16'sd1087, 1'b0, 1'b0);
+    obs_send(16'sd575, 16'sd1087, 1'b1, 1'b0);
+    axi_read(8'ha8, rd);
+    $display("Observation status=%08x", rd);
+    if (!rd[2] || rd[1]) $fatal(1, "observation training window did not complete");
+    axi_read(8'hac, rd);
+    $display("Observation pair count=%0d", rd);
+    if (rd != 32'd2) $fatal(1, "observation paired count mismatch: %0d", rd);
+    axi_read(8'hd8, rd);
+    if (rd != {8'd2, 8'd0, 16'd6400}) $fatal(1, "observation environment mismatch: %08x", rd);
+    axi_read(8'hdc, rd);
+    if (rd != 32'd3320) $fatal(1, "observation reference magnitude mismatch: %0d", rd);
+    axi_read(8'he0, rd);
+    if (rd != 32'd3324) $fatal(1, "observation magnitude mismatch: %0d", rd);
+    axi_read(8'he4, rd);
+    if (rd != 32'd1662) $fatal(1, "observation peak mismatch: %0d", rd);
+    axi_read(8'he8, rd);
+    if (rd != 32'd0) $fatal(1, "observation clip/saturation mismatch: %08x", rd);
+    axi_read(8'hec, rd);
+    if (rd != 32'd0) $fatal(1, "observation slew mismatch: %0d", rd);
+    axi_read(8'hf0, rd);
+    if (rd != 32'd3324) $fatal(1, "observation bin0 mismatch: %0d", rd);
+    axi_read(8'hf4, rd);
+    if (rd != 32'd2174) $fatal(1, "observation bin1 mismatch: %0d", rd);
+    axi_read(8'hf8, rd);
+    if (rd != 32'd0) $fatal(1, "observation bin2 mismatch: %0d", rd);
+    axi_read(8'hfc, rd);
+    if (rd != 32'd3324) $fatal(1, "observation adjacent proxy mismatch: %0d", rd);
 
     repeat (6000) @(posedge aclk);
 

@@ -20,6 +20,7 @@ Set-Location $work
 $filelist = Join-Path $work "filelist_dsm_ip_abs.f"
 $tbTop = Join-Path $repo "verif\tb\tb_dsm_ip_top_smoke.sv"
 $tbAxi = Join-Path $repo "verif\tb\tb_dsm_ip_axi_smoke.sv"
+$tbDpdV11 = Join-Path $repo "verif\tb\tb_dpd_v11.sv"
 
 $rtlFiles = @(
   "$repo\rtl\axis\axis_skid_buffer.sv",
@@ -43,6 +44,10 @@ $rtlFiles = @(
   "$repo\rtl\interp\dsm_interp_frontend.sv",
   "$repo\rtl\dpd\dpd_poly.v",
   "$repo\rtl\dpd\dpd_lut.v",
+  "$repo\rtl\dpd\dpd_memory_poly.v",
+  "$repo\rtl\dpd\dpd_observer.v",
+  "$repo\rtl\dpd\dpd_seed_predictor.v",
+  "$repo\rtl\dpd\dpd_tinyml_tree.v",
   "$repo\rtl\dpd\dpd_frontend.v",
   "$repo\rtl\duc\duc_fs4_merge.sv",
   "$repo\rtl\duc\duc_fs4_merge_signed.sv",
@@ -74,7 +79,10 @@ function Invoke-VivadoCmd($cmd) {
   try {
     cmd.exe /c $tmp
     if ($LASTEXITCODE -ne 0) { throw "Command failed: $cmd" }
-    if ($log -and (Test-Path -LiteralPath $log)) {
+    if ($log -and -not (Test-Path -LiteralPath $log)) {
+      throw "Vivado command returned without producing a log: $cmd"
+    }
+    if ($log) {
       $errors = Select-String -LiteralPath $log -Pattern "ERROR:" -SimpleMatch
       if ($errors) {
         throw "Vivado reported errors while running: $cmd"
@@ -90,7 +98,7 @@ function Invoke-VivadoCmd($cmd) {
 }
 
 Write-Host "[xsim] compile DSM IP top smoke"
-Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tbTop`" `"$tbAxi`""
+Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tbTop`" `"$tbAxi`" `"$tbDpdV11`""
 
 Write-Host "[xsim] elaborate DSM IP top smoke"
 Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_top_smoke -s sim_tb_dsm_ip_top_smoke"
@@ -103,5 +111,11 @@ Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_axi_smoke -s sim_tb_dsm_ip_axi_
 
 Write-Host "[xsim] run DSM IP AXI smoke"
 Invoke-VivadoCmd "xsim sim_tb_dsm_ip_axi_smoke -runall"
+
+Write-Host "[xsim] elaborate DPD v1.1 unit smoke"
+Invoke-VivadoCmd "xelab -debug typical tb_dpd_v11 -s sim_tb_dpd_v11"
+
+Write-Host "[xsim] run DPD v1.1 unit smoke"
+Invoke-VivadoCmd "xsim sim_tb_dpd_v11 -runall"
 
 Write-Host "[xsim] DSM IP smoke PASS"

@@ -1,0 +1,12 @@
+{
+  "model_feature_schema": "behavioral_pa_observation_v1",
+  "replay_feature_schema": "pl_dsm_monitor_v1",
+  "rows": 16,
+  "direct_decisions": 0,
+  "fallback_decisions": 16,
+  "rows_with_missing_features": 16,
+  "rows_with_known_feature_ood": 16,
+  "mean_recorded_search_benefit": 2809.0625,
+  "deployment_allowed": false,
+  "reason": "schema mismatch: retained traces lack temperature and observer-error features, while PL output monitors describe the post-DSM one-bit stream rather than the complex behavioral PA observation"
+}

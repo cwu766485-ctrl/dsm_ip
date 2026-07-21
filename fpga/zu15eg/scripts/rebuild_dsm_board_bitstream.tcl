@@ -2,16 +2,26 @@
 #
 # Usage:
 #   vivado -mode batch -source fpga/zu15eg/scripts/rebuild_dsm_board_bitstream.tcl \
-#     -tclargs fpga/zu15eg/local_hw/pl_ps_gpio_test/pl_ps_gpio_test.xpr
+#     -tclargs fpga/zu15eg/local_hw/pl_ps_gpio_test/pl_ps_gpio_test.xpr 2 0
 
-if {$argc < 1} {
-    puts "Usage: rebuild_dsm_board_bitstream.tcl <vivado_project.xpr>"
+if {$argc < 1 || $argc > 3} {
+    puts "Usage: rebuild_dsm_board_bitstream.tcl <vivado_project.xpr> ?algorithm? ?interp_mode?"
     exit 1
 }
 
 set xpr [file normalize [lindex $argv 0]]
+set algorithm [expr {$argc >= 2 ? [lindex $argv 1] : 2}]
+set interp_mode [expr {$argc >= 3 ? [lindex $argv 2] : 0}]
 if {![file exists $xpr]} {
     puts "ERROR: Vivado project not found: $xpr"
+    exit 1
+}
+if {$algorithm < 0 || $algorithm > 13} {
+    puts "ERROR: algorithm must be in the range 0 to 13"
+    exit 1
+}
+if {$interp_mode < 0 || $interp_mode > 4} {
+    puts "ERROR: interp_mode must be in the range 0 to 4"
     exit 1
 }
 
@@ -42,9 +52,16 @@ foreach bd $bds {
     open_bd_design $bd
     set dsm_cells [get_bd_cells -quiet *dsm_ip*]
     foreach cell $dsm_cells {
-        puts "Configuring DSM IP cell $cell"
-        if {[catch {set_property -dict [list CONFIG.C_S_AXI_ADDR_WIDTH {8}] $cell} msg]} {
-            puts "WARNING: failed to set C_S_AXI_ADDR_WIDTH on $cell: $msg"
+        puts "Configuring DSM IP cell $cell: ALGORITHM=$algorithm INTERP_MODE=$interp_mode"
+        if {[catch {
+            set_property -dict [list \
+                CONFIG.C_S_AXI_ADDR_WIDTH {8} \
+                CONFIG.ALGORITHM $algorithm \
+                CONFIG.INTERP_MODE $interp_mode \
+            ] $cell
+        } msg]} {
+            puts "ERROR: failed to configure DSM IP cell $cell: $msg"
+            exit 1
         }
     }
     puts "Regenerating BD targets: [file tail $bd]"
@@ -82,4 +99,4 @@ if {![string match -nocase "*write_bitstream*Complete*" $impl_status] && ![strin
 }
 
 close_project
-puts "PASS rebuilt local ZU15EG DSM bitstream"
+puts "PASS rebuilt local ZU15EG DSM bitstream (ALGORITHM=$algorithm INTERP_MODE=$interp_mode)"

@@ -1,8 +1,8 @@
 # DPD Models
 
-This folder contains MATLAB models for the planned AI-assisted TX calibration
-path. These models do not replace the DSM datapath. They establish the
-conventional DPD and PA-model baseline before RTL implementation.
+This folder contains MATLAB models for the implemented AI-assisted TX
+calibration path. These models do not replace the DSM datapath. They train and
+evaluate coefficient packages for the deterministic DPD RTL.
 
 ## Current Model
 
@@ -12,6 +12,9 @@ conventional DPD and PA-model baseline before RTL implementation.
 | `run_dpd_fixed_baseline.m` | Quantizes the learned polynomial DPD to signed Q2.14 coefficients and applies an integer Q1.15 datapath matching the first RTL DPD block |
 | `run_ai_assisted_dpd_sweep.m` | Runs a multi-scenario software calibration sweep, refines polynomial DPD coefficients with fixed-point coordinate search, exports polynomial/LUT DPD metrics, and emits AXI-Lite coefficient words |
 | `run_dpd_memory_pa_observation_sweep.m` | Adds a more realistic PA/observation model: memory polynomial PA taps, soft saturation, linear frequency response, gain/phase drift, observation noise, fixed-point optimized polynomial DPD, LUT DPD, and an assumed RF observation chain |
+| `run_dpd_memory_poly_training_comparison.m` | Trains Q2.14 memoryless and 4-tap memory-polynomial coefficients on disjoint fit/validation OFDM data, then compares both against no DPD on held-out test seeds under the same behavioral PA and observation conditions |
+| `run_dpd_memory_tinyml_dataset.m` | Generates six joint EVM/ACLR/safety memory-DPD package labels plus exact `aligned_complex_pa_monitor_v2` raw Q1.15 complex-feedback traces; `training` produces the 12-profile base matrix, `development` produces eight profile-LOSO/model-selection profiles, and `blind` produces three permanently isolated final-test profiles |
+| `prepare_dpd_observer_behavioral_vectors.m` | Exports Q1.15 reference and behavioral-PA feedback vectors plus programmed delay/gain and exact observer counters for XSim closed-loop checking |
 | `export_dpd_coeff_header.m` | Exports MATLAB DPD calibration words, LUT packages, and proxy EVM/SNDR scores to `fpga/zu15eg/baremetal/src/dpd_coeffs.h` for Vitis standalone experiments |
 | `prepare_dpd_bittrue_vectors.m` | Generates deterministic Q1.15 inputs, Q2.14 coefficients, and expected fixed-point DPD outputs for RTL comparison |
 | `compare_dpd_rtl_xsim.m` | Compares `dpd_poly` XSim dumps against MATLAB expected vectors |
@@ -34,6 +37,7 @@ entry_dpd_fixed_baseline
 entry_dpd_bittrue_check
 entry_ai_assisted_dpd_sweep
 entry_dpd_memory_pa_observation_sweep
+entry_dpd_memory_poly_training_comparison
 entry_export_dpd_coeff_header
 ```
 
@@ -85,10 +89,16 @@ matlab/out/dpd/dpd_memory_pa_observation_sweep.csv
 matlab/out/dpd/dpd_memory_pa_observation_sweep.md
 matlab/out/dpd/dpd_memory_pa_observation_sweep.mat
 matlab/out/dpd/dpd_memory_pa_observation_coordinate_trace.csv
+matlab/out/dpd/dpd_memory_poly_comparison.csv
+matlab/out/dpd/dpd_memory_poly_comparison_summary.csv
+matlab/out/dpd/dpd_memory_poly_coefficients.csv
+matlab/out/dpd/dpd_memory_poly_comparison.md
+matlab/out/dpd/dpd_memory_poly_comparison.mat
 matlab/out/dpd/bittrue/dpd_input_iq.csv
 matlab/out/dpd/bittrue/dpd_coefficients.csv
 matlab/out/dpd/bittrue/dpd_expected_iq.csv
 fpga/zu15eg/baremetal/src/dpd_coeffs.h
+fpga/zu15eg/baremetal/src/dpd_tinyml_packages_v2.h
 ```
 
 ## Boundary
@@ -100,7 +110,23 @@ ideal than the memoryless baseline. The coefficients are still not tied to any
 real PA device. A real board or product would recalibrate coefficients for the
 actual PA, frequency, bandwidth, temperature, and output power.
 
-The LUT DPD flow is intended as the first hardware-friendly target for future
-AI or optimization engines. The current implementation uses deterministic
-least-squares fitting; a later model can replace the search method while
-keeping the same AXI-Lite coefficient/LUT programming interface.
+Memoryless polynomial, LUT, and 2-to-4-tap memory-polynomial DPD are implemented
+in RTL. The current coefficient flow uses deterministic indirect learning and
+held-out validation; a later learned model can guide package selection while
+keeping the same AXI-Lite programming interface.
+
+The first learned package selector is now frozen as a depth-4 signed-Q12.20
+decision tree. Generate and verify it with
+`verif/scripts/run_tinyml_tree_equivalence.ps1`. Python owns ratio formation
+and quantization; C and RTL consume the same 13 integer features. The standalone
+tree is intentionally not connected to AXI until XSim and retained board-trace
+replay pass. See `docs/DPD_TINYML_TREE.md` for the exact contract and limits.
+
+Run `entry_dpd_memory_tinyml_development_dataset` to create the 192-condition
+development matrix, then run `entry_dpd_memory_tinyml_blind_dataset` only for
+the permanently frozen 72-condition final test. The legacy observer-v2
+tree/LUT hierarchy has 19 unsafe blind seeds and remains blocked with
+`AVAILABLE=0`. The new offline safety-first policy accepts a seed only after
+unanimous nearest-development safety evidence and otherwise requests
+`fallback_14`; it does not alter the mandatory 14-candidate safety search or
+authorize the legacy PS interface.

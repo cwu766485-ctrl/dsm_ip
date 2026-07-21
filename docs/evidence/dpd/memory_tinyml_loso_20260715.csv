@@ -1,0 +1,6 @@
+Model,DirectDecisions,FallbackDecisions,SafetyViolations,MeanRegret,MeanCandidates,FoldsNotWorseThanLUT,FoldsStrictlyBetterThanLUT,SoftwareQualified
+LUT,140,148,0,127.520833,7.680556,0,0,0
+Linear,0,288,0,0.000000,14.000000,1,0,0
+DecisionTree,148,140,0,0.000000,7.319444,12,9,1
+kNN,148,140,0,0.000000,7.319444,12,9,1
+MLP,107,181,0,0.000000,9.170139,3,0,0
