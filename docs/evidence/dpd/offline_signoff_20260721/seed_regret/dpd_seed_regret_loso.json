@@ -1,0 +1,60 @@
+{
+  "benchmark": "E:\\workspace\\chip\\dsm_ip\\matlab\\out\\dpd\\dpd_seed_regret_benchmark.csv",
+  "dsm_config_id": "efdsm_1bit_osr32_interp0",
+  "export_allowed": false,
+  "regret_budget": 100,
+  "simulation_only": true,
+  "splits": {
+    "profile": {
+      "aclr_limit_dbc": -20.0,
+      "direct_constraint_preserved": false,
+      "direct_count": 55,
+      "direct_rate": 0.1909722222222222,
+      "evm_limit_pct": 8.0,
+      "export_allowed": false,
+      "max_gated_regret": 682.9808240739003,
+      "mean_candidate_reduction": 2.4826388888888893,
+      "mean_fixed_package_3_regret": 286.4828950687293,
+      "mean_gated_candidates": 11.51736111111111,
+      "mean_gated_regret": 15.975240896439345,
+      "mean_knn_seed_regret": 195.20759255491714,
+      "mean_local_candidates": 14.0,
+      "record_count": 288,
+      "status": "evaluated"
+    },
+    "seed": {
+      "aclr_limit_dbc": -20.0,
+      "direct_constraint_preserved": false,
+      "direct_count": 35,
+      "direct_rate": 0.12152777777777778,
+      "evm_limit_pct": 8.0,
+      "export_allowed": false,
+      "max_gated_regret": 399.26976085369824,
+      "mean_candidate_reduction": 1.5798611111111107,
+      "mean_fixed_package_3_regret": 286.4828950687293,
+      "mean_gated_candidates": 12.42013888888889,
+      "mean_gated_regret": 20.133021262349658,
+      "mean_knn_seed_regret": 195.20759255491714,
+      "mean_local_candidates": 14.0,
+      "record_count": 288,
+      "status": "evaluated"
+    },
+    "waveform": {
+      "aclr_limit_dbc": -20.0,
+      "direct_constraint_preserved": false,
+      "direct_count": 37,
+      "direct_rate": 0.1284722222222222,
+      "evm_limit_pct": 8.0,
+      "export_allowed": false,
+      "max_gated_regret": 700.909853652498,
+      "mean_candidate_reduction": 1.6701388888888893,
+      "mean_fixed_package_3_regret": 286.4828950687293,
+      "mean_gated_candidates": 12.32986111111111,
+      "mean_gated_regret": 62.097485860413066,
+      "mean_knn_seed_regret": 233.1463131327579,
+      "mean_local_candidates": 14.0,
+      "record_count": 288,
+      "status": "evaluated"
+    }
+  }
+}

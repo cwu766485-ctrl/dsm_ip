@@ -3,6 +3,95 @@
 This file records project changes that affect interfaces, verification status,
 timing/resource evidence, repository hygiene, or handoff documentation.
 
+## 2026-07-22 20:17:52 +08:00
+
+Reason:
+
+- Complete the pending ZU15EG board replay for the PS-side AI-seed DPD
+  calibration loop after the JTAG/DAP target tree was restored.
+
+Changed files:
+
+- `fpga/zu15eg/scripts/xsdb_probe_dsm_version.tcl`
+- `docs/evidence/dpd/zu15eg_ai_seed_search_20260722/README.md`
+- `docs/evidence/dpd/zu15eg_ai_seed_search_20260722/counter_readback.txt`
+- `docs/evidence/dpd/zu15eg_ai_seed_search_20260722/calibration_trace.csv`
+- `docs/AI_ASSISTED_DPD_RESULTS.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- XSDB target precheck: passed with PL, PSU, and Cortex-A53 #0 visible.
+- The read-only DSM version probe correctly rejected the uninitialized PL map
+  before programming; post-run register access then returned version
+  `0x00010000`.
+- Direct A53 build: passed; generated a 118,776-byte ELF for the 16-QAM,
+  48-subcarrier, 0.58-backoff, seed-1 waveform and `CAL_AI_POLICY_ONLY=1`.
+- Board launch: passed bitstream programming, `psu_init`, A53 reset, ELF
+  download, and execution start.
+- Post-run AXI-Lite counter check: passed with four 4096-sample counters,
+  polynomial DPD active, and zero stall, sticky error, clipping, or DPD
+  saturation.
+- JTAG calibration trace: passed with `complete=1`, `count=14`, and no
+  overflow. Search reduced PL proxy cost from `316604` to `313959`.
+
+Result and remaining limitations:
+
+- The deterministic PS policy-seed -> DMA/PL measurement -> bounded-search ->
+  final-register-update loop is now demonstrated on ZU15EG.
+- UART was unavailable through the active JTAG-only connection, so acceptance
+  uses the versioned memory trace and AXI-Lite counter readback.
+- The tiny MLP remains offline and deployment-disabled. Physical PA feedback
+  and measured RF EVM/SNDR/ACLR still require an external PA and observation
+  receiver.
+
+## 2026-07-22 00:01:00 +08:00
+
+Reason:
+
+- Consolidate every AI-assisted DPD check that does not require ZU15EG, JTAG,
+  PS/DMA execution, or physical RF equipment into one reproducible signoff.
+
+Changed files:
+
+- `scripts/run_ai_dpd_offline_signoff.ps1`
+- `fpga/zu15eg/scripts/evaluate_seed_mlp_loso.py`
+- `matlab/dpd/README.md`
+- `docs/evidence/dpd/offline_signoff_20260721/`
+- `docs/AI_ASSISTED_DPD_RESULTS.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- Strict seed/regret LOSO: passed as a conservative gate; direct one-candidate
+  execution was correctly blocked in profile, waveform, and random-seed
+  holdouts.
+- Safety-first policy Python/C equivalence: 552 decisions, zero mismatches.
+- Observer-v2 feedback replay: 288 traces, zero monitor mismatches.
+- TinyML Python/C/RTL equivalence: 329 decisions, zero mismatches.
+- DPD MATLAB/RTL bit-true: polynomial and four-tap memory-polynomial paths each
+  compared 256 samples with zero mismatches and zero maximum LSB error.
+- Observation receiver MATLAB/RTL equivalence: 63 aligned pairs, one expected
+  drop, and exact counters.
+- Tiny MLP strict LOSO: passed as an offline seed candidate. Mean final-cost
+  change versus fixed package 3 was `-94.01`, `-89.48`, and `-86.40` for held
+  profile, waveform, and random-seed splits, with zero new modeled constraint
+  failures. Deployment remains disabled.
+- Full command:
+  `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_ai_dpd_offline_signoff.ps1`.
+
+Result and remaining limitations:
+
+- Offline behavioral modeling, holdout evaluation, fixed-point software, and
+  RTL equivalence are signed off.
+- The qualified policy remains seed selection plus mandatory 14-candidate
+  bounded search. The MLP may propose the seed, but a direct one-candidate AI
+  path is not qualified.
+- ZU15EG PS/DMA replay and physical PA/observation-receiver EVM/SNDR/ACLR
+  measurement remain board and laboratory tasks.
+
 ## 2026-07-18 01:25:00 +08:00
 
 Reason:

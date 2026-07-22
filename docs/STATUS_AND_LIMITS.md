@@ -190,6 +190,14 @@
   versus fixed package-3 bounded search and introduce no modeled EVM/ACLR,
   clip, or saturation failure. A representative J1 replay produced 14 complete
   records, cost `321062 -> 311350`, and zero safety counters.
+- A fresh ZU15EG replay on 2026-07-22 rebuilt the A53 application directly
+  against the exported BSP and ran the generated waveform-policy seed plus
+  mandatory bounded search. The 14-record JTAG trace completed without
+  overflow, reduced PL proxy cost from `316604` to `313959`, and left
+  polynomial DPD package 2 active. All four datapath counters were 4096 and
+  stall/error/clip/saturation remained zero. This closes the previously
+  recorded DAP-blocked search-loop rerun; it does not qualify physical RF
+  EVM/SNDR/ACLR or the simulation-only tiny MLP.
 
 ## Timing Summary
 
@@ -440,6 +448,21 @@ target in the current evidence.
   fixed DSM cost. All 8/8 actions are therefore validated. Their mean joint
   minus best-fixed cost is `1057.25`, so do not claim a joint-policy benefit or
   build TinyML RTL from this completed negative result.
+- The 2026-07-21 no-board AI-assisted DPD signoff passes the retained
+  behavioral-data, strict holdout, Python/C, Python/C/RTL, DPD sample bit-true,
+  and observation-receiver checks. It covers 1,728 seed/regret rows, 552
+  safety-policy decisions, 329 tree decisions, two 256-sample DPD compares,
+  and 288 observer-v2 trace replays. Strict profile/waveform/random-seed
+  holdouts reject one-candidate direct promotion, so the only qualified action
+  remains seed selection followed by the mandatory 14-candidate bounded
+  search. See `docs/evidence/dpd/offline_signoff_20260721/`.
+- A real tiny MLP software baseline is now evaluated without scikit-learn: 11
+  inputs, 16 hidden units, and six predicted seed costs. Strict held-profile,
+  held-waveform, and held-random-seed tests improve mean bounded-search final
+  cost by `94.01`, `89.48`, and `86.40` versus fixed package 3, with zero new
+  modeled constraint failures. Deployment remains disabled: the result is
+  simulation-only, always requires the 14-candidate search, and has no C,
+  AXI, RTL, board, or physical-PA promotion.
 - Do not populate the multi-scenario manifest by relabelling the existing
   synthetic smoke-vector trace. A valid scenario trace must be produced with
   its declared QAM-OFDM waveform and controlled PA/feedback configuration.

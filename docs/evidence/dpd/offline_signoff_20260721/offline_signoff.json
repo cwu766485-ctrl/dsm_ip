@@ -1,0 +1,53 @@
+{
+    "timestamp":  "2026-07-21 23:56:43 +08:00",
+    "board_required":  false,
+    "regenerate_datasets":  false,
+    "xsim_skipped":  false,
+    "checks":  {
+                   "Seed/regret evaluator self-test":  {
+                                                           "status":  "PASS",
+                                                           "elapsed_seconds":  0.191
+                                                       },
+                   "Strict seed/regret LOSO":  {
+                                                   "status":  "PASS",
+                                                   "elapsed_seconds":  32.308
+                                               },
+                   "Tiny MLP seed-selector strict LOSO":  {
+                                                              "status":  "PASS",
+                                                              "elapsed_seconds":  6.399
+                                                          },
+                   "Safety-first policy Python/C equivalence":  {
+                                                                    "status":  "PASS",
+                                                                    "elapsed_seconds":  2.922
+                                                                },
+                   "TinyML pre-board equivalence":  {
+                                                        "status":  "PASS",
+                                                        "elapsed_seconds":  24.779
+                                                    },
+                   "DPD MATLAB/RTL sample bit-true":  {
+                                                          "status":  "PASS",
+                                                          "elapsed_seconds":  113.04
+                                                      },
+                   "Observation receiver MATLAB/RTL equivalence":  {
+                                                                       "status":  "PASS",
+                                                                       "elapsed_seconds":  48.575
+                                                                   }
+               },
+    "seed_regret":  {
+                        "record_count":  1728,
+                        "profile_count":  12,
+                        "waveform_count":  8,
+                        "random_seed_count":  3,
+                        "package_count":  6,
+                        "local_search_candidates":  14,
+                        "direct_policy_blocked":  true,
+                        "deployed_policy":  "seed selection plus mandatory 14-candidate bounded search",
+                        "tiny_mlp_all_splits_qualified":  true,
+                        "tiny_mlp_deployment_allowed":  false
+                    },
+    "boundary":  {
+                     "completed":  "Behavioral PA/receiver modeling, strict holdout policy evaluation, fixed-point C/RTL equivalence",
+                     "remaining":  "ZU15EG PS/DMA replay and physical PA/RF observation feedback",
+                     "rf_performance_claim_allowed":  false
+                 }
+}

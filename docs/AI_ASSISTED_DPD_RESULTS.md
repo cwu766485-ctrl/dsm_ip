@@ -29,6 +29,54 @@ This is "AI-assisted" in the calibration sense: the current implementation uses
 deterministic optimization rather than a neural network. The PL hardware remains
 fixed-point and verifiable while software searches or selects DPD parameters.
 
+## No-Board Offline Signoff
+
+The complete offline path was rerun on 2026-07-21 through
+`scripts/run_ai_dpd_offline_signoff.ps1`. The retained benchmark contains 1,728
+records across 12 behavioral PA/observation profiles, eight waveforms, three
+random seeds, and six fixed-point DPD seed packages.
+
+Strict leave-one-profile, leave-one-waveform, and leave-one-random-seed checks
+reject one-candidate direct execution. The direct branches admitted by the
+current predictor include held-out constraint violations, so direct promotion
+remains blocked. The qualified architecture is AI/optimization seed selection
+followed by the mandatory 14-candidate bounded search.
+
+Offline implementation checks passed:
+
+- safety-first policy Python/C equivalence: 552 decisions, zero mismatches;
+- observer-v2 raw feedback replay: 288 traces, zero monitor mismatches;
+- TinyML tree Python/C/RTL equivalence: 329 decisions, zero mismatches;
+- polynomial and memory-polynomial DPD bit-true: 256 samples each, zero
+  mismatches and zero maximum LSB error;
+- behavioral observation receiver: 63 aligned pairs and one expected drop,
+  with exact MATLAB/RTL counters.
+
+The retained report is
+`docs/evidence/dpd/offline_signoff_20260721/offline_signoff.md`. This is
+behavioral and fixed-point implementation evidence only. It is not physical-PA
+or measured RF EVM/SNDR/ACLR evidence.
+
+### Tiny MLP Seed Candidate
+
+A dependency-free NumPy implementation now supplies a real learned baseline:
+an 11-input, 16-hidden-unit, six-output MLP predicts the bounded-search final
+cost of each seed package from waveform metadata and one fixed package-3
+observer probe. Training normalization and fitting use only the training side
+of each strict split.
+
+| Held-out axis | Best-package accuracy | Mean final-cost delta vs fixed package 3 | Wins | New constraint failures |
+|---|---:|---:|---:|---:|
+| PA/observation profile | 70.83% | -94.01 | 248/288 | 0 |
+| Waveform | 60.76% | -89.48 | 242/288 | 0 |
+| Random seed | 60.42% | -86.40 | 226/288 | 0 |
+
+Negative cost delta is better. These results qualify the MLP only as an
+offline seed candidate before the mandatory 14-candidate search. They do not
+qualify direct execution, generated C constants, AXI integration, TinyML RTL,
+or physical-PA deployment. The detailed report is
+`docs/evidence/dpd/offline_signoff_20260721/seed_regret/dpd_seed_mlp_loso.md`.
+
 ## Memoryless PA Sweep
 
 Source:
@@ -268,11 +316,16 @@ Checks run:
   PS init, ELF launch, and post-run JTAG counter check.
 - ZU15EG PS-side search-loop build: passed. The updated ELF compiles with the
   coordinate-search loop and final selected-configuration stream rerun.
-- ZU15EG PS-side search-loop board rerun: blocked after one successful ELF
-  launch by an unstable JTAG/DAP session during a later `dow` command
-  (`Invalid DAP ACK value: 3`). This is a board/debug-link issue, not a C build
-  failure. Reconnect or power-cycle the JTAG path before rerunning the board
-  counter check.
+- ZU15EG PS-side AI-seed search-loop board rerun: passed on 2026-07-22 after
+  restoring the JTAG/DAP target tree. XSDB programmed the bitstream, ran PS
+  initialization, downloaded the direct-built A53 ELF, and launched it. The
+  post-run AXI-Lite check reported four matching 4096-sample counters and zero
+  stall, sticky error, clipping, or DPD saturation.
+- The JTAG trace completed with 14 records: one waveform-policy seed, twelve
+  polynomial coefficient perturbations, and one final replay. Search reduced
+  the PL proxy cost from `316604` to `313959` and retained polynomial mode,
+  package 2. Evidence is retained under
+  `docs/evidence/dpd/zu15eg_ai_seed_search_20260722/`.
 
 ## Current Limits
 

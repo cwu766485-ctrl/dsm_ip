@@ -72,6 +72,23 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd
 matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_dpd_rtl_xsim; disp(T); assert(all(T.mismatch==0));"
 ```
 
+Run the complete no-board AI-assisted DPD signoff from PowerShell:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run_ai_dpd_offline_signoff.ps1
+```
+
+Add `-RegenerateDatasets` to rebuild the long-running MATLAB training,
+development, blind, and seed/regret data sets before evaluation. The default
+run verifies the retained data and does not require a board, JTAG, PS, DMA, or
+an RF laboratory setup.
+
+The offline signoff also evaluates a dependency-free 11-input, 16-hidden-unit,
+six-output tiny MLP seed-cost regressor. It uses one fixed package-3 probe and
+observer monitor state to choose a DPD seed, but it never bypasses the mandatory
+14-candidate bounded search. The model is a PS-software research candidate;
+its report does not authorize RTL or board deployment.
+
 Generated outputs:
 
 ```text
