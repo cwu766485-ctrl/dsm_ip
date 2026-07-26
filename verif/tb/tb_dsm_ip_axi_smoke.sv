@@ -9,7 +9,7 @@ module tb_dsm_ip_axi_smoke;
   reg aclk;
   reg aresetn;
 
-  reg [7:0] s_axi_awaddr;
+  reg [8:0] s_axi_awaddr;
   reg s_axi_awvalid;
   wire s_axi_awready;
   reg [31:0] s_axi_wdata;
@@ -20,7 +20,7 @@ module tb_dsm_ip_axi_smoke;
   wire s_axi_bvalid;
   reg s_axi_bready;
 
-  reg [7:0] s_axi_araddr;
+  reg [8:0] s_axi_araddr;
   reg s_axi_arvalid;
   wire s_axi_arready;
   wire [31:0] s_axi_rdata;
@@ -58,7 +58,7 @@ module tb_dsm_ip_axi_smoke;
     .ALGORITHM(2),
     .DUC_MODE(0),
     .INTERP_MODE(4),
-    .C_S_AXI_ADDR_WIDTH(8)
+    .C_S_AXI_ADDR_WIDTH(9)
   ) dut (
     .aclk(aclk),
     .aresetn(aresetn),
@@ -108,7 +108,7 @@ module tb_dsm_ip_axi_smoke;
   reg [31:0] rd;
 
   task axi_write;
-    input [7:0] addr;
+    input [8:0] addr;
     input [31:0] data;
     begin
       @(posedge aclk);
@@ -126,10 +126,105 @@ module tb_dsm_ip_axi_smoke;
     end
   endtask
 
-  task axi_read;
-    input [7:0] addr;
-    output [31:0] data;
+  // AXI4-Lite does not require AW and W to arrive together.  Exercise both
+  // legal orderings, with a deliberate gap between the two handshakes.
+  task axi_write_aw_first;
+    input [8:0] addr;
+    input [31:0] data;
     begin
+      @(posedge aclk);
+      s_axi_awaddr <= addr;
+      s_axi_awvalid <= 1'b1;
+      while (!s_axi_awready) @(posedge aclk);
+      @(posedge aclk);
+      s_axi_awvalid <= 1'b0;
+      repeat (2) @(posedge aclk);
+      s_axi_wdata <= data;
+      s_axi_wstrb <= 4'hf;
+      s_axi_wvalid <= 1'b1;
+      while (!s_axi_wready) @(posedge aclk);
+      @(posedge aclk);
+      s_axi_wvalid <= 1'b0;
+      while (!s_axi_bvalid) @(posedge aclk);
+      @(posedge aclk);
+    end
+  endtask
+
+  task axi_write_w_first;
+    input [8:0] addr;
+    input [31:0] data;
+    begin
+      @(posedge aclk);
+      s_axi_wdata <= data;
+      s_axi_wstrb <= 4'hf;
+      s_axi_wvalid <= 1'b1;
+      while (!s_axi_wready) @(posedge aclk);
+      @(posedge aclk);
+      s_axi_wvalid <= 1'b0;
+      repeat (2) @(posedge aclk);
+      s_axi_awaddr <= addr;
+      s_axi_awvalid <= 1'b1;
+      while (!s_axi_awready) @(posedge aclk);
+      @(posedge aclk);
+      s_axi_awvalid <= 1'b0;
+      while (!s_axi_bvalid) @(posedge aclk);
+      @(posedge aclk);
+    end
+  endtask
+
+  task axi_write_strb;
+    input [8:0] addr;
+    input [31:0] data;
+    input [3:0] strb;
+    begin
+      @(posedge aclk);
+      s_axi_awaddr <= addr;
+      s_axi_awvalid <= 1'b1;
+      s_axi_wdata <= data;
+      s_axi_wstrb <= strb;
+      s_axi_wvalid <= 1'b1;
+      wait (s_axi_awready && s_axi_wready);
+      @(posedge aclk);
+      s_axi_awvalid <= 1'b0;
+      s_axi_wvalid <= 1'b0;
+      wait (s_axi_bvalid);
+      @(posedge aclk);
+    end
+  endtask
+
+  task axi_write_bready_stall;
+    input [8:0] addr;
+    input [31:0] data;
+    integer hold_cycle;
+    begin
+      @(posedge aclk);
+      s_axi_awaddr <= addr;
+      s_axi_awvalid <= 1'b1;
+      s_axi_wdata <= data;
+      s_axi_wstrb <= 4'hf;
+      s_axi_wvalid <= 1'b1;
+      wait (s_axi_awready && s_axi_wready);
+      @(posedge aclk);
+      s_axi_awvalid <= 1'b0;
+      s_axi_wvalid <= 1'b0;
+      s_axi_bready <= 1'b0;
+      wait (s_axi_bvalid);
+      for (hold_cycle = 0; hold_cycle < 3; hold_cycle = hold_cycle + 1) begin
+        @(posedge aclk);
+        if (!s_axi_bvalid || s_axi_bresp != 2'b00)
+          $fatal(1, "B response did not remain stable while BREADY was low");
+      end
+      s_axi_bready <= 1'b1;
+      @(posedge aclk);
+    end
+  endtask
+
+  task axi_read_rready_stall;
+    input [8:0] addr;
+    input [31:0] expected;
+    integer hold_cycle;
+    begin
+      s_axi_rready <= 1'b0;
       @(posedge aclk);
       s_axi_araddr <= addr;
       s_axi_arvalid <= 1'b1;
@@ -137,7 +232,44 @@ module tb_dsm_ip_axi_smoke;
       @(posedge aclk);
       s_axi_arvalid <= 1'b0;
       wait (s_axi_rvalid);
-      data = s_axi_rdata;
+      #1;
+      for (hold_cycle = 0; hold_cycle < 3; hold_cycle = hold_cycle + 1) begin
+        if (s_axi_rdata !== expected || s_axi_rresp != 2'b00)
+          $fatal(1, "R response changed while RREADY was low");
+        @(posedge aclk);
+      end
+      s_axi_rready <= 1'b1;
+      @(posedge aclk);
+    end
+  endtask
+
+  task wait_mp_commit_ack;
+    integer poll;
+    begin
+      for (poll = 0; poll < 32; poll = poll + 1) begin
+        axi_read(9'h110, rd);
+        if (rd[0]) begin
+          poll = 32;
+        end
+      end
+      if (!rd[0]) $fatal(1, "MP commit did not acknowledge: %08x", rd);
+    end
+  endtask
+
+  task axi_read;
+    input [8:0] addr;
+    output [31:0] data;
+    begin
+      @(posedge aclk);
+      s_axi_araddr <= addr;
+      s_axi_arvalid <= 1'b1;
+      wait (s_axi_arready);
+       @(posedge aclk);
+       s_axi_arvalid <= 1'b0;
+       wait (s_axi_rvalid);
+       // The RTL updates RVALID and RDATA with nonblocking assignments on
+       // the accepting clock edge.  Sample after that NBA update.
+       #1 data = s_axi_rdata;
       @(posedge aclk);
     end
   endtask
@@ -184,13 +316,13 @@ module tb_dsm_ip_axi_smoke;
 
   initial begin
     aresetn = 1'b0;
-    s_axi_awaddr = 8'd0;
+    s_axi_awaddr = 9'd0;
     s_axi_awvalid = 1'b0;
     s_axi_wdata = 32'd0;
     s_axi_wstrb = 4'h0;
     s_axi_wvalid = 1'b0;
     s_axi_bready = 1'b1;
-    s_axi_araddr = 8'd0;
+    s_axi_araddr = 9'd0;
     s_axi_arvalid = 1'b0;
     s_axi_rready = 1'b1;
     s_axis_tdata = 32'd0;
@@ -212,7 +344,7 @@ module tb_dsm_ip_axi_smoke;
     s_axis_tvalid <= 1'b0;
 
     axi_read(7'h24, rd);
-    if (rd[0] !== 1'b1) $fatal(1, "sticky error was not set while stream was not ready");
+    if (rd[0] !== 1'b1) $fatal(1, "sticky error was not set while stream was not ready: rd=%h", rd);
     axi_write(7'h24, 32'h0000_0001);
     axi_read(7'h24, rd);
     if (rd != 32'h0000_0000) $fatal(1, "sticky error did not clear");
@@ -225,7 +357,23 @@ module tb_dsm_ip_axi_smoke;
     axi_read(7'h40, rd);
     if (rd[1:0] !== 2'b00) $fatal(1, "DPD default mode mismatch");
     axi_read(7'h14, rd);
-    if (rd != 32'h0001_0002) $fatal(1, "TX frontend v1.2 version mismatch");
+    if (rd != 32'h0001_0005) $fatal(1, "TX frontend v1.5 version mismatch");
+    axi_read(9'h108, rd);
+    if (!rd[2] || !rd[18] || !rd[19] || rd[5:3] != 3'd4 ||
+        rd[8:6] != 3'd5 || rd[12:9] != 4'd2 || rd[16:13] != 4'd4)
+      $fatal(1, "capability register mismatch: %08x", rd);
+    axi_write_aw_first(9'h104, 32'h0000_0003);
+    axi_read(9'h104, rd);
+    if (rd[3:0] != 4'd3) $fatal(1, "AW-first DSM control mismatch: %08x", rd);
+    axi_write_strb(9'h104, 32'h0000_000f, 4'h0);
+    axi_read(9'h104, rd);
+    if (rd[3:0] != 4'd3) $fatal(1, "WSTRB=0 unexpectedly changed DSM control: %08x", rd);
+    axi_write_w_first(9'h104, 32'h0000_0004);
+    axi_read(9'h104, rd);
+    if (rd[3:0] != 4'd4) $fatal(1, "W-first DSM control mismatch: %08x", rd);
+    axi_write(9'h104, 32'h0000_0000);
+    axi_write_bready_stall(9'h120, 32'hdead_beef);
+    axi_read_rready_stall(9'h14, 32'h0001_0005);
     axi_read(7'h44, rd);
     if (rd != 32'h0000_4000) $fatal(1, "DPD default C1 coefficient mismatch");
     axi_write(7'h48, 32'hf1a4_1f6f);
@@ -250,8 +398,12 @@ module tb_dsm_ip_axi_smoke;
     axi_read(8'h94, rd);
     if (rd != 32'h0000_2000) $fatal(1, "MP shadow coefficient mismatch");
     axi_write(8'h98, 32'h0000_0001);
+    wait_mp_commit_ack();
     axi_read(8'h98, rd);
     if (rd[0] != 1'b1) $fatal(1, "MP coefficient bank did not commit");
+    axi_read(9'h10c, rd);
+    if (rd[1:0] != 2'b10 || !rd[4])
+      $fatal(1, "effective status does not report Memory-Poly bank 1: %08x", rd);
 
     axi_write(8'hbc, 32'h0000_0101);
     axi_write(8'hc0, 32'd16);
@@ -286,7 +438,14 @@ module tb_dsm_ip_axi_smoke;
     obs_send(16'sd575, 16'sd1087, 1'b1, 1'b0);
     axi_read(8'ha8, rd);
     $display("Observation status=%08x", rd);
-    if (!rd[2] || rd[1]) $fatal(1, "observation training window did not complete");
+    if (!rd[2] || rd[1] || !rd[4] || rd[5])
+      $fatal(1, "observation training window did not complete cleanly");
+    axi_read(8'hb4, rd);
+    axi_write(9'h114, 32'h0000_0001);
+    axi_read(9'h118, rd);
+    if (rd !== dut.obs_error_acc[31:0]) $fatal(1, "observation error snapshot low mismatch");
+    axi_read(9'h11c, rd);
+    if (rd !== dut.obs_error_acc[63:32]) $fatal(1, "observation error snapshot high mismatch");
     axi_read(8'hac, rd);
     $display("Observation pair count=%0d", rd);
     if (rd != 32'd2) $fatal(1, "observation paired count mismatch: %0d", rd);

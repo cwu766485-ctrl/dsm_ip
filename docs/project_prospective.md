@@ -1,6 +1,6 @@
 # Project Prospective
 
-Timestamp: 2026-07-15 14:17:31 +08:00
+Timestamp: 2026-07-22 21:15:00 +08:00
 
 ## Current Position
 
@@ -15,6 +15,9 @@ TX IP prototype. The current baseline contains:
   2-to-4-tap memory-polynomial modes.
 - An optional non-blocking observation AXI-Stream input with programmed
   delay/gain alignment and bounded training windows.
+- A documented calibration contract separating PL execution from PS/PC model
+  identification, coefficient selection, and AXI-Lite writeback.
+- Safety-gated coefficient-bank commits and saturation fallback for DPD modes.
 - Runtime QAM/bandwidth/backoff/power/temperature/monitor-state registers and a
   conservative dynamic seed selector.
 - XSim smoke and bit-true regressions.
@@ -59,6 +62,27 @@ simulation feedback / ILA-visible metrics / future observation receiver
 
 This partition keeps the FPGA datapath practical while still demonstrating a
 modern communication SoC-style calibration architecture.
+
+## Current DPD Upgrade Evidence
+
+The next implementation baseline is defined by
+`DPD_CALIBRATION_INTERFACE.md`:
+
+- The observation AXI-Stream is the feedback interface for a future PA/coupler
+  receiver, including frame, invalid-sample, delay, and gain conventions.
+- The deterministic PL DPD engine retains the active coefficient package until
+  an inactive bank has passed safety checks and a single atomic commit.
+- Coefficient magnitude limits, rejected-commit status, and saturation-to-
+  bypass fallback protect a new package during board or silicon bring-up.
+- `run_dpd_model_selection_sweep.m` evaluates behavioral PA conditions and
+  selects an order/depth candidate using EVM, ACLR, clipping, and structural
+  resource proxies.
+
+The memoryless RTL kernel now implements first-, third-, fifth-, and
+seventh-order terms, with a dedicated Q1.15/Q2.14 MATLAB/XSim bit-true flow.
+The banked memory-polynomial kernel remains first/third/fifth order. Do not
+select a seventh-order memory-polynomial architecture until its own RTL and
+bit-true regression exist.
 
 ## Technical Route
 

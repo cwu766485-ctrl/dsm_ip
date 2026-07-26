@@ -2,6 +2,46 @@
 
 This directory contains compact evidence for the DSM IP handoff.
 
+## ZU15EG DPD OOC Matrix
+
+Reference file:
+
+```text
+ooc/dpd_ooc_xczu15eg_ffvb1156_1_i_20260725_summary.csv
+```
+
+This is the post-synthesis OOC comparison of bypass, LUT, polynomial 3/5/7,
+and memory-polynomial 1/2/4/6-tap DPD implementations. See
+`docs/DPD_PPA_REPORT.md` for the architecture decision and evidence limits.
+
+## ZU15EG Feature-Gated DPD OOC Matrix
+
+Reference file:
+
+```text
+ooc/dpd_feature_ooc_zu15eg_ffvb1156_2_i_20260725_summary.csv
+```
+
+This is the current `dpd_frontend` product-SKU comparison on the actual
+`xczu15eg-ffvb1156-2-i` target. It preserves dynamic polynomial coefficients,
+uses compile-time branch gates, and includes a development build with all DPD
+modes retained. It is post-synthesis OOC evidence, not routed full-TX timing.
+
+## ZU15EG Full-TX Routed Implementation
+
+Reference file:
+
+```text
+integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv
+```
+
+This is the routed 100 MHz `xczu15eg-ffvb1156-2-i` implementation for EFDSM
+1-bit, x32 CIC plus compensation FIR interpolation, fixed Fs/4 DUC, and the
+Memory-Poly5 four-tap SKU. Polynomial and LUT DPD branches are compile-time
+pruned. It includes bitstream and XSA generation. See
+`docs/FULL_TX_IMPLEMENTATION.md` for the clock/reset contract and the boundary
+between implementation evidence and physical RF validation.
+
 ## Timing-Clean OOC Paths
 
 Reference file:

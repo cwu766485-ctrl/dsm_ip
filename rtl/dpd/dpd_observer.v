@@ -42,7 +42,12 @@ module dpd_observer #(
   output wire [31:0] spec_bin0,
   output wire [31:0] spec_bin1,
   output wire [31:0] spec_bin2,
-  output wire [31:0] spec_adj
+  output wire [31:0] spec_adj,
+  // Sticky, per-window overflow indicators.  Software must reject a window
+  // with any asserted bit instead of using wrapped fixed-width statistics.
+  // [0] pair/drop count, [1] error accumulator, [2] magnitude/slew,
+  // [3] clip/saturation count, [4] fixed-bin spectral accumulators.
+  output reg [4:0] overflow_flags
 );
 
   localparam integer DEPTH = (1 << DELAY_AW);
@@ -119,6 +124,16 @@ module dpd_observer #(
   wire [32:0] spec_bin1_sum = {1'b0, spec_bin1_i_mag} + {1'b0, spec_bin1_q_mag};
   wire [32:0] spec_bin2_sum = {1'b0, spec_bin2_i_mag} + {1'b0, spec_bin2_q_mag};
   wire [32:0] spec_adj_sum = {1'b0, spec_bin0} + {1'b0, spec_bin2};
+  wire signed [31:0] spec_bin2_i_term = spec_phase[0] ? -aligned_i_ext : aligned_i_ext;
+  wire signed [31:0] spec_bin2_q_term = spec_phase[0] ? -aligned_q_ext : aligned_q_ext;
+  wire signed [31:0] spec_bin1_i_term = (spec_phase == 2'd0) ? aligned_i_ext :
+                                         (spec_phase == 2'd1) ? aligned_q_ext :
+                                         (spec_phase == 2'd2) ? -aligned_i_ext :
+                                                                 -aligned_q_ext;
+  wire signed [31:0] spec_bin1_q_term = (spec_phase == 2'd0) ? aligned_q_ext :
+                                         (spec_phase == 2'd1) ? -aligned_i_ext :
+                                         (spec_phase == 2'd2) ? -aligned_q_ext :
+                                                                 aligned_i_ext;
 
   assign spec_bin0 = spec_bin0_sum[32] ? 32'hffff_ffff : spec_bin0_sum[31:0];
   assign spec_bin1 = spec_bin1_sum[32] ? 32'hffff_ffff : spec_bin1_sum[31:0];
@@ -158,6 +173,16 @@ module dpd_observer #(
     end
   endfunction
 
+  function signed_add_overflow32;
+    input signed [31:0] lhs;
+    input signed [31:0] rhs;
+    reg signed [31:0] sum;
+    begin
+      sum = lhs + rhs;
+      signed_add_overflow32 = ~(lhs[31] ^ rhs[31]) & (sum[31] ^ lhs[31]);
+    end
+  endfunction
+
   integer idx;
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
@@ -186,6 +211,7 @@ module dpd_observer #(
       spec_bin1_q_acc <= 32'sd0;
       spec_bin2_i_acc <= 32'sd0;
       spec_bin2_q_acc <= 32'sd0;
+      overflow_flags <= 5'd0;
       for (idx = 0; idx < DEPTH; idx = idx + 1) begin
         ref_i_mem[idx] <= {W{1'b0}};
         ref_q_mem[idx] <= {W{1'b0}};
@@ -218,6 +244,7 @@ module dpd_observer #(
         spec_bin1_q_acc <= 32'sd0;
         spec_bin2_i_acc <= 32'sd0;
         spec_bin2_q_acc <= 32'sd0;
+        overflow_flags <= 5'd0;
         done <= 1'b0;
         last_seen <= 1'b0;
         active <= start & enable;
@@ -227,15 +254,28 @@ module dpd_observer #(
           if (obs_last) last_seen <= 1'b1;
           if (obs_invalid || !ref_available) begin
             dropped_count <= dropped_count + 32'd1;
+            if (dropped_count == 32'hffff_ffff) overflow_flags[0] <= 1'b1;
           end else begin
             paired_count <= paired_count + 32'd1;
             error_acc <= error_acc + error_now;
             ref_mag_acc <= ref_mag_acc + ref_mag_now;
             obs_mag_acc <= obs_mag_acc + obs_mag_now;
+            if (paired_count == 32'hffff_ffff) overflow_flags[0] <= 1'b1;
+            if (error_acc > (64'hffff_ffff_ffff_ffff - error_now))
+              overflow_flags[1] <= 1'b1;
+            if ((ref_mag_acc > (32'hffff_ffff - ref_mag_now)) ||
+                (obs_mag_acc > (32'hffff_ffff - obs_mag_now)) ||
+                (obs_prev_valid && (slew_acc > (32'hffff_ffff - slew_now))))
+              overflow_flags[2] <= 1'b1;
             if (obs_mag_sat > obs_peak) obs_peak <= obs_mag_sat;
-            if (obs_clip_now) clip_count <= clip_count + 16'd1;
-            if (aligned_i_saturated || aligned_q_saturated)
+            if (obs_clip_now) begin
+              clip_count <= clip_count + 16'd1;
+              if (clip_count == 16'hffff) overflow_flags[3] <= 1'b1;
+            end
+            if (aligned_i_saturated || aligned_q_saturated) begin
               saturation_count <= saturation_count + 16'd1;
+              if (saturation_count == 16'hffff) overflow_flags[3] <= 1'b1;
+            end
             if (obs_prev_valid) slew_acc <= slew_acc + slew_now;
             obs_i_prev <= aligned_i;
             obs_q_prev <= aligned_q;
@@ -247,7 +287,7 @@ module dpd_observer #(
               spec_bin2_q_acc <= spec_bin2_q_acc - aligned_q_ext;
             end else begin
               spec_bin2_i_acc <= spec_bin2_i_acc + aligned_i_ext;
-              spec_bin2_q_acc <= spec_bin2_q_acc + aligned_q_ext;
+            spec_bin2_q_acc <= spec_bin2_q_acc + aligned_q_ext;
             end
             case (spec_phase)
               2'd0: begin
@@ -268,6 +308,13 @@ module dpd_observer #(
               end
             endcase
             spec_phase <= spec_phase + 2'd1;
+            if (signed_add_overflow32(spec_bin0_i_acc, aligned_i_ext) ||
+                signed_add_overflow32(spec_bin0_q_acc, aligned_q_ext) ||
+                signed_add_overflow32(spec_bin1_i_acc, spec_bin1_i_term) ||
+                signed_add_overflow32(spec_bin1_q_acc, spec_bin1_q_term) ||
+                signed_add_overflow32(spec_bin2_i_acc, spec_bin2_i_term) ||
+                signed_add_overflow32(spec_bin2_q_acc, spec_bin2_q_term))
+              overflow_flags[4] <= 1'b1;
             if ((window_samples != 0) &&
                 ((paired_count + 32'd1) >= window_samples)) begin
               active <= 1'b0;

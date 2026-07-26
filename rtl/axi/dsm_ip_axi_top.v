@@ -9,13 +9,18 @@ module dsm_ip_axi_top #(
   parameter integer LUT_AW = 10,
   parameter integer TW_W = 16,
   parameter integer DPD_LUT_AW = 4,
+  parameter integer DPD_MP_MAX_TAPS = 4,
+  parameter integer DPD_POLY_ORDER = 5,
+  parameter integer ENABLE_DPD_POLY = 1,
+  parameter integer ENABLE_DPD_LUT = 1,
+  parameter integer ENABLE_DPD_MEMORY = 1,
   parameter integer ALGORITHM = 2,
   parameter integer DUC_MODE = 0,
   parameter integer INTERP_MODE = 0,
   parameter integer CLK_FREQ_HZ = 100000000,
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
-  parameter integer C_S_AXI_ADDR_WIDTH = 8,
+  parameter integer C_S_AXI_ADDR_WIDTH = 9,
   parameter integer C_S_AXI_DATA_WIDTH = 32,
   parameter integer C_S_AXIS_TDATA_WIDTH = 32,
   parameter integer C_S_AXIS_TUSER_WIDTH = 1,
@@ -27,11 +32,11 @@ module dsm_ip_axi_top #(
 
   input wire [C_S_AXI_ADDR_WIDTH-1:0] s_axi_awaddr,
   input wire s_axi_awvalid,
-  output reg s_axi_awready,
+  output wire s_axi_awready,
   input wire [C_S_AXI_DATA_WIDTH-1:0] s_axi_wdata,
   input wire [(C_S_AXI_DATA_WIDTH/8)-1:0] s_axi_wstrb,
   input wire s_axi_wvalid,
-  output reg s_axi_wready,
+  output wire s_axi_wready,
   output reg [1:0] s_axi_bresp,
   output reg s_axi_bvalid,
   input wire s_axi_bready,
@@ -55,6 +60,7 @@ module dsm_ip_axi_top #(
   input wire [C_S_AXIS_OBS_TUSER_WIDTH-1:0] s_axis_obs_tuser,
   input wire s_axis_obs_tvalid,
   output wire s_axis_obs_tready,
+  output wire obs_irq,
 
   output wire dsm_valid,
   output wire i_bit,
@@ -67,8 +73,8 @@ module dsm_ip_axi_top #(
   output wire [PHASE_W-1:0] phase_acc_dbg
 );
 
-  localparam [31:0] CORE_VERSION = 32'h0001_0002;
-  localparam [5:0] ADDR_CTRL       = 6'h00;
+  localparam [31:0] CORE_VERSION = 32'h0001_0005;
+  localparam [6:0] ADDR_CTRL       = 7'h00;
   localparam [5:0] ADDR_STATUS     = 6'h01;
   localparam [5:0] ADDR_PHASE_INC  = 6'h02;
   localparam [5:0] ADDR_ALGORITHM  = 6'h03;
@@ -115,7 +121,7 @@ module dsm_ip_axi_top #(
   localparam [5:0] ADDR_OBS_DROP_COUNT = 6'h2c;
   localparam [5:0] ADDR_OBS_ERROR_LO = 6'h2d;
   localparam [5:0] ADDR_OBS_ERROR_HI = 6'h2e;
-  localparam [5:0] ADDR_COND_CTRL = 6'h2f;
+  localparam [6:0] ADDR_COND_CTRL = 7'h2f;
   localparam [5:0] ADDR_COND_QAM = 6'h30;
   localparam [5:0] ADDR_COND_BW = 6'h31;
   localparam [5:0] ADDR_COND_BACKOFF = 6'h32;
@@ -131,10 +137,22 @@ module dsm_ip_axi_top #(
   localparam [5:0] ADDR_OBS_SPEC_BIN0 = 6'h3c;
   localparam [5:0] ADDR_OBS_SPEC_BIN1 = 6'h3d;
   localparam [5:0] ADDR_OBS_SPEC_BIN2 = 6'h3e;
-  localparam [5:0] ADDR_OBS_SPEC_ADJ = 6'h3f;
+  localparam [6:0] ADDR_OBS_SPEC_ADJ = 7'h3f;
+  // Extended bank: preserves the legacy 0x00-0xfc byte address map.
+  localparam [6:0] ADDR_DPD_C7 = 7'h40;
+  localparam [6:0] ADDR_DSM_CTRL = 7'h41;
+  localparam [6:0] ADDR_CAPABILITY = 7'h42;
+  localparam [6:0] ADDR_EFFECTIVE_STATUS = 7'h43;
+  localparam [6:0] ADDR_MP_COMMIT_STATUS = 7'h44;
+  localparam [6:0] ADDR_OBS_SNAPSHOT = 7'h45;
+  localparam [6:0] ADDR_OBS_SNAPSHOT_ERROR_LO = 7'h46;
+  localparam [6:0] ADDR_OBS_SNAPSHOT_ERROR_HI = 7'h47;
   localparam [W-1:0] MON_CLIP_LEVEL = {1'b0, {(W-4){1'b1}}, 3'b000};
 
   reg [31:0] ctrl_reg;
+  // Runtime DSM attenuation is intentionally limited to a signed right shift;
+  // structural DSM/DUC/interpolator choices remain compile-time SKU controls.
+  reg [3:0] dsm_input_shift_reg;
   reg [PHASE_W-1:0] phase_inc_reg;
   reg soft_reset_pulse;
   reg [31:0] input_sample_count;
@@ -153,18 +171,21 @@ module dsm_ip_axi_top #(
   reg signed [15:0] dpd_c3_im_reg;
   reg signed [15:0] dpd_c5_re_reg;
   reg signed [15:0] dpd_c5_im_reg;
+  reg signed [15:0] dpd_c7_re_reg;
+  reg signed [15:0] dpd_c7_im_reg;
   reg [DPD_LUT_AW-1:0] dpd_lut_addr_reg;
   reg dpd_lut_we_pulse;
   reg dpd_lut_commit_pulse;
   reg signed [15:0] dpd_lut_wgain_re_reg;
   reg signed [15:0] dpd_lut_wgain_im_reg;
-  reg [1:0] mp_coeff_tap_reg;
+  reg [2:0] mp_coeff_tap_reg;
   reg [1:0] mp_coeff_order_reg;
   reg [2:0] mp_active_taps_reg;
   reg signed [15:0] mp_coeff_re_reg;
   reg signed [15:0] mp_coeff_im_reg;
   reg mp_coeff_we_pulse;
   reg mp_commit_pulse;
+  reg dpd_safety_clear_pulse;
   reg obs_enable_reg;
   reg obs_start_pulse;
   reg obs_clear_pulse;
@@ -172,6 +193,7 @@ module dsm_ip_axi_top #(
   reg signed [15:0] obs_gain_re_reg;
   reg signed [15:0] obs_gain_im_reg;
   reg [31:0] obs_window_reg;
+  reg obs_irq_enable_reg;
   reg condition_valid_reg;
   reg [7:0] condition_version_reg;
   reg [15:0] condition_qam_reg;
@@ -180,6 +202,19 @@ module dsm_ip_axi_top #(
   reg signed [15:0] condition_power_reg;
   reg signed [15:0] condition_temperature_reg;
   reg [31:0] condition_monitor_reg;
+  reg aw_hold_valid;
+  reg [C_S_AXI_ADDR_WIDTH-1:0] aw_hold_addr;
+  reg w_hold_valid;
+  reg [C_S_AXI_DATA_WIDTH-1:0] w_hold_data;
+  reg [(C_S_AXI_DATA_WIDTH/8)-1:0] w_hold_strb;
+  reg mp_commit_pending;
+  reg mp_commit_inflight;
+  reg mp_commit_ack;
+  reg mp_commit_failed;
+  reg mp_commit_target_bank;
+  reg [7:0] mp_commit_epoch;
+  reg [63:0] obs_error_snapshot;
+  reg obs_snapshot_valid;
   reg [31:0] mon_input_power_acc;
   reg [31:0] mon_output_power_acc;
   reg [31:0] mon_input_clip_count;
@@ -196,21 +231,27 @@ module dsm_ip_axi_top #(
   reg signed [31:0] mon_spec_bin1_i_acc;
   reg signed [31:0] mon_spec_bin1_q_acc;
   reg signed [31:0] mon_spec_bin2_acc;
+  wire dpd_safety_fault;
+  wire dpd_mp_commit_rejected;
+  wire dpd_lut_commit_rejected;
+  wire obs_done;
 
   wire core_enable = ctrl_reg[0];
   wire soft_reset = soft_reset_pulse;
   wire core_rst_n = aresetn & ~soft_reset;
-  wire [7:0] s_axi_awaddr_ext = {{(8-C_S_AXI_ADDR_WIDTH){1'b0}}, s_axi_awaddr};
-  wire [7:0] s_axi_araddr_ext = {{(8-C_S_AXI_ADDR_WIDTH){1'b0}}, s_axi_araddr};
-  wire [5:0] axi_aw_word_addr = s_axi_awaddr_ext[7:2];
-  wire [5:0] axi_ar_word_addr = s_axi_araddr_ext[7:2];
+  wire [8:0] s_axi_awaddr_ext = {{(9-C_S_AXI_ADDR_WIDTH){1'b0}}, aw_hold_addr};
+  wire [8:0] s_axi_araddr_ext = {{(9-C_S_AXI_ADDR_WIDTH){1'b0}}, s_axi_araddr};
+  wire [6:0] axi_aw_word_addr = s_axi_awaddr_ext[8:2];
+  wire [6:0] axi_ar_word_addr = s_axi_araddr_ext[8:2];
   wire axis_fire = s_axis_tvalid & s_axis_tready;
   wire frontend_fire;
-  wire clear_status_req = s_axi_awvalid & s_axi_wvalid &
+  wire axi_write_fire = !s_axi_bvalid && aw_hold_valid && w_hold_valid;
+  wire clear_status_req = axi_write_fire &
                           (axi_aw_word_addr == ADDR_CTRL) &
-                          s_axi_wstrb[0] & s_axi_wdata[2];
+                          w_hold_strb[0] & w_hold_data[2];
   wire stream_while_disabled = s_axis_tvalid & (!core_enable | !core_rst_n);
   wire stream_stall = s_axis_tvalid & !s_axis_tready & core_enable & core_rst_n;
+  assign obs_irq = obs_irq_enable_reg & obs_done;
 
   wire [C_S_AXIS_TDATA_WIDTH-1:0] axis_buf_tdata;
   wire axis_buf_tlast;
@@ -230,6 +271,8 @@ module dsm_ip_axi_top #(
       $signed({1'b0, axis_mag_sat}) - $signed({1'b0, mon_input_avg_mag});
   wire signed [W-1:0] dpd_i;
   wire signed [W-1:0] dpd_q;
+  wire signed [W-1:0] dsm_i_cfg = dpd_i >>> dsm_input_shift_reg;
+  wire signed [W-1:0] dsm_q_cfg = dpd_q >>> dsm_input_shift_reg;
   wire dpd_valid;
   wire dpd_ready;
   wire [W-1:0] dpd_i_abs = abs_w(dpd_i);
@@ -243,6 +286,8 @@ module dsm_ip_axi_top #(
   wire [W+1:0] evm_proxy_sum = {1'b0, dpd_i_delta_abs} + {1'b0, dpd_q_delta_abs};
   wire [31:0] dpd_sample_count;
   wire [31:0] dpd_saturation_count;
+  wire [1:0] dpd_effective_mode;
+  wire dpd_busy;
   wire signed [15:0] dpd_lut_rgain_re;
   wire signed [15:0] dpd_lut_rgain_im;
   wire dpd_lut_active_bank;
@@ -250,7 +295,6 @@ module dsm_ip_axi_top #(
   wire signed [15:0] mp_coeff_rdata_im;
   wire mp_active_bank;
   wire obs_active;
-  wire obs_done;
   wire obs_last_seen;
   wire [31:0] obs_paired_count;
   wire [31:0] obs_dropped_count;
@@ -266,6 +310,7 @@ module dsm_ip_axi_top #(
   wire [31:0] obs_spec_bin1;
   wire [31:0] obs_spec_bin2;
   wire [31:0] obs_spec_adj;
+  wire [4:0] obs_overflow_flags;
   wire [2:0] seed_package;
   wire condition_known;
   wire seed_fallback_required;
@@ -289,6 +334,30 @@ module dsm_ip_axi_top #(
       mon_spec_adj_sum[32] ? 32'hffff_ffff : mon_spec_adj_sum[31:0];
 
   wire dsm_input_ready;
+  wire [2:0] mp_effective_taps = (mp_active_taps_reg < 3'd1) ? 3'd1 :
+                                  ((mp_active_taps_reg > DPD_MP_MAX_TAPS[2:0]) ?
+                                   DPD_MP_MAX_TAPS[2:0] : mp_active_taps_reg);
+  wire dpd_mode_fallback = (dpd_effective_mode != dpd_ctrl_reg[1:0]);
+  // A source may legally keep TVALID asserted while TREADY is low.  It has not
+  // transferred that sample, so it must not prevent a pending bank change.
+  wire commit_safe_boundary = !dpd_busy && !axis_buf_valid && !frontend_fire;
+  wire [31:0] capability_word = {
+      11'd0,
+      1'b1,                    // observation asynchronous companion IP exists
+      1'b1,                    // safe window-boundary MP commit supported
+      1'b1,                    // runtime DSM input shift supported
+      (DUC_MODE != 0),         // NCO-capable compiled SKU
+      INTERP_MODE[3:0],
+      ALGORITHM[3:0],
+      DPD_POLY_ORDER[2:0],
+      DPD_MP_MAX_TAPS[2:0],
+      ENABLE_DPD_MEMORY[0],
+      ENABLE_DPD_LUT[0],
+      ENABLE_DPD_POLY[0]
+  };
+
+  assign s_axi_awready = !aw_hold_valid && !s_axi_bvalid;
+  assign s_axi_wready = !w_hold_valid && !s_axi_bvalid;
 
   function [W-1:0] abs_w;
     input signed [W-1:0] value;
@@ -361,7 +430,8 @@ module dsm_ip_axi_top #(
     .s_data(s_axis_tdata),
     .s_last(s_axis_tlast),
     .s_user(s_axis_tuser),
-    .s_valid(s_axis_tvalid & core_enable & core_rst_n),
+    .s_valid(s_axis_tvalid & core_enable & core_rst_n &
+             !mp_commit_pending & !mp_commit_inflight),
     .s_ready(axis_buf_ready),
     .m_data(axis_buf_tdata),
     .m_last(axis_buf_tlast),
@@ -371,16 +441,18 @@ module dsm_ip_axi_top #(
     .full(axis_buf_full)
   );
 
-  assign s_axis_tready = core_enable & core_rst_n & axis_buf_ready;
+  // A requested memory-DPD commit first drains the accepted stream and then
+  // holds the upstream source until the coefficient-bank swap is acknowledged.
+  assign s_axis_tready = core_enable & core_rst_n & axis_buf_ready &
+                         !mp_commit_pending & !mp_commit_inflight;
   assign frontend_fire = dpd_valid & dsm_input_ready & core_enable & core_rst_n;
 
   always @(posedge aclk or negedge aresetn) begin
     if (!aresetn) begin
-      s_axi_awready <= 1'b0;
-      s_axi_wready <= 1'b0;
       s_axi_bresp <= 2'b00;
       s_axi_bvalid <= 1'b0;
       ctrl_reg <= 32'h0000_0000;
+      dsm_input_shift_reg <= 4'd0;
       phase_inc_reg <= {{(PHASE_W-24){1'b0}}, 24'h400000};
       soft_reset_pulse <= 1'b0;
       input_sample_count <= 32'd0;
@@ -399,18 +471,21 @@ module dsm_ip_axi_top #(
       dpd_c3_im_reg <= 16'sd0;
       dpd_c5_re_reg <= 16'sd0;
       dpd_c5_im_reg <= 16'sd0;
+      dpd_c7_re_reg <= 16'sd0;
+      dpd_c7_im_reg <= 16'sd0;
       dpd_lut_addr_reg <= {DPD_LUT_AW{1'b0}};
       dpd_lut_we_pulse <= 1'b0;
       dpd_lut_commit_pulse <= 1'b0;
       dpd_lut_wgain_re_reg <= 16'sd16384;
       dpd_lut_wgain_im_reg <= 16'sd0;
-      mp_coeff_tap_reg <= 2'd0;
+      mp_coeff_tap_reg <= 3'd0;
       mp_coeff_order_reg <= 2'd0;
       mp_active_taps_reg <= 3'd2;
       mp_coeff_re_reg <= 16'sd0;
       mp_coeff_im_reg <= 16'sd0;
       mp_coeff_we_pulse <= 1'b0;
       mp_commit_pulse <= 1'b0;
+      dpd_safety_clear_pulse <= 1'b0;
       obs_enable_reg <= 1'b0;
       obs_start_pulse <= 1'b0;
       obs_clear_pulse <= 1'b0;
@@ -418,6 +493,7 @@ module dsm_ip_axi_top #(
       obs_gain_re_reg <= 16'sd16384;
       obs_gain_im_reg <= 16'sd0;
       obs_window_reg <= 32'd0;
+      obs_irq_enable_reg <= 1'b0;
       condition_valid_reg <= 1'b0;
       condition_version_reg <= 8'd1;
       condition_qam_reg <= 16'd16;
@@ -426,6 +502,19 @@ module dsm_ip_axi_top #(
       condition_power_reg <= 16'sd0;
       condition_temperature_reg <= 16'sd6400;
       condition_monitor_reg <= 32'd0;
+      aw_hold_valid <= 1'b0;
+      aw_hold_addr <= {C_S_AXI_ADDR_WIDTH{1'b0}};
+      w_hold_valid <= 1'b0;
+      w_hold_data <= {C_S_AXI_DATA_WIDTH{1'b0}};
+      w_hold_strb <= {(C_S_AXI_DATA_WIDTH/8){1'b0}};
+      mp_commit_pending <= 1'b0;
+      mp_commit_inflight <= 1'b0;
+      mp_commit_ack <= 1'b0;
+      mp_commit_failed <= 1'b0;
+      mp_commit_target_bank <= 1'b0;
+      mp_commit_epoch <= 8'd0;
+      obs_error_snapshot <= 64'd0;
+      obs_snapshot_valid <= 1'b0;
       mon_input_power_acc <= 32'd0;
       mon_output_power_acc <= 32'd0;
       mon_input_clip_count <= 32'd0;
@@ -443,15 +532,43 @@ module dsm_ip_axi_top #(
       mon_spec_bin1_q_acc <= 32'sd0;
       mon_spec_bin2_acc <= 32'sd0;
     end else begin
-      s_axi_awready <= 1'b0;
-      s_axi_wready <= 1'b0;
       soft_reset_pulse <= 1'b0;
       dpd_lut_we_pulse <= 1'b0;
       dpd_lut_commit_pulse <= 1'b0;
       mp_coeff_we_pulse <= 1'b0;
       mp_commit_pulse <= 1'b0;
+      dpd_safety_clear_pulse <= 1'b0;
       obs_start_pulse <= 1'b0;
       obs_clear_pulse <= 1'b0;
+
+      // AXI4-Lite AW and W are independent channels.  Capture each one once,
+      // then execute exactly one write when both held channels are present.
+      if (s_axi_awvalid && s_axi_awready) begin
+        aw_hold_valid <= 1'b1;
+        aw_hold_addr <= s_axi_awaddr;
+      end
+      if (s_axi_wvalid && s_axi_wready) begin
+        w_hold_valid <= 1'b1;
+        w_hold_data <= s_axi_wdata;
+        w_hold_strb <= s_axi_wstrb;
+      end
+
+      if (mp_commit_pending && !mp_commit_inflight && commit_safe_boundary) begin
+        mp_commit_pulse <= 1'b1;
+        mp_commit_pending <= 1'b0;
+        mp_commit_inflight <= 1'b1;
+        mp_commit_target_bank <= ~mp_active_bank;
+      end
+      if (mp_commit_inflight) begin
+        if (mp_active_bank == mp_commit_target_bank) begin
+          mp_commit_inflight <= 1'b0;
+          mp_commit_ack <= 1'b1;
+          mp_commit_epoch <= mp_commit_epoch + 8'd1;
+        end else if (dpd_mp_commit_rejected) begin
+          mp_commit_inflight <= 1'b0;
+          mp_commit_failed <= 1'b1;
+        end
+      end
 
       if (axis_fire) begin
         input_sample_count <= input_sample_count + 32'd1;
@@ -512,6 +629,9 @@ module dsm_ip_axi_top #(
       if (stream_while_disabled) begin
         error_status_reg[0] <= 1'b1;
       end
+      if (dpd_safety_fault) error_status_reg[2] <= 1'b1;
+      if (dpd_mp_commit_rejected) error_status_reg[3] <= 1'b1;
+      if (dpd_lut_commit_rejected) error_status_reg[4] <= 1'b1;
 
       if (clear_status_req) begin
         input_sample_count <= 32'd0;
@@ -540,12 +660,14 @@ module dsm_ip_axi_top #(
         mon_spec_bin2_acc <= 32'sd0;
       end
 
-      if (!s_axi_bvalid && s_axi_awvalid && s_axi_wvalid) begin
-        s_axi_awready <= 1'b1;
-        s_axi_wready <= 1'b1;
+      if (axi_write_fire) begin
+        aw_hold_valid <= 1'b0;
+        w_hold_valid <= 1'b0;
         s_axi_bvalid <= 1'b1;
         s_axi_bresp <= 2'b00;
 
+`define s_axi_wdata w_hold_data
+`define s_axi_wstrb w_hold_strb
         case (axi_aw_word_addr)
           ADDR_CTRL: begin
             if (s_axi_wstrb[0]) begin
@@ -564,6 +686,9 @@ module dsm_ip_axi_top #(
               phase_inc_reg <= s_axi_wdata[PHASE_W-1:0];
             end
           end
+          ADDR_DSM_CTRL: begin
+            if (s_axi_wstrb[0]) dsm_input_shift_reg <= s_axi_wdata[3:0];
+          end
           ADDR_ERROR: begin
             error_status_reg <= error_status_reg & ~s_axi_wdata;
           end
@@ -572,6 +697,7 @@ module dsm_ip_axi_top #(
             if (s_axi_wstrb[1]) dpd_ctrl_reg[15:8] <= s_axi_wdata[15:8];
             if (s_axi_wstrb[2]) dpd_ctrl_reg[23:16] <= s_axi_wdata[23:16];
             if (s_axi_wstrb[3]) dpd_ctrl_reg[31:24] <= s_axi_wdata[31:24];
+            if (s_axi_wstrb[1] && s_axi_wdata[9]) dpd_safety_clear_pulse <= 1'b1;
           end
           ADDR_DPD_C1: begin
             if (s_axi_wstrb[0]) dpd_c1_re_reg[7:0] <= s_axi_wdata[7:0];
@@ -591,6 +717,12 @@ module dsm_ip_axi_top #(
             if (s_axi_wstrb[2]) dpd_c5_im_reg[7:0] <= s_axi_wdata[23:16];
             if (s_axi_wstrb[3]) dpd_c5_im_reg[15:8] <= s_axi_wdata[31:24];
           end
+          ADDR_DPD_C7: begin
+            if (s_axi_wstrb[0]) dpd_c7_re_reg[7:0] <= s_axi_wdata[7:0];
+            if (s_axi_wstrb[1]) dpd_c7_re_reg[15:8] <= s_axi_wdata[15:8];
+            if (s_axi_wstrb[2]) dpd_c7_im_reg[7:0] <= s_axi_wdata[23:16];
+            if (s_axi_wstrb[3]) dpd_c7_im_reg[15:8] <= s_axi_wdata[31:24];
+          end
           ADDR_DPD_LUT_ADDR: begin
             if (s_axi_wstrb[0]) dpd_lut_addr_reg <= s_axi_wdata[DPD_LUT_AW-1:0];
           end
@@ -608,8 +740,9 @@ module dsm_ip_axi_top #(
           end
           ADDR_MP_SELECT: begin
             if (s_axi_wstrb[0]) begin
-              mp_coeff_tap_reg <= s_axi_wdata[1:0];
+              mp_coeff_tap_reg[1:0] <= s_axi_wdata[1:0];
               mp_coeff_order_reg <= s_axi_wdata[3:2];
+              mp_coeff_tap_reg[2] <= s_axi_wdata[4];
             end
             if (s_axi_wstrb[1]) mp_active_taps_reg <= s_axi_wdata[10:8];
           end
@@ -621,7 +754,12 @@ module dsm_ip_axi_top #(
             mp_coeff_we_pulse <= 1'b1;
           end
           ADDR_MP_COMMIT: begin
-            if (s_axi_wstrb[0] && s_axi_wdata[0]) mp_commit_pulse <= 1'b1;
+            if (s_axi_wstrb[0] && s_axi_wdata[0] && !mp_commit_pending &&
+                !mp_commit_inflight) begin
+              mp_commit_pending <= 1'b1;
+              mp_commit_ack <= 1'b0;
+              mp_commit_failed <= 1'b0;
+            end
           end
           ADDR_OBS_CTRL: begin
             if (s_axi_wstrb[0]) begin
@@ -630,6 +768,7 @@ module dsm_ip_axi_top #(
               if (s_axi_wdata[2]) obs_clear_pulse <= 1'b1;
             end
             if (s_axi_wstrb[1]) obs_delay_reg <= s_axi_wdata[12:8];
+            if (s_axi_wstrb[2]) obs_irq_enable_reg <= s_axi_wdata[16];
           end
           ADDR_OBS_GAIN: begin
             if (s_axi_wstrb[0]) obs_gain_re_reg[7:0] <= s_axi_wdata[7:0];
@@ -638,6 +777,17 @@ module dsm_ip_axi_top #(
             if (s_axi_wstrb[3]) obs_gain_im_reg[15:8] <= s_axi_wdata[31:24];
           end
           ADDR_OBS_WINDOW: obs_window_reg <= s_axi_wdata;
+          ADDR_MP_COMMIT_STATUS: begin
+            if (s_axi_wstrb[0] && s_axi_wdata[0]) mp_commit_ack <= 1'b0;
+            if (s_axi_wstrb[0] && s_axi_wdata[3]) mp_commit_failed <= 1'b0;
+          end
+          ADDR_OBS_SNAPSHOT: begin
+            if (s_axi_wstrb[0] && s_axi_wdata[0]) begin
+              obs_error_snapshot <= obs_error_acc;
+              obs_snapshot_valid <= 1'b1;
+            end
+            if (s_axi_wstrb[0] && s_axi_wdata[1]) obs_snapshot_valid <= 1'b0;
+          end
           ADDR_COND_CTRL: begin
             if (s_axi_wstrb[0]) condition_valid_reg <= s_axi_wdata[0];
             if (s_axi_wstrb[1]) condition_version_reg <= s_axi_wdata[15:8];
@@ -653,6 +803,8 @@ module dsm_ip_axi_top #(
           default: begin
           end
         endcase
+`undef s_axi_wdata
+`undef s_axi_wstrb
       end else if (s_axi_bvalid && s_axi_bready) begin
         s_axi_bvalid <= 1'b0;
       end
@@ -676,6 +828,7 @@ module dsm_ip_axi_top #(
           ADDR_CTRL:      s_axi_rdata <= ctrl_reg;
           ADDR_STATUS:    s_axi_rdata <= {25'b0, axis_buf_full, |error_status_reg, s_axis_tready, rf_valid, dsm_valid, soft_reset, core_enable};
           ADDR_PHASE_INC: s_axi_rdata <= {{(32-PHASE_W){1'b0}}, phase_inc_reg};
+          ADDR_DSM_CTRL:  s_axi_rdata <= {28'd0, dsm_input_shift_reg};
           ADDR_ALGORITHM: s_axi_rdata <= ALGORITHM[31:0];
           ADDR_DUC_MODE:  s_axi_rdata <= DUC_MODE[31:0];
           ADDR_VERSION:   s_axi_rdata <= CORE_VERSION;
@@ -693,6 +846,12 @@ module dsm_ip_axi_top #(
           ADDR_DPD_C1:      s_axi_rdata <= {dpd_c1_im_reg, dpd_c1_re_reg};
           ADDR_DPD_C3:      s_axi_rdata <= {dpd_c3_im_reg, dpd_c3_re_reg};
           ADDR_DPD_C5:      s_axi_rdata <= {dpd_c5_im_reg, dpd_c5_re_reg};
+          ADDR_DPD_C7:      s_axi_rdata <= {dpd_c7_im_reg, dpd_c7_re_reg};
+          ADDR_CAPABILITY:  s_axi_rdata <= capability_word;
+          ADDR_EFFECTIVE_STATUS: s_axi_rdata <= {
+              19'd0, mp_commit_failed, mp_commit_inflight, mp_commit_pending,
+              dpd_mode_fallback, dpd_safety_fault, mp_effective_taps,
+              mp_active_bank, dpd_effective_mode, dpd_ctrl_reg[1:0]};
           ADDR_DPD_COUNT:   s_axi_rdata <= dpd_sample_count;
           ADDR_DPD_SAT_COUNT: s_axi_rdata <= dpd_saturation_count;
           ADDR_DPD_LUT_ADDR: s_axi_rdata <= {{(32-DPD_LUT_AW){1'b0}}, dpd_lut_addr_reg};
@@ -713,12 +872,21 @@ module dsm_ip_axi_top #(
                                            mp_coeff_order_reg, mp_coeff_tap_reg};
           ADDR_MP_DATA: s_axi_rdata <= {mp_coeff_rdata_im, mp_coeff_rdata_re};
           ADDR_MP_COMMIT: s_axi_rdata <= {31'd0, mp_active_bank};
-          ADDR_OBS_CTRL: s_axi_rdata <= {19'd0, obs_delay_reg, 5'd0,
+          ADDR_MP_COMMIT_STATUS: s_axi_rdata <= {16'd0, mp_commit_epoch,
+                                                  4'd0, mp_commit_failed,
+                                                  mp_commit_inflight,
+                                                  mp_commit_pending,
+                                                  mp_commit_ack};
+          ADDR_OBS_CTRL: s_axi_rdata <= {15'd0, obs_irq_enable_reg, 3'd0, obs_delay_reg, 5'd0,
                                          obs_clear_pulse, obs_start_pulse,
                                          obs_enable_reg};
           ADDR_OBS_GAIN: s_axi_rdata <= {obs_gain_im_reg, obs_gain_re_reg};
           ADDR_OBS_WINDOW: s_axi_rdata <= obs_window_reg;
-          ADDR_OBS_STATUS: s_axi_rdata <= {28'd0, obs_last_seen, obs_done,
+          ADDR_OBS_STATUS: s_axi_rdata <= {24'd0, obs_snapshot_valid,
+                                           |obs_overflow_flags,
+                                           (obs_done && (obs_dropped_count == 0) &&
+                                            !(|obs_overflow_flags)),
+                                           obs_last_seen, obs_done,
                                            obs_active, s_axis_obs_tready};
           ADDR_OBS_PAIR_COUNT: s_axi_rdata <= obs_paired_count;
           ADDR_OBS_DROP_COUNT: s_axi_rdata <= obs_dropped_count;
@@ -746,6 +914,9 @@ module dsm_ip_axi_top #(
           ADDR_OBS_SPEC_BIN1: s_axi_rdata <= obs_spec_bin1;
           ADDR_OBS_SPEC_BIN2: s_axi_rdata <= obs_spec_bin2;
           ADDR_OBS_SPEC_ADJ: s_axi_rdata <= obs_spec_adj;
+          ADDR_OBS_SNAPSHOT: s_axi_rdata <= {31'd0, obs_snapshot_valid};
+          ADDR_OBS_SNAPSHOT_ERROR_LO: s_axi_rdata <= obs_error_snapshot[31:0];
+          ADDR_OBS_SNAPSHOT_ERROR_HI: s_axi_rdata <= obs_error_snapshot[63:32];
           default: s_axi_rdata <= 32'h0000_0000;
         endcase
       end else if (s_axi_rvalid && s_axi_rready) begin
@@ -758,7 +929,12 @@ module dsm_ip_axi_top #(
     .W(W),
     .COEFF_W(16),
     .COEFF_FRAC(14),
-    .LUT_AW(DPD_LUT_AW)
+    .LUT_AW(DPD_LUT_AW),
+    .MP_MAX_TAPS(DPD_MP_MAX_TAPS),
+    .MP_POLY_ORDER(DPD_POLY_ORDER),
+    .ENABLE_DPD_POLY(ENABLE_DPD_POLY),
+    .ENABLE_DPD_LUT(ENABLE_DPD_LUT),
+    .ENABLE_DPD_MEMORY(ENABLE_DPD_MEMORY)
   ) u_dpd_frontend (
     .clk(aclk),
     .rst_n(core_rst_n),
@@ -769,6 +945,8 @@ module dsm_ip_axi_top #(
     .c3_im(dpd_c3_im_reg),
     .c5_re(dpd_c5_re_reg),
     .c5_im(dpd_c5_im_reg),
+    .c7_re(dpd_c7_re_reg),
+    .c7_im(dpd_c7_im_reg),
     .mp_active_taps(mp_active_taps_reg),
     .mp_coeff_we(mp_coeff_we_pulse),
     .mp_commit(mp_commit_pulse),
@@ -788,6 +966,11 @@ module dsm_ip_axi_top #(
     .lut_rgain_re(dpd_lut_rgain_re),
     .lut_rgain_im(dpd_lut_rgain_im),
     .lut_active_bank(dpd_lut_active_bank),
+    .safety_enable(dpd_ctrl_reg[8]),
+    .safety_clear(dpd_safety_clear_pulse),
+    .safety_fault(dpd_safety_fault),
+    .mp_commit_rejected(dpd_mp_commit_rejected),
+    .lut_commit_rejected(dpd_lut_commit_rejected),
     .i_in(axis_i),
     .q_in(axis_q),
     .in_valid(axis_buf_valid & core_enable & core_rst_n),
@@ -796,6 +979,8 @@ module dsm_ip_axi_top #(
     .q_out(dpd_q),
     .out_valid(dpd_valid),
     .out_ready(dsm_input_ready & core_enable & core_rst_n),
+    .effective_mode_out(dpd_effective_mode),
+    .busy(dpd_busy),
     .sample_count(dpd_sample_count),
     .saturation_count(dpd_saturation_count)
   );
@@ -841,7 +1026,8 @@ module dsm_ip_axi_top #(
     .spec_bin0(obs_spec_bin0),
     .spec_bin1(obs_spec_bin1),
     .spec_bin2(obs_spec_bin2),
-    .spec_adj(obs_spec_adj)
+    .spec_adj(obs_spec_adj),
+    .overflow_flags(obs_overflow_flags)
   );
 
   dpd_seed_predictor u_dpd_seed_predictor (
@@ -877,8 +1063,8 @@ module dsm_ip_axi_top #(
     .rst_n(core_rst_n),
     .in_valid(frontend_fire),
     .cfg_phase_inc(phase_inc_reg),
-    .i_in(dpd_i),
-    .q_in(dpd_q),
+    .i_in(dsm_i_cfg),
+    .q_in(dsm_q_cfg),
     .in_ready(dsm_input_ready),
     .dsm_valid(dsm_valid),
     .i_bit(i_bit),

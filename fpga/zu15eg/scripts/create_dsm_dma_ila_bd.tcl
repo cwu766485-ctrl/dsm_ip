@@ -29,11 +29,11 @@ if {[llength $ps] == 0} {
 }
 
 set clk_pin [get_bd_pins -quiet $ps/pl_clk0]
-set raw_rst_pin [get_bd_pins -quiet $ps/pl_resetn0]
-set rst_pin [get_bd_pins -quiet rst_ps8_0_96M/peripheral_aresetn]
-if {[llength $rst_pin] == 0} {
-  set rst_pin $raw_rst_pin
+set reset_cells [get_bd_cells -quiet -filter {VLNV =~ "xilinx.com:ip:proc_sys_reset:*"}]
+if {[llength $reset_cells] == 0} {
+  error "Create a Processor System Reset block and use peripheral_aresetn for TX/DMA reset release."
 }
+set rst_pin [get_bd_pins -quiet [lindex $reset_cells 0]/peripheral_aresetn]
 set hpm_pin [get_bd_intf_pins -quiet $ps/M_AXI_HPM0_FPD]
 set ps_slave_pin ""
 foreach candidate {S_AXI_HPC0_FPD S_AXI_HP0_FPD S_AXI_HPC1_FPD S_AXI_HP1_FPD S_AXI_HP2_FPD S_AXI_HP3_FPD} {
@@ -45,7 +45,7 @@ foreach candidate {S_AXI_HPC0_FPD S_AXI_HP0_FPD S_AXI_HPC1_FPD S_AXI_HP1_FPD S_A
 }
 
 if {[llength $clk_pin] == 0 || [llength $rst_pin] == 0} {
-  error "PS pl_clk0/pl_resetn0 pins are required."
+  error "PS pl_clk0 and Processor System Reset peripheral_aresetn are required."
 }
 if {[llength $hpm_pin] == 0} {
   error "Enable PS M_AXI_HPM0_FPD for AXI-Lite register access."
@@ -124,6 +124,11 @@ connect_bd_net [get_bd_pins obs_tdata_zero/dout]          [get_bd_pins dsm_ip_0/
 connect_bd_net [get_bd_pins obs_control_zero/dout]        [get_bd_pins dsm_ip_0/s_axis_obs_tlast]
 connect_bd_net [get_bd_pins obs_control_zero/dout]        [get_bd_pins dsm_ip_0/s_axis_obs_tuser]
 connect_bd_net [get_bd_pins obs_control_zero/dout]        [get_bd_pins dsm_ip_0/s_axis_obs_tvalid]
+
+# The observation interface is synchronous to dsm_ip_0/aclk. Replace the
+# constants above only with a same-clock source. An external ADC/RF feedback
+# clock must first cross through an AXI-Stream Clock Converter or async FIFO;
+# never connect an unrelated-clock producer directly to s_axis_obs_*.
 
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 \
   -config [list Clk_master $clk_pin Clk_slave $clk_pin Clk_xbar $clk_pin Master $hpm_pin Slave [get_bd_intf_pins dsm_ip_0/s_axi]] \

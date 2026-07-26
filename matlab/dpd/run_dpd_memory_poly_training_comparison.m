@@ -58,7 +58,7 @@ function [Results, Summary, Coefficients, Artifacts] = run_dpd_memory_poly_train
 
   Results = struct2table(rows);
   Summary = summarize_results(Results, modes);
-  Coefficients = coefficient_table(memoryless, memory_poly);
+  Coefficients = coefficient_table(memoryless, memory_poly, cfg.orders);
   Artifacts = struct('cfg', cfg, 'pa', pa, 'memoryless', memoryless, ...
     'memory_poly', memory_poly, 'validation_no_dpd', val_no_metrics);
 
@@ -214,13 +214,28 @@ function [y, saturation_count] = dpd_fixed_model(x, coeff_q, taps, cfg)
     qq = [zeros(delay, 1, 'int64'); q.q(1:end-delay)];
     base = delay * numel(cfg.orders);
     r2 = bitsra(ii.*ii + qq.*qq, cfg.input_frac);
-    r4 = bitsra(r2.*r2, cfg.input_frac);
-    gr = int64(real(coeff_q(base + 1))) + ...
-      bitsra(int64(real(coeff_q(base + 2))) .* r2, cfg.input_frac) + ...
-      bitsra(int64(real(coeff_q(base + 3))) .* r4, cfg.input_frac);
-    gi = int64(imag(coeff_q(base + 1))) + ...
-      bitsra(int64(imag(coeff_q(base + 2))) .* r2, cfg.input_frac) + ...
-      bitsra(int64(imag(coeff_q(base + 3))) .* r4, cfg.input_frac);
+    gr = int64(0);
+    gi = int64(0);
+    radial_power = int64(1);
+    for order_idx = 1:numel(cfg.orders)
+      order = cfg.orders(order_idx);
+      if mod(order, 2) ~= 1
+        error('DPD orders must be odd positive integers.');
+      end
+      if order_idx == 1
+        if order ~= 1
+          error('The first DPD order must be one.');
+        end
+        gr = gr + int64(real(coeff_q(base + order_idx)));
+        gi = gi + int64(imag(coeff_q(base + order_idx)));
+      else
+        radial_power = bitsra(radial_power .* r2, cfg.input_frac);
+        gr = gr + bitsra(int64(real(coeff_q(base + order_idx))) .* ...
+          radial_power, cfg.input_frac);
+        gi = gi + bitsra(int64(imag(coeff_q(base + order_idx))) .* ...
+          radial_power, cfg.input_frac);
+      end
+    end
     acc_i = acc_i + bitsra(ii.*gr - qq.*gi, cfg.coeff_frac);
     acc_q = acc_q + bitsra(ii.*gi + qq.*gr, cfg.coeff_frac);
   end
@@ -408,22 +423,23 @@ function Summary = summarize_results(Results, modes)
   Summary = struct2table(rows);
 end
 
-function T = coefficient_table(memoryless, memory_poly)
+function T = coefficient_table(memoryless, memory_poly, orders)
   rows = repmat(struct('Model', string(""), 'Tap', NaN, 'Order', NaN, ...
     'FloatReal', NaN, 'FloatImag', NaN, 'Q2_14_Real', NaN, ...
-    'Q2_14_Imag', NaN, 'PackedHex', string("")), 15, 1);
+    'Q2_14_Imag', NaN, 'PackedHex', string("")), ...
+    memoryless.taps * numel(orders) + memory_poly.taps * numel(orders), 1);
   row = 0;
   models = {memoryless, memory_poly};
   names = ["Memoryless DPD", "Memory-polynomial DPD"];
   for model_idx = 1:2
     model = models{model_idx};
     for tap = 0:model.taps-1
-      for order_idx = 1:3
+      for order_idx = 1:numel(orders)
         row = row + 1;
-        index = tap * 3 + order_idx;
+        index = tap * numel(orders) + order_idx;
         rows(row).Model = names(model_idx);
         rows(row).Tap = tap;
-        rows(row).Order = 2*order_idx - 1;
+        rows(row).Order = orders(order_idx);
         rows(row).FloatReal = real(model.coeff_float(index));
         rows(row).FloatImag = imag(model.coeff_float(index));
         rows(row).Q2_14_Real = real(model.coeff_q(index));

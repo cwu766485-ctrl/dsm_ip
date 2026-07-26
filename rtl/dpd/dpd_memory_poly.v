@@ -32,10 +32,14 @@ module dpd_memory_poly #(
   localparam integer MUL_W = 2 * W;
   localparam integer PWR_W = 32;
   localparam integer ACC_W = 64;
-  localparam integer PIPE_STAGES = 9;
+  // The extra register after the complex products gives Vivado a dedicated
+  // DSP output stage before the subtract/add and Q2.14 rescale stage.
+  localparam integer PIPE_STAGES = 10;
+  // Keep a legal declaration for the compile-time one-tap configuration.
+  localparam integer HISTORY_TAPS = (MAX_TAPS > 1) ? (MAX_TAPS - 1) : 1;
 
-  reg signed [W-1:0] i_history [0:MAX_TAPS-2];
-  reg signed [W-1:0] q_history [0:MAX_TAPS-2];
+  reg signed [W-1:0] i_history [0:HISTORY_TAPS-1];
+  reg signed [W-1:0] q_history [0:HISTORY_TAPS-1];
   reg [PIPE_STAGES-1:0] valid_pipe;
 
   reg signed [W-1:0] i_s0 [0:MAX_TAPS-1];
@@ -104,12 +108,18 @@ module dpd_memory_poly #(
   reg signed [ACC_W-1:0] q_gr_s6 [0:MAX_TAPS-1];
   reg tap_enable_s6 [0:MAX_TAPS-1];
 
-  reg signed [ACC_W-1:0] term_i_s7 [0:MAX_TAPS-1];
-  reg signed [ACC_W-1:0] term_q_s7 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] i_gr_s7 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] q_gi_s7 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] i_gi_s7 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] q_gr_s7 [0:MAX_TAPS-1];
+  reg tap_enable_s7 [0:MAX_TAPS-1];
+
+  reg signed [ACC_W-1:0] term_i_s8 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] term_q_s8 [0:MAX_TAPS-1];
   reg signed [ACC_W-1:0] sum_i_s8;
   reg signed [ACC_W-1:0] sum_q_s8;
-  reg signed [ACC_W-1:0] sum_i_s7;
-  reg signed [ACC_W-1:0] sum_q_s7;
+  reg signed [ACC_W-1:0] sum_i_s9;
+  reg signed [ACC_W-1:0] sum_q_s9;
   wire signed [(2*PWR_W)-1:0] r4_full_s2 [0:MAX_TAPS-1];
 
   wire pipe_ce = out_ready | !valid_pipe[PIPE_STAGES-1];
@@ -145,19 +155,19 @@ module dpd_memory_poly #(
   endgenerate
 
   dpd_sat_signed #(.IN_W(ACC_W), .OUT_W(W)) u_sat_i (
-    .din(sum_i_s8), .dout(sat_i_val), .sat(sat_i)
+    .din(sum_i_s9), .dout(sat_i_val), .sat(sat_i)
   );
   dpd_sat_signed #(.IN_W(ACC_W), .OUT_W(W)) u_sat_q (
-    .din(sum_q_s8), .dout(sat_q_val), .sat(sat_q)
+    .din(sum_q_s9), .dout(sat_q_val), .sat(sat_q)
   );
 
   integer comb_tap;
   always @* begin
-    sum_i_s7 = {ACC_W{1'b0}};
-    sum_q_s7 = {ACC_W{1'b0}};
+    sum_i_s8 = {ACC_W{1'b0}};
+    sum_q_s8 = {ACC_W{1'b0}};
     for (comb_tap = 0; comb_tap < MAX_TAPS; comb_tap = comb_tap + 1) begin
-      sum_i_s7 = sum_i_s7 + term_i_s7[comb_tap];
-      sum_q_s7 = sum_q_s7 + term_q_s7[comb_tap];
+      sum_i_s8 = sum_i_s8 + term_i_s8[comb_tap];
+      sum_q_s8 = sum_q_s8 + term_q_s8[comb_tap];
     end
   end
 
@@ -167,8 +177,8 @@ module dpd_memory_poly #(
       valid_pipe <= {PIPE_STAGES{1'b0}};
       sample_count <= 32'd0;
       saturation_count <= 32'd0;
-      sum_i_s8 <= {ACC_W{1'b0}};
-      sum_q_s8 <= {ACC_W{1'b0}};
+      sum_i_s9 <= {ACC_W{1'b0}};
+      sum_q_s9 <= {ACC_W{1'b0}};
       for (tap = 0; tap < MAX_TAPS-1; tap = tap + 1) begin
         i_history[tap] <= {W{1'b0}};
         q_history[tap] <= {W{1'b0}};
@@ -181,13 +191,14 @@ module dpd_memory_poly #(
         tap_enable_s4[tap] <= 1'b0;
         tap_enable_s5[tap] <= 1'b0;
         tap_enable_s6[tap] <= 1'b0;
-        term_i_s7[tap] <= {ACC_W{1'b0}};
-        term_q_s7[tap] <= {ACC_W{1'b0}};
+        tap_enable_s7[tap] <= 1'b0;
+        term_i_s8[tap] <= {ACC_W{1'b0}};
+        term_q_s8[tap] <= {ACC_W{1'b0}};
       end
     end else if (pipe_ce) begin
       valid_pipe <= {valid_pipe[PIPE_STAGES-2:0], in_valid};
-      sum_i_s8 <= sum_i_s7;
-      sum_q_s8 <= sum_q_s7;
+      sum_i_s9 <= sum_i_s8;
+      sum_q_s9 <= sum_q_s8;
 
       for (tap = 0; tap < MAX_TAPS; tap = tap + 1) begin
         if (tap == 0) begin
@@ -266,11 +277,17 @@ module dpd_memory_poly #(
         q_gr_s6[tap] <= q_s5[tap] * gain_re_s5[tap];
         tap_enable_s6[tap] <= tap_enable_s5[tap];
 
-        term_i_s7[tap] <= tap_enable_s6[tap] ?
-                          shift_acc_coeff(i_gr_s6[tap] - q_gi_s6[tap]) :
+        i_gr_s7[tap] <= i_gr_s6[tap];
+        q_gi_s7[tap] <= q_gi_s6[tap];
+        i_gi_s7[tap] <= i_gi_s6[tap];
+        q_gr_s7[tap] <= q_gr_s6[tap];
+        tap_enable_s7[tap] <= tap_enable_s6[tap];
+
+        term_i_s8[tap] <= tap_enable_s7[tap] ?
+                          shift_acc_coeff(i_gr_s7[tap] - q_gi_s7[tap]) :
                           {ACC_W{1'b0}};
-        term_q_s7[tap] <= tap_enable_s6[tap] ?
-                          shift_acc_coeff(i_gi_s6[tap] + q_gr_s6[tap]) :
+        term_q_s8[tap] <= tap_enable_s7[tap] ?
+                          shift_acc_coeff(i_gi_s7[tap] + q_gr_s7[tap]) :
                           {ACC_W{1'b0}};
       end
 

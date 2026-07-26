@@ -52,7 +52,7 @@ only asserts `tready` while an explicitly started training window is active.
 
 | Offset | Name | Access | Description |
 |---:|---|---|---|
-| `0x00` | `CTRL` | RW | bit0 `enable`, bit1 `soft_reset` |
+| `0x00` | `CTRL` | RW | bit0 `enable`, bit1 `soft_reset`, bit2 clear status/counters |
 | `0x04` | `STATUS` | RO | enable/reset/valid/ready/error status |
 | `0x08` | `CFG_PHASE_INC` | RW | NCO phase increment |
 | `0x0C` | `ALGORITHM` | RO | compiled DSM algorithm ID |
@@ -72,6 +72,7 @@ only asserts `tready` while an explicitly started training window is active.
 | `0x44` | `DPD_C1` | RW | packed Q2.14 coefficient `{c1_im, c1_re}` |
 | `0x48` | `DPD_C3` | RW | packed Q2.14 coefficient `{c3_im, c3_re}` |
 | `0x4C` | `DPD_C5` | RW | packed Q2.14 coefficient `{c5_im, c5_re}` |
+| `0x100` | `DPD_C7` | RW | packed Q2.14 seventh-order coefficient `{c7_im, c7_re}`; requires the 9-bit AXI-Lite address configuration |
 | `0x50` | `DPD_SAMPLE_COUNT` | RO | samples accepted by the DPD frontend |
 | `0x54` | `DPD_SATURATION_COUNT` | RO | DPD output saturation count |
 | `0x58` | `DPD_LUT_ADDR` | RW | LUT DPD table address |
@@ -88,13 +89,13 @@ only asserts `tready` while an explicitly started training window is active.
 | `0x84` | `MON_SPEC_BIN1` | RO | fixed-bin spectral proxy at Fs/4 carrier bin |
 | `0x88` | `MON_SPEC_BIN2` | RO | fixed-bin spectral proxy at Fs/2 high-frequency bin |
 | `0x8C` | `MON_SPEC_ADJ` | RO | adjacent/out-of-band spectral proxy, `BIN0 + BIN2` |
-| `0x90` | `MP_SELECT` | RW | tap `[1:0]`, order selector `[3:2]` (`0/1/2` = `C1/C3/C5`), active taps `[10:8]` (`2..4`) |
+| `0x90` | `MP_SELECT` | RW | tap `[1:0]` plus bit4, order selector `[3:2]` (`0/1/2` = `C1/C3/C5`), active taps `[10:8]` (`1..6`, limited by `DPD_MP_MAX_TAPS`) |
 | `0x94` | `MP_DATA` | RW | inactive-bank packed Q2.14 coefficient `{imag, real}` |
-| `0x98` | `MP_COMMIT` | RW/RO | write bit0 to atomically swap coefficient bank; read active bank |
-| `0x9C` | `OBS_CTRL` | RW | bit0 enable, bit1 start, bit2 clear, delay `[12:8]` (`0..31`) |
+| `0x98` | `MP_COMMIT` | RW/RO | write bit0 to request a safe-boundary coefficient-bank swap; read active bank |
+| `0x9C` | `OBS_CTRL` | RW | bit0 enable, bit1 start, bit2 clear, delay `[12:8]` (`0..31`), bit16 `obs_irq` enable |
 | `0xA0` | `OBS_GAIN` | RW | programmed Q2.14 complex alignment gain `{imag, real}` |
 | `0xA4` | `OBS_WINDOW` | RW | paired-sample target; zero means run until software stops/clears |
-| `0xA8` | `OBS_STATUS` | RO | bit0 ready, bit1 active, bit2 done, bit3 `tlast` seen |
+| `0xA8` | `OBS_STATUS` | RO | bit0 ready, bit1 active, bit2 done, bit3 `tlast` seen, bit4 valid window, bit5 accumulator/drop overflow, bit6 snapshot valid |
 | `0xAC` | `OBS_PAIR_COUNT` | RO | valid aligned reference/observation pairs |
 | `0xB0` | `OBS_DROP_COUNT` | RO | invalid or unavailable-reference observations |
 | `0xB4` | `OBS_ERROR_LO` | RO | aligned L1 error accumulator `[31:0]` |
@@ -116,10 +117,22 @@ only asserts `tready` while an explicitly started training window is active.
 | `0xF4` | `OBS_SPEC_BIN1` | RO | complex fixed-bin magnitude proxy at Fs/4 |
 | `0xF8` | `OBS_SPEC_BIN2` | RO | complex fixed-bin magnitude proxy at Fs/2 |
 | `0xFC` | `OBS_SPEC_ADJ` | RO | saturated `OBS_SPEC_BIN0 + OBS_SPEC_BIN2` |
+| `0x104` | `DSM_CTRL` | RW | bits `[3:0]` signed DSM input right shift (0 to 15); runtime digital-backoff control |
+| `0x108` | `CAPABILITY` | RO | retained DPD branches, maximum MP taps/order, compiled DSM/interpolation/DUC capability, and v1.5 control features |
+| `0x10C` | `EFFECTIVE_STATUS` | RO | requested/effective DPD mode, active MP bank/taps, fallback/safety state, and MP commit state |
+| `0x110` | `MP_COMMIT_STATUS` | RW1C/RO | bit0 commit-ack (W1C), bit1 pending, bit2 inflight, bit3 failed (W1C), bits `[15:8]` commit epoch |
+| `0x114` | `OBS_SNAPSHOT` | WO | write bit0 to atomically snapshot the 64-bit observation error accumulator; write bit1 to invalidate snapshot |
+| `0x118` | `OBS_SNAPSHOT_ERROR_LO` | RO | snapshot error accumulator `[31:0]` |
+| `0x11C` | `OBS_SNAPSHOT_ERROR_HI` | RO | snapshot error accumulator `[63:32]` |
 
-`ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time parameters in this
-release. Their read-only registers report the selected hardware build; they do
-not switch a runtime mux.
+`ALGORITHM`, `DUC_MODE`, `INTERP_MODE`, DPD branch retention, maximum
+memory-polynomial depth, and DPD polynomial order are compile-time SKU
+parameters. Their read-only registers and `CAPABILITY` report the selected
+hardware build; they do not switch a runtime mux. Runtime software may change
+DPD coefficients/mode, active-tap request, phase increment, safe DSM digital
+backoff (`DSM_CTRL`), and safety controls. Software must use
+`EFFECTIVE_STATUS` rather than assuming a requested DPD mode survived SKU
+pruning or a safety fallback.
 
 `CTRL[1]` is a software reset trigger pulse. `CTRL[2]` clears status counters
 and sticky errors. Legal AXI-Stream backpressure increments
@@ -155,9 +168,13 @@ path so the mode-selected output remains sample-aligned under AXI-Stream
 backpressure. This changes latency only; the fixed-point output sequence is
 kept bit-true against the MATLAB DPD reference.
 
-LUT and memory-polynomial coefficients use shadow banks and commit pulses, so a
-complete table can be prepared without exposing a partial update to streaming
-data.
+LUT and memory-polynomial coefficients use shadow banks. A memory-polynomial
+commit first deasserts TX `tready`, drains every already accepted DPD sample,
+then swaps the bank and raises `MP_COMMIT_STATUS.commit_ack`. `commit_epoch`
+increments exactly once per acknowledged swap. This V1 contract is a bounded
+window update, not a claim of seamless per-sample online updates. A source may
+keep `tvalid` asserted during the pause; that unaccepted sample belongs to the
+new bank after `tready` returns.
 
 The observation block uses a 32-sample reference ring. `OBS_CTRL.delay=0`
 pairs a same-cycle TX reference; delay `N` selects the reference accepted `N`
@@ -165,8 +182,10 @@ samples earlier. `OBS_GAIN` and delay are programmed by software. Automatic
 delay/gain estimation and formal EVM/ACLR calculation are not implemented in
 this block.
 
-Wrapper version `0x00010002` adds observation schema
-`aligned_complex_pa_monitor_v2`. On `OBS_CTRL.start`, the block clears all
+Wrapper version `0x00010005` adds the AXI-Lite independent-write-channel,
+capability/effective-status, safe-commit, and observation-snapshot contract.
+The aligned observation schema remains `aligned_complex_pa_monitor_v2`. On
+`OBS_CTRL.start`, the block clears all
 window statistics and latches the signed Q8.8 temperature from
 `CONDITION_ENV`. Only valid aligned pairs update the statistics. The complex
 gain result is saturated to Q1.15 before magnitude, clip, slew, and fixed-bin
@@ -177,8 +196,12 @@ aligned component lies outside signed 16-bit range.
 
 `OBS_PAIR_COUNT` is the sample-count denominator and `OBS_MAG / OBS_PAIR_COUNT`
 is the arithmetic average-magnitude proxy. The 32-bit sum and spectral
-accumulators use finite-width hardware arithmetic, so software must select a
-bounded window that cannot overflow for the intended signal level. These
+accumulators use finite-width hardware arithmetic. Overflow, saturated pair or
+drop count, clip/saturation-count overflow, and fixed-bin signed overflow set
+`OBS_STATUS.bit5`; such a window is invalid (`OBS_STATUS.bit4=0`). Software
+must select a bounded window that cannot overflow for the intended signal
+level. The 64-bit error accumulator must be read through the snapshot registers
+when a coherent two-word value is required. These
 multiplier-free fixed-bin and slew values are calibration features, not formal
 ACLR or EVM measurements.
 

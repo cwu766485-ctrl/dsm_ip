@@ -67,6 +67,7 @@ ip/ip_repo/
 *.xpr
 
 # Synthesis/report generated outputs
+reports/
 syn/reports/**/*.rpt
 syn/reports/ooc_*/
 syn/reports/ooc_xc*/

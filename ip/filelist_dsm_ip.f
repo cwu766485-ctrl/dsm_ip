@@ -20,6 +20,7 @@
 ../rtl/dpd/dpd_poly.v
 ../rtl/dpd/dpd_lut.v
 ../rtl/dpd/dpd_memory_poly.v
+../rtl/dpd/dpd_observer_async_bridge.v
 ../rtl/dpd/dpd_observer.v
 ../rtl/dpd/dpd_seed_predictor.v
 ../rtl/dpd/dpd_tinyml_tree.v

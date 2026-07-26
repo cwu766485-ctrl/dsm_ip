@@ -55,7 +55,7 @@ foreach bd $bds {
         puts "Configuring DSM IP cell $cell: ALGORITHM=$algorithm INTERP_MODE=$interp_mode"
         if {[catch {
             set_property -dict [list \
-                CONFIG.C_S_AXI_ADDR_WIDTH {8} \
+                CONFIG.C_S_AXI_ADDR_WIDTH {9} \
                 CONFIG.ALGORITHM $algorithm \
                 CONFIG.INTERP_MODE $interp_mode \
             ] $cell

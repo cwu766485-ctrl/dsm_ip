@@ -3,6 +3,658 @@
 This file records project changes that affect interfaces, verification status,
 timing/resource evidence, repository hygiene, or handoff documentation.
 
+## 2026-07-27 00:01:00 +08:00
+
+Reason:
+
+- Refresh exact post-route FPGA implementation evidence after the V1 RTL
+  closure, before freezing the Performance SKU for the verification phase.
+
+Changed files:
+
+- `docs/FULL_TX_IMPLEMENTATION.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/evidence/integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\implement_full_tx.ps1`:
+  passed for `xczu15eg-ffvb1156-2-i` with the exact Performance SKU:
+  EFDSM 1-bit, x32 interpolation, fixed Fs/4 DUC, Memory-Poly5/four-tap,
+  and pruned polynomial/LUT branches. Synthesis, placement, routing, DRC,
+  timing reports, bitstream generation, and XSA export completed.
+- Routed maximum-delay timing: WNS `+2.314 ns`, TNS `0.000 ns`; minimum
+  pulse-width slack `+3.500 ns`. The router's final minimum-delay estimate
+  was WHS `+0.010 ns`, THS `0.000 ns`.
+- Utilization: `16,296 LUT / 20,763 FF / 3.0 BRAM / 266 DSP48E2`.
+  Vectorless power: `4.114 W` total (`3.268 W` dynamic, `0.846 W` static).
+- The routed CDC report has no unsafe endpoints. DRC reports no errors and
+  236 warnings, principally DSP-pipeline advisories and debug/IP-generated
+  LUT/FIFO advisories.
+
+Remaining limitations:
+
+- The implementation deliberately ties the optional observation stream to
+  synchronous zero constants. It validates the TX integration boundary, not
+  a clock-crossed external PA/ADC feedback receiver.
+- The final `report_timing_summary` is maximum-delay oriented; the hold value
+  retained here is the router's final estimate. ASIC-grade min-delay sign-off
+  and physical feedback validation remain later-stage work.
+
+## 2026-07-26 21:46:00 +08:00
+
+Reason:
+
+- Close the V1 RTL/software/feedback contract before beginning the future
+  interleaved DSM architecture work.
+
+Changed files:
+
+- `rtl/axi/dsm_ip_axi_top.v`
+- `rtl/dpd/dpd_frontend.v`
+- `rtl/dpd/dpd_observer.v`
+- `verif/tb/tb_dsm_ip_axi_smoke.sv`
+- `docs/IP_HANDOFF.md`
+- `docs/DPD_CALIBRATION_INTERFACE.md`
+- `docs/STATUS_AND_LIMITS.md`
+
+Change summary:
+
+- AXI-Lite now independently holds AW and W, executes one write only after
+  both handshakes, and keeps B/R responses stable under backpressure.
+- Added runtime DSM input backoff, a compile-time `CAPABILITY` word, and an
+  `EFFECTIVE_STATUS` word that reports requested/effective DPD mode, active
+  memory-polynomial bank/taps, safety fallback, and commit state.
+- Memory-polynomial coefficient updates are now a drain-to-safe-boundary
+  transaction with pending/inflight/ack/failure state and an epoch counter.
+- Observation windows now expose overflow/validity and provide a coherent
+  snapshot path for the 64-bit error accumulator. The feedback clock, reset,
+  drop, delay, and bounded-window contract is documented.
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1`:
+  passed all seven 65,536-sample P0 DSM simulations.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`:
+  passed streaming-top, AXI-wrapper, and DPD smoke tests. The AXI test now
+  covers AW-first, W-first, `WSTRB=0`, B-channel backpressure, R-channel
+  backpressure, capability/effective-status readback, commit acknowledgement,
+  and observation snapshot coherence.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1 -SkipMatlabPrep -SkipMatlabCompare`:
+  passed directed Poly7, memory-polynomial, safety, protocol, async observer
+  bridge, feature-gate, and compile-matrix XSim tests using the existing
+  256-sample MATLAB vectors.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1`:
+  passed and regenerated the Vivado packaged IP.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dsm_ip_axi_v11.ps1 -Part xczu15eg-ffvb1156-2-i`:
+  passed 100 MHz OOC synthesis for the wrapper configuration
+  (`9,354 LUT / 8,768 FF / 154 DSP48E2`, WNS `+3.453 ns`, TNS `0.000 ns`).
+
+Remaining limitations:
+
+- This is directed RTL/XSim verification, not the requested future UVM
+  functional/code-coverage sign-off. Reset during an in-flight AXI-Lite
+  transaction and full constrained-random AXI stress remain UVM-plan items.
+- The OOC result is a wrapper configuration (`ALGORITHM=2`, no interpolation)
+  and supplements, rather than replaces, the already recorded routed
+  Performance SKU result. No board, DAC, PA, or external-feedback measurement
+  was performed in this closure.
+
+## 2026-07-26 11:20:00 +08:00
+
+Reason:
+
+- Establish no-board system-level performance evidence for the selected
+  Memory-Poly5, four-tap Performance SKU after local RTL closure.
+
+Changed files:
+
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `matlab -batch "cd('matlab'); path_setup; eval_p0_seven_metrics_from_xsim"`:
+  consumed fresh XSim P0 dumps with the repository's fixed complex-baseband
+  reconstruction, decimation, and alignment flow.  The selected EFDSM path
+  measured 1.5462% EVM, 36.214 dB SNDR, and -23.428 dBc mean ACLR.  The full
+  seven-mode result is recorded in `matlab/out/p0_seven_metrics.csv` and
+  `matlab/out/p0_seven_metrics.md`.
+- `matlab -batch "run('matlab/scripts/entry_dpd_memory_poly_training_comparison.m')"`:
+  passed using disjoint fit/validation/test OFDM seeds, Q1.15 samples, Q2.14
+  coefficients, and the same behavioral memory PA/noise realization for all
+  modes.  On the three held-out seeds, Memory-Poly5 averaged 3.505202% EVM,
+  29.108127 dB SNDR, and -32.402041 dBc ACLR; memoryless DPD averaged
+  3.593970%, 28.890544 dB, and -32.432904 dBc.  This is a 2.47% relative EVM
+  reduction and a 0.218 dB SNDR gain for the memory-polynomial model; mean
+  ACLR changed by +0.031 dB (slightly less negative, within the script's
+  0.05 dB guardband).  No DPD saturation or drive limiting occurred.
+
+Remaining limitations:
+
+- These EVM/SNDR/ACLR values are model-based baseband results.  They do not
+  include DAC/PA/receiver impairments beyond the specified behavioral PA, nor
+  do they constitute measured RF performance.
+- A later board phase must capture the programmed FPGA sample stream and
+  compare it against the same golden vectors before making a hardware bit-true
+  or measured-RF claim.
+
+## 2026-07-26 11:13:00 +08:00
+
+Reason:
+
+- Close the local RTL verification loop for the selected Memory-Poly5,
+  four-tap Performance SKU before any board-dependent verification.
+
+Changed files:
+
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1`:
+  MATLAB vector generation and the full XSim suite completed. Three separate
+  256-sample MATLAB/RTL comparisons reported zero mismatches and zero maximum
+  error LSB. Directed Poly7, DPD safety/protocol, async observer bridge,
+  feature gates, and the 3/5/7-order plus 1/2/4/6-tap compile matrix passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1`:
+  passed; all seven P0 testbenches completed 65,536 samples with zero errors.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`:
+  passed; top-level, AXI-Lite/AXI-Stream, and DPD v1.1 smoke tests passed.
+- `.\scripts\run_matlab_p0_bittrue_check.cmd`:
+  passed; LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11, MASH111, and MASH22 each
+  reported zero mismatch over 65,536 samples.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dpd_feature_matrix.ps1 -Part xczu15eg-ffvb1156-2-i -Config memory4`:
+  passed; the selected SKU used 2,480 LUTs, 3,058 FFs, 120 DSP48E2 blocks,
+  0 BRAM, and has `+6.572 ns` WNS at the 100 MHz OOC constraint.
+
+Remaining limitations:
+
+- This closes MATLAB/RTL and RTL/XSim behavior locally, but does not yet prove
+  a programmed FPGA sample stream against the same golden vector.
+- No external DAC, PA, ADC/receiver feedback, measured RF EVM/ACLR, or measured
+  board power is included in this local closure.
+
+## 2026-07-26 00:39:00 +08:00
+
+Reason:
+
+- Select and implement the Performance SKU: four-tap, C1/C3/C5
+  memory-polynomial DPD (Memory-Poly5), with alternate polynomial and LUT
+  datapaths pruned at compile time.
+
+Changed files:
+
+- `fpga/zu15eg/scripts/implement_full_tx.tcl`
+- `docs/FULL_TX_IMPLEMENTATION.md`
+- `docs/evidence/integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv`
+- `docs/evidence/README.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- The full-TX implementation script now sets `ENABLE_DPD_POLY=0`,
+  `ENABLE_DPD_LUT=0`, `ENABLE_DPD_MEMORY=1`, `DPD_POLY_ORDER=5`, and
+  `DPD_MP_MAX_TAPS=4` for the production build.
+- Routed implementation on `xczu15eg-ffvb1156-2-i` met the 100 MHz target:
+  WNS `+2.967 ns`, TNS `0.000 ns`, WHS `+3.500 ns`, and THS `0.000 ns`.
+  It used 16,197 LUTs, 20,658 registers, 3.0 BRAM tiles, and 266 DSP48E2
+  blocks. Vectorless power estimation was 4.111 W total.
+- Bitstream and XSA generation completed.
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\implement_full_tx.ps1`:
+  passed; IP packaging, synthesis, placement, routing, timing/report export,
+  bitstream, and XSA export completed.
+
+Remaining limitations:
+
+- The implementation has vectorless power estimates only; it is not measured
+  board power or RF EVM/ACLR evidence.
+- Vivado emits non-fatal `DPOP-4` advisories for memory-polynomial DSP output
+  pipelining. These do not prevent 100 MHz closure, but require further
+  staging before an increased-clock claim.
+
+## 2026-07-25 22:52:00 +08:00
+
+Reason:
+
+- Productize the DPD execution path after the routed-baseline review: improve
+  DSP staging, provide an explicit asynchronous feedback boundary, enable
+  compile-time feature pruning, and preserve current ZU15EG PPA evidence.
+
+Changed files:
+
+- `rtl/dpd/dpd_memory_poly.v`
+- `rtl/dpd/dpd_frontend.v`
+- `rtl/dpd/dpd_observer_async_bridge.v`
+- `rtl/axi/dsm_ip_axi_top.v`
+- `verif/tb/tb_dpd_observer_async_bridge.sv`
+- `verif/tb/tb_dpd_feature_gates.sv`
+- `verif/tb/tb_dpd_compile_matrix.sv`
+- `verif/scripts/run_xsim_dpd_bittrue.ps1`
+- `syn/rtl/dpd_frontend_ooc_top.sv`
+- `syn/run_ooc_dpd_feature_matrix.tcl`
+- `syn/run_ooc_dpd_feature_matrix.ps1`
+- `ip/package_vivado_ip.tcl`
+- `ip/package_dpd_observer_bridge.tcl`
+- `ip/package_dpd_observer_bridge.ps1`
+- `ip/filelist_dsm_ip.f`
+- `rtl/dpd/README.md`
+- `docs/DPD_CALIBRATION_INTERFACE.md`
+- `docs/DPD_PPA_REPORT.md`
+- `docs/FULL_TX_IMPLEMENTATION.md`
+- `docs/evidence/ooc/dpd_feature_ooc_zu15eg_ffvb1156_2_i_20260725_summary.csv`
+- `docs/evidence/README.md`
+- `docs/PROJECT_MAP.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Added a registered complex-product output stage to `dpd_memory_poly`; its
+  fixed accepted-input-to-output latency is now ten cycles. `dpd_frontend`
+  aligns bypass, LUT, and polynomial paths to that output epoch.
+- Added `ENABLE_DPD_POLY`, `ENABLE_DPD_LUT`, and `ENABLE_DPD_MEMORY` as
+  compile-time feature gates. A runtime request for a pruned mode resolves to
+  bypass deterministically.
+- Added `dpd_observer_async_bridge`, a reusable dual-clock AXI-Stream FIFO
+  boundary. It defaults to strict backpressure and exposes explicit source
+  stall/drop counters. It is separately packaged as a companion IP and is not
+  inserted into the existing single-clock full-TX build.
+- Added a compile-time XSim matrix for polynomial orders 3/5/7 and memory
+  depths 1/2/4/6. This is an identity/ordering/handshake matrix; it does not
+  replace MATLAB golden vectors for every configuration.
+- Completed the corrected ZU15EG feature-gated OOC matrix with dynamic
+  coefficient inputs, preventing nonlinear arithmetic from being constant
+  folded. Poly5 uses 505 LUTs, 644 FFs, and 26 DSP48E2 blocks; Memory4 uses
+  2,480 LUTs, 3,058 FFs, and 120 DSP48E2 blocks. All ten configurations have
+  positive 100 MHz OOC WNS.
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1 -SkipMatlabPrep -SkipMatlabCompare`:
+  passed; directed, bit-true dump, safety, protocol, async bridge, feature
+  gate, and compile-time matrix tests completed.
+- `D:\MATLAB\R2025a\bin\matlab.exe -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; entry_dpd_bittrue_check;"`:
+  passed; three 256-sample MATLAB/RTL comparisons reported zero mismatch and
+  zero maximum error LSB.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1`:
+  passed; seven P0 rows, zero failures.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1`:
+  passed; streaming top, AXI smoke, and DPD v1.1 smoke passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1`:
+  passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_dpd_observer_bridge.ps1`:
+  passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dpd_feature_matrix.ps1 -Part xczu15eg-ffvb1156-2-i`:
+  passed; compact summary retained under `docs/evidence/ooc/`.
+
+Remaining limitations:
+
+- The new ten-cycle memory-DPD pipeline and feature-gated product SKU have not
+  yet been reimplemented in the complete TX design. The prior routed build is
+  explicitly a baseline and must not be reused as current routed evidence.
+- The async bridge has XSim coverage and companion-IP packaging only. It still
+  requires an external ADC/observation-receiver clock and a board-level
+  feedback capture test.
+- The PPA matrix is post-synthesis OOC with vectorless power estimation. It is
+  neither routed full-TX timing nor measured board power.
+
+## 2026-07-25 15:39:00 +08:00
+
+Reason:
+
+- Complete the selected ZU15EG full-TX routed implementation with an explicit
+  clock/reset/feedback boundary and preserve reviewable implementation
+  evidence.
+
+Changed files:
+
+- `fpga/zu15eg/scripts/create_dsm_dma_ila_bd.tcl`
+- `fpga/zu15eg/scripts/implement_full_tx.tcl`
+- `fpga/zu15eg/scripts/implement_full_tx.ps1`
+- `docs/FULL_TX_IMPLEMENTATION.md`
+- `docs/evidence/integration/full_tx_zu15eg_20260725_summary.csv`
+- `docs/evidence/README.md`
+- `docs/PROJECT_MAP.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Added a reproducible full-TX implementation flow for the local ZU15EG
+  project. It packages the IP, enforces a single 100 MHz `pl_clk0` domain for
+  DMA/AXI-Lite/ILA/DSM, requires `proc_sys_reset/peripheral_aresetn`, builds
+  EFDSM 1-bit with x32 CIC plus compensation FIR, fifth-order DPD, and four
+  compile-time memory taps, then exports reports, bitstream, and XSA.
+- The legacy board design was upgraded for the observer-stream interface. Its
+  unused observer inputs are tied to synchronous zero constants. A real ADC or
+  RF feedback source on another clock must use an external AXI-Stream clock
+  converter or asynchronous FIFO.
+- Routed implementation on `xczu15eg-ffvb1156-2-i` passed at 100 MHz with
+  WNS `+1.993 ns`, TNS `0.000 ns`, WHS `+0.011 ns`, and THS `0.000 ns`.
+  Bitstream and XSA generation completed. Integrated use was 17,454 LUTs,
+  21,363 registers, 3.0 BRAM tiles, and 296 DSP48E2 blocks. Vectorless power
+  estimation was 4.136 W total.
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\scripts\implement_full_tx.ps1`
+  completed synthesis, placement, physical optimization, routing, bitstream
+  generation, report export, and XSA export with 0 errors and 0 critical
+  warnings.
+- `report_cdc` reported no unsafe endpoints; remaining warnings are expected
+  debug-hub and false-pathed input-port crossings.
+
+Remaining limitations:
+
+- The power result is vectorless implementation estimation, not measured board
+  power.
+- This build does not connect a physical PA/ADC feedback stream, so it does
+  not qualify RF EVM, ACLR, PA linearization, or asynchronous feedback capture.
+- Vivado reports non-fatal `DPOP-4` advisories for the compiled
+  memory-polynomial alternative. The selected build closes at 100 MHz, but
+  more DSP register staging is required before claiming a higher clock target.
+
+## 2026-07-25 14:10:00 +08:00
+
+Reason:
+
+- Complete the ZU15EG DPD post-synthesis OOC PPA matrix and preserve compact,
+  reviewable evidence for the DPD architecture decision.
+
+Changed files:
+
+- `syn/run_ooc_dpd_matrix.tcl`
+- `docs/DPD_PPA_REPORT.md`
+- `docs/evidence/ooc/dpd_ooc_xczu15eg_ffvb1156_1_i_20260725_summary.csv`
+- `docs/evidence/README.md`
+- `docs/PROJECT_MAP.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Completed the Vivado 2024.1 OOC sweep for `xczu15eg-ffvb1156-1-i` across
+  bypass, LUT, polynomial 3/5/7, and memory-polynomial 1/2/4/6-tap tops.
+- Corrected the matrix parser for Vivado 2024.1 report labels (`CLB LUTs` and
+  `CLB Registers`) and added vectorless dynamic/total power fields to future
+  summaries.
+- Fifth-order memoryless DPD is the current PPA default: 398 LUTs, 338 FFs,
+  22 DSP48E2, +5.811 ns WNS at 100 MHz, and a 238.720 MHz post-synthesis
+  estimate. Seventh order uses 28 DSP48E2 and estimates 218.293 MHz.
+- Four-tap memory polynomial uses 2,409 LUTs, 1,956 FFs, and 120 DSP48E2;
+  select it only when PA/feedback validation demonstrates memory effects.
+
+Checks run:
+
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dpd_matrix.ps1`
+  completed all nine configurations.
+- Reviewed Vivado utilization, timing, and power reports under
+  `reports/dpd_ooc_zu15eg/` and preserved the compact evidence CSV.
+
+Remaining limitations:
+
+- This evidence is OOC post-synthesis only. Routed timing, integrated dynamic
+  power, and board power remain separate checks for the selected TX build.
+
+## 2026-07-25 00:17:00 +08:00
+
+Reason:
+
+- Close the seventh-order polynomial DPD MATLAB/RTL bit-true loop and restore
+  regression coverage after the AXI-Lite register map expanded from eight to
+  nine address bits.
+
+Changed files:
+
+- `rtl/dpd/dpd_poly.v`
+- `rtl/axi/dsm_ip_axi_top.v`
+- `verif/tb/tb_dpd_poly7_bittrue.sv`
+- `verif/tb/tb_dsm_ip_axi_smoke.sv`
+- `verif/scripts/run_dpd_poly7_bittrue.tcl`
+- `matlab/dpd/prepare_dpd7_bittrue_vectors.m`
+- `matlab/dpd/compare_dpd7_rtl_xsim.m`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Replaced width-implicit polynomial products with explicit signed extensions
+  and safe-width result slices. The seventh-order failure was caused by
+  unsigned gain accumulation: negative imaginary terms became large positive
+  values and saturated the complex output.
+- Added a per-sample C1/C3/C5/C7 golden comparison to the seventh-order XSim
+  testbench. A simulation-only transaction trace isolated the failing gain
+  term; it is compile-macro guarded and not synthesized.
+- Updated the AXI smoke testbench to drive the current nine-bit AXI-Lite
+  address interface and to expect register-map version `0x0001_0004`. The
+  stale eight-bit connection left the high address bit high-impedance and
+  caused incorrect extended-register decode in simulation.
+- Moved the `obs_done` declaration before its first use so project compilation
+  does not depend on tool-specific forward-reference tolerance.
+
+Checks run:
+
+- Vivado XSim seventh-order DPD regression: passed, 256 samples.
+- MATLAB `compare_dpd7_rtl_xsim`: passed, 256 compared samples, zero mismatch,
+  and zero maximum absolute error LSB.
+- Vivado XSim DPD frontend protocol/safety regression: passed.
+- `verif/scripts/run_xsim_p0_all.ps1`: passed for LPDSM, LPDSM2, EFDSM,
+  EFDSM2, MASH11, MASH111, and MASH22; each ran 65536 samples with zero errors.
+- `scripts/run_matlab_p0_bittrue_check.cmd`: passed for the same seven DSM
+  modes; each compared 65536 samples with zero mismatches.
+- `verif/scripts/run_xsim_ip_smoke.ps1`: passed for top smoke, AXI smoke, and
+  DPD v1.1 unit smoke.
+
+Remaining limitations:
+
+- OOC PPA is now available; integrated routed timing and vector-based power
+  remain required for a selected full TX configuration.
+
+## 2026-07-24 00:00:00 +08:00
+
+Reason:
+
+- Correct the seventh-order DPD verification claim after an independent MATLAB
+  comparison exposed a missing golden-data check in the original XSim
+  testbench.
+
+Finding:
+
+- `compare_dpd7_rtl_xsim` compared the fresh 256-sample RTL dump against the
+  MATLAB Q1.15/Q2.14 expected file and reported 250 mismatches, with maximum
+  absolute error 65535 LSB.
+- The earlier XSim `PASS` message verified only that 256 samples traversed the
+  RTL and that the sample counter matched. It did not parse or compare
+  `dpd7_expected_iq.csv`; it is not MATLAB/RTL bit-true evidence.
+
+Correction:
+
+- `tb_dpd_poly7_bittrue.sv` now parses the expected CSV, compares every output
+  sample, prints the first eight mismatches, and terminates with a fatal error
+  unless the mismatch count is zero.
+- `run_dpd_poly7_bittrue.tcl` now copies the expected CSV into its XSim work
+  directory. The next GUI simulation is the authoritative seventh-order
+  bit-true result.
+
+Remaining limitation:
+
+- Do not run or interpret the ZU15EG DPD PPA matrix as a final architecture
+  selection until this seventh-order MATLAB/RTL discrepancy is resolved.
+
+## 2026-07-23 01:20:26 +08:00
+
+Reason:
+
+- Record the first successful Vivado GUI XSim execution of the seventh-order
+  DPD datapath and its accompanying protocol/safety regression.
+
+Evidence:
+
+- Vivado 2024.1 GUI XSim compiled, elaborated, and ran
+  `tb_dpd_poly7_bittrue` with `dpd_poly(POLY_ORDER=7)`.
+- The testbench reported `DPD polynomial seventh-order PASS: 256 samples` and
+  generated `verif/out_xsim_dpd/dpd7_rtl_iq.csv` at 2026-07-23 00:11:51
+  +08:00.
+- `tb_dpd_frontend_protocol` reported `DPD protocol and safety PASS`. It
+  exercised deterministic reset state, output backpressure stability, unsafe
+  memory-bank rejection, explicit shadow-bank abort, and a subsequent safe
+  atomic commit.
+- The test identified and corrected a recovery-state omission: `safety_clear`
+  now abandons invalid shadow-bank state before software reloads a known-safe
+  package. It does not alter the active bank.
+
+Checks and limitations:
+
+- The two `$fgets` diagnostics are XSim style warnings only; the testbench
+  completed normally and no mismatch or fatal error occurred.
+- XSim 2024.1 does not support SystemVerilog `cover property`; those cover
+  statements were ignored. Assertions and directed functional checks ran. A
+  coverage database requires a simulator with supported SVA coverage or a
+  future UVM/functional-coverage environment.
+- MATLAB command-line comparison remains blocked by the local startup error
+  `System Error: File system inconsistency`. Run the provided comparison in the
+  existing MATLAB GUI before claiming zero MATLAB-versus-RTL mismatches.
+- ZU15EG OOC PPA data remains pending a Vivado GUI/batch run of
+  `syn/run_ooc_dpd_matrix.tcl`.
+
+## 2026-07-22 23:23:39 +08:00
+
+Reason:
+
+- Complete the DPD verification, integration, and PPA infrastructure needed to
+  select polynomial order and memory depth from evidence rather than default
+  feature growth.
+
+Changed files:
+
+- `rtl/axi/dsm_ip_axi_top.v`
+- `syn/rtl/dpd_ooc_tops.sv`
+- `syn/run_ooc_dpd_matrix.tcl`
+- `syn/run_ooc_dpd_matrix.ps1`
+- `verif/tb/tb_dpd_frontend_protocol.sv`
+- `verif/scripts/run_xsim_dpd_bittrue.ps1`
+- `verif/scripts/run_dpd_poly7_bittrue.tcl`
+- `fpga/zu15eg/scripts/rebuild_dsm_board_bitstream.tcl`
+- `fpga/zu15eg/baremetal/src/dsm_dpd_baremetal_smoke.c`
+- `docs/DPD_CALIBRATION_INTERFACE.md`
+- `docs/IP_HANDOFF.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Changes:
+
+- Added a nine-bit AXI-Lite extension bank and runtime `DPD_C7` register at
+  byte address `0x100`; all legacy register addresses are unchanged.
+- Updated the ZU15EG rebuild configuration and bare-metal coefficient
+  readback path for the extended C7 register; generated package headers may
+  leave C7 at its explicit zero default until seventh-order packages are added.
+- Added `DPD_MP_MAX_TAPS` to the AXI wrapper so 1, 2, 4, or 6-tap memory-DPD
+  implementations can be selected at synthesis time.
+- Added a synchronous observer-interface contract, deterministic drop policy,
+  and optional sticky window-done `obs_irq` output. External feedback clock
+  domains require an AXI-Stream asynchronous FIFO before the IP.
+- Added a directed RTL protocol test with SVA assertions and cover properties
+  for reset state, output backpressure, unsafe bank rejection, and safe atomic
+  bank commit.
+- Added a standalone ZU15EG DPD OOC matrix for bypass, orders 3/5/7, LUT, and
+  memory-polynomial depths 1/2/4/6. Each top excludes the runtime mux so its
+  utilization and timing represent the selected implementation.
+
+Checks run:
+
+- MATLAB GUI vector generation completed for baseline, seventh-order, and
+  memory-polynomial Q1.15/Q2.14 vector sets.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1 -SkipMatlabPrep -CompileOnly` returned zero, but it
+  did not create an elaboration artifact. It is not recorded as RTL compile or
+  simulation evidence.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_dpd_matrix.ps1` failed before Tcl execution with Vivado exit code
+  `-1073741790`; no PPA results were generated.
+- `aarch64-none-elf-gcc` is not available on the current PATH, so the updated
+  bare-metal C source has not been locally compiled in this session.
+
+Remaining limitations:
+
+- The Vivado/XSim Windows launcher failure remains unresolved. Run
+  `verif/scripts/run_dpd_poly7_bittrue.tcl` from a functioning Vivado GUI Tcl
+  console, then run `compare_dpd7_rtl_xsim` in MATLAB to establish the required
+  zero-mismatch evidence.
+- The OOC matrix script is ready but has no measured ZU15EG data until the
+  Vivado batch launcher can execute normally.
+- The banked memory-polynomial engine remains C1/C3/C5. C7 plus memory is
+  intentionally deferred pending PA-fit improvement versus its PPA cost.
+
+## 2026-07-22 21:15:00 +08:00
+
+Reason:
+
+- Harden the DPD calibration boundary for PA-dependent deployment and add an
+  offline method to choose memory-polynomial complexity before implementation.
+
+Changed files:
+
+- `rtl/dpd/dpd_frontend.v`
+- `rtl/dpd/dpd_memory_poly.v`
+- `rtl/dpd/dpd_poly.v`
+- `rtl/axi/dsm_ip_axi_top.v`
+- `verif/tb/tb_dpd_frontend.sv`
+- `verif/tb/tb_dpd_frontend_safety.sv`
+- `verif/tb/tb_dpd_poly7_bittrue.sv`
+- `verif/tb/tb_dpd_poly7_directed.sv`
+- `verif/scripts/run_dpd_poly7_bittrue.tcl`
+- `verif/scripts/run_xsim_dpd_bittrue.ps1`
+- `matlab/dpd/run_dpd_memory_poly_training_comparison.m`
+- `matlab/dpd/run_dpd_model_selection_sweep.m`
+- `matlab/dpd/prepare_dpd7_bittrue_vectors.m`
+- `matlab/dpd/compare_dpd7_rtl_xsim.m`
+- `matlab/scripts/entry_dpd_model_selection_sweep.m`
+- `matlab/dpd/README.md`
+- `rtl/README.md`
+- `docs/DPD_CALIBRATION_INTERFACE.md`
+- `docs/PROJECT_PROSPECTIVE.md`
+- `docs/UPDATE_LOG.md`
+
+Changes:
+
+- Added compile-time `MP_MAX_TAPS` and `MP_POLY_ORDER` controls to the DPD
+  frontend. The synthesizable execution path remains first/third/fifth order;
+  `MP_POLY_ORDER=3` masks the fifth-order term and the default remains 4-tap,
+  fifth-order.
+- Extended coefficient selection from two to three tap-address bits, allowing
+  up to six memory taps in a configured DPD frontend.
+- Added safety-gated coefficient writes and atomic-bank commit rejection,
+  sticky AXI error bits, and saturation-triggered bypass fallback.
+- Defined the observation AXI-Stream sample format, calibration ordering,
+  software/hardware responsibility split, and safety semantics.
+- Generalized the MATLAB fixed-point memory-polynomial evaluator for odd
+  orders and added a behavioral order/depth/PA-condition selection sweep.
+- Added a compile-time seventh-order memoryless DPD datapath using
+  `C1/C3/C5/C7`, MATLAB vector/comparison helpers, a full-vector XSim
+  testbench, and a directed C7 arithmetic test.
+
+Checks run:
+
+- MATLAB GUI vector generation: passed for the baseline, seventh-order, and
+  memory-polynomial Q1.15/Q2.14 vector sets.
+- XSim command-line validation is blocked. `xvlog -version` exits with code 1
+  without diagnostics, and the regression command did not create refreshed
+  seventh-order simulation artifacts. The console step messages are therefore
+  not treated as synthesis or simulation evidence.
+- `run_xsim_ip_smoke.ps1`: also blocked before compilation log generation by
+  the same Vivado/XSim command-line failure.
+
+Remaining limitations:
+
+- The new MATLAB selection sweep has not executed on this host because of the
+  same MATLAB launcher failure; its recommendation is not yet evidence.
+- The seventh-order MATLAB vectors and compare flow exist, but its full-vector
+  RTL simulation and zero-mismatch assertion remain pending until XSim can
+  launch and create a new `dpd7_rtl_iq.csv` artifact.
+- Seventh-order banked memory-polynomial DPD is not implemented.
+
 ## 2026-07-22 20:17:52 +08:00
 
 Reason:

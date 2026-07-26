@@ -2,6 +2,70 @@
 
 ## Verified Status
 
+### Current DPD Verification and PPA Boundary
+
+- The memoryless polynomial RTL supports compile-time orders 3, 5, and 7. C7
+  is programmable through the nine-bit AXI-Lite extension at byte address
+  `0x100`; the legacy register map is unchanged.
+- The AXI wrapper supports compile-time memory-DPD depth through
+  `DPD_MP_MAX_TAPS`; the supported architectural sweep is 1, 2, 4, and 6 taps.
+  The banked memory implementation is intentionally limited to C1/C3/C5.
+- `s_axis_obs_*` is an `aclk` synchronous feedback stream. A separate feedback
+  clock requires an external AXI-Stream asynchronous FIFO. `obs_irq` is an
+  optional level interrupt for a completed observation window; software must
+  reject captures with nonzero drop count.
+- Seventh-order MATLAB/RTL bit-true passes. The directed 256-sample Q1.15 /
+  Q2.14 C1/C3/C5/C7 vector set reports zero mismatches and zero maximum error
+  LSB. The XSim testbench now performs a mandatory per-sample golden comparison
+  instead of checking sample count only.
+- The closure fixed explicit signed fixed-point arithmetic in `dpd_poly`: the
+  gain terms are signed before accumulation, so negative imaginary polynomial
+  terms cannot be reinterpreted as large unsigned values. This was the root
+  cause of the prior seventh-order saturation failures.
+- The directed DPD protocol regression passes in Vivado GUI XSim for reset,
+  backpressure, unsafe bank rejection, shadow-bank abort, and safe commit.
+  XSim 2024.1 ignores `cover property`, so these are assertion/directed-test
+  results rather than collected SVA coverage metrics.
+- The completed ZU15EG post-synthesis OOC DPD matrix covers bypass,
+  polynomial 3/5/7, LUT, and memory-polynomial 1/2/4/6 taps. All registered
+  polynomial/memory configurations meet the 100 MHz OOC constraint with at
+  least +5.419 ns WNS. The compact evidence and scope limits are recorded in
+  `docs/DPD_PPA_REPORT.md` and
+  `docs/evidence/ooc/dpd_ooc_xczu15eg_ffvb1156_1_i_20260725_summary.csv`.
+- The current feature-gated DPD OOC matrix on `xczu15eg-ffvb1156-2-i` passes
+  all ten product/development configurations at 100 MHz. Poly5 is
+  `505 LUT / 644 FF / 26 DSP48E2 / +6.572 ns WNS`; Memory4 is
+  `2,480 LUT / 3,058 FF / 120 DSP48E2 / +6.572 ns WNS`; the retained-all-modes
+  development build is `3,077 LUT / 3,691 FF / 150 DSP48E2 / +6.572 ns WNS`.
+  The evidence is
+  `docs/evidence/ooc/dpd_feature_ooc_zu15eg_ffvb1156_2_i_20260725_summary.csv`.
+- The selected full-TX Performance SKU has completed routed implementation and
+  bitstream/XSA generation on `xczu15eg-ffvb1156-2-i`: EFDSM 1-bit,
+  interpolation mode 4 (x32 CIC plus compensation FIR), fixed Fs/4 DUC, and
+  four-tap Memory-Poly5 DPD. `ENABLE_DPD_POLY=0` and `ENABLE_DPD_LUT=0` prune
+  non-SKU branches. The refreshed routed build at 100 MHz reports WNS
+  `+2.314 ns`, TNS `0.000 ns`, and `+3.500 ns` minimum pulse-width slack;
+  the final router hold estimate is WHS `+0.010 ns`, THS `0.000 ns`.
+  Integrated use is 16,296 LUTs, 20,763 registers, 3.0 BRAM tiles, and 266
+  DSP48E2 blocks. The vectorless total-power estimate is 4.114 W. Evidence is
+  retained in `docs/FULL_TX_IMPLEMENTATION.md`
+  and `docs/evidence/integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv`.
+- The full TX build uses one PS-derived 100 MHz `pl_clk0` domain for AXI DMA,
+  AXI-Lite, ILA, and the DSM IP. Reset is exclusively
+  `proc_sys_reset/peripheral_aresetn`; raw PS reset is not permitted. The
+  optional observer input is synchronous to this clock. A physical feedback
+  converter on another clock must cross through an AXI-Stream clock converter
+  or asynchronous FIFO before the IP.
+- The routed full-TX report includes the current ten-cycle memory-DPD pipeline
+  and compile-time feature gates for the selected Performance SKU.
+- Wrapper v1.5 closes the V1 software/feedback contract: AXI-Lite accepts
+  independently arriving AW and W channels; `CAPABILITY` and
+  `EFFECTIVE_STATUS` expose the compiled SKU and any mode fallback; the
+  Memory-Poly bank update is acknowledged only after a drain-to-safe-boundary
+  swap; and observation windows report overflow/validity plus a coherent
+  64-bit error snapshot. These are RTL/XSim closure features, not a claim of
+  a multi-clock feedback CDC or a physical PA adaptation loop.
+
 - Seven DSM paths are retained: LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11,
   MASH111, and MASH22.
 - MATLAB/RTL bit-true comparison passes with zero mismatches for all seven
@@ -23,6 +87,15 @@
   multiplier/add path is split across square, radius, coefficient multiply,
   gain accumulation, complex multiply, and saturation stages. Bypass and LUT
   DPD modes are latency-aligned to the polynomial path.
+- The revised memory-polynomial path has fixed ten-cycle latency after adding
+  a registered complex-product output stage. MATLAB/RTL comparison passes for
+  retained 5th-order, 7th-order, and four-tap vector sets. XSim also passes
+  the 3/5/7-order and 1/2/4/6-tap configuration matrix, disabled-feature
+  fallback, and dual-clock observer bridge with backpressure.
+- `dpd_observer_async_bridge` is a standalone companion IP for an observation
+  receiver clock domain. It is lossless by default, reports source stalls and
+  optional drops, and is not yet instantiated in the single-clock full-TX
+  board build.
 - The ZU15EG bare-metal regression has been run after the DPD pipeline update.
   It rebuilt the bitstream, exported XSA, rebuilt the ELF, programmed the
   board, launched the PS-side calibration app, and passed post-run DSM/DPD

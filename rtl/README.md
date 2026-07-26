@@ -119,3 +119,19 @@ AXI wrapper flow control:
 - `ERROR_STATUS[1]` is set when an accepted AXI-Stream sample has nonzero
   `tuser`; this supports upstream error tagging without changing the DSM
   numerical datapath.
+- `ERROR_STATUS[2]` latches a DPD safety fault, `[3]` latches a rejected
+  memory-polynomial commit, and `[4]` latches a rejected LUT commit.
+
+DPD calibration safety:
+
+- `dpd_frontend` keeps the deployed default at four memory taps and fifth
+  order, but `MP_MAX_TAPS` is a compile-time control for one to six taps.
+- `DPD_CTRL[8]` enables coefficient safety. Writes above the configured Q2.14
+  magnitude limit mark the inactive package unsafe; its later commit is
+  rejected without replacing the active package.
+- `DPD_CTRL[9]` is a write-one clear for the saturation fallback latch. A
+  saturation event in the selected DPD mode causes later samples to use the
+  bypass path until software clears the latch after loading a safe package.
+- `s_axis_obs_*` is the optional Q1.15 complex observation-feedback stream.
+  Its detailed transfer and calibration contract is in
+  `docs/DPD_CALIBRATION_INTERFACE.md`.

@@ -15,6 +15,7 @@ This repository is a reusable DSM IP handoff tree.
 | `docs` | Architecture, status, integration, and evidence notes |
 | `fpga` | FPGA/RFSoC source fragments, COE files, and local-only board collateral notes |
 | `ip` | Vivado IP-XACT packaging scripts and generated IP repository |
+| `ip/package_dpd_observer_bridge.ps1` | Companion IP packaging flow for the dual-clock DPD feedback bridge |
 | `matlab` | MATLAB models, bit-true comparison, QAM-OFDM generation, and board-validation scripts |
 | `rtl` | DSM RTL paths: LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11, MASH111, MASH22 |
 | `rtl/dsm` | DSM algorithm cores |
@@ -22,6 +23,7 @@ This repository is a reusable DSM IP handoff tree.
 | `rtl/mem` | ROM reader |
 | `rtl/ip` | Reusable streaming DSM datapath |
 | `rtl/axi` | AXI-Lite/AXI-Stream SoC/RFSoC wrapper |
+| `rtl/dpd` | Fixed-point polynomial, LUT, memory-polynomial, and feedback-bridge DPD RTL |
 | `rtl/top` | ROM-backed P0 simulation and synthesis tops |
 | `verif` | XSim testbenches for retained RTL paths |
 | `syn` | 100 MHz OOC proxy synthesis |
@@ -35,6 +37,9 @@ This repository is a reusable DSM IP handoff tree.
 | `docs/IP_HANDOFF.md` | Reusable DSM IP handoff and integration notes |
 | `docs/METRIC_DEFINITIONS.md` | Native and RF-recovered metric definitions |
 | `docs/AI_COMMUNICATION_IP_ROADMAP.md` | XCZU15EG-oriented AI-assisted communication IP roadmap |
+| `docs/DPD_PPA_REPORT.md` | ZU15EG DPD OOC resource, timing, and power-estimate evidence |
+| `docs/FULL_TX_IMPLEMENTATION.md` | ZU15EG full TX clock/reset contract and routed build evidence |
+| `syn/run_ooc_dpd_feature_matrix.ps1` | ZU15EG compile-time DPD product-SKU OOC PPA matrix |
 
 The seven P0 comparison paths are retained. Other exploratory EFDSM4/MASH
 bundles and broad research workspaces remain outside this handoff tree.

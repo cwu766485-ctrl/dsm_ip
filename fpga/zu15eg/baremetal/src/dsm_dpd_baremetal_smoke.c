@@ -12,6 +12,7 @@
 #define DSM_DPD_C1_WORD 0xFFFB4009U
 #define DSM_DPD_C3_WORD 0xF1A41F6FU
 #define DSM_DPD_C5_WORD 0xDE503A39U
+#define DSM_DPD_C7_WORD 0x00000000U
 #define DSM_DPD_LUT_LEN 16U
 #define DSM_DPD_NUM_PACKAGES 1U
 static const u32 dsm_dpd_lut_words[DSM_DPD_LUT_LEN] = {
@@ -38,6 +39,10 @@ static const u32 dsm_dpd_lut_packages[DSM_DPD_NUM_PACKAGES][DSM_DPD_LUT_LEN] = {
         0x00004000U, 0x00004000U, 0x00004000U, 0x00004000U
     }
 };
+#endif
+
+#ifndef DSM_DPD_C7_WORD
+#define DSM_DPD_C7_WORD 0x00000000U
 #endif
 
 #if __has_include("cal_config.h")
@@ -260,6 +265,7 @@ static const u32 dsm_dpd_lut_packages[DSM_DPD_NUM_PACKAGES][DSM_DPD_LUT_LEN] = {
 #define DSM_DPD_C1                0x44U
 #define DSM_DPD_C3                0x48U
 #define DSM_DPD_C5                0x4CU
+#define DSM_DPD_C7                0x100U
 #define DSM_DPD_SAMPLE_COUNT      0x50U
 #define DSM_DPD_SATURATION_COUNT  0x54U
 #define DSM_DPD_LUT_ADDR          0x58U
@@ -679,9 +685,11 @@ static int configure_dpd(u32 mode, u32 package_idx)
         dsm_write(DSM_DPD_C1, dsm_dpd_c1_words[pkg]);
         dsm_write(DSM_DPD_C3, dsm_dpd_c3_words[pkg]);
         dsm_write(DSM_DPD_C5, dsm_dpd_c5_words[pkg]);
+        dsm_write(DSM_DPD_C7, DSM_DPD_C7_WORD);
         if (expect_eq("DPD_C1", dsm_read(DSM_DPD_C1), dsm_dpd_c1_words[pkg]) != XST_SUCCESS) return XST_FAILURE;
         if (expect_eq("DPD_C3", dsm_read(DSM_DPD_C3), dsm_dpd_c3_words[pkg]) != XST_SUCCESS) return XST_FAILURE;
         if (expect_eq("DPD_C5", dsm_read(DSM_DPD_C5), dsm_dpd_c5_words[pkg]) != XST_SUCCESS) return XST_FAILURE;
+        if (expect_eq("DPD_C7", dsm_read(DSM_DPD_C7), DSM_DPD_C7_WORD) != XST_SUCCESS) return XST_FAILURE;
     } else if (mode == DPD_MODE_LUT) {
         for (u32 k = 0; k < DSM_DPD_LUT_LEN; k++) {
             dsm_write(DSM_DPD_LUT_ADDR, k);

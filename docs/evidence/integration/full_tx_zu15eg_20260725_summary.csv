@@ -1,0 +1,2 @@
+project_part,clock_hz,algorithm,interp_mode,duc_mode,dpd_poly_order,dpd_mp_max_taps,bb_sample_rate_hz,signal_bw_hz,routed_wns_ns,routed_tns_ns,routed_whs_ns,routed_ths_ns,lut,ff,bram,dsp,total_power_w,dynamic_power_w,static_power_w,bitstream_generated,xsa_generated
+xczu15eg-ffvb1156-2-i,100000000,EFDSM_1BIT,4_X32_CIC_COMP_FIR,0_FS4,5,4,3125000,2539062,1.993,0.000,0.011,0.000,17454,21363,3.0,296,4.136,3.290,0.846,yes,yes

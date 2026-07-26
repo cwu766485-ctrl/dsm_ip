@@ -1,0 +1,10 @@
+config,top,generic,lut,ff,dsp,bram,wns_ns,fmax_est_mhz,dynamic_power_w,total_power_w
+bypass,dpd_bypass_ooc_top,,1,33,0,0,NA,NA,0.000,0.708
+poly3,dpd_poly_ooc_top,POLY_ORDER=3,301,336,16,0,6.355,274.348,0.008,0.716
+poly5,dpd_poly_ooc_top,POLY_ORDER=5,398,338,22,0,5.811,238.720,0.014,0.722
+poly7,dpd_poly_ooc_top,POLY_ORDER=7,490,338,28,0,5.419,218.293,0.019,0.727
+lut,dpd_lut_ooc_top,,82,0,4,0,NA,NA,0.001,0.709
+mp1,dpd_memory_poly_ooc_top,MAX_TAPS=1,608,502,26,0,5.811,238.720,0.016,0.724
+mp2,dpd_memory_poly_ooc_top,MAX_TAPS=2,1229,1030,60,0,5.806,238.436,0.036,0.744
+mp4,dpd_memory_poly_ooc_top,MAX_TAPS=4,2409,1956,120,0,5.806,238.436,0.068,0.776
+mp6,dpd_memory_poly_ooc_top,MAX_TAPS=6,3587,2880,180,0,5.806,238.436,0.101,0.809

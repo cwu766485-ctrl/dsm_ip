@@ -13,11 +13,14 @@ evaluate coefficient packages for the deterministic DPD RTL.
 | `run_ai_assisted_dpd_sweep.m` | Runs a multi-scenario software calibration sweep, refines polynomial DPD coefficients with fixed-point coordinate search, exports polynomial/LUT DPD metrics, and emits AXI-Lite coefficient words |
 | `run_dpd_memory_pa_observation_sweep.m` | Adds a more realistic PA/observation model: memory polynomial PA taps, soft saturation, linear frequency response, gain/phase drift, observation noise, fixed-point optimized polynomial DPD, LUT DPD, and an assumed RF observation chain |
 | `run_dpd_memory_poly_training_comparison.m` | Trains Q2.14 memoryless and 4-tap memory-polynomial coefficients on disjoint fit/validation OFDM data, then compares both against no DPD on held-out test seeds under the same behavioral PA and observation conditions |
+| `run_dpd_model_selection_sweep.m` | Sweeps PA saturation, input backoff, polynomial order (3/5/7), and memory depth (1/2/4/6); rejects clipped candidates and emits a PPA-aware behavioral recommendation |
 | `run_dpd_memory_tinyml_dataset.m` | Generates six joint EVM/ACLR/safety memory-DPD package labels plus exact `aligned_complex_pa_monitor_v2` raw Q1.15 complex-feedback traces; `training` produces the 12-profile base matrix, `development` produces eight profile-LOSO/model-selection profiles, and `blind` produces three permanently isolated final-test profiles |
 | `prepare_dpd_observer_behavioral_vectors.m` | Exports Q1.15 reference and behavioral-PA feedback vectors plus programmed delay/gain and exact observer counters for XSim closed-loop checking |
 | `export_dpd_coeff_header.m` | Exports MATLAB DPD calibration words, LUT packages, and proxy EVM/SNDR scores to `fpga/zu15eg/baremetal/src/dpd_coeffs.h` for Vitis standalone experiments |
 | `prepare_dpd_bittrue_vectors.m` | Generates deterministic Q1.15 inputs, Q2.14 coefficients, and expected fixed-point DPD outputs for RTL comparison |
 | `compare_dpd_rtl_xsim.m` | Compares `dpd_poly` XSim dumps against MATLAB expected vectors |
+| `prepare_dpd7_bittrue_vectors.m` | Generates deterministic Q1.15 and Q2.14 `C1/C3/C5/C7` vectors for the seventh-order memoryless DPD core |
+| `compare_dpd7_rtl_xsim.m` | Compares seventh-order `dpd_poly` XSim dumps against MATLAB expected vectors |
 
 ## Run
 
@@ -38,6 +41,7 @@ entry_dpd_bittrue_check
 entry_ai_assisted_dpd_sweep
 entry_dpd_memory_pa_observation_sweep
 entry_dpd_memory_poly_training_comparison
+entry_dpd_model_selection_sweep
 entry_export_dpd_coeff_header
 ```
 
@@ -111,6 +115,9 @@ matlab/out/dpd/dpd_memory_poly_comparison_summary.csv
 matlab/out/dpd/dpd_memory_poly_coefficients.csv
 matlab/out/dpd/dpd_memory_poly_comparison.md
 matlab/out/dpd/dpd_memory_poly_comparison.mat
+matlab/out/dpd/dpd_model_selection_sweep.csv
+matlab/out/dpd/dpd_model_selection_recommendation.csv
+matlab/out/dpd/dpd_model_selection_sweep.md
 matlab/out/dpd/bittrue/dpd_input_iq.csv
 matlab/out/dpd/bittrue/dpd_coefficients.csv
 matlab/out/dpd/bittrue/dpd_expected_iq.csv
@@ -131,6 +138,12 @@ Memoryless polynomial, LUT, and 2-to-4-tap memory-polynomial DPD are implemented
 in RTL. The current coefficient flow uses deterministic indirect learning and
 held-out validation; a later learned model can guide package selection while
 keeping the same AXI-Lite programming interface.
+
+The memoryless `dpd_poly` primitive supports compile-time polynomial orders 3,
+5, and 7. The seventh-order path adds `C7*abs(x)^6`; its direct RTL test is
+included in `run_xsim_dpd_bittrue.ps1`. Full per-sample MATLAB/RTL signoff also
+requires the local MATLAB launcher to generate `dpd7_*` vectors. The banked
+memory-polynomial hardware path remains limited to C1/C3/C5.
 
 The first learned package selector is now frozen as a depth-4 signed-Q12.20
 decision tree. Generate and verify it with
