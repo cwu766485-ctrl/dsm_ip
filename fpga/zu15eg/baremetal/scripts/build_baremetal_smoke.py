@@ -1,5 +1,6 @@
 import os
 import shutil
+import socket
 import vitis
 
 
@@ -18,11 +19,23 @@ print(f"XSA:       {xsa_path}")
 print(f"Sources:   {src_dir}")
 print(f"Defines:   {define_text}")
 
+
+def select_vitis_server_port():
+    """Avoid Vitis 2024.1 parsing Windows launcher output for a random port."""
+    requested = int(os.environ.get("DSM_VITIS_SERVER_PORT", "0"))
+    if requested:
+        return requested
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.bind(("127.0.0.1", 0))
+        return probe.getsockname()[1]
+
 if os.path.isdir(workspace_path):
     shutil.rmtree(workspace_path)
 os.makedirs(workspace_path, exist_ok=True)
 
-client = vitis.create_client()
+server_port = select_vitis_server_port()
+print(f"Vitis server port: {server_port}")
+client = vitis.create_client(port=server_port)
 client.set_workspace(workspace_path)
 platform = client.create_platform_component(
     name=platform_name,
@@ -38,7 +51,10 @@ app = client.create_app_component(
     name=app_name,
     platform=platform_xpfm,
     domain=domain_name,
-    template="empty",
+    # Vitis 2024.1 registers the standalone blank project as
+    # "empty_application".  The previous "empty" identifier was accepted by
+    # older flows but is not a valid 2024.1 template.
+    template="empty_application",
 )
 config_path = os.path.join(src_dir, "cal_config.h")
 if define_text:

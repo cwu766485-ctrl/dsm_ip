@@ -32,6 +32,9 @@ set rtl_files [list \
   [file join $ip_root rtl dsm multibit dsm_core_multibit_mash111.sv] \
   [file join $ip_root rtl dsm multibit dsm_core_multibit_mash22.sv] \
   [file join $ip_root rtl interp dsm_interp_fir_fixed.sv] \
+  [file join $ip_root rtl interp dsm_interp_cic_direct.sv] \
+  [file join $ip_root rtl interp dsm_interp_fir_polyphase.sv] \
+  [file join $ip_root rtl interp dsm_interp_fir_i2_polyphase.sv] \
   [file join $ip_root rtl interp dsm_interp2_halfband.sv] \
   [file join $ip_root rtl interp dsm_interp_frontend.sv] \
   [file join $ip_root rtl dpd dpd_poly.v] \

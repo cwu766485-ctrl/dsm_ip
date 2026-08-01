@@ -14,7 +14,7 @@ $work = Join-Path $repo "verif\out_xsim_interp_frontend"
 New-Item -ItemType Directory -Force -Path $work | Out-Null
 
 if (-not $SkipMatlabPrep) {
-  matlab -batch "cd('$($repo.Replace('\','/'))/matlab'); path_setup; prepare_interp_frontend_bittrue_vectors('n_input',128);"
+  matlab -batch "cd('$($repo.Replace('\','/'))/matlab'); path_setup; prepare_interp_frontend_bittrue_vectors('n_input',128); prepare_interp_i2_bittrue_vectors('n_input',128);"
   if ($LASTEXITCODE -ne 0) { throw "MATLAB vector preparation failed" }
 }
 
@@ -58,12 +58,23 @@ function Invoke-VivadoCmd($cmd) {
 
 Write-Host "[xsim] xvlog compile interp frontend"
 $tb = Join-Path $repo "verif\tb\tb_interp_frontend.sv"
-Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tb`""
+$tbVariants = Join-Path $repo "verif\tb\tb_interp_frontend_variants.sv"
+Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tb`" `"$tbVariants`""
 
 Write-Host "[xsim] xelab tb_interp_frontend"
 Invoke-VivadoCmd "xelab -debug typical tb_interp_frontend -s sim_tb_interp_frontend"
 
 Write-Host "[xsim] xsim tb_interp_frontend"
 Invoke-VivadoCmd "xsim sim_tb_interp_frontend -runall"
+
+Write-Host "[xsim] xelab tb_interp_frontend_variants"
+Invoke-VivadoCmd "xelab -debug typical tb_interp_frontend_variants -s sim_tb_interp_frontend_variants"
+
+Write-Host "[xsim] xsim tb_interp_frontend_variants"
+Invoke-VivadoCmd "xsim sim_tb_interp_frontend_variants -runall"
+
+Write-Host "[matlab] compare I0/I1/I2/I3 x32 outputs"
+matlab -batch "cd('$($repo.Replace('\','/'))/matlab'); path_setup; compare_interp_frontend_variants_rtl_xsim"
+if ($LASTEXITCODE -ne 0) { throw "I0/I1/I2/I3 bit-true comparison failed" }
 
 Write-Host "[xsim] interp frontend done. Outputs in $work"

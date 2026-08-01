@@ -17,6 +17,7 @@ module dsm_ip_axi_top #(
   parameter integer ALGORITHM = 2,
   parameter integer DUC_MODE = 0,
   parameter integer INTERP_MODE = 0,
+  parameter integer INTERP_IMPL = 0,
   parameter integer CLK_FREQ_HZ = 100000000,
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
@@ -1055,6 +1056,7 @@ module dsm_ip_axi_top #(
     .ALGORITHM(ALGORITHM),
     .DUC_MODE(DUC_MODE),
     .INTERP_MODE(INTERP_MODE),
+    .INTERP_IMPL(INTERP_IMPL),
     .CLK_FREQ_HZ(CLK_FREQ_HZ),
     .BB_SAMPLE_RATE_HZ(BB_SAMPLE_RATE_HZ),
     .SIGNAL_BW_HZ(SIGNAL_BW_HZ)

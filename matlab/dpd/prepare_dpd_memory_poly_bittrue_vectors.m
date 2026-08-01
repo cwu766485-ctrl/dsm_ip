@@ -7,6 +7,7 @@ function prepare_dpd_memory_poly_bittrue_vectors(varargin)
   cfg.input_w = 16;
   cfg.input_frac = 15;
   cfg.coeff_frac = 14;
+  cfg.coefficients_file = '';
   cfg.out_dir = fullfile(fileparts(fileparts(mfilename('fullpath'))), ...
                          'out', 'dpd', 'bittrue');
   for n = 1:2:numel(varargin)
@@ -29,6 +30,11 @@ function prepare_dpd_memory_poly_bittrue_vectors(varargin)
   c3_im = int32([-900, 256, -160, 64]);
   c5_re = int32([1800, -320, 128, -48]);
   c5_im = int32([-400, 160, -64, 24]);
+
+  if ~isempty(cfg.coefficients_file)
+    [c1_re, c1_im, c3_re, c3_im, c5_re, c5_im] = ...
+      read_release_coefficients(cfg.coefficients_file, cfg.active_taps);
+  end
 
   [y_i, y_q, saturated] = memory_poly_model(i_in, q_in, c1_re, ...
       c1_im, c3_re, c3_im, c5_re, c5_im, cfg);
@@ -55,6 +61,32 @@ function prepare_dpd_memory_poly_bittrue_vectors(varargin)
         c3_re(tap), c3_im(tap), c5_re(tap), c5_im(tap));
   end
   fprintf(fid, '\n');
+end
+
+function [c1_re, c1_im, c3_re, c3_im, c5_re, c5_im] = read_release_coefficients(path, active_taps)
+% Read a quality-gated Q2.14 four-tap C1/C3/C5 package for RTL signoff.
+  assert(exist(path, 'file') == 2, 'Released coefficient file not found: %s', path);
+  T = readtable(path, 'TextType', 'string');
+  required = {'Tap', 'Order', 'Q2_14_Real', 'Q2_14_Imag'};
+  assert(all(ismember(required, T.Properties.VariableNames)), ...
+    'Released coefficient table has an unsupported format.');
+  assert(height(T) == 3*active_taps, 'Expected %d released coefficients.', 3*active_taps);
+  c1_re = zeros(1, active_taps, 'int32'); c1_im = c1_re;
+  c3_re = c1_re; c3_im = c1_re; c5_re = c1_re; c5_im = c1_re;
+  for tap = 0:active_taps-1
+    for order = [1 3 5]
+      row = T(T.Tap == tap & T.Order == order, :);
+      assert(height(row) == 1, 'Missing or duplicate tap %d order %d coefficient.', tap, order);
+      switch order
+        case 1
+          c1_re(tap+1) = int32(row.Q2_14_Real); c1_im(tap+1) = int32(row.Q2_14_Imag);
+        case 3
+          c3_re(tap+1) = int32(row.Q2_14_Real); c3_im(tap+1) = int32(row.Q2_14_Imag);
+        case 5
+          c5_re(tap+1) = int32(row.Q2_14_Real); c5_im(tap+1) = int32(row.Q2_14_Imag);
+      end
+    end
+  end
 end
 
 function [y_i, y_q, saturated] = memory_poly_model(i_in, q_in, ...

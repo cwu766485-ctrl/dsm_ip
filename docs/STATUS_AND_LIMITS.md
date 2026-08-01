@@ -4,6 +4,18 @@
 
 ### Current DPD Verification and PPA Boundary
 
+- The LPDSM2 one-bit DPA+BPF MATLAB endpoint now uses one fit seed, three
+  independent validation seeds (`137/149/163`), and three isolated test seeds
+  (`211/223/239`). A Q2.14 Memory-Poly5 four-tap package may be released only
+  when every validation and test condition improves EVM and SNDR, does not
+  worsen OOB ratio, and reports zero coefficient or drive limits. The latest
+  run is `ACCEPT`: all three validation and three isolated test conditions
+  pass. It reports 19.33% mean validation EVM improvement, 3.54 dB mean
+  validation SNDR improvement, 18.28% mean test EVM improvement, and 3.32 dB
+  mean test SNDR improvement. Its dedicated 256-sample Memory-Poly XSim
+  comparison passes with zero mismatches and zero maximum LSB error. This is
+  still a behavioral-model result with ideal interpolation, not physical PA
+  evidence.
 - The memoryless polynomial RTL supports compile-time orders 3, 5, and 7. C7
   is programmable through the nine-bit AXI-Lite extension at byte address
   `0x100`; the legacy register map is unchanged.
@@ -50,6 +62,12 @@
   DSP48E2 blocks. The vectorless total-power estimate is 4.114 W. Evidence is
   retained in `docs/FULL_TX_IMPLEMENTATION.md`
   and `docs/evidence/integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv`.
+- The dedicated Performance SKU bare-metal ELF was rebuilt from that routed XSA
+  with `CAL_MEMORY_SKU_ONLY=1`, package index `0`, and software seed disabled.
+  The Vitis 2024.1 platform and A53 application builds completed successfully.
+  On 2026-07-28, XSDB started `hw_server` but enumerated an empty JTAG target
+  chain; therefore this SKU has not yet been programmed or executed on the
+  board. This is a board-link limitation, not evidence of a PL datapath pass.
 - The full TX build uses one PS-derived 100 MHz `pl_clk0` domain for AXI DMA,
   AXI-Lite, ILA, and the DSM IP. Reset is exclusively
   `proc_sys_reset/peripheral_aresetn`; raw PS reset is not permitted. The

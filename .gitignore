@@ -45,6 +45,7 @@ verif/out_xsim_p0_multibit/
 verif/out_xsim_interp_frontend/
 verif/out_xsim_ip_smoke/
 verif/out_xsim_dpd/
+verif/out_xsim_lpdsmdpa_bpf_dpd/
 verif/out_xsim_v11_compile/
 verif/out_xsim_dpd_observer/
 verif/out_xsim_tinyml_tree/
@@ -68,6 +69,8 @@ ip/ip_repo/
 
 # Synthesis/report generated outputs
 reports/
+alib-*/
+*.svf
 syn/reports/**/*.rpt
 syn/reports/ooc_*/
 syn/reports/ooc_xc*/

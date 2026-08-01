@@ -81,14 +81,30 @@ if ($waveformArgsProvided -eq 3) {
         throw "DPD TX waveform generation failed with exit code $LASTEXITCODE"
     }
 } else {
-    # Avoid silently reusing a waveform from a different calibration condition.
+    # Keep the checked-in deterministic smoke waveform. A board build must not
+    # silently delete a tracked source artifact when no new waveform is asked
+    # for; callers that need a labelled condition pass all waveform arguments.
     $waveformHeader = Join-Path $repoRoot "fpga\zu15eg\baremetal\src\dpd_tx_waveform.h"
-    if (Test-Path $waveformHeader) {
-        Remove-Item -LiteralPath $waveformHeader -Force
+    if (-not (Test-Path $waveformHeader)) {
+        throw "No deterministic DMA waveform found: $waveformHeader. Supply all Waveform* arguments."
     }
 }
 
 New-Item -ItemType Directory -Force -Path $workspacePath | Out-Null
+
+# Vitis 2024.1's Python client decodes its launcher output as UTF-8. On a
+# Windows account whose profile path contains non-ASCII characters, that can
+# fail before platform creation. Keep this build's tool state in repository
+# local ASCII paths; this only affects the Vitis child process launched below.
+$vitisStateRoot = Join-Path $repoRoot ".Xil\vitis_baremetal_state"
+$vitisTempRoot = Join-Path $repoRoot ".Xil\vitis_baremetal_tmp"
+New-Item -ItemType Directory -Force -Path $vitisStateRoot, $vitisTempRoot | Out-Null
+$env:USERPROFILE = $vitisStateRoot
+$env:HOME = $vitisStateRoot
+$env:APPDATA = $vitisStateRoot
+$env:LOCALAPPDATA = $vitisStateRoot
+$env:TEMP = $vitisTempRoot
+$env:TMP = $vitisTempRoot
 
 $env:DSM_REPO_ROOT = $repoRoot.Path
 $env:DSM_XSA = $xsaPath.Path

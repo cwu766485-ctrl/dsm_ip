@@ -13,6 +13,7 @@ evaluate coefficient packages for the deterministic DPD RTL.
 | `run_ai_assisted_dpd_sweep.m` | Runs a multi-scenario software calibration sweep, refines polynomial DPD coefficients with fixed-point coordinate search, exports polynomial/LUT DPD metrics, and emits AXI-Lite coefficient words |
 | `run_dpd_memory_pa_observation_sweep.m` | Adds a more realistic PA/observation model: memory polynomial PA taps, soft saturation, linear frequency response, gain/phase drift, observation noise, fixed-point optimized polynomial DPD, LUT DPD, and an assumed RF observation chain |
 | `run_dpd_memory_poly_training_comparison.m` | Trains Q2.14 memoryless and 4-tap memory-polynomial coefficients on disjoint fit/validation OFDM data, then compares both against no DPD on held-out test seeds under the same behavioral PA and observation conditions |
+| `run_lpdsmdpa_bpf_dpd_closed_loop.m` | Runs the LPDSM2 one-bit DPA+BPF endpoint with disjoint fit, three-condition validation, and test windows; an identity-start ILC search evaluates bounded Q2.14 four-tap Memory-Poly coefficients and releases them only when every validation and held-out test condition improves EVM/SNDR, does not degrade OOB ratio, and has zero limits |
 | `run_dpd_model_selection_sweep.m` | Sweeps PA saturation, input backoff, polynomial order (3/5/7), and memory depth (1/2/4/6); rejects clipped candidates and emits a PPA-aware behavioral recommendation |
 | `run_dpd_memory_tinyml_dataset.m` | Generates six joint EVM/ACLR/safety memory-DPD package labels plus exact `aligned_complex_pa_monitor_v2` raw Q1.15 complex-feedback traces; `training` produces the 12-profile base matrix, `development` produces eight profile-LOSO/model-selection profiles, and `blind` produces three permanently isolated final-test profiles |
 | `prepare_dpd_observer_behavioral_vectors.m` | Exports Q1.15 reference and behavioral-PA feedback vectors plus programmed delay/gain and exact observer counters for XSim closed-loop checking |
@@ -21,6 +22,8 @@ evaluate coefficient packages for the deterministic DPD RTL.
 | `compare_dpd_rtl_xsim.m` | Compares `dpd_poly` XSim dumps against MATLAB expected vectors |
 | `prepare_dpd7_bittrue_vectors.m` | Generates deterministic Q1.15 and Q2.14 `C1/C3/C5/C7` vectors for the seventh-order memoryless DPD core |
 | `compare_dpd7_rtl_xsim.m` | Compares seventh-order `dpd_poly` XSim dumps against MATLAB expected vectors |
+| `prepare_lpdsmdpa_bpf_dpd_bittrue_vectors.m` | Requires an accepted LPDSM2 DPA+BPF release gate, then generates isolated four-tap C1/C3/C5 Q2.14 Memory-Poly RTL vectors |
+| `compare_lpdsmdpa_bpf_dpd_rtl_xsim.m` | Requires 256 RTL samples, zero mismatches, and zero LSB error for the accepted LPDSM2 DPA+BPF release package |
 
 ## Run
 
@@ -42,6 +45,9 @@ entry_ai_assisted_dpd_sweep
 entry_dpd_memory_pa_observation_sweep
 entry_dpd_memory_poly_training_comparison
 entry_dpd_model_selection_sweep
+entry_lpdsmdpa_bpf_dpd_closed_loop
+entry_lpdsmdpa_bpf_dpd_bittrue_prepare
+entry_lpdsmdpa_bpf_dpd_bittrue_compare
 entry_export_dpd_coeff_header
 ```
 
@@ -124,6 +130,29 @@ matlab/out/dpd/bittrue/dpd_expected_iq.csv
 fpga/zu15eg/baremetal/src/dpd_coeffs.h
 fpga/zu15eg/baremetal/src/dpd_tinyml_packages_v2.h
 ```
+
+The LPDSM2 DPA+BPF flow writes a diagnostic candidate table to
+`matlab/out/dpd/lpdsmdpa_bpf_dpd_candidate_coefficients.csv`. It writes
+`lpdsmdpa_bpf_dpd_release_coefficients.csv` only when the strict
+multi-condition quality gate returns `ACCEPT`. Use only that release file as
+the optional `coefficients_file` input to
+`prepare_dpd_memory_poly_bittrue_vectors` before an RTL comparison.
+
+The accepted LPDSM2 DPA+BPF release package uses a separate signoff flow and
+does not overwrite generic DPD vectors:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_lpdsmdpa_bpf_dpd_bittrue.ps1
+```
+
+This command checks that the release gate reports `ACCEPT`, requires all three
+validation and independent-test EVM/SNDR/OOB checks to pass with zero limits,
+then runs Memory-Poly XSim in `verif/out_xsim_lpdsmdpa_bpf_dpd`. If MATLAB must
+run from its GUI, first run `entry_lpdsmdpa_bpf_dpd_bittrue_prepare`, invoke
+the PowerShell command with `-SkipMatlabPrep -SkipMatlabCompare`, then run
+`entry_lpdsmdpa_bpf_dpd_bittrue_compare`. A zero mismatch signs off only the
+deterministic four-tap C1/C3/C5 RTL arithmetic for this behavioral package; it
+does not validate a physical PA.
 
 ## Boundary
 

@@ -22,6 +22,9 @@
 ../rtl/dsm/multibit/dsm_core_multibit_mash111.sv
 ../rtl/dsm/multibit/dsm_core_multibit_mash22.sv
 ../rtl/interp/dsm_interp_fir_fixed.sv
+../rtl/interp/dsm_interp_cic_direct.sv
+../rtl/interp/dsm_interp_fir_polyphase.sv
+../rtl/interp/dsm_interp_fir_i2_polyphase.sv
 ../rtl/interp/dsm_interp2_halfband.sv
 ../rtl/interp/dsm_interp_frontend.sv
 ../rtl/dpd/dpd_poly.v

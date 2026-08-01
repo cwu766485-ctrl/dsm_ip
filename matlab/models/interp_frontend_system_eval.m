@@ -24,6 +24,7 @@ function T = interp_frontend_system_eval(varargin)
   for im = 1:numel(cfg.modes)
     mode = cfg.modes(im);
     mcfg = mode_cfg(mode);
+    mcfg.interp_impl = upper(string(cfg.interp_impl));
     x_tx = interp_chain_complex(x_ref, mcfg);
     x_tx = x_tx / max(abs(x_tx)) * cfg.dsm_drive_peak;
 
@@ -39,10 +40,10 @@ function T = interp_frontend_system_eval(varargin)
       case "none"
         rf = fs4_duc(real(x_tx), imag(x_tx));
       case "iq_lpdsm_fs4"
-        yi = p0_dsm_bittrue(xi, cfg.dsm_alg);
-        yq = p0_dsm_bittrue(xq, cfg.dsm_alg);
-        native_i = dsm_output_to_float(yi, cfg.dsm_alg);
-        native_q = dsm_output_to_float(yq, cfg.dsm_alg);
+        yi = dsm_bittrue_dispatch(xi, cfg.dsm_alg, cfg.mb_q_bits);
+        yq = dsm_bittrue_dispatch(xq, cfg.dsm_alg, cfg.mb_q_bits);
+        native_i = dsm_output_to_float(yi, cfg.dsm_alg, cfg.mb_q_bits);
+        native_q = dsm_output_to_float(yq, cfg.dsm_alg, cfg.mb_q_bits);
         rf = fs4_duc(native_i, native_q);
       case "rf_bp_dsm"
         rf_pre = fs4_duc(real(x_tx), imag(x_tx));
@@ -83,8 +84,10 @@ function cfg = default_cfg()
   cfg.out_dir = fullfile(repo_matlab, 'out', 'interp_frontend');
   cfg.seed = 11;
   cfg.modes = 0:4;
+  cfg.interp_impl = 'I0';
   cfg.architecture = 'iq_lpdsm_fs4';
   cfg.dsm_alg = 'ef2';
+  cfg.mb_q_bits = 4;
   cfg.rf_dsm_bits = 4;
   cfg.dsm_drive_peak = 0.45;
   cfg.nfft = 64;
@@ -153,6 +156,11 @@ end
 
 function y = interp_chain_complex(x, m)
   y = x(:);
+  if (m.interp == 32) && strcmp(m.interp_impl, "I2")
+    h = monolithic_x32_coeff(m);
+    y = interp_by_fir(y, 32, h);
+    return;
+  end
   for s = 1:m.hb_stages
     y = interp_by_fir(y, 2, halfband_interp_coeff(m.hb_taps));
   end
@@ -160,6 +168,24 @@ function y = interp_chain_complex(x, m)
     y = interp_by_fir(y, m.cic_rate, cic_interp_impulse(m.cic_rate, m.cic_order));
     y = filter(cic_comp_coeff(m.comp_taps, m.cic_rate, m.cic_order), 1, y);
   end
+end
+
+function h = monolithic_x32_coeff(m)
+  h = 1;
+  h = cascade_interp_coeff(h, halfband_interp_coeff(m.hb_taps), 2);
+  h = cascade_interp_coeff(h, halfband_interp_coeff(m.hb_taps), 2);
+  h = cascade_interp_coeff(h, cic_interp_impulse(m.cic_rate, m.cic_order), m.cic_rate);
+  h = conv(h, cic_comp_coeff(m.comp_taps, m.cic_rate, m.cic_order));
+  h = round(h * 2^16) / 2^16;
+  if numel(h) ~= 1195
+    error('Unexpected I2 monolithic tap count: %d', numel(h));
+  end
+end
+
+function h = cascade_interp_coeff(h0, hs, rate)
+  up = zeros(1, (numel(h0)-1) * rate + 1);
+  up(1:rate:end) = h0;
+  h = conv(up, hs);
 end
 
 function rf = fs4_duc(i_pm, q_pm)
@@ -277,9 +303,12 @@ function [y, best_phase] = reconstruct_native_iq(i_data, q_data, interp, cfg, x_
   end
 end
 
-function y = dsm_output_to_float(raw, alg)
+function y = dsm_output_to_float(raw, alg, mb_q_bits)
   alg = lower(string(alg));
-  if startsWith(alg, "mash")
+  if startsWith(alg, "mb_")
+    qmax = 2^(mb_q_bits - 1) - 1;
+    y = double(raw(:)) / qmax;
+  elseif startsWith(alg, "mash")
     y = double(raw(:));
     scale = max(abs(y));
     if scale > 0
@@ -287,6 +316,15 @@ function y = dsm_output_to_float(raw, alg)
     end
   else
     y = bits_to_pm(raw);
+  end
+end
+
+function y = dsm_bittrue_dispatch(x, alg, mb_q_bits)
+  alg = lower(string(alg));
+  if startsWith(alg, "mb_")
+    y = dsm_multibit_model(x, extractAfter(alg, "mb_"), mb_q_bits);
+  else
+    y = p0_dsm_bittrue(x, alg);
   end
 end
 

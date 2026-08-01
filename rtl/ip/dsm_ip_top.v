@@ -11,6 +11,7 @@ module dsm_ip_top #(
   parameter integer ALGORITHM = 2,
   parameter integer DUC_MODE = 0,
   parameter integer INTERP_MODE = 0,
+  parameter integer INTERP_IMPL = 0,
   parameter integer CLK_FREQ_HZ = 100000000,
   parameter integer BB_SAMPLE_RATE_HZ = 3125000,
   parameter integer SIGNAL_BW_HZ = 2539062,
@@ -54,7 +55,8 @@ module dsm_ip_top #(
   dsm_interp_frontend #(
     .W_IN(W),
     .W_OUT(W),
-    .INTERP_MODE(INTERP_MODE)
+    .INTERP_MODE(INTERP_MODE),
+    .INTERP_IMPL(INTERP_IMPL)
   ) u_interp_frontend (
     .clk(clk),
     .rst_n(rst_n),

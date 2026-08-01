@@ -3,6 +3,272 @@
 This file records project changes that affect interfaces, verification status,
 timing/resource evidence, repository hygiene, or handoff documentation.
 
+## 2026-08-01 16:10:00 +08:00
+
+Reason:
+
+- Isolate the strict-accepted LPDSM2 DPA+BPF behavioral calibration result in
+  a release-gated Memory-Poly MATLAB-to-RTL signoff flow.
+
+Changed files:
+
+- `matlab/dpd/prepare_lpdsmdpa_bpf_dpd_bittrue_vectors.m`
+- `matlab/dpd/compare_lpdsmdpa_bpf_dpd_rtl_xsim.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_bittrue_prepare.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_bittrue_compare.m`
+- `verif/scripts/run_xsim_lpdsmdpa_bpf_dpd_bittrue.ps1`
+- `matlab/dpd/README.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- The latest quality gate is `ACCEPT`: all three validation and all three
+  independent test conditions pass EVM, SNDR, OOB, and zero-limit checks. The
+  mean validation improvements are 19.33% EVM and 3.54 dB SNDR; the mean
+  independent-test improvements are 18.28% EVM and 3.32 dB SNDR.
+- The dedicated vector generator accepts only
+  `lpdsmdpa_bpf_dpd_release_coefficients.csv`. It rejects missing/failed gate
+  evidence before it writes its isolated vector directory.
+- The dedicated XSim work directory is
+  `verif/out_xsim_lpdsmdpa_bpf_dpd`; the generic DPD regression dump is left
+  untouched.
+
+Checks run:
+
+- MATLAB GUI execution of `entry_lpdsmdpa_bpf_dpd_closed_loop` completed and
+  generated the accepted quality-gate and release-coefficient artifacts.
+- `verif/scripts/run_xsim_lpdsmdpa_bpf_dpd_bittrue.ps1 -SkipMatlabPrep
+  -SkipMatlabCompare`: compiled, elaborated, and ran the isolated
+  `dpd_memory_poly` XSim case successfully.
+- `entry_lpdsmdpa_bpf_dpd_bittrue_compare`: 256 expected samples, 256 RTL
+  samples, zero mismatches, and zero maximum LSB error.
+- `scripts/run_matlab_p0_bittrue_check.cmd`: LPDSM, LPDSM2, EFDSM, EFDSM2,
+  MASH11, MASH111, and MASH22 each passed their 65,536-sample bit-true
+  baseline with zero mismatches.
+
+Remaining limitations:
+
+- The accepted package is MATLAB/RTL bit-true for the deterministic four-tap
+  C1/C3/C5 Memory-Poly arithmetic. A physical PA/observation capture remains
+  outside this behavioral evidence.
+
+## 2026-08-01 15:33:55 +08:00
+
+Reason:
+
+- Upgrade the LPDSM2 one-bit DPA+BPF DPD training flow from a single
+  validation checkpoint to a multi-condition release gate before starting a
+  new FPGA implementation run.
+
+Changed files:
+
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/prepare_dpd_memory_poly_bittrue_vectors.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/README.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- The Q2.14 four-tap C1/C3/C5 ILC search now uses validation seeds
+  `137/149/163`. A candidate can become the retained checkpoint only if every
+  validation condition improves EVM and SNDR, does not worsen OOB ratio by
+  more than 0.05 dB, and has zero coefficient or drive limits.
+- The final gate retains independent test seeds `211/223/239` and applies the
+  same per-seed EVM/SNDR/OOB/zero-limit requirements.
+- Candidate words are written only to
+  `lpdsmdpa_bpf_dpd_candidate_coefficients.csv`. The distinct
+  `lpdsmdpa_bpf_dpd_release_coefficients.csv` is created only for an
+  `ACCEPT` result and is the only permitted source for the memory-poly RTL
+  vector generator.
+- The full MATLAB run completed. It returned `REJECT` with the identity
+  package retained: no candidate passed all three validation conditions.
+  The release coefficient file was correctly absent. This prevents the prior
+  average-only improvement from being programmed into RTL or hardware.
+
+Checks run:
+
+- `D:\MATLAB\R2025a\bin\matlab.exe -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; entry_lpdsmdpa_bpf_dpd_closed_loop"`
+- `cmd.exe /c scripts\run_matlab_p0_bittrue_check.cmd`: seven P0 DSM models,
+  65,536 samples each, zero mismatches.
+- `prepare_dpd_memory_poly_bittrue_vectors('n_input',16)`: completed.
+
+Remaining limitations:
+
+- The present LPDSM2 DPA+BPF model uses ideal x32 interpolation and a
+  behavioral DPA/BPF/observation receiver. It does not authorize a physical
+  PA claim or hardware coefficient release.
+- No DPA endpoint release coefficient exists, so a package-specific
+  MATLAB-to-RTL XSim regression is intentionally blocked. It becomes required
+  only after an `ACCEPT` result.
+
+## 2026-07-31 19:34:00 +08:00
+
+Reason:
+
+- Re-run the requested direct Q2.14 ILC DPD training against the behavioral
+  LPDSM2 one-bit DPA+BPF endpoint in Windows MATLAB, with a strict per-seed
+  release decision.
+
+Changed files:
+
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/README.md`
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Corrected the quality-gate call to pass its configuration, including the
+  validation out-of-band tolerance. The gate now requires validation EVM and
+  SNDR improvement, zero limits, and per-test-seed EVM, SNDR, and OOB
+  improvement; it cannot accept an average-only gain.
+- Windows MATLAB executed
+  `matlab/scripts/entry_lpdsmdpa_bpf_dpd_closed_loop.m` from the synchronized
+  `E:\workspace\chip\dsm_ip` copy. It refreshed the closed-loop CSV, MATLAB
+  MAT file, coefficient CSV, training trace, validation CSV, and quality-gate
+  CSV under `matlab/out/dpd/` at 19:34 local time.
+- The selected identity-start, bounded Q2.14 four-tap C1/C3/C5 checkpoint
+  improved validation EVM from 59.4338 to 52.4520 percent and SNDR from
+  4.5193 to 5.6048 dB. On blind test seeds 211, 223, and 239, EVM and SNDR
+  improved on all three, OOB improved on only seed 239, and all DPD limit
+  counters were zero. The resulting gate is `REJECT` with pass counts 3/3/1.
+
+Checks run:
+
+- Windows MATLAB direct entry-file execution: completed and refreshed the
+  output artifacts.
+- Inspected `lpdsmdpa_bpf_dpd_quality_gate.csv`, validation CSV, and per-seed
+  results CSV: confirmed `REJECT`, EVM/SNDR/OOB pass counts 3/3/1, and zero
+  Q2.14 limits.
+
+Remaining limitations:
+
+- The candidate coefficient words are rejected and must not be programmed
+  into RTL or hardware.
+- This remains a behavioral endpoint with ideal interpolation and an assumed
+  switched-DPA/BPF model, not ADS, EM, transistor, or measured-PA evidence.
+- A subsequent trainer must impose OOB directly in candidate acceptance and
+  checkpoint selection, then repeat the isolated validation and blind tests.
+
+## 2026-07-30 04:30:00 +08:00
+
+Reason:
+
+- Add the requested Windows-MATLAB system-level 25 MHz one-bit DPA+BPF
+  endpoint so that the selected LPDSM2 digital chain has an explicit DPD
+  training target without claiming a physical PA implementation.
+
+Changed files:
+
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `scripts/run_matlab_lpdsmdpa_bpf_dpd_closed_loop.cmd`
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and execution contract:
+
+- The new flow creates a 3.125 MS/s Q1.15 complex source, applies no/floating
+  point/Q2.14 four-tap Memory-Poly DPD, converts it to a 100 MS/s one-bit
+  LPDSM2 plus Fs/4 `rf_bit` stream, passes it through a behavioral switched
+  DPA and explicit 25 MHz BPF, and coherently returns a decimated complex
+  observation for indirect-learning DPD fitting.
+- The output tables include EVM, SNDR, an out-of-band ratio, DPD limiting,
+  `rf_bit` one fraction, DPA output RMS, and twelve Q2.14 packed coefficients
+  in `matlab/out/dpd/`. The coefficients have the same four-tap C1/C3/C5 shape
+  as the RTL interface, but are not released for RTL or board use until a
+  Windows MATLAB execution and independent bit-true correlation are complete.
+- The first model deliberately uses x32 ideal band-limited interpolation rather than I0 FIR
+  reconstruction. It is a rate-contract model, not an I0 RTL-equivalence or
+  physical PA/ADS/EM result. Its controlled DPA/BPF parameters must later be
+  replaced or calibrated from ADS or measured data.
+
+Checks run:
+
+- `git diff --check` for the new MATLAB, command, and documentation files:
+  passed.
+- The Windows entry point was executed from the synchronized Windows project
+  copy. It generated the closed-loop CSV, Markdown, MAT, coefficient, and
+  quality-gate outputs under `matlab/out/dpd/`; the final gate is `REJECT` as
+  recorded below. MATLAB remains unavailable as a native Linux executable.
+
+Remaining limitations:
+
+- No ADS workspace, transistor model, physical DPA, calibrated BPF, or
+  measured PA waveform is included. This is behavioral DPD-flow evidence only.
+- The output quantized DPD coefficients require a dedicated RTL vector and
+  bit-true check before software programs them into the IP.
+- The first Windows-MATLAB execution completed on 2026-07-30. Its independent
+  test seeds did not show a consistent Q2.14 DPD EVM/SNDR improvement, so the
+  generated coefficient table is explicitly rejected and must not be used by
+  RTL or hardware. The result validates the closed-loop execution boundary,
+  not DPD closure; a new training and model-fitting method targeted to the
+  LPDSM2 one-bit DPA+BPF endpoint is required before a coefficient release.
+- The replacement identity-start Q2.14 ILC coordinate search completed with
+  disjoint fit/validation/test windows. It improved validation EVM by 6.98%
+  and SNDR by 1.09 dB, and improved EVM/SNDR on all three test seeds without
+  coefficient or drive limits. The strict release gate still rejects it because
+  one test seed worsened the out-of-band ratio. The next revision must impose a
+  per-seed OOB constraint during training and validation; no coefficient is
+  released to RTL or hardware.
+
+## 2026-07-30 03:45:00 +08:00
+
+Reason:
+
+- Complete the requested like-for-like 28 nm and 40 nm pre-layout synthesis of
+  the four complete AXI-top finalists, document the measured evidence, and
+  select the next verification target.
+
+Changed files:
+
+- `syn/dc_finalist_axi_asic.tcl`
+- `syn/run_finalists_asic_dc.sh`
+- `docs/FINALIST_ASIC_PPA_REPORT.md`
+- `docs/FINALIST_IMPLEMENTATION_REPORT.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- `bash syn/run_finalists_asic_dc.sh`: completed all eight full AXI-top cases
+  from the persistent host-side tmux session; the final console record is
+  `EXIT=0`. The run directory is
+  `syn/reports/finalists_asic_dc_full_axi_20260730_0145/`; all four 28 nm and
+  all four 40 nm cases have `PASS` entries plus QoR, area, setup, hold,
+  check-design, check-timing, constraints, reference, and power reports.
+- DC library inspection first selected a reduced 28 nm cache DB with 44 cells
+  and no inverter. The correct 28 nm RVT TT DB is
+  `/home/ray/pdk/TSMC28/.../tcbn28hpcplusbwp7t40p140tt0p9v25c.db`; it has 839
+  cells including 15 inverter cells. The selected 40 nm DB has 1,633 cells
+  including 31 inverter cells. Both libraries mapped the complete AXI top.
+- All eight reports show positive setup and hold slack at 100 MHz. The 28 nm
+  smallest-area/power row is D3/MASH11; the 40 nm smallest-area/power row is
+  D5/multibit EFDSM. The differences are below 1%, so LPDSM2 was selected as
+  the next verification target because it is near-minimum in both nodes,
+  retains the one-bit output contract, and has the best matching routed-FPGA
+  timing/one-bit behavioural evidence.
+- Full physical PDK collateral was also verified: the 28 nm tree includes RVT
+  LEF, technology files, and TLU+ RC views; the 40 nm tree includes Milkyway
+  technology/TLU+ views and an ICC2 NDM reference library. These views are not
+  consumed by the current DC pre-layout flow and are recorded as a required
+  later physical-implementation stage rather than being misrepresented as DC
+  inputs.
+- `bash -n syn/run_finalists_asic_dc.sh`: passed after making the launcher
+  return nonzero when any case fails.
+
+Remaining limitations:
+
+- `report_power` has unannotated-primary-input and unannotated-sequential-output
+  warnings. Its dynamic values are same-flow relative estimates, not
+  application-power evidence. A representative SAIF/VCD-annotated rerun is
+  required for an application-power conclusion.
+- `report_constraint -all_violators` lists library-default minimum-capacitance
+  and maximum-leakage constraints. Physical implementation must resolve or
+  waive them. The flow remains pre-layout and is not ASIC signoff.
+
 ## 2026-07-27 00:01:00 +08:00
 
 Reason:
@@ -5534,3 +5800,568 @@ Remaining limitations:
   ELF, then request a board connection to collect completed observer-v2 traces.
 - This remains behavioral PA evidence; zero blind simulated seed violations do
   not prove RF or physical-PA safety.
+
+## 2026-07-28 21:25:00 +08:00
+
+Reason:
+
+- Remove rebuildable legacy tool artifacts and define one evidence-backed
+  DSM/DPD configuration suitable for an interview demonstration.
+
+Changed files:
+
+- `.gitignore`
+- `docs/PROJECT_MAP.md`
+- `docs/PORTFOLIO_SKU.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Selected the integrated EFDSM / x32 interpolation / Fs/4 DUC / fifth-order
+  four-tap memory-polynomial DPD Performance SKU. This is the current routed
+  FPGA configuration and has bit-true, XSim, packaging, and board-integration
+  evidence.
+- Recorded the existing local 28 nm RVT SS preliminary estimate for the same
+  complete top: +1.22 ns setup slack at 100 MHz and a 113.9 MHz zero-setup
+  estimate. The record explicitly preserves the unresolved hold and physical
+  implementation limitations.
+- Added ignore coverage for Design Compiler ALIB caches and SVF output. Local
+  ignored DC, Vivado, XSim, and IP-package artifacts are removed separately.
+
+Checks run:
+
+- `git diff --check`: passed after artifact cleanup.
+- No RTL or algorithm change; no XSim, MATLAB, Vivado, or new ASIC synthesis
+  run was required or claimed.
+
+Remaining limitations:
+
+- The Design Compiler license service is unavailable for a fresh 28 nm run.
+- The 28 nm figure remains a pre-layout, single-corner setup estimate with
+  unresolved hold violations; it is not sign-off evidence.
+
+## 2026-07-28 21:25:00 +08:00
+
+Reason:
+
+- Refresh the IP specification from the current RTL, verification, FPGA
+  implementation, and preliminary 28 nm synthesis status, and provide the
+  requested Chinese-language specification.
+
+Changed files:
+
+- `docs/IP_SPEC.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Replaced the obsolete DSM-only specification with the complete AXI top-level
+  architecture: TX and observation streams, Memory-Poly DPD, observer,
+  interpolation, DSM, Fs/4 DUC, control behavior, and key register groups.
+- Defined the completed EFDSM / x32 / Fs/4 / Memory-Poly5 four-tap Performance
+  SKU as the current primary configuration.
+- Recorded routed ZU15EG evidence and the bounded preliminary 28 nm estimate,
+  including the unresolved hold and physical-signoff limitations.
+
+Checks run:
+
+- Documentation review and `git diff --check`: passed.
+
+Remaining limitations:
+
+- This documentation change does not rerun RTL verification, FPGA
+  implementation, or ASIC synthesis.
+
+## 2026-07-29 09:30:00 +08:00
+
+Reason:
+
+- Define a bounded, evidence-driven plan for behavioural digital-PA modelling
+  and interpolation/DSM PPA exploration without changing the released TX SKU.
+
+Changed files:
+
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Frozen the current one-bit Performance SKU as the comparison baseline.
+- Defined the behavioural DPA boundary, DPD acceptance gates, interpolation
+  and DSM candidate matrix, common quality/PPA metrics, and three-SKU
+  Pareto-selection rule.
+- Explicitly kept post-DSM multi-bit filtering outside the frozen one-bit
+  switched-RF product contract.
+
+Checks run:
+
+- Documentation review and scoped `git diff --check` for the changed plan
+  files: passed.
+- Repository-wide `git diff --check` remains blocked by pre-existing trailing
+  whitespace in `rtl/axis/axis_skid_buffer.sv`; this plan does not modify that
+  RTL file.
+
+Remaining limitations:
+
+- No new MATLAB model, RTL candidate, verification run, FPGA implementation,
+  or ASIC synthesis has been run by this planning change.
+
+## 2026-07-29 09:35:00 +08:00
+
+Reason:
+
+- Translate the digital-PA model and PPA exploration plan into Chinese at the
+  user's request.
+
+Changed files:
+
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Checks run:
+
+- Documentation review and scoped `git diff --check`: passed.
+
+Remaining limitations:
+
+- This language-only update does not run MATLAB, RTL verification, FPGA
+  implementation, or ASIC synthesis.
+
+## 2026-07-29 10:05:00 +08:00
+
+Reason:
+
+- Reorder the architecture search so that an x32 interpolation plus DSM
+  Pareto point is selected before PA/DPA-specific DPD work.
+
+Changed files:
+
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Required every interpolation candidate to preserve the 3.125-to-100 MS/s
+  x32 rate contract.
+- Fixed DPD to bypass/identity during front-end selection and deferred DPA
+  modelling until after the interpolation/DSM choice.
+- Expanded the first-round DSM comparison to EFDSM, LPDSM2, EFDSM2, and native
+  MASH11, with EFDSM2 versus MASH11 identified as the primary same-order but
+  different-output-contract comparison.
+- Defined quality gates before PPA Pareto ranking and deferred higher-order or
+  explicit multibit modes until the first round demonstrates a need.
+
+Checks run:
+
+- Documentation review and scoped `git diff --check`: passed.
+
+Remaining limitations:
+
+- The revised plan does not yet run the MATLAB candidate matrix or produce new
+  synthesis evidence.
+
+## 2026-07-29 15:35:00 +08:00
+
+Reason:
+
+- Add the requested MASH111 and multibit EFDSM candidates, retain the common
+  Memory-Poly5 DPD during front-end exploration, and define a staged synthesis
+  strategy plus the Windows Vivado execution-copy contract.
+
+Changed files:
+
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Defined seven first-round DSM candidates: EFDSM, LPDSM2, EFDSM2, native
+  MASH11, native MASH111, multibit EFDSM, and multibit EFDSM2.
+- Limited the first round to I0/I1, producing 14 MATLAB combinations; I2 is a
+  conditional extension that would raise the total to 21.
+- Required separate OOC synthesis for interpolation, DSM, and the common
+  Memory-Poly5 block, followed by full synthesis only for quality/PPA Pareto
+  finalists and P&R for at most three SKUs.
+- Read-only source comparison found matching RTL file lists and matching
+  MATLAB/main-script sources between Linux and
+  `E:\workspace\chip\dsm_ip`; only the already-modified Linux skid-buffer RTL
+  differs among the compared RTL sources. The Windows copy also retains a
+  generated `.Xil` cache that must not be synchronised.
+
+Checks run:
+
+- Documentation review and scoped `git diff --check`: passed.
+
+Remaining limitations:
+
+- No source files were copied between Linux and Windows, and no Vivado,
+  MATLAB, RTL regression, or ASIC flow was run for this planning update.
+
+## 2026-07-29 16:20:00 +08:00
+
+Reason:
+
+- Start the user-requested 21-point x32 interpolation/DSM search by adding
+  the two missing x32 interpolation realizations and making the candidate
+  naming and matrix explicit.
+
+Changed files:
+
+- `rtl/interp/dsm_interp_cic_direct.sv`
+- `rtl/interp/dsm_interp_fir_polyphase.sv`
+- `rtl/interp/dsm_interp_frontend.sv`
+- `rtl/ip/dsm_ip_top.v`
+- `rtl/axi/dsm_ip_axi_top.v`
+- `rtl/filelist_p0.f`
+- `verif/scripts/filelist_p0_abs.ps1`
+- `syn/run_ooc_dsm_ip_axi_matrix_synth.tcl`
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Defined I0 as the existing CIC-equivalent FIR, I1 as a direct four-stage
+  x8 CIC, and I3 as an x8 polyphase realization of I0's 29-tap quantized
+  CIC-equivalent FIR.  Every candidate remains x32 after the two shared
+  halfband stages and uses the same compensation FIR.
+- Added `INTERP_IMPL` as a compile-time parameter, defaulting to I0.  The
+  current public IP configuration therefore remains unchanged unless a
+  candidate is selected explicitly.
+- Updated the experiment contract from a staged 14-point plan to the
+  requested complete `I0/I1/I3 x D0..D6 = 21` MATLAB matrix.
+
+Checks run:
+
+- Scoped `git diff --check`: passed.
+
+Remaining limitations:
+
+- This Linux session has no MATLAB, Vivado, XSim, PowerShell, or Windows
+  process bridge on `PATH`; simulation, MATLAB quality data, FPGA OOC/P&R,
+  and 28 nm synthesis have not yet been claimed as run.
+- The new candidate RTL still requires XSim bit-true and backpressure
+  verification before it may be used as a finalist.
+
+## 2026-07-29 16:45:00 +08:00
+
+Reason:
+
+- Add repeatable MATLAB, XSim, and Vivado entry points for the requested
+  interpolation/DSM Pareto search rather than relying on manually assembled
+  commands.
+
+Changed files:
+
+- `matlab/models/interp_frontend_system_eval.m`
+- `matlab/models/run_frontend_dsm_pareto_matrix.m`
+- `matlab/models/compare_interp_frontend_variants_rtl_xsim.m`
+- `matlab/scripts/entry_frontend_dsm_pareto_matrix.m`
+- `scripts/run_matlab_frontend_dsm_pareto_matrix.cmd`
+- `rtl/top/dsm_interp_ooc_top.sv`
+- `rtl/top/dsm_core_ooc_top.sv`
+- `rtl/top/dpd_memory_poly_ooc_top.sv`
+- `syn/run_ooc_frontend_pareto_matrix.tcl`
+- `syn/run_ooc_frontend_pareto_matrix.ps1`
+- `verif/tb/tb_interp_frontend_variants.sv`
+- `verif/scripts/run_xsim_interp_frontend.ps1`
+- `verif/scripts/run_xsim_ip_smoke.ps1`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Added D5/D6 dispatch to the interpolation system evaluation, using the
+  existing four-bit multibit EFDSM and EFDSM2 behavioral models.
+- Added a 21-row matrix runner.  It reports native and RF-recovered signal
+  metrics, ACLR, output-code width/range, and sensitivity to three explicit
+  reconstruction-filter bandwidth settings.
+- Added an I0/I1/I3 XSim valid/ready backpressure test and a MATLAB stream
+  comparison against I0's common fixed-point x32 response.
+- Added one Vivado OOC entry point that emits the requested 3 interpolation,
+  7 DSM, and one Memory-Poly5 result rows.
+
+Checks run:
+
+- Scoped `git diff --check`: passed.
+- Attempted Windows process bridge through `/mnt/c/Windows/System32/cmd.exe`:
+  unavailable in this WSL session (`UtilBindVsockAnyPort` failure).
+
+Remaining limitations:
+
+- MATLAB/Vivado/XSim and the 28 nm synthesis executable remain unavailable
+  from this Linux process, so no newly generated PPA or quality result is
+  claimed.
+- The current MATLAB matrix reports output-code peak/range.  A detailed
+  per-integrator DSM state-peak and saturation trace is a required follow-up
+  before treating overdrive robustness as closed.
+
+## 2026-07-29 17:00:00 +08:00
+
+Reason:
+
+- Synchronise the new stage-1 Pareto flow to the user-designated Windows
+  Vivado working copy and provide one ordered entry point for that host.
+
+Changed files:
+
+- `scripts/run_frontend_pareto_windows.ps1`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Copied only the new/changed Pareto RTL, MATLAB, verification and OOC source
+  files to `E:\workspace\chip\dsm_ip`.  No generated `.Xil`, log, waveform,
+  report, or cache file was copied; `rtl/axis/axis_skid_buffer.sv` was not
+  touched.
+- SHA-256 checks matched for representative copied RTL, MATLAB and Tcl files.
+
+Checks run:
+
+- Scoped `git diff --check`: passed (Git emitted only existing CRLF conversion
+  warnings for Windows PowerShell scripts).
+
+Remaining limitations:
+
+- The Windows runner cannot be invoked from this WSL session because Windows
+  process interoperation is disabled.  It has not been represented as run.
+
+## 2026-07-29 16:40:00 +08:00
+
+Reason:
+
+- Execute the stage-1 MATLAB/XSim/Vivado experiment on the Windows Vivado
+  working copy and record the measured evidence for the x32 frontend search.
+
+Changed files:
+
+- `rtl/interp/dsm_interp_fir_polyphase.sv`
+- `verif/tb/tb_interp_frontend_variants.sv`
+- `verif/tb/tb_interp_cic_polyphase_unit.sv`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Ran the complete `I0/I1/I3 x D0..D6` MATLAB matrix in
+  `E:\workspace\chip\dsm_ip`.  I0/I1/I3 have identical system-model results
+  by construction because they use the same target response.  For the
+  reference I0+D1 point, the native model measured 2.322 percent EVM and
+  32.684 dB SNDR.  These are comparative behavioral results, not RF signoff;
+  the current RF-recovered/ACLR measurement definition still needs
+  calibration before it is used as an acceptance threshold.
+- Ran Windows XSim.  The existing interpolation latency test passed; the new
+  I0/I1/I3 valid/ready backpressure test passed; final bit-true comparison
+  passed with 4,096 compared samples and zero mismatch for every candidate.
+- The initial I3 mismatch was isolated with a dedicated raw x8 FIR versus
+  polyphase unit test.  At phase zero the preceding sample remained in
+  `current_sample` until after the history shift; the old implementation
+  omitted that term.  The corrected unit stream and complete frontend stream
+  both compare with zero mismatch.
+- Windows Vivado module OOC results on `xc7z020clg400-1`, 10 ns clock:
+  I0 = 7,494 LUT / 7,822 FF / 142 DSP / WNS -0.910 ns (91.66 MHz);
+  I1 = 7,628 LUT / 7,028 FF / 116 DSP / WNS -7.695 ns (56.51 MHz);
+  corrected I3 = 6,433 LUT / 6,514 FF / 124 DSP / WNS -12.342 ns
+  (44.76 MHz).  I2 is not implemented and has no PPA row.
+- DSM OOC results: D0 185 LUT/64 FF/141.94 MHz; D1 273/88/101.61 MHz;
+  D2 319/120/101.68 MHz; D3 278/104/155.30 MHz; D4 402/150/154.58 MHz;
+  D5 498/62/122.71 MHz; D6 608/94/100.23 MHz.  All DSM cores used zero DSP.
+  The common four-tap Memory-Poly5 block used 2,888 LUT / 3,691 FF / 120 DSP
+  and achieved 102.08 MHz.
+
+Checks run:
+
+- Windows MATLAB `run_frontend_dsm_pareto_matrix`: completed with 21 summary
+  rows (three reconstruction-filter settings per row).
+- Windows XSim `run_xsim_interp_frontend.ps1`: passed after the I3 fix.
+- Windows Vivado `run_ooc_frontend_pareto_matrix.ps1`: completed valid I0/I1,
+  DSM and Memory-Poly5 rows; I3 was separately re-synthesized after the fix.
+
+Remaining limitations:
+
+- The x32 interpolation modules do not close 100 MHz standalone on this
+  `xc7z020` OOC target; I0 is closest and is the only candidate retained for
+  the 100 MHz full-top finalist stage.  I1/I3 require architectural
+  retiming/pipelining before they can be considered 100 MHz implementations.
+- Do not use the overlapping concurrent OOC rerun that produced empty I0/I1
+  rows as evidence.  It is a tool-execution artefact and is excluded above.
+- Full AXI-top finalist synthesis, routed FPGA SKU evidence, and corresponding
+  28 nm comparison remain pending.
+
+## 2026-07-29 16:50:00 +08:00
+
+Reason:
+
+- Promote I2 from a reserved identifier to an explicit pure-FIR x32
+  interpolation candidate after reviewing the first I0/I1/I3 PPA evidence.
+
+Changed files:
+
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation plan:
+
+- I2 will be a monolithic, single-stage x32 FIR that represents I0's complete
+  cascaded response, rather than merely replacing the middle x8 stage.
+- Its coefficient set, fixed-point rule, RTL, XSim test and module OOC report
+  must be produced before it receives a PPA result.  The system matrix will
+  then grow from 21 to 28 points.
+
+Checks run:
+
+- Documentation review and scoped `git diff --check`: passed.
+
+Remaining limitations:
+
+- I2 has no RTL, MATLAB fixed-point vectors, or PPA data yet.  No I2 PPA
+  value is implied by the existing I0/I1/I3 table.
+
+## 2026-07-29 17:00:00 +08:00
+
+Reason:
+
+- Select the system-level decision matrix as combined interpolation/DSM
+  candidates, rather than selecting the two blocks independently.
+
+Changed files:
+
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Decision:
+
+- The next MATLAB Pareto matrix is `I0/I1/I2/I3 x D0/D1/D2/D3/D5/D6`, for
+  24 combined candidates.
+- D4/MASH111 remains an extension candidate.  In the current common stimulus
+  it is not better than D3/MASH11 in native EVM/SNDR, while its OOC cost is
+  higher (402 LUT/150 FF versus 278 LUT/104 FF).
+- Module OOC remains separate to explain marginal PPA.  Full AXI synthesis,
+  P&R, and 28 nm evaluation are performed only for combination Pareto
+  finalists; they are not selected by independently ranking filter and DSM.
+
+## 2026-07-29 18:16:00 +08:00
+
+Reason:
+
+- Implement the requested I2 monolithic pure-FIR x32 interpolation candidate,
+  validate its fixed-point/RTL contract, and extend the interpolation/DSM
+  evidence from three to four interpolation realizations.
+
+Changed files:
+
+- `matlab/models/generate_i2_pure_fir_coeffs.m`
+- `matlab/models/prepare_interp_i2_bittrue_vectors.m`
+- `matlab/models/run_frontend_dsm_pareto_matrix*.m`
+- `matlab/models/interp_frontend_system_eval.m`
+- `matlab/models/compare_interp_frontend_variants_rtl_xsim.m`
+- `rtl/interp/dsm_interp_i2_coeffs.svh`
+- `rtl/interp/dsm_interp_fir_i2_polyphase.sv`
+- `rtl/interp/dsm_interp_frontend.sv`
+- RTL/filelist, XSim, OOC and Windows-runner source lists
+- `docs/DPA_PPA_EXPERIMENT_PLAN.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Generated the complete I2 coefficient set from the I0 cascade: 1,195
+  signed Q2.16 taps, stored as a synthesizable SystemVerilog function. I2 is
+  a single x32 FIR algorithmically, realized as 32 polyphase branches with at
+  most 38 products per output phase. It intentionally has a one-stage
+  rounding contract and therefore is not presumed bit-identical to I0's
+  stage-by-stage rounding.
+- Added I2 (`INTERP_IMPL=2`) without changing the public default, which
+  remains I0. The MATLAB decision CSV now contains the requested 24 primary
+  combinations: `I0/I1/I2/I3 x D0/D1/D2/D3/D5/D6`.
+- Windows XSim compared 4,096 I/Q outputs per interpolation candidate. I0,
+  I1, I2 and I3 each had zero mismatches and zero maximum LSB error against
+  their respective fixed-point contracts under valid/ready backpressure.
+- The 24-point MATLAB matrix completed at
+  `matlab/out/frontend_dsm_pareto/frontend_dsm_pareto_matrix.csv`. I2+D1
+  measured 2.3205 percent native EVM and 32.6885 dB native SNDR, close to
+  I0+D1's 2.3218 percent and 32.6837 dB. These are comparative behavioral
+  metrics; current RF-recovered/ACLR definitions are not acceptance evidence.
+- The requested 28-point diagnostic matrix also completed at
+  `matlab/out/frontend_dsm_pareto/frontend_dsm_pareto_matrix_28.csv`: it is
+  the 24-point primary table plus four D4/MASH111 extension rows. I2+D4
+  measured 2.3815 percent native EVM and 32.4632 dB native SNDR. D4 remains
+  an extension, rather than a primary Pareto candidate, because it has no
+  demonstrated quality advantage over D3 under the common stimulus and has a
+  higher module cost.
+- Windows Vivado OOC on `xc7z020clg400-1` at 10 ns measured I0/I1/I2/I3 as
+  7,494/7,822/142/91.66 MHz, 7,628/7,028/116/56.51 MHz,
+  2,960/1,193/58/23.00 MHz, and 6,433/6,514/124/44.76 MHz respectively
+  (LUT/FF/DSP/Fmax). All four miss 100 MHz standalone. I2 has the smallest
+  resource count but WNS -33.470 ns because its multi-MAC accumulation is
+  currently unpipelined; it is not a 100 MHz candidate without redesign.
+- The serial OOC rerun also reproduced valid D0..D6 and Memory-Poly rows.
+  The common Memory-Poly5 block is 2,888 LUT / 3,691 FF / 120 DSP / 102.08
+  MHz; DSM cores use zero DSP.
+
+Checks run:
+
+- Windows `verif/scripts/run_xsim_interp_frontend.ps1`: passed, including
+  I0/I1/I2/I3 valid/ready count/backpressure and bit-true comparison.
+- Windows `verif/scripts/run_xsim_p0_all.ps1`: passed, `Rows=7, Failed=0`.
+- Windows `verif/scripts/run_xsim_ip_smoke.ps1`: passed, including IP top,
+  AXI and DPD v1.1 smoke tests.
+- Windows `syn/run_ooc_frontend_pareto_matrix.ps1 -Part xc7z020clg400-1`:
+  completed; report directory
+  `syn/reports/ooc_frontend_pareto_xc7z020clg400_1_20260729_180238`.
+
+Remaining limitations:
+
+- The 24-point CSV is the main combined selection matrix; the 28-point CSV
+  is the complete diagnostic record that retains the D4/MASH111 extension.
+- The present I2 OOC result is an unpipelined baseline, not its final PPA
+  potential. Selecting I2 for a 100 MHz SKU requires an explicit retiming
+  implementation and another bit-true proof.
+- No full AXI-top finalist synthesis/P&R or 28 nm synthesis was run for the
+  new 24-point configurations.
+
+## 2026-07-29 21:08:00 +08:00
+
+Reason:
+
+- Run the user-selected four interpolation/DSM finalists through complete
+  AXI-top FPGA implementation and prepare the corresponding 28 nm sweep.
+
+Changed files:
+
+- `syn/run_finalists_axi_routed.tcl`
+- `syn/run_finalists_axi_routed.ps1`
+- `syn/dc_finalist_axi_28nm.tcl`
+- `syn/run_finalists_28nm_dc.sh`
+- `docs/FINALIST_IMPLEMENTATION_REPORT.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Completed synth/place/route/post-route physopt for I0+D0 EFDSM,
+  I0+D1 LPDSM2, I0+D3 MASH11, and I0+D5 multibit EFDSM on
+  `xczu15eg-ffvb1156-1-i` at 100 MHz. All four pass setup with final WNS
+  +1.352, +1.400, +0.814, and +1.163 ns respectively.
+- The authoritative post-route utilization comes from each
+  `report_utilization` output: 14,245/14,298/14,286/14,455 LUT;
+  17,063/17,087/17,095/17,062 FF; and 296 DSP for D0/D1/D3/D5.
+- Corrected the reusable Tcl runner so future CSV rows parse the post-route
+  utilization report rather than overcounting primitive-name helper cells.
+- Created a four-case 28 nm Design Compiler flow using the local TSMC28 DB.
+  `dc_shell` is absent on this host, therefore the produced summary records
+  `TOOL_UNAVAILABLE` for every case and no new 28 nm timing, area, hold, or
+  power number is claimed.
+
+Checks run:
+
+- Windows Vivado 2024.1 complete AXI OOC P&R:
+  `syn/reports/finalists_axi_routed_xczu15eg_ffvb1156_1_i_20260729_195441/`.
+- `bash syn/run_finalists_28nm_dc.sh`: correctly stopped before synthesis and
+  recorded tool unavailability.
+- Tcl utilization-report parsing was exercised with `tclsh` against a
+  representative post-route table.
+
+Remaining limitations:
+
+- FPGA evidence is OOC; it lacks board XDC/I/O delays and clock-source
+  placement, so it is not board-level sign-off. The power reports are
+  vectorless estimates.
+- 28 nm comparison remains blocked until a licensed `dc_shell` environment is
+  available. Any earlier preliminary 28 nm estimate must not be treated as a
+  result for these four configurations.

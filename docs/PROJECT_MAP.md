@@ -39,6 +39,7 @@ This repository is a reusable DSM IP handoff tree.
 | `docs/AI_COMMUNICATION_IP_ROADMAP.md` | XCZU15EG-oriented AI-assisted communication IP roadmap |
 | `docs/DPD_PPA_REPORT.md` | ZU15EG DPD OOC resource, timing, and power-estimate evidence |
 | `docs/FULL_TX_IMPLEMENTATION.md` | ZU15EG full TX clock/reset contract and routed build evidence |
+| `docs/PORTFOLIO_SKU.md` | Recommended interview demonstration SKU and preliminary 28 nm estimate |
 | `syn/run_ooc_dpd_feature_matrix.ps1` | ZU15EG compile-time DPD product-SKU OOC PPA matrix |
 
 The seven P0 comparison paths are retained. Other exploratory EFDSM4/MASH

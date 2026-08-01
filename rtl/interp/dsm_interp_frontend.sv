@@ -4,7 +4,10 @@
 module dsm_interp_frontend #(
   parameter int W_IN = 16,
   parameter int W_OUT = 16,
-  parameter int INTERP_MODE = 0
+  parameter int INTERP_MODE = 0,
+  // x32 only: 0=I0 staged CIC-equivalent FIR, 1=I1 direct CIC,
+  // 2=I2 monolithic x32 FIR, 3=I3 polyphase CIC-equivalent FIR.
+  parameter int INTERP_IMPL = 0
 ) (
   input  wire                     clk,
   input  wire                     rst_n,
@@ -25,6 +28,21 @@ module dsm_interp_frontend #(
       assign i_out = i_in;
       assign q_out = q_in;
       assign out_valid = enable && in_valid;
+    end else if ((INTERP_MODE == 4) && (INTERP_IMPL == 2)) begin : g_i2_mode4
+      dsm_interp_fir_i2_polyphase #(
+        .W_IN(W_IN), .W_OUT(W_OUT)
+      ) u_i2_i (
+        .clk(clk), .rst_n(rst_n), .enable(enable),
+        .in_data(i_in), .in_valid(in_valid), .in_ready(in_ready),
+        .out_data(i_out), .out_valid(out_valid), .out_ready(out_ready)
+      );
+      dsm_interp_fir_i2_polyphase #(
+        .W_IN(W_IN), .W_OUT(W_OUT)
+      ) u_i2_q (
+        .clk(clk), .rst_n(rst_n), .enable(enable),
+        .in_data(q_in), .in_valid(in_valid), .in_ready(),
+        .out_data(q_out), .out_valid(), .out_ready(out_ready)
+      );
     end else if (INTERP_MODE == 4) begin : g_mode4
       wire signed [W_OUT-1:0] si [0:4];
       wire signed [W_OUT-1:0] sq [0:4];
@@ -49,20 +67,52 @@ module dsm_interp_frontend #(
         );
       end
 
-      dsm_interp_fir_fixed #(
-        .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8), .COEFF_SET(2)
-      ) u_cic_i (
-        .clk(clk), .rst_n(rst_n), .enable(enable),
-        .in_data(si[2]), .in_valid(sv[2]), .in_ready(sr[2]),
-        .out_data(si[3]), .out_valid(sv[3]), .out_ready(sr[3])
-      );
-      dsm_interp_fir_fixed #(
-        .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8), .COEFF_SET(2)
-      ) u_cic_q (
-        .clk(clk), .rst_n(rst_n), .enable(enable),
-        .in_data(sq[2]), .in_valid(sv[2]), .in_ready(),
-        .out_data(sq[3]), .out_valid(), .out_ready(sr[3])
-      );
+      if (INTERP_IMPL == 1) begin : g_i1_direct_cic
+        dsm_interp_cic_direct #(
+          .W_IN(W_OUT), .W_OUT(W_OUT), .RATE(8), .ORDER(4)
+        ) u_cic_i (
+          .clk(clk), .rst_n(rst_n), .enable(enable),
+          .in_data(si[2]), .in_valid(sv[2]), .in_ready(sr[2]),
+          .out_data(si[3]), .out_valid(sv[3]), .out_ready(sr[3])
+        );
+        dsm_interp_cic_direct #(
+          .W_IN(W_OUT), .W_OUT(W_OUT), .RATE(8), .ORDER(4)
+        ) u_cic_q (
+          .clk(clk), .rst_n(rst_n), .enable(enable),
+          .in_data(sq[2]), .in_valid(sv[2]), .in_ready(),
+          .out_data(sq[3]), .out_valid(), .out_ready(sr[3])
+        );
+      end else if (INTERP_IMPL == 3) begin : g_i3_polyphase
+        dsm_interp_fir_polyphase #(
+          .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8)
+        ) u_cic_i (
+          .clk(clk), .rst_n(rst_n), .enable(enable),
+          .in_data(si[2]), .in_valid(sv[2]), .in_ready(sr[2]),
+          .out_data(si[3]), .out_valid(sv[3]), .out_ready(sr[3])
+        );
+        dsm_interp_fir_polyphase #(
+          .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8)
+        ) u_cic_q (
+          .clk(clk), .rst_n(rst_n), .enable(enable),
+          .in_data(sq[2]), .in_valid(sv[2]), .in_ready(),
+          .out_data(sq[3]), .out_valid(), .out_ready(sr[3])
+        );
+      end else begin : g_i0_cic_equiv
+        dsm_interp_fir_fixed #(
+          .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8), .COEFF_SET(2)
+        ) u_cic_i (
+          .clk(clk), .rst_n(rst_n), .enable(enable),
+          .in_data(si[2]), .in_valid(sv[2]), .in_ready(sr[2]),
+          .out_data(si[3]), .out_valid(sv[3]), .out_ready(sr[3])
+        );
+        dsm_interp_fir_fixed #(
+          .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8), .COEFF_SET(2)
+        ) u_cic_q (
+          .clk(clk), .rst_n(rst_n), .enable(enable),
+          .in_data(sq[2]), .in_valid(sv[2]), .in_ready(),
+          .out_data(sq[3]), .out_valid(), .out_ready(sr[3])
+        );
+      end
 
       dsm_interp_fir_fixed #(
         .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(63), .INTERP(1), .COEFF_SET(3)

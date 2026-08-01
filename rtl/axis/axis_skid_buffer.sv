@@ -1,3 +1,6 @@
+// In essence, this is a one-deep FIFO with skid-buffer behavior.
+// It accepts new data while output is stalled and holds it until accepted.
+// This is useful for AXI Stream interfaces where the downstream module may not always be ready to accept data, but we want to avoid dropping data.
 `timescale 1ns/1ps
 `default_nettype none
 

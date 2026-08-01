@@ -39,6 +39,11 @@ puts "PROGRAM_BIT  = $program_bit"
 
 connect -url tcp:127.0.0.1:3121
 
+set discovered_targets [targets]
+if {[llength $discovered_targets] == 0} {
+    error "no JTAG targets detected; verify board power, the selected JTAG connector, cable driver, and boot/jumper settings before retrying"
+}
+
 if {$program_bit != 0} {
     if {$bit_file eq "" || ![file exists $bit_file]} {
         error "PROGRAM_BIT=1 but BIT_FILE is missing or does not exist"

@@ -49,11 +49,41 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scri
 
 The script uses the Vitis 2024.1 Python API because the installed Vitis
 Embedded flow does not support the older classic XSCT platform/app commands.
+It redirects only the Vitis child-process state to repository-local ASCII
+paths under `.Xil/`; this avoids a Vitis 2024.1 UTF-8 launcher issue on Windows
+accounts whose profile path contains non-ASCII characters. The build script
+also selects an explicit local Vitis-server port, avoiding Vitis's fragile
+random-port parsing of launcher output on such hosts.
 The generated ELF is:
 
 ```text
 fpga/zu15eg/out/vitis_baremetal/dsm_dpd_baremetal_smoke/build/dsm_dpd_baremetal_smoke.elf
 ```
+
+## Performance SKU Board Smoke
+
+The routed Performance SKU retains only the fifth-order, four-tap
+memory-polynomial DPD branch. Build its dedicated smoke ELF against the routed
+XSA:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -Xsa .\fpga\zu15eg\out\full_tx\full_tx_zu15eg.xsa `
+  -Workspace .\fpga\zu15eg\out\vitis_performance_sku `
+  -Define @("CAL_MEMORY_SKU_ONLY=1","CAL_MEMORY_SKU_PACKAGE_IDX=0","CAL_USE_SOFTWARE_SEED=0")
+```
+
+Then download the routed bitstream and ELF through XSDB:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\run_baremetal_smoke.ps1 `
+  -Elf .\fpga\zu15eg\out\vitis_performance_sku\dsm_dpd_baremetal_smoke\build\dsm_dpd_baremetal_smoke.elf
+```
+
+This path programs a memory-DPD coefficient bank, commits it, selects mode 3,
+sends the DMA waveform, and checks transport/error/saturation counters. It is
+a digital board smoke only; without a PA and observation receiver it does not
+measure PA linearization or calibrate coefficients from physical feedback.
 
 Optional calibration policy overrides can be passed as generated compile-time
 defines. For example, to run a shorter replay-only build that applies one fixed
@@ -96,9 +126,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scri
 
 This affects only the PS DMA source vector. It does not emulate a PA or create
 RF feedback; record the actual PA/observation setup separately in the trace
-manifest. A build without all three `-Waveform*` scenario arguments removes
-the generated waveform header and restores the synthetic smoke vector, so a
-previous scenario cannot be reused silently.
+manifest. A build without all three `-Waveform*` scenario arguments retains
+the checked-in deterministic waveform header, so the default board smoke is
+reproducible without silently changing a tracked source file.
 
 Useful overrides include:
 
@@ -167,6 +197,10 @@ The run script optionally programs `top.bit`, runs `psu_init.tcl`, resets
 Cortex-A53 #0, downloads the ELF, and starts it. Application prints appear on
 the PS UART through `xil_printf`; they do not automatically appear in the XSDB
 console.
+
+If XSDB reports `no JTAG targets detected`, it has not programmed the FPGA or
+started the ELF. Resolve the board power, selected JTAG connector, cable driver,
+and boot/jumper configuration before retrying.
 
 For the local XCZU15EG board, use J1 by itself. Its FTDI channel A is the
 Xilinx JTAG cable (`Xilinx/15051A`) and the measured PS UART0 port is `COM11`

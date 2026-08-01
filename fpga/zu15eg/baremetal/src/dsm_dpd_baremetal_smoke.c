@@ -368,6 +368,12 @@ static const u32 dsm_dpd_lut_packages[DSM_DPD_NUM_PACKAGES][DSM_DPD_LUT_LEN] = {
 #ifndef CAL_REPLAY_C5_WORD
 #define CAL_REPLAY_C5_WORD           DSM_DPD_C5_WORD
 #endif
+#ifndef CAL_MEMORY_SKU_ONLY
+#define CAL_MEMORY_SKU_ONLY          0U
+#endif
+#ifndef CAL_MEMORY_SKU_PACKAGE_IDX
+#define CAL_MEMORY_SKU_PACKAGE_IDX   0U
+#endif
 #ifndef CAL_USE_SOFTWARE_SEED
 #define CAL_USE_SOFTWARE_SEED         1U
 #endif
@@ -1558,6 +1564,49 @@ static int run_calibration_demo(void)
     return apply_selected_package(&best);
 }
 
+/*
+ * Hardware smoke for the product build that retains only the four-tap
+ * memory-polynomial branch. This proves coefficient-bank programming,
+ * commit, mode selection, DMA transport, and datapath counters without
+ * claiming a PA-calibration result when no external observation receiver is
+ * connected.
+ */
+static int run_memory_sku_smoke(void)
+{
+#if DPD_TINYML_PACKAGE_TABLE_V2_AVAILABLE
+    CalibrationResult result;
+    const u32 pkg = (CAL_MEMORY_SKU_PACKAGE_IDX <
+                     DPD_TINYML_PACKAGE_TABLE_V2_COUNT) ?
+                    CAL_MEMORY_SKU_PACKAGE_IDX : 0U;
+
+    xil_printf("\r\n=== Performance SKU memory-DPD smoke ===\r\n");
+    print_calibration_config();
+
+    g_candidate_id++;
+    if (run_one_memory_package(pkg, -1, 0U, 0, &result) != XST_SUCCESS) {
+        return XST_FAILURE;
+    }
+
+    print_calibration_trace("memory_sku", 0U, &result, "selected",
+                            "hardware_smoke");
+    calibration_trace_complete();
+    xil_printf("PERFORMANCE_SKU_MEMORY_PASS package=%d active_taps=%d input=0x%08x frontend=0x%08x dpd=0x%08x output=0x%08x stall=0x%08x error=0x%08x sat=0x%08x\r\n",
+               (int)pkg,
+               (int)DPD_TINYML_HIERARCHY_POLICY_ACTIVE_TAPS,
+               dsm_read(DSM_INPUT_SAMPLE_COUNT),
+               dsm_read(DSM_FRONTEND_SAMPLE_COUNT),
+               dsm_read(DSM_DPD_SAMPLE_COUNT),
+               dsm_read(DSM_OUTPUT_SAMPLE_COUNT),
+               dsm_read(DSM_INPUT_STALL_COUNT),
+               dsm_read(DSM_ERROR_STATUS),
+               dsm_read(DSM_DPD_SATURATION_COUNT));
+    return XST_SUCCESS;
+#else
+    xil_printf("FAIL Performance SKU requires memory-DPD package data\r\n");
+    return XST_FAILURE;
+#endif
+}
+
 static int run_replay_demo(void)
 {
     CalibrationResult replay;
@@ -1937,6 +1986,15 @@ int main(void)
             return XST_FAILURE;
         }
         xil_printf("\r\nPASS ZU15EG DSM DPD bare-metal calibration replay completed\r\n");
+        return XST_SUCCESS;
+    }
+
+    if (CAL_MEMORY_SKU_ONLY != 0U) {
+        if (run_memory_sku_smoke() != XST_SUCCESS) {
+            xil_printf("FAIL Performance SKU memory-DPD smoke\r\n");
+            return XST_FAILURE;
+        }
+        xil_printf("\r\nPASS Performance SKU Memory-Poly5 four-tap smoke completed\r\n");
         return XST_SUCCESS;
     }
 
