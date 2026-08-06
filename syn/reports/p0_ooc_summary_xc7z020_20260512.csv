@@ -1,4 +1,0 @@
-Top,Status,LUT,FF,DSP,WNS_ns,Fmax_est_MHz
-p0_ooc_lp1,PASS,104,71,0,6.557,290.44
-p0_ooc_ef1,PASS,182,63,0,2.221,128.55
-p0_ooc_ef2,PASS,316,119,0,0.080,100.81

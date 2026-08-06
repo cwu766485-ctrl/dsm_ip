@@ -62,6 +62,17 @@ module tb_dsm_ip_top_smoke;
   logic signed [RF_W-1:0] rf_signed_interp;
   logic [PHASE_W-1:0] phase_acc_interp;
 
+  logic dsm_valid_bp;
+  logic in_ready_bp;
+  logic i_bit_bp;
+  logic q_bit_bp;
+  logic signed [DSM_OUT_W-1:0] i_yout_bp;
+  logic signed [DSM_OUT_W-1:0] q_yout_bp;
+  logic rf_valid_bp;
+  logic rf_bit_bp;
+  logic signed [RF_W-1:0] rf_signed_bp;
+  logic [PHASE_W-1:0] phase_acc_bp;
+
   dsm_ip_top #(
     .W(W),
     .DSM_OUT_W(DSM_OUT_W),
@@ -167,6 +178,32 @@ module tb_dsm_ip_top_smoke;
     .phase_acc_dbg(phase_acc_interp)
   );
 
+  dsm_ip_top #(
+    .W(W),
+    .DSM_OUT_W(DSM_OUT_W),
+    .RF_W(RF_W),
+    .PHASE_W(PHASE_W),
+    .ALGORITHM(3),
+    .DUC_MODE(3)
+  ) dut_bp_ef2 (
+    .clk(clk),
+    .rst_n(rst_n),
+    .in_valid(in_valid),
+    .cfg_phase_inc(cfg_phase_inc),
+    .i_in(i_in),
+    .q_in(q_in),
+    .in_ready(in_ready_bp),
+    .dsm_valid(dsm_valid_bp),
+    .i_bit(i_bit_bp),
+    .q_bit(q_bit_bp),
+    .i_yout(i_yout_bp),
+    .q_yout(q_yout_bp),
+    .rf_valid(rf_valid_bp),
+    .rf_bit(rf_bit_bp),
+    .rf_signed(rf_signed_bp),
+    .phase_acc_dbg(phase_acc_bp)
+  );
+
   initial clk = 1'b0;
   always #5 clk = ~clk;
 
@@ -175,6 +212,9 @@ module tb_dsm_ip_top_smoke;
   int nco_valid_count;
   int mb_valid_count;
   int interp_valid_count;
+  int bp_valid_count;
+  int bp_one_count;
+  int bp_zero_count;
 
   initial begin
     rst_n = 1'b0;
@@ -221,8 +261,10 @@ module tb_dsm_ip_top_smoke;
     if (nco_valid_count == 0) $fatal(1, "dsm_ip_top NCO path produced no rf_valid");
     if (mb_valid_count == 0) $fatal(1, "dsm_ip_top multibit path produced no rf_valid");
     if (interp_valid_count == 0) $fatal(1, "dsm_ip_top INTERP_MODE=4 path produced no rf_valid");
-    $display("DSM IP top smoke PASS: fs4_valid=%0d nco_valid=%0d mb_valid=%0d interp_valid=%0d",
-             fs4_valid_count, nco_valid_count, mb_valid_count, interp_valid_count);
+    if (bp_valid_count == 0 || bp_one_count == 0 || bp_zero_count == 0)
+      $fatal(1, "dsm_ip_top BP EFDSM2 path did not produce a toggling one-bit IF stream");
+    $display("DSM IP top smoke PASS: fs4_valid=%0d nco_valid=%0d mb_valid=%0d interp_valid=%0d bp_valid=%0d",
+             fs4_valid_count, nco_valid_count, mb_valid_count, interp_valid_count, bp_valid_count);
     $finish;
   end
 
@@ -232,11 +274,21 @@ module tb_dsm_ip_top_smoke;
       nco_valid_count <= 0;
       mb_valid_count <= 0;
       interp_valid_count <= 0;
+      bp_valid_count <= 0;
+      bp_one_count <= 0;
+      bp_zero_count <= 0;
     end else begin
       if (rf_valid_fs4) fs4_valid_count <= fs4_valid_count + 1;
       if (rf_valid_nco) nco_valid_count <= nco_valid_count + 1;
       if (rf_valid_mb) mb_valid_count <= mb_valid_count + 1;
       if (rf_valid_interp) interp_valid_count <= interp_valid_count + 1;
+      if (rf_valid_bp) begin
+        bp_valid_count <= bp_valid_count + 1;
+        if (rf_bit_bp) bp_one_count <= bp_one_count + 1;
+        else bp_zero_count <= bp_zero_count + 1;
+        if (rf_signed_bp != (rf_bit_bp ? 16'sh7fff : -16'sh7fff))
+          $fatal(1, "BP EFDSM2 rf_signed/rf_bit mismatch");
+      end
     end
   end
 endmodule

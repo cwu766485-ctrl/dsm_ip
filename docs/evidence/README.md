@@ -1,6 +1,13 @@
 # Evidence Index
 
-This directory contains compact evidence for the DSM IP handoff.
+This directory contains compact machine-readable evidence for the DSM IP
+handoff. Human-readable interpretation is consolidated in
+`docs/PPA_VERIFICATION_RELEASE.md`, `docs/DPD_AI_DPA.md`, and
+`docs/STATUS_AND_LIMITS.md`.
+
+Keep CSV and JSON files here only when they are compact, referenced by a
+canonical document, and needed to reproduce a claim. Raw tool reports,
+waveforms, logs, and generated workspaces belong outside the repository.
 
 ## ZU15EG DPD OOC Matrix
 
@@ -12,7 +19,8 @@ ooc/dpd_ooc_xczu15eg_ffvb1156_1_i_20260725_summary.csv
 
 This is the post-synthesis OOC comparison of bypass, LUT, polynomial 3/5/7,
 and memory-polynomial 1/2/4/6-tap DPD implementations. See
-`docs/DPD_PPA_REPORT.md` for the architecture decision and evidence limits.
+`docs/PPA_VERIFICATION_RELEASE.md` for the architecture decision and evidence
+limits.
 
 ## ZU15EG Feature-Gated DPD OOC Matrix
 
@@ -39,8 +47,8 @@ This is the routed 100 MHz `xczu15eg-ffvb1156-2-i` implementation for EFDSM
 1-bit, x32 CIC plus compensation FIR interpolation, fixed Fs/4 DUC, and the
 Memory-Poly5 four-tap SKU. Polynomial and LUT DPD branches are compile-time
 pruned. It includes bitstream and XSA generation. See
-`docs/FULL_TX_IMPLEMENTATION.md` for the clock/reset contract and the boundary
-between implementation evidence and physical RF validation.
+`docs/PPA_VERIFICATION_RELEASE.md` for the clock/reset contract and the
+boundary between implementation evidence and physical RF validation.
 
 ## Timing-Clean OOC Paths
 
@@ -91,6 +99,59 @@ closure/p0_100mhz_release_summary.csv
 
 This combines retained RTL simulation pass records and timing-clean OOC records
 from the checked 100 MHz snapshot.
+
+## LPDSM2 Fs/4 Front-End Audit
+
+Reference file:
+
+```text
+frontend/p0_lp2_fs4_frontend_audit_20260804.csv
+```
+
+This independent audit reads the checked 65,536-sample P0 Q1.15 ROM pair and
+reproduces the registered LPDSM2 state arithmetic plus the current fixed-Fs/4
+`[+I,+Q,-I,-Q]` merge. It measures CP-removed, subcarrier-equalized OFDM EVM
+at three distinct apertures. The native complex I/Q result is `0.6891%` EVM.
+The fixed-Fs/4 RF result is `94.3613%` EVM with IF BPF plus full-rate sparse
+recovery, and `93.9062%` EVM with a MATLAB-compatible half-rate demultiplexer.
+The latter also has only `0.2566` recovery correlation before its CP/FFT
+measurement, below the MATLAB flow's `0.55` confidence threshold. It is a
+Python model audit, not fresh XSim, ADS, board, or measured-RF evidence.
+
+The result makes the boundary explicit: native DSM I/Q quality must not be
+reported as fixed-Fs/4 RF-output quality. The fixed-Fs/4 RF path is blocked
+from communication or DPD performance claims until its modulation architecture
+is replaced or a corrected architecture passes the same audit.
+
+## Initial BP EFDSM Front-End Audit
+
+Reference file:
+
+```text
+frontend/p0_bp_ef2_frontend_audit_20260804.csv
+```
+
+This early audit performs full-precision `[+I,+Q,-I,-Q]` mixing before one-bit
+BP error-feedback DSM (`NTF = 1 + z^-2`), then an ideal IF BPF, coherent DDC,
+and the same CP/FFT receiver. The checked P0 vector measures `3.5638%` EVM and
+`28.9617 dB` SNDR. It demonstrates that quantizing after IF mixing removes the
+low-pass DSM/Fs/4 noise-folding failure; it is not yet RTL, ADS, DPA, or board
+evidence.
+
+## BPDSM Candidate Comparison
+
+Reference file:
+
+```text
+frontend/p0_bp_dsm_comparison_20260805.csv
+```
+
+The same P0 vector, IF BPF, DDC, and CP/FFT receiver compare the initial BP
+single-loop and BP EFDSM candidates. BP EFDSM is best among the one-bit outputs:
+`3.5638%` EVM / `28.9617 dB` SNDR versus `3.6597%` / `28.7312 dB` for the
+single-loop resonator. The exploratory BP MASH 1-1 needs multilevel output;
+its hard-limited one-bit version measures `810.0852%` EVM / `-18.1706 dB` SNDR,
+so it is not compatible with the current one-bit DPA.
 
 ## Evidence Boundary
 

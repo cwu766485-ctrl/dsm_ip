@@ -1,8 +1,0 @@
-Design,Domain,Samples,Mismatches,Pass,FirstMismatch
-LPDSM,bits,65536,0,1,0
-LPDSM2,bits,65536,0,1,0
-EFDSM,bits,65536,0,1,0
-EFDSM2,bits,65536,0,1,0
-MASH11,yout,65536,0,1,0
-MASH111,yout,65536,0,1,0
-MASH22,yout,65536,0,1,0

@@ -7,9 +7,11 @@
 //   0 LPDSM, 1 LPDSM2, 2 EFDSM, 3 EFDSM2, 4 MASH11, 5 MASH111, 6 MASH22
 //
 // The input and output sample rate is the IP clock rate. DUC_MODE selects the
-// real IF/RF output mixer:
+// real IF/RF output behavior:
 //   0 fixed Fs/4 mixer
 //   1 NCO mixer, fc = cfg_phase_inc / 2^PHASE_W * clk
+//   2 no digital RF output; use i_bit/q_bit with external analog IQ upconversion
+//   3 reserved by dsm_ip_top for full-precision IF mixing followed by BP EFDSM2
 module dsm_ip_core #(
   parameter int W = 16,
   parameter int DSM_OUT_W = 8,
@@ -212,7 +214,7 @@ module dsm_ip_core #(
       end
 
       assign phase_acc_dbg = {{(PHASE_W-2){1'b0}}, fs4_phase};
-    end else begin : g_nco_duc
+    end else if (DUC_MODE == 1) begin : g_nco_duc
       duc_nco_mix_signed #(
         .W_IN(DSM_OUT_W),
         .W_OUT(RF_W),
@@ -232,6 +234,14 @@ module dsm_ip_core #(
       );
 
       assign rf_bit = ~rf_signed[RF_W-1];
+    end else begin : g_analog_iq_output
+      // No fabricated real-RF sample is emitted in analog-IQ mode.  The two
+      // one-bit low-pass streams remain available on i_bit/q_bit and must pass
+      // external reconstruction filters before an analog IQ mixer.
+      assign rf_valid = 1'b0;
+      assign rf_bit = 1'b0;
+      assign rf_signed = '0;
+      assign phase_acc_dbg = '0;
     end
   endgenerate
 

@@ -39,6 +39,10 @@ set files [list \
   [file join $repo_root rtl duc duc_fs4_merge.sv] \
   [file join $repo_root rtl duc duc_fs4_merge_signed.sv] \
   [file join $repo_root rtl duc duc_nco_mix_signed.v] \
+  [file join $repo_root rtl tx_bandpass_if bp_fs4_iq_mixer.sv] \
+  [file join $repo_root rtl tx_bandpass_if dsm_core_bp_single.sv] \
+  [file join $repo_root rtl tx_bandpass_if dsm_core_bp_ef2.sv] \
+  [file join $repo_root rtl tx_bandpass_if tx_bp_if_top.sv] \
   [file join $repo_root rtl ip dsm_ip_core.sv] \
   [file join $repo_root rtl ip dsm_ip_top.v] \
   [file join $repo_root rtl axi dsm_ip_axi_top.v] \

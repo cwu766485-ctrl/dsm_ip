@@ -71,47 +71,86 @@ module dsm_ip_top #(
     .out_ready(1'b1)
   );
 
-  dsm_ip_core #(
-    .W(W),
-    .DSM_OUT_W(DSM_OUT_W),
-    .RF_W(RF_W),
-    .PHASE_W(PHASE_W),
-    .LUT_AW(LUT_AW),
-    .TW_W(TW_W),
-    .ALGORITHM(ALGORITHM),
-    .DUC_MODE(DUC_MODE),
-    .CLK_FREQ_HZ(CLK_FREQ_HZ),
-    .BB_SAMPLE_RATE_HZ(BB_SAMPLE_RATE_HZ),
-    .SIGNAL_BW_HZ(SIGNAL_BW_HZ),
-    .ACC_W_LP1(ACC_W_LP1),
-    .ACC_W_LP2(ACC_W_LP2),
-    .ACC_W_EF(ACC_W_EF),
-    .ACC_W_MASH(ACC_W_MASH),
-    .ACC_W_MB(ACC_W_MB),
-    .MB_Q_BITS(MB_Q_BITS),
-    .IN_SHIFT(IN_SHIFT),
-    .SATURATE(SATURATE[0]),
-    .COEFF_W(COEFF_W),
-    .B1_NUM(B1_NUM),
-    .B2_NUM(B2_NUM),
-    .COEFF_SHIFT(COEFF_SHIFT)
-  ) u_core (
-    .clk(clk),
-    .rst_n(rst_n),
-    .in_valid(interp_valid),
-    .cfg_phase_inc(cfg_phase_inc),
-    .i_in(interp_i),
-    .q_in(interp_q),
-    .dsm_valid(dsm_valid),
-    .i_bit(i_bit),
-    .q_bit(q_bit),
-    .i_yout(i_yout),
-    .q_yout(q_yout),
-    .rf_valid(rf_valid),
-    .rf_bit(rf_bit),
-    .rf_signed(rf_signed),
-    .phase_acc_dbg(phase_acc_dbg)
-  );
+  generate
+    if (DUC_MODE == 3) begin : g_bp_ef2_if
+      // The BP route mixes the full-precision interpolated I/Q sample before
+      // its one-bit quantizer.  It must not reuse the legacy low-pass DSM
+      // followed by the one-bit Fs/4 merge.
+      wire if_valid;
+      wire signed [W-1:0] if_sample;
+      wire [1:0] if_phase;
+
+      tx_bp_if_top #(
+        .W(W),
+        .ACC_W(ACC_W_EF),
+        .IN_SHIFT(IN_SHIFT),
+        .SATURATE(SATURATE[0]),
+        .BP_ALGORITHM(1)
+      ) u_bp_ef2_if (
+        .clk(clk),
+        .rst_n(rst_n),
+        .in_valid(interp_valid),
+        .i_in(interp_i),
+        .q_in(interp_q),
+        .if_valid(if_valid),
+        .if_sample(if_sample),
+        .rf_valid(rf_valid),
+        .rf_bit(rf_bit),
+        .rf_signed(rf_signed),
+        .if_phase(if_phase)
+      );
+
+      // The BP path has one real IF stream rather than Cartesian DSM lanes.
+      assign dsm_valid = if_valid;
+      assign i_bit = 1'b0;
+      assign q_bit = 1'b0;
+      assign i_yout = '0;
+      assign q_yout = '0;
+      assign phase_acc_dbg = {{(PHASE_W-2){1'b0}}, if_phase};
+    end else begin : g_cartesian_dsm
+      dsm_ip_core #(
+        .W(W),
+        .DSM_OUT_W(DSM_OUT_W),
+        .RF_W(RF_W),
+        .PHASE_W(PHASE_W),
+        .LUT_AW(LUT_AW),
+        .TW_W(TW_W),
+        .ALGORITHM(ALGORITHM),
+        .DUC_MODE(DUC_MODE),
+        .CLK_FREQ_HZ(CLK_FREQ_HZ),
+        .BB_SAMPLE_RATE_HZ(BB_SAMPLE_RATE_HZ),
+        .SIGNAL_BW_HZ(SIGNAL_BW_HZ),
+        .ACC_W_LP1(ACC_W_LP1),
+        .ACC_W_LP2(ACC_W_LP2),
+        .ACC_W_EF(ACC_W_EF),
+        .ACC_W_MASH(ACC_W_MASH),
+        .ACC_W_MB(ACC_W_MB),
+        .MB_Q_BITS(MB_Q_BITS),
+        .IN_SHIFT(IN_SHIFT),
+        .SATURATE(SATURATE[0]),
+        .COEFF_W(COEFF_W),
+        .B1_NUM(B1_NUM),
+        .B2_NUM(B2_NUM),
+        .COEFF_SHIFT(COEFF_SHIFT)
+      ) u_core (
+        .clk(clk),
+        .rst_n(rst_n),
+        .in_valid(interp_valid),
+        .cfg_phase_inc(cfg_phase_inc),
+        .i_in(interp_i),
+        .q_in(interp_q),
+        .dsm_valid(dsm_valid),
+        .i_bit(i_bit),
+        .q_bit(q_bit),
+        .i_yout(i_yout),
+        .q_yout(q_yout),
+        .rf_valid(rf_valid),
+        .rf_bit(rf_bit),
+        .rf_signed(rf_signed),
+        .phase_acc_dbg(phase_acc_dbg)
+      );
+    end
+  endgenerate
 
 endmodule
 

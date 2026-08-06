@@ -13,7 +13,7 @@ evaluate coefficient packages for the deterministic DPD RTL.
 | `run_ai_assisted_dpd_sweep.m` | Runs a multi-scenario software calibration sweep, refines polynomial DPD coefficients with fixed-point coordinate search, exports polynomial/LUT DPD metrics, and emits AXI-Lite coefficient words |
 | `run_dpd_memory_pa_observation_sweep.m` | Adds a more realistic PA/observation model: memory polynomial PA taps, soft saturation, linear frequency response, gain/phase drift, observation noise, fixed-point optimized polynomial DPD, LUT DPD, and an assumed RF observation chain |
 | `run_dpd_memory_poly_training_comparison.m` | Trains Q2.14 memoryless and 4-tap memory-polynomial coefficients on disjoint fit/validation OFDM data, then compares both against no DPD on held-out test seeds under the same behavioral PA and observation conditions |
-| `run_lpdsmdpa_bpf_dpd_closed_loop.m` | Runs the LPDSM2 one-bit DPA+BPF endpoint with disjoint fit, three-condition validation, and test windows; an identity-start ILC search evaluates bounded Q2.14 four-tap Memory-Poly coefficients and releases them only when every validation and held-out test condition improves EVM/SNDR, does not degrade OOB ratio, and has zero limits |
+| `run_lpdsmdpa_bpf_dpd_closed_loop.m` | Runs the LPDSM2 one-bit DPA+BPF endpoint with disjoint fit, three-condition validation, and test windows; it compares no-DPD, endpoint-trained Q2.14 one-tap memoryless DPD, and endpoint-trained four-tap Memory-Poly DPD. Only the four-tap package is release-gated by every validation and held-out EVM/SNDR/OOB/limit check |
 | `run_dpd_model_selection_sweep.m` | Sweeps PA saturation, input backoff, polynomial order (3/5/7), and memory depth (1/2/4/6); rejects clipped candidates and emits a PPA-aware behavioral recommendation |
 | `run_dpd_memory_tinyml_dataset.m` | Generates six joint EVM/ACLR/safety memory-DPD package labels plus exact `aligned_complex_pa_monitor_v2` raw Q1.15 complex-feedback traces; `training` produces the 12-profile base matrix, `development` produces eight profile-LOSO/model-selection profiles, and `blind` produces three permanently isolated final-test profiles |
 | `prepare_dpd_observer_behavioral_vectors.m` | Exports Q1.15 reference and behavioral-PA feedback vectors plus programmed delay/gain and exact observer counters for XSim closed-loop checking |
@@ -24,6 +24,9 @@ evaluate coefficient packages for the deterministic DPD RTL.
 | `compare_dpd7_rtl_xsim.m` | Compares seventh-order `dpd_poly` XSim dumps against MATLAB expected vectors |
 | `prepare_lpdsmdpa_bpf_dpd_bittrue_vectors.m` | Requires an accepted LPDSM2 DPA+BPF release gate, then generates isolated four-tap C1/C3/C5 Q2.14 Memory-Poly RTL vectors |
 | `compare_lpdsmdpa_bpf_dpd_rtl_xsim.m` | Requires 256 RTL samples, zero mismatches, and zero LSB error for the accepted LPDSM2 DPA+BPF release package |
+| `export_ads_low_power_dpa_stimulus.m` | Exports a 100 MHz LPDSM2 x32 Fs/4 `rf_bit` sequence as complementary PWL source files for the circuit-level ADS low-power DPA baseline |
+| `export_ads_dpd_candidate_pair.m` | Reads only an accepted LPDSM2 DPA+BPF release table, applies its Q1.15/Q2.14 four-tap memory-polynomial datapath before LPDSM2, and exports separate no-DPD/candidate ADS PWL files |
+| `analyze_ads_low_power_dpa_result.m` | Imports the ADS transient CSV and summarizes DC power, declared-load output power, peak voltage/current, and a trend-level efficiency |
 
 ## Run
 
@@ -49,6 +52,9 @@ entry_lpdsmdpa_bpf_dpd_closed_loop
 entry_lpdsmdpa_bpf_dpd_bittrue_prepare
 entry_lpdsmdpa_bpf_dpd_bittrue_compare
 entry_export_dpd_coeff_header
+entry_export_ads_low_power_dpa_stimulus
+entry_export_ads_dpd_candidate_pair
+entry_analyze_ads_low_power_dpa_result
 ```
 
 The exported C header contains:
@@ -74,6 +80,20 @@ and RF-slew proxy counters. It first selects a best exported package, then runs
 a small PS-side coordinate search around the best polynomial package by
 perturbing the fixed-point Q2.14 `C1/C3/C5` words. This is the current
 hardware-facing calibration loop.
+
+For the optional local PDK-MOS DPA switch-core, the same importer accepts the generated
+50 ohm output observation by passing `load_ohm=50`. The checked 256-bit
+LPDSM2 PWL export established only the ADS-to-MATLAB observation contract; it
+does not yet retrain DPD coefficients against the circuit result.
+
+`export_ads_dpd_candidate_pair` is an optional circuit-endpoint handoff. The
+main DPD milestone does not depend on it.
+It requires the behavioral release quality gate to be `ACCEPT`; otherwise it
+does not export a candidate. The pair uses the same seed and sample count, but
+it is not ADS-trained DPD evidence. A behavioral-PA coefficient package can
+change output power or spectral trends at the circuit endpoint. The correct
+next action is to identify a PA/observation model from the ADS output, retrain
+the coefficients, and repeat the same pair comparison.
 
 Run the RTL bit-true flow from PowerShell:
 
@@ -131,7 +151,10 @@ fpga/zu15eg/baremetal/src/dpd_coeffs.h
 fpga/zu15eg/baremetal/src/dpd_tinyml_packages_v2.h
 ```
 
-The LPDSM2 DPA+BPF flow writes a diagnostic candidate table to
+The LPDSM2 DPA+BPF flow writes a three-mode comparison summary to
+`lpdsmdpa_bpf_dpd_three_mode_summary.csv` and a labeled coefficient table to
+`lpdsmdpa_bpf_dpd_three_mode_coefficients.csv`. It also writes a diagnostic
+four-tap candidate table to
 `matlab/out/dpd/lpdsmdpa_bpf_dpd_candidate_coefficients.csv`. It writes
 `lpdsmdpa_bpf_dpd_release_coefficients.csv` only when the strict
 multi-condition quality gate returns `ACCEPT`. Use only that release file as
@@ -151,17 +174,56 @@ then runs Memory-Poly XSim in `verif/out_xsim_lpdsmdpa_bpf_dpd`. If MATLAB must
 run from its GUI, first run `entry_lpdsmdpa_bpf_dpd_bittrue_prepare`, invoke
 the PowerShell command with `-SkipMatlabPrep -SkipMatlabCompare`, then run
 `entry_lpdsmdpa_bpf_dpd_bittrue_compare`. A zero mismatch signs off only the
-deterministic four-tap C1/C3/C5 RTL arithmetic for this behavioral package; it
+  deterministic four-tap C1/C3/C5 RTL arithmetic for this behavioral package; it
 does not validate a physical PA.
+
+## DPA Feedback AI-Seeded Calibration
+
+`run_dpa_ai_seeded_calibration.m` adds a reproducible PS-side calibration
+experiment on top of the existing LPDSM2 one-bit behavioral DPA+BPF endpoint.
+It is deliberately a small, inspectable model:
+
+1. Eight independent DPA/observation conditions produce no-DPD feedback
+   monitors: EVM, SNDR, out-of-band ratio, output RMS, and RF-bit one fraction.
+2. A ridge-regression predictor maps those feedback-only values to Q2.14
+   first-tap `C1/C3/C5` seed words.
+3. The complete four-tap Memory-Poly5 structure remains in place. A bounded
+   Q2.14 coordinate search and independent validation decide whether any
+   predicted seed is retained.
+
+Run from MATLAB:
+
+```matlab
+cd('E:/workspace/chip/dsm_ip/matlab');
+path_setup;
+[Summary, Detail, Model] = run_dpa_ai_seeded_calibration;
+```
+
+Outputs are `dpa_ai_seeded_calibration_summary.csv`,
+`dpa_ai_seeded_calibration_detail.csv`, and `dpa_ai_seeded_calibration.md` in
+`matlab/out/dpd/`. The learned seed is not a released RTL coefficient package:
+only a separately validated MATLAB/RTL bit-true package may be programmed into
+the DPD coefficient bank.
+
+This experiment is the primary DPD evidence. ADS circuit-endpoint evidence is
+optional and is not required before comparing DPD algorithms or completing the
+software calibration study.
 
 ## Boundary
 
-The behavioral PA is a simulation model only. The memory-PA observation sweep
+The DPA/PA model is a simulation model only. The memory-PA observation sweep
 now includes memory effects, saturation, linear frequency response, gain/phase
 drift, and observation noise, so its DPD improvement is intentionally less
 ideal than the memoryless baseline. The coefficients are still not tied to any
 real PA device. A real board or product would recalibrate coefficients for the
 actual PA, frequency, bandwidth, temperature, and output power.
+
+For DPA characterization, run the same sweep with
+`'scenario_set','dpa_characterization'`. This produces a 12-row matrix that
+records the DPA gain multiplier, saturation level, memory depth, observation
+SNR, gain/phase drift, temperature offset, output RMS, output-power proxy, and
+output peak alongside the DPD metrics. The matrix is a simulation design
+record, not a physical PA specification.
 
 Memoryless polynomial, LUT, and 2-to-4-tap memory-polynomial DPD are implemented
 in RTL. The current coefficient flow uses deterministic indirect learning and
@@ -179,7 +241,8 @@ decision tree. Generate and verify it with
 `verif/scripts/run_tinyml_tree_equivalence.ps1`. Python owns ratio formation
 and quantization; C and RTL consume the same 13 integer features. The standalone
 tree is intentionally not connected to AXI until XSim and retained board-trace
-replay pass. See `docs/DPD_TINYML_TREE.md` for the exact contract and limits.
+replay pass. See `docs/DPD_AI_DPA.md` and `docs/IP_HANDOFF.md` for the
+calibration contract and limits.
 
 Run `entry_dpd_memory_tinyml_development_dataset` to create the 192-condition
 development matrix, then run `entry_dpd_memory_tinyml_blind_dataset` only for

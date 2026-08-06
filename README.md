@@ -38,7 +38,7 @@ dsm_ip_axi_top
   -> dsm_ip_top
      -> dsm_ip_core
         -> DSM algorithm core
-        -> Fs/4 or NCO DUC
+        -> Fs/4 DUC, NCO DUC, or analog-IQ output boundary
 ```
 
 `dsm_ip_top.v` remains a non-AXI streaming wrapper for reuse in testbenches or
@@ -112,6 +112,12 @@ f_if = 100 MHz / 4 = 25 MHz
 
 `DUC_MODE=1` selects the NCO mixer path. This path is included for integration
 experiments; the fixed Fs/4 path is the primary low-resource configuration.
+
+`DUC_MODE=2` disables the digital real-IF/RF outputs (`rf_valid=0`). Use its
+`i_bit` and `q_bit` outputs with external reconstruction LPFs and an analog IQ
+mixer. This is the low-pass DSM route for the DPD communication chain. The
+separate BPDSM real-IF research route is under `rtl/tx_bandpass_if/`; it is not
+a compile-time `dsm_ip_axi_top` algorithm selection yet.
 
 ## P0 QAM-OFDM Profile
 
@@ -239,6 +245,8 @@ does not include a closed RFSoC `.xpr`, implementation run, bitstream, `.hwh`,
 | Path | Purpose |
 |---|---|
 | `rtl/dsm` | DSM algorithm cores |
+| `rtl/tx_analog_iq` | Low-pass I/Q DSM boundary for external analog upconversion |
+| `rtl/tx_bandpass_if` | Experimental full-precision IF plus BPDSM route |
 | `rtl/duc` | Fs/4 and NCO DUC blocks |
 | `rtl/ip` | Reusable streaming DSM datapath |
 | `rtl/axi` | AXI-Lite/AXI-Stream wrapper |
@@ -252,14 +260,15 @@ does not include a closed RFSoC `.xpr`, implementation run, bitstream, `.hwh`,
 | `docs` | Architecture, status, and evidence |
 | `fpga/rfsoc4x2` | Historical source-only RFSoC board fragments |
 
-See `docs/PROJECT_MAP.md` for the expanded file map.
+See `docs/PROJECT_GUIDE.md` for the project map and `docs/README.md` for the
+documentation index.
 
 ## Public GitHub Release
 
 Before publishing this repository publicly, review:
 
 ```text
-docs/GITHUB_RELEASE_CHECKLIST.md
+docs/PPA_VERIFICATION_RELEASE.md
 ```
 
 Do not publish restricted RFSoC board PDFs, schematics, BOMs, or board files.

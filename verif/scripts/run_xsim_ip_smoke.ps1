@@ -21,6 +21,7 @@ $filelist = Join-Path $work "filelist_dsm_ip_abs.f"
 $tbTop = Join-Path $repo "verif\tb\tb_dsm_ip_top_smoke.sv"
 $tbAxi = Join-Path $repo "verif\tb\tb_dsm_ip_axi_smoke.sv"
 $tbDpdV11 = Join-Path $repo "verif\tb\tb_dpd_v11.sv"
+$tbBpAxi = Join-Path $repo "verif\tb\tx_bandpass_if\tb_dsm_ip_bp_axi_smoke.sv"
 
 $rtlFiles = @(
   "$repo\rtl\axis\axis_skid_buffer.sv",
@@ -55,6 +56,10 @@ $rtlFiles = @(
   "$repo\rtl\duc\duc_fs4_merge.sv",
   "$repo\rtl\duc\duc_fs4_merge_signed.sv",
   "$repo\rtl\duc\duc_nco_mix_signed.v",
+  "$repo\rtl\tx_bandpass_if\bp_fs4_iq_mixer.sv",
+  "$repo\rtl\tx_bandpass_if\dsm_core_bp_single.sv",
+  "$repo\rtl\tx_bandpass_if\dsm_core_bp_ef2.sv",
+  "$repo\rtl\tx_bandpass_if\tx_bp_if_top.sv",
   "$repo\rtl\ip\dsm_ip_core.sv",
   "$repo\rtl\ip\dsm_ip_top.v",
   "$repo\rtl\axi\dsm_ip_axi_top.v"
@@ -101,7 +106,7 @@ function Invoke-VivadoCmd($cmd) {
 }
 
 Write-Host "[xsim] compile DSM IP top smoke"
-Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tbTop`" `"$tbAxi`" `"$tbDpdV11`""
+Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tbTop`" `"$tbAxi`" `"$tbDpdV11`" `"$tbBpAxi`""
 
 Write-Host "[xsim] elaborate DSM IP top smoke"
 Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_top_smoke -s sim_tb_dsm_ip_top_smoke"
@@ -114,6 +119,12 @@ Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_axi_smoke -s sim_tb_dsm_ip_axi_
 
 Write-Host "[xsim] run DSM IP AXI smoke"
 Invoke-VivadoCmd "xsim sim_tb_dsm_ip_axi_smoke -runall"
+
+Write-Host "[xsim] elaborate BP AXI route smoke"
+Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_bp_axi_smoke -s sim_tb_dsm_ip_bp_axi_smoke"
+
+Write-Host "[xsim] run BP AXI route smoke"
+Invoke-VivadoCmd "xsim sim_tb_dsm_ip_bp_axi_smoke -runall"
 
 Write-Host "[xsim] elaborate DPD v1.1 unit smoke"
 Invoke-VivadoCmd "xelab -debug typical tb_dpd_v11 -s sim_tb_dpd_v11"

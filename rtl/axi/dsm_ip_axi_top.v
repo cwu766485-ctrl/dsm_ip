@@ -347,7 +347,7 @@ module dsm_ip_axi_top #(
       1'b1,                    // observation asynchronous companion IP exists
       1'b1,                    // safe window-boundary MP commit supported
       1'b1,                    // runtime DSM input shift supported
-      (DUC_MODE != 0),         // NCO-capable compiled SKU
+      (DUC_MODE == 1),         // digital NCO DUC compiled into this SKU
       INTERP_MODE[3:0],
       ALGORITHM[3:0],
       DPD_POLY_ORDER[2:0],

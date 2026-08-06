@@ -4,22 +4,37 @@ function [Results, Coefficients, Artifacts] = run_lpdsmdpa_bpf_dpd_closed_loop(v
 
   cfg = default_cfg();
   cfg = parse_kv(cfg, varargin{:});
+  cfg = apply_dpa_stage(cfg, cfg.dpa_stage);
   fit_reference = make_ofdm(cfg, cfg.fit_seed, cfg.fit_nsym);
   validation_references = cell(numel(cfg.validation_seeds), 1);
   for k = 1:numel(cfg.validation_seeds)
     validation_references{k} = make_ofdm(cfg, cfg.validation_seeds(k), cfg.validation_nsym);
   end
   identity_q = identity_coeff_q(cfg);
+  initial_q = identity_q;
+  if ~isempty(cfg.initial_coeff_q)
+    assert(numel(cfg.initial_coeff_q) == numel(identity_q), ...
+      'initial_coeff_q must contain one Q2.14 word per tap/order basis term.');
+    initial_q = complex(round(real(cfg.initial_coeff_q(:))), ...
+      round(imag(cfg.initial_coeff_q(:))));
+  end
 
   % The one-bit DPA endpoint is non-smooth, so do not use a postdistorter as a
   % predistorter. Search the actual Q2.14 pre-DPD words with ILC-style
   % coordinate updates on fit data and select the accepted checkpoint on a
   % disjoint validation waveform.
+  memoryless_cfg = cfg;
+  memoryless_cfg.memory_taps = 1;
+  memoryless_identity_q = identity_coeff_q(memoryless_cfg);
+  [memoryless_q, MemorylessTrainingTrace, MemorylessValidation] = train_q214_ilc( ...
+    fit_reference, validation_references, memoryless_identity_q, ...
+    memoryless_identity_q, memoryless_cfg);
   [coeff_q, TrainingTrace, Validation] = train_q214_ilc( ...
-    fit_reference, validation_references, identity_q, cfg);
+    fit_reference, validation_references, initial_q, identity_q, cfg);
+  memoryless_float = double(memoryless_q) / 2^memoryless_cfg.coeff_frac;
   coeff_float = double(coeff_q) / 2^cfg.coeff_frac;
 
-  modes = ["No DPD", "Q2.14 Memory-Poly DPD"];
+  modes = ["No DPD", "Q2.14 Memoryless DPD", "Q2.14 Memory-Poly DPD"];
   rows = repmat(empty_row(), numel(cfg.test_seeds) * numel(modes), 1);
   row = 0;
   for seed = cfg.test_seeds(:).'
@@ -30,6 +45,10 @@ function [Results, Coefficients, Artifacts] = run_lpdsmdpa_bpf_dpd_closed_loop(v
           dpd_out = ref;
           saturation_count = 0;
         case 2
+          [dpd_out, saturation_count] = apply_q214_memory_poly(ref, memoryless_q, memoryless_cfg);
+          [dpd_out, drive_limited] = limit_drive(dpd_out, memoryless_cfg.dpd_drive_limit);
+          saturation_count = saturation_count + drive_limited;
+        case 3
           [dpd_out, saturation_count] = apply_q214_memory_poly(ref, coeff_q, cfg);
           [dpd_out, drive_limited] = limit_drive(dpd_out, cfg.dpd_drive_limit);
           saturation_count = saturation_count + drive_limited;
@@ -39,6 +58,7 @@ function [Results, Coefficients, Artifacts] = run_lpdsmdpa_bpf_dpd_closed_loop(v
 
       row = row + 1;
       rows(row).Seed = seed;
+      rows(row).Stage = cfg.dpa_stage;
       rows(row).Mode = modes(mode_idx);
       rows(row).EVM_percent = metrics.evm_percent;
       rows(row).SNDR_dB = metrics.sndr_dB;
@@ -50,11 +70,18 @@ function [Results, Coefficients, Artifacts] = run_lpdsmdpa_bpf_dpd_closed_loop(v
   end
   Results = struct2table(rows);
   Coefficients = make_coefficient_table(coeff_float, coeff_q, cfg);
+  MemorylessCoefficients = make_coefficient_table(memoryless_float, memoryless_q, memoryless_cfg);
+  ComparisonCoefficients = [labeled_coefficients("Memoryless DPD", MemorylessCoefficients); ...
+    labeled_coefficients("Memory-polynomial DPD", Coefficients)];
+  Summary = summarize_three_modes(Results, modes);
   QualityGate = evaluate_quality_gate(Results, Validation, cfg);
   Artifacts = struct('cfg', cfg, 'fit_reference', fit_reference, ...
     'validation_references', {validation_references}, 'coeff_float', coeff_float, ...
-    'coeff_q', coeff_q, 'training_trace', TrainingTrace, ...
-    'validation', Validation, 'quality_gate', QualityGate);
+    'coeff_q', coeff_q, 'initial_coeff_q', initial_q, 'identity_coeff_q', identity_q, ...
+    'memoryless_coeff_float', memoryless_float, 'memoryless_coeff_q', memoryless_q, ...
+    'memoryless_training_trace', MemorylessTrainingTrace, ...
+    'memoryless_validation', MemorylessValidation, 'training_trace', TrainingTrace, ...
+    'validation', Validation, 'quality_gate', QualityGate, 'summary', Summary);
 
   if cfg.write_outputs
     out_dir = cfg.out_dir;
@@ -63,6 +90,8 @@ function [Results, Coefficients, Artifacts] = run_lpdsmdpa_bpf_dpd_closed_loop(v
     end
     if ~exist(out_dir, 'dir'), mkdir(out_dir); end
     writetable(Results, fullfile(out_dir, 'lpdsmdpa_bpf_dpd_closed_loop.csv'));
+    writetable(Summary, fullfile(out_dir, 'lpdsmdpa_bpf_dpd_three_mode_summary.csv'));
+    writetable(ComparisonCoefficients, fullfile(out_dir, 'lpdsmdpa_bpf_dpd_three_mode_coefficients.csv'));
     % Candidate coefficients are diagnostic evidence only.  A separate release
     % file is emitted only after the independent quality gate accepts them.
     writetable(Coefficients, fullfile(out_dir, 'lpdsmdpa_bpf_dpd_candidate_coefficients.csv'));
@@ -76,7 +105,7 @@ function [Results, Coefficients, Artifacts] = run_lpdsmdpa_bpf_dpd_closed_loop(v
       delete(release_path);
     end
     write_report(fullfile(out_dir, 'lpdsmdpa_bpf_dpd_closed_loop.md'), ...
-      Results, Coefficients, TrainingTrace, Validation, QualityGate, cfg);
+      Results, Summary, Coefficients, TrainingTrace, Validation, QualityGate, cfg);
     save(fullfile(out_dir, 'lpdsmdpa_bpf_dpd_closed_loop.mat'), ...
       'Results', 'Coefficients', 'Artifacts');
   end
@@ -103,8 +132,13 @@ function cfg = default_cfg()
   cfg.fs_hz = cfg.bb_fs_hz * cfg.osr;
   cfg.if_hz = cfg.fs_hz / 4;
   cfg.channel_bw_hz = cfg.bb_fs_hz * cfg.nused / cfg.nfft;
-  cfg.bpf_bw_hz = 2.0 * cfg.channel_bw_hz;
-  cfg.rx_lpf_bw_hz = 1.25 * cfg.channel_bw_hz;
+  % The behavioral endpoint uses a finite OFDM record. Its occupied bandwidth
+  % is wider than the nominal active-subcarrier span after record edges and
+  % Fs/4 sparse recovery are included. Keep enough passband for the complete
+  % envelope; the narrow historical filter made the clean reference fail
+  % before any DPA impairment was enabled.
+  cfg.bpf_bw_hz = 32.0 * cfg.channel_bw_hz;
+  cfg.rx_lpf_bw_hz = 32.0 * cfg.channel_bw_hz;
   cfg.input_backoff = 0.45;
   cfg.dpd_drive_limit = 0.75;
   cfg.memory_taps = 4;
@@ -114,6 +148,8 @@ function cfg = default_cfg()
   cfg.input_w = 16;
   cfg.input_frac = 15;
   cfg.coeff_safe_abs = 24576;
+  cfg.initial_coeff_q = [];
+  cfg.initial_source = "identity";
   % High-order terms are attenuated by |x|^2 and |x|^4 at the configured
   % input backoff.  Start wide enough to explore a useful predistortion range,
   % then refine in Q2.14 steps.  A point is still retained only after every
@@ -128,9 +164,92 @@ function cfg = default_cfg()
   cfg.dpa_thermal_compression = 0.24;
   cfg.dpa_memory_fir = [0.88 0.16 -0.05];
   cfg.observation_snr_dB = 46;
+  % The legacy endpoint is retained for reproducibility.  The staged runner
+  % uses the calibrated linear-to-noisy sequence below.
+  cfg.dpa_stage = "legacy_full";
+  % The primary behavioral DPA/DPD experiment uses an analog-equivalent
+  % Fs/4 endpoint so DPA effects can be measured independently. The actual
+  % LPDSM2 + Fs/4 bitstream remains available as the explicit `lpdsm2`
+  % diagnostic stage below.
+  cfg.digital_chain_mode = "lpdsm2";
+  cfg.dpa_enable_amam = false;
+  cfg.dpa_enable_ampm = false;
+  cfg.dpa_enable_memory = true;
+  cfg.dpa_enable_switch_nonideality = true;
+  cfg.dpa_enable_noise = true;
+  cfg.dpa_amam_sat_level = 0.84;
+  cfg.dpa_amam_smooth_p = 3.0;
+  cfg.dpa_ampm_max_deg = 2.0;
+  cfg.dpa_ampm_ref = 0.65;
+  cfg.metric_guard_samples = 128;
   cfg.out_dir = '';
   cfg.write_outputs = true;
   cfg.verbose = true;
+end
+
+function cfg = apply_dpa_stage(cfg, stage)
+% Select an interpretable impairment sequence for the staged DPA experiment.
+% The legacy endpoint remains available so historical results are reproducible.
+  stage = lower(string(stage));
+  cfg.dpa_stage = stage;
+  switch stage
+    case "ideal_bb"
+      cfg.digital_chain_mode = "ideal_duc";
+      cfg.dpa_low_level = -1.0;
+      cfg.dpa_high_level = 1.0;
+      cfg.dpa_switch_asymmetry = 0;
+      cfg.dpa_thermal_compression = 0;
+      cfg.dpa_memory_fir = 1;
+      cfg.dpa_enable_amam = false;
+      cfg.dpa_enable_ampm = false;
+      cfg.dpa_enable_memory = false;
+      cfg.dpa_enable_switch_nonideality = false;
+      cfg.dpa_enable_noise = false;
+    case "linear"
+      cfg.digital_chain_mode = "ideal_duc";
+      cfg.dpa_low_level = -1.0;
+      cfg.dpa_high_level = 1.0;
+      cfg.dpa_switch_asymmetry = 0;
+      cfg.dpa_thermal_compression = 0;
+      cfg.dpa_memory_fir = 1;
+      cfg.dpa_enable_amam = false;
+      cfg.dpa_enable_ampm = false;
+      cfg.dpa_enable_memory = false;
+      cfg.dpa_enable_switch_nonideality = false;
+      cfg.dpa_enable_noise = false;
+    case "am_am"
+      cfg = apply_dpa_stage(cfg, "linear");
+      cfg.dpa_stage = stage;
+      cfg.dpa_enable_amam = true;
+    case "am_pm"
+      cfg = apply_dpa_stage(cfg, "am_am");
+      cfg.dpa_stage = stage;
+      cfg.dpa_enable_ampm = true;
+    case "memory"
+      cfg = apply_dpa_stage(cfg, "am_pm");
+      cfg.dpa_stage = stage;
+      cfg.dpa_enable_memory = true;
+      cfg.dpa_thermal_alpha = 0.997;
+      cfg.dpa_thermal_compression = 0.08;
+      cfg.dpa_memory_fir = [0.94 0.06 -0.015];
+    case "noise"
+      cfg = apply_dpa_stage(cfg, "memory");
+      cfg.dpa_stage = stage;
+      cfg.dpa_enable_noise = true;
+    case "full"
+      cfg = apply_dpa_stage(cfg, "noise");
+      cfg.dpa_stage = stage;
+      cfg.dpa_enable_switch_nonideality = true;
+      cfg.dpa_switch_asymmetry = 0.01;
+    case "lpdsm2"
+      cfg = apply_dpa_stage(cfg, "linear");
+      cfg.dpa_stage = stage;
+      cfg.digital_chain_mode = "lpdsm2";
+    case "legacy_full"
+      % Keep the original endpoint settings from default_cfg unchanged.
+    otherwise
+      error('Unknown dpa_stage: %s', stage);
+  end
 end
 
 function x = make_ofdm(cfg, seed, nsym)
@@ -152,44 +271,134 @@ function x = make_ofdm(cfg, seed, nsym)
 end
 
 function [feedback, endpoint] = switched_dpa_feedback(x, cfg)
+  if cfg.dpa_stage == "ideal_bb"
+    feedback = x(:);
+    endpoint = struct('rf_bit_one_fraction', 0.5, ...
+      'dpa_output_rms', sqrt(mean(abs(feedback).^2)));
+    return;
+  end
   % This first system model uses ideal band-limited interpolation. It preserves
   % the x32 rate and suppresses zero-order-hold images, but deliberately does
   % not claim I0 FIR bit-true equivalence.
+  % Main RTL path: both I/Q DSMs run at the interpolated 100 MHz rate and
+  % duc_fs4_merge selects the current I/Q sample on successive four phases.
+  % The separate half-rate rate-matched variant is not used by this endpoint.
   high_rate = bandlimited_interpolate(x(:), cfg.osr);
-  i_bit = lpdsm2_bit_dsm(real(high_rate), cfg);
-  q_bit = lpdsm2_bit_dsm(imag(high_rate), cfg);
   phase = mod((0:numel(high_rate)-1).', 4);
-  rf_signed = i_bit;
-  rf_signed(phase == 1) = q_bit(phase == 1);
-  rf_signed(phase == 2) = -i_bit(phase == 2);
-  rf_signed(phase == 3) = -q_bit(phase == 3);
-  rf_bit = rf_signed > 0;
+  if cfg.digital_chain_mode == "ideal_duc"
+    % This is the calibrated behavioral endpoint: an analog-equivalent
+    % Fs/4 DUC drives the DPA model, so LPDSM2 quantization folding is not
+    % counted as PA distortion. The RTL LPDSM2 endpoint is tested separately.
+    n = (0:numel(high_rate)-1).';
+    rf_signed = real(high_rate .* exp(-1j * 2*pi*cfg.if_hz/cfg.fs_hz*n));
+    rf_bit = rf_signed >= 0;
+    i_bit = rf_bit;
+    q_bit = rf_bit;
+  else
+    i_bit = lpdsm2_bit_dsm(real(high_rate), cfg);
+    q_bit = lpdsm2_bit_dsm(imag(high_rate), cfg);
+    rf_signed = i_bit;
+    rf_signed(phase == 1) = q_bit(phase == 1);
+    rf_signed(phase == 2) = -i_bit(phase == 2);
+    rf_signed(phase == 3) = -q_bit(phase == 3);
+    rf_bit = rf_signed > 0;
+  end
 
   % The DPA model exposes switch asymmetry, pulse-density thermal memory, and
   % finite output bandwidth before the explicit 25 MHz output BPF.
-  on_fraction = filter(1-cfg.dpa_thermal_alpha, [1 -cfg.dpa_thermal_alpha], ...
-    double(rf_bit));
-  thermal_gain = 1 - cfg.dpa_thermal_compression * (on_fraction - 0.5);
-  levels = cfg.dpa_low_level + (cfg.dpa_high_level-cfg.dpa_low_level) * double(rf_bit);
-  levels = levels .* (1 + cfg.dpa_switch_asymmetry * rf_signed) .* thermal_gain;
-  dpa_out = filter(cfg.dpa_memory_fir(:), 1, levels);
+  if cfg.dpa_enable_memory
+    on_fraction = filter(1-cfg.dpa_thermal_alpha, [1 -cfg.dpa_thermal_alpha], ...
+      double(rf_bit));
+    thermal_gain = 1 - cfg.dpa_thermal_compression * (on_fraction - 0.5);
+  else
+    thermal_gain = ones(size(rf_bit));
+  end
+  if cfg.digital_chain_mode == "ideal_duc"
+    levels = rf_signed;
+  else
+    levels = cfg.dpa_low_level + (cfg.dpa_high_level-cfg.dpa_low_level) * double(rf_bit);
+  end
+  if cfg.dpa_enable_switch_nonideality && cfg.digital_chain_mode ~= "ideal_duc"
+    levels = levels .* (1 + cfg.dpa_switch_asymmetry * rf_signed);
+  end
+  levels = levels .* thermal_gain;
+  if cfg.dpa_enable_memory
+    dpa_out = filter(cfg.dpa_memory_fir(:), 1, levels);
+  else
+    dpa_out = levels;
+  end
   bpf_out = fft_bandpass(dpa_out, cfg.fs_hz, cfg.if_hz, cfg.bpf_bw_hz);
-  mixed = 2 * bpf_out .* exp(-1j * 2*pi*cfg.if_hz/cfg.fs_hz * (0:numel(bpf_out)-1).');
-  baseband = fft_lowpass(mixed, cfg.fs_hz, cfg.rx_lpf_bw_hz);
-  % Fs/4 merge emits Re{(I - jQ)exp(j*pi*n/2)}. Conjugate after coherent
-  % downconversion to restore the project's original I + jQ convention.
-  feedback = conj(baseband(1:cfg.osr:end));
-  feedback = feedback(1:numel(x));
-  noise_power = mean(abs(feedback).^2) / 10^(cfg.observation_snr_dB/10);
-  % Derive a repeatable noise state from the input without perturbing the
-  % caller's global random stream used for separate OFDM test cases.
-  prior_rng = rng;
-  restore_rng = onCleanup(@() rng(prior_rng)); %#ok<NASGU>
-  rng(numel(x) + round(1000*mean(abs(x))), 'twister');
-  feedback = feedback + sqrt(noise_power/2) * ...
-    (randn(size(feedback)) + 1j*randn(size(feedback)));
+  if cfg.digital_chain_mode == "ideal_duc"
+    % The analog-equivalent path is a real Fs/4 waveform, so recover it with
+    % coherent complex downconversion. Sparse demultiplexing is reserved for
+    % the actual one-bit RTL merge below.
+    n = (0:numel(bpf_out)-1).';
+    mixed = 2 * bpf_out .* exp(1j * 2*pi*cfg.if_hz/cfg.fs_hz*n);
+    baseband = fft_lowpass(mixed, cfg.fs_hz, cfg.rx_lpf_bw_hz);
+  else
+    % Recover the one-bit RTL merge as sparse four-phase branches. A direct
+    % complex mixer is not equivalent here because I and Q occupy alternating
+    % Fs/4 phases.
+    phase = mod((0:numel(bpf_out)-1).', 4);
+    i_sparse = zeros(size(bpf_out));
+    q_sparse = zeros(size(bpf_out));
+    i_sparse(phase == 0) = bpf_out(phase == 0);
+    i_sparse(phase == 2) = -bpf_out(phase == 2);
+    q_sparse(phase == 1) = bpf_out(phase == 1);
+    q_sparse(phase == 3) = -bpf_out(phase == 3);
+    % Each branch is active on one quarter of the RF samples. The factor of 4
+    % restores the branch amplitude after sparse low-pass reconstruction.
+    baseband = 4 * (fft_lowpass(i_sparse, cfg.fs_hz, cfg.rx_lpf_bw_hz) + ...
+      1j * fft_lowpass(q_sparse, cfg.fs_hz, cfg.rx_lpf_bw_hz));
+  end
+  if cfg.dpa_enable_amam
+    radius = abs(baseband);
+    scale = 1 ./ ((1 + (radius / max(cfg.dpa_amam_sat_level, eps)).^(2*cfg.dpa_amam_smooth_p)) .^ ...
+      (1/(2*cfg.dpa_amam_smooth_p)));
+    baseband = baseband .* scale;
+  end
+  if cfg.dpa_enable_ampm
+    radius = abs(baseband);
+    phase = deg2rad(cfg.dpa_ampm_max_deg) * min((radius / max(cfg.dpa_ampm_ref, eps)).^2, 1);
+    baseband = baseband .* exp(1j * phase);
+  end
+  % The sparse reconstruction directly returns the original I + jQ
+  % convention; no conjugation is required. Select the decimation phase by
+  % correlation because the BPF/reconstruction path can introduce a fractional
+  % sample phase relative to the first RF sample.
+  [feedback, decimation_phase] = select_decimation_phase(baseband, x, cfg);
+  if cfg.dpa_enable_noise
+    noise_power = mean(abs(feedback).^2) / 10^(cfg.observation_snr_dB/10);
+    % Derive a repeatable noise state from the input without perturbing the
+    % caller's global random stream used for separate OFDM test cases.
+    prior_rng = rng;
+    restore_rng = onCleanup(@() rng(prior_rng)); %#ok<NASGU>
+    rng(numel(x) + round(1000*mean(abs(x))), 'twister');
+    feedback = feedback + sqrt(noise_power/2) * ...
+      (randn(size(feedback)) + 1j*randn(size(feedback)));
+  end
   endpoint = struct('rf_bit_one_fraction', mean(rf_bit), ...
-    'dpa_output_rms', sqrt(mean(abs(bpf_out).^2)));
+    'dpa_output_rms', sqrt(mean(abs(bpf_out).^2)), ...
+    'decimation_phase', decimation_phase);
+end
+
+function [feedback, best_phase] = select_decimation_phase(baseband, reference, cfg)
+  best_error = inf;
+  feedback = baseband(1:cfg.osr:end);
+  best_phase = 0;
+  for phase = 0:cfg.osr-1
+    candidate = baseband(phase+1:cfg.osr:end);
+    n = min(numel(candidate), numel(reference));
+    if n < 32, continue; end
+    [ya, xa] = align_gain_delay(candidate(1:n), reference(1:n), 8);
+    error = mean(abs(ya - xa).^2) / (mean(abs(xa).^2) + eps);
+    if error < best_error
+      best_error = error;
+      feedback = candidate;
+      best_phase = phase;
+    end
+  end
+  feedback = feedback(1:min(numel(feedback), numel(reference)));
 end
 
 function bits = lpdsm2_bit_dsm(x, cfg)
@@ -212,13 +421,13 @@ function q = identity_coeff_q(cfg)
   q(1) = 2^cfg.coeff_frac;
 end
 
-function [best_q, Trace, Validation] = train_q214_ilc(fit_ref, validation_refs, identity_q, cfg)
+function [best_q, Trace, Validation] = train_q214_ilc(fit_ref, validation_refs, initial_q, identity_q, cfg)
 % ILC-style black-box coefficient search against the actual 1-bit endpoint.
 % Coordinate moves use the fit waveform for search direction, but a retained
 % training update and a release checkpoint must both satisfy every disjoint
 % validation condition.  This intentionally prevents an average-only fit gain
 % from steering the coordinate search toward a non-generalizing coefficient.
-  current_q = identity_q;
+  current_q = initial_q;
   [fit_metrics, fit_limits] = evaluate_q214_endpoint(fit_ref, current_q, cfg);
   [baseline_val, baseline_val_limits] = evaluate_validation_set(validation_refs, identity_q, cfg);
   best_q = current_q;
@@ -226,7 +435,7 @@ function [best_q, Trace, Validation] = train_q214_ilc(fit_ref, validation_refs, 
   best_limits = baseline_val_limits;
   trace_rows = repmat(empty_trace_row(), 0, 1);
   trace_rows(end+1) = make_trace_row(0, 0, 0, current_q, fit_metrics, ...
-    fit_limits, baseline_val, baseline_val_limits, true, "identity"); %#ok<AGROW>
+    fit_limits, baseline_val, baseline_val_limits, true, string(cfg.initial_source)); %#ok<AGROW>
   iteration = 0;
   for step = cfg.ilc_steps
     for pass = 1:cfg.ilc_max_passes
@@ -388,6 +597,11 @@ end
 
 function m = evaluate_feedback(ref, feedback, cfg)
   [y, x] = align_gain_delay(feedback, ref, 8);
+  guard = min(cfg.metric_guard_samples, floor((numel(y)-1)/4));
+  if guard > 0
+    y = y(guard+1:end-guard);
+    x = x(guard+1:end-guard);
+  end
   err = y-x; signal = mean(abs(x).^2); noise = mean(abs(err).^2);
   m.evm_percent = 100*sqrt(noise/(signal+eps));
   m.sndr_dB = 10*log10((signal+eps)/(noise+eps));
@@ -422,6 +636,25 @@ function T = make_coefficient_table(coeff_float, coeff_q, cfg)
   T = struct2table(rows);
 end
 
+function T = labeled_coefficients(model, coefficients)
+  T = addvars(coefficients, repmat(string(model), height(coefficients), 1), ...
+    'Before', 1, 'NewVariableNames', 'Model');
+end
+
+function T = summarize_three_modes(results, modes)
+  rows = repmat(struct('Mode', "", 'MeanEVM_percent', NaN, 'MeanSNDR_dB', NaN, ...
+    'MeanACLR_dBc', NaN, 'TotalDPDLimitCount', 0), numel(modes), 1);
+  for k = 1:numel(modes)
+    selected = results(results.Mode == modes(k), :);
+    rows(k).Mode = modes(k);
+    rows(k).MeanEVM_percent = mean(selected.EVM_percent);
+    rows(k).MeanSNDR_dB = mean(selected.SNDR_dB);
+    rows(k).MeanACLR_dBc = mean(selected.ACLR_dBc);
+    rows(k).TotalDPDLimitCount = sum(selected.DPDLimitCount);
+  end
+  T = struct2table(rows);
+end
+
 function value = twos_u16(value)
   value = round(value); if value < 0, value = value + 65536; end
 end
@@ -432,7 +665,7 @@ function [value, saturated] = saturate_int(value, width)
 end
 
 function row = empty_row()
-  row = struct('Seed', 0, 'Mode', "", 'EVM_percent', NaN, 'SNDR_dB', NaN, ...
+  row = struct('Seed', 0, 'Stage', "", 'Mode', "", 'EVM_percent', NaN, 'SNDR_dB', NaN, ...
     'ACLR_dBc', NaN, 'DPDLimitCount', 0, 'RFBitOneFraction', NaN, 'DPAOutputRMS', NaN);
 end
 
@@ -524,7 +757,7 @@ function row = make_trace_row(iteration, step, pass, coeff_q, fit, fit_limits, v
   row.C5Re = real(coeff_q(3)); row.C5Im = imag(coeff_q(3));
 end
 
-function write_report(path, results, coefficients, trace, validation, quality_gate, cfg)
+function write_report(path, results, summary, coefficients, trace, validation, quality_gate, cfg)
   fid = fopen(path, 'w'); if fid < 0, error('Cannot write %s', path); end
   cleaner = onCleanup(@() fclose(fid)); %#ok<NASGU>
   fprintf(fid, '# LPDSM2 1-bit DPA+BPF DPD Closed-Loop Experiment\n\n');
@@ -537,7 +770,12 @@ function write_report(path, results, coefficients, trace, validation, quality_ga
   fprintf(fid, '- DPA: switch-level asymmetry, pulse-density thermal compression, finite FIR memory, and %.3f MHz ideal output BPF.\n', cfg.bpf_bw_hz/1e6);
   fprintf(fid, '- Training: Q2.14 identity-start ILC coordinate search on seed %d; every validation seed [%s] constrains each accepted move; test seeds are [%s].\n', cfg.fit_seed, num2str(cfg.validation_seeds), num2str(cfg.test_seeds));
   fprintf(fid, '- Feedback: coherent downconversion, %.3f MHz low-pass, x%d decimation, and %.1f dB additive observation SNR.\n\n', cfg.rx_lpf_bw_hz/1e6, cfg.osr, cfg.observation_snr_dB);
-  fprintf(fid, '## Validation Checkpoint\n\n| Seed | Mode | EVM %% | SNDR dB | Out-of-band ratio dBc | Limits |\n|---:|---|---:|---:|---:|---:|\n');
+  fprintf(fid, 'The memoryless and memory-polynomial packages are independently trained against this same endpoint. The four-tap package retains the strict release gate; the one-tap package is a comparison baseline only.\n\n');
+  fprintf(fid, '## Three-Mode Test Summary\n\n| Mode | Mean EVM %% | Mean SNDR dB | Mean out-of-band ratio dBc | Total limits |\n|---|---:|---:|---:|---:|\n');
+  for k = 1:height(summary)
+    fprintf(fid, '| %s | %.4f | %.4f | %.4f | %d |\n', summary.Mode(k), summary.MeanEVM_percent(k), summary.MeanSNDR_dB(k), summary.MeanACLR_dBc(k), summary.TotalDPDLimitCount(k));
+  end
+  fprintf(fid, '\n## Memory-Polynomial Validation Checkpoint\n\n| Seed | Mode | EVM %% | SNDR dB | Out-of-band ratio dBc | Limits |\n|---:|---|---:|---:|---:|---:|\n');
   for k = 1:height(validation)
     fprintf(fid, '| %d | %s | %.4f | %.4f | %.4f | %d |\n', validation.Seed(k), validation.Mode(k), validation.EVM_percent(k), validation.SNDR_dB(k), validation.ACLR_dBc(k), validation.DPDLimitCount(k));
   end

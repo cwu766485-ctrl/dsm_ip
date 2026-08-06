@@ -10,6 +10,9 @@ IP handoff.
 | `bittrue/` | Fixed-point DSM reference models and RTL/XSim dump comparison. This is the current source of truth for the seven RTL DSM algorithms. |
 | `models/` | Executable algorithm models for new IP blocks before RTL implementation, including interpolation frontend and system-level metric experiments. |
 | `dpd/` | MATLAB-only DPD and PA-model baselines for the planned AI-assisted TX calibration path. |
+| `tx_analog_iq/` | Low-pass I/Q DSM plus external analog-IQ-upconversion route notes. |
+| `tx_bandpass_if/` | Fixed-point models and metrics for the separate full-precision IF plus BPDSM route. |
+| `../ads/` | ADS circuit-level low-power DPA baseline and its MATLAB PWL-stimulus handoff. |
 | `scripts/` | User-facing entry scripts for vector export, metric evaluation, calibration sweeps, and plots. |
 | `cartesian_dsm/` | Cartesian I/Q DSM algorithm workspace, including retained legacy flow, single-bit wrappers, and exploratory multibit models. |
 | `board_validation/` | Scope-capture recovery and board-output comparison scripts retained for hardware validation. |
@@ -48,6 +51,7 @@ matlab/
     entry_dpd_bittrue_check.m
     entry_ai_assisted_dpd_sweep.m
     entry_dpd_memory_pa_observation_sweep.m
+    entry_export_ads_low_power_dpa_stimulus.m
     entry_export_dpd_coeff_header.m
     export_p0_rom_mem.m
     export_p1_rom_mem.m
@@ -73,6 +77,12 @@ matlab/
     prepare_dpd_bittrue_vectors.m
     compare_dpd_rtl_xsim.m
     README.md
+
+  tx_analog_iq/
+    analog-IQ transmitter boundary notes
+
+  tx_bandpass_if/
+    initial BP EFDSM fixed-point reference and route notes
 
   cartesian_dsm/
     dsm_singlebit/
@@ -178,6 +188,26 @@ The fixed-point metrics in this frontend model measure fixed-point error
 against the floating-point reference only. They are not end-to-end communication
 SNR/EVM results.
 
+## ADS Low-Power DPA Stimulus
+
+The circuit-level ADS baseline consumes the same 100 MHz LPDSM2 x32 Fs/4
+one-bit stream used by the behavioral DPA endpoint. Generate the PWL sources
+with:
+
+```matlab
+S = export_ads_low_power_dpa_stimulus('n_symbols', 8, 'n_samples', 256, 'seed', 211);
+```
+
+It writes generated files below `ads/low_power_dpa/data/`. The schematic
+topology and electrical boundary are documented in `ads/README.md`; this is
+not an RTL bit-true or physical-PA signoff flow.
+
+After ADS exports `ads_observation.csv`, use
+`analyze_ads_low_power_dpa_result` to summarize DC/output power and switching
+waveform trends at the current 100 ohm differential pre-balun measurement
+plane. The model must include the balun/matching network before interpreting
+the result as a 50 ohm single-ended output.
+
 Run the system-level behavioral metric check:
 
 ```matlab
@@ -205,6 +235,19 @@ This generates an OFDM/QAM source, applies a behavioral memoryless PA, trains a
 memoryless polynomial DPD with indirect learning, quantizes the DPD to a
 fixed-point Q1.15/Q2.14 datapath, and compares PA-only vs DPD-plus-PA
 EVM/SNDR/ACLR.
+
+For the staged LPDSM2 DPA endpoint, run:
+
+```matlab
+path_setup;
+run('scripts/entry_lpdsmdpa_bpf_dpd_staged.m');
+```
+
+This reports `ideal_bb`, `linear`, `am_am`, `am_pm`, `memory`, and `noise`
+cumulatively. The `linear` stage still exercises the one-bit DSM and modeled
+Fs/4 observation path, but disables DPA impairments and observation noise. The
+prior all-in-one result is retained as `legacy_full` diagnostic evidence and
+must not be used as a communication-capability claim.
 
 Generated outputs:
 

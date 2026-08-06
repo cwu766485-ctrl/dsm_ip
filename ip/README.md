@@ -53,6 +53,12 @@ Clock and frequency contract:
 - The default release target is `clk = 100 MHz`.
 - `DUC_MODE=0` keeps the fixed Fs/4 DUC, so 100 MHz gives a 25 MHz IF.
 - `DUC_MODE=1` enables NCO upconversion.
+- `DUC_MODE=2` exports low-pass one-bit I/Q for external reconstruction and an
+  analog IQ mixer; it intentionally keeps `rf_valid=0`.
+- `DUC_MODE=3` selects the DPA research route: interpolated full-precision I/Q
+  is mixed to fixed Fs/4 IF and then quantized by one-bit BP EFDSM2. It emits
+  the real one-bit `rf_bit`; `i_bit/q_bit` are not valid signal lanes in this
+  mode.
 - NCO tuning word: `cfg_phase_inc = round(f_if / f_clk * 2^PHASE_W)`.
 - Example for 25 MHz at 100 MHz with `PHASE_W=24`: `cfg_phase_inc = 24'h400000`.
 - `ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are compile-time selected IP

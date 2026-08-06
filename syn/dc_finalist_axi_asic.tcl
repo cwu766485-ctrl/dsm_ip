@@ -5,6 +5,7 @@ set ROOT [file normalize [file join [file dirname [info script]] ..]]
 set RTL "$ROOT/rtl"
 set PERIOD [expr {[info exists ::env(DSM_ASIC_PERIOD_NS)] ? $::env(DSM_ASIC_PERIOD_NS) : 10.0}]
 set MAX_CORES [expr {[info exists ::env(DSM_ASIC_MAX_CORES)] ? $::env(DSM_ASIC_MAX_CORES) : 4}]
+set DUC_MODE [expr {[info exists ::env(DSM_ASIC_DUC_MODE)] ? $::env(DSM_ASIC_DUC_MODE) : 0}]
 
 foreach var {DSM_ASIC_STDCELL_DB DSM_ASIC_NODE DSM_ASIC_LABEL DSM_ASIC_ALGORITHM DSM_ASIC_RUN_DIR} {
   if {![info exists ::env($var)] || $::env($var) eq ""} {
@@ -30,7 +31,7 @@ if {[sizeof_collection [get_lib_cells */*INV*]] == 0} {
   error "Standard-cell DB has no inverter cells: $::env(DSM_ASIC_STDCELL_DB)"
 }
 
-puts "DSM ASIC DC: node=$::env(DSM_ASIC_NODE) label=$::env(DSM_ASIC_LABEL) algorithm=$::env(DSM_ASIC_ALGORITHM) period_ns=$PERIOD"
+puts "DSM ASIC DC: node=$::env(DSM_ASIC_NODE) label=$::env(DSM_ASIC_LABEL) algorithm=$::env(DSM_ASIC_ALGORITHM) duc_mode=$DUC_MODE period_ns=$PERIOD"
 puts "DSM ASIC DC: stdcell_db=$::env(DSM_ASIC_STDCELL_DB)"
 set_host_options -max_cores $MAX_CORES
 
@@ -66,12 +67,16 @@ analyze -format sverilog [list \
   $RTL/duc/duc_fs4_merge.sv \
   $RTL/duc/duc_fs4_merge_signed.sv \
   $RTL/duc/duc_nco_mix_signed.v \
+  $RTL/tx_bandpass_if/bp_fs4_iq_mixer.sv \
+  $RTL/tx_bandpass_if/dsm_core_bp_single.sv \
+  $RTL/tx_bandpass_if/dsm_core_bp_ef2.sv \
+  $RTL/tx_bandpass_if/tx_bp_if_top.sv \
   $RTL/ip/dsm_ip_core.sv \
   $RTL/ip/dsm_ip_top.v \
   $RTL/axi/dsm_ip_axi_top.v \
 ]
 
-elaborate dsm_ip_axi_top -parameters "ALGORITHM=$::env(DSM_ASIC_ALGORITHM),INTERP_MODE=4,INTERP_IMPL=0,DUC_MODE=0,DPD_POLY_ORDER=5,DPD_MP_MAX_TAPS=4,ENABLE_DPD_POLY=0,ENABLE_DPD_LUT=0,ENABLE_DPD_MEMORY=1"
+elaborate dsm_ip_axi_top -parameters "ALGORITHM=$::env(DSM_ASIC_ALGORITHM),INTERP_MODE=4,INTERP_IMPL=0,DUC_MODE=$DUC_MODE,DPD_POLY_ORDER=5,DPD_MP_MAX_TAPS=4,ENABLE_DPD_POLY=0,ENABLE_DPD_LUT=0,ENABLE_DPD_MEMORY=1"
 # Elaborate makes the parameterized top current; its generated design name
 # includes the parameter values and is not literally dsm_ip_axi_top.
 link

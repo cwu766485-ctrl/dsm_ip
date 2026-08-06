@@ -23,6 +23,19 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
     local_cfg.input_backoff = sc.input_backoff;
     local_cfg.nused = sc.nused;
     local_cfg.qam_order = sc.qam_order;
+    local_cfg.pa.c1 = local_cfg.pa.c1 * sc.pa_relative_gain_scale;
+    local_cfg.pa.c3 = local_cfg.pa.c3 * sc.pa_relative_gain_scale;
+    local_cfg.pa.c5 = local_cfg.pa.c5 * sc.pa_relative_gain_scale;
+    local_cfg.pa_memory_taps = sc.pa_memory_taps;
+    local_cfg.pa_sat_level = sc.pa_sat_level;
+    local_cfg.pa_gain_drift_ppm = sc.pa_gain_drift_ppm;
+    local_cfg.pa_phase_drift_deg = sc.pa_phase_drift_deg;
+    local_cfg.pa_phase_ripple_deg = sc.pa_phase_ripple_deg;
+    local_cfg.temperature_delta_c = sc.temperature_delta_c;
+    local_cfg.temp_gainco_ppm_per_c = sc.temp_gainco_ppm_per_c;
+    local_cfg.temp_phaseco_deg_per_c = sc.temp_phaseco_deg_per_c;
+    local_cfg.observation_snr_dB = sc.observation_snr_dB;
+    local_cfg.pa = trim_pa_taps(local_cfg.pa, local_cfg.pa_memory_taps);
     local_cfg = configure_observation_bandwidth(local_cfg);
 
     x = make_ofdm_source(local_cfg);
@@ -70,6 +83,17 @@ function T = run_dpd_memory_pa_observation_sweep(varargin)
     rows(k).QAM = local_cfg.qam_order;
     rows(k).UsedSubcarriers = local_cfg.nused;
     rows(k).InputBackoff = local_cfg.input_backoff;
+    rows(k).DPA_RelativeGainScale = sc.pa_relative_gain_scale;
+    rows(k).DPA_RelativePowerDelta_dB = 20*log10(sc.pa_relative_gain_scale);
+    rows(k).DPA_SaturationLevel = local_cfg.pa_sat_level;
+    rows(k).DPA_MemoryTaps = local_cfg.pa_memory_taps;
+    rows(k).DPA_ObservationSNR_dB = local_cfg.observation_snr_dB;
+    rows(k).DPA_GainDrift_ppm = local_cfg.pa_gain_drift_ppm;
+    rows(k).DPA_PhaseDrift_deg = local_cfg.pa_phase_drift_deg;
+    rows(k).DPA_TemperatureDelta_C = local_cfg.temperature_delta_c;
+    rows(k).DPA_OutputRMS = sqrt(mean(abs(y_no).^2));
+    rows(k).DPA_OutputPowerProxy = mean(abs(y_no).^2);
+    rows(k).DPA_OutputPeak = max(abs(y_no));
     rows(k).Native_NoDPD_EVM_percent = native_no.EVM_percent;
     rows(k).Native_InitialPoly_EVM_percent = native_poly_initial.EVM_percent;
     rows(k).Native_OptimizedPoly_EVM_percent = native_poly_opt.EVM_percent;
@@ -166,6 +190,9 @@ function cfg = default_cfg()
   cfg.pa_gain_drift_ppm = 1800;
   cfg.pa_phase_drift_deg = 1.8;
   cfg.pa_phase_ripple_deg = 0.45;
+  cfg.temperature_delta_c = 0;
+  cfg.temp_gainco_ppm_per_c = 120;
+  cfg.temp_phaseco_deg_per_c = 0.08;
   cfg.pa_sat_level = 0.92;
   cfg.pa_smooth_sat_p = 3.0;
   cfg.observation_snr_dB = 43;
@@ -208,7 +235,22 @@ function scenarios = build_scenarios(cfg)
     [-0.72+0.34j, -0.13+0.06j, 0.035-0.018j], ...
     [0.26-0.23j, 0.055-0.030j, -0.016+0.010j]);
 
-  if strcmp(cfg.scenario_set, 'extended')
+  if strcmp(cfg.scenario_set, 'dpa_characterization')
+    scenarios = [ ...
+      scenario_dpa('dpa_nominal', 0.58, 48, 16, nominal_pa, 1.00, 0.92, 3, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_gain_low', 0.58, 48, 16, nominal_pa, 0.85, 0.92, 3, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_gain_high', 0.58, 48, 16, nominal_pa, 1.15, 0.92, 3, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_compression_soft', 0.58, 48, 16, nominal_pa, 1.00, 1.10, 3, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_compression_strong', 0.58, 48, 16, nominal_pa, 1.00, 0.74, 3, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_memoryless', 0.58, 48, 16, nominal_pa, 1.00, 0.92, 1, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_memory_long', 0.58, 48, 16, strong_pa, 1.00, 0.92, 3, 43, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_noise_low', 0.58, 48, 16, nominal_pa, 1.00, 0.92, 3, 50, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_noise_high', 0.58, 48, 16, nominal_pa, 1.00, 0.92, 3, 35, 1800, 1.8, 0), ...
+      scenario_dpa('dpa_temp_cold', 0.58, 48, 16, nominal_pa, 1.00, 0.92, 3, 43, 1800, 1.8, -40), ...
+      scenario_dpa('dpa_temp_hot', 0.58, 48, 16, nominal_pa, 1.00, 0.92, 3, 43, 1800, 1.8, 60), ...
+      scenario_dpa('dpa_combined_corner', 0.52, 48, 16, strong_pa, 1.10, 0.78, 3, 35, 3500, 3.0, 60) ...
+    ];
+  elseif strcmp(cfg.scenario_set, 'extended')
     scenarios = [ ...
       scenario('memory_pa_nominal_16qam_48sc_bo058', 0.58, 48, 16, nominal_pa), ...
       scenario('memory_pa_nominal_16qam_48sc_bo070', 0.70, 48, 16, nominal_pa), ...
@@ -239,8 +281,17 @@ function scenarios = build_scenarios(cfg)
 end
 
 function sc = scenario(name, backoff, nused, qam, pa)
+  sc = scenario_dpa(name, backoff, nused, qam, pa, 1.0, 0.92, 3, 43, 1800, 1.8, 0);
+end
+
+function sc = scenario_dpa(name, backoff, nused, qam, pa, relative_gain_scale, sat_level, taps, snr_dB, gain_drift_ppm, phase_drift_deg, temperature_delta_c)
   sc = struct('name', string(name), 'input_backoff', backoff, 'nused', nused, ...
-    'qam_order', qam, 'pa', pa);
+    'qam_order', qam, 'pa', pa, 'pa_relative_gain_scale', relative_gain_scale, ...
+    'pa_sat_level', sat_level, 'pa_memory_taps', taps, ...
+    'observation_snr_dB', snr_dB, 'pa_gain_drift_ppm', gain_drift_ppm, ...
+    'pa_phase_drift_deg', phase_drift_deg, 'pa_phase_ripple_deg', 0.45, ...
+    'temperature_delta_c', temperature_delta_c, 'temp_gainco_ppm_per_c', 120, ...
+    'temp_phaseco_deg_per_c', 0.08);
 end
 
 function cfg = configure_observation_bandwidth(cfg)
@@ -264,6 +315,13 @@ function pa = apply_pa_profile(pa, cfg)
   pa.c3 = pa.c3(1:ntap);
   pa.c5 = pa.c5(1:ntap);
   pa.c1 = pa.c1 * cfg.pa_gain_scale;
+end
+
+function pa = trim_pa_taps(pa, taps)
+  ntap = min(max(round(taps), 1), numel(pa.c1));
+  pa.c1 = pa.c1(1:ntap);
+  pa.c3 = pa.c3(1:ntap);
+  pa.c5 = pa.c5(1:ntap);
 end
 
 function pa = make_memory_pa(c1, c3, c5)
@@ -300,8 +358,10 @@ end
 function y = apply_gain_phase_drift(x, cfg)
   n = (0:numel(x)-1).';
   t = n / max(numel(x)-1, 1);
-  gain = 1 + cfg.pa_gain_drift_ppm * 1e-6 * (2*t - 1);
-  phase = deg2rad(cfg.pa_phase_drift_deg * (2*t - 1) + ...
+  gain = 1 + cfg.temperature_delta_c * cfg.temp_gainco_ppm_per_c * 1e-6 + ...
+    cfg.pa_gain_drift_ppm * 1e-6 * (2*t - 1);
+  phase = deg2rad(cfg.temperature_delta_c * cfg.temp_phaseco_deg_per_c + ...
+    cfg.pa_phase_drift_deg * (2*t - 1) + ...
     cfg.pa_phase_ripple_deg * sin(2*pi*3*t));
   y = x(:) .* gain .* exp(1j*phase);
 end
@@ -745,7 +805,13 @@ end
 
 function row = empty_row()
   row = struct('Scenario', string(""), 'QAM', NaN, 'UsedSubcarriers', NaN, ...
-    'InputBackoff', NaN, ...
+    'InputBackoff', NaN, 'DPA_RelativeGainScale', NaN, ...
+    'DPA_RelativePowerDelta_dB', NaN, ...
+    'DPA_SaturationLevel', NaN, 'DPA_MemoryTaps', NaN, ...
+    'DPA_ObservationSNR_dB', NaN, 'DPA_GainDrift_ppm', NaN, ...
+    'DPA_PhaseDrift_deg', NaN, 'DPA_TemperatureDelta_C', NaN, ...
+    'DPA_OutputRMS', NaN, 'DPA_OutputPowerProxy', NaN, ...
+    'DPA_OutputPeak', NaN, ...
     'Native_NoDPD_EVM_percent', NaN, 'Native_InitialPoly_EVM_percent', NaN, ...
     'Native_OptimizedPoly_EVM_percent', NaN, 'Native_LUT_EVM_percent', NaN, ...
     'Native_NoDPD_SNDR_dB', NaN, 'Native_InitialPoly_SNDR_dB', NaN, ...

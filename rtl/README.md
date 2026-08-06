@@ -21,6 +21,8 @@ Directory layout:
 | `axis/` | Small AXI-Stream helper blocks |
 | `interp/` | Standalone interpolation/filter frontend RTL |
 | `duc/` | Fs/4 merge and NCO upconversion blocks |
+| `tx_analog_iq/` | Low-pass I/Q DSM route for external reconstruction and analog IQ mixing |
+| `tx_bandpass_if/` | Experimental full-precision IF mixer and one-bit BPDSM route |
 | `mem/` | ROM reader used by simulation and ROM-backed tops |
 | `top/` | P0 wrapper tops |
 
@@ -48,6 +50,8 @@ Included cores and support blocks:
 - `duc/duc_fs4_merge.sv`
 - `duc/duc_fs4_merge_signed.sv`
 - `duc/duc_nco_mix_signed.v`
+- `tx_analog_iq/dsm_iq_analog_top.sv`
+- `tx_bandpass_if/tx_bp_if_top.sv`
 - `mem/rom_reader.sv`
 
 The primary compilation list is:
@@ -71,6 +75,14 @@ Multibit controls:
 The default 4-bit multibit modes are MATLAB/RTL bit-true over the current
 65536-sample P0 vector set. Timing/resource OOC signoff for these modes is still
 separate from the seven original P0 signoff paths.
+
+`dsm_ip_core` supports `DUC_MODE=2` for analog-IQ integration. It keeps the
+DSM I/Q outputs valid but forces `rf_valid=0`; downstream logic must not
+interpret `rf_bit` or `rf_signed` as a physical RF waveform in this mode.
+`dsm_ip_top` additionally supports `DUC_MODE=3` for the BP EFDSM2 research
+SKU. It routes interpolated full-precision I/Q through the IF mixer before the
+one-bit BPDSM and emits `rf_bit` for the DPA. This route remains qualification
+only until fixed-point, RF-metric, RTL, and implementation evidence is closed.
 
 Interpolation frontend:
 
@@ -134,4 +146,4 @@ DPD calibration safety:
   bypass path until software clears the latch after loading a safe package.
 - `s_axis_obs_*` is the optional Q1.15 complex observation-feedback stream.
   Its detailed transfer and calibration contract is in
-  `docs/DPD_CALIBRATION_INTERFACE.md`.
+  `docs/IP_HANDOFF.md`.

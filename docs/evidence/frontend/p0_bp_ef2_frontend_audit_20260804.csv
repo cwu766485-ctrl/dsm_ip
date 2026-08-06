@@ -1,0 +1,2 @@
+Aperture,EVM_percent,SNDR_dB,Correlation,DecimationPhase,BasebandLag,EqualizedSymbols,InputSamples,Fs_Hz,IF_Hz,BPF_Bandwidth_Hz,Model,Measurement,EvidenceBoundary
+full_precision_fs4_to_bp_ef2_rf,3.563808,28.961713,0.998382,0,0,19,65536,100000000,25000000,3164062.500,full-precision Fs/4 mixer plus dsm_core_bp_ef2 state order,"ideal IF BPF, coherent DDC, CP-removed 64-point OFDM FFT, per-subcarrier equalizer","Python algorithm audit; not fresh RTL, ADS, board, or measured RF"

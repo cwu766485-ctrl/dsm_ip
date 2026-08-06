@@ -1,8 +1,0 @@
-Part,Top,Status,LUT,FF,DSP,WNS_ns,Fmax_est_MHz
-xczu48dr-ffvg1517-2-e,p0_ooc_lp1,PASS,103,71,0,9.072,1077.59
-xczu48dr-ffvg1517-2-e,p0_ooc_lp2,PASS,469,167,0,5.624,228.52
-xczu48dr-ffvg1517-2-e,p0_ooc_ef1,PASS,181,63,0,7.363,379.22
-xczu48dr-ffvg1517-2-e,p0_ooc_ef2,PASS,315,119,0,6.558,290.53
-xczu48dr-ffvg1517-2-e,p0_ooc_mash11,PASS,246,88,0,5.764,236.07
-xczu48dr-ffvg1517-2-e,p0_ooc_mash111,PASS,382,133,0,3.908,164.15
-xczu48dr-ffvg1517-2-e,p0_ooc_mash22,PASS,251,167,72,2.017,125.27

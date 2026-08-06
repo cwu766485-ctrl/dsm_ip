@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 PERIOD_NS=${DSM28_PERIOD_NS:-10.0}
-STDCELL_DB=${DSM28_STDCELL_DB:-/home/ray/ic/CIMForge/syn/out/pdk_cache/tcbn28hpcplusbwp7t40p140tt0p9v0p9v25c.db}
+STDCELL_DB=${DSM28_STDCELL_DB:-/home/ray/pdk/TSMC28/standard_cell_rvt/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn28hpcplusbwp7t40p140_180a/tcbn28hpcplusbwp7t40p140tt0p9v25c.db}
 STAMP=$(date +%Y%m%d_%H%M%S)
 OUT_ROOT="$ROOT/syn/reports/finalists_28nm_dc_${STAMP}"
 mkdir -p "$OUT_ROOT"

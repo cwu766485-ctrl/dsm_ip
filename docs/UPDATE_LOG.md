@@ -1,7 +1,1335 @@
 # Update Log
 
+## 2026-08-06 23:10:00 +08:00
+
+原因：
+
+- 根据项目主线，进一步收敛规格文档的验证对象，避免把通用 DSM/DPD 分支误读为同等交付结论。
+
+变更文件：
+
+- `docs/SPEC.md`
+- `docs/PROJECT_GUIDE.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/DPD_AI_DPA.md`
+- `docs/UPDATE_LOG.md`
+
+明确内容：
+
+- 主验证 DSM 是 `DUC_MODE=3` 下的全精度 Fs/4 Mixer + 一位 BP EFDSM2。
+- `dsm_core_bp_ef2` 固定 `B1=0`、`B2=-1`，由通用 EF2 核实现 Fs/4 带通噪声整形。
+- `ALGORITHM=3` 是 AXI/综合 build identity；BP 分支实际固定选择 `BP_ALGORITHM=1`。
+- DPD 的被测对象是 MATLAB behavioral DPA；memoryless 和 memory-polynomial DPD 必须在同一 DPA、同一波形和 held-out 数据上比较。
+- RTL DPD 主实现是 Q2.14、4-tap/5th-order memory-polynomial，用于承接针对 behavioral DPA 拟合并通过安全检查的系数。
+- 模拟 IQ、LPDSM/其他 DSM、LUT 和 polynomial 分支降为次要集成、兼容或研究对象。
+
+检查：
+
+- 文档内容已按 `rtl/tx_bandpass_if/dsm_core_bp_ef2.sv`、`rtl/tx_bandpass_if/tx_bp_if_top.sv`、`rtl/ip/dsm_ip_top.v` 和 `rtl/axi/dsm_ip_axi_top.v` 核对。
+- 本次只修改文档，不改变 RTL、接口、位宽或综合参数。
+
+## 2026-08-06 22:45:00 +08:00
+
+原因：
+
+- 统一并中文化当前交付文档，清理过时的路线和工具状态描述。
+- 新增公司内部可直接评审和集成的详细规格文档。
+
+变更文件：
+
+- `docs/README.md`
+- `docs/PROJECT_GUIDE.md`
+- `docs/IP_HANDOFF.md`
+- `docs/SPEC.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/PPA_VERIFICATION_RELEASE.md`
+- `docs/DPD_AI_DPA.md`
+- `docs/UPDATE_LOG.md`
+
+内容：
+
+- 明确 `rtl/axi/dsm_ip_axi_top.v` 是交付顶层。
+- 明确 `DUC_MODE=2` 为模拟 IQ 路线，`DUC_MODE=3` 为全精度 IF + 一位 BP EFDSM2 路线。
+- 统一主 BP SKU 参数：`ALGORITHM=3`、`DUC_MODE=3`、`INTERP_MODE=4`、4 tap/5th-order memory DPD，关闭 polynomial/LUT 分支。
+- 记录有效 28 nm DC 预布局结果和 DC lint“无 Error/Fatal 但带 warning”的真实状态。
+- 明确 MATLAB behavioral、ADS、FPGA 和实测 RF 证据不可混用。
+
+检查：
+
+- 已按当前 `rtl/axi/dsm_ip_axi_top.v` 核对端口、寄存器和主 SKU 参数。
+- `git diff --check` 待本轮完成后执行。
+- 文档不改变 RTL 行为。
+
+## 2026-08-06 21:30:00 +08:00
+
+Reason:
+
+- Stop repeated Vivado 2024.1 Windows OOC retries after native synthesis
+  crashes and establish a structural RTL check first.
+
+Changed files:
+
+- `syn/dc_lint_bp_ef2_axi.tcl`
+- `syn/run_lint_bp_ef2_axi.sh`
+- `syn/README.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and status:
+
+- Added a lint-only DC flow for the complete BP EFDSM2 AXI SKU using
+  `ALGORITHM=3`, `DUC_MODE=3`, `INTERP_MODE=4`, and memory-only DPD.
+- The flow runs `analyze`, `elaborate`, `link`, `check_design`, and
+  `check_timing`; it does not run `compile_ultra` and makes no PPA claim.
+- Vivado OOC remains blocked on this Windows host: recent attempts crash after
+  entering `synth_design` and produce no utilization/timing summary. This is
+  currently tool/host evidence, not a demonstrated RTL compile error.
+
+Remaining limitation:
+
+- The new lint flow must be run in the WSL DC environment before a lint pass is
+  claimed. Any later Vivado retry should be a minimal diagnostic or use a
+  different Vivado/host environment.
+
+### DC lint result
+
+The WSL run completed twice; the latest evidence is:
+
+- `syn/reports/lint_bp_ef2_axi_20260806_214119/`
+- `analyze`, `elaborate`, `link`, `check_design`, and `check_timing` completed.
+- DC log contains zero `Error:` or `Fatal:` records and reports one elaborated
+  design. This is a structural lint pass with warnings, not a warning-free
+  signoff.
+- `check_design` reports: 226 unconnected ports, 73 shorted outputs, 74
+  constant outputs, 101 cells that do not drive, 5 same-cell multi-pin nets,
+  and 80 unloaded nets in the full parameterized hierarchy.
+- The bulk is expected from compile-time-pruned optional DPD/debug outputs in
+  the BP SKU, but the shorted-output/unloaded-net groups and signed/unsigned
+  conversion warnings need targeted review before calling the RTL lint-clean.
+- `check_timing` also reports 17 high-fanout nets and a timing-constraint
+  warning; this lint flow is not a post-compile timing result.
+
+## 2026-08-06 22:05:00 +08:00
+
+Reason:
+
+- Isolate the primary synthesized transmitter chain for focused SpyGlass and
+  VCS verification without duplicating or modifying its datapath RTL.
+
+Changed files:
+
+- `rtl/main_chain/dsm_main_chain_top.sv`
+- `rtl/main_chain/main_chain_sources.f`
+- `rtl/main_chain/main_chain.spyglass.prj`
+- `rtl/main_chain/README.md`
+- `verif/tb/main_chain/tb_dsm_main_chain.sv`
+- `verif/scripts/run_spyglass_main_chain.sh`
+- `verif/scripts/run_vcs_main_chain.sh`
+- `docs/UPDATE_LOG.md`
+
+Implementation:
+
+- The verification shell directly instantiates the existing synthesized
+  `dsm_ip_axi_top`; it does not copy DPD, interpolation, mixer, or DSM logic.
+- The frozen verification SKU is `ALGORITHM=3`, `DUC_MODE=3`,
+  `INTERP_MODE=4`, `INTERP_IMPL=0`, 4-tap/5th-order memory DPD, with optional
+  polynomial and LUT branches disabled. This matches the retained 28 nm DC
+  and BP Vivado OOC parameter set.
+- Added one shared RTL source list for the shell and the focused checks. The
+  VCS smoke drives AXI-Stream I/Q and checks that the BP `rf_bit` toggles and
+  agrees with `rf_signed`.
+
+Checks:
+
+- Main-chain filelist contains 39 existing RTL sources plus the verification
+  shell; all listed paths exist.
+- `git diff --check`: passed.
+- SpyGlass and VCS are not installed in the Windows environment, so their
+  runs are pending in the Linux EDA environment.
+- The existing Windows XSim IP smoke was attempted after extraction, but
+  `xvlog` returned without creating `xvlog.log`; the work directory contains
+  only the generated filelist. Therefore no XSim pass/fail is claimed from
+  this attempt, and the failure is currently at Vivado/XSim process startup,
+  before a readable RTL compile diagnostic.
+
+Correction:
+
+- Removed the temporary `rtl/main_chain/` verification wrapper and its
+  dedicated testbench/scripts. It duplicated the organization of the real
+  RTL path without adding hardware.
+- The authoritative main path remains the existing `dsm_ip_axi_top` synthesis
+  top, with DPD/interpolation in their existing directories and BP IF logic in
+  `rtl/tx_bandpass_if/`. Future SpyGlass/VCS checks must consume that same
+  synthesis file list and top directly.
+
+## 2026-08-05 20:55:00 +08:00
+
+### Connected the complete AXI BP EFDSM2 transmitter SKU
+
+Reason:
+
+- The DPA research route needed the existing AXI-Stream, DPD, and interpolation
+  frontend connected to the full-precision IF mixer and one-bit BP EFDSM2,
+  rather than keeping BPDSM as a standalone post-interpolation prototype.
+
+Changed files:
+
+- `rtl/ip/dsm_ip_top.v`, `rtl/ip/dsm_ip_core.sv`
+- `rtl/tx_bandpass_if/`
+- `verif/tb/tb_dsm_ip_top_smoke.sv`
+- `verif/tb/tx_bandpass_if/tb_dsm_ip_bp_axi_smoke.sv`
+- `verif/scripts/filelist_p0_abs.ps1`, `verif/scripts/run_xsim_ip_smoke.ps1`
+- `ip/package_vivado_ip.tcl`, `ip/README.md`, `rtl/README.md`
+- `syn/run_ooc_bp_ef2_axi.tcl`, `syn/run_ooc_bp_ef2_axi.ps1`
+- `syn/dc_finalist_axi_28nm.tcl`, `syn/dc_finalist_axi_asic.tcl`
+- `syn/run_bp_ef2_28nm_dc.sh`, `syn/README.md`, `docs/PROJECT_GUIDE.md`
+
+Implementation:
+
+- Added `DUC_MODE=3` in `dsm_ip_top` as a compile-time BP transmitter SKU.
+  The selected data path is `AXI-Stream -> DPD frontend -> x32 interpolation
+  -> full-precision Fs/4 I/Q-to-IF mixer -> one-bit BP EFDSM2 -> rf_bit`.
+- Existing `DUC_MODE=0`, `1`, and `2` behavior is unchanged. In BP mode,
+  Cartesian `i_bit/q_bit` and `i_yout/q_yout` are deliberately invalid; only
+  the real one-bit IF `rf_*` stream is a DPA input candidate.
+- Added a full AXI smoke test and dedicated FPGA OOC / 28 nm DC launchers for
+  the same fixed SKU. The external DPA and analog BPF remain outside digital
+  synthesis.
+
+Checks:
+
+- `git diff --check`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File
+  .\verif\scripts\run_xsim_ip_smoke.ps1`: attempted; blocked because Vivado
+  returned without producing `xvlog.log`.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File
+  .\syn\run_ooc_bp_ef2_axi.ps1 -Part xczu15eg-ffvb1156-2-i`: attempted;
+  Vivado exited before creating a run directory or tool log.
+- 28 nm DC was not runnable in the current Windows workspace: no local
+  `dc_shell` and no installed WSL distribution. The launcher is prepared but
+  no fresh 28 nm PPA result is claimed.
+
+Remaining limitation:
+
+- BP EFDSM2 still requires a fixed-point MATLAB/RTL vector comparison, an
+  actual XSim pass, FPGA OOC timing, and 28 nm DC output before it can replace
+  the qualified low-pass IP route or be presented as implementation-closed.
+
+### Diagnosed the first BP FPGA OOC failure as a Vivado runtime hang
+
+Evidence:
+
+- GUI-launched OOC attempts created only `hs_err_pid*.log/.dmp` under
+  `syn/reports/bp_ef2_axi_ooc_*`, with `EXCEPTION_BREAKPOINT`; no RTL report
+  or summary was produced.
+- The Vivado session log shows that the `xczu15eg` synthesis license was
+  acquired and `dsm_ip_axi_top` was elaborated. The process then hung just
+  after `synth_design` launched Vivado's two-process synthesis helper.
+- The log contains warnings about existing DPD reset coding and unused ports,
+  but no BP EFDSM2 RTL compile error or Tcl command error.
+
+Change:
+
+- `syn/run_ooc_bp_ef2_axi.tcl` now sets `general.maxThreads` to `1` before
+  `synth_design`, avoiding the host's multi-process synthesis-helper failure.
+
+Remaining limitation:
+
+- The prior Windows command-line `0xC0000022` result applies only to the
+  constrained automation process. Vivado GUI runs under the interactive user
+  account, but its first two BP OOC attempts independently hung in synthesis.
+  A fresh single-thread GUI run is required for valid FPGA PPA.
+
+### Repeated single-thread BP FPGA OOC still aborts inside Vivado synthesis
+
+Evidence:
+
+- `bp_ef2_axi_ooc_xczu15eg_ffvb1156_2_i_20260806_005716` again contains only
+  `hs_err_pid17544.log/.dmp`; it created no utilization, timing, or summary
+  report.
+- The interactive Vivado log records a valid synthesis license, successful RTL
+  elaboration, `general.maxThreads=1`, and entry into synthesis at about
+  `1.8 GB` engine memory. It then aborts with `EXCEPTION_BREAKPOINT` before
+  reporting any RTL or constraint error.
+- This rules out the first hypothesis that the failure is caused solely by the
+  two-process thread setting. It is a Vivado 2024.1 native synthesis/runtime
+  failure on this Windows host, not an FPGA PPA result and not evidence of a
+  BP EFDSM2 RTL compile failure.
+
+Next action:
+
+- Restart the Windows host to clear Vivado child-process/native state, then
+  rerun the single-thread OOC. If it repeats, preserve the `hs_err` dump for
+  AMD support and use the valid 28 nm DC result for current PPA evidence while
+  FPGA OOC remains explicitly unavailable.
+
+### Rejected an invalid initial BP 28 nm DC report
+
+Reason:
+
+- The first Linux DC invocation completed its shell wrapper but used a DB that
+  could be read without providing mappable standard-cell logic.
+
+Evidence:
+
+- `syn/reports/bp_ef2_axi_28nm_dc_20260805_210820/dc.log` reports
+  `OPT-101`, "The target library does not contain an inverter."
+- The corresponding `area.rpt` reports zero cell area and explicitly states
+  that the design contains unmapped logic. Its `0 ns` timing and power values
+  are therefore invalid and must not be used for BP EFDSM2 PPA claims.
+
+Change:
+
+- `syn/dc_finalist_axi_28nm.tcl` now rejects a DB without inverter cells
+  before compilation.
+- `syn/run_bp_ef2_28nm_dc.sh` now fails on DC errors, unmapped logic, or
+  zero-area reports instead of printing a false success.
+
+Next requirement:
+
+- Select a full mappable 28 nm standard-cell `.db` with INV/NAND/flip-flop
+  cells, then rerun the same BP AXI command.
+
+### Mapped BP 28 nm result requires memory-only DPD pruning for comparison
+
+Reason:
+
+- The first fully mapped BP run used the correct 28 nm RVT library and is
+  structurally valid, but retained the optional polynomial and LUT DPD
+  branches. The frozen main transmitter SKU retains only Memory-Poly5 with
+  four taps, so the development-build area is not a fair direct comparator.
+
+Observed development-build result:
+
+- `bp_ef2_axi_28nm_dc_20260805_224040` mapped `170,764` leaf cells at
+  100 MHz with cell area `142,363.718369`, setup slack `+5.74 ns`, hold slack
+  `+0.04 ns`, and DC low-effort total power `9.1063 mW`.
+- The optional DPD LUT and polynomial branches alone account for `4,888.1420`
+  and `10,133.6901` cell-area units, respectively.
+
+Change:
+
+- The BP 28 nm flow now fixes `ENABLE_DPD_POLY=0`, `ENABLE_DPD_LUT=0`,
+  `ENABLE_DPD_MEMORY=1`, fifth order, and four memory taps. A fresh run is
+  required before recording the final BP SKU PPA.
+
+## 2026-08-05 00:20:00 +08:00
+
+### Compared BPDSM candidates at the real IF aperture
+
+Reason:
+
+- The BPDSM route needed a direct same-vector comparison before choosing a
+  one-bit DPA candidate. Low-pass DSM rankings cannot decide this RF aperture.
+
+Changed files:
+
+- `rtl/tx_bandpass_if/dsm_core_bp_single.sv`
+- `rtl/tx_bandpass_if/tx_bp_if_top.sv`
+- `matlab/tx_bandpass_if/bp_single_fs4_model.m`
+- `matlab/tx_bandpass_if/bp_mash11_exploratory_model.m`
+- `verif/tb/tx_bandpass_if/tb_dsm_core_bp_single.sv`
+- `verif/scripts/run_xsim_tx_routes.ps1`
+- `scripts/measure_p0_bp_dsm_comparison.py`
+- `docs/evidence/frontend/p0_bp_dsm_comparison_20260805.csv`
+- `rtl/tx_bandpass_if/README.md`
+- `matlab/tx_bandpass_if/README.md`
+- `docs/evidence/README.md`, `docs/STATUS_AND_LIMITS.md`
+- `docs/DPD_AI_DPA.md`, `docs/UPDATE_LOG.md`
+
+Implementation and result:
+
+- Added a second-order resonator single-loop BPDSM RTL core and matching
+  MATLAB reference. Its linearized NTF is `1 + z^-2`, with zeros at `+/-Fs/4`.
+- Added one reproducible P0 comparison aperture: full-precision 25 MHz IF
+  mixing, 1.2x-channel ideal IF BPF, coherent DDC, then CP-removed OFDM FFT
+  with one complex equalizer per active subcarrier.
+- One-bit BP EFDSM is the current DPA candidate: `3.563808%` EVM and
+  `28.961713 dB` SNDR. One-bit BP single-loop is close but lower:
+  `3.659670%` and `28.731161 dB`.
+- The initial BP MASH 1-1 exploration is a multilevel `{-3,-1,+1,+3}` output.
+  Its native algorithm result is `3.581210%` EVM / `28.919404 dB` SNDR, but
+  hard limiting it for the current one-bit DPA gives `810.085188%` EVM /
+  `-18.170614 dB` SNDR. It is therefore not a current DPA candidate.
+
+Checks:
+
+- `python .\scripts\measure_p0_bp_dsm_comparison.py`: passed.
+- `python .\scripts\measure_p0_bp_ef2_frontend.py`: passed.
+- `python -m py_compile .\scripts\measure_p0_bp_dsm_comparison.py
+  .\scripts\measure_p0_bp_ef2_frontend.py`: passed.
+- Independent state-order port check for `bp_single_fs4_model` versus the
+  Python model: passed, `0/65536` mismatches.
+- `git diff --check`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File
+  .\verif\scripts\run_xsim_tx_routes.ps1`: blocked because Vivado returned
+  without producing `xvlog.log`; no new RTL simulation pass is claimed.
+
+Remaining limitation:
+
+- BP EFDSM still requires actual XSim, MATLAB/RTL vector comparison, and OOC
+  timing before it is integrated with DPA/DPD. The BP MASH result is only an
+  exploratory multilevel reference, not a qualified topology.
+
+## 2026-08-04 23:30:00 +08:00
+
+### Split the transmitter into analog-IQ and BPDSM routes
+
+Reason:
+
+- The P0 audit showed that the former low-pass one-bit I/Q followed by a
+  one-bit Fs/4 merge is not a valid RF output aperture. The project needs a
+  DPD-focused communication path and a separate one-bit DPA research path.
+
+Changed files:
+
+- `rtl/ip/dsm_ip_core.sv`, `rtl/axi/dsm_ip_axi_top.v`
+- `rtl/tx_analog_iq/`, `rtl/tx_bandpass_if/`
+- `matlab/tx_analog_iq/`, `matlab/tx_bandpass_if/`
+- `verif/tb/tx_analog_iq/`, `verif/tb/tx_bandpass_if/`
+- `verif/scripts/run_xsim_tx_routes.ps1`
+- `scripts/measure_p0_bp_ef2_frontend.py`
+- `docs/evidence/frontend/p0_bp_ef2_frontend_audit_20260804.csv`
+- `README.md`, `rtl/README.md`, `ip/README.md`, `docs/IP_HANDOFF.md`
+- `docs/PROJECT_GUIDE.md`, `docs/STATUS_AND_LIMITS.md`
+- `docs/evidence/README.md`, `docs/UPDATE_LOG.md`
+
+Implementation:
+
+- Added `DUC_MODE=2` to the reusable core. It retains `i_bit/q_bit` as valid
+  low-pass DSM outputs for external reconstruction and analog IQ upconversion,
+  while forcing the incompatible digital `rf_*` output invalid.
+- Added `rtl/tx_analog_iq/` as the primary DPD communication boundary.
+- Added the separate `rtl/tx_bandpass_if/` route: full-precision Fs/4 I/Q
+  mixing precedes the initial one-bit BP EFDSM (`NTF = 1 + z^-2`).
+- The initial P0 BP EFDSM audit measures `3.563808%` EVM and `28.961713 dB`
+  SNDR with an ideal 1.2x-channel IF BPF, coherent DDC, and CP/FFT receiver.
+  This is algorithm evidence only, not RTL, ADS, board, DPA, or DPD evidence.
+
+Checks:
+
+- `python .\scripts\measure_p0_bp_ef2_frontend.py`: passed; wrote the BP EFDSM
+  audit CSV stated above.
+- `python -m py_compile .\scripts\measure_p0_bp_ef2_frontend.py`: passed.
+- `python -m py_compile .\scripts\measure_p0_lp2_fs4_frontend.py`: passed.
+- `git diff --check`: passed.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File
+  .\verif\scripts\run_xsim_tx_routes.ps1`: attempted but blocked. Vivado
+  returns without producing `xvlog.log`; the route script now explicitly
+  treats a missing tool log as failure, so no XSim pass is claimed.
+- The retained P0 and IP smoke regressions were also re-attempted and stop at
+  the same `xvlog` no-log failure. Vivado IP packaging exits before producing
+  its package log (retry exit code `-1073741790`).
+
+Remaining limitation:
+
+- Only the initial BP EFDSM candidate exists. BP single-loop and BP MASH have
+  not yet been modeled or compared, and BPDSM is intentionally not packaged
+  into the AXI IP or used by the DPD/DPA loop.
+
+## 2026-08-04 23:00:00 +08:00
+
+### Rechecked the LPDSM2 Fs/4 result with the mature half-rate receiver convention
+
+Reason:
+
+- The first P0 audit used full-rate sparse reconstruction, while the historical
+  MATLAB flow also has a half-rate Fs/4 demultiplexer with a Q half-sample
+  adjustment. The two receiver conventions needed an explicit same-vector,
+  same-CP/FFT comparison before making a front-end conclusion.
+
+Changed files:
+
+- `scripts/measure_p0_lp2_fs4_frontend.py`
+- `docs/evidence/frontend/p0_lp2_fs4_frontend_audit_20260804.csv`
+- `docs/evidence/README.md`
+- `docs/DPD_AI_DPA.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and result:
+
+- Extended the NumPy audit with a direct port of the MATLAB
+  `rtl_fs4_demux_halfrate_once` behavior: four phase offsets, both Q signs,
+  Q shifts of `-1/0/+1`, and the matching Q half-sample advance.
+- Over the same checked 65,536-sample P0 vectors, the best half-rate recovery
+  selection was phase `0`, Q sign `+1`, Q shift `-1`, with pre-metric
+  correlation `0.256556`. This is below the mature MATLAB receiver's `0.55`
+  confidence threshold.
+- CP-removed, per-subcarrier-equalized OFDM measurement of that half-rate
+  aperture is `93.906155%` EVM and `0.546119 dB` SNDR. It agrees with the
+  full-rate sparse aperture (`94.361301%`, `0.504122 dB`) that the current
+  one-bit fixed-Fs/4 path is not communication-qualified.
+- The native LPDSM2 aperture remains `0.689097%` EVM and `43.234396 dB` SNDR.
+  The discrepancy is therefore not a DPA/DPD impairment or a receiver-choice
+  artifact: low-pass DSM noise near Nyquist folds into the desired IF when
+  the present Fs/4 time-multiplexing merge is used.
+
+Checks:
+
+- `python .\scripts\measure_p0_lp2_fs4_frontend.py`: passed.
+- `python -m py_compile .\scripts\measure_p0_lp2_fs4_frontend.py`: passed.
+- `git diff --check`: passed.
+- Fresh RTL simulation was attempted with
+  `powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1`.
+  It remains blocked at `xvlog`: the Vivado launcher returns with zero output
+  and does not produce `xvlog.log`.
+- MATLAB recheck was attempted with `test_lpdsmdpa_bpf_duc`; MATLAB R2025a
+  remains blocked at startup by `System Error: File system inconsistency`.
+
+Remaining limitation:
+
+- This remains a Python bit-accurate model audit. Fresh XSim RTL waveform
+  capture is required for final RTL equivalence, but it cannot turn the
+  current Fs/4 architecture into a valid RF aperture. The next design action
+  is a corrected RF modulation architecture, not DPD coefficient tuning.
+
+## 2026-08-04
+
+### Re-measured LPDSM2 front-end apertures on the checked P0 vector
+
+Reason:
+
+- Historical few-percent EVM results referred to native complex DSM I/Q or
+  behavioral-PA feedback, while the recent high-EVM diagnostic referred to the
+  actual one-bit fixed-Fs/4 RF output.
+- The two apertures had to be measured against the same input, receiver, and
+  OFDM metric before judging DPA or DPD.
+
+Changed files:
+
+- `scripts/measure_p0_lp2_fs4_frontend.py`
+- `docs/evidence/frontend/p0_lp2_fs4_frontend_audit_20260804.csv`
+- `docs/evidence/README.md`
+- `docs/DPD_AI_DPA.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and result:
+
+- Added a NumPy-only audit over the checked `verif/vectors/p0/rom_i.mem` and
+  `rom_q.mem` pair (65,536 Q1.15 samples, 100 MHz, x32, 16-QAM OFDM).
+- The script reproduces the registered LPDSM2 state order in
+  `dsm_core_dsm2.sv`, measures CP-removed 64-point OFDM with one complex
+  equalizer per active subcarrier, and searches all 32 decimation phases.
+- Native complex LPDSM2 I/Q measured `0.689097%` EVM and `43.234396 dB` SNDR.
+  This confirms that the remembered few-percent-or-better DSM result is a
+  real native-I/Q result, not an invented historical value.
+- The current fixed-Fs/4 `[+I,+Q,-I,-Q]` merge measured `94.361301%` EVM and
+  `0.504122 dB` SNDR after an ideal 25 MHz IF BPF and sparse recovery. This is
+  a front-end modulation limitation: the low-pass one-bit DSM noise near
+  Nyquist folds into the desired band at Fs/4. It is not a DPA or DPD result.
+- The previously reported `96.435%` smoke result was directionally correct,
+  but this audit replaces it with a defined CP/FFT measurement and an explicit
+  source-vector contract.
+
+Checks:
+
+- `python .\scripts\measure_p0_lp2_fs4_frontend.py`: passed; refreshed the
+  compact CSV evidence above.
+- `git diff --check`: passed after this documentation update.
+- Fresh XSim capture could not start: `run_xsim_p0_all.ps1` exited before
+  `xvlog.log` was produced. MATLAB R2025a remains blocked at startup by
+  `System Error: File system inconsistency`.
+
+Remaining limitation:
+
+- This is an independently bit-true Python model audit, not a fresh XSim,
+  board, ADS, or measured RF result. The fixed-Fs/4 design must remain outside
+  the DPD/DPA communication-performance aperture until a corrected RF
+  architecture passes this audit and fresh RTL simulation.
+
+## 2026-08-04
+
+### Separated DPA/DPD calibration from LPDSM2 front-end diagnosis
+
+Reason:
+
+- The staged table showed roughly 58% EVM even with DPA AM/AM, AM/PM, memory,
+  switch nonideality, and observation noise disabled.
+- That result was therefore diagnosing the digital DSM/DUC/recovery endpoint,
+  not the behavioral DPA. It must not be used to judge DPD quality.
+
+Changed files:
+
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_staged.m`
+- `matlab/dpd/test_lpdsmdpa_bpf_duc.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_staged.m`
+- `docs/DPD_AI_DPA.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation:
+
+- Added an analog-equivalent behavioral Fs/4 endpoint for the primary DPA/DPD
+  stages. It uses the real Fs/4 waveform and coherent feedback recovery, so
+  LPDSM2 quantization-noise folding is not counted as PA distortion.
+- Added the explicit `lpdsm2` staged row for the actual one-bit LPDSM2 plus
+  sparse Fs/4 path. This row remains diagnostic and does not alter RTL.
+- Added a coherent-tone DUC/recovery unit test for the `[+I,+Q,-I,-Q]` mapping.
+- Widened the behavioral endpoint's finite-record BPF/recovery passband to
+  `16 * channel_bw_hz`; this is a model-measurement correction, not an RTL
+  interface change.
+
+Checks:
+
+- `git diff --check`: passed.
+- Independent Python sanity check of the coherent tone: near-zero DUC/recovery
+  EVM.
+- MATLAB R2025a startup: still blocked by `System Error: File system
+  inconsistency`; no fresh staged numerical table is claimed.
+
+Follow-up verification after the startup recovered:
+
+- `test_lpdsmdpa_bpf_duc`: passed; coherent-tone recovery EVM was
+  `2.6664e-10%`.
+- A short linear-stage MATLAB smoke run completed with the corrected
+  analog-equivalent endpoint: no-DPD EVM `2.551e-11%`, SNDR `140.8 dB`.
+- A compact seven-stage smoke run completed with one validation/test seed and
+  one coarse search step. Its analog-equivalent stages measured linear no-DPD
+  EVM `2.551e-11%`, AM/AM `0.031829%`, AM/PM `0.30744%`, memory `0.28873%`,
+  and noise `0.60816%`. The memory-polynomial DPD rows improved those impaired
+  stages to `0.024211%`, `0.13267%`, `0.1107%`, and `0.54718%`, respectively.
+- The same compact run reported `lpdsm2` no-DPD EVM `96.435%`. This confirms
+  that the actual LPDSM2/sparse-recovery endpoint remains a separate digital
+  front-end diagnostic and is not DPA evidence.
+- The compact run is a smoke check, not the final LOSO/release result. The
+  existing staged CSV remains stale until the full configured run completes.
+
+Formal saved regression:
+
+- Ran `run_lpdsmdpa_bpf_dpd_staged` for `ideal_bb`, `linear`, `am_am`,
+  `am_pm`, `memory`, and `noise` with 12/10/10 symbols, validation seeds
+  `137/149/163`, held-out seeds `211/223/239`, and Q2.14 search steps
+  `4096/1024/256`.
+- Saved outputs to `matlab/out/dpd/staged_formal_20260804/`; 54 rows and 18
+  summary rows were written.
+- Formal linear baseline: `5.2783e-11%` EVM, `141.5769 dB` SNDR.
+- Formal noise stage: `0.597880%` EVM, `44.4704 dB` SNDR.
+- Formal AM/PM stage improved from `0.352161%` to `0.344657%` EVM and from
+  `49.0888 dB` to `49.2735 dB` SNDR. AM/AM and memory did not show held-out
+  improvement; no new coefficient release is qualified.
+- All formal rows reported zero DPD limit counts.
+- This formal run is behavioral MATLAB evidence, not ADS, measured RF, or
+  LPDSM2 digital-front-end signoff. The `lpdsm2` diagnostic remains in the
+  completed smoke run and is intentionally excluded from the DPA/DPD gate.
+
+Remaining limitations:
+
+- The existing `matlab/out/dpd/lpdsmdpa_bpf_dpd_staged_summary.csv` remains
+  stale until MATLAB reruns the updated entry script.
+- The actual LPDSM2 digital endpoint still needs a separate noise-transfer and
+  RF reconstruction study; its poor result must not be attributed to DPA.
+
+## 2026-08-04
+
+### Replaced all-in-one DPA diagnosis with staged baseline flow
+
+Reason:
+
+- The archived `legacy_full` result (`57.63%` no-DPD EVM and `39.35%`
+  memoryless/memory-polynomial EVM) is not a usable communication result.
+- It combined one-bit DSM quantization, Fs/4 reconstruction, output filtering,
+  feedback recovery, DPA nonlinearity, memory, and noise before checking the
+  digital-chain baseline.
+
+Changed files:
+
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_staged.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_staged.m`
+- `matlab/README.md`
+- `docs/DPD_AI_DPA.md`
+- `docs/STATUS_AND_LIMITS.md`
+
+Implementation:
+
+- Added `ideal_bb` metric/alignment sanity stage.
+- Added `linear` stage with the one-bit DSM, Fs/4 merge, BPF, coherent
+  feedback recovery, and decimation but no modeled DPA impairment or noise.
+- Added cumulative `am_am`, `am_pm`, `memory`, and `noise` stages.
+- Added filter-edge transient trimming before EVM/SNDR calculation.
+- Each stage retrains memoryless and memory-polynomial Q2.14 DPD using the
+  existing disjoint fit/validation/test protocol.
+- Kept `legacy_full` as an explicit historical endpoint for reproducibility.
+
+Checks:
+
+- MATLAB `-batch` startup and the required MATLAB P0 command were attempted
+  but remain blocked by MATLAB's `File system inconsistency` fatal startup
+  error before user code executes.
+- The MATLAB `mlint` checks for the modified closed-loop model, staged runner,
+  and staged entry all returned exit code 0.
+- No new staged numerical result is claimed.
+- Static source inspection and `git diff --check` passed.
+
+Interpretation boundary:
+
+- The staged `linear` result must be healthy before any later DPA/DPD result is
+  described as communication-capable.
+- All values remain MATLAB behavioral simulation, not ADS or measured RF data.
+
+### Repository cleanup and documentation consolidation
+
+Reason:
+
+- Remove disposable MATLAB, Vivado, XSim, Vitis, ADS, OOC, packaging, and
+  board-run outputs from the working tree.
+- Consolidate overlapping project documentation into a small set of named
+  handoff documents so the current architecture and limitations have one clear
+  home.
+
+Changed files:
+
+- Consolidated `docs/` into `README.md`, `PROJECT_GUIDE.md`, `IP_HANDOFF.md`,
+  `DPD_AI_DPA.md`, `PPA_VERIFICATION_RELEASE.md`, `STATUS_AND_LIMITS.md`, and
+  `UPDATE_LOG.md`.
+- Removed superseded roadmap, interface, specification, result, verification,
+  and release-checklist Markdown files whose content is represented in the
+  consolidated documents.
+- Removed generated contents under `matlab/out/` and `syn/reports/`; retained
+  compact evidence under `docs/evidence/` and source scripts needed to
+  reproduce results.
+- Added ignore coverage for ADS simulation workspaces and generated datasets.
+- Updated the repository hygiene workflow to require the consolidated document
+  names.
+- Restored `syn/reports/README.md` because it is a versioned regeneration guide,
+  not a generated report.
+
+Checks:
+
+- `git diff --check`: passed.
+- Stale consolidated-document reference search: no stale documentation paths;
+  source symbol `dpd_tinyml_tree.h` is intentionally retained.
+- Full MATLAB, Vivado, XSim, packaging, and OOC regressions were not rerun;
+  this cleanup intentionally removes their disposable outputs.
+
+Remaining local-only files:
+
+- Eight small historical UART/live log files under `fpga/zu15eg/out/` remain
+  locked by the host environment. They are ignored, untracked, and do not
+  belong to the source handoff.
+
+## 2026-08-03
+
+### DPA scope correction: DPD is the primary deliverable
+
+Reason:
+
+- Correct the project emphasis. DPA is a simulation endpoint used to create
+  reasonable gain error, compression, memory, filtering, and feedback. The
+  main work is DPD algorithm comparison and AI-assisted calibration; tapeout,
+  PDK closure, matching, PAE, and RF measurement are out of scope.
+
+Changed files:
+
+- `ads/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `matlab/dpd/README.md`
+- `docs/AI_ASSISTED_DPD_RESULTS.md`
+- `docs/AI_COMMUNICATION_IP_ROADMAP.md`
+- `docs/UPDATE_LOG.md`
+
+Result:
+
+- MATLAB behavioral DPA is now the required endpoint for the primary DPD
+  milestone.
+- ADS/PDK-MOS material is retained as an optional sanity-check appendix and
+  is no longer a project blocker.
+- The main comparison is explicitly no DPD, memoryless polynomial DPD,
+  memory-polynomial DPD, LUT-seeded bounded search, and AI-seeded bounded
+  search under the same behavioral DPA and held-out data.
+- Existing behavioral evidence remains the main baseline: the accepted
+  LPDSM2 DPA+BPF package reports 18.28% mean test EVM improvement,
+  3.32 dB mean test SNDR improvement, improved test out-of-band metric, and
+  zero Q2.14/drive-limit events. The generic held-out memory-polynomial
+  comparison reports 4.305% -> 3.505% mean EVM and -27.326 -> -29.108 dB
+  mean NMSE with zero saturation/drive limiting.
+
+Checks:
+
+- Documentation scope review: passed.
+- Existing MATLAB result tables inspected; no new MATLAB run was claimed
+  because MATLAB still exits during startup with `File system inconsistency`.
+- `git diff --check`: passed.
+
+### DPA behavioral characterization matrix
+
+- Extended `matlab/dpd/run_dpd_memory_pa_observation_sweep.m` with a frozen
+  `dpa_characterization` scenario set covering gain, compression, memory depth,
+  observation SNR, gain/phase drift, and temperature offset.
+- Added DPA output RMS, output-power proxy, and output peak to the CSV rows.
+- The matrix subsequently completed in MATLAB. Its CSV records all 12 DPA
+  conditions, output RMS/power/peak proxies, and no-DPD/DPD quality metrics.
+- Renamed the ambiguous behavioral `DPA_GainMultiplier` output to
+  `DPA_RelativeGainScale`; it is a normalized condition variation rather than
+  a physical PA gain.
+- MATLAB GUI completed the characterization. The earlier command-line
+  `-batch` startup failure is now recorded as an automation-only limitation.
+- Clarified the three efficiency figures: 83.55% ideal-switch baseline,
+  29.03% nominal PDK-MOS/driver proxy, and 17.97-24.00% PVT proxy range.
+  The project claims 29.03% as the current nominal circuit proxy, not 83.55%,
+  and does not claim a quantitative advantage over Class-A/Class-AB before a
+  same-output-power comparison.
+- Started the retuned `C_BPF=9.7 pF` ADS PDK-driver transient using the same
+  256-bit DSM PWL and 50 ohm endpoint. Netlist/PDK parsing completed, but ADS
+  stopped before transient solution because the High Frequency SPICE license
+  was unavailable. No retuned Pout, Pdc, or efficiency result is claimed.
+- Added a PDK-independent generic 3.3 V switched-DPA screen with finite
+  switch resistance and node capacitance. This is now the preferred
+  circuit-level system model; the 40 nm PDK remains optional. ADS generated a
+  valid `3.3 V`, `0.10 ohm`, `0.5 pF`, 25 MHz candidate netlist but rejected
+  its transient run for the same unavailable High Frequency SPICE feature.
+  No generic efficiency number is claimed.
+
+### Generic finite-loss DPA efficiency pre-screen
+
+Reason:
+
+- Provide a DPA system-model efficiency pre-screen without making the
+  behavioral DPD milestone depend on a 40 nm PDK or an unavailable ADS
+  transient license.
+
+Changed files:
+
+- `ads/scripts/run_generic_dpa_loss_model.py`
+- `ads/scripts/extract_ads_complex_feedback.py`
+- `ads/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `docs/DPA_SIMULATION_RESULTS.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Added a reproducible PDK-independent finite-loss DPA solver. It expands the
+  checked 4096-sample 100 MHz LPDSM2 one-bit input to a 1 GHz time-domain
+  waveform, applies explicit 1 ns all-off dead time, and solves the declared
+  3.18 uH / 12.7 pF / 100 ohm series-RLC endpoint with RK4 integration.
+- The three candidates account for bridge conduction, LC series loss,
+  switch-node charging, and four gate-drive controls. The low-loss point
+  (`3.3 V`, `RON=0.10 ohm`, `Cnode=0.5 pF`, `Cgate=0.1 pF`, `RLC=0.20 ohm`)
+  is centered at 25.044 MHz and produces 13.388 mW (11.267 dBm), draws
+  14.218 mW, and has a 94.165% finite-loss efficiency trend. Its loss ledger
+  is 0.054 mW conduction, 0.554 mW node charging, and 0.222 mW gate drive.
+- The declared balanced and conservative sensitivity points report 89.109%
+  and 81.339%, respectively. This bounds the intended system-model conclusion:
+  a switching DPA can retain a large efficiency advantage when parasitics and
+  drive energy are controlled, but these values are not an ADS, PDK, layout,
+  or silicon guarantee.
+- The winner exports a 1 GHz `time_s,vout_v,ivdd_a` observation trace. The
+  common feedback extractor consumed it, generated 4,088 aligned 100 MHz
+  complex-feedback samples, and recorded a forward 4-tap C1/C3/C5 fit. This
+  proves the waveform handoff needed for the physical-endpoint DPD study.
+- The generic model uses only the 3.18 uH and 12.7 pF output components, so
+  its resonance is 25.044 MHz. The earlier 21.84 MHz issue and 9.70 pF fix
+  apply solely to the separate PDK proxy, which includes another 1.0 uH series
+  transformer primary.
+
+Checks run:
+
+- `python -m py_compile .\\ads\\scripts\\run_generic_dpa_loss_model.py`: passed.
+- `python .\\ads\\scripts\\run_generic_dpa_loss_model.py`: passed.
+- `python .\\ads\\scripts\\extract_ads_complex_feedback.py --observation .\\ads\\low_power_dpa\\data\\generic_dpa_loss_model\\winner_observation.csv --rf-bits .\\ads\\low_power_dpa\\data\\rf_bit_samples.csv --output-dir .\\ads\\low_power_dpa\\data\\generic_dpa_loss_model\\feedback`: passed.
+- `git diff --check`: passed.
+
+Remaining limitations:
+
+- The model is linear apart from finite switching losses; it is an efficiency
+  endpoint, not yet the nonlinear DPA feedback model from which to claim DPD
+  EVM, SNDR, or ACLR improvement. The next task is to identify or add a
+  controlled AM/AM, AM/PM, and memory law to this frozen endpoint, then compare
+  no-DPD, memoryless DPD, and memory-polynomial DPD against the same waveform
+  contract.
+- An ADS cross-check is desirable once the transient feature is available, but
+  the absence of that license does not block the DPD modeling work.
+
+### Correction: generic loss screen is not ADS-derived DPD evidence
+
+Reason:
+
+- Correct the distinction between the new numerical DPA efficiency pre-screen
+  and the user's requested ADS-circuit DPA endpoint for DPD modeling.
+
+Correction:
+
+- The `94.165%`, `89.109%`, and `81.339%` results were produced by
+  `run_generic_dpa_loss_model.py`, a Python finite-loss time-domain solver.
+  They are not ADS transient results and are therefore not a valid source of
+  circuit-endpoint DPD coefficients or EVM/SNDR/ACLR claims.
+- The local ADS generic 3.3 V H-bridge netlist is prepared, but its transient
+  launch is blocked during circuit setup because the `High Frequency SPICE`
+  transient feature is not licensed in the current environment. It produced
+  no generic-ADS waveform or efficiency result.
+- Circuit-endpoint DPD is now explicitly gated on three fresh, long ADS runs
+  through the same frozen DPA and measurement plane: no-DPD, memoryless DPD,
+  and DPA-identified memory-polynomial DPD. Each run must export
+  `time_s,vout_v,ivdd_a`; only then can the common feedback extractor provide
+  the data used for PA identification and quality comparison.
+
+Checks run:
+
+- Generic ADS transient launch inspected: correctly stopped with return code
+  `120` before simulation because the ADS transient license is unavailable.
+- Documentation boundary review and `git diff --check`: passed.
+
+### Behavioral DPA three-mode DPD chain
+
+Reason:
+
+- Continue the DPD project without waiting for ADS licensing by completing one
+  consistent behavioral DPA simulation chain from Q1.15 DPD through LPDSM2
+  one-bit switching, DPA+BPF feedback recovery, and quality comparison.
+
+Changed files:
+
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/scripts/entry_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/README.md`
+- `docs/DPA_SIMULATION_RESULTS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation:
+
+- Extended the existing one-bit switching-DPA+BPF experiment from two modes
+  to three: no-DPD, endpoint-trained one-tap Q2.14 memoryless DPD, and
+  endpoint-trained four-tap Q2.14 C1/C3/C5 memory-polynomial DPD.
+- Both DPD arms use the same actual behavioral endpoint during black-box ILC
+  search, the same 100 MHz LPDSM2 `rf_bit` path, and the same test seeds. The
+  one-tap arm is a comparison baseline; the pre-existing strict release gate
+  remains attached solely to the four-tap implementation compatible with RTL.
+- Added a three-mode summary CSV and labeled coefficient CSV. The established
+  release coefficient file and its interface remain unchanged.
+
+Checks run:
+
+- MATLAB command-line entry launch attempted through
+  `scripts/run_matlab_lpdsmdpa_bpf_dpd_closed_loop.cmd`.
+- The launcher stopped before script execution with the host-level MATLAB
+  `File system inconsistency` startup error. No fresh behavioral results are
+  claimed from this change.
+- A background MATLAB GUI launch was also attempted. It did not advance to
+  the entry script or update any result timestamp, so it was terminated; the
+  existing six-row result file was not reused as new three-mode evidence.
+- `git diff --check`: passed.
+
+Remaining limitation:
+
+- Run `entry_lpdsmdpa_bpf_dpd_closed_loop` from the already working MATLAB GUI
+  to generate the new nine-row results and three-row summary. Those values are
+  behavioral DPA simulation evidence only, not ADS or measured PA evidence.
+
+## 2026-08-03
+
+### DPA feedback path and identification readiness
+
+Reason:
+
+- Continue the DPA design from the archived project discussion and connect
+  the existing ADS observation endpoint to a reproducible complex-feedback
+  identification flow.
+
+Changed files:
+
+- `ads/scripts/extract_ads_complex_feedback.py`
+- `ads/README.md`
+- `docs/STATUS_AND_LIMITS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Added coherent 25 MHz downconversion, deterministic low-pass averaging,
+  100 MHz feedback sampling, Fs/4 reference alignment, and complex 4-tap
+  memory-polynomial identification for ADS observation CSV files.
+- The existing 40.96 us ADS observation produced 4,088 aligned samples and a
+  4-tap 1/3/5-order forward-model NMSE of -1.62 dB. The independent 256-bit
+  no-DPD paired observation produced 253 aligned samples and -2.93 dB NMSE.
+- The long trace also produced an indirect-learning inverse seed with NMSE of
+  -0.44 dB. This is a candidate for a future DPD replay only; it was not
+  written to RTL, AXI, or board software.
+- Outputs are written under ignored `ads/low_power_dpa/data/feedback_*` folders:
+  aligned complex feedback, forward-model coefficients, and `summary.json`.
+  They are identification artifacts only; no DPD coefficient was released to
+  RTL or board software.
+
+Checks run:
+
+- `python -m py_compile ads/scripts/extract_ads_complex_feedback.py`: passed.
+- Long ADS observation extraction: passed.
+- 256-bit paired ADS observation extraction: passed.
+- `git diff --check`: passed.
+
+Remaining limitations:
+
+- The 25 MHz PDK screen remains incomplete with only its first case present;
+  no new PDK simulation was claimed because the current shell lacks
+  `TSMC40_PDK_ROOT` and the ADS transient license is unavailable.
+- MATLAB R2025a exits during startup with `File system inconsistency`, so the
+  MATLAB AI calibration was not regenerated in this session.
+- Forward-model identification is not yet an indirect-learning DPD. A fresh
+  ADS candidate pair and the existing independent quality/safety gate are
+  required before generating any new DPD constants.
+
+## 2026-08-02
+
+### 23:22:00 +08:00
+
+Reason:
+
+- Correct the DPA output-network exploration boundary and add a reproducible
+  behavioral feedback plus AI-seeded calibration experiment without claiming
+  physical-endpoint DPD improvement before circuit data exists.
+
+Changed files:
+
+- `ads/scripts/run_tsmc40_dpa_switch_core.py`
+- `ads/scripts/run_tsmc40_dpa_25mhz_screen.py`
+- `ads/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `matlab/dpd/run_lpdsmdpa_bpf_dpd_closed_loop.m`
+- `matlab/dpd/run_dpa_ai_seeded_calibration.m`
+- `matlab/scripts/entry_dpa_ai_seeded_calibration.m`
+- `matlab/dpd/README.md`
+
+Implementation:
+
+- Parameterized the PDK-MOS runner for BPF inductance/capacitance, transformer
+  inductances, and output load. Historical defaults remain available for prior
+  result reproduction.
+- Added a nominal 25 MHz DPA screen that ranks BPF capacitance, RF-MOS fingers,
+  and PDK driver fingers by target-power error, efficiency trend, peak current,
+  and zero overlap. Any selected result still requires PVT rerun.
+- Identified the first-order retuning issue: `3.18 uH + 1.0 uH` in series with
+  `12.7 pF` resonates near 21.84 MHz. The 25 MHz initial capacitor estimate is
+  9.70 pF for 4.18 uH total inductance.
+- Added an optional Q2.14 initial coefficient input to the behavioral one-bit
+  DPA+BPF ILC flow. It keeps identity coefficients as the independent
+  validation baseline.
+- Added a PS-side ridge-regression seed predictor using feedback monitor
+  features. Its predicted C1/C3/C5 words are always followed by the existing
+  bounded search and validation; no AI-produced package is released to RTL.
+
+Checks run:
+
+- ADS Python `py_compile` for the parameterized runner and 25 MHz screen:
+  passed.
+- `git diff --check`: passed.
+- ADS 25 MHz screen launch: blocked before first transient by an ADS license
+  error stating that no transient simulation license is available to the
+  command-line simulator. No new electrical result is recorded.
+- MATLAB batch launch for the new behavioral calibration: blocked by a local
+  MATLAB startup `File system inconsistency` error. No calibration result is
+  recorded; run the entry script from an already working MATLAB GUI session.
+
+Remaining limitations:
+
+- The selected DPA efficiency, 0 dBm PVT compliance, and circuit-endpoint DPD
+  improvement remain open until ADS transient licensing is available and the
+  screen/PVT/PWL experiments complete.
+- Behavioral AI-seeded calibration is not ADS-trained, RTL-released, or
+  board-calibrated evidence.
+
+## 2026-08-02
+
+### 21:21:19 +08:00
+
+Reason:
+
+- Extend the low-power DPA handoff from an ideal-gate PDK smoke result to a
+  reproducible PDK-driver/dead-time/PVT baseline, and test whether the
+  accepted behavioral DPD package transfers to the same circuit endpoint.
+
+Changed files:
+
+- `ads/scripts/run_tsmc40_dpa_switch_core.py`
+- `ads/scripts/run_tsmc40_dpa_pvt_matrix.py`
+- `ads/scripts/run_tsmc40_dpa_driver_deadtime_sweep.py`
+- `ads/scripts/analyze_tsmc40_dpa_spectrum.py`
+- `ads/scripts/compare_tsmc40_dpa_candidates.py`
+- `ads/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `matlab/dpd/export_ads_low_power_dpa_stimulus.m`
+- `matlab/dpd/export_ads_dpd_candidate_pair.m`
+- `matlab/scripts/entry_export_ads_dpd_candidate_pair.m`
+- `matlab/dpd/README.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and checks:
+
+- Parameterized periodic and PWL dead time in the PDK switch-core runner and
+  added a two-stage PDK CMOS gate-driver option, declared switch-node
+  capacitance, and an explicitly estimated passive-loss proxy. The proxy
+  defaults are `k=0.990`, 0.20 ohm BPF loss, 0.50 ohm primary loss, and 0.25
+  ohm secondary loss; they are not extracted balun/package/PCB values.
+- Added a 12-case representative PVT dead-time sweep. All cases passed with
+  zero leg overlap. The 1 ns nominal point is retained; 2 ns reduced output
+  and increased the FF peak-current trend without a demonstrated robustness
+  benefit.
+- Ran the selected 16-finger, four-driver-finger, 100 fF, 1 ns,
+  estimated-passive configuration over all 27 TT/SS/FF, 0/25/85 C, and
+  1.14/1.20/1.26 V combinations. All 27 passed with zero overlap. The 50-ohm
+  proxy output range was -3.21 to -0.07 dBm, DC power was 2.66 to 4.10 mW,
+  efficiency trend was 17.97% to 24.00%, and the maximum current trend was
+  6.06 mA.
+- Added a quality-gated MATLAB PWL-pair exporter. It checked that the existing
+  release table was `ACCEPT`, reproduced the no-DPD 256-bit PWL with zero
+  differences from the prior export, and emitted a candidate with 126 changed
+  bits and zero fixed-point saturation/drive limits.
+- Ran both PWL files through the same TT PDK-driver/passive proxy. Both had
+  zero leg overlap. No-DPD measured -3.85 dBm / 1.48 mW / 27.88%; the candidate
+  measured -4.39 dBm / 1.27 mW / 28.71%. The 2.359 us spectrum reports have
+  423.9 kHz resolution and are explicitly trend proxies rather than ACLR.
+- Corrected a discovered Q1.15 unity-scaling error in the new PWL memory-poly
+  exporter before accepting the paired result. The C1 radial basis now starts
+  at `2^15`, matching the project's fixed-point convention.
+- Ran ADS-Python `py_compile` on the new/updated automation scripts, all ADS
+  transient/PVT/dead-time/pair comparisons above, and the MATLAB no-DPD and
+  candidate PWL exports. Generated PDK, dataset, waveform, and observation
+  artifacts remain ignored.
+
+Remaining limitations:
+
+- The selected 16-finger proxy misses the frozen 0 dBm output target over PVT.
+  It is a low-power baseline, not a final power-stage sizing result.
+- No physical transformer/balun, output-filter S parameters, package/PCB
+  parasitics, RF layout extraction, or measured receiver path exists yet.
+- The behavioral DPD release did not automatically improve the circuit endpoint.
+  Retraining requires gain/phase/delay-aligned ADS observation data and a
+  circuit-identified PA/observation model before any updated coefficient can
+  be written to RTL or PL.
+
+## 2026-08-02
+
+### 09:38:36 +08:00
+
+Reason:
+
+- Freeze a practical V1 low-power IF-DPA engineering target before replacing
+  ideal switches with foundry devices, while separating a measurable output
+  contract from the still-unselected PDK.
+
+Changed files:
+
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation:
+
+- Frozen the V1 demonstrator target at a 25 MHz, 0 dBm, 50 ohm output with
+  500 kHz occupied bandwidth, 256-QAM EVM <= 3.5%, ACLR <= -45 dBc,
+  1.2 V +/- 5%, and 0 to 85 degrees C.
+- Corrected the output-network contract: 100 ohm differential to 50 ohm
+  single-ended requires a nominal 2:1 impedance transformation, not a 1:1
+  voltage balun.
+- Added an explicit PDK selection gate. The repository does not contain
+  sufficient non-confidential ADS model evidence to choose TSMC28 or TSMC40;
+  no transistor sizing or PAE claim is permitted until a local design kit is
+  reviewed.
+
+Remaining limitation:
+
+- The selected bandwidth and ACLR target are V1 engineering targets, not a
+  named wireless-standard compliance mask. A standard-specific product target
+  must replace them before final circuit optimization.
+
+## 2026-08-01
+
+### 23:58:00 +08:00
+
+Reason:
+
+- Establish a longer-window frequency-domain ADS validation path and correct
+  the observation export for an adaptive-step transient solver.
+
+Changed files:
+
+- `ads/scripts/analyze_low_power_dpa_spectrum.py`
+- `ads/scripts/analyze_low_power_dpa_tran.py`
+- `ads/README.md`
+- `ads/low_power_dpa/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+
+Implementation and checks:
+
+- Generated a 4096-bit, 40.96 us LPDSM2 PWL stimulus and completed the ADS
+  v17 transient run in 129.07 seconds with a zero solver return code. The
+  native dataset contains 8,231,591 samples.
+- Added a uniform 1 GHz, Hann-window spectrum extractor and a time-integrated
+  power calculation. The 36.959 us post-settling window has 27.06 kHz
+  frequency resolution.
+- Corrected adaptive-step power averaging. ADS and the MATLAB observation
+  importer agree on approximately 1.937 mW DC and 1.618 mW at the modeled
+  100 ohm differential load; the compact observation export uses
+  interval-average supply current.
+- The v17 third-harmonic proxy is -29.49 dBc relative to its in-band proxy.
+  The lower and upper adjacent proxies are -1.57 dBc and -2.08 dBc and are
+  explicitly documented as non-ACLR filter-quality indicators.
+
+Remaining limitations:
+
+- Ideal switches, explicit ideal diode clamps, and 100 ps edges make current
+  peaks and efficiency trends unsuitable as silicon PAE or device-stress
+  claims. The simple LC branch is not a final output filter. A PDK switch
+  stage, gate driver, parasitics, balun/matching network, and a specified
+  50 ohm measurement plane are the next circuit-design gate.
+
+### 23:31:00 +08:00
+
+Reason:
+
+- Replace the periodic pulse-only ADS excitation with a reproducible PWL gate
+  sequence derived from the project LPDSM2 100 MHz `rf_bit` samples, while
+  retaining non-overlap and adding explicit rail clamps absent from ideal
+  `SwitchV` devices.
+
+Changed files:
+
+- `ads/scripts/generate_low_power_dpa.py`
+- `ads/scripts/run_low_power_dpa_tran.py`
+- `ads/scripts/analyze_low_power_dpa_tran.py`
+- `ads/README.md`
+- `ads/low_power_dpa/README.md`
+- `matlab/dpd/analyze_ads_low_power_dpa_result.m`
+- `matlab/README.md`
+- `matlab/dpd/README.md`
+- `.gitignore`
+
+Implementation and checks:
+
+- Added `--drive pwl` to the ADS generator. It reads the MATLAB-generated
+  `rf_bit_samples.csv` and emits four inline ADS `VtPWL` controls. Each bit
+  transition first turns the active bridge devices off, holds all four gates
+  off for 1 ns, then enables the next diagonal pair.
+- Added upper and lower diode clamps to each bridge node because the ideal
+  `SwitchV` element does not model MOS body diodes. The accepted v16 netlist
+  explicitly contains `SW_A -> VDD`, `gnd -> SW_A`, `SW_B -> VDD`, and
+  `gnd -> SW_B` clamp paths.
+- Corrected the ADS runner to resolve `--run-dir` before using it as the
+  simulator working directory.
+- ADS v16 transient completed from 0 to 2.56 us with a 5 ps maximum step and
+  zero solver return code. The analyzer passed supply, gate, no-overlap,
+  bounded-differential, and non-static-output checks: 514,709 samples,
+  2.169 Vpp load differential, 1.773 mW across the modeled 100 ohm
+  differential load, 2.947 mW DC trend, and zero gate-overlap samples.
+- MATLAB `analyze_ads_low_power_dpa_result` read the v16 observation CSV and
+  completed successfully using the same 100 ohm differential pre-balun
+  reference.
+
+Remaining limitations:
+
+- The 3.41 A instantaneous supply-current spike and 60.17% efficiency trend
+  are properties of an ideal-switch/ideal-diode circuit with 100 ps edges.
+  They are neither PAE nor a silicon-current estimate. A transistor PDK,
+  package/layout parasitics, balun/matching network, and measured waveform
+  are required before using this result for DPD coefficient correlation.
+
+- Added `ads/scripts/generate_low_power_dpa.py`, an ADS 2025 Design
+  Environment Python API generator for an editable `low_power_dpa_api_v10`
+  schematic. It creates a 1.2 V differential switched H-bridge, complementary
+  pulse controls with 1 ns non-overlap, series LC reconstruction, 100 ohm
+  differential load, and a 2.56 us transient control without overwriting the
+  hand-edited cell.
+- Updated ADS documentation with the supported automation invocation and the
+  pulse-driven baseline boundary before the MATLAB PWL driver replacement.
+- The first six generated API cells exposed bridge-node shorts, an omitted
+  `SwitchV_Model` definition, or invalid equal switch thresholds through
+  netlist/simulator inspection. The corrected v7 generator explicitly
+  instantiates `SWITCHVM1` and uses 0.5 V / 0.7 V hysteresis with low gate OFF
+  and high gate ON.
+- The initial four generated API cells exposed bridge-node shorts through
+  netlist inspection. The generator was redesigned around fully physical local
+  pulse-control and return paths, avoiding any long wire crossing. The v5
+  H-bridge, filter, and transient netlist passed topology assertions before
+  the missing-model simulator error was found.
+- Added `ads/scripts/run_low_power_dpa_tran.py` to generate the validated ADS
+  netlist and invoke the local transient solver without GUI state. Generated
+  workspace and simulation outputs are ignored by Git.
+- ADS transient v7 completed with a zero return code, and the ADS Dataset API
+  successfully read 26,883 transient points. Dataset inspection exposed an
+  inverted source reference: the supply and gate pulses were negative, so the
+  switches did not turn on. The v8 generator corrects the source parameters to
+  `-VDD` while retaining the documented 1.2 V positive supply convention.
+- ADS transient v8 corrected source polarity but exposed nonphysical resonator
+  voltage growth with a 100 ps maximum step. The v9 smoke configuration uses a
+  5 ps maximum step to resolve 100 ps ideal-switch edges before any electrical
+  power conclusion is made.
+- ADS transient v9 showed that the ideal bridge nodes floated during dead-time:
+  their differential voltage reached an unphysical level even though the LC
+  load output was bounded. The v10 schematic adds the documented 2 pF output
+  capacitance from each bridge node to ground. Waveform acceptance now uses
+  differential bridge and load voltages rather than only absolute node values.
+- ADS transient v10 completed with zero solver return code after 8.07 seconds.
+  The 1.2 V circuit produced 2.474 Vpp bridge differential and 3.017 Vpp load
+  differential waveforms with 9.371 mA mean supply current. Added
+  `ads/scripts/analyze_low_power_dpa_tran.py` to make those bounds reproducible
+  and to export the existing MATLAB observation-CSV contract. The reported
+  power/efficiency remains an ideal-circuit trend only.
+- The transient analyzer now exports the observation contract directly to
+  `ads/low_power_dpa/data/ads_observation.csv` and asserts that the local
+  high-side/low-side controls do not overlap. The current output-power
+  reference is explicitly the modeled 100 ohm differential pre-balun load;
+  it must not be represented as a 50 ohm single-ended measurement until a
+  balun and matching network are modeled.
+
 This file records project changes that affect interfaces, verification status,
 timing/resource evidence, repository hygiene, or handoff documentation.
+
+## 2026-08-01 17:05:00 +08:00
+
+Reason:
+
+- Establish a reproducible low-power switched-DPA circuit-validation boundary
+  after ADS became available, without misrepresenting an ideal-switch model as
+  a PDK-qualified PA implementation.
+
+Changed files:
+
+- `ads/README.md`
+- `ads/low_power_dpa/README.md`
+- `ads/low_power_dpa/data/.gitkeep`
+- `matlab/dpd/export_ads_low_power_dpa_stimulus.m`
+- `matlab/dpd/analyze_ads_low_power_dpa_result.m`
+- `matlab/scripts/entry_export_ads_low_power_dpa_stimulus.m`
+- `matlab/scripts/entry_analyze_ads_low_power_dpa_result.m`
+- `matlab/README.md`
+- `matlab/dpd/README.md`
+- `.gitignore`
+- `docs/UPDATE_LOG.md`
+
+Implementation:
+
+- Defined a 1.2 V differential H-bridge DPA baseline driven by the current
+  LPDSM2 x32 Fs/4 stream at 100 MHz, with a 25 MHz, 5 MHz-bandwidth output BPF
+  and a 50 ohm output contract.
+- Added MATLAB export of complementary, edge-held PWL controls and a
+  traceability CSV. The default 256-bit window is a 2.56 us ADS convergence
+  smoke test. Added an importer that summarizes the defined ADS transient CSV
+  as DC/output power, peak voltage/current, and a trend-level efficiency. The
+  generated files are ignored by Git; the checked-in documents define the ADS
+  topology, electrical checks, and observation export format.
+- The baseline requires non-overlap switching and records supply/output power,
+  peak current, and switch-overlap evidence. It is explicitly limited to
+  circuit-level trend analysis until real switch/PDK, passive, package, and
+  measurement data are available.
+- Corrected the initial output-power boundary: a full-scale 1.2 V differential
+  square-wave smoke stimulus can exceed 0 dBm into 100 ohm differential. Low
+  power is evaluated from the actual modulated waveform and switch/matching
+  losses, not by adding a deliberately lossy series resistor.
+
+Checks:
+
+- Local MATLAB R2025a batch export generated the 256-sample stimulus manifest
+  and both 512-point PWL files. The Windows MATLAB launcher did not exit before
+  the command timeout, but the generated artifact contract was checked after
+  the process timeout: 256 samples, 100 MHz sample rate, 25 MHz IF, monotonic
+  time vectors, and complementary 1.2 V drive levels all passed.
+- Not run: the ADS schematic has not yet been created in the native ADS GUI.
+- Not run: no ADS transient waveform or electrical power result exists yet.
+
+Remaining limitation:
+
+- No ADS circuit waveform, PAE number, or PA-derived DPD coefficient has been
+  claimed. Those require a completed schematic and a transient simulation.
 
 ## 2026-08-01 16:10:00 +08:00
 
@@ -6365,3 +7693,116 @@ Remaining limitations:
 - 28 nm comparison remains blocked until a licensed `dc_shell` environment is
   available. Any earlier preliminary 28 nm estimate must not be treated as a
   result for these four configurations.
+## 2026-08-02 10:54:29 +08:00
+
+Reason:
+
+- Replace the ideal-switch-only DPA endpoint with a repeatable local PDK-MOS
+  switch-core experiment and establish first process, voltage, temperature,
+  and sizing evidence without adding restricted PDK collateral to the project.
+
+Changed files:
+
+- `ads/scripts/run_tsmc40_hspice_probe.py`
+- `ads/scripts/run_tsmc40_dpa_switch_core.py`
+- `ads/scripts/analyze_tsmc40_dpa_switch_core.py`
+- `ads/scripts/run_tsmc40_dpa_pvt_matrix.py`
+- `ads/scripts/run_tsmc40_dpa_size_sweep.py`
+- `ads/README.md`
+- `ads/low_power_dpa/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- The local RF-MOS HSPICE deck was first verified through an ADS DC probe.
+  The probe required the PDK statistical, global, typical-corner, and RF-MOS
+  subcircuit sections in dependency order. No PDK model card, library, or
+  absolute local path was added to version control.
+- Added a separate netlist-level four-transistor H-bridge flow using local PDK
+  PMOS/NMOS subcircuits. It has explicit 1 ns non-overlap, a 25 MHz series LC
+  branch, and an ideal sqrt(2):1 turns transformer that maps the 100 ohm
+  differential bridge reference to a 50 ohm single-ended measurement plane.
+  The earlier editable ideal-switch ADS cells are unchanged.
+- The corrected ADS-native-temperature PVT matrix completed 27/27 cases:
+  TT/SS/FF, 0/25/85 C, and 1.14/1.20/1.26 V. There were zero high-side/low-side
+  overlap failures. The 16-finger output range was -3.14 to +0.05 dBm at the
+  50 ohm plane; DC power was 2.62 to 4.16 mW and the pre-layout efficiency
+  trend was 18.56 to 24.35 percent.
+- The TT/25 C/1.2 V finger screen completed for 4/8/16/32 fingers. The
+  resulting output/DC-power/efficiency trend was -11.09 dBm/1.13 mW/6.88%,
+  -5.91 dBm/2.02 mW/12.73%, -1.02 dBm/3.47 mW/22.76%, and
+  +2.93 dBm/5.43 mW/36.17%, respectively. `16` fingers is retained as the
+  current low-power candidate for matching optimization, not as a final PVT
+  guaranteed 0 dBm configuration.
+- An earlier 27-case attempt used a SPICE `.temp` statement. ADS reported that
+  it ignored this statement, so those temperature rows are not evidence and
+  were replaced by the ADS-native-temperature rerun above.
+- Added an optional two-stage PDK CMOS inverter driver per bridge gate and a
+  declared switch-node capacitance parameter. The checked TT/25 C/1.2 V,
+  16-finger case with a 4-finger driver and 100 fF per switch node passed with
+  zero overlap samples. It measured -1.02 dBm output, 3.48 mW DC power, and a
+  22.73 percent efficiency trend. The driver is a functional compatibility
+  check, not a sized, PVT-swept, or extracted implementation.
+
+Checks run:
+
+- Local ADS HSPICE compatibility probe: passed.
+- Local ADS PDK-MOS switch-core transient: passed.
+- Local ADS PDK-MOS 27-case PVT matrix: passed, 27/27.
+- Local ADS PDK-MOS TT finger-count sweep: passed, 4/4.
+- `git diff --check`: passed.
+
+Remaining limitations:
+
+- The PDK-MOS PVT matrix uses ideal gate voltage sources; a separate single
+  PDK-driver compatibility run exists. Both versions use an ideal transformer,
+  pulse stimulus, and pre-layout devices. They are not final PAE, thermal,
+  EVM, ACLR, reliability, or silicon-performance evidence.
+- The next electrical closure is a PDK gate driver plus a physical balun,
+  matching/filter network and package/PCB parasitics, followed by the real
+  DSM PWL waveform and observation-receiver/DPD closed loop.
+
+## 2026-08-02 11:14:13 +08:00
+
+Reason:
+
+- Drive the local PDK-MOS DPA switch core from the real MATLAB DSM bitstream
+  and prove that its output can be handed to the existing MATLAB observation
+  interface at the correct 50 ohm measurement plane.
+
+Changed files:
+
+- `ads/scripts/run_tsmc40_dpa_switch_core.py`
+- `ads/scripts/analyze_tsmc40_dpa_switch_core.py`
+- `ads/README.md`
+- `ads/low_power_dpa/README.md`
+- `ads/low_power_dpa/DPA_REQUIREMENTS.md`
+- `matlab/dpd/README.md`
+- `docs/UPDATE_LOG.md`
+
+Implementation and evidence:
+
+- Added direct CSV-driven HSPICE PWL generation to the PDK switch-core runner.
+  It derives four gate waveforms from the MATLAB `time_s,rf_bit` contract and
+  preserves explicit dead time at every diagonal transition.
+- The TT/25 C/1.2 V, 16-finger, two-stage PDK-driver, 100 fF switch-node
+  capacitance configuration completed a 256-bit LPDSM2 PWL transient. It had
+  zero overlap samples, -3.80 dBm output at the 50 ohm plane, 1.433 mW DC, and
+  a 29.06 percent efficiency trend.
+- Added optional uniform observation-CSV export to the switch-core analyzer.
+  MATLAB consumed the 2,560-sample, 1 GHz export with `load_ohm=50` and
+  independently reported -3.81 dBm, 1.433 mW DC, and a 29.03 percent trend.
+
+Checks run:
+
+- Local ADS PDK-driver 256-bit DSM-PWL transient: passed.
+- Local ADS observation export: passed.
+- MATLAB `analyze_ads_low_power_dpa_result` with the 50 ohm observation:
+  passed.
+
+Remaining limitations:
+
+- The physical-endpoint DPD loop is not yet trained. It must rerun ADS for
+  candidate DPD-produced bitstreams and optimize against the resulting
+  observation metrics rather than only behavioral-PA metrics.
