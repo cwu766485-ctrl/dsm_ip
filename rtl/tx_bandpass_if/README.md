@@ -9,7 +9,9 @@ complex I/Q after DPD and interpolation
 -> DPA -> analog output BPF
 ```
 
-`bp_fs4_iq_mixer.sv` performs `[+I,+Q,-I,-Q]` before quantization. The current
+`bp_fs4_iq_mixer.sv` performs `[+I,+Q,-I,-Q]` before quantization. Its phase
+debug output is transaction-aligned: when `rf_valid` is asserted, `if_phase`
+identifies the Fs/4 slot that produced that RF sample. The current
 one-bit candidates are `dsm_core_bp_single.sv` and `dsm_core_bp_ef2.sv`; both
 use an NTF with zeros at `+/- Fs/4`. The checked P0 comparison selects BP EFDSM
 as the initial DPA candidate (`3.5638%` EVM, `28.9617 dB` SNDR), narrowly ahead

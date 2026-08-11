@@ -1,161 +1,52 @@
-# Evidence Index
+# 验证证据索引
 
-This directory contains compact machine-readable evidence for the DSM IP
-handoff. Human-readable interpretation is consolidated in
-`docs/PPA_VERIFICATION_RELEASE.md`, `docs/DPD_AI_DPA.md`, and
-`docs/STATUS_AND_LIMITS.md`.
+更新时间：2026-08-09
 
-Keep CSV and JSON files here only when they are compact, referenced by a
-canonical document, and needed to reproduce a claim. Raw tool reports,
-waveforms, logs, and generated workspaces belong outside the repository.
+本目录只保留体积小、可追溯、被正式文档引用的 CSV/JSON/TXT。原始日志、波形、工具缓存、完整工作区和大型报告不进入 Git。
 
-## ZU15EG DPD OOC Matrix
+## 1. 当前证据等级
 
-Reference file:
+| 类别 | 路径 | 证据等级 |
+|---|---|---|
+| DPD feature OOC | `ooc/dpd_feature_ooc_zu15eg_ffvb1156_2_i_20260725_summary.csv` | ZU15EG post-synthesis OOC |
+| DPD 算法 OOC | `ooc/dpd_ooc_xczu15eg_ffvb1156_1_i_20260725_summary.csv` | 早期器件 speed-grade 对照 |
+| 历史 full-TX | `integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv` | 旧 Cartesian EFDSM/Fs4 routed + bitstream |
+| 低通 DSM 历史 | `ooc/p0_*.csv` | Zynq-7020/ZU48DR/ZU15EG OOC 对照 |
+| LPDSM2 Fs/4 审计 | `frontend/p0_lp2_fs4_frontend_audit_20260804.csv` | Python 模型审计 |
+| BP EFDSM 审计 | `frontend/p0_bp_ef2_frontend_audit_20260804.csv` | Python behavioral 审计 |
+| BP 算法对比 | `frontend/p0_bp_dsm_comparison_20260805.csv` | Python behavioral 对比 |
+| DPD/AI 离线 | `dpd/` | MATLAB/Python 离线或板级 replay 证据 |
+| 100 MHz 历史摘要 | `closure/p0_100mhz_release_summary.csv` | 历史 P0 汇总 |
 
-```text
-ooc/dpd_ooc_xczu15eg_ffvb1156_1_i_20260725_summary.csv
-```
+## 2. 重要边界
 
-This is the post-synthesis OOC comparison of bypass, LUT, polynomial 3/5/7,
-and memory-polynomial 1/2/4/6-tap DPD implementations. See
-`docs/PPA_VERIFICATION_RELEASE.md` for the architecture decision and evidence
-limits.
+### 2.1 历史 full-TX
 
-## ZU15EG Feature-Gated DPD OOC Matrix
+`full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv` 对应 `DUC_MODE=0` 的 Cartesian EFDSM + 固定 Fs/4 路线。它包含 routed timing、资源、功耗估计、bitstream 和 XSA，但不是当前 `DUC_MODE=3` BP EFDSM2 主 SKU 的最终证据。
 
-Reference file:
+### 2.2 当前主 BP SKU
 
-```text
-ooc/dpd_feature_ooc_zu15eg_ffvb1156_2_i_20260725_summary.csv
-```
+当前 BP 主 SKU 的 ZU15EG full-TX routed/bitstream 仍待重跑。28 nm DC 和 lint 原始报告位于 `syn/reports/`，因体积和工具生成属性不复制到本目录。
 
-This is the current `dpd_frontend` product-SKU comparison on the actual
-`xczu15eg-ffvb1156-2-i` target. It preserves dynamic polynomial coefficients,
-uses compile-time branch gates, and includes a development build with all DPD
-modes retained. It is post-synthesis OOC evidence, not routed full-TX timing.
+### 2.3 算法指标
 
-## ZU15EG Full-TX Routed Implementation
+- LPDSM2 native complex I/Q EVM 为 0.6891%，但旧 Fs/4 RF 恢复约 94% EVM；两者不能混报。
+- 初始 BP EFDSM EVM 3.5638%、SNDR 28.9617 dB，只是 behavioral 审计。
+- hard-limited 一位 BP MASH 不满足当前一位 DPA 需求。
 
-Reference file:
+### 2.4 AI/DPD
 
-```text
-integration/full_tx_zu15eg_20260726_memory_poly5_4tap_summary.csv
-```
+`dpd/` 下的 LOSO、blind、seed、safety 和 replay 文件用于评估低速校准策略。它们不证明高速神经网络 RTL，也不证明真实 PA 的物理改善。
 
-This is the routed 100 MHz `xczu15eg-ffvb1156-2-i` implementation for EFDSM
-1-bit, x32 CIC plus compensation FIR interpolation, fixed Fs/4 DUC, and the
-Memory-Poly5 four-tap SKU. Polynomial and LUT DPD branches are compile-time
-pruned. It includes bitstream and XSA generation. See
-`docs/PPA_VERIFICATION_RELEASE.md` for the clock/reset contract and the
-boundary between implementation evidence and physical RF validation.
+## 3. 引用规则
 
-## Timing-Clean OOC Paths
+引用证据时必须同时说明：
 
-Reference file:
+- 文件路径；
+- 日期和工具；
+- 目标器件/工艺；
+- compile-time 参数；
+- waveform、PA profile 和 receiver；
+- OOC、routed、behavioral、ADS 或实测等级。
 
-```text
-ooc/p0_ooc_xc7z020_20260702_summary.csv
-ooc/p0_ooc_xczu48dr_20260702_summary.csv
-```
-
-### Zynq-7020 / PYNQ-Z2 Proxy
-
-| Top | LUT | FF | DSP | WNS (ns) | Fmax est. (MHz) |
-|---|---:|---:|---:|---:|---:|
-| `p0_ooc_lp1` | 104 | 71 | 0 | +6.557 | 290.44 |
-| `p0_ooc_lp2` | 470 | 167 | 0 | -1.175 | 89.49 |
-| `p0_ooc_ef1` | 182 | 63 | 0 | +2.221 | 128.55 |
-| `p0_ooc_ef2` | 316 | 119 | 0 | +0.080 | 100.81 |
-| `p0_ooc_mash11` | 274 | 100 | 0 | -2.098 | 82.66 |
-| `p0_ooc_mash111` | 407 | 143 | 0 | -7.438 | 57.35 |
-| `p0_ooc_mash22` | 276 | 177 | 8 | -8.646 | 53.63 |
-
-LPDSM, EFDSM, and EFDSM2 have `WNS >= 0` at a 100 MHz target. LPDSM2 and
-MASH are restored but currently fail the 100 MHz timing criterion on this
-target.
-
-### RFSoC 4x2 / ZU48DR Proxy
-
-| Top | LUT | FF | DSP | WNS (ns) | Fmax est. (MHz) |
-|---|---:|---:|---:|---:|---:|
-| `p0_ooc_lp1` | 103 | 71 | 0 | +9.072 | 1077.59 |
-| `p0_ooc_lp2` | 469 | 167 | 0 | +5.624 | 228.52 |
-| `p0_ooc_ef1` | 181 | 63 | 0 | +7.363 | 379.22 |
-| `p0_ooc_ef2` | 315 | 119 | 0 | +6.558 | 290.53 |
-| `p0_ooc_mash11` | 246 | 88 | 0 | +5.764 | 236.07 |
-| `p0_ooc_mash111` | 382 | 133 | 0 | +3.908 | 164.15 |
-| `p0_ooc_mash22` | 251 | 167 | 72 | +2.017 | 125.27 |
-
-All seven paths have `WNS >= 0` at a 100 MHz target on `xczu48dr-ffvg1517-2-e`.
-
-## Release Summary
-
-Reference file:
-
-```text
-closure/p0_100mhz_release_summary.csv
-```
-
-This combines retained RTL simulation pass records and timing-clean OOC records
-from the checked 100 MHz snapshot.
-
-## LPDSM2 Fs/4 Front-End Audit
-
-Reference file:
-
-```text
-frontend/p0_lp2_fs4_frontend_audit_20260804.csv
-```
-
-This independent audit reads the checked 65,536-sample P0 Q1.15 ROM pair and
-reproduces the registered LPDSM2 state arithmetic plus the current fixed-Fs/4
-`[+I,+Q,-I,-Q]` merge. It measures CP-removed, subcarrier-equalized OFDM EVM
-at three distinct apertures. The native complex I/Q result is `0.6891%` EVM.
-The fixed-Fs/4 RF result is `94.3613%` EVM with IF BPF plus full-rate sparse
-recovery, and `93.9062%` EVM with a MATLAB-compatible half-rate demultiplexer.
-The latter also has only `0.2566` recovery correlation before its CP/FFT
-measurement, below the MATLAB flow's `0.55` confidence threshold. It is a
-Python model audit, not fresh XSim, ADS, board, or measured-RF evidence.
-
-The result makes the boundary explicit: native DSM I/Q quality must not be
-reported as fixed-Fs/4 RF-output quality. The fixed-Fs/4 RF path is blocked
-from communication or DPD performance claims until its modulation architecture
-is replaced or a corrected architecture passes the same audit.
-
-## Initial BP EFDSM Front-End Audit
-
-Reference file:
-
-```text
-frontend/p0_bp_ef2_frontend_audit_20260804.csv
-```
-
-This early audit performs full-precision `[+I,+Q,-I,-Q]` mixing before one-bit
-BP error-feedback DSM (`NTF = 1 + z^-2`), then an ideal IF BPF, coherent DDC,
-and the same CP/FFT receiver. The checked P0 vector measures `3.5638%` EVM and
-`28.9617 dB` SNDR. It demonstrates that quantizing after IF mixing removes the
-low-pass DSM/Fs/4 noise-folding failure; it is not yet RTL, ADS, DPA, or board
-evidence.
-
-## BPDSM Candidate Comparison
-
-Reference file:
-
-```text
-frontend/p0_bp_dsm_comparison_20260805.csv
-```
-
-The same P0 vector, IF BPF, DDC, and CP/FFT receiver compare the initial BP
-single-loop and BP EFDSM candidates. BP EFDSM is best among the one-bit outputs:
-`3.5638%` EVM / `28.9617 dB` SNDR versus `3.6597%` / `28.7312 dB` for the
-single-loop resonator. The exploratory BP MASH 1-1 needs multilevel output;
-its hard-limited one-bit version measures `810.0852%` EVM / `-18.1706 dB` SNDR,
-so it is not compatible with the current one-bit DPA.
-
-## Evidence Boundary
-
-LPDSM2 and native-multibit MASH paths have been restored into RTL, simulation,
-and OOC scripts. They are not 100 MHz timing-clean on `xc7z020clg400-1`, but
-they are 100 MHz timing-clean in the current `xczu48dr-ffvg1517-2-e` proxy OOC
-run.
+没有这些信息的数字只能作为调试记录，不能进入 release 结论。

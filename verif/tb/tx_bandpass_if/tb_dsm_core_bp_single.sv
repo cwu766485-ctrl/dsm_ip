@@ -27,13 +27,15 @@ module tb_dsm_core_bp_single;
     for (int n = 0; n < 256; n++) begin
       @(posedge clk);
       enable <= 1'b1;
-      x_in <= (n[3:0] < 8) ? 16'sd8192 : -16'sd8192;
+      // Avoid a period-16 stimulus that is phase-locked to this Fs/4 loop.
+      x_in <= $signed(n * 1103 + 173);
     end
     @(posedge clk);
     enable <= 1'b0;
     repeat (2) @(posedge clk);
     if (count != 256) $fatal(1, "Expected 256 samples, got %0d", count);
-    if (ones == 0 || zeros == 0) $fatal(1, "BP single-loop output did not toggle");
+    if (ones == 0 || zeros == 0)
+      $fatal(1, "BP single-loop output did not toggle: ones=%0d zeros=%0d", ones, zeros);
     $display("BP single-loop smoke PASS: samples=%0d ones=%0d zeros=%0d", count, ones, zeros);
     $finish;
   end

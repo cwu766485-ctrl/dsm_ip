@@ -1,29 +1,41 @@
 # DSM IP 文档索引
 
-本目录记录 `dsm_ip` 数字发射机 IP 的规格、接口、验证证据、DPD/AI 实验和已知限制。文档只描述仓库中已经实现或明确标注为实验的能力。
+更新时间：2026-08-09
 
-## 交付入口
+本目录记录数字发射机 IP 的规格、验证、实现证据、DPD/AI 实验和已知限制。文档只陈述仓库中可追溯的能力，不把 behavioral、OOC 或预布局结果写成板级实测或硅后结论。
+
+## 文档入口
 
 | 文档 | 用途 |
 |---|---|
-| [SPEC.md](SPEC.md) | 详细产品规格、接口、寄存器、时序、验证和集成要求 |
-| [IP_HANDOFF.md](IP_HANDOFF.md) | PS、DMA、AXI、反馈链路和上板交接说明 |
-| [PROJECT_GUIDE.md](PROJECT_GUIDE.md) | 工程结构、构建配置和推荐工作流 |
-| [STATUS_AND_LIMITS.md](STATUS_AND_LIMITS.md) | 当前状态、证据等级、风险和下一步 |
-| [PPA_VERIFICATION_RELEASE.md](PPA_VERIFICATION_RELEASE.md) | FPGA/28 nm DC/RTL 验证证据及发布边界 |
-| [DPD_AI_DPA.md](DPD_AI_DPA.md) | behavioral DPA、DPD 和 AI 校准实验结论 |
-| [UPDATE_LOG.md](UPDATE_LOG.md) | 按时间记录的实现、验证和调试过程 |
+| [SPEC.md](SPEC.md) | 详细产品规格、接口、寄存器、定点和时序契约 |
+| [VPLAN.md](VPLAN.md) | 全中文分层验证计划及发布门槛 |
+| [PROJECT_GUIDE.md](PROJECT_GUIDE.md) | 工程结构、主链路、构建方式和运行流程 |
+| [UPDATE_LOG.md](UPDATE_LOG.md) | 按时间记录的完成度、证据等级、限制和下一步 |
+| [PPA_VERIFICATION_RELEASE.md](PPA_VERIFICATION_RELEASE.md) | ZU15EG、28 nm DC、OOC 与 routed 证据 |
+| [IP_HANDOFF.md](IP_HANDOFF.md) | AXI、PS/DMA、反馈和软件启动交接 |
+| [DPD_AI_DPA.md](DPD_AI_DPA.md) | DPD、behavioral DPA 和 AI 校准的结论 |
+| [BP_LITE_LINT_AUDIT.md](BP_LITE_LINT_AUDIT.md) | BP 主 SKU 的 lint 风险与精简决策 |
+| [evidence/README.md](evidence/README.md) | 仓库内精简证据索引 |
+| [UPDATE_LOG.md](UPDATE_LOG.md) | 经过整理的项目里程碑与最新变更 |
 
-## 阅读顺序
+## 当前主线
 
-1. 先读 `SPEC.md`，确认接口和参数。
-2. 集成 PS/PL 时读 `IP_HANDOFF.md`。
-3. 评估当前是否可交付时读 `STATUS_AND_LIMITS.md` 和 `PPA_VERIFICATION_RELEASE.md`。
-4. 了解 DPD/AI 研究价值时读 `DPD_AI_DPA.md`。
+```text
+AXI4-Stream Q1.15 I/Q
+ -> Memory-Poly5 4-tap DPD
+ -> x32 interpolation
+ -> full-precision Fs/4 IF
+ -> one-bit BP EFDSM2
+ -> rf_bit
+```
 
-## 证据原则
+当前主目标器件为 `xczu15eg-ffvb1156-2-i`，目标时钟为 100 MHz。旧 Zynq-7020 和 ZU48DR 结果仅作为历史对照。
 
-- MATLAB behavioral 结果不能称为 ADS 或实测 RF 结果。
-- 28 nm DC 是预布局综合估计，不是流片签核。
-- Vivado OOC 只有在生成完整 utilization/timing/summary 报告后才算通过。
-- AXI/PS 板级验证不能等同于真实 PA 闭环验证。
+## 阅读原则
+
+- 先读 `UPDATE_LOG.md` 末尾的“当前交付状态”，确认哪些结论已经闭环。
+- 再读 `SPEC.md` 和 `VPLAN.md`，确认接口和签核标准。
+- 集成时读 `IP_HANDOFF.md` 和 `PROJECT_GUIDE.md`。
+- 引用 PPA 或性能数字时必须同时引用其配置和证据目录。
+- MATLAB behavioral、ADS、FPGA、ASIC pre-layout 和实测 RF 结果不得混用。

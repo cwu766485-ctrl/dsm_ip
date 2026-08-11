@@ -1,276 +1,113 @@
-# DSM IP
+# DSM Digital Transmitter IP
 
-Reusable digital delta-sigma modulator IP for an all-digital transmitter path.
-The repository contains fixed-point MATLAB models, synthesizable RTL, XSim
-testbenches, Vivado IP packaging, and out-of-context synthesis evidence.
+Reusable digital transmitter IP with fixed-point MATLAB models, synthesizable
+RTL, AXI interfaces, DPD, interpolation, delta-sigma modulation, verification,
+Vivado packaging, FPGA implementation flows, and pre-layout ASIC evidence.
 
-## Scope
-
-The current release keeps seven DSM structures:
-
-| ID | Algorithm | RTL core |
-|---:|---|---|
-| 0 | LPDSM | `rtl/dsm/singlebit/dsm_core.sv` |
-| 1 | LPDSM2 | `rtl/dsm/singlebit/dsm_core_dsm2.sv` |
-| 2 | EFDSM | `rtl/dsm/singlebit/dsm_core_ef1.sv` |
-| 3 | EFDSM2 | `rtl/dsm/singlebit/dsm_core_ef2.sv` |
-| 4 | MASH11 | `rtl/dsm/singlebit/dsm_core_mash11.sv` |
-| 5 | MASH111 | `rtl/dsm/singlebit/dsm_core_mash111.sv` |
-| 6 | MASH22 | `rtl/dsm/singlebit/dsm_core_mash22.sv` |
-
-The default P0 profile is a 16-QAM OFDM stream at a 100 MHz DSM clock. The
-fixed Fs/4 DUC path places the default IF center at 25 MHz.
-
-## IP Architecture
-
-The Vivado-packaged top is:
+## Current Validation SKU
 
 ```text
-rtl/axi/dsm_ip_axi_top.v
+target               = xczu15eg-ffvb1156-2-i
+clock                = 100 MHz
+top                  = dsm_ip_axi_top
+ALGORITHM            = 3
+DUC_MODE             = 3
+INTERP_MODE          = 4
+INTERP_IMPL          = 0
+DPD                  = Memory-Poly5, 4 taps
+ENABLE_DPD_MEMORY    = 1
+ENABLE_DPD_POLY/LUT  = 0
 ```
 
-Internal hierarchy:
+The selected datapath is:
 
 ```text
-dsm_ip_axi_top
-  -> AXI-Lite control/status
-  -> AXI-Stream packed I/Q input
-  -> dsm_ip_top
-     -> dsm_ip_core
-        -> DSM algorithm core
-        -> Fs/4 DUC, NCO DUC, or analog-IQ output boundary
+AXI4-Stream Q1.15 complex I/Q
+ -> 4-tap fifth-order memory-polynomial DPD
+ -> x32 interpolation
+ -> full-precision Fs/4 real-IF mixer
+ -> one-bit band-pass EFDSM2
+ -> rf_bit/rf_signed
 ```
 
-`dsm_ip_top.v` remains a non-AXI streaming wrapper for reuse in testbenches or
-custom integrations. `dsm_ip_axi_top.v` adds the SoC/RFSoC-facing register and
-stream interfaces used by the packaged IP.
+The source defaults keep a broader development configuration. Product hardware
+is selected with compile-time parameters during synthesis; AXI-Lite cannot
+restore a branch removed by a generate condition.
+
+## Implemented Capabilities
+
+- Seven low-pass DSM families: LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11,
+  MASH111, and MASH22.
+- Single-bit and parameterized multibit research implementations.
+- Bypass, Poly3/5/7, LUT, and memory-polynomial DPD.
+- x4/x8/x16 halfband and x32 CIC plus compensation-FIR interpolation.
+- AXI4-Lite control/status and AXI4-Stream TX input.
+- Backpressure, frame/sample/stall/error counters, and sticky errors.
+- Coefficient shadow banks, safe commit, saturation detection, and fallback.
+- Digital observer, monitor proxies, and an asynchronous feedback bridge.
+- Bare-metal PS/DMA replay and bounded calibration-search framework.
+- Directed XSim/MATLAB regressions, a UVM scaffold, Vivado IP packaging,
+  ZU15EG OOC scripts, and 28 nm Design Compiler flows.
 
 ## Interfaces
 
-### AXI-Lite Control
-
-| Offset | Name | Access | Description |
-|---:|---|---|---|
-| `0x00` | `CTRL` | RW | bit0 `enable`, bit1 `soft_reset` |
-| `0x04` | `STATUS` | RO | bit0 enable, bit1 soft_reset, bit2 dsm_valid, bit3 rf_valid, bit4 s_axis_tready |
-| `0x08` | `CFG_PHASE_INC` | RW | NCO phase increment, default `24'h400000` |
-| `0x0C` | `ALGORITHM` | RO | compiled DSM algorithm ID |
-| `0x10` | `DUC_MODE` | RO | compiled DUC mode |
-| `0x14` | `VERSION` | RO | wrapper version, currently `0x00010000` |
-| `0x30` | `INTERP_MODE` | RO | compiled interpolation mode |
-
-Register behavior:
-
-- `CTRL.enable` enables input acceptance and datapath operation.
-- `CTRL.soft_reset` resets the DSM/DUC datapath state while leaving the AXI
-  register interface accessible.
-- `STATUS` exposes the current enable/reset state and datapath ready/valid
-  flags.
-- `CFG_PHASE_INC` is used only when `DUC_MODE=1`.
-- `ALGORITHM`, `DUC_MODE`, and `INTERP_MODE` are read-only because they are
-  compile-time parameters in this release. Synthesis keeps only the selected
-  hardware paths.
-
-For an NCO DUC with `PHASE_W=24`:
+TX input samples are packed as:
 
 ```text
-phase_inc = round(f_if / f_clk * 2^PHASE_W)
+s_axis_tdata[15:0]  = signed I, Q1.15
+s_axis_tdata[31:16] = signed Q, Q1.15
 ```
 
-### AXI-Stream Input
+AXI4-Stream transfers occur only on `tvalid && tready`. AXI4-Lite is the
+low-rate control plane for reset, DPD configuration, coefficient/LUT writes,
+observer controls, monitor readback, and status.
 
-The input stream is a continuous 32-bit packed I/Q sample stream:
-
-```text
-s_axis_tdata[15:0]  = signed Q1.15 I
-s_axis_tdata[31:16] = signed Q1.15 Q
-s_axis_tvalid       = sample valid
-s_axis_tready       = IP can accept a sample
-```
-
-The wrapper does not use `tlast`, `tkeep`, `tid`, or `tdest`.
-
-### Outputs
-
-Primary outputs:
-
-- `dsm_valid`
-- `i_bit`, `q_bit`
-- `i_yout`, `q_yout`
-- `rf_valid`
-- `rf_bit`
-- `rf_signed`
-- `phase_acc_dbg`
-
-## DUC Modes
-
-`DUC_MODE=0` selects the fixed Fs/4 path. With a 100 MHz clock:
-
-```text
-f_if = 100 MHz / 4 = 25 MHz
-```
-
-`DUC_MODE=1` selects the NCO mixer path. This path is included for integration
-experiments; the fixed Fs/4 path is the primary low-resource configuration.
-
-`DUC_MODE=2` disables the digital real-IF/RF outputs (`rf_valid=0`). Use its
-`i_bit` and `q_bit` outputs with external reconstruction LPFs and an analog IQ
-mixer. This is the low-pass DSM route for the DPD communication chain. The
-separate BPDSM real-IF research route is under `rtl/tx_bandpass_if/`; it is not
-a compile-time `dsm_ip_axi_top` algorithm selection yet.
-
-## P0 QAM-OFDM Profile
-
-| Parameter | Value |
-|---|---:|
-| Modulation | 16-QAM |
-| `Nfft` | 64 |
-| `Ncp` | 16 |
-| `Nsym` | 500 |
-| Active subcarriers | 52, DC null |
-| `OSR` | 32 |
-| DSM clock / sample rate | 100 MHz |
-| Baseband sample rate | 3.125 MHz |
-| Subcarrier spacing | 48.828125 kHz |
-| Default Fs/4 IF center | 25 MHz |
-
-The IP includes a compile-time selected interpolation/filter frontend. Runtime
-interpolation switching is intentionally not implemented in this release; the
-selected mode is exposed through the read-only `INTERP_MODE` register.
+The main BP SKU uses `rf_valid`, `rf_bit`, and `rf_signed`. Cartesian
+`i_bit/q_bit` outputs remain for compatible low-pass integration modes.
 
 ## Verification
 
-Run MATLAB/RTL bit-true comparison:
-
 ```powershell
 .\scripts\run_matlab_p0_bittrue_check.cmd
-```
-
-Current evidence file:
-
-```text
-matlab/out/p0_bittrue_compare.csv
-```
-
-Result summary:
-
-```text
-LPDSM    Mismatches = 0
-LPDSM2   Mismatches = 0
-EFDSM    Mismatches = 0
-EFDSM2   Mismatches = 0
-MASH11   Mismatches = 0
-MASH111  Mismatches = 0
-MASH22   Mismatches = 0
-```
-
-Run the seven-path XSim regression:
-
-```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1
-```
-
-Run the IP smoke tests:
-
-```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
 ```
 
-The IP smoke tests cover the streaming top, the NCO path, and the AXI wrapper
-register/stream handshake.
+The UVM environment under `uvm_verif/` is currently a connectivity scaffold,
+not a completed signoff environment. See `docs/VPLAN.md` for the required
+protocol, safety, observer, monitor, and coverage matrix.
 
-## Vivado IP Packaging
+## Implementation Evidence
 
-Package the IP:
+- ZU15EG DPD post-synthesis OOC evidence covers bypass, Poly3/5/7, LUT, and
+  memory-polynomial 1/2/4/6-tap configurations.
+- A historical ZU15EG full-TX routed/bitstream result exists for the older
+  Cartesian EFDSM/Fs4 `DUC_MODE=0` path.
+- The current BP EFDSM2 SKU has 28 nm pre-layout DC evidence, but its new
+  ZU15EG full-TX routed/bitstream closure is still pending.
+- No physical PA/ADC feedback loop or measured RF signoff is claimed.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1
-```
-
-Generated IP-XACT output:
-
-```text
-ip/ip_repo/dsm_ip_1_0/component.xml
-```
-
-The packaged component exposes:
-
-```text
-modelName = dsm_ip_axi_top
-s_axi     = AXI memory-mapped interface
-s_axis    = AXI-Stream interface
-aclk      = 100 MHz default clock metadata
-```
-
-## OOC Synthesis Evidence
-
-Run proxy OOC synthesis:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_all_dsm.ps1 -Part xc7z020clg400-1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_all_dsm.ps1 -Part xczu48dr-ffvg1517-2-e
-```
-
-Summary files:
-
-```text
-docs/evidence/ooc/p0_ooc_xc7z020_20260702_summary.csv
-docs/evidence/ooc/p0_ooc_xczu48dr_20260702_summary.csv
-```
-
-On `xc7z020clg400-1`, LPDSM, EFDSM, and EFDSM2 meet the 100 MHz proxy OOC
-target in the current run. On `xczu48dr-ffvg1517-2-e`, all seven retained paths
-meet the 100 MHz proxy OOC target.
-
-## RFSoC 4x2 Collateral
-
-RFSoC 4x2 board files, schematics, BOMs, reference manuals, and vendor board
-packages are local-only collateral. They are not included in the public
-repository unless redistribution rights are explicitly confirmed.
-
-Use a private local copy for:
-
-```text
-fpga/hardware/rfsoc4x2_board_files/
-fpga/hardware/4x2_PL_FULL_CONSTRAINTS/
-fpga/hardware/4x2_PL_FULL_CONSTRAINTS/4x2_SYZYGY.xdc
-```
-
-This handoff is not a complete board-ready Vivado project. The current tree
-does not include a closed RFSoC `.xpr`, implementation run, bitstream, `.hwh`,
-`.xsa`, or board execution script.
-
-## Directory Map
+## Repository Map
 
 | Path | Purpose |
 |---|---|
-| `rtl/dsm` | DSM algorithm cores |
-| `rtl/tx_analog_iq` | Low-pass I/Q DSM boundary for external analog upconversion |
-| `rtl/tx_bandpass_if` | Experimental full-precision IF plus BPDSM route |
-| `rtl/duc` | Fs/4 and NCO DUC blocks |
-| `rtl/ip` | Reusable streaming DSM datapath |
-| `rtl/axi` | AXI-Lite/AXI-Stream wrapper |
-| `rtl/top` | ROM-backed P0 tops |
-| `matlab/bittrue` | MATLAB fixed-point reference models |
-| `matlab/scripts` | MATLAB entry scripts |
-| `verif/tb` | XSim testbenches |
-| `verif/vectors` | ROM input vectors |
-| `syn` | OOC synthesis flow |
-| `ip` | Vivado IP packaging |
-| `docs` | Architecture, status, and evidence |
-| `fpga/rfsoc4x2` | Historical source-only RFSoC board fragments |
+| `rtl/` | Synthesizable datapath and wrappers |
+| `matlab/` | Fixed-point references, vectors, DPD models, and metrics |
+| `verif/` | Directed SystemVerilog/XSim tests |
+| `uvm_verif/` | UVM verification scaffold |
+| `ip/` | Vivado IP packaging |
+| `syn/` | Vivado and Design Compiler flows |
+| `fpga/zu15eg/` | ZU15EG integration and bare-metal support |
+| `ads/` | Optional DPA circuit experiments |
+| `docs/` | Specification, verification plan, status, and evidence |
 
-See `docs/PROJECT_GUIDE.md` for the project map and `docs/README.md` for the
-documentation index.
+Start with [the documentation index](docs/README.md) and
+[current status](docs/UPDATE_LOG.md).
 
-## Public GitHub Release
+## Evidence Boundary
 
-Before publishing this repository publicly, review:
-
-```text
-docs/PPA_VERIFICATION_RELEASE.md
-```
-
-Do not publish restricted RFSoC board PDFs, schematics, BOMs, or board files.
-Keep them in a private local archive and document the expected local path if a
-board flow is restored later.
+MATLAB behavioral, ADS, FPGA OOC, FPGA routed, ASIC pre-layout, and measured RF
+results are separate evidence levels. Every performance claim must identify its
+configuration and source. Restricted board collateral, PDK files, licenses,
+credentials, generated logs, waveforms, and tool workspaces must not be
+committed.

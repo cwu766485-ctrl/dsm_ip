@@ -1,448 +1,523 @@
-# BP EFDSM2 + behavioral DPA/DPD 验证计划
+# BP EFDSM2 数字发射机 IP 验证计划
 
-文档版本：1.0
+文档版本：2.3
+更新时间：2026-08-09
+适用顶层：`dsm_ip_axi_top`
 
-适用主验证 SKU：`dsm_ip_axi_top`，`ALGORITHM=3`、`DUC_MODE=3`、`INTERP_MODE=4`、`INTERP_IMPL=0`，4-tap/5th-order memory-polynomial DPD。
+## 1. 验证范围
 
-## 1. 验证目标
-
-本计划只把下面链路作为主验证对象：
-
-```text
-AXI-Stream Q1.15 IQ
- -> memory-polynomial DPD
- -> x32 interpolation
- -> Fs/4 real-IF mixer
- -> one-bit BP EFDSM2
- -> rf_bit
- -> behavioral DPA + BPF
- -> observation/receiver
- -> EVM/SNDR/ACLR proxy
-```
-
-目标是：
-
-- 证明 BP EFDSM2 RTL 的功能、定点行为、有效信号和复位行为正确；
-- 证明 AXI-Lite、TX AXI-Stream、feedback AXI-Stream 和 observer 契约正确；
-- 证明 DPD 在同一 behavioral DPA、同一波形、同一接收机和 held-out 数据上可重复比较；
-- 证明安全 gate、bank commit、saturation fallback 和 AI 边界不被绕过；
-- 形成可追溯的 RTL、MATLAB、XSim/VCS、SpyGlass、DC/Vivado 和 behavioral DPA 证据。
-
-## 2. 验证对象与非目标
-
-### 2.1 主要 DUT
+主验证 SKU 固定为：
 
 ```text
-top: dsm_ip_axi_top
-ALGORITHM=3
-DUC_MODE=3
-INTERP_MODE=4
-INTERP_IMPL=0
-ENABLE_DPD_POLY=0
-ENABLE_DPD_LUT=0
-ENABLE_DPD_MEMORY=1
-DPD_MP_MAX_TAPS=4
-DPD_POLY_ORDER=5
+ALGORITHM          = 3
+DUC_MODE           = 3
+INTERP_MODE        = 4
+INTERP_IMPL        = 0
+ENABLE_DPD_POLY    = 0
+ENABLE_DPD_LUT     = 0
+ENABLE_DPD_MEMORY  = 1
+DPD_MP_MAX_TAPS    = 4
+DPD_POLY_ORDER     = 5
+aclk               = 100 MHz
 ```
 
-BP 主 RTL 为：
+主链路为：
+
+```text
+AXI4-Stream Q1.15 I/Q
+ -> Memory-Poly5 4-tap DPD
+ -> x32 插值
+ -> 全精度 Fs/4 实数 IF
+ -> 一位 BP EFDSM2
+ -> rf_bit/rf_signed
+ -> behavioral DPA/BPF/观测接收机
+ -> EVM/SNDR/ACLR
+```
+
+验证目标：
+
+- 证明 RTL 的定点算法、时序、复位、流控和寄存器行为正确；
+- 证明 MATLAB 与 RTL 在冻结的数值契约下逐样本等价；
+- 证明 DPD 系数写入、双 bank 原子切换和故障回退不会破坏数据流；
+- 分开签核 RTL、PS 软件、校准策略、behavioral RF 和物理板级反馈；
+- 所有性能结论都标明模型、波形、接收机、工具和证据等级。
+
+## 2. 验证边界
+
+### 2.1 RTL DUT
+
+UVM/XSim/VCS 的 DUT 是真实交付 RTL，不复制数据通路。主要文件包括：
 
 - `rtl/axi/dsm_ip_axi_top.v`
 - `rtl/ip/dsm_ip_top.v`
-- `rtl/tx_bandpass_if/bp_fs4_iq_mixer.sv`
-- `rtl/tx_bandpass_if/dsm_core_bp_ef2.sv`
-- `rtl/tx_bandpass_if/tx_bp_if_top.sv`
-- `rtl/interp/` 中主配置使用的 x32 插值文件；
-- `rtl/dpd/dpd_frontend.v`、`dpd_memory_poly.v`、`dpd_observer.v`；
-- `rtl/axis/axis_skid_buffer.sv`。
+- `rtl/dpd/`
+- `rtl/interp/`
+- `rtl/tx_bandpass_if/`
+- `rtl/axis/axis_skid_buffer.sv`
 
-验证不得复制一份 datapath RTL；source list 必须与 DC/Vivado BP flow 一致。
+source list 必须与 Vivado/DC 主 SKU 一致。
 
-### 2.2 外部 behavioral DPA
+### 2.2 软件与算法
 
-behavioral DPA 位于 MATLAB 闭环，不属于 RTL DUT。每个 profile 必须声明：增益、压缩点、AM/AM、AM/PM、memory taps、噪声、温漂、输出 BPF、receiver、训练/验证/测试 seed。
+- PS C 负责寄存器配置、DMA 重放、候选评分、排序和安全提交；
+- MATLAB/Python 负责 PA/DPA 模型、指标、系数训练、量化和参考计算；
+- AI 仅用于低速 seed/package 建议，最终仍经过安全仲裁和有界搜索；
+- UVM 不负责证明 PS 算法、AI 策略或真实 RF 性能。
 
-### 2.3 非目标
+### 2.3 当前非目标
 
-- 不把 ADS transient 当作当前 DPD 必需门槛；
-- 不把 behavioral 结果称为真实 PA 或硅后结果；
-- 不在本计划验证 CNN/MLP 高速 RTL；
-- 不把 LPDSM2 旧 Fs/4 合路结果作为 BP EFDSM2 结论；
-- 没有真实 feedback receiver 时，不宣称板级 PA 闭环。
+- 不把 MATLAB behavioral DPA 称为 ADS、实测 PA 或硅后结果；
+- 不把数字 monitor proxy 称为物理功率、EVM 或 ACLR；
+- 不声称已经接通 FMC DPA/PA、ADC 和物理反馈闭环；
+- 不把历史 LPDSM2 Fs/4 合路结果用于当前 BP EFDSM2 性能结论；
+- 不要求在高速数据通路中部署神经网络。
 
-## 3. 验证层级
+## 3. 测试平台框图
 
-| 层级 | 目标 | 工具/入口 | 输出 |
+### 3.1 UVM/RTL 主测试平台
+
+```mermaid
+flowchart TB
+  subgraph TEST[UVM 测试与场景控制]
+    TST[测试用例 dsm_bp_test]
+    VSEQ[虚拟序列器 virtual sequencer]
+    CFG[配置对象<br/>SKU 参数 寄存器配置 seed]
+    TST --> VSEQ
+    CFG --> TST
+  end
+
+  subgraph AGENTS[主动与被动 Agent]
+    AXILS[AXI-Lite sequencer]
+    AXILD[AXI-Lite driver]
+    AXILM[AXI-Lite monitor]
+    TXS[TX AXI-Stream sequencer]
+    TXD[TX AXI-Stream driver]
+    TXM[TX AXI-Stream monitor]
+    OBSS[OBS AXI-Stream sequencer]
+    OBSD[OBS AXI-Stream driver]
+    OBSM[OBS AXI-Stream monitor]
+    RFM[RF output monitor]
+    AXILS --> AXILD
+    TXS --> TXD
+    OBSS --> OBSD
+  end
+
+  VSEQ --> AXILS
+  VSEQ --> TXS
+  VSEQ --> OBSS
+
+  subgraph IFACE[SystemVerilog Interface]
+    AXILIF[s_axi_if<br/>AW W B AR R]
+    TXIF[s_axis_tx_if<br/>tdata tvalid tready tlast tuser]
+    OBSIF[s_axis_obs_if<br/>反馈 I/Q 和 sideband]
+    RFIF[rf_if<br/>rf_valid rf_bit rf_signed phase]
+  end
+
+  AXILD --> AXILIF
+  TXD --> TXIF
+  OBSD --> OBSIF
+  AXILIF --> AXILM
+  TXIF --> TXM
+  OBSIF --> OBSM
+  RFIF --> RFM
+
+  subgraph DUT[DUT dsm_ip_axi_top]
+    REGS[AXI-Lite 寄存器<br/>状态 计数器 sticky error]
+    SKID[AXIS skid buffer]
+    DPD[Memory-Poly5 4-tap DPD<br/>shadow bank safe commit fallback]
+    INTP[x32 CIC + compensation FIR]
+    MIX[全精度 Fs/4 IF mixer]
+    BP[一位 BP EFDSM2]
+    OBSERVER[observer<br/>delay gain error window]
+    MON[monitor<br/>power peak clip EVM ACPR spectral proxy]
+    SKID --> DPD --> INTP --> MIX --> BP
+    SKID --> OBSERVER
+    OBSERVER --> MON
+    DPD --> MON
+    BP --> MON
+  end
+
+  AXILIF <--> REGS
+  TXIF --> SKID
+  OBSIF --> OBSERVER
+  BP --> RFIF
+
+  subgraph CHECK[参考模型与自检查]
+    VEC[MATLAB/Python 冻结向量<br/>输入 系数 feedback expected]
+    REF[定点参考模型<br/>DPD 插值 mixer BP observer monitor]
+    SB[Scoreboard<br/>transaction 对齐和逐样本比较]
+    REGM[寄存器镜像/预测器]
+    COV[功能覆盖率<br/>模式 边界 stall reset commit error]
+    SVA[协议与安全断言<br/>AXI payload stability commit fallback]
+    VEC --> REF
+    REF --> SB
+    REGM --> SB
+  end
+
+  TXM --> SB
+  OBSM --> SB
+  RFM --> SB
+  AXILM --> REGM
+  AXILM --> COV
+  TXM --> COV
+  OBSM --> COV
+  RFM --> COV
+  AXILIF -. bind .-> SVA
+  TXIF -. bind .-> SVA
+  OBSIF -. bind .-> SVA
+  DUT -. 内部安全属性 .-> SVA
+
+  subgraph REPORT[统一结果输出]
+    LOG[UVM log 和 assertion summary]
+    COVDB[coverage database]
+    MIS[bit-true mismatch CSV]
+    MAN[manifest<br/>工具 版本 参数 seed source hash]
+  end
+
+  SB --> MIS
+  COV --> COVDB
+  SVA --> LOG
+  TST --> MAN
+```
+
+该平台只验证数字 RTL。behavioral DPA 不直接放进 DUT；MATLAB/Python 先生成冻结的反馈 I/Q 向量，再由 OBS agent 重放。这样可以让同一组向量在 XSim、VCS、UVM 和 C/Python 单元测试之间复用，并避免模拟模型的不确定性破坏 RTL 回归。
+
+### 3.2 跨层验证闭环
+
+```mermaid
+flowchart LR
+  W[QAM/OFDM 波形] --> M[MATLAB fixed reference]
+  M --> GV[golden vectors]
+  GV --> U[UVM/XSim RTL 回归]
+  U --> RO[rf_bit 与 monitor readback]
+  RO --> CMP[MATLAB/Python 逐样本比较]
+
+  W --> PA[behavioral DPA/BPF/receiver]
+  PA --> FB[冻结 feedback I/Q]
+  FB --> U
+
+  U --> PS[PS C cost 排序和 bank commit 单元测试]
+  PS --> POL[AI seed + 14-candidate bounded search]
+  POL --> PKG[安全系数 package]
+  PKG --> U
+
+  U --> FPGA[ZU15EG implementation 与板级 smoke]
+  FPGA -. 未来物理反馈 .-> PHY[DPA/PA + coupler + receiver/ADC]
+  PHY -. Q1.15 OBS AXI-Stream .-> U
+```
+
+实线表示当前可进行的数字/behavioral 验证；虚线表示尚未签核的物理反馈路径。
+
+### 3.3 组件与目录映射
+
+| 平台组件 | 当前路径 | 后续建设内容 |
+|---|---|---|
+| UVM 顶层 | `uvm_verif/tb/dsm_uvm_tb.sv` | 实例化真实 DUT、三类 interface、时钟和复位 |
+| AXI-Lite interface | `uvm_verif/agent/interfaces/dsm_axi_lite_if.sv` | 增加协议断言和独立 AW/W 时序 |
+| TX/OBS interface | `uvm_verif/agent/interfaces/dsm_axis_if.sv` | 分离 TX/OBS 配置，覆盖 backpressure 和 sideband |
+| RF interface | `uvm_verif/agent/interfaces/dsm_rf_if.sv` | 采集 valid/bit/signed/phase |
+| 冻结配置与寄存器表 | `uvm_verif/env/dsm_uvm_config.svh`、`dsm_uvm_reg_map.svh` | 主 SKU、byte address、DPD latency 和弹性流水约束 |
+| transaction | `uvm_verif/agent/<protocol>/` | AXI-Lite、复数 AXIS 和 RF 输出事务，按协议归属 |
+| agent/monitor | `uvm_verif/agent/axi_lite/`、`axis/`、`rf/` | 三类 agent；AXI-Lite/TX/OBS 为主动实例，RF 为被动实例；协议 monitor 已建立 |
+| environment/scoreboard | `uvm_verif/env/dsm_uvm_env.svh`、`dsm_uvm_scoreboard.svh` | virtual sequencer 连接和当前 RF smoke 检查 |
+| sequence/test | `uvm_verif/agent/*/*sequences.svh`、`uvm_verif/env/dsm_virtual_sequences.svh`、`uvm_verif/tests/` | 协议 sequence、跨 agent 编排和 testcase 分层 |
+| 协议断言 | `uvm_verif/formal/dsm_axi_protocol_sva.sv` | 增加 reset、commit、fallback 和 observer 属性 |
+| test/filelist | `uvm_verif/tests/`、`uvm_verif/sim/` | 建立 base test、功能 test、负向 test 和 regression list |
+| golden vectors | `matlab/out/`、`verif/vectors/` | 冻结格式、延迟、manifest 和 expected output |
+| directed baseline | `verif/tb/`、`verif/scripts/` | 在 UVM 完成前继续作为单元级 source of truth |
+
+### 3.4 平台建设顺序
+
+1. 冻结主 SKU、寄存器表、定点格式、延迟和 source list；已完成第一版；
+2. 完成 interface 与 transaction，并加入 AXI payload-stability 断言；已完成第一版；
+3. 完成 AXI-Lite、AXI-Stream 和 RF 三类 agent；TX/OBS 复用 AXI-Stream 类型形成四个实例；driver 与基础 monitor 已拆分；
+4. 建立 virtual sequencer 和 virtual sequence，统一控制寄存器、TX 激励、反馈重放和 reset/stall；基础分层已完成；
+5. 接入 MATLAB/Python golden vector loader 和定点 reference model；
+6. 完成 scoreboard 的 transaction 对齐、逐样本比较和 monitor readback 比较；
+7. 加入 commit/fallback/reset/backpressure 的 SVA 与负向测试；随机 AXI 时序与基础 SVA 已完成，commit/fallback/reset 仍待补齐；
+8. 建立 functional coverage、cross coverage 和 regression manifest；
+9. 最后接 PS C 等价测试、behavioral DPA held-out 测试和 ZU15EG 板级 smoke。
+
+## 4. 分层签核
+
+| 签核门 | 负责范围 | 主要方法 | 当前状态 |
 |---|---|---|---|
-| L0 静态 | 文件、参数、编码、接口一致性 | PowerShell、Git | manifest/check summary |
-| L1 单元 | BP EF2、IF Mixer、插值、DPD memory、observer | VCS/XSim、MATLAB | unit log、CSV、波形 |
-| L2 子系统 | Mixer+BP EF2、DPD+插值、observer pairing | VCS/XSim/MATLAB | scoreboard、bit-true CSV |
-| L3 顶层 | AXI-Lite、TX、feedback、错误和状态 | VCS/XSim | smoke/regression summary |
-| L4 算法 | MATLAB 与 RTL 逐样本等价 | MATLAB + XSim/VCS | mismatch report |
-| L5 RF behavioral | BP 输出经 DPA/BPF 后的质量 | MATLAB | EVM/SNDR/ACLR 表 |
-| L6 AI/safety | seed 安全、search、fallback、blind test | MATLAB/Python/PS | policy report |
-| L7 实现 | lint、综合、时序、资源、功耗 | SpyGlass、DC、Vivado | implementation evidence |
-| L8 板级 | DMA、AXI、ILA、UART、JTAG | Vitis/板卡 | board trace |
+| `RTL-UNIT` | DSM、DPD、插值、observer、monitor 算术 | XSim/VCS、逐样本参考 | 部分已有定向回归 |
+| `RTL-PROTOCOL` | AXI-Lite、AXI-Stream、复位、backpressure、错误路径 | UVM、断言、scoreboard、覆盖率 | XSim 基础 smoke 与随机协议测试已通过；负向矩阵和覆盖率未签核 |
+| `BITTRUE` | MATLAB 与 RTL 定点等价 | MATLAB + XSim/VCS | 多个单元已闭环，主 BP 全链仍需统一审计 |
+| `PS-SW` | DMA、寄存器顺序、cost、排序、commit/fallback | C 单元测试、Python/C 等价 | 框架已实现，未作为 UVM 范围 |
+| `POLICY` | known/unknown/OOD、seed、安全搜索 | Python/C 决策日志 | 有离线证据，不是高速 AI RTL |
+| `RF-BHV` | behavioral DPA 下 DPD 效果 | MATLAB/Python held-out 比较 | 有阶段性结果，依赖冻结模型 |
+| `FPGA` | ZU15EG 资源、时序、bitstream、DMA/ILA | Vivado/Vitis/板卡 | 历史 Cartesian 基线闭环；当前 BP SKU 未完整闭环 |
+| `ASIC-PRE` | 28 nm 预布局面积、时序、功耗 | DC | 主 BP SKU 有 pre-layout 结果 |
+| `RF-PHYSICAL` | DPA/PA、BPF、耦合器、接收机、ADC | ADS/实验室仪器 | 未签核 |
 
-## 4. 测试矩阵
+任一层通过都不能替代其他层。
 
-### 4.0 testcase 编写规则和 100% 覆盖定义
+## 5. RTL 测试矩阵
 
-每个 testcase 必须同时声明以下字段，不能只写一句“场景可运行”：
-
-| 字段 | 必填内容 |
-|---|---|
-| Test ID | 唯一 ID，例如 `BP-F-001` |
-| 编译配置 | top、所有 compile-time parameter、source list hash |
-| 激励 | 输入类别、幅度、符号、帧数、seed、stall/复位注入 |
-| 运行时配置 | AXI-Lite 寄存器写入、DPD mode、tap/order、observer window |
-| 观测点 | 输入/输出 transaction、valid、sideband、状态和计数器 |
-| 覆盖 bin | 本 testcase 必须命中的 coverpoint/cross |
-| 通过条件 | mismatch、error、fatal、计数器和数值阈值 |
-| 证据 | log、波形、coverage database、CSV 和 manifest |
-
-本计划的“100%”不是要求把所有可能的无限输入空间穷举，而是要求：
-
-1. 主 SKU 的声明 functional coverpoint 达到 100% hit；
-2. 主 SKU 的声明 cross coverage 达到 100% hit；
-3. RTL statement/branch/toggle coverage 达到工具设定的 100% goal，或每个未命中
-   分支有明确的 `excluded` 记录和代码/配置依据；
-4. 所有 safety negative testcase 均执行，非法操作生效次数必须为 0；
-5. 每个 testcase 的 checker、scoreboard、assertion 都启用，不能用关闭 checker
-   来换取 coverage；
-6. compile-time 被裁剪的分支不计入主 SKU 100%，但必须在对应 optional SKU 回归中
-   单独达到同一要求。
-
-覆盖率签核文件必须包含：`coverage_summary`、bin 明细、未命中原因、test-to-bin
-   映射、仿真命令和 simulator/tool version。
-
-### 4.1 BP EFDSM2 功能
-
-| ID | 激励与配置 | 检查点 / 覆盖目标 | 通过条件 |
-|---|---|---|---|
-| `BP-F-001` | reset、零输入，8 个时钟后 enable | reset/enable bins；rf_valid、phase、状态 | 无 X/Z、无发散、复位计数正确 |
-| `BP-F-002` | 正小幅常值 `+1,+4096,+32767` | 正幅度 bins；rf_bit 极性 cross | `rf_signed` 与 bit 逐样本一致 |
-| `BP-F-003` | 负小幅常值 `-1,-4096,-32768` | 负幅度 bins；符号边界 | 输出符号和饱和规则正确 |
-| `BP-F-004` | 正负交替、四相序列 | phase `{0,1,2,3}` cross；状态更新 | Mixer 顺序和 BP bit-exact |
-| `BP-F-005` | I-only、Q-only、complex tone | I/Q pattern bins；IF valid latency | phase/valid 对齐正确 |
-| `BP-F-006` | QPSK/16QAM/64QAM OFDM 帧 | modulation bins、tlast frame cross | 输入输出 transaction 无丢失 |
-| `BP-F-007` | `0x7fff/0x8000` 及 ±1 LSB | min/max/saturation bins | 无错误符号扩展或 wrap |
-| `BP-F-008` | 长时间大幅随机输入 | long-run、state range、toggle | 无非预期状态溢出 |
-| `BP-F-009` | active stream 中异步复位 | reset-during-stream cross | valid、状态、计数器清晰恢复 |
-
-### 4.2 AXI 流控
-
-| ID | 激励与配置 | 检查点 / 覆盖目标 | 通过条件 |
-|---|---|---|---|
-| `AXI-F-001` | 连续 valid/ready | valid-ready 交叉；0/1 stall | 无丢失、重复、重排 |
-| `AXI-F-002` | 25/50/75% 随机下游 stall | stall bins；payload stability assertion | stall 中 payload/sideband 保持 |
-| `AXI-F-003` | valid 单周期、valid gap 1/7/31 | gap cross | 只在握手时接收 |
-| `AXI-F-004` | 单帧、空帧、多帧 tlast | frame length `{1,24,256}` bins | frame count 正确 |
-| `AXI-F-005` | tuser=0/1、连续错误 | tuser cross | error/user count 正确 |
-| `AXI-F-006` | disabled 发送、重新 enable | enable cross | 不产生非法有效数据 |
-| `AXI-F-007` | AW/W 同周期、AW 先、W 先 | channel ordering cross | 一次写只执行一次 |
-| `AXI-F-008` | BREADY/RREADY 延迟 0/1/16 周期 | response hold bins | response 保持到 ready |
-
-### 4.3 DPD 和安全
+### 5.1 BP EFDSM2 与 IF
 
 | ID | 场景 | 通过条件 |
 |---|---|---|
-| `DPD-F-001` | identity C1=1 | 输出与 bypass 对齐一致 |
-| `DPD-F-002` | 合法 C1/C3/C5 | 与 MATLAB 定点结果一致 |
-| `DPD-F-003` | 4-tap MP | tap/order 映射正确 |
-| `DPD-F-004` | 超限系数 | shadow invalid，active 不变 |
-| `DPD-F-005` | 非法 commit | failed，输出不切换 |
-| `DPD-F-006` | 安全边界 commit | 只在 safe boundary 换 bank |
-| `DPD-F-007` | saturation fault | fallback bypass，清 fault 后可恢复 |
-| `DPD-F-008` | 未编译 mode | effective mode 回退 bypass |
-| `DPD-F-009` | AI 危险 seed | 不绕过安全 gate/local search |
+| `BP-001` | 复位、零输入、重新使能 | 无 X/Z，状态和 valid 可预测 |
+| `BP-002` | 正负小幅常值及交替输入 | 符号、相位和状态更新与参考一致 |
+| `BP-003` | Q1.15 最大值、最小值和边界值 | 无错误扩展、截断或非预期 wrap |
+| `BP-004` | I-only、Q-only、复数 tone | Fs/4 mixer 相位顺序和 valid 对齐正确 |
+| `BP-005` | QPSK/16QAM/64QAM OFDM | transaction 不丢失、不重复、不重排 |
+| `BP-006` | 长时间随机满幅输入 | 状态有界，无非预期溢出 |
+| `BP-007` | active stream 中复位 | 输出、状态和计数器按契约恢复 |
 
-### 4.4 Observer
+### 5.2 AXI-Lite 与 AXI4-Stream
 
 | ID | 场景 | 通过条件 |
 |---|---|---|
-| `OBS-F-001` | delay=0/gain identity | paired/error 正确 |
-| `OBS-F-002` | 非零 delay | reference ring buffer 对齐 |
-| `OBS-F-003` | complex gain | I/Q 旋转缩放正确 |
-| `OBS-F-004` | feedback tlast | last_seen/done 正确 |
-| `OBS-F-005` | invalid feedback | drop 增加，窗口无效 |
-| `OBS-F-006` | feedback 早到 | ref unavailable 时 drop |
-| `OBS-F-007` | accumulator overflow | overflow flag 正确 |
-| `OBS-F-008` | temperature | start 时锁存温度 |
+| `AXI-001` | 连续 valid/ready | 每次握手只接收一次 |
+| `AXI-002` | 25/50/75% 随机 stall | stall 时 payload/sideband 稳定 |
+| `AXI-003` | valid gap、单拍和多帧 | frame、sample、tlast 计数正确 |
+| `AXI-004` | tuser 错误注入 | sticky error 和计数器正确 |
+| `AXI-005` | AW/W 不同到达顺序 | 写请求只执行一次 |
+| `AXI-006` | BREADY/RREADY 长延迟 | response 保持到握手完成 |
+| `AXI-007` | 软复位、关停和 drain | 不产生半 transaction 或幽灵输出 |
+| `AXI-008` | 长 backpressure 后恢复 | 无丢样、重复和死锁 |
 
-### 4.5 behavioral DPA/DPD
+当前自动化用例 `dsm_axi_protocol_test` 已覆盖 AXI-Lite 独立 `AW/W` 延迟、
+`BREADY/RREADY` 延迟、TX/OBS AXI-Stream 随机 valid gap、observer 基础启动和
+主链 drain。XSim seed 7 对 64 个输入得到 2048 个 RF transaction，observer
+配对 64、丢弃 0、窗口正常完成，零 UVM error/fatal 且上述协议 SVA 无失败。
+25/50/75% 长 stall、active-stream
+reset、`tuser` 注错和覆盖率 closure 仍为待验证项。
 
-| ID | impairment/profile |
-|---|---|
-| `RF-F-001` | linear reference |
-| `RF-F-002` | AM/AM gain/compression |
-| `RF-F-003` | AM/PM |
-| `RF-F-004` | memory taps |
-| `RF-F-005` | observation noise |
-| `RF-F-006` | gain/phase temperature drift |
-| `RF-F-007` | combined controlled behavioral DPA |
-| `RF-F-008` | permanently isolated blind PA profiles |
+### 5.3 DPD 与安全机制
 
-每个 profile 必须比较 no-DPD、memoryless DPD 和 memory-polynomial DPD；AI 还要比较 LUT seed、AI seed 和 mandatory local search。
+| ID | 场景 | 通过条件 |
+|---|---|---|
+| `DPD-001` | bypass 与 identity C1 | 数值一致且延迟对齐 |
+| `DPD-002` | Poly3/5/7 | 各自与对应 MATLAB fixed reference 零失配 |
+| `DPD-003` | Memory-poly 1/2/4/6 tap | tap 顺序、矩阵和输出零失配 |
+| `DPD-004` | LUT 地址边界和 bank | 地址、符号和 bank 选择正确 |
+| `DPD-005` | 合法 shadow bank commit | 只在安全边界原子切换 |
+| `DPD-006` | 超限系数和非法 commit | active bank 不变，错误置位 |
+| `DPD-007` | saturation fault | 回退 bypass 或已知安全 bank |
+| `DPD-008` | disabled feature mode | effective mode 可预测地回退 |
+| `DPD-009` | reset/stall 与 commit 交叉 | 不丢样，不发生半更新 |
 
-### 4.6 Future work: FMC feedback-loop integration (not implemented)
+### 5.4 Observer、异步反馈与 monitor
 
-This section is a future hardware-integration plan, not a current verification
-test matrix. The current board BD ties `s_axis_obs_*` to synchronous zero
-constants. No FMC DPA/PA, receiver, ADC, feedback DMA, or feedback clock-domain
-crossing has been implemented or verified. The intended future connection is:
+| ID | 场景 | 通过条件 |
+|---|---|---|
+| `OBS-001` | identity gain、delay=0 | 配对和误差逐样本正确 |
+| `OBS-002` | 非零 delay、复增益 | 延迟、旋转和缩放正确 |
+| `OBS-003` | feedback 早到、丢样和 overflow | drop/overflow/window invalid 正确 |
+| `OBS-004` | 异步输入时钟 | FIFO 不重排；满时按配置 backpressure 或计数丢样 |
+| `OBS-005` | 窗口中复位/清零 | drain 和完成状态无歧义 |
+| `MON-001` | 已知 I/Q 与 rf_bit 窗口 | `MON_*` 与冻结参考逐项一致 |
+| `MON-002` | AXI-Lite 读取全部 monitor | 偏移、宽度、清零和锁存正确 |
+| `MON-003` | peak/clip/saturation/slew 边界 | 计数和 sticky 标志正确 |
+| `MON-004` | spectral proxy 已知 tone | Goertzel/频点 proxy 与参考容差一致 |
+
+`MON_INPUT_POWER` 和 `MON_OUTPUT_POWER` 是 RTL 累加量，只用于数值验证、诊断和安全。在一位归一化 RF 输出上，`MON_OUTPUT_POWER` 对候选 DPD 的区分能力有限。当前 PS `calibration_cost()` 主要使用 EVM/ACPR/spectral proxy 和错误惩罚，不把这两个功率寄存器作为主要优化目标。
+
+## 6. PS 软件和校准策略验证
+
+### 6.1 PS C
+
+| ID | 验证内容 | 通过条件 |
+|---|---|---|
+| `PS-001` | VERSION/CAPABILITY/build identity | 与硬件 manifest 一致 |
+| `PS-002` | 系数写入顺序与 bank commit | C 与寄存器协议一致 |
+| `PS-003` | DMA 重放与计数器 | 输入、前端、DPD、输出计数一致 |
+| `PS-004` | cost 定点计算 | C 与 Python bit-exact |
+| `PS-005` | 14-candidate 排序 | 候选数量、顺序和最优选择一致 |
+| `PS-006` | 错误惩罚和 fallback | 危险候选不能成为 active |
+
+### 6.2 AI/优化策略
+
+| ID | 验证内容 | 通过条件 |
+|---|---|---|
+| `AI-001` | 已知 condition 的 seed | Python、C 和 RTL metadata 一致 |
+| `AI-002` | unknown/OOD condition | 强制 fallback 和局部搜索 |
+| `AI-003` | clip/saturation/stall/error | 安全 gate 优先于评分 |
+| `AI-004` | LOSO 与 blind profile | blind 数据不参与训练和阈值选择 |
+| `AI-005` | seed 与 cold-start 搜索比较 | 报告候选数、成本和安全违规 |
+| `AI-006` | 最终重放 | 指标不退化且安全计数为零 |
+
+这里的 AI 是低速校准辅助，不是神经网络直接处理 100 MHz 数据流。当前 release policy 必须保留有界搜索，不能让单个预测候选绕过安全机制。
+
+## 7. behavioral DPA 与指标验证
+
+每个 profile 必须冻结：
+
+- 输入调制、采样率、带宽、幅度和 seed；
+- AM/AM、AM/PM、memory taps、频响、噪声、温漂和 clipping；
+- 输出 BPF、观测接收机、增益/相位/延迟估计；
+- train/validation/test 分割；
+- EVM、SNDR、ACLR 的窗口和归一化定义。
+
+至少比较：
+
+1. no-DPD；
+2. memoryless Poly5；
+3. Memory-Poly5 4-tap；
+4. seed-assisted bounded search。
+
+通过条件不是固定的“必须提升若干 dB”，而是：同一 held-out 条件下可重复、无安全违规、报告均值与最差值，并清楚区分改善、不显著和退化。
+
+## 8. 实现与 PPA 验证
+
+### 8.1 FPGA
+
+- DPD OOC：bypass、Poly3/5/7、LUT、Memory-poly 1/2/4/6 tap；
+- 主 BP SKU：综合、布局布线、WNS/TNS、资源、功耗估计、bitstream；
+- 所有报告注明器件、speed grade、Vivado 版本、参数和 source hash；
+- OOC 通过不能代替全 TX routed 通过。
+
+### 8.2 ASIC 预布局
+
+- analyze/elaborate/link 无 Error/Fatal；
+- 审计 signedness、宽度、未连接、常量和未加载警告；
+- 报告面积、cell 数、关键路径、setup/hold、动态和漏电功耗；
+- 结果只称为 pre-layout，不称为物理签核。
+
+## 9. 板级与物理反馈计划
+
+当前板级设计没有真实 feedback receiver。未来链路为：
 
 ```text
-rf_bit -> FMC 外部 1-bit DPA/PA -> 输出 BPF/耦合器
-        -> 接收机下变频/ADC -> 复数 Q1.15 AXI-Stream
-        -> 时钟转换/异步 FIFO -> s_axis_obs_*
-        -> dpd_observer -> AXI-Lite 状态/统计 -> PS 校准控制
+rf_bit -> 外部 DPA/PA -> BPF/耦合器
+       -> 下变频/ADC -> Q1.15 feedback AXI4-Stream
+       -> async FIFO/clock converter -> s_axis_obs
+       -> observer/monitor -> AXI-Lite -> PS 校准
 ```
 
-| Future ID | Planned hardware work | Required evidence before claiming closure |
-|---|---|---|---|
-| `FMC-PRE-001` | Add DPA/PA, output filter, coupler, receiver and ADC on an FMC design | Schematic, clock plan and calibrated power limits |
-| `FMC-PRE-002` | Convert ADC I/Q to Q1.15 AXI4-Stream | Format, sample-rate and latency contract |
-| `FMC-PRE-003` | Cross receiver clock to `aclk` through async FIFO/clock converter | CDC/RDC review and no loss/reorder evidence |
-| `FMC-PRE-004` | Replace zero constants on `s_axis_obs_*` | Vivado BD, bitstream and ILA capture |
-| `FMC-PRE-005` | Execute observer/DPD loopback validation | Measured feedback, EVM/ACLR and before/after DPD result |
+只有在原理图、时钟计划、ADC 格式、CDC、ILA capture 和 before/after 实测指标全部存在后，才能签核 `RF-PHYSICAL`。当前该层状态为 `NOT_IMPLEMENTED`。
 
-Until all five items exist, `s_axis_obs_*` and `dpd_observer` are verified only
-with simulation/digital replay contracts. They are not a measured RF feedback
-loop and must not be used as such in project claims.
+## 10. 覆盖率与发布门槛
 
-### 4.7 DPD calibration 与 AI policy
+UVM 签核至少要求：
 
-#### Current implementation status
+- 主 SKU 声明的 functional coverpoint 和 cross 全部命中，或有逐项 exclusion；
+- AXI、reset、commit、fallback、observer、monitor 的 assertion 零失败；
+- scoreboard 零 mismatch；
+- 长 backpressure、复位中断和负向测试全部执行；
+- 记录 simulator、seed、命令、source hash 和 coverage database。
 
-| Item | Current state | Evidence / limitation |
-|---|---|---|
-| Q2.14 4-tap C1/C3/C5 MP DPD RTL | Implemented | `dpd_frontend.v` instantiates `dpd_memory_poly.v`; mode 3 is compiled in the main SKU |
-| Coefficient shadow-bank write and safe commit | Implemented | PS writes `MP_SELECT`/`MP_DATA`, then `MP_COMMIT`; RTL changes bank only at a safe boundary |
-| PS bare-metal candidate/package replay | Implemented as test/calibration-control software | `dsm_dpd_baremetal_smoke.c` writes packages, runs DMA, reads counters and emits `CAL_TRACE` |
-| Internal monitor cost | Implemented | It measures input/DPD-output/RF-bitstream proxy values, not PA output EVM/ACLR |
-| Feedback observer RTL contract | Implemented | It accepts digital feedback on `s_axis_obs_*`; current board sends no valid feedback samples |
-| Physical DPA/PA -> receiver/ADC -> feedback | Not implemented | Board BD ties observation input to zero constants |
-| Closed-loop DPA coefficient identification | Not implemented on hardware | MATLAB behavioral DPA supports this algorithmically; board has no physical feedback evidence |
-| AI direct deployment | Disabled | Existing qualified policy forces a 14-candidate bounded local search |
+项目发布必须同时给出：
 
-Therefore, the existing board flow proves coefficient loading, mode selection,
-safe bank commit, DMA replay and proxy-cost control flow. It does **not** prove
-that the selected coefficients improve a physical DPA/PA.
+- MATLAB/RTL bit-true 结果；
+- RTL protocol/safety 回归结果；
+- PS C/Python 等价结果；
+- behavioral DPA held-out 指标；
+- FPGA/ASIC 实现证据及其边界；
+- 未完成项和禁止声明。
 
-#### Verification ownership and release gates
+## 11. 当前结论
 
-The verification domains below are deliberately separate. Passing one domain
-does not close another domain's signoff obligation.
+- RTL、MATLAB、PS 软件和离线策略已经形成较完整的工程框架；
+- directed regression、DPD OOC 和 28 nm pre-layout 有可追溯证据；
+- UVM 已完成模块化拆分并在 XSim 2024.1 通过真实 DUT 基础 smoke，但不能宣称完整 UVM signoff；
+- 当前 BP EFDSM2 主 SKU 尚缺新的 ZU15EG full-TX routed/bitstream 闭环；
+- behavioral DPA 结果可用于算法研究，但没有真实 PA/ADC 反馈，不能宣称实测 RF 改善。
 
-| Gate | Owner and scope | Required evidence | Current signoff boundary |
-|---|---|---|---|
-| `MON-RTL` | RTL/UVM: monitor arithmetic, window/reset behavior, and AXI-Lite register mapping | Apply known IQ and `rf_bit` sequences; compare `MON_INPUT_POWER`, `MON_OUTPUT_POWER`, `MON_EVM_PROXY`, `MON_ACPR_PROXY`, and `MON_SPEC_*` against a frozen MATLAB/Python reference for every completed window | Required before claiming monitor correctness; it does not establish physical RF power or ACPR |
-| `RTL-PROTOCOL` | RTL/UVM: AXI-Lite, TX/observer AXI-Stream, DPD datapath, coefficient bank commit, fallback, and error paths | Scoreboard, assertions, negative tests, functional coverage, and long backpressure/reset regressions | UVM verifies the RTL/DUT; it does not validate the PS search policy or PA model |
-| `PS-SW` | Bare-metal C: register sequencing, DMA replay, cost calculation, candidate sorting, and commit/fallback handling | C unit test plus C/Python fixed-point equivalence for each candidate result | Required before claiming a correct PS calibration controller; it does not prove RTL arithmetic or RF improvement |
-| `POLICY` | Python/C policy: known/unknown/OOD decisions, seed selection, bounded search, and safety gates | Identical decision log and ranking for all vectors; 14 evaluated candidates and zero unsafe direct acceptance | Required before enabling a release policy; this is a slow control-plane algorithm, not an RTL neural network |
-| `RF-BEHAVIORAL` | MATLAB/Python: behavioral DPA, receiver alignment, and metric calculation | Held-out no-DPD/memoryless/MP comparison using the same waveform, DPA, BPF, receiver, and metric script | Required for a behavioral EVM/SNDR/ACLR claim; it is not measured hardware RF evidence |
-| `FMC-FEEDBACK` | Board integration: DPA/PA, coupler, receiver/ADC, feedback capture, and CDC | Calibrated physical feedback samples and before/after measured metrics | `NOT_IMPLEMENTED`; excluded from the current signoff claim |
+## 12. Block、Subsystem 与 System 参考模型分层
 
-`MON_INPUT_POWER` and `MON_OUTPUT_POWER` are RTL accumulators. They must be
-numerically verified, but they are diagnostic and safety observables only.
-In the current one-bit normalized RF output path, `MON_OUTPUT_POWER` has weak
-candidate discrimination. The active bare-metal `calibration_cost()` uses the
-replay EVM proxy, saturation/clip/error/stall penalties, `MON_EVM_PROXY`,
-`MON_ACPR_PROXY`, and `MON_SPEC_ADJ`; it does not use either monitor-power
-register as a primary optimization term. No `MON_*` proxy may be reported as a
-measured PA output power, EVM, or ACPR value.
+### 12.1 参考模型职责
 
-The selectable regression set is:
+- MATLAB fixed model 是算法、定点格式和最终数值定义的 signoff reference；
+- Python integer model 是 Linux/VCS 日常回归 reference，必须使用显式整数位宽、两补码、算术右移、截断、饱和/回绕、状态更新和 valid/latency 顺序；
+- SystemVerilog predictor 用于协议、寄存器、事务顺序和简单延迟预测，不复制复杂 DSP 算法作为唯一 golden model；
+- Python 与 MATLAB 必须逐样本等价，Python 与 RTL 必须在有效 transaction 上零失配。
 
-| ID | Verification objective | Pass condition |
-|---|---|---|
-| `MON-RTL-001` | Per-window monitor arithmetic | Reference and RTL register values match for all selected known-vector windows |
-| `MON-RTL-002` | AXI-Lite monitor readback | Every monitor offset returns the frozen expected value after the matching window completes |
-| `UVM-RTL-001` | DPD/AXI/observer nominal behavior | Scoreboard and assertions report zero errors |
-| `UVM-RTL-002` | Bank commit, saturation fallback, observer faults, reset, and long stalls | No illegal active-bank update, dropped transaction, or unhandled error path |
-| `PS-SW-001` | C/Python cost and ranking equivalence | Bit-exact cost and identical candidate ordering |
-| `PS-SW-002` | Bounded search and safety fallback | Exactly 14 candidate evaluations; unsafe candidates cannot become active |
-| `POLICY-001` | Known/unknown/OOD policy equivalence | Identical fallback reason and zero unsafe direct decisions |
-| `RF-BHV-001` | Behavioral DPA DPD effectiveness | Reproducible held-out EVM/SNDR/ACLR comparison with declared DPA/receiver assumptions |
-| `FMC-001` | Physical feedback-loop effectiveness | Pending external DPA/PA and receiver/ADC integration; not a current release gate |
+Python integer model 与 fixed-point model 不是两套算法。前者是 fixed-point 行为的一种可执行实现：Python 自身整数无限宽，因此模型必须主动施加 RTL 的每一级位宽和量化规则。
 
-The present UVM environment is a connectivity scaffold for the actual DUT. Its
-implemented smoke covers basic AXI-Lite enable, TX AXI-Stream traffic, and RF
-polarity/toggle checks. It must be extended with the `UVM-RTL-001` and
-`UVM-RTL-002` suites before UVM signoff is claimed.
+### 12.2 验证层次
 
-这里的 AI 是校准策略，不是高速数据通路神经网络。当前已接入的 RTL
-`dpd_seed_predictor` 可以根据 condition/monitor 输入给出 seed package、
-`condition_known`、fallback 和 local-search 标志；PS/离线代码负责候选评估、
-成本比较和最终系数提交。当前策略要求始终保留 14-candidate bounded local
-search，因此还没有启用“一候选直接放行”。
+```text
+Block:
+  DPD | interpolation | Fs/4 mixer | BP EFDSM2 | observer | monitor
+  -> lightweight SV testbench + MATLAB/Python bit-true vectors
 
-| ID | 激励/操作 | 检查点 | 通过条件 |
-|---|---|---|---|
-| `AI-F-001` | 已知 development condition | seed package 与 reference policy | seed 格式、候选起点和 policy decision 一致 |
-| `AI-F-002` | 未知 QAM/BW/backoff/temperature | `condition_known=0` | fallback 标志正确，仍执行 14 候选 |
-| `AI-F-003` | monitor clip/saturation/stall/error | monitor fault gate | 不论距离是否近，均进入保守搜索 |
-| `AI-F-004` | OOD monitor state | feature range/OOD | 不允许 direct，记录 fallback reason |
-| `AI-F-005` | 训练/验证 LOSO | development profiles only | held-out condition 不泄漏，结果可重复 |
-| `AI-F-006` | 3 个 frozen blind profiles | frozen selector replay | blind 不参与训练/阈值/结构选择，安全违规=0 |
-| `AI-F-007` | 合法 seed package | PS-C/Python 等价 | 每个决策 0 mismatch |
-| `AI-F-008` | 危险 seed/超限系数 | safety gate + bank commit | active bank 不被非法更新 |
-| `AI-F-009` | no-DPD/memoryless/MP/seeded search | 同一 DPA/waveform/receiver | 主表记录 EVM、SNDR、ACLR、cost、候选数 |
-| `AI-F-010` | 校准后复测 | before/after observer metrics | 质量不退化，且安全计数为零 |
+Subsystem:
+  TX frontend : DPD -> interpolation
+  IF/DSM      : Fs/4 mixer -> BP EFDSM2
+  feedback    : observer -> monitor
+  control     : AXI-Lite -> bank commit/error/status
+  -> width/latency/flow-control/reset boundary checks
 
-### 4.8 Future PS/FMC operation sequence
-
-After the future FMC loop is implemented, its software operation must record:
-
-1. `RESET`：清空 valid、计数器、observer 和 DPD fault。
-2. `DISCOVER`：读取 `VERSION`、`CAPABILITY` 和 `EFFECTIVE_STATUS`。
-3. `CONFIGURE`：写 DPD 模式、MP tap/order、observer delay/gain/window 和 condition。
-4. `RUN_TX`：通过 DMA 发送固定 Q1.15 waveform，并保存 input count/frame count。
-5. `CAPTURE_FB`：从 FMC 接收机/ADC 取得 feedback AXI-Stream，检查时钟域和 tuser。
-6. `OBSERVE`：等待 `done`，读取 paired/drop/error/power/monitor/overflow。
-7. `FIT`：只在 drop=0、overflow=0、无 clip/saturation 的窗口拟合系数。
-8. `STAGE_COMMIT`：写 inactive bank，轮询 commit status，确认安全边界 ack。
-9. `REPLAY`：重放同一 waveform，比较 no-DPD 与校准后指标。
-10. `ACCEPT/FALLBACK`：质量退化、错误或未知状态时保持 bypass/14-candidate 安全路径。
-
-## 5. 参考模型与 scoreboard
-
-MATLAB reference 必须明确 Q1.15/Q2.14、二补码、舍入/截位/饱和、BP 状态初值、更新顺序、Mixer phase、插值 valid/latency、DPD 对齐和 output valid 对应的样本编号。
-
-scoreboard 只在 `valid && ready` 时推进 transaction index。transaction 至少包含输入 I/Q、tlast/tuser、DPD 输出、IF sample、rf_bit、rf_signed、rf_valid、phase、错误和计数器快照。
-
-bitstream、valid、sideband、错误状态必须 bit-exact；EVM/SNDR/ACLR 必须使用冻结 receiver/metric script。
-
-## 6. 覆盖率计划
-
-### 6.1 功能覆盖
-
-必须覆盖 reset、enable/disable、AXI handshake、随机 stall、tlast/tuser、DPD mode/fallback、MP pending/inflight/ack/failed、saturation、observer start/clear/done/drop/overflow、condition known/unknown、seed fallback/local search。
-
-### 6.2 数值覆盖
-
-必须覆盖 0、正负小幅、满幅、符号翻转、Q1.15 最值、identity 系数、正负非线性系数、tap0/tap3、order1/order3/order5、delay0/最大 delay 和温度边界。
-
-### 6.3 结构覆盖
-
-VCS/XSim 需要 statement/branch/toggle coverage。编译期关闭的 polynomial/LUT 分支单独标为 excluded；BP 主路径、memory DPD、AXI wrapper 和 observer 不得排除。
-
-## 7. 回归命令
-
-MATLAB：
-
-```matlab
-cd('E:/workspace/chip/dsm_ip/matlab');
-path_setup;
-run('scripts/entry_lpdsmdpa_bpf_dpd_bittrue_compare.m');
-run('scripts/entry_lpdsmdpa_bpf_dpd_staged.m');
+IP System:
+  AXI-Stream I/Q -> DPD -> interpolation -> mixer -> BP EFDSM2 -> rf_bit
+  -> uvm_verif agents + full-chain Python reference + scoreboard
 ```
 
-Windows XSim：
+目录契约：
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_tx_routes.ps1
+- `verif/block/`：单模块定向验证说明与轻量 testbench；
+- `verif/subsystem/`：子系统边界验证；
+- `verif/vectors/`：冻结向量格式与来源；
+- `uvm_verif/refmodel/python/`：无 MATLAB 依赖的 Linux/VCS bit-exact reference；
+- `uvm_verif/`：完整 IP system UVM，不在 `verif/` 内重复搭建另一套 system 环境。
+
+### 12.3 当前证据
+
+2026-08-09 已完成第一条分层闭环：
+
+- Python Fs/4 mixer + BP EFDSM2 integer model；
+- MATLAB/Python 2048 sample comparison：registered trace 0 mismatch，core trace 0 mismatch；
+- Python-to-RTL XSim subsystem comparison：2048 个 `if_sample`、`rf_bit` 和 `rf_signed` transaction 0 mismatch；
+- `registered_bit` 对应历史 MATLAB 输出寄存器观察口径，`core_bit` 对应 `rf_valid` 下 UVM/RF monitor 的 transaction 口径，两者延迟差一拍且已显式记录。
+
+下一步按相同门槛依次接入 interpolation、DPD，最后替换当前只检查数量/编码/toggle 的 UVM system scoreboard。
+
+### 12.4 插值、DPD 与 system scoreboard 进度
+
+2026-08-10 已按两级门槛补齐 interpolation 和 DPD 的 Python integer reference：
+
+```text
+MATLAB fixed vectors
+  -> Python integer model
+  -> RTL/XSim transaction dump
+  -> UVM system scoreboard
 ```
 
-Linux DC：
+当前已完成并实际执行的检查：
 
-```bash
-export DC_SHELL=/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell
-bash syn/run_lint_bp_ef2_axi.sh
-bash syn/run_bp_ef2_28nm_dc.sh
+- interpolation mode 0/1/2/3/4：MATLAB/Python 128/512/1024/2048/4096 transaction 零失配；
+- interpolation mode 0/1/2/3/4：Python/RTL XSim 零失配；
+- Memory-Poly C1/C3/C5、4-tap：MATLAB/Python 256 samples 零失配；
+- Memory-Poly C1/C3/C5、4-tap：Python/RTL XSim 256 samples 零失配。
+
+已新增 `dsm_performance_bittrue_test`，以 Python 生成的冻结 24-sample system vector
+替换只检查 RF 数量/编码的 smoke scoreboard，逐 transaction 检查 TX I/Q/`tlast` 与
+768 个 RF bit、signed code、Fs/4 phase。该测试尚待 Linux VCS 编译执行，因此当前只能
+称为“system scoreboard 已实现”，不能称为 VCS signoff。
+
+该 system vector 当前选择 runtime DPD bypass，以隔离并签核主 TX 流
+`AXI-Stream -> interpolation -> mixer -> BP EFDSM2`。Performance SKU 的
+Memory-Poly5/4-tap DPD 已分别完成 block 级数值闭环；后续需要增加 AXI-Lite 写
+coefficient bank、atomic commit、runtime memory mode 和 fallback 的 UVM system testcase。
+
+### 12.5 Memory-DPD system testcase
+
+2026-08-10 已实现 `dsm_memory_dpd_bittrue_test` 和 `dsm_memory_dpd_safety_test`：
+
+```text
+Python coefficient package / RF reference
+  -> AXI-Lite writes inactive MP bank
+  -> MP_COMMIT request and ack polling
+  -> runtime memory mode and effective-status check
+  -> AXI-Stream input replay
+  -> DPD -> interpolation -> mixer -> BP EFDSM2
+  -> per-transaction RF scoreboard
 ```
 
-SpyGlass/VCS 必须在 Linux EDA 环境使用与 DC/Vivado BP flow 相同的 source list、top 和参数，不得复制 datapath RTL。
+有效 package 使用 4 tap x C1/C3/C5 的 12 个 Q2.14 complex coefficients；UVM 从 Python
+生成的 CSV 读取同一 package，避免在 MATLAB/Python/UVM 之间手工复制系数。负向 testcase
+写入绝对值 24577 的非法系数，并要求 commit failed、`ERROR.bit3` 置位、active bank 不变。
 
-Packaging/FPGA：
+Linux VCS 已执行该组 testcase：safety testcase 已通过；active bit-true testcase 完整运行了
+768 个 RF transaction，但所有数据值正确时仍出现固定 two-slot Fs/4 phase label offset。根因是
+BP mixer 的 phase debug 未跨 quantizer pipeline 对齐，RTL 已修正，尚待 VCS 重跑确认。
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_bp_ef2_axi.ps1 -Part xczu15eg-ffvb1156-2-i
-```
-
-## 8. 通过判据
-
-Blocker 包括语法/elaboration/link error、多个驱动、AXI protocol violation、valid transaction 丢失/重复、BP bit 极性错误、状态发散、非法系数替换 active bank、overflow 窗口被接受、错误回退失效、unmapped/zero-area PPA 报告。
-
-可接受 warning 只能是已解释并记录的 compile-time pruned optional ports、兼容输出和工具 signedness warning。shorted outputs、unloaded nets、未约束端点和高扇出必须逐项分类。
-
-质量门槛：bitstream/valid/AXI transaction 0 mismatch；安全 negative tests 0 次非法 package 生效；observer 有效窗口 drop=0、overflow=0；behavioral DPA 结果可重复且数据隔离；AI 不增加安全违规；PPA 报告非零 mapped 且注明 PVT/part。
-
-## 9. 证据归档
-
-每次回归生成唯一 run ID，记录 manifest、命令、工具版本、参数、输入向量 hash、结果摘要和失败日志。`docs/evidence/` 只保留精简摘要；原始大型波形和工具 cache 不进入公开交付包。
-
-## 10. 变更影响矩阵
-
-| 变更 | 必跑验证 |
-|---|---|
-| BP EFDSM2 算术/状态 | BP unit、MATLAB/RTL bit-true、IP smoke、PPA |
-| Mixer phase/IF scaling | BP unit、RF metric、MATLAB/RTL bit-true |
-| interpolation | interpolation unit、BP chain、PPA |
-| DPD/系数格式 | DPD bit-true、DPA comparison、safety、PPA |
-| AXI/register | AXI top、observer、packaging、lint |
-| observer | observer unit、overflow/drop negative test |
-| compile parameters | manifest、lint、simulation、synthesis |
-
-## 11. 可执行 testcase 规范与 100% 覆盖签核
-
-### 11.1 testcase 必填字段
-
-每个 testcase 必须明确写出：
-
-| 字段 | 要求 |
-|---|---|
-| Test ID | 唯一编号，例如 `BP-F-001` |
-| 编译配置 | top、compile-time parameters、source list/hash |
-| 激励 | 输入类别、幅度、符号、帧数、seed、stall/复位注入 |
-| 运行时配置 | AXI-Lite 寄存器、DPD mode、tap/order、observer window |
-| 观测点 | input/output transaction、valid、sideband、状态、计数器 |
-| 覆盖目标 | coverpoint、cross、assertion 和应命中的 bin |
-| 通过条件 | mismatch、error、fatal、计数器和数值门槛 |
-| 证据 | compile/run log、波形、coverage database、CSV、manifest |
-
-### 11.2 覆盖率 100% 定义
-
-本项目的 100% 是对已经冻结的覆盖模型签核，不是对无限输入空间做穷举：
-
-1. 主 SKU 声明的 functional coverpoint 命中率为 100%。
-2. 主 SKU 声明的 cross coverage 命中率为 100%。
-3. statement、branch、toggle 和 assertion coverage 达到 100% 目标；未命中项必须
-   有独立 `excluded` 清单和代码/配置依据。
-4. 所有 safety negative testcase 均执行，非法 package 生效次数为 0。
-5. scoreboard、protocol checker 和 assertions 必须启用，不能关闭 checker 换覆盖率。
-6. compile-time 被裁剪的 polynomial/LUT branch 不计入主 SKU，但必须在对应 optional
-   SKU 回归中达到同样的覆盖目标。
-
-任何未命中 bin 都必须增加 directed stimulus 或证明其确实不可达，不能直接删除 bin。
-签核报告必须包含 bin 明细、未命中原因、test-to-bin 映射、命令和工具版本。
-
-### 11.3 Directed testcase 清单
-
-| Testcase | 主要覆盖内容 | 必须命中的场景 |
-|---|---|---|
-| `tc_bp_reset_boundary` | BP、复位和 enable | reset、enable、active stream reset、RF valid |
-| `tc_bp_numeric_extremes` | 数值边界 | 正负小幅、满幅、`0x7fff/0x8000`、饱和、bit/sign |
-| `tc_bp_phase_iq` | IF mixer | I-only、Q-only、complex、phase 0/1/2/3、valid latency |
-| `tc_bp_frames_modulation` | 帧和调制 | QPSK/16QAM/64QAM、1/24/256 样本帧、tlast |
-| `tc_axi_handshake_random` | AXI 流控 | 连续流、25/50/75% stall、valid gap、B/R backpressure |
-| `tc_axi_sideband_order` | sideband 和 AXI-Lite | tlast/tuser、disabled、AW/W 同时/分离到达 |
-| `tc_dpd_modes` | DPD 运行模式 | bypass、合法 MP、tap 1/2/3/4、order 1/3/5、未编译 mode |
-| `tc_dpd_safety_commit` | DPD 安全 | `24576/24577` 边界、非法 commit、busy/idle commit、saturation |
-| `tc_observer_nominal` | observer 正常路径 | delay 0/最大、identity/complex gain、tlast、temperature |
-| `tc_observer_negative` | observer 异常路径 | invalid、early feedback、drop、overflow、窗口无效 |
-| `tc_ai_policy_safety` | AI 策略 | known/unknown/OOD、seed fallback、14-candidate local search |
-| `tc_rf_metric_matrix` | behavioral DPA | linear、AM/AM、AM/PM、memory、noise、temperature、3 blind profiles |
-
-### 11.4 testcase 通过条件
-
-- AXI transaction、valid/sideband、BP bit、signed 编码：0 mismatch。
-- UVM fatal/error、protocol assertion、scoreboard error：0。
-- 非法系数或非法 bank commit 生效：0 次。
-- 有效 observer 窗口：`drop=0`、`overflow=0`、`last_seen=1`。
-- blind profile 永久不进入训练、阈值选择或结构选择。
-- 主 RF 比较使用同一 waveform、DPA、BPF、receiver 和 held-out 划分。
-- 每次回归生成 test-to-bin hit list；未达到 100% 时不称为 signoff。
+只有 `dsm_memory_dpd_bittrue_test` 在修正后取得零 UVM error/fatal、768 个 RF transaction
+全部 bit-true 且 safety testcase 持续通过后，才可声明 AXI control plane 与 active
+memory-DPD datapath 的 system-level UVM 证据成立。

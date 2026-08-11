@@ -21,9 +21,12 @@ jobs:
             "SECURITY.md",
             "AGENTS.md",
             "docs/STATUS_AND_LIMITS.md",
-            "docs/IP_SPEC.md",
+            "docs/SPEC.md",
+            "docs/VPLAN.md",
             "docs/IP_HANDOFF.md",
-            "docs/PROJECT_MAP.md",
+            "docs/PROJECT_GUIDE.md",
+            "docs/PPA_VERIFICATION_RELEASE.md",
+            "docs/README.md",
             "docs/UPDATE_LOG.md",
             "rtl/filelist_p0.f"
           )
@@ -58,10 +61,10 @@ jobs:
             }
           }
 
-      - name: Check public text is English-only
+      - name: Check source text is English-only
         shell: pwsh
         run: |
-          $exts = @(".md", ".m", ".py", ".sv", ".svh", ".v", ".vh", ".tcl", ".ps1", ".cmd", ".f", ".xdc", ".yml", ".yaml")
+          $exts = @(".m", ".py", ".sv", ".svh", ".v", ".vh", ".tcl", ".ps1", ".cmd", ".f", ".xdc", ".yml", ".yaml")
           $files = git ls-files |
             Where-Object {
               $exts -contains [System.IO.Path]::GetExtension($_) -and
@@ -71,14 +74,14 @@ jobs:
           $hit = $files | Select-String -Pattern '\p{IsCJKUnifiedIdeographs}'
           if ($hit) {
             $hit | Select-Object -First 20
-            throw "Non-English CJK text found in public text files"
+            throw "Non-English CJK text found in source or automation files"
           }
 
       - name: Check generated temp files are not tracked
         shell: pwsh
         run: |
           $files = git ls-files
-          $bad = $files | Select-String -Pattern '(^|/)(\.Xil|xsim\.dir)(/|$)|\.jou$|\.log$|\.backup\.(jou|log)$|^ip/build/|^verif/out_xsim_ip_smoke/'
+          $bad = $files | Select-String -Pattern '(^|/)(\.Xil|xsim\.dir|__pycache__|cksum_dir|\.matlab_pref|\.matlab_prefs)(/|$)|\.jou$|\.log$|\.backup\.(jou|log)$|\.mr$|-verilog\.(pvl|syn)$|ucli\.key$|^ip/build/|^verif/out_xsim_ip_smoke/'
           if ($bad) {
             $bad
             throw "Generated temp files should not be tracked"

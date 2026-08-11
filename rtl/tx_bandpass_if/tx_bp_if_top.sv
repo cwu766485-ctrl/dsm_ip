@@ -30,6 +30,8 @@ module tx_bp_if_top #(
 
   logic signed [W-1:0] if_sample_reg;
   logic bp_valid;
+  logic [1:0] mixer_phase;
+  logic [1:0] rf_phase_reg;
 
   bp_fs4_iq_mixer #(.W(W)) u_mixer (
     .clk(clk),
@@ -39,7 +41,7 @@ module tx_bp_if_top #(
     .q_in(q_in),
     .out_valid(if_valid),
     .if_out(if_sample_reg),
-    .phase(if_phase)
+    .phase(mixer_phase)
   );
 
   generate
@@ -69,13 +71,19 @@ module tx_bp_if_top #(
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       bp_valid <= 1'b0;
+      rf_phase_reg <= 2'd0;
     end else begin
       bp_valid <= if_valid;
+      // The BPDSM consumes if_sample_reg one cycle after the mixer produces
+      // it. Carry the matching Fs/4 phase to the RF transaction boundary.
+      if (if_valid)
+        rf_phase_reg <= mixer_phase;
     end
   end
 
   assign if_sample = if_sample_reg;
   assign rf_valid = bp_valid;
+  assign if_phase = rf_phase_reg;
 
 endmodule
 

@@ -59,40 +59,49 @@ $tbs = @(
   "$repo\verif\tb\tx_bandpass_if\tb_tx_bp_if_top.sv"
 )
 
-$bat = Join-Path $env:TEMP ("run_xsim_tx_routes_" + [guid]::NewGuid().ToString() + ".cmd")
+$vivadoBin = Join-Path (Split-Path -Parent $vivadoSettings) "bin"
+$xvlog = Join-Path $vivadoBin "xvlog.bat"
+$xelab = Join-Path $vivadoBin "xelab.bat"
+$xsim = Join-Path $vivadoBin "xsim.bat"
+$oldLocation = Get-Location
 try {
-  Set-Content -LiteralPath $bat -Encoding ASCII -Value (@(
-    '@echo off',
-    "call `"$vivadoSettings`" >nul",
-    "xvlog -sv -log xvlog.log -f `"$filelist`" " + (($tbs | ForEach-Object { "`"$_`"" }) -join ' '),
-    'if errorlevel 1 exit /b 1',
-    'xelab -log xelab_analog_iq.log tb_dsm_iq_analog_top -s sim_analog_iq',
-    'if errorlevel 1 exit /b 1',
-    'xsim sim_analog_iq -log xsim_analog_iq.log -runall',
-    'if errorlevel 1 exit /b 1',
-    'xelab -log xelab_bp_single.log tb_dsm_core_bp_single -s sim_bp_single',
-    'if errorlevel 1 exit /b 1',
-    'xsim sim_bp_single -log xsim_bp_single.log -runall',
-    'if errorlevel 1 exit /b 1',
-    'xelab -log xelab_bp_if.log tb_tx_bp_if_top -s sim_bp_if',
-    'if errorlevel 1 exit /b 1',
-    'xsim sim_bp_if -log xsim_bp_if.log -runall'
-  ))
-  cmd.exe /c $bat
-  if ($LASTEXITCODE -ne 0) { throw "XSim transmitter-route regression failed." }
+  Set-Location $work
+  & $xvlog -sv -log xvlog.log -f $filelist @tbs
+  if ($LASTEXITCODE -ne 0) { throw "TX route compile failed." }
+
+  & $xelab -log xelab_analog_iq.log tb_dsm_iq_analog_top -s sim_analog_iq
+  if ($LASTEXITCODE -ne 0) { throw "Analog-IQ elaboration failed." }
+  & $xsim sim_analog_iq -log xsim_analog_iq.log -runall
+  if ($LASTEXITCODE -ne 0) { throw "Analog-IQ simulation failed." }
+
+  & $xelab -log xelab_bp_single.log tb_dsm_core_bp_single -s sim_bp_single
+  if ($LASTEXITCODE -ne 0) { throw "BP single elaboration failed." }
+  & $xsim sim_bp_single -log xsim_bp_single.log -runall
+  if ($LASTEXITCODE -ne 0) { throw "BP single simulation failed." }
+
+  & $xelab -log xelab_bp_if.log tb_tx_bp_if_top -s sim_bp_if
+  if ($LASTEXITCODE -ne 0) { throw "BP IF elaboration failed." }
+  & $xsim sim_bp_if -log xsim_bp_if.log -runall
+  if ($LASTEXITCODE -ne 0) { throw "BP IF simulation failed." }
+
   $logs = @('xvlog.log', 'xelab_analog_iq.log', 'xsim_analog_iq.log', 'xelab_bp_single.log', 'xsim_bp_single.log', 'xelab_bp_if.log', 'xsim_bp_if.log')
   foreach ($name in $logs) {
     if (-not (Test-Path -LiteralPath (Join-Path $work $name))) {
       throw "Vivado returned without producing $name."
     }
   }
-  foreach ($name in @('xsim_analog_iq.log', 'xsim_bp_single.log', 'xsim_bp_if.log')) {
-    if (-not (Select-String -LiteralPath (Join-Path $work $name) -Pattern 'PASS' -SimpleMatch -Quiet)) {
-      throw "Simulation PASS marker was not found in $name."
+  $markers = @{
+    'xsim_analog_iq.log' = 'Analog-IQ smoke PASS:'
+    'xsim_bp_single.log' = 'BP single-loop smoke PASS:'
+    'xsim_bp_if.log' = 'BP IF smoke PASS:'
+  }
+  foreach ($name in $markers.Keys) {
+    if (-not (Select-String -LiteralPath (Join-Path $work $name) -Pattern $markers[$name] -SimpleMatch -CaseSensitive -Quiet)) {
+      throw "Expected marker '$($markers[$name])' was not found in $name."
     }
   }
 } finally {
-  Remove-Item -LiteralPath $bat -Force -ErrorAction SilentlyContinue
+  Set-Location $oldLocation
 }
 
 Write-Host "TX route XSim regression passed. Outputs in $work"

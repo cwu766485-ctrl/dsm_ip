@@ -23,6 +23,7 @@ module bp_fs4_iq_mixer #(
 );
 
   logic [1:0] phase_reg;
+  logic [1:0] phase_out_reg;
   logic signed [W-1:0] if_next;
 
   always_comb begin
@@ -38,18 +39,22 @@ module bp_fs4_iq_mixer #(
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       phase_reg <= 2'd0;
+      phase_out_reg <= 2'd0;
       out_valid <= 1'b0;
       if_out <= '0;
     end else begin
       out_valid <= in_valid;
       if (in_valid) begin
         if_out <= if_next;
+        // Keep the phase that generated if_out. phase_reg advances to the
+        // next Fs/4 slot and must not be used to label this transaction.
+        phase_out_reg <= phase_reg;
         phase_reg <= phase_reg + 2'd1;
       end
     end
   end
 
-  assign phase = phase_reg;
+  assign phase = phase_out_reg;
 
 endmodule
 

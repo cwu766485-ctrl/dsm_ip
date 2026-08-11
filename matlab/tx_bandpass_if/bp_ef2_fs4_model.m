@@ -1,4 +1,4 @@
-function y = bp_ef2_fs4_model(x, varargin)
+function [y, core] = bp_ef2_fs4_model(x, varargin)
 % BP_EF2_FS4_MODEL Fixed-point Fs/4 bandpass EFDSM reference.
 %   X is a real Q1.15 IF sequence. The NTF is 1 + z^-2, with zeros at Fs/4.
 
@@ -16,15 +16,17 @@ function y = bp_ef2_fs4_model(x, varargin)
   e2 = int64(0);
   yreg = int64(1);
   y = zeros(numel(x), 1, 'int64');
+  core = zeros(numel(x), 1, 'int64');
 
   for n = 1:numel(x)
     y(n) = yreg;
     v = sat_or_wrap(x(n) - e2, acc_w, saturate);
     q = tern(v >= 0, qpos, qneg);
-    e0 = v - q;
+    e0 = sat_or_wrap(v - q, acc_w, false);
     e2 = e1;
     e1 = e0;
     yreg = tern(v >= 0, int64(1), int64(0));
+    core(n) = yreg;
   end
 end
 

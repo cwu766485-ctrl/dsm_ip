@@ -14,6 +14,8 @@ __pycache__/
 *.tmp
 *.bak
 .tmp_matlab/
+.matlab_pref/
+.matlab_prefs/
 codex-*.cmd
 
 # MATLAB generated outputs
@@ -40,6 +42,7 @@ clockInfo.txt
 # XSim generated files
 xsim.dir/
 .slang/
+verif/out/
 verif/out_xsim_p0/
 verif/out_xsim_p0_multibit/
 verif/out_xsim_interp_frontend/
@@ -49,7 +52,12 @@ verif/out_xsim_lpdsmdpa_bpf_dpd/
 verif/out_xsim_v11_compile/
 verif/out_xsim_dpd_observer/
 verif/out_xsim_tinyml_tree/
+verif/out_xsim_tx_routes/
+verif/out_xsim_if_dsm_bittrue/
 verif/out_safety_seed_policy/
+uvm_verif/sim/out/
+uvm_verif/sim/ucli.key
+uvm_verif/refmodel/python/out/
 *.vcd
 *.fst
 *.ghw
@@ -70,7 +78,11 @@ ip/ip_repo/
 # Synthesis/report generated outputs
 reports/
 alib-*/
+cksum_dir/
 *.svf
+*.mr
+*-verilog.pvl
+*-verilog.syn
 syn/reports/**/*.rpt
 syn/reports/ooc_*/
 syn/reports/ooc_xc*/
@@ -98,6 +110,17 @@ fpga/hardware/
 # Third-party papers and downloaded references
 docs/papers/
 *.pdf
+
+# ADS generated workspaces, datasets, and circuit simulation outputs
+ads/**/data/*.csv
+ads/**/data/*.txt
+ads/**/data/*.ds
+ads/**/simulation/
+ads/**/workspace/
+ads/**/*.wrk/
+ads/**/*.log
+de_sim.cfg
+hpeesofsim.cfg
 
 # Local server/license/secrets
 .env

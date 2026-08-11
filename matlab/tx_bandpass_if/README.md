@@ -11,3 +11,13 @@ I/Q -> full-precision IF -> BPDSM -> IF BPF -> DDC -> CP/FFT EVM and ACLR
 ```
 
 It is not interchangeable with the native low-pass I/Q metric.
+
+`bp_ef2_fs4_model` returns two traces:
+
+- the first output is the historical registered observation trace;
+- the second output is the current quantizer result used for an RTL
+  `rf_valid` transaction.
+
+Run `compare_python_bp_ef2_reference` after generating vectors under
+`uvm_verif/refmodel/python/` to prove that both latency views match the Python
+integer model sample by sample.

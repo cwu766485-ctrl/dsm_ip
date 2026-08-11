@@ -1,62 +1,103 @@
 # IP 交接说明
 
-## 1. 交付对象
+更新时间：2026-08-09
 
-顶层模块：`rtl/axi/dsm_ip_axi_top.v`，模块名 `dsm_ip_axi_top`。
+## 1. 交付顶层
 
-它包含 AXI-Lite 控制/状态接口、TX AXI4-Stream、可选反馈 AXI4-Stream、DPD 前端、插值、DSM/IF 输出和监控统计。推荐 `aclk=100 MHz`，`aresetn` 为低有效异步复位。
+文件：`rtl/axi/dsm_ip_axi_top.v`
+模块：`dsm_ip_axi_top`
+推荐时钟：`aclk = 100 MHz`
+复位：`aresetn` 低有效
 
-## 2. TX 数据通道
+顶层包含 AXI4-Lite 控制面、TX AXI4-Stream、可选 observer AXI4-Stream、DPD、插值、DSM/IF 输出和 monitor。
 
-每个 32 bit AXI-Stream word 是一个复数 Q1.15 样本：
-
-```text
-tdata[15:0]  = signed I
-tdata[31:16] = signed Q
-```
-
-传输条件是 `tvalid && tready` 在 `aclk` 上升沿同时为 1。`tlast` 是帧尾标志，`tuser[0]` 非零表示上游错误。发送端在 `tvalid=1,tready=0` 时必须保持 `tdata/tlast/tuser` 不变。
-
-推荐 ZU15EG 路径：
+## 2. 主 SKU
 
 ```text
-PS DDR TxBuffer -> AXI DMA MM2S -> M_AXIS_MM2S -> dsm_ip_axi_top.s_axis
+ALGORITHM=3
+DUC_MODE=3
+INTERP_MODE=4
+INTERP_IMPL=0
+ENABLE_DPD_MEMORY=1
+ENABLE_DPD_POLY=0
+ENABLE_DPD_LUT=0
+DPD_POLY_ORDER=5
+DPD_MP_MAX_TAPS=4
 ```
 
-AXI-Lite 仅用于低速配置和读状态，不应发送每个 IQ 样本。
+这是 compile-time 产品配置。软件只能配置已综合进硬件的 mode 和系数。
 
-## 3. 反馈通道
+## 3. TX AXI4-Stream
 
 ```text
-obs_tdata[15:0]  = observed I，signed Q1.15
-obs_tdata[31:16] = observed Q，signed Q1.15
+tdata[15:0]  = signed I, Q1.15
+tdata[31:16] = signed Q, Q1.15
 ```
 
-反馈应位于 DPA/PA 输出经过输出滤波、耦合衰减、下变频和 ADC/接收机之后的复数观测面。它不是 DPD 输入，也不是未经滤波的一位 DSM bitstream。
+传输发生在 `tvalid && tready`。stall 时 `tdata/tlast/tuser` 必须稳定。`tlast` 标记帧尾，`tuser[0]` 表示上游错误。
 
-反馈需要与 `aclk` 同时钟；异步 ADC 必须经过 AXI-Stream clock converter/FIFO。观测窗口出现 drop 或 overflow 时，软件必须丢弃该窗口。
+推荐 ZU15EG 连接：
 
-## 4. 两种 SKU
+```text
+PS DDR -> AXI DMA MM2S -> dsm_ip_axi_top.s_axis
+PS master -> AXI interconnect -> dsm_ip_axi_top.s_axi
+```
 
-模拟 IQ SKU：`DUC_MODE=2`。输出 `i_bit/q_bit`，`rf_valid=0`，后接外部重构 LPF 和模拟 IQ Mixer。
+AXI-Lite 不用于逐样本传输。
 
-BP EFDSM2 SKU：`ALGORITHM=3, DUC_MODE=3, INTERP_MODE=4`。路径为 `DPD -> x32 插值 -> 全精度 Fs/4 IF -> 一位 BP EFDSM2`，使用 `rf_valid/rf_bit/rf_signed`。此模式下 `i_bit/q_bit/i_yout/q_yout` 只是兼容性输出。
+## 4. 输出
 
-## 5. 软件启动顺序
+主 BP SKU 使用：
 
-1. 释放 `aresetn`，确认 `VERSION` 和 `CAPABILITY`。
-2. 读取 `ALGORITHM/DUC_MODE/INTERP_MODE`，确认与软件 build manifest 一致。
-3. 配置 DPD 系数、tap 数和安全控制。
-4. 对 memory-polynomial 写 inactive bank，等待安全边界后写 `MP_COMMIT`。
-5. 配置 observer delay、复增益、窗口和 condition metadata。
-6. 写 `CTRL.bit0=1` 使能 core。
-7. 启动 DMA，发送 AXI-Stream TX 帧。
-8. 读取计数器、错误状态和 observer 结果。
+- `rf_valid`：RF 输出有效；
+- `rf_bit`：一位编码；
+- `rf_signed`：与 bit 对应的有符号电平。
 
-## 6. 安全规则
+`i_bit/q_bit/i_yout/q_yout` 是低通 Cartesian 兼容输出，在 BP SKU 中不作为有效数据面。
 
-`DPD_CTRL.bit8` 开启系数安全检查，`bit9` 写 1 清 saturation fallback。超过 Q2.14 工程幅度限制的系数会使 shadow package 无效，commit 被拒绝。DPD saturation fault 会使后续样本回退 bypass，软件必须清 fault 并重新加载安全 package。
+## 5. 反馈 AXI4-Stream
 
-## 7. 责任边界
+```text
+obs_tdata[15:0]  = observed I, signed Q1.15
+obs_tdata[31:16] = observed Q, signed Q1.15
+```
 
-PL 负责确定性的定点 datapath、流控、统计、bank 和安全；PS/PC 负责 PA 识别、系数拟合、候选搜索和量化；RF 负责重构、Mixer、DPA/PA、耦合器和接收机。AXI 通道验证不等于真实 RF 闭环验证。
+反馈应来自 DPA/PA 输出经 BPF、耦合器、下变频和 ADC 后的复数观测面，而不是未经恢复的一位 bitstream。异步 ADC 必须先经过 `dpd_observer_async_bridge` 或 AXI Stream Clock Converter。
+
+当前板级模板没有物理 PA/ADC feedback，因此 observer 只具备数字 replay 接口能力。
+
+## 6. DPD 系数流程
+
+1. 读取 `VERSION`、`CAPABILITY` 和 build identity；
+2. 向 inactive shadow bank 写 C1/C3/C5 与各 tap；
+3. 检查系数范围和 shadow package 状态；
+4. 请求 `MP_COMMIT`；
+5. 等待 safe-boundary ack，确认 active bank 已切换；
+6. 若 commit failed 或 saturation fault，保持/回退 bypass 或上一组安全 bank。
+
+禁止在 active stream 中直接逐寄存器修改 active 系数。
+
+## 7. 软件启动顺序
+
+1. 复位并确认错误计数为零；
+2. 检查硬件版本和编译配置；
+3. 配置 DPD、observer、monitor window 和安全策略；
+4. 写入并提交系数；
+5. 使能 core；
+6. 启动 DMA；
+7. 等待 frame/window 完成；
+8. 读取 sample/frame/stall/error、observer 和 monitor；
+9. 只有在窗口有效且无 overflow/drop/saturation 时才评估候选；
+10. 退化或错误时回退安全配置。
+
+## 8. 责任边界
+
+- PL/ASIC：定点数据通路、握手、状态、统计、bank 和安全回退；
+- PS/PC：PA 识别、系数拟合、候选搜索、量化和策略；
+- RF：DPA/PA、滤波、匹配、耦合器、接收机和 ADC；
+- UVM：验证 RTL/DUT，不验证 PS 算法和 RF 模型；
+- MATLAB/Python：验证算法和 behavioral RF，不替代板级实测。
+
+## 9. 交付限制
+
+当前可以交付数字 IP 源码和接口，但主 BP SKU 仍需新的 ZU15EG routed/bitstream、完整 UVM signoff 和真实反馈验证。使用方不得将历史 `DUC_MODE=0` bitstream 证据当成当前 BP SKU 证据。

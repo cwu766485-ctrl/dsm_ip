@@ -1,91 +1,130 @@
 # 项目工程指南
 
+更新时间：2026-08-09
+
 ## 1. 项目定位
 
-`dsm_ip` 是可复用的数字 Delta-Sigma Modulator（DSM）与数字预失真（DPD）IP 交付包，目标是形成：
+`dsm_ip` 是面向数字 IC/FPGA 的可复用数字发射机 IP。项目将复数基带 I/Q 经过 DPD、插值、数字 IF 和 DSM 转换为确定性的数字输出，并提供控制、状态、验证和实现流程。
+
+当前主链路：
 
 ```text
 PS/DDR -> AXI DMA -> AXI4-Stream Q1.15 I/Q
-       -> DPD -> 插值 -> DSM/数字 IF
-       -> 外部重构、IQ 上变频或一位 DPA
+       -> Memory-Poly5 4-tap DPD
+       -> x32 interpolation
+       -> full-precision Fs/4 IF
+       -> one-bit BP EFDSM2
+       -> rf_bit
 ```
 
-高速数据路径使用可综合定点 RTL；MATLAB 用于 bit-true 参考、DPD 建模和指标分析；PS 软件用于低速配置、观测和校准策略。AI 是低速校准辅助，不是高速神经网络数据通路。
+外部 behavioral DPA/PA、BPF、接收机和 ADC 不在数字 RTL 内。
 
-当前唯一主验证闭环是：
+## 2. 两类集成路线
 
-```text
-BP EFDSM2 RTL -> rf_bit -> MATLAB behavioral DPA -> observation receiver
-               -> DPD quality metrics
-```
+### 2.1 模拟 IQ 路线
 
-因此，项目重点是验证 BP EFDSM2 作为一位 DPA 驱动调制器时的数字质量，以及验证针对同一 behavioral DPA 训练的 DPD 是否改善 EVM/SNDR/ACLR proxy。其他 DSM 结构和 DPD 分支属于兼容、历史对照或研究对象。
+`DUC_MODE=2` 输出 `i_bit/q_bit`，后接外部重构 LPF、模拟 IQ mixer、LO 和 PA。该路线是兼容集成方式，不是当前主验证 SKU。
 
-## 2. 两条 RF 路线
+### 2.2 一位数字 IF 路线
 
-### 路线 A：模拟 IQ 次要集成路线
-
-```text
-DPD -> 插值 -> 低通一位 I/Q DSM
-     -> 外部重构 LPF -> 模拟 IQ Mixer/LO -> PA
-```
-
-使用 `DUC_MODE=2`。此模式输出 `i_bit/q_bit`，`rf_valid` 保持无效。它是实际模拟上变频系统的推荐边界。
-
-### 路线 B：数字 IF / BP EFDSM2 主验证路线
-
-```text
-DPD -> x32 插值 -> 全精度 Fs/4 IF Mixer
-     -> 一位 BP EFDSM2 -> rf_bit -> 外部 DPA/BPF
-```
-
-使用 `ALGORITHM=3, DUC_MODE=3, INTERP_MODE=4`。该路线已经接入 `dsm_ip_top` 和 AXI 顶层，是当前主验证 SKU；其输出后接 behavioral DPA，而不是 ADS 或物理 PA，并使用统一 bit-true/接收机审计。
-
-旧的低通 DSM 后直接做一位 `[+I,+Q,-I,-Q]` 合路不能作为通信性能结论。
+`DUC_MODE=3` 先做全精度 Fs/4 IF，再用 BP EFDSM2 量化为一位 `rf_bit`。该路线面向一位 DPA/开关功放，是当前主验证 SKU。
 
 ## 3. 目录职责
 
 | 路径 | 职责 |
 |---|---|
-| `rtl/dsm/` | 单环、误差反馈、MASH、低通和多位 DSM |
-| `rtl/dpd/` | polynomial、LUT、memory-polynomial、observer 和安全逻辑 |
-| `rtl/interp/` | x4/x8/x16/x32 插值滤波器 |
-| `rtl/duc/` | 传统 Fs/4/NCO DUC |
-| `rtl/tx_bandpass_if/` | 全精度 IF Mixer 与 BP DSM |
-| `rtl/ip/` | 可复用 streaming datapath |
-| `rtl/axi/` | `dsm_ip_axi_top` AXI-Lite/AXI-Stream 封装 |
-| `matlab/` | 定点模型、向量生成、DPD 训练和指标 |
-| `verif/` | XSim testbench、向量和回归脚本 |
+| `rtl/dsm/` | 单比特和多比特低通 DSM |
+| `rtl/tx_bandpass_if/` | Fs/4 IF mixer 和 BP DSM |
+| `rtl/interp/` | x4/x8/x16/x32 插值 |
+| `rtl/dpd/` | polynomial、LUT、memory-poly、observer 和安全逻辑 |
+| `rtl/axis/` | AXI4-Stream 缓冲与流控 |
+| `rtl/ip/` | 与总线无关的数字数据通路顶层 |
+| `rtl/axi/` | AXI-Lite/AXI-Stream 交付顶层 |
+| `matlab/` | fixed/float 模型、向量、DPD 训练和指标 |
+| `verif/` | 定向 SystemVerilog testbench 和 XSim 回归 |
+| `uvm_verif/` | UVM scaffold 和后续完整验证环境 |
 | `ip/` | Vivado IP 打包 |
-| `syn/` | Vivado OOC 和 Synopsys DC 流程 |
-| `fpga/` | ZU15EG PS/DMA/ILA 集成 |
-| `ads/` | 可选 DPA 电路/数值实验，不是数字 IP 必需项 |
-| `docs/evidence/` | 精简、可追溯的验证证据 |
+| `syn/` | Vivado OOC/routed 与 DC 脚本/报告 |
+| `fpga/zu15eg/` | ZU15EG BD、bare-metal、XSDB 和板级支持 |
+| `ads/` | 可选 DPA 电路实验；生成 workspace/data 不入库 |
+| `docs/evidence/` | 精简、可追溯的 CSV/JSON 证据 |
 
-## 4. 推荐发布 SKU
+## 4. 配置方式
 
-| 参数 | 主 BP SKU |
-|---|---:|
-| `ALGORITHM` | 3，EFDSM2 标识；BP 分支实际使用 `BP_ALGORITHM=1` |
-| `DUC_MODE` | 3 |
-| `INTERP_MODE` | 4，x32 |
-| `INTERP_IMPL` | 0 |
-| DPD | 针对 behavioral DPA 的 Q2.14 memory-polynomial，C1/C3/C5，4 taps |
-| `ENABLE_DPD_POLY` | 0 |
-| `ENABLE_DPD_LUT` | 0 |
-| `ENABLE_DPD_MEMORY` | 1 |
-| 时钟 | 100 MHz |
-| 输入 | 3.125 MS/s 复数 Q1.15 |
+### 4.1 编译期参数
 
-注意：`ALGORITHM/DUC_MODE/INTERP_MODE` 是编译期参数，寄存器只用于读取 build identity，不是运行时切换开关。
+`ALGORITHM`、`DUC_MODE`、`INTERP_MODE`、`INTERP_IMPL`、DPD feature gate、polynomial order 和最大 tap 数决定实际综合硬件。修改后必须重新综合和生成 bitstream。
 
-## 5. 必要检查
+### 4.2 运行时寄存器
+
+AXI-Lite 用于 enable/reset、DPD mode、系数/LUT、bank commit、observer、monitor 和状态读取。运行时寄存器只能控制已经编译进硬件的能力，不能恢复被 generate 裁剪的分支。
+
+### 4.3 数据面
+
+AXI4-Stream 每拍传送一个复数 Q1.15 样本：
+
+```text
+tdata[15:0]  = signed I
+tdata[31:16] = signed Q
+```
+
+只在 `tvalid && tready` 时发生传输；stall 时上游必须保持数据和 sideband。
+
+## 5. 运行流程
+
+### 5.1 MATLAB
+
+```matlab
+cd('E:/workspace/chip/dsm_ip/matlab');
+path_setup;
+```
+
+各模型入口和向量位置见 `matlab/README.md`。
+
+### 5.2 RTL 回归
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_all_dsm.ps1 -Part xc7z020clg400-1
 ```
 
-28 nm DC 和 SpyGlass/VCS 需要 Linux EDA 环境。工具不可用或崩溃时必须记录为未完成，不得伪造通过结果。
+DPD、插值、observer 和 BP 专项使用 `verif/scripts/` 下对应脚本。
+
+### 5.3 IP 打包
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1
+```
+
+### 5.4 ZU15EG
+
+推荐结构：
+
+```text
+PS DDR -> AXI DMA MM2S -> dsm_ip_axi_top
+PS AXI master -> AXI-Lite
+IP status/monitor -> PS reads
+```
+
+先验证 VERSION/CAPABILITY，再写系数、提交 bank、启动 DMA，最后读取计数器和错误。没有真实反馈硬件时，observer 只能使用数字 replay，不能宣称 PA 闭环。
+
+## 6. 异步反馈扩展
+
+未来物理反馈链路必须经过 clock converter 或异步 FIFO：
+
+```text
+DPA/PA -> BPF/coupler -> receiver/ADC
+       -> Q1.15 feedback AXI4-Stream
+       -> dpd_observer_async_bridge
+       -> s_axis_obs -> observer -> PS
+```
+
+需要定义反馈时钟、FIFO 满策略、丢样计数、窗口完成、软复位 drain 和 CDC/RDC 检查。
+
+## 7. 工程规则
+
+- 不静默修改定点宽度、符号、缩放、截断、饱和或延迟；
+- 行为变化必须同步 MATLAB、RTL、testbench、寄存器和文档；
+- 生成日志、缓存、波形、ADS workspace 和大型报告不入库；
+- 结果必须注明配置和证据等级；
+- 当前主目标只关注 ZU15EG，历史器件结果不作为 release gate。
