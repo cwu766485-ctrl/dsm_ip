@@ -68,7 +68,7 @@ function Invoke-VivadoCmd($cmd, $logName) {
 }
 
 Write-Host "[rtl] compile and elaborate fixed-point tree"
-Invoke-VivadoCmd "xvlog -sv `"$repo\rtl\dpd\dpd_tinyml_tree.v`" `"$repo\verif\tb\tb_dpd_tinyml_tree.sv`"" "xvlog.log"
+Invoke-VivadoCmd "xvlog -sv `"$repo\rtl\dpd\dpd_tinyml_tree.v`" `"$repo\verif\block\dpd\tb\tb_dpd_tinyml_tree.sv`"" "xvlog.log"
 Invoke-VivadoCmd "xelab -debug typical tb_dpd_tinyml_tree -s sim_tb_dpd_tinyml_tree" "xelab.log"
 Write-Host "[rtl] compare every decision with Python golden vectors"
 Invoke-VivadoCmd "xsim sim_tb_dpd_tinyml_tree -runall" "xsim.log"

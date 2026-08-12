@@ -14,6 +14,7 @@ $work = Join-Path $repo "verif\out_xsim_dpd_observer"
 if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force }
 New-Item -ItemType Directory -Path $work | Out-Null
 Copy-Item (Join-Path $repo "matlab\out\dpd\observer\*.csv") $work -Force
+$originalLocation = Get-Location
 Set-Location $work
 
 function Invoke-Xilinx([string]$Command) {
@@ -27,16 +28,27 @@ function Invoke-Xilinx([string]$Command) {
   }
 }
 
-$rtl = Join-Path $repo "rtl\dpd\dpd_observer.v"
-$tb = Join-Path $repo "verif\tb\tb_dpd_observer_behavioral.sv"
-Invoke-Xilinx "xvlog -sv `"$rtl`" `"$tb`""
-Invoke-Xilinx "xelab -debug typical tb_dpd_observer_behavioral -s sim_dpd_observer_behavioral"
-Invoke-Xilinx "xsim sim_dpd_observer_behavioral -runall"
-$xsimLog = Join-Path $work "xsim.log"
-if (Select-String -LiteralPath $xsimLog -Pattern "Fatal:" -SimpleMatch) {
-  throw "Behavioral PA observer simulation reported a fatal failure"
+try {
+  $rtl = Join-Path $repo "rtl\dpd\dpd_observer.v"
+  $tb = Join-Path $repo "verif\block\monitor\tb\tb_dpd_observer_behavioral.sv"
+  $tbRandom = Join-Path $repo "verif\block\monitor\tb\tb_dpd_observer_random_protocol.sv"
+  Invoke-Xilinx "xvlog -sv `"$rtl`" `"$tb`" `"$tbRandom`""
+  Invoke-Xilinx "xelab -debug typical tb_dpd_observer_behavioral -s sim_dpd_observer_behavioral"
+  Invoke-Xilinx "xsim sim_dpd_observer_behavioral -log behavioral_xsim.log -runall"
+  Invoke-Xilinx "xelab -debug typical tb_dpd_observer_random_protocol -s sim_dpd_observer_random_protocol"
+  Invoke-Xilinx "xsim sim_dpd_observer_random_protocol -log random_xsim.log -runall"
+  $behavioralLog = Join-Path $work "behavioral_xsim.log"
+  $randomLog = Join-Path $work "random_xsim.log"
+  if (Select-String -LiteralPath $behavioralLog,$randomLog -Pattern "Fatal:" -SimpleMatch) {
+    throw "Behavioral PA observer simulation reported a fatal failure"
+  }
+  if (-not (Select-String -LiteralPath $behavioralLog -Pattern "Behavioral PA observer PASS" -SimpleMatch)) {
+    throw "Behavioral PA observer simulation did not report PASS"
+  }
+  if (-not (Select-String -LiteralPath $randomLog -Pattern "DPD_OBSERVER_RANDOM_PROTOCOL_PASS" -SimpleMatch)) {
+    throw "Observer random protocol simulation did not report PASS"
+  }
+  Write-Host "[xsim] behavioral PA observation loop PASS"
+} finally {
+  Set-Location $originalLocation
 }
-if (-not (Select-String -LiteralPath $xsimLog -Pattern "Behavioral PA observer PASS" -SimpleMatch)) {
-  throw "Behavioral PA observer simulation did not report PASS"
-}
-Write-Host "[xsim] behavioral PA observation loop PASS"

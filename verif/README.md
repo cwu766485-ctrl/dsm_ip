@@ -4,7 +4,7 @@ Verification is split into block, subsystem, and IP-system levels:
 
 - `block/`: lightweight arithmetic and protocol tests for individual RTL blocks.
 - `subsystem/`: boundary tests for TX frontend, IF/DSM, feedback, and control.
-- `tb/`: retained directed XSim testbenches.
+- `tb/`: retained IP-top and route-level directed XSim testbenches.
 - `scripts/`: XSim runners and regression helpers.
 - `vectors/`: checked-in input vectors and vector-format rules.
 - `../uvm_verif/`: complete IP-system UVM environment for Linux VCS/Verdi.

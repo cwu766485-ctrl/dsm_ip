@@ -41,7 +41,7 @@ function Invoke-VivadoCmd([string]$Command) {
 
 $poly = Join-Path $repo 'rtl\dpd\dpd_poly.v'
 $memory = Join-Path $repo 'rtl\dpd\dpd_memory_poly.v'
-$tb = Join-Path $repo 'verif\tb\tb_dpd_memory_poly_bittrue.sv'
+$tb = Join-Path $repo 'verif\block\dpd\tb\tb_dpd_memory_poly_bittrue.sv'
 Remove-Item -LiteralPath (Join-Path $work 'xsim.dir') -Recurse -Force -ErrorAction SilentlyContinue
 Push-Location $work
 try {

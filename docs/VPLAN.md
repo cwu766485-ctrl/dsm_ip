@@ -514,10 +514,38 @@ Python coefficient package / RF reference
 生成的 CSV 读取同一 package，避免在 MATLAB/Python/UVM 之间手工复制系数。负向 testcase
 写入绝对值 24577 的非法系数，并要求 commit failed、`ERROR.bit3` 置位、active bank 不变。
 
-Linux VCS 已执行该组 testcase：safety testcase 已通过；active bit-true testcase 完整运行了
-768 个 RF transaction，但所有数据值正确时仍出现固定 two-slot Fs/4 phase label offset。根因是
-BP mixer 的 phase debug 未跨 quantizer pipeline 对齐，RTL 已修正，尚待 VCS 重跑确认。
+2026-08-12 已在当前 RTL revision 上重新执行 Linux VCS：
+`dsm_memory_dpd_bittrue_test` 完成 768 个 RF transaction 的 Python golden 逐项比较，
+`dsm_memory_dpd_safety_test` 完成非法系数拒绝路径；两个 testcase 均为
+`UVM_ERROR=0`、`UVM_FATAL=0`。此前的 two-slot Fs/4 phase debug offset 已在 mixer/BP
+边界修复并由该次 full-chain testcase 重新确认。因此 AXI control plane 与 active
+Memory-Poly5/4-tap datapath 已具备 system-level UVM 证据。
 
-只有 `dsm_memory_dpd_bittrue_test` 在修正后取得零 UVM error/fatal、768 个 RF transaction
-全部 bit-true 且 safety testcase 持续通过后，才可声明 AXI control plane 与 active
-memory-DPD datapath 的 system-level UVM 证据成立。
+### 12.6 2026-08-12 Block 验证阶段结论
+
+本轮 block signoff 已由 `verif/scripts/run_block_signoff.ps1 -BpSamples 4096`
+实际执行并以 exit code 0 结束。覆盖范围为：
+
+- DPD Poly3/5/7、Memory-Poly 的 MATLAB/RTL 逐样本比较，三个结果均为 256/256、零失配；
+- 插值 mode 0 至 4、x32 的 I0/I1/I2/I3 输出各 4096 样本零失配，并覆盖 97 输入样本和
+  1084 次输出 backpressure；
+- Fs/4 mixer 的 8 组定向角点及 257 组随机样本；
+- BP EFDSM2 的 4096 组带固定种子的随机/极值/enable bubble 向量；
+- 双时钟 observer bridge 的 24 组定向样本和 129 组随机样本、225 次输出停顿；
+- monitor 的 MATLAB behavioral 计数向量，以及 129 样本、12 个 invalid beat 和 clear 路径。
+
+因此当前可以进入 subsystem 阶段，先后验证 `TX frontend`、`IF/DSM`、`feedback` 和
+`control` 的位宽、延迟、流控、复位及跨模块状态边界。该结论不包含 formal CDC/RDC、完整
+lint、门级/SDF、物理实现或真实 PA/ADC/RF feedback 签核。
+
+### 12.7 2026-08-12 Subsystem XSim 进度
+
+- IF/DSM：`Fs/4 mixer -> BP EFDSM2` 已完成 4096 transaction 的 Python-to-RTL 零失配。
+- TX frontend：`DPD bypass -> x4 interpolation` 已完成 97 输入、388 输出的逐样本零失配，
+  并覆盖 140 个 output backpressure 周期。
+- Feedback：`async bridge -> observer` 已完成 129 feedback beat 联合测试，117 有效配对、
+  12 invalid drop、191 源端停顿、零 FIFO drop 和零 `error_acc`。
+- Control：必须复用 Linux/VCS UVM 的 AXI-Lite、coefficient bank、atomic commit、
+  fallback 和协议断言；2026-08-12 的最新 RTL 已通过 memory-DPD bit-true 与 safety testcase，
+  不以 XSim 简化 testbench 取代 UVM。多 seed coverage closure、active-stream reset、长时
+  backpressure 与 `tuser` 错误注入仍为后续增强项。

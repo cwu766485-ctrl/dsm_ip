@@ -15,12 +15,14 @@ if ((Test-Path $work) -and -not $KeepWork) {
   Remove-Item -LiteralPath $work -Recurse -Force
 }
 New-Item -ItemType Directory -Force -Path $work | Out-Null
+$originalLocation = Get-Location
+try {
 Set-Location $work
 
 $filelist = Join-Path $work "filelist_dsm_ip_abs.f"
 $tbTop = Join-Path $repo "verif\tb\tb_dsm_ip_top_smoke.sv"
 $tbAxi = Join-Path $repo "verif\tb\tb_dsm_ip_axi_smoke.sv"
-$tbDpdV11 = Join-Path $repo "verif\tb\tb_dpd_v11.sv"
+$tbDpdV11 = Join-Path $repo "verif\block\dpd\tb\tb_dpd_v11.sv"
 $tbBpAxi = Join-Path $repo "verif\tb\tx_bandpass_if\tb_dsm_ip_bp_axi_smoke.sv"
 
 $rtlFiles = @(
@@ -133,3 +135,6 @@ Write-Host "[xsim] run DPD v1.1 unit smoke"
 Invoke-VivadoCmd "xsim sim_tb_dpd_v11 -runall"
 
 Write-Host "[xsim] DSM IP smoke PASS"
+} finally {
+  Set-Location $originalLocation
+}

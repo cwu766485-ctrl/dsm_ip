@@ -21,6 +21,8 @@ if (-not $SkipMatlabPrep) {
   if ($LASTEXITCODE -ne 0) { throw "MATLAB DPD vector preparation failed" }
 }
 
+$originalLocation = Get-Location
+try {
 Set-Location $work
 
 function Invoke-VivadoCmd($cmd) {
@@ -58,24 +60,29 @@ function Invoke-VivadoCmd($cmd) {
 $dpdPoly = Join-Path $repo "rtl\dpd\dpd_poly.v"
 $dpdLut = Join-Path $repo "rtl\dpd\dpd_lut.v"
 $dpdMemory = Join-Path $repo "rtl\dpd\dpd_memory_poly.v"
+$dpdObserver = Join-Path $repo "rtl\dpd\dpd_observer.v"
+$dpdSeedPredictor = Join-Path $repo "rtl\dpd\dpd_seed_predictor.v"
 $dpdAsyncBridge = Join-Path $repo "rtl\dpd\dpd_observer_async_bridge.v"
 $dpdFrontend = Join-Path $repo "rtl\dpd\dpd_frontend.v"
-$tb = Join-Path $repo "verif\tb\tb_dpd_frontend.sv"
-$tbMemory = Join-Path $repo "verif\tb\tb_dpd_memory_poly_bittrue.sv"
-$tbSafety = Join-Path $repo "verif\tb\tb_dpd_frontend_safety.sv"
-$tbProtocol = Join-Path $repo "verif\tb\tb_dpd_frontend_protocol.sv"
-$tbPoly7 = Join-Path $repo "verif\tb\tb_dpd_poly7_bittrue.sv"
-$tbPoly7Directed = Join-Path $repo "verif\tb\tb_dpd_poly7_directed.sv"
-$tbAsyncBridge = Join-Path $repo "verif\tb\tb_dpd_observer_async_bridge.sv"
-$tbFeatureGates = Join-Path $repo "verif\tb\tb_dpd_feature_gates.sv"
-$tbCompileMatrix = Join-Path $repo "verif\tb\tb_dpd_compile_matrix.sv"
+$tb = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend.sv"
+$tbMemory = Join-Path $repo "verif\block\dpd\tb\tb_dpd_memory_poly_bittrue.sv"
+$tbSafety = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend_safety.sv"
+$tbProtocol = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend_protocol.sv"
+$tbRandomProtocol = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend_random_protocol.sv"
+$tbPoly7 = Join-Path $repo "verif\block\dpd\tb\tb_dpd_poly7_bittrue.sv"
+$tbPoly7Directed = Join-Path $repo "verif\block\dpd\tb\tb_dpd_poly7_directed.sv"
+$tbAsyncBridge = Join-Path $repo "verif\block\observer\tb\tb_dpd_observer_async_bridge.sv"
+$tbAsyncBridgeRandom = Join-Path $repo "verif\block\observer\tb\tb_dpd_observer_async_bridge_random.sv"
+$tbV11 = Join-Path $repo "verif\block\dpd\tb\tb_dpd_v11.sv"
+$tbFeatureGates = Join-Path $repo "verif\block\dpd\tb\tb_dpd_feature_gates.sv"
+$tbCompileMatrix = Join-Path $repo "verif\block\dpd\tb\tb_dpd_compile_matrix.sv"
 
 Write-Host "[xsim] compile DPD bit-true"
-Invoke-VivadoCmd "xvlog -sv `"$dpdPoly`" `"$dpdLut`" `"$dpdMemory`" `"$dpdAsyncBridge`" `"$dpdFrontend`" `"$tb`" `"$tbMemory`" `"$tbSafety`" `"$tbProtocol`" `"$tbPoly7`" `"$tbPoly7Directed`" `"$tbAsyncBridge`" `"$tbFeatureGates`" `"$tbCompileMatrix`""
+Invoke-VivadoCmd "xvlog -sv `"$dpdPoly`" `"$dpdLut`" `"$dpdMemory`" `"$dpdObserver`" `"$dpdSeedPredictor`" `"$dpdAsyncBridge`" `"$dpdFrontend`" `"$tb`" `"$tbMemory`" `"$tbSafety`" `"$tbProtocol`" `"$tbRandomProtocol`" `"$tbPoly7`" `"$tbPoly7Directed`" `"$tbAsyncBridge`" `"$tbAsyncBridgeRandom`" `"$tbV11`" `"$tbFeatureGates`" `"$tbCompileMatrix`""
 
 if ($CompileOnly) {
   Write-Host "[xsim] compile command returned success; no elaboration artifact was checked."
-  exit 0
+  return
 }
 
 Write-Host "[xsim] elaborate directed seventh-order DPD"
@@ -89,6 +96,7 @@ Copy-Item (Join-Path $vecDir "dpd_input_iq.csv") (Join-Path $work "dpd_input_iq.
 Copy-Item (Join-Path $vecDir "dpd_coefficients.csv") (Join-Path $work "dpd_coefficients.csv") -Force
 if (-not $SkipPoly7) {
   Copy-Item (Join-Path $vecDir "dpd7_input_iq.csv") (Join-Path $work "dpd7_input_iq.csv") -Force
+  Copy-Item (Join-Path $vecDir "dpd7_expected_iq.csv") (Join-Path $work "dpd7_expected_iq.csv") -Force
   Copy-Item (Join-Path $vecDir "dpd7_coefficients.csv") (Join-Path $work "dpd7_coefficients.csv") -Force
 }
 Copy-Item (Join-Path $vecDir "dpd_mp_input_iq.csv") (Join-Path $work "dpd_mp_input_iq.csv") -Force
@@ -126,11 +134,29 @@ Invoke-VivadoCmd "xelab -debug typical tb_dpd_frontend_protocol -s sim_tb_dpd_fr
 Write-Host "[xsim] run DPD protocol assertions"
 Invoke-VivadoCmd "xsim sim_tb_dpd_frontend_protocol -runall"
 
+Write-Host "[xsim] elaborate randomized DPD protocol"
+Invoke-VivadoCmd "xelab -debug typical tb_dpd_frontend_random_protocol -s sim_tb_dpd_frontend_random_protocol"
+
+Write-Host "[xsim] run randomized DPD protocol"
+Invoke-VivadoCmd "xsim sim_tb_dpd_frontend_random_protocol -runall"
+
 Write-Host "[xsim] elaborate DPD asynchronous observer bridge"
 Invoke-VivadoCmd "xelab -debug typical tb_dpd_observer_async_bridge -s sim_tb_dpd_observer_async_bridge"
 
 Write-Host "[xsim] run DPD asynchronous observer bridge"
 Invoke-VivadoCmd "xsim sim_tb_dpd_observer_async_bridge -runall"
+
+Write-Host "[xsim] elaborate randomized DPD asynchronous observer bridge"
+Invoke-VivadoCmd "xelab -debug typical tb_dpd_observer_async_bridge_random -s sim_tb_dpd_observer_async_bridge_random"
+
+Write-Host "[xsim] run randomized DPD asynchronous observer bridge"
+Invoke-VivadoCmd "xsim sim_tb_dpd_observer_async_bridge_random -runall"
+
+Write-Host "[xsim] elaborate DPD v1.1 observer/predictor boundary test"
+Invoke-VivadoCmd "xelab -debug typical tb_dpd_v11 -s sim_tb_dpd_v11"
+
+Write-Host "[xsim] run DPD v1.1 observer/predictor boundary test"
+Invoke-VivadoCmd "xsim sim_tb_dpd_v11 -runall"
 
 Write-Host "[xsim] elaborate DPD feature gates"
 Invoke-VivadoCmd "xelab -debug typical tb_dpd_feature_gates -s sim_tb_dpd_feature_gates"
@@ -156,3 +182,6 @@ if (-not $SkipMatlabCompare) {
 }
 
 Write-Host "[xsim] DPD bit-true done. Outputs in $work"
+} finally {
+  Set-Location $originalLocation
+}

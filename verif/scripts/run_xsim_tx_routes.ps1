@@ -55,7 +55,7 @@ $filelist = Join-Path $work "filelist_tx_routes.f"
 Set-Content -LiteralPath $filelist -Value ($rtlFiles -join "`r`n") -Encoding ASCII
 $tbs = @(
   "$repo\verif\tb\tx_analog_iq\tb_dsm_iq_analog_top.sv",
-  "$repo\verif\tb\tx_bandpass_if\tb_dsm_core_bp_single.sv",
+  "$repo\verif\block\bp_dsm\tb\tb_dsm_core_bp_single.sv",
   "$repo\verif\tb\tx_bandpass_if\tb_tx_bp_if_top.sv"
 )
 

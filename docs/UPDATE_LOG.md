@@ -1,5 +1,83 @@
 # 项目更新日志
 
+## 2026-08-12：Control 子系统 VCS 证据补齐与验证收口
+- 在 Linux VCS V-2023.12-SP1 上以当前 RTL 重新编译并运行
+  `dsm_memory_dpd_bittrue_test` 和 `dsm_memory_dpd_safety_test`，两个 testcase 均为
+  `UVM_ERROR=0`、`UVM_FATAL=0`，并生成对应 `simv.vdb` 覆盖数据库。
+- active memory-DPD testcase 完成 inactive bank 的 12 个 Q2.14 complex C1/C3/C5、4-tap
+  系数写入，等待 `MP_COMMIT` acknowledge，检查 effective memory mode，并对 24 个输入产生的
+  768 个 RF transaction 完成 Python golden 逐项比较和队列 drain。
+- safety testcase 写入超限系数，确认 commit 被拒绝、active bank 保持不变、`ERROR.bit3` 置位，
+  并按预期不产生 RF transaction。
+- 至此，固定 RTL revision 的 block signoff、IF/DSM、TX frontend、feedback 及 control
+  子系统证据齐全，可以作为项目级 RTL/block/subsystem 验证收口。未完成项仍包括多 seed
+  coverage closure、formal CDC/RDC、完整 lint、门级/SDF、物理 PPA/RF feedback 签核。
+
+## 2026-08-12：Feedback 子系统与一键子系统回归
+- 新增 `dpd_observer_async_bridge -> dpd_observer` 联合 testbench；使用异步反馈时钟、
+  小深度 FIFO、严格反压、invalid 标记和窗口结束状态，验证跨模块的顺序、计数和 monitor
+  累加契约。
+- 实际执行 `verif/scripts/run_xsim_feedback_subsystem.ps1`，结果为
+  `FEEDBACK_SUBSYSTEM_PASS samples=129 pairs=117 invalid=12 stalls=191`。无 FIFO 丢样、
+  `error_acc=0`、无 overflow，且观测到末拍。
+- 新增 `verif/scripts/run_subsystem_signoff.ps1`，统一调用 IF/DSM、TX frontend 和 feedback
+  的 XSim 回归。Control 子系统仍由 `uvm_verif/` 的 Linux/VCS AXI-Lite UVM testcase 覆盖，
+  不在 Windows XSim 中复制另一套协议环境。
+
+## 2026-08-12：TX frontend 子系统 bit-true 回归
+- 新增 `DPD bypass -> x4 halfband interpolation` 的独立子系统 testbench 与 Python 向量生成器；
+  使用 DPD bypass 隔离验证十拍 transport latency、ready/valid 传播与 x4 样本扩展，不重复
+  DPD Poly/LUT/Memory 的 block 级算术签核。
+- 实际执行 `verif/scripts/run_xsim_tx_frontend_bittrue.ps1 -Inputs 97`，XSim 通过：97 组 Q1.15
+  I/Q 输入产生 388 组输出，逐样本零失配，并覆盖 140 个输出 backpressure 周期。
+- 更新 `verif/subsystem/` 状态表、TX frontend DUT 边界和 `verif/RUN_REGRESSION.md` 的可复跑入口。
+
+## 2026-08-12：Block 随机边界回归与阶段签核
+- 为 DPD、插值、Fs/4 mixer、BP EFDSM2、observer bridge 和 monitor 补充或接入可重复的
+  随机/边界 testbench；覆盖 signed 极值、valid/enable bubble、AXI-Stream backpressure、
+  非法输入、状态 clear、双时钟 bridge 的顺序保持及无丢样约束。
+- 各 block 的 `vectors/` 新增 manifest，明确 Python/MATLAB 生成器、固定随机种子、输入
+  边界和生成目录。生成的 CSV 仍只保存在 `matlab/out/`、Python 输出目录或可删除的
+  `verif/out_xsim_*`，不在多个 block 目录复制 golden 数据。
+- 实际执行 `verif/scripts/run_block_signoff.ps1 -BpSamples 4096`，exit code 为 0：
+  DPD Poly3/5/7 与 Memory-Poly 的三组 MATLAB/RTL 比较均为 256/256、零失配；插值
+  mode 0 至 4 及 x32 I0/I1/I2/I3 各 4096 样本零失配；Fs/4 mixer 的 8 组角点和 257
+  组随机样本通过；BP EFDSM2 的 4096 组随机/极值/enable bubble 向量通过；observer
+  bridge 的 24 组定向和 129 组随机样本、225 次停顿通过；monitor 的 behavioral 向量和
+  129 样本/12 invalid beat/clear 路径通过。
+- 更新 `verif/block/README.md`、`verif/block/BLOCK_SIGNOFF.md` 和
+  `verif/RUN_REGRESSION.md`，使每个 block 的 DUT、参考模型、测试范围、证据和一键命令
+  可直接追溯。
+- 本次完成的是固定 RTL 版本和已列参数下的项目级 block signoff；尚未完成 formal CDC/RDC、
+  完整 lint、门级/SDF、物理签核及真实 PA/ADC/RF feedback 验证。下一阶段进入
+  `verif/subsystem/`，验证模块间位宽、延迟、流控、复位与状态边界。
+
+## 2026-08-12：IF/DSM 子系统回归启动
+- 实际执行 `verif/scripts/run_xsim_if_dsm_bittrue.ps1 -Samples 4096`，将 Fs/4 mixer、
+  BP EFDSM2、共享 EF2 核与 `tx_bp_if_top` 作为一个 DUT 边界进行 Python-to-RTL
+  transaction 比较，结果为 `IF_DSM_PYTHON_BITTRUE_PASS samples=4096`。
+- 更新 `verif/subsystem/if_dsm/README.md`，明确该子系统的 RTL 组成、参考模型、比较对象和
+  可复现命令；更新 `verif/subsystem/README.md` 的状态表。TX frontend、feedback 和 control
+  仍只有 block 或 UVM 层证据，尚未建立独立 subsystem scoreboard，不能写为已通过。
+
+## 2026-08-12：Block 验证资产入口规范化
+
+- 为 `verif/block/` 定义统一目录契约：每个 block 具有 `tb/`、`vectors/` 和 `refmodel/` 入口；README 明确列出 DUT RTL、参考模型、生成器、运行脚本与证据状态。
+- `vectors/` 不复制 `matlab/out/`、`uvm_verif/refmodel/python/out/` 或 `verif/out_xsim_*` 的生成 CSV。MATLAB/Python 模型和生成器保持唯一真源，XSim 运行目录保持可删除，避免同一 golden vector 出现多份并逐渐失配。
+- 明确 block 验证边界：DPD、插值、Fs/4 mixer、BP EFDSM2、observer bridge 和 monitor 采用定向 SystemVerilog testbench；UVM 仅承担 IP-system 的 AXI-Lite、AXI-Stream、RF monitor、跨接口时序和随机流控验证。
+- 修复 `run_xsim_dpd_bittrue.ps1` 的七阶向量准备：脚本此前漏复制 `dpd7_expected_iq.csv`，导致 testbench 在 0 ps 无法打开期望向量。补齐后已重新运行完整 DPD XSim 流程，七阶、memory-polynomial、安全、协议、异步 observer、feature-gate 和编译配置矩阵均通过。
+- 当前可复查 block 证据：Fs/4 mixer directed test 已通过 8 个角点样本；BP EFDSM2 Python-to-RTL test 已通过 2048 个样本；插值 XSim 已报告 I0/I1/I2/I3 x32 通过。observer/monitor 的 testbench 和向量入口已具备，后续 RTL 变化后需要重新运行。
+
+## 2026-08-11：验证目录分层整理
+
+- 将 DPD、插值、observer 相关的定向 testbench 迁移到各自的 `verif/block/<block>/tb/`，使 block、subsystem 与 IP-top 测试边界可见。
+- 新增独立 `Fs/4 mixer` directed test，覆盖 `I/Q/-I/-Q` 选择、`valid` 门控、复位和最小负数取反角点。
+- 新增独立 `BP EFDSM2` Python-to-RTL block bit-true test；它直接比较 real-IF 输入后的 bit、signed code 与 quantizer state。
+- 将 `dpd_observer` 的数值累计验证归入 `block/monitor`，将双时钟 bridge 验证归入 `block/observer`；两者不再混为同一层级。
+- 更新 XSim 脚本和回归文档路径。当前 Windows Vivado launcher 曾发生启动崩溃，故本次目录重构只完成静态路径审计，新增 block test 需要在工具恢复后运行。
+- `python 3.12` 向量生成和 PowerShell 脚本语法检查已通过；`xvlog -version` 返回 `-1073741790` 且不生成日志，属于本机 Vivado launcher 问题，不可解释为 RTL 或 testbench 失败。
+- 修复 `run_xsim_interp_frontend.ps1`、`run_xsim_dpd_bittrue.ps1` 和 `run_xsim_ip_smoke.ps1` 的工作目录恢复行为，脚本结束或报错后不再把调用者留在 `verif/out_xsim_*` 目录。
+
 本文件按时间正序记录影响接口、验证证据、实现状态或交付边界的里程碑。工具日志、波形、覆盖率数据库和其他生成物不纳入版本控制。
 
 ## 2026-07-02：七种低通 DSM 基线
