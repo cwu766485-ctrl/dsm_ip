@@ -71,3 +71,43 @@ module dsm_rf_protocol_sva (
   endproperty
   a_rf_encoding: assert property (p_rf_encoding);
 endmodule
+
+module dsm_ip_control_sva (
+  input logic aclk,
+  input logic aresetn,
+  input logic soft_reset,
+  input logic s_axis_tready,
+  input logic mp_commit_pending,
+  input logic mp_commit_inflight,
+  input logic mp_active_bank,
+  input logic obs_enable,
+  input logic obs_active,
+  input logic obs_ready
+);
+  default clocking cb @(posedge aclk); endclocking
+
+  // A software reset and an in-flight coefficient-bank commit must close the
+  // TX acceptance boundary.  The stream source is then responsible for
+  // holding its payload stable until TREADY returns.
+  a_soft_reset_closes_tx: assert property (
+    disable iff (!aresetn) soft_reset |-> !s_axis_tready);
+  c_soft_reset_closes_tx: cover property (
+    disable iff (!aresetn) soft_reset && !s_axis_tready);
+  a_commit_closes_tx: assert property (
+    disable iff (!aresetn) (mp_commit_pending || mp_commit_inflight) |-> !s_axis_tready);
+  c_commit_closes_tx: cover property (
+    disable iff (!aresetn) (mp_commit_pending || mp_commit_inflight) && !s_axis_tready);
+
+  // The active bank can only move while the guarded commit operation is live.
+  a_bank_change_requires_commit: assert property (
+    disable iff (!aresetn) $changed(mp_active_bank) |-> $past(mp_commit_inflight));
+  c_bank_change: cover property (
+    disable iff (!aresetn) $changed(mp_active_bank));
+
+  // The observer must never accept feedback before its software-controlled
+  // enable/start state has made the collection window active.
+  a_observer_ready_requires_active: assert property (
+    disable iff (!aresetn) obs_ready |-> (obs_enable && obs_active));
+  c_observer_ready: cover property (
+    disable iff (!aresetn) obs_ready && obs_enable && obs_active);
+endmodule

@@ -31,5 +31,13 @@ covergroup dsm_rf_cg with function sample(
   phase_cp: coverpoint phase_i[1:0] {
     bins phase[] = {[0:3]};
   }
-  bit_sign_x: cross rf_bit_cp, rf_sign_cp;
+  bit_sign_x: cross rf_bit_cp, rf_sign_cp {
+    // The RF interface encodes a one as +0x7fff and a zero as -0x7fff.
+    // The opposite sign combinations are structurally unreachable and are
+    // asserted separately by dsm_rf_protocol_sva.
+    ignore_bins one_negative = binsof(rf_bit_cp.one) &&
+                               binsof(rf_sign_cp.negative);
+    ignore_bins zero_positive = binsof(rf_bit_cp.zero) &&
+                               binsof(rf_sign_cp.positive);
+  }
 endgroup

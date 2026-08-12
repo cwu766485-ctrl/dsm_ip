@@ -68,7 +68,8 @@ def parse_args():
                                              "dsm_performance_bittrue_test,"
                                              "dsm_memory_dpd_bittrue_test,"
                                              "dsm_memory_dpd_safety_test,"
-                                             "dsm_control_stress_test"),
+                                             "dsm_control_stress_test,"
+                                             "dsm_axis_coverage_test"),
                         help="comma-separated UVM test names")
     parser.add_argument("--seeds", default="1,2,3",
                         help="comma-separated positive integer seeds")
@@ -78,6 +79,8 @@ def parse_args():
     parser.add_argument("--no-coverage", dest="coverage", action="store_false")
     parser.add_argument("--fsdb", action="store_true")
     parser.add_argument("--skip-compile", action="store_true")
+    parser.add_argument("--summary", default="",
+                        help="CSV path relative to repository root; defaults to regression_summary.csv")
     return parser.parse_args()
 
 
@@ -110,7 +113,8 @@ def main():
                   f"fatals={result['uvm_fatal']}")
 
     results.sort(key=lambda row: (str(row["test"]), int(row["seed"])))
-    summary_path = root / "uvm_verif" / "sim" / "out" / args.sim / "regression_summary.csv"
+    summary_path = (root / args.summary) if args.summary else (
+        root / "uvm_verif" / "sim" / "out" / args.sim / "regression_summary.csv")
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     fields = ["test", "seed", "tag", "status", "returncode", "uvm_error", "uvm_fatal", "log"]
     with summary_path.open("w", newline="", encoding="utf-8") as handle:

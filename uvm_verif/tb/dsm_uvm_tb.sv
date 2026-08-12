@@ -47,6 +47,12 @@ module dsm_uvm_tb;
   dsm_rf_protocol_sva rf_sva (
     .aclk(aclk), .aresetn(aresetn), .rf_valid(rf_if.rf_valid),
     .rf_bit(rf_if.rf_bit), .rf_signed(rf_if.rf_signed));
+  dsm_ip_control_sva control_sva (
+    .aclk(aclk), .aresetn(aresetn), .soft_reset(dut.soft_reset),
+    .s_axis_tready(tx_if.tready), .mp_commit_pending(dut.mp_commit_pending),
+    .mp_commit_inflight(dut.mp_commit_inflight), .mp_active_bank(dut.mp_active_bank),
+    .obs_enable(dut.obs_enable_reg), .obs_active(dut.obs_active),
+    .obs_ready(obs_if.tready));
   initial begin
     axi_if.awvalid=0; axi_if.wvalid=0; axi_if.arvalid=0; axi_if.bready=1; axi_if.rready=1;
     tx_if.tvalid=0; obs_if.tvalid=0; aresetn=0;

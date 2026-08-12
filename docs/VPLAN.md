@@ -1,6 +1,6 @@
 # BP EFDSM2 数字发射机 IP 验证计划
 
-文档版本：2.4
+文档版本：2.5
 更新时间：2026-08-13
 适用顶层：`dsm_ip_axi_top`
 
@@ -72,17 +72,26 @@ source list 必须与 Vivado/DC 主 SKU 一致。
 - 不把历史 LPDSM2 Fs/4 合路结果用于当前 BP EFDSM2 性能结论；
 - 不要求在高速数据通路中部署神经网络。
 
-### 2.4 当前 UVM 证据与边界
+### 2.4 IP-system UVM 功能覆盖收口证据
 
-- `dsm_control_stress_test` 已在 Linux VCS V-2023.12-SP1 以 seed `1`、`7`、`31` 通过；
-  三组均为 `UVM_ERROR=0`、`UVM_FATAL=0`，并已生成 URG 合并 coverage report。
-- 该场景覆盖独立 AW/W、B/R response backpressure、TX 长 backpressure、active-stream
-  soft reset、`tuser`/`tlast`、observer 启动反压、clear 和 window completion。
-- 覆盖率证据只能说明当前 control-stress 的既定功能点已被执行。当前 URG 总覆盖率分数约为
-  59.22%，尚未达到全 IP code/functional coverage closure，未覆盖模式需要由后续 regression
-  或明确 exclusion 处理。
-- Coverage database、VCS 编译产物和 waveform 都是生成物，不纳入版本控制；可复跑命令位于
-  `uvm_verif/sim/run_control_coverage_linux.sh`。
+- Linux VCS V-2023.12-SP1 已完成 12 项主 SKU 系统回归，全部为
+  `UVM_ERROR=0`、`UVM_FATAL=0`：`dsm_bp_test`、performance bit-true、memory-DPD
+  bit-true、memory-DPD safety、AXI protocol 三个 seed、control stress 三个 seed，以及
+  AXI-Stream sideband coverage 两个 seed。
+- 统一结果位于生成物
+  `uvm_verif/sim/out/vcs/ip_coverage_summary.csv`；该文件、VCS 编译产物、coverage
+  database 与 waveform 均不纳入版本控制。
+- Function coverage 已达到定义的 100%：AXI-Lite control、RF 输出编码、TX AXI-Stream
+  sideband/stall，以及 OBS AXI-Stream sideband/wait。OBS 的 `TREADY` 由观测窗口状态机
+  控制，因此按“无等待/有等待”覆盖，而不把它误建模为短/长 backpressure。
+- 并发 SVA 未出现断言失败，并命中 soft reset 关闭 TX、commit 关闭 TX、bank 切换及
+  observer ready 四类 cover property。RF 编码中不可能的 `{rf_bit, rf_signed}` 组合被
+  明确排除，并由断言保留其正确性约束。
+- 当前 URG 总分为 65.87%（line 58.60%、condition 56.50%、toggle 62.02%、branch
+  40.33%、assert 77.78%、group 100.00%）。本轮结论是“既定功能点的 functional
+  coverage closure”，不是全 RTL code coverage closure 或最终签核。
+- 可复跑入口为 `uvm_verif/sim/run_ip_coverage_linux.sh`；Windows 通过
+  `uvm_verif/sim/run_ip_coverage_bridge.ps1` 向 Linux/VCS bridge 提交同一命令。
 
 ## 3. 测试平台框图
 

@@ -1,5 +1,26 @@
 # 项目更新日志
 
+## 2026-08-13 03:34 +08:00：IP-system UVM 功能覆盖收口
+- 新增 `dsm_axis_coverage_test` 与虚拟序列，定向覆盖 TX/OBS AXI-Stream 的
+  `TLAST`、`TUSER[0]`、连续/短间隔/长间隔 transaction 组合；TX 和 OBS 分别使用符合各自
+  微架构的 stall covergroup，避免将 observer 窗口状态机等待错误解释为通用 backpressure。
+- 扩展 `dsm_axi_protocol_sva.sv`：断言 soft reset 与 memory-polynomial commit 期间关闭
+  TX 接收、active coefficient bank 仅在 commit 期间切换、observer ready 仅在 enable 且
+  active 时出现；同时增加对应 cover property。
+- RF monitor 的交叉覆盖排除物理不可能的编码组合 `{rf_bit=1, rf_signed<0}` 与
+  `{rf_bit=0, rf_signed>0}`，编码关系仍由 SVA 保持为错误检测条件。
+- 新增 Linux/Windows bridge 回归入口，统一执行 12 项 VCS 用例并生成
+  `ip_coverage_summary.csv`；其中包含 4 项确定性 bit-true/safety 测试、AXI protocol 与
+  control stress 各 3 个 seed、AXI-Stream coverage 2 个 seed。
+- Linux VCS V-2023.12-SP1 最终回归 12/12 通过，所有运行均为
+  `UVM_ERROR=0`、`UVM_FATAL=0`。初次运行中 AXI sideband test 因错误要求单极性激励也必须
+  产生 RF 正负翻转而失败；该 testbench 质量门限已改为仅检查其职责范围，最终复跑通过，RTL
+  未修改。
+- URG 合并结果：line 58.60%、condition 56.50%、toggle 62.02%、branch 40.33%、
+  assert 77.78%、group 100.00%、total 65.87%。本次签署已定义功能点的 functional
+  coverage closure；全代码覆盖、formal CDC/RDC、lint、门级/SDF、routed/bitstream 和真实
+  RF/PA 反馈仍未签署。
+
 ## 2026-08-13：Control UVM 多 seed 压力回归与覆盖率报告
 - 新增 `dsm_control_stress_test`，在真实 `dsm_ip_axi_top` 上联合驱动 AXI-Lite、TX
   AXI-Stream 和 OBS AXI-Stream。场景覆盖独立 AW/W 到达、B/R response stall、TX 长
@@ -16,8 +37,8 @@
   testbench 误报。该修正不改变 RTL 行为。
 - `dsm_ip_axi_top` 同时修复 active-stream soft reset 期间的 false sticky error：合法上游
   可保持 `TVALID`，只有软件明确禁用 IP 时才报告 stream-while-disabled。
-- 本条证据签署 control-stress 场景和其已定义 functional coverpoint；当前 URG 总覆盖率
-  分数约为 59.22%，因此不宣称全 IP code/functional coverage closure。
+- 当时该控制子系统回归的 URG 总覆盖率约为 59.22%；后续 IP-system 汇总结果及其边界见本日
+  “IP-system UVM 功能覆盖收口”记录。
 
 ## 2026-08-13：控制子系统 active-stream soft-reset 验证
 - 新增 `verif/subsystem/control/tb/tb_dsm_ip_axi_active_reset.sv`，在 AXI-Stream

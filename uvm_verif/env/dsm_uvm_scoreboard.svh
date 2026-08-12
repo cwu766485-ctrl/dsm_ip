@@ -38,6 +38,24 @@ covergroup dsm_axis_control_cg with function sample(
   packet_error_x: cross last_cp, user_cp;
 endgroup
 
+// OBS TREADY is intentionally gated by the observer enable/start state
+// machine.  It has no independent short-backpressure microarchitecture, so
+// only the immediately-ready and intentionally-waiting behaviours are useful
+// coverage goals for this interface.
+covergroup dsm_obs_axis_control_cg with function sample(
+  input bit last_i,
+  input bit user_error_i,
+  input int unsigned gap_i,
+  input int unsigned ready_stall_i
+);
+  option.per_instance = 1;
+  last_cp: coverpoint last_i { bins clear = {0}; bins asserted = {1}; }
+  user_cp: coverpoint user_error_i { bins clean = {0}; bins error = {1}; }
+  gap_cp: coverpoint gap_i { bins continuous = {0}; bins short = {[1:7]}; bins long = {[8:$]}; }
+  ready_stall_cp: coverpoint ready_stall_i { bins none = {0}; bins waiting = {[1:$]}; }
+  packet_error_x: cross last_cp, user_cp;
+endgroup
+
 class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   `uvm_component_utils(dsm_scoreboard)
   dsm_uvm_config cfg;
@@ -50,7 +68,7 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   dsm_rf_cg rf_cg;
   dsm_axil_control_cg axil_cg;
   dsm_axis_control_cg tx_cg;
-  dsm_axis_control_cg obs_cg;
+  dsm_obs_axis_control_cg obs_cg;
   uvm_analysis_imp_tx #(dsm_axis_item, dsm_scoreboard) tx_export;
   uvm_analysis_imp_axil #(dsm_axi_lite_item, dsm_scoreboard) axil_export;
   uvm_analysis_imp_obs #(dsm_axis_item, dsm_scoreboard) obs_export;
