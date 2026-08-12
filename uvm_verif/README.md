@@ -72,6 +72,21 @@ make -C uvm_verif/sim vcs-run UVM_TESTNAME=dsm_memory_dpd_bittrue_test UVM_SEED=
 make -C uvm_verif/sim vcs-run UVM_TESTNAME=dsm_memory_dpd_safety_test UVM_SEED=1
 ```
 
+For a Windows host that cannot directly enumerate the registered EDA WSL
+distribution, use the shared-drive Linux bridge after it has been started in
+that Linux session:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File .\uvm_verif\sim\run_control_coverage_bridge.ps1
+```
+
+The bridge submits only the repository script
+`uvm_verif/sim/run_control_coverage_linux.sh`. It compiles once, runs the
+three-seed `dsm_control_stress_test` regression, and creates
+`uvm_verif/sim/out/vcs/coverage/dashboard.html`. It neither reads nor copies
+licenses, PDKs, or external EDA installation files.
+
 The Makefile uses `python3.12` by default. Override it for a different EDA
 environment without editing the Makefile, for example `make -C uvm_verif/sim
 vcs PYTHON=python3`.
@@ -143,6 +158,19 @@ x32 interpolation -> Fs/4 mixer -> BP EFDSM2 主数据通路。
 `dsm_memory_dpd_safety_test` 单独写入绝对值 24577 的非法系数，要求
 `MP_COMMIT_STATUS.failed` 和 `ERROR.bit3` 置位、active bank 保持不变。
 
+`dsm_control_stress_test` is the control-subsystem UVM scenario. It uses the
+real AXI-Lite, TX AXI-Stream, and observer AXI-Stream interfaces to exercise
+independent AW/W arrival, B/R response stalls, long TX backpressure, a
+software reset during an active TX transfer, `tuser`/`tlast` boundaries,
+observer start-time backpressure, counter clear, and observer window status.
+The test records actual handshaking delays in per-instance functional
+covergroups; it does not infer coverage from requested driver delays.
+
+On 2026-08-13, this test passed on VCS V-2023.12-SP1 with seeds `1`, `7`, and
+`31`; every run reported `UVM_ERROR=0` and `UVM_FATAL=0`. URG generated the
+merged report in `sim/out/vcs/coverage/`. This is control-scenario evidence,
+not full-IP coverage closure: the merged total coverage score is about 59.22%.
+
 `dsm_axi_protocol_test` 在同一真实 DUT 上进一步执行：
 
 1. 随机打散 AXI-Lite `AW/W` 到达时间，并延迟 `BREADY/RREADY`；
@@ -188,3 +216,13 @@ Memory-Poly5/4-tap 链路的 768 个 RF transaction 完成 Python golden 逐项�
 非法系数 commit 拒绝、active bank 保持及 `ERROR.bit3`；两者均为 `UVM_ERROR=0` 与
 `UVM_FATAL=0`。这构成当前 control/data-path 的 system-level UVM 证据，但不等同于多 seed
 coverage closure、reset/error 全矩阵或完整 IP signoff。
+
+For the reproducible control-stress merge, use:
+
+```bash
+make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1
+python3.12 uvm_verif/sim/run_regression.py \
+  --sim vcs --tests dsm_control_stress_test --seeds 1,7,31 --jobs 3 --skip-compile
+make -C uvm_verif/sim coverage-merge \
+  RUN_TAGS="dsm_control_stress_test_seed1 dsm_control_stress_test_seed7 dsm_control_stress_test_seed31"
+```

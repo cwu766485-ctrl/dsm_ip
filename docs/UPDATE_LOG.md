@@ -1,5 +1,34 @@
 # 项目更新日志
 
+## 2026-08-13：Control UVM 多 seed 压力回归与覆盖率报告
+- 新增 `dsm_control_stress_test`，在真实 `dsm_ip_axi_top` 上联合驱动 AXI-Lite、TX
+  AXI-Stream 和 OBS AXI-Stream。场景覆盖独立 AW/W 到达、B/R response stall、TX 长
+  backpressure、active-stream soft reset、`tuser`/`tlast` 边界、observer 启动反压、
+  counter clear 和 observer window 状态。
+- AXI-Lite 与 AXI-Stream monitor 记录实际 handshake 延迟；scoreboard 的 covergroup 以
+  实际通道偏斜、response stall、valid gap、ready stall 和 sideband 组合采样，而非仅依据
+  driver 请求延迟推断覆盖率。
+- 在 Linux VCS V-2023.12-SP1 上使用 seed `1`、`7`、`31` 运行 `dsm_control_stress_test`。
+  三组均通过，均为 `UVM_ERROR=0`、`UVM_FATAL=0`；URG 已在
+  `uvm_verif/sim/out/vcs/coverage/` 生成合并报告。
+- 修正 observer window 完成状态的测试期望：读回 `0x0000001c` 表示 clean、last-seen 和
+  done 置位；此前的 `0x00000028` 将错误位映射解释为完成状态，导致三组 seed 均出现一个
+  testbench 误报。该修正不改变 RTL 行为。
+- `dsm_ip_axi_top` 同时修复 active-stream soft reset 期间的 false sticky error：合法上游
+  可保持 `TVALID`，只有软件明确禁用 IP 时才报告 stream-while-disabled。
+- 本条证据签署 control-stress 场景和其已定义 functional coverpoint；当前 URG 总覆盖率
+  分数约为 59.22%，因此不宣称全 IP code/functional coverage closure。
+
+## 2026-08-13：控制子系统 active-stream soft-reset 验证
+- 新增 `verif/subsystem/control/tb/tb_dsm_ip_axi_active_reset.sv`，在 AXI-Stream
+  数据流运行期间经 AXI-Lite 请求 `CTRL.soft_reset`。
+- 该用例验证复位窗口内源端 `TREADY` 去使能；复位释放后 16 个输入 transaction 全部恢复、
+  软件复位计数增加一次、sticky error 保持为零并再次观察到 RF 输出。
+- 修复 `dsm_ip_axi_top`：软件复位期间上游合法保持 `TVALID` 不再被错误记录为
+  “stream while disabled”。只有软件明确写 `CTRL.enable=0` 时才产生该 sticky error。
+- `run_xsim_ip_smoke.ps1` 已接入新用例，因此 `run_xsim_control_subsystem.ps1` 和
+  `run_subsystem_signoff.ps1` 会自动执行该控制边界检查。
+
 ## 2026-08-12：子系统测试资产归位与四子系统入口统一
 - 将已有 TX frontend、IF/DSM、feedback 的 testbench 分别迁入
   `verif/subsystem/<name>/tb/`；将 AXI 控制面 smoke 迁入

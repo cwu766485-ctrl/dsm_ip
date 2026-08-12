@@ -5,6 +5,8 @@ class dsm_axi_lite_item extends uvm_sequence_item;
   rand int unsigned addr_delay_cycles;
   rand int unsigned data_delay_cycles;
   rand int unsigned ready_delay_cycles;
+  int unsigned observed_channel_skew_cycles;
+  int unsigned observed_response_stall_cycles;
   bit [31:0] rdata;
   bit [1:0] resp;
 
@@ -21,6 +23,8 @@ class dsm_axi_lite_item extends uvm_sequence_item;
     `uvm_field_int(addr_delay_cycles, UVM_DEFAULT)
     `uvm_field_int(data_delay_cycles, UVM_DEFAULT)
     `uvm_field_int(ready_delay_cycles, UVM_DEFAULT)
+    `uvm_field_int(observed_channel_skew_cycles, UVM_DEFAULT)
+    `uvm_field_int(observed_response_stall_cycles, UVM_DEFAULT)
     `uvm_field_int(rdata, UVM_DEFAULT)
     `uvm_field_int(resp, UVM_DEFAULT)
   `uvm_object_utils_end

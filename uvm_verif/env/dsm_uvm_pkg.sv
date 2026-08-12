@@ -27,9 +27,11 @@ package dsm_uvm_pkg;
   `include "dsm_performance_virtual_sequences.svh"
   `include "dsm_memory_dpd_virtual_sequences.svh"
   `include "dsm_protocol_virtual_sequences.svh"
+  `include "dsm_control_virtual_sequences.svh"
   `include "dsm_base_test.svh"
   `include "dsm_bp_test.svh"
   `include "dsm_axi_protocol_test.svh"
   `include "dsm_performance_bittrue_test.svh"
   `include "dsm_memory_dpd_tests.svh"
+  `include "dsm_control_stress_test.svh"
 endpackage

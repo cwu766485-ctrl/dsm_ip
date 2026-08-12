@@ -4,6 +4,7 @@ class dsm_axis_item extends uvm_sequence_item;
   rand bit last;
   rand bit user_error;
   rand int unsigned valid_gap_cycles;
+  int unsigned observed_ready_stall_cycles;
 
   constraint c_valid_gap {
     valid_gap_cycles inside {[0:8]};
@@ -15,6 +16,7 @@ class dsm_axis_item extends uvm_sequence_item;
     `uvm_field_int(last, UVM_DEFAULT)
     `uvm_field_int(user_error, UVM_DEFAULT)
     `uvm_field_int(valid_gap_cycles, UVM_DEFAULT)
+    `uvm_field_int(observed_ready_stall_cycles, UVM_DEFAULT)
   `uvm_object_utils_end
 
   function new(string name = "dsm_axis_item");

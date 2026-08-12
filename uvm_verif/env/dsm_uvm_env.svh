@@ -31,8 +31,12 @@ class dsm_env extends uvm_env;
     super.connect_phase(phase);
     rf_agent.monitor.ap.connect(scoreboard.analysis_export);
     tx_agent.monitor.ap.connect(scoreboard.tx_export);
+    axi_agent.monitor.ap.connect(scoreboard.axil_export);
+    obs_agent.monitor.ap.connect(scoreboard.obs_export);
     virtual_sequencer.axi_sequencer = axi_agent.sequencer;
     virtual_sequencer.tx_sequencer = tx_agent.sequencer;
     virtual_sequencer.obs_sequencer = obs_agent.sequencer;
+    virtual_sequencer.tx_vif = tx_agent.driver.vif;
+    virtual_sequencer.obs_vif = obs_agent.driver.vif;
   endfunction
 endclass

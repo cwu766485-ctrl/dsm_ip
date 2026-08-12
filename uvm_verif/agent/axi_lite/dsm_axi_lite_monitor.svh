@@ -19,46 +19,66 @@ class dsm_axi_lite_monitor extends uvm_monitor;
     dsm_reg_addr_t awaddr, araddr;
     bit [31:0] wdata;
     dsm_axi_lite_item item;
+    int unsigned cycle_count;
+    int unsigned aw_cycle, w_cycle;
+    int unsigned b_stall_cycles, r_stall_cycles;
     aw_pending = 0;
     w_pending = 0;
     ar_pending = 0;
+    cycle_count = 0;
+    b_stall_cycles = 0;
+    r_stall_cycles = 0;
     forever begin
       @(posedge vif.aclk);
+      cycle_count++;
       if (!vif.aresetn) begin
         aw_pending = 0;
         w_pending = 0;
         ar_pending = 0;
+        b_stall_cycles = 0;
+        r_stall_cycles = 0;
       end else begin
         if (vif.awvalid && vif.awready) begin
           awaddr = vif.awaddr;
           aw_pending = 1;
+          aw_cycle = cycle_count;
         end
         if (vif.wvalid && vif.wready) begin
           wdata = vif.wdata;
           w_pending = 1;
+          w_cycle = cycle_count;
         end
+        if (vif.bvalid && !vif.bready) b_stall_cycles++;
         if (vif.bvalid && vif.bready && aw_pending && w_pending) begin
           item = dsm_axi_lite_item::type_id::create("write_item");
           item.is_write = 1;
           item.addr = awaddr;
           item.data = wdata;
           item.resp = vif.bresp;
+          item.observed_channel_skew_cycles = (aw_cycle >= w_cycle) ?
+              (aw_cycle - w_cycle) : (w_cycle - aw_cycle);
+          item.observed_response_stall_cycles = b_stall_cycles;
           ap.write(item);
           aw_pending = 0;
           w_pending = 0;
+          b_stall_cycles = 0;
         end
         if (vif.arvalid && vif.arready) begin
           araddr = vif.araddr;
           ar_pending = 1;
         end
+        if (vif.rvalid && !vif.rready) r_stall_cycles++;
         if (vif.rvalid && vif.rready && ar_pending) begin
           item = dsm_axi_lite_item::type_id::create("read_item");
           item.is_write = 0;
           item.addr = araddr;
           item.rdata = vif.rdata;
           item.resp = vif.rresp;
+          item.observed_channel_skew_cycles = 0;
+          item.observed_response_stall_cycles = r_stall_cycles;
           ap.write(item);
           ar_pending = 0;
+          r_stall_cycles = 0;
         end
       end
     end

@@ -250,7 +250,10 @@ module dsm_ip_axi_top #(
   wire clear_status_req = axi_write_fire &
                           (axi_aw_word_addr == ADDR_CTRL) &
                           w_hold_strb[0] & w_hold_data[2];
-  wire stream_while_disabled = s_axis_tvalid & (!core_enable | !core_rst_n);
+  // A compliant AXI-Stream source may retain TVALID while a software reset
+  // applies backpressure. Flag only an explicitly disabled IP, not the
+  // transient CTRL.soft_reset window.
+  wire stream_while_disabled = s_axis_tvalid & !core_enable;
   wire stream_stall = s_axis_tvalid & !s_axis_tready & core_enable & core_rst_n;
   assign obs_irq = obs_irq_enable_reg & obs_done;
 

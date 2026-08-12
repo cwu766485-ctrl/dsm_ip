@@ -1,7 +1,7 @@
 # BP EFDSM2 数字发射机 IP 验证计划
 
-文档版本：2.3
-更新时间：2026-08-09
+文档版本：2.4
+更新时间：2026-08-13
 适用顶层：`dsm_ip_axi_top`
 
 ## 1. 验证范围
@@ -71,6 +71,18 @@ source list 必须与 Vivado/DC 主 SKU 一致。
 - 不声称已经接通 FMC DPA/PA、ADC 和物理反馈闭环；
 - 不把历史 LPDSM2 Fs/4 合路结果用于当前 BP EFDSM2 性能结论；
 - 不要求在高速数据通路中部署神经网络。
+
+### 2.4 当前 UVM 证据与边界
+
+- `dsm_control_stress_test` 已在 Linux VCS V-2023.12-SP1 以 seed `1`、`7`、`31` 通过；
+  三组均为 `UVM_ERROR=0`、`UVM_FATAL=0`，并已生成 URG 合并 coverage report。
+- 该场景覆盖独立 AW/W、B/R response backpressure、TX 长 backpressure、active-stream
+  soft reset、`tuser`/`tlast`、observer 启动反压、clear 和 window completion。
+- 覆盖率证据只能说明当前 control-stress 的既定功能点已被执行。当前 URG 总覆盖率分数约为
+  59.22%，尚未达到全 IP code/functional coverage closure，未覆盖模式需要由后续 regression
+  或明确 exclusion 处理。
+- Coverage database、VCS 编译产物和 waveform 都是生成物，不纳入版本控制；可复跑命令位于
+  `uvm_verif/sim/run_control_coverage_linux.sh`。
 
 ## 3. 测试平台框图
 
@@ -552,6 +564,10 @@ PA/ADC/RF feedback 签核。
 - Control 的完整交叉接口验证仍由 Linux/VCS UVM 承担；当前 memory-DPD bit-true 与 safety
   testcase 均已通过。该层不是用 XSim smoke 替代 UVM，而是为 UVM 的多 seed coverage、
   active-stream reset、长时 backpressure 和 `tuser` 错误注入提供稳定的 directed 基线。
+- Control reset recovery：`tb_dsm_ip_axi_active_reset.sv` 在第 4 个 AXI-Stream input
+  transaction 后请求 `CTRL.soft_reset`。它断言复位窗口内 `TREADY=0`，并检查复位后
+  16 个输入 transaction 全部恢复、软件复位计数增加一次、不会产生误报 sticky error，且可
+  再次观察到 RF 输出。
 - 2026-08-12 已实际执行 `run_subsystem_signoff.ps1 -IfDsmSamples 4096 -TxInputs 97`，四个
   子系统均通过；每个子系统的 testbench 位于各自 `verif/subsystem/<name>/tb/`，DUT、参考
   模型和运行命令由其 README 直接说明。

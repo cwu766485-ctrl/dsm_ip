@@ -1,4 +1,42 @@
 `uvm_analysis_imp_decl(_tx)
+`uvm_analysis_imp_decl(_axil)
+`uvm_analysis_imp_decl(_obs)
+
+covergroup dsm_axil_control_cg with function sample(
+  input bit is_write_i,
+  input bit [8:0] addr_i,
+  input int unsigned channel_skew_i,
+  input int unsigned response_stall_i
+);
+  option.per_instance = 1;
+  direction_cp: coverpoint is_write_i { bins read = {0}; bins write = {1}; }
+  address_cp: coverpoint addr_i {
+    bins ctrl = {DSM_REG_CTRL};
+    bins error = {DSM_REG_ERROR};
+    bins observer = {DSM_REG_OBS_CTRL, DSM_REG_OBS_GAIN, DSM_REG_OBS_WINDOW};
+    bins status = {DSM_REG_STATUS, DSM_REG_IN_COUNT, DSM_REG_RESET_COUNT,
+                   DSM_REG_ERROR, DSM_REG_FRAME_COUNT, DSM_REG_USER_ERROR_COUNT,
+                   DSM_REG_OBS_STATUS, DSM_REG_OBS_PAIR_COUNT, DSM_REG_OBS_DROP_COUNT};
+    bins other = default;
+  }
+  channel_skew_cp: coverpoint channel_skew_i { bins aligned = {0}; bins short = {[1:7]}; bins long = {[8:$]}; }
+  response_stall_cp: coverpoint response_stall_i { bins none = {0}; bins short = {[1:7]}; bins long = {[8:$]}; }
+  direction_address_x: cross direction_cp, address_cp;
+endgroup
+
+covergroup dsm_axis_control_cg with function sample(
+  input bit last_i,
+  input bit user_error_i,
+  input int unsigned gap_i,
+  input int unsigned ready_stall_i
+);
+  option.per_instance = 1;
+  last_cp: coverpoint last_i { bins clear = {0}; bins asserted = {1}; }
+  user_cp: coverpoint user_error_i { bins clean = {0}; bins error = {1}; }
+  gap_cp: coverpoint gap_i { bins continuous = {0}; bins short = {[1:7]}; bins long = {[8:$]}; }
+  ready_stall_cp: coverpoint ready_stall_i { bins none = {0}; bins short = {[1:7]}; bins long = {[8:$]}; }
+  packet_error_x: cross last_cp, user_cp;
+endgroup
 
 class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   `uvm_component_utils(dsm_scoreboard)
@@ -6,8 +44,16 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   int unsigned rf_count;
   int unsigned one_count;
   int unsigned zero_count;
+  int unsigned tx_count;
+  int unsigned obs_count;
+  int unsigned axil_count;
   dsm_rf_cg rf_cg;
+  dsm_axil_control_cg axil_cg;
+  dsm_axis_control_cg tx_cg;
+  dsm_axis_control_cg obs_cg;
   uvm_analysis_imp_tx #(dsm_axis_item, dsm_scoreboard) tx_export;
+  uvm_analysis_imp_axil #(dsm_axi_lite_item, dsm_scoreboard) axil_export;
+  uvm_analysis_imp_obs #(dsm_axis_item, dsm_scoreboard) obs_export;
   int expected_input_i[$];
   int expected_input_q[$];
   bit expected_input_last[$];
@@ -18,7 +64,12 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   function new(string name, uvm_component parent);
     super.new(name, parent);
     rf_cg = new();
+    axil_cg = new();
+    tx_cg = new();
+    obs_cg = new();
     tx_export = new("tx_export", this);
+    axil_export = new("axil_export", this);
+    obs_export = new("obs_export", this);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -79,6 +130,8 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
     int i_value;
     int q_value;
     bit last_value;
+    tx_count++;
+    tx_cg.sample(t.last, t.user_error, t.valid_gap_cycles, t.observed_ready_stall_cycles);
     if (!cfg.enable_fullchain_check)
       return;
     if (!expected_input_i.size()) begin
@@ -91,6 +144,20 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
     if ((t.i_sample !== i_value) || (t.q_sample !== q_value) || (t.last !== last_value))
       `uvm_error("TX_BITTRUE", $sformatf("TX actual=(%0d,%0d,%0b) expected=(%0d,%0d,%0b)",
                  t.i_sample, t.q_sample, t.last, i_value, q_value, last_value))
+  endfunction
+
+  function void write_axil(dsm_axi_lite_item t);
+    axil_count++;
+    axil_cg.sample(t.is_write, t.addr, t.observed_channel_skew_cycles,
+                   t.observed_response_stall_cycles);
+    if (t.resp != 2'b00)
+      `uvm_error("AXIL_RESP", $sformatf("AXI-Lite transaction to 0x%03x returned %0b",
+                 t.addr, t.resp))
+  endfunction
+
+  function void write_obs(dsm_axis_item t);
+    obs_count++;
+    obs_cg.sample(t.last, t.user_error, t.valid_gap_cycles, t.observed_ready_stall_cycles);
   endfunction
 
   function void write(dsm_rf_item t);
@@ -129,7 +196,10 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
     if (cfg.enable_fullchain_check && (expected_input_i.size() || expected_rf_bit.size()))
       `uvm_error("VECTOR_DRAIN", $sformatf("Undrained vectors: tx=%0d rf=%0d",
                  expected_input_i.size(), expected_rf_bit.size()))
-    `uvm_info("BP_SCORE", $sformatf("rf=%0d one=%0d zero=%0d", rf_count,
-              one_count, zero_count), UVM_LOW)
+    `uvm_info("BP_SCORE", $sformatf(
+              "rf=%0d one=%0d zero=%0d tx=%0d obs=%0d axil=%0d func_cov(axil=%0.1f tx=%0.1f obs=%0.1f rf=%0.1f)",
+              rf_count, one_count, zero_count, tx_count, obs_count, axil_count,
+              axil_cg.get_coverage(), tx_cg.get_coverage(), obs_cg.get_coverage(),
+              rf_cg.get_coverage()), UVM_LOW)
   endfunction
 endclass

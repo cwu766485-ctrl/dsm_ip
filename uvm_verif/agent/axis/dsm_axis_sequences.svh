@@ -52,6 +52,42 @@ class dsm_axis_random_burst_sequence extends uvm_sequence #(dsm_axis_item);
   endtask
 endclass
 
+// Directed-random stream used by system-control tests.  It keeps data values
+// randomized while making packet-boundary and error insertion deterministic.
+class dsm_axis_control_burst_sequence extends uvm_sequence #(dsm_axis_item);
+  `uvm_object_utils(dsm_axis_control_burst_sequence)
+  int unsigned item_count = 64;
+  int unsigned max_valid_gap = 16;
+  int unsigned first_valid_gap = 0;
+  int signed amplitude = 8192;
+  int signed user_error_index = -1;
+  int signed last_index = -1;
+  bit emit_last = 1'b1;
+
+  function new(string name = "dsm_axis_control_burst_sequence");
+    super.new(name);
+  endfunction
+
+  task body();
+    dsm_axis_item req;
+    int signed span;
+    int signed effective_last_index;
+    span = (amplitude > 0) ? amplitude : 1;
+    effective_last_index = (last_index >= 0) ? last_index : item_count - 1;
+    for (int unsigned n = 0; n < item_count; n++) begin
+      req = dsm_axis_item::type_id::create($sformatf("control_req_%0d", n));
+      start_item(req);
+      req.i_sample = $signed($urandom_range(0, 2 * span)) - span;
+      req.q_sample = $signed($urandom_range(0, 2 * span)) - span;
+      req.last = emit_last && (n == effective_last_index);
+      req.user_error = (n == user_error_index);
+      req.valid_gap_cycles = (n == 0) ? first_valid_gap :
+                             $urandom_range(0, max_valid_gap);
+      finish_item(req);
+    end
+  endtask
+endclass
+
 class dsm_axis_csv_sequence extends uvm_sequence #(dsm_axis_item);
   `uvm_object_utils(dsm_axis_csv_sequence)
   string vector_set = "performance_sku";

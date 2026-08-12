@@ -22,6 +22,7 @@ Set-Location $work
 $filelist = Join-Path $work "filelist_dsm_ip_abs.f"
 $tbTop = Join-Path $repo "verif\tb\tb_dsm_ip_top_smoke.sv"
 $tbAxi = Join-Path $repo "verif\subsystem\control\tb\tb_dsm_ip_axi_control.sv"
+$tbAxiActiveReset = Join-Path $repo "verif\subsystem\control\tb\tb_dsm_ip_axi_active_reset.sv"
 $tbDpdV11 = Join-Path $repo "verif\block\dpd\tb\tb_dpd_v11.sv"
 $tbBpAxi = Join-Path $repo "verif\subsystem\if_dsm\tb\tb_dsm_ip_bp_axi_smoke.sv"
 
@@ -108,7 +109,7 @@ function Invoke-VivadoCmd($cmd) {
 }
 
 Write-Host "[xsim] compile DSM IP top smoke"
-Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tbTop`" `"$tbAxi`" `"$tbDpdV11`" `"$tbBpAxi`""
+Invoke-VivadoCmd "xvlog -sv -f `"$filelist`" `"$tbTop`" `"$tbAxi`" `"$tbAxiActiveReset`" `"$tbDpdV11`" `"$tbBpAxi`""
 
 Write-Host "[xsim] elaborate DSM IP top smoke"
 Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_top_smoke -s sim_tb_dsm_ip_top_smoke"
@@ -121,6 +122,12 @@ Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_axi_smoke -s sim_tb_dsm_ip_axi_
 
 Write-Host "[xsim] run DSM IP AXI smoke"
 Invoke-VivadoCmd "xsim sim_tb_dsm_ip_axi_smoke -runall"
+
+Write-Host "[xsim] elaborate active-stream soft-reset control test"
+Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_axi_active_reset -s sim_tb_dsm_ip_axi_active_reset"
+
+Write-Host "[xsim] run active-stream soft-reset control test"
+Invoke-VivadoCmd "xsim sim_tb_dsm_ip_axi_active_reset -runall"
 
 Write-Host "[xsim] elaborate BP AXI route smoke"
 Invoke-VivadoCmd "xelab -debug typical tb_dsm_ip_bp_axi_smoke -s sim_tb_dsm_ip_bp_axi_smoke"

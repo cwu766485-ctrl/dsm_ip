@@ -67,7 +67,8 @@ def parse_args():
     parser.add_argument("--tests", default=("dsm_bp_test,dsm_axi_protocol_test,"
                                              "dsm_performance_bittrue_test,"
                                              "dsm_memory_dpd_bittrue_test,"
-                                             "dsm_memory_dpd_safety_test"),
+                                             "dsm_memory_dpd_safety_test,"
+                                             "dsm_control_stress_test"),
                         help="comma-separated UVM test names")
     parser.add_argument("--seeds", default="1,2,3",
                         help="comma-separated positive integer seeds")

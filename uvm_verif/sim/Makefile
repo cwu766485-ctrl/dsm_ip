@@ -20,6 +20,7 @@ UVM_TESTNAME ?= dsm_bp_test
 UVM_VERBOSITY ?= UVM_LOW
 UVM_SEED ?= 1
 RUN_TAG ?= $(UVM_TESTNAME)_seed$(UVM_SEED)
+RUN_TAGS ?= $(RUN_TAG)
 COVERAGE ?= 1
 FSDB ?= 0
 
@@ -31,6 +32,7 @@ QUESTA_OUT := $(OUT)/questa
 
 VCS_COV_COMPILE := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
 VCS_COV_RUN := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert -cm_dir $(RUN_DIR)/simv.vdb,)
+VCS_RUN_ARGS ?= -no_save
 VCS_FSDB_COMPILE :=
 VCS_FSDB_RUN :=
 ifeq ($(FSDB),1)
@@ -55,10 +57,11 @@ help:
 	@echo "  make vcs                 Compile once with VCS"
 	@echo "  make vcs-run             Compile and run one test/seed"
 	@echo "  make regression          Run Python test/seed matrix"
-	@echo "  make coverage-merge      Merge VCS coverage with URG"
+	@echo "  make coverage-merge      Merge selected VCS coverage databases with URG"
+	@echo "  PowerShell bridge: .\\uvm_verif\\sim\\run_control_coverage_bridge.ps1"
 	@echo "  make verdi RUN_TAG=...   Open an FSDB generated with FSDB=1"
 	@echo "Optional targets: questa-run, check-tools, clean"
-	@echo "Variables: UVM_TESTNAME, UVM_SEED, UVM_VERBOSITY, COVERAGE, FSDB, VERDI_HOME"
+	@echo "Variables: UVM_TESTNAME, UVM_SEED, RUN_TAGS, UVM_VERBOSITY, COVERAGE, FSDB, VERDI_HOME"
 
 check-tools:
 	@command -v $(VCS) >/dev/null 2>&1 || { echo "ERROR: VCS not found"; exit 127; }
@@ -81,14 +84,14 @@ vcs-run-only:
 	@test -x $(VCS_BIN) || { echo "ERROR: run 'make vcs' first"; exit 2; }
 	@mkdir -p $(RUN_DIR)
 	@cd $(ROOT) && $(VCS_BIN) $(UVM_ARGS) $(VCS_COV_RUN) $(VCS_FSDB_RUN) \
-		-l $(RUN_DIR)/run.log
+		$(VCS_RUN_ARGS) -l $(RUN_DIR)/run.log
 
 regression:
 	@$(PYTHON) $(UVM_ROOT)/sim/run_regression.py --sim vcs
 
 coverage-merge:
 	@mkdir -p $(VCS_OUT)/coverage
-	@$(URG) -full64 -dir $(VCS_OUT)/runs/*/simv.vdb \
+	@$(URG) -full64 -dir $(VCS_OUT)/simv.vdb $(foreach tag,$(RUN_TAGS),$(VCS_OUT)/runs/$(tag)/simv.vdb) \
 		-report $(VCS_OUT)/coverage -dbname dsm_uvm_merged
 
 verdi:

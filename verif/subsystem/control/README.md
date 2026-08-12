@@ -15,6 +15,11 @@ observer status readback. Run it through:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
 ```
 
+`tb/tb_dsm_ip_axi_active_reset.sv` keeps a legal AXI-Stream source active
+while requesting `CTRL.soft_reset`. It checks reset-window backpressure,
+source recovery, reset-count readback, no false sticky error, and post-reset
+RF output. It uses `INTERP_MODE=0` to isolate reset/control behavior.
+
 ## Current Evidence
 
 On 2026-08-12, the Linux VCS environment completed the following directed
@@ -28,3 +33,16 @@ system tests without UVM errors or fatals:
 
 This is directed functional evidence, not multi-seed coverage closure or
 formal protocol signoff.
+
+## Control-Stress UVM Evidence
+
+On 2026-08-13, `dsm_control_stress_test` passed in VCS V-2023.12-SP1 with
+seeds `1`, `7`, and `31`; all three runs reported `UVM_ERROR=0` and
+`UVM_FATAL=0`. The test uses the real AXI-Lite, TX AXI-Stream, and observer
+AXI-Stream interfaces to cover independent AW/W arrival, B/R stalls, TX
+backpressure, active-stream soft reset, `tuser`/`tlast`, observer start
+backpressure, counter clear, and observer-window completion.
+
+URG coverage was merged under `uvm_verif/sim/out/vcs/coverage/`. It is evidence
+for this defined control scenario only; it does not constitute full-IP code or
+functional coverage closure.

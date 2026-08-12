@@ -62,6 +62,7 @@ verif/out_xsim_tx_frontend/
 uvm_verif/sim/out/
 uvm_verif/sim/ucli.key
 uvm_verif/refmodel/python/out/
+*.vdb/
 *.vcd
 *.fst
 *.ghw
