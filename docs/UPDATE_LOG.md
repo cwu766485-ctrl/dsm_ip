@@ -1,5 +1,22 @@
 # 项目更新日志
 
+## 2026-08-12：子系统测试资产归位与四子系统入口统一
+- 将已有 TX frontend、IF/DSM、feedback 的 testbench 分别迁入
+  `verif/subsystem/<name>/tb/`；将 AXI 控制面 smoke 迁入
+  `verif/subsystem/control/tb/tb_dsm_ip_axi_control.sv`，将 AXI-wrapped BP
+  route smoke 迁入 `verif/subsystem/if_dsm/tb/`。测试代码、DUT 边界和 README
+  现在位于同一子系统目录，生成输出仍保留在忽略的 `verif/out_xsim_*`。
+- 新增 `run_xsim_control_subsystem.ps1`。由于 coefficient bank commit、sticky
+  error、soft reset、AXI-Lite response backpressure 必须在
+  `dsm_ip_axi_top` 的完整上下文中验证，该入口复用 IP smoke runner，而不复制
+  一套易失配的顶层编译文件表。
+- `run_subsystem_signoff.ps1` 扩展为四个子系统：TX frontend、IF/DSM、feedback
+  和 control；同时修复 IF/DSM runner 的 `-Python` 参数声明，使总入口可切换
+  Linux/Windows 上可用的 Python 可执行文件。
+- 子系统层继续使用 focused SystemVerilog testbench；完整 UVM 仅在
+  `uvm_verif/` 覆盖跨 AXI-Lite、TX/OBS AXI-Stream 和 RF 接口的随机协议、
+  安全切换、scoreboard、assertion 与 coverage，避免在每个子系统复制 UVM 环境。
+
 ## 2026-08-12：Control 子系统 VCS 证据补齐与验证收口
 - 在 Linux VCS V-2023.12-SP1 上以当前 RTL 重新编译并运行
   `dsm_memory_dpd_bittrue_test` 和 `dsm_memory_dpd_safety_test`，两个 testcase 均为

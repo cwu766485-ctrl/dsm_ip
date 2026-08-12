@@ -19,6 +19,8 @@ propagation, and a zero-delay/identity-gain observation contract.
 
 ## Evidence
 
+The subsystem testbench is `tb/tb_feedback_bridge_observer.sv`.
+
 On 2026-08-12, the following test passed:
 
 ```powershell

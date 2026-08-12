@@ -18,6 +18,10 @@ I/Q input -> bp_fs4_iq_mixer -> dsm_core_bp_ef2 -> rf_bit/rf_signed
 
 ## Evidence
 
+`tb/tb_if_dsm_python_bittrue.sv` is the transaction-level Python bit-true
+testbench. `tb/tb_dsm_ip_bp_axi_smoke.sv` is the AXI-wrapped BP route smoke
+used by the IP smoke runner.
+
 `tb_if_dsm_python_bittrue.sv` compares mixer IF samples, RF bit, signed code,
 and the aligned phase label against `dsm_refmodel.bp_ef2`. On 2026-08-12, the
 following command passed 4096 transactions with zero mismatch:

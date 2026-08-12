@@ -534,18 +534,36 @@ Memory-Poly5/4-tap datapath 已具备 system-level UVM 证据。
 - 双时钟 observer bridge 的 24 组定向样本和 129 组随机样本、225 次输出停顿；
 - monitor 的 MATLAB behavioral 计数向量，以及 129 样本、12 个 invalid beat 和 clear 路径。
 
-因此当前可以进入 subsystem 阶段，先后验证 `TX frontend`、`IF/DSM`、`feedback` 和
-`control` 的位宽、延迟、流控、复位及跨模块状态边界。该结论不包含 formal CDC/RDC、完整
-lint、门级/SDF、物理实现或真实 PA/ADC/RF feedback 签核。
+因此当前 fixed RTL revision 的 block 验证可以收口，并进入或继续扩展 subsystem 和
+IP-system 验证。该结论不包含 formal CDC/RDC、完整 lint、门级/SDF、物理实现或真实
+PA/ADC/RF feedback 签核。
 
-### 12.7 2026-08-12 Subsystem XSim 进度
+### 12.7 2026-08-12 Subsystem 验证收口
 
 - IF/DSM：`Fs/4 mixer -> BP EFDSM2` 已完成 4096 transaction 的 Python-to-RTL 零失配。
 - TX frontend：`DPD bypass -> x4 interpolation` 已完成 97 输入、388 输出的逐样本零失配，
   并覆盖 140 个 output backpressure 周期。
 - Feedback：`async bridge -> observer` 已完成 129 feedback beat 联合测试，117 有效配对、
   12 invalid drop、191 源端停顿、零 FIFO drop 和零 `error_acc`。
-- Control：必须复用 Linux/VCS UVM 的 AXI-Lite、coefficient bank、atomic commit、
-  fallback 和协议断言；2026-08-12 的最新 RTL 已通过 memory-DPD bit-true 与 safety testcase，
-  不以 XSim 简化 testbench 取代 UVM。多 seed coverage closure、active-stream reset、长时
-  backpressure 与 `tuser` 错误注入仍为后续增强项。
+- Control：`dsm_ip_axi_top` 上下文中的 XSim control-in-context smoke 已通过，覆盖 AW-first/
+  W-first、WSTRB、B/R response backpressure、soft reset、register readback、LUT/Memory
+  coefficient bank commit、非法 package reject、sticky-error clear、observer/monitor status。
+  该 TB 位于 `verif/subsystem/control/tb/`，通过 `run_xsim_control_subsystem.ps1` 执行。
+- Control 的完整交叉接口验证仍由 Linux/VCS UVM 承担；当前 memory-DPD bit-true 与 safety
+  testcase 均已通过。该层不是用 XSim smoke 替代 UVM，而是为 UVM 的多 seed coverage、
+  active-stream reset、长时 backpressure 和 `tuser` 错误注入提供稳定的 directed 基线。
+- 2026-08-12 已实际执行 `run_subsystem_signoff.ps1 -IfDsmSamples 4096 -TxInputs 97`，四个
+  子系统均通过；每个子系统的 testbench 位于各自 `verif/subsystem/<name>/tb/`，DUT、参考
+  模型和运行命令由其 README 直接说明。
+
+### 12.8 下一阶段：完整 IP-System UVM
+
+在 subsystem 收口后，UVM 验证的优先级为：
+
+1. 增加随机 AXI-Lite AW/W 独立到达、B/R backpressure 与寄存器访问序列；
+2. 增加 TX/OBS AXI-Stream 长时随机 valid gap、backpressure、`tlast/tuser` 错误注入和 reset
+   during active stream；
+3. 将 performance 与 memory-DPD testcase 扩展为多 seed regression，并收集 mode、commit、
+   error、stall、reset 和 RF transaction 的 functional coverage；
+4. 保持 Python full-chain golden scoreboard，逐 transaction 比较 `rf_bit`、`rf_signed` 和
+   Fs/4 phase；UVM predictor 不取代复杂 DSP 的 Python/MATLAB reference。

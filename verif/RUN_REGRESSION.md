@@ -49,5 +49,13 @@ Run the XSim subsystem suite:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_subsystem_signoff.ps1
 ```
 
+The suite covers TX frontend, IF/DSM, and feedback. The AXI control subsystem
+is also executed through the reusable IP smoke runner because it requires the
+full `dsm_ip_axi_top` context:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
+```
+
 The full AXI control/data-plane UVM regression is intentionally separate under
 `uvm_verif/` and uses Linux VCS/Verdi. See `uvm_verif/README.md`.

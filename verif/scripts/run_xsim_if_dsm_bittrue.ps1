@@ -1,5 +1,6 @@
 param(
   [int]$Samples = 2048,
+  [string]$Python = "python",
   [switch]$KeepWork
 )
 
@@ -21,7 +22,7 @@ New-Item -ItemType Directory -Force -Path $work | Out-Null
 
 $generator = Join-Path $repo "uvm_verif\refmodel\python\generate_bp_ef2_vectors.py"
 $vectors = Join-Path $work "bp_ef2_equivalence.csv"
-& python $generator --samples $Samples --output $vectors
+& $Python $generator --samples $Samples --output $vectors
 if ($LASTEXITCODE -ne 0) { throw "Python vector generation failed." }
 
 $files = @(
@@ -30,7 +31,7 @@ $files = @(
   (Join-Path $repo "rtl\tx_bandpass_if\dsm_core_bp_ef2.sv"),
   (Join-Path $repo "rtl\tx_bandpass_if\dsm_core_bp_single.sv"),
   (Join-Path $repo "rtl\tx_bandpass_if\tx_bp_if_top.sv"),
-  (Join-Path $repo "verif\subsystem\if_dsm\tb_if_dsm_python_bittrue.sv")
+  (Join-Path $repo "verif\subsystem\if_dsm\tb\tb_if_dsm_python_bittrue.sv")
 )
 $oldLocation = Get-Location
 try {

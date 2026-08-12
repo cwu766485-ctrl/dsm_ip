@@ -24,6 +24,8 @@ level and in the IP-system UVM tests.
 
 ## Reference and Evidence
 
+The subsystem testbench is `tb/tb_tx_frontend_python_bittrue.sv`.
+
 `uvm_verif/refmodel/python/generate_tx_frontend_vectors.py` generates signed
 corner values and deterministic random I/Q traffic. The expected x4 samples
 come from the Python integer interpolation model. The testbench randomizes both

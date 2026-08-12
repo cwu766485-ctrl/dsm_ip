@@ -16,4 +16,7 @@ if ($LASTEXITCODE -ne 0) { throw "TX frontend subsystem regression failed." }
 & (Join-Path $PSScriptRoot "run_xsim_feedback_subsystem.ps1")
 if ($LASTEXITCODE -ne 0) { throw "Feedback subsystem regression failed." }
 
-Write-Host "[subsystem-signoff] PASS: IF/DSM, TX frontend, and feedback regressions completed."
+& (Join-Path $PSScriptRoot "run_xsim_control_subsystem.ps1")
+if ($LASTEXITCODE -ne 0) { throw "Control subsystem regression failed." }
+
+Write-Host "[subsystem-signoff] PASS: TX frontend, IF/DSM, feedback, and control regressions completed."

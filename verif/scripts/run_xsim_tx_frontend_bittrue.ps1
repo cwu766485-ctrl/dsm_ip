@@ -23,7 +23,7 @@ $files = @(
   (Join-Path $repo "rtl\interp\dsm_interp_fir_fixed.sv"),
   (Join-Path $repo "rtl\interp\dsm_interp2_halfband.sv"),
   (Join-Path $repo "rtl\interp\dsm_interp_frontend.sv"),
-  (Join-Path $repo "verif\subsystem\tx_frontend\tb_tx_frontend_python_bittrue.sv")
+  (Join-Path $repo "verif\subsystem\tx_frontend\tb\tb_tx_frontend_python_bittrue.sv")
 )
 
 function Invoke-XsimTool([string]$Command, [string]$LogName) {

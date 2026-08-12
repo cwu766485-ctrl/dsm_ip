@@ -21,9 +21,9 @@ Set-Location $work
 
 $filelist = Join-Path $work "filelist_dsm_ip_abs.f"
 $tbTop = Join-Path $repo "verif\tb\tb_dsm_ip_top_smoke.sv"
-$tbAxi = Join-Path $repo "verif\tb\tb_dsm_ip_axi_smoke.sv"
+$tbAxi = Join-Path $repo "verif\subsystem\control\tb\tb_dsm_ip_axi_control.sv"
 $tbDpdV11 = Join-Path $repo "verif\block\dpd\tb\tb_dpd_v11.sv"
-$tbBpAxi = Join-Path $repo "verif\tb\tx_bandpass_if\tb_dsm_ip_bp_axi_smoke.sv"
+$tbBpAxi = Join-Path $repo "verif\subsystem\if_dsm\tb\tb_dsm_ip_bp_axi_smoke.sv"
 
 $rtlFiles = @(
   "$repo\rtl\axis\axis_skid_buffer.sv",

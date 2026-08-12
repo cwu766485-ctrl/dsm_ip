@@ -9,7 +9,7 @@ New-Item -ItemType Directory -Path $work | Out-Null
 $files = @(
   (Join-Path $repo "rtl\dpd\dpd_observer_async_bridge.v"),
   (Join-Path $repo "rtl\dpd\dpd_observer.v"),
-  (Join-Path $repo "verif\subsystem\feedback\tb_feedback_bridge_observer.sv")
+  (Join-Path $repo "verif\subsystem\feedback\tb\tb_feedback_bridge_observer.sv")
 )
 
 function Invoke-XsimTool([string]$Command, [string]$LogName) {
