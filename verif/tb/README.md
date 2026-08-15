@@ -13,3 +13,9 @@ AXI-wrapped BP route smoke now lives in `verif/subsystem/if_dsm/tb/`.
 Do not add new isolated DPD, interpolation, mixer, BP DSM, observer, or monitor
 testbenches here. Put them under `verif/block/<block>/tb/` with a vector entry
 and a documented runner.
+
+verif/tb/ 是保留的“跨模块/历史主回归”测试目录。
+tb_p0_*：七种 DSM 算法的 P0 RTL 回归。
+tb_dsm_ip_top_smoke.sv：IP 顶层 smoke。
+tx_analog_iq/、tx_bandpass_if/：较宽范围的历史发射链路/路由级集成测试。
+它不该再放新的独立 block TB；新的 block TB 应放在 verif/block/<block>/tb/，新的 subsystem TB 放在 verif/subsystem/<name>/tb/。

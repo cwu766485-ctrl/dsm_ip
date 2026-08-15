@@ -49,7 +49,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
             +UVM_VERBOSITY=$(UVM_VERBOSITY) \
             +ntb_random_seed=$(UVM_SEED)
 
-.PHONY: help check-tools vcs vcs-run vcs-run-only regression coverage-merge \
+.PHONY: help check-tools formal-check-tools vcs vcs-run vcs-run-only regression coverage-merge \
         verdi questa questa-run questa-run-only run clean
 
 help:
@@ -58,6 +58,7 @@ help:
 	@echo "  make vcs-run             Compile and run one test/seed"
 	@echo "  make regression          Run Python test/seed matrix"
 	@echo "  make coverage-merge      Merge selected VCS coverage databases with URG"
+	@echo "  make formal-check-tools  Probe the Linux EDA environment for a formal engine"
 	@echo "  IP functional closure: ./uvm_verif/sim/run_ip_coverage_linux.sh"
 	@echo "  PowerShell bridge: .\\uvm_verif\\sim\\run_ip_coverage_bridge.ps1"
 	@echo "  make verdi RUN_TAG=...   Open an FSDB generated with FSDB=1"
@@ -70,6 +71,11 @@ check-tools:
 	@echo "VCS:   $$(command -v $(VCS))"
 	@echo "Python: $$(command -v $(PYTHON))"
 	@echo "Verdi: $$(command -v $(VERDI) 2>/dev/null || echo NOT_FOUND)"
+
+# This target only discovers whether a formal engine is present. It does not
+# claim that any property has been proven.
+formal-check-tools:
+	@bash $(UVM_ROOT)/formal/check_formal_tools_linux.sh
 
 vcs:
 	@mkdir -p $(VCS_OUT)

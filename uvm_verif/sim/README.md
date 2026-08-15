@@ -23,6 +23,20 @@ python3 uvm_verif/sim/run_regression.py \
 make -C uvm_verif/sim coverage-merge
 ```
 
+The reproducible IP-system closure entry point is:
+
+```bash
+bash uvm_verif/sim/run_ip_coverage_linux.sh
+```
+
+It runs 19 regressions: deterministic bit-true/safety tests once; AXI protocol,
+control stress, and memory-DPD commit stress tests across seeds `1,7,31`; plus
+AXI-Stream sideband coverage and system-closure tests across seeds `1,7,31`.
+The system-closure testcase combines reset, DPD bank commit/reject, long random
+TX traffic, observer windows, monitor readback, sticky-error behavior, and
+counter clear checks. The Windows bridge submits this same Linux command; it is
+not a simulator itself.
+
 FSDB 调试示例：
 
 ```bash

@@ -21,7 +21,12 @@ propagation, and a zero-delay/identity-gain observation contract.
 
 The subsystem testbench is `tb/tb_feedback_bridge_observer.sv`.
 
-On 2026-08-12, the following test passed:
+On 2026-08-12 the XSim baseline passed, and on 2026-08-13 the focused test was
+included in the unified Linux VCS subsystem regression. The Linux VCS run also
+instantiates a data-aware FIFO ordering checker that compares accepted source
+and destination `{data,last,user}` transactions across the unrelated clocks.
+
+The local baseline command is:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_feedback_subsystem.ps1

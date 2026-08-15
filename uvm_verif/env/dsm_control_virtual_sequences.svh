@@ -61,6 +61,20 @@ class dsm_control_stress_virtual_sequence extends uvm_sequence;
         "%s got=0x%08x expected=0x%08x mask=0x%08x", name, value, expected, mask))
   endtask
 
+  task automatic expect_observer_state(
+    input bit [31:0] expected,
+    input bit [31:0] mask,
+    input int unsigned ar_delay,
+    input int unsigned r_delay,
+    input string name
+  );
+    bit [31:0] value;
+    read_reg(DSM_REG_OBS_STATUS, value, ar_delay, r_delay, name);
+    if ((value & mask) != (expected & mask))
+      `uvm_error("CTRL_CHECK", $sformatf(
+        "%s got=0x%08x expected=0x%08x mask=0x%08x", name, value, expected, mask))
+  endtask
+
   task automatic wait_tx_accepts(input int unsigned count);
     int unsigned accepted;
     accepted = 0;
@@ -140,6 +154,11 @@ class dsm_control_stress_virtual_sequence extends uvm_sequence;
     write_reg(DSM_REG_OBS_GAIN, 32'h0000_4000, 16, 0, 16, "obs_gain");
     write_reg(DSM_REG_OBS_WINDOW, 32'd32, 0, 16, 24, "obs_window");
     expect_mask(DSM_REG_OBS_CTRL, 32'd0, 32'h0000_ffff, "obs_ctrl_disabled");
+    // Deliberately cover each AXI-Lite response-stall class while the observer
+    // is idle.  Active and clean-done use the same 0/3/16-cycle pattern below.
+    expect_observer_state(32'd0, 32'h0000_0006, 0, 0, "obs_idle_no_stall");
+    expect_observer_state(32'd0, 32'h0000_0006, 0, 3, "obs_idle_short_stall");
+    expect_observer_state(32'd0, 32'h0000_0006, 0, 16, "obs_idle_long_stall");
 
     tx_observer_ref = dsm_axis_control_burst_sequence::type_id::create("tx_observer_ref");
     tx_observer_ref.item_count = OBS_REF_ITEMS;
@@ -193,6 +212,9 @@ class dsm_control_stress_virtual_sequence extends uvm_sequence;
         write_reg(DSM_REG_OBS_CTRL, 32'h0000_0103, 8, 16, 16, "obs_start");
       end
     join
+    expect_observer_state(32'h0000_0002, 32'h0000_0006, 0, 0, "obs_active_no_stall");
+    expect_observer_state(32'h0000_0002, 32'h0000_0006, 0, 3, "obs_active_short_stall");
+    expect_observer_state(32'h0000_0002, 32'h0000_0006, 0, 16, "obs_active_long_stall");
     obs_seq.start(p_sequencer.obs_sequencer);
     wait_cycles(64);
 
@@ -200,7 +222,9 @@ class dsm_control_stress_virtual_sequence extends uvm_sequence;
     expect_mask(DSM_REG_OBS_DROP_COUNT, 32'd0, 32'hffff_ffff, "obs_drop_count");
     // Keep the status check aligned with the established observer interface
     // contract.  Pair/drop counters above independently prove window quality.
-    expect_mask(DSM_REG_OBS_STATUS, 32'h0000_001c, 32'h0000_003c, "obs_window_complete");
+    expect_observer_state(32'h0000_001c, 32'h0000_003c, 0, 0, "obs_complete_no_stall");
+    expect_observer_state(32'h0000_001c, 32'h0000_003c, 0, 3, "obs_complete_short_stall");
+    expect_observer_state(32'h0000_001c, 32'h0000_003c, 0, 16, "obs_complete_long_stall");
     expect_mask(DSM_REG_ERROR, 32'd0, 32'hffff_ffff, "final_error_status");
   endtask
 endclass

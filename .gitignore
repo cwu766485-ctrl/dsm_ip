@@ -59,6 +59,7 @@ verif/out_xsim_fs4_mixer_block/
 verif/out_xsim_feedback_subsystem/
 verif/out_safety_seed_policy/
 verif/out_xsim_tx_frontend/
+verif/out_vcs_subsystem/
 uvm_verif/sim/out/
 uvm_verif/sim/ucli.key
 uvm_verif/refmodel/python/out/
@@ -128,6 +129,15 @@ ads/**/*.wrk/
 ads/**/*.log
 de_sim.cfg
 hpeesofsim.cfg
+
+# VC Formal local runtime database and launcher environment snapshots
+vcst_rtdb/
+.vc_env_*.txt
+uvm_verif/formal/out/
+dsm_ip_formal_harness_learn_dir/
+simv
+simv.daidir/
+traces/
 
 # Local server/license/secrets
 .env

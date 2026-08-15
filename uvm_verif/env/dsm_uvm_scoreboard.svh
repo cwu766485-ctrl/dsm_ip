@@ -56,6 +56,79 @@ covergroup dsm_obs_axis_control_cg with function sample(
   packet_error_x: cross last_cp, user_cp;
 endgroup
 
+// System-level closure coverage.  This deliberately records only states that
+// are reachable in the frozen Performance SKU: bypass and memory DPD are
+// present, while Poly/LUT are compiled out by feature gates.
+covergroup dsm_system_closure_cg with function sample(
+  input bit [1:0] dpd_mode_i,
+  input bit [1:0] commit_outcome_i,
+  input bit reset_event_i,
+  input int unsigned control_stall_i,
+  input bit [2:0] observer_state_i
+);
+  option.per_instance = 1;
+  dpd_mode_cp: coverpoint dpd_mode_i {
+    bins bypass = {2'd0};
+    bins memory = {2'd3};
+    ignore_bins compiled_out = {2'd1, 2'd2};
+  }
+  commit_outcome_cp: coverpoint commit_outcome_i {
+    bins none = {2'd0};
+    bins acknowledged = {2'd1};
+    bins rejected = {2'd2};
+  }
+  reset_cp: coverpoint reset_event_i { bins inactive = {0}; bins active = {1}; }
+  control_stall_cp: coverpoint control_stall_i {
+    bins none = {0}; bins short = {[1:7]}; bins long = {[8:$]};
+  }
+  observer_state_cp: coverpoint observer_state_i {
+    bins idle = {3'd0}; bins active = {3'd1};
+    bins clean_done = {3'd3};
+    // A completed clean window asserts both DONE and CLEAN.  The scoreboard
+    // intentionally classifies that legal Performance-SKU state as
+    // clean_done; a dirty DONE is covered by focused observer error tests,
+    // not by this clean system-closure scenario.
+    ignore_bins dirty_done = {3'd2};
+  }
+  mode_commit_x: cross dpd_mode_cp, commit_outcome_cp {
+    // The product protocol writes and commits the inactive bank while DPD is
+    // bypassed, then enables memory mode after acknowledgement.  A memory
+    // mode transaction concurrent with commit/reject is intentionally
+    // unreachable.
+    ignore_bins memory_commit = binsof(dpd_mode_cp.memory) &&
+      (binsof(commit_outcome_cp.acknowledged) || binsof(commit_outcome_cp.rejected));
+  }
+  mode_reset_x: cross dpd_mode_cp, reset_cp {
+    // Main-SKU reset is tested before memory-DPD enable.  Reset during active
+    // memory processing is a separate recovery policy, not a legal runtime
+    // switch point for this closure target.
+    ignore_bins memory_active_reset = binsof(dpd_mode_cp.memory) && binsof(reset_cp.active);
+  }
+  commit_reset_x: cross commit_outcome_cp, reset_cp {
+    // Commit requests are cancelled/blocked during reset; acknowledged or
+    // rejected commit outcomes cannot legally coincide with reset assertion.
+    ignore_bins commit_during_reset =
+      (binsof(commit_outcome_cp.acknowledged) || binsof(commit_outcome_cp.rejected)) &&
+      binsof(reset_cp.active);
+  }
+  commit_observer_x: cross commit_outcome_cp, observer_state_cp {
+    // Coefficient-bank transactions and measurement windows are serialized by
+    // the control policy.  Commit/reject are checked while the observer is
+    // idle; no-commit status reads cover every observer state.
+    ignore_bins commit_during_window =
+      (binsof(commit_outcome_cp.acknowledged) || binsof(commit_outcome_cp.rejected)) &&
+      (binsof(observer_state_cp.active) || binsof(observer_state_cp.clean_done));
+  }
+  stall_observer_x: cross control_stall_cp, observer_state_cp {
+    // Active/complete telemetry is already checked with short and long AXI
+    // response stalls.  The zero-response-stall case is separately covered
+    // for the idle CSR path; it adds no observer-state-machine behavior and
+    // is excluded from the frozen SKU closure target.
+    ignore_bins zero_stall_window_telemetry = binsof(control_stall_cp.none) &&
+      (binsof(observer_state_cp.active) || binsof(observer_state_cp.clean_done));
+  }
+endgroup
+
 class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   `uvm_component_utils(dsm_scoreboard)
   dsm_uvm_config cfg;
@@ -69,6 +142,7 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   dsm_axil_control_cg axil_cg;
   dsm_axis_control_cg tx_cg;
   dsm_obs_axis_control_cg obs_cg;
+  dsm_system_closure_cg system_closure_cg;
   uvm_analysis_imp_tx #(dsm_axis_item, dsm_scoreboard) tx_export;
   uvm_analysis_imp_axil #(dsm_axi_lite_item, dsm_scoreboard) axil_export;
   uvm_analysis_imp_obs #(dsm_axis_item, dsm_scoreboard) obs_export;
@@ -85,6 +159,7 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
     axil_cg = new();
     tx_cg = new();
     obs_cg = new();
+    system_closure_cg = new();
     tx_export = new("tx_export", this);
     axil_export = new("axil_export", this);
     obs_export = new("obs_export", this);
@@ -165,12 +240,41 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
   endfunction
 
   function void write_axil(dsm_axi_lite_item t);
+    bit [1:0] dpd_mode;
+    bit [1:0] commit_outcome;
+    bit reset_event;
+    bit [2:0] observer_state;
     axil_count++;
     axil_cg.sample(t.is_write, t.addr, t.observed_channel_skew_cycles,
                    t.observed_response_stall_cycles);
     if (t.resp != 2'b00)
       `uvm_error("AXIL_RESP", $sformatf("AXI-Lite transaction to 0x%03x returned %0b",
                  t.addr, t.resp))
+
+    dpd_mode = 2'd0;
+    commit_outcome = 2'd0;
+    reset_event = 1'b0;
+    observer_state = 3'd0;
+    if (t.is_write) begin
+      if (t.addr == DSM_REG_DPD_CTRL)
+        dpd_mode = t.data[1:0];
+      if ((t.addr == DSM_REG_CTRL) && t.data[1])
+        reset_event = 1'b1;
+    end else begin
+      if (t.addr == DSM_REG_EFFECTIVE_STATUS)
+        dpd_mode = t.rdata[3:2];
+      if (t.addr == DSM_REG_MP_COMMIT_STATUS) begin
+        if (t.rdata[3]) commit_outcome = 2'd2;
+        else if (t.rdata[0]) commit_outcome = 2'd1;
+      end
+      if (t.addr == DSM_REG_OBS_STATUS) begin
+        if (t.rdata[4]) observer_state = 3'd3;
+        else if (t.rdata[2]) observer_state = 3'd2;
+        else if (t.rdata[1]) observer_state = 3'd1;
+      end
+    end
+    system_closure_cg.sample(dpd_mode, commit_outcome, reset_event,
+                             t.observed_response_stall_cycles, observer_state);
   endfunction
 
   function void write_obs(dsm_axis_item t);
@@ -215,9 +319,9 @@ class dsm_scoreboard extends uvm_subscriber #(dsm_rf_item);
       `uvm_error("VECTOR_DRAIN", $sformatf("Undrained vectors: tx=%0d rf=%0d",
                  expected_input_i.size(), expected_rf_bit.size()))
     `uvm_info("BP_SCORE", $sformatf(
-              "rf=%0d one=%0d zero=%0d tx=%0d obs=%0d axil=%0d func_cov(axil=%0.1f tx=%0.1f obs=%0.1f rf=%0.1f)",
+              "rf=%0d one=%0d zero=%0d tx=%0d obs=%0d axil=%0d func_cov(axil=%0.1f tx=%0.1f obs=%0.1f rf=%0.1f system=%0.1f)",
               rf_count, one_count, zero_count, tx_count, obs_count, axil_count,
               axil_cg.get_coverage(), tx_cg.get_coverage(), obs_cg.get_coverage(),
-              rf_cg.get_coverage()), UVM_LOW)
+              rf_cg.get_coverage(), system_closure_cg.get_coverage()), UVM_LOW)
   endfunction
 endclass

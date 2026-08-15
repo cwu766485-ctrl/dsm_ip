@@ -49,8 +49,12 @@ module dsm_uvm_tb;
     .rf_bit(rf_if.rf_bit), .rf_signed(rf_if.rf_signed));
   dsm_ip_control_sva control_sva (
     .aclk(aclk), .aresetn(aresetn), .soft_reset(dut.soft_reset),
-    .s_axis_tready(tx_if.tready), .mp_commit_pending(dut.mp_commit_pending),
-    .mp_commit_inflight(dut.mp_commit_inflight), .mp_active_bank(dut.mp_active_bank),
+    .s_axis_tready(tx_if.tready), .axis_buf_valid(dut.axis_buf_valid), .rf_valid(rf_if.rf_valid),
+    .mp_commit_pending(dut.mp_commit_pending), .mp_commit_inflight(dut.mp_commit_inflight),
+    .mp_commit_pulse(dut.mp_commit_pulse),
+    .mp_commit_success_event(dut.mp_commit_success_event),
+    .mp_commit_ack(dut.mp_commit_ack), .mp_commit_failed(dut.mp_commit_failed),
+    .mp_commit_epoch(dut.mp_commit_epoch), .mp_active_bank(dut.mp_active_bank),
     .obs_enable(dut.obs_enable_reg), .obs_active(dut.obs_active),
     .obs_ready(obs_if.tready));
   initial begin

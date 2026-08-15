@@ -88,6 +88,15 @@ module tb_feedback_bridge_observer;
     .obs_ready(obs_ready)
   );
 
+  dsm_async_fifo_order_checker #(
+    .DATA_W(2*W), .USER_W(1), .MAX_TRANSACTIONS(256)
+  ) u_fifo_order_checker (
+    .s_clk(feedback_clk), .s_rst_n(rst_n), .s_tdata(s_tdata),
+    .s_tlast(s_tlast), .s_tuser(s_tuser), .s_tvalid(s_tvalid), .s_tready(s_tready),
+    .m_clk(aclk), .m_rst_n(rst_n), .m_tdata({obs_q, obs_i}),
+    .m_tlast(obs_last), .m_tuser(obs_invalid), .m_tvalid(obs_valid), .m_tready(obs_ready)
+  );
+
   dpd_observer u_observer (
     .clk(aclk), .rst_n(rst_n), .enable(enable), .start(start), .clear(clear),
     .delay_samples(5'd0), .gain_re(16'sd16384), .gain_im('0),

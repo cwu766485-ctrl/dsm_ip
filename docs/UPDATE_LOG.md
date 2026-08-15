@@ -1,5 +1,127 @@
 # 项目更新日志
 
+## 2026-08-15 02:38 +08:00：IP-system UVM 覆盖收口
+- 新增 `dsm_system_closure_test` 及其虚拟序列，将已有 control、memory-DPD 和 AXI-Stream
+  场景组成单一系统用例：active-stream soft reset、有效/非法 bank commit、memory-DPD mode、
+  512 个随机 gap 的 TX 数据流、`tlast/tuser`、observer clean window、monitor/counter
+  readback、sticky error 以及 W1C clear 均在同一运行中检查。
+- 扩展 `dsm_system_closure_cg`：覆盖 DPD mode、commit outcome、reset、AXI-Lite response
+  stall 和 observer idle/active/clean-complete 状态，并添加有依据的主 SKU exclusion。排除项
+  是编译裁剪或控制协议禁止的组合，不是用忽略项掩盖未验证功能。
+- 扩展 control 虚拟序列：对 observer idle、active、clean-complete 分别执行精确的无/短/长
+  AXI 读响应延迟检查；保留 focused observer block 对 dirty/error 场景的验证责任。
+- 实际执行 `bash uvm_verif/sim/run_ip_coverage_linux.sh`。Linux VCS V-2023.12-SP1 共 19/19
+  通过，所有运行均为 `UVM_ERROR=0`、`UVM_FATAL=0`。合并 URG 结果为总分 66.58%、line
+  59.74%、condition 57.56%、toggle 62.79%、branch 41.99%、assert 77.42%、group 100.00%；
+  system closure covergroup 为 100.00%。
+- 修改文件：`uvm_verif/env/dsm_uvm_scoreboard.svh`、
+  `uvm_verif/env/dsm_control_virtual_sequences.svh`、
+  `uvm_verif/env/dsm_system_closure_virtual_sequences.svh`、
+  `uvm_verif/tests/dsm_system_closure_test.svh`、`uvm_verif/env/dsm_uvm_pkg.sv`、
+  `uvm_verif/sim/run_ip_coverage_linux.sh`、`uvm_verif/sim/README.md`、`docs/VPLAN.md`。
+- 仍未完成：全 RTL code coverage closure、lint、CDC/RDC、门级/SDF、所有其他 compile-time
+  SKU 的完整回归、routed/bitstream/板级验证，以及真实 PA/ADC/RF 闭环。
+
+## 2026-08-15 00:19 +08:00：VC Formal FPV 闭环与 memory-DPD commit/reset 缺陷修复
+- 新增并实际运行固定 Performance SKU 的 VC Formal FPV 流程：真实 DUT 为
+  `dsm_ip_axi_top`，配置为 BP EFDSM2、Fs/4 IF、插值 bypass、Poly5 与
+  Memory-Poly5 4-tap；LUT DPD 关闭。形式模型无 black box。
+- VC Formal `V-2023.12-SP2` 最终报告为 14/14 assertion proven、18/18 vacuity
+  non-vacuous、7/7 cover covered。setup 门禁对 clock、glitch、组合/振荡环和
+  multi-driver 的检查均为零违规；runner 会在报告缺失、setup 非零或性质存在
+  falsified/inconclusive/undetermined/unprocessed 时返回失败。
+- `core_rst_n = aresetn & ~soft_reset` 中的 `soft_reset` 是运行时功能，不是只允许初始化
+  期间出现的复位。VC Formal 通用 reset-setup 规则因此按类别显式排除，但没有把
+  `soft_reset` 约束为常零；soft reset 关闭 TX、清空 datapath、取消 commit 及其可达性仍由
+  专用 assertion/cover 证明。该例外不代表 CDC/RDC 已签核。
+- 形式验证发现并修复两个真实 RTL 缺陷：旧事务留下的 sticky
+  `dpd_mp_commit_rejected` 可能在新 commit pulse 尚未被消费时误拒绝新事务；soft reset 与
+  commit completion 同拍时可能错误增加 `mp_commit_epoch` 并留下旧的 wrapper transaction
+  状态。现在 rejection 只在新 pulse 后判定，soft reset 会取消 pending/inflight/ack/failed，
+  且硬件完成事件优先于同拍 W1C 清除。
+- 修正 UVM 顶层 SVA 实例漏接 `mp_commit_pulse` 和 `mp_commit_success_event` 的问题，消除
+  VCS `Too few instance port connections`，避免 assertion 使用悬空输入。
+- 修复 FPV 报告脚本在全部性质通过时仍尝试导出反例而产生误导性 `[Error]` 的问题。
+- 回归执行：Linux VCS `dsm_memory_dpd_bittrue_test` 通过，24 个 I/Q 输入对应 768 个 RF
+  transaction 逐项匹配；`dsm_memory_dpd_safety_test` 命中非法 commit/reject 路径；两项均为
+  `UVM_ERROR=0`、`UVM_FATAL=0`。剩余边界为 CDC/RDC、形式算术等价、其他编译 SKU、门级/SDF、
+  物理实现和真实 RF/PA 反馈。
+
+## 2026-08-14 21:55 +08:00：VC Formal 安装与许可证启动确认
+- 确认 Rocky WSL 已安装 VC Formal `V-2023.12-SP2_Full64`，可执行文件为
+  `/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf`；同时存在 Formality，但后者用于等价检查，
+  不能替代 SVA property proof。
+- 定位此前 `NO_SUPPORTED_FORMAL_ENGINE` 为环境探测误报：共享 bridge 进程已经退出，
+  `status.txt/result.log` 是旧结果；非交互 shell 又未加载 `~/.bashrc` 中的
+  `VC_FORMAL_HOME` 和 PATH。探测脚本现会强制重新进入一次交互式 shell，并新增不依赖
+  bridge 常驻进程的 `run_formal_tool_check_wsl.ps1` 直接入口。
+- `vcf -id` 已正常报告安装信息；`vcf -batch -no_ui -fmode FPV` 启动 smoke 打印
+  `VCF_BATCH_STARTUP_PASS` 并以退出码 0 结束，确认 FPV 二进制和许可证可用。
+- 当前结论仅是工具与许可证就绪。尚未建立冻结参数的 formal harness、assumption、property
+  分组和 proof report，因此不能将已有 VCS 并发断言宣称为 formal proof 已完成。
+
+## 2026-08-13 22:53 +08:00：Formal 工具可用性检查（已被 2026-08-14 复核纠正）
+- 新增 `uvm_verif/formal/check_formal_tools_linux.sh`、
+  `uvm_verif/formal/run_formal_tool_check_bridge.ps1` 以及
+  `make -C uvm_verif/sim formal-check-tools`，用于在既有 Linux EDA bridge 中可重复探测
+  property-formal / equivalence 工具。
+- 实际通过 Linux bridge 检查：`vcs` 可用；`vcf`、`vc_formal`、`jaspergold`、`qverify`、
+  `sby`、`yosys`、`formality` 均未找到，脚本按预期以 `last_exit=2` 结束并输出
+  `FORMAL_TOOL_CHECK_RESULT=NO_SUPPORTED_FORMAL_ENGINE`。
+- 该次结论由未加载完整 EDA 环境和陈旧 bridge 日志导致，已由 2026-08-14 的直接交互式
+  WSL 检查纠正。当前断言证据仍严格限定为 Linux VCS 并发 SVA 仿真，不能标记为穷尽
+  formal proof。
+  后续使用现有 VC Formal 添加冻结参数的 harness、assumption、proof runset 和独立 proof
+  状态报告。
+- 本次未改动 RTL；检查执行：Linux bridge formal-tool probe。剩余限制：尚无法运行
+  property proof、formal CDC/RDC 或等价检查。该历史限制已在 2026-08-14 更新为“工具可用但
+  尚未完成证明”。
+
+## 2026-08-13 22:35 +08:00：IP-system 随机压力、系统断言与异步反馈顺序检查
+- 扩展 `dsm_memory_dpd_commit_stress_test`：保持 24 组 Q1.15 I/Q 和 768 组 RF golden
+  transaction 不变，仅随机化 AXI-Lite 写地址/写数据/写响应和读响应的到达延迟。该测试在
+  seed `1`、`7`、`31` 下验证 inactive bank 写入、受保护 commit、bank 切换与全链路
+  Python bit-exact RF 比较可在不同控制面时序下保持正确。
+- 扩展 IP-system 回归至 15 项：4 项确定性 bit-true/safety、AXI protocol 3 seed、control
+  stress 3 seed、memory-DPD commit stress 3 seed、AXI-Stream sideband coverage 2 seed。
+  Linux VCS V-2023.12-SP1 回归全部通过，所有运行均为 `UVM_ERROR=0`、`UVM_FATAL=0`。
+- 扩展并在 `dsm_uvm_tb` 中实例化系统级 SVA：TX/OBS AXI-Stream 和 AXI-Lite stall 时
+  payload 稳定；soft reset 关闭 TX 并在下一拍清空 skid/datapath 可见状态；commit 串行化、
+  bank 变化对应 acknowledge/epoch、失败 commit 保持 active bank；observer ready 仅在
+  enable 且窗口 active 时出现。它们均作为 VCS 仿真中的并发断言执行，尚未作为 formal
+  proof 签署。
+- 新增异步 FIFO 数据顺序检查器，并接入 `feedback` focused testbench。Linux VCS 统一
+  subsystem 回归再次通过：`tx_frontend`、`if_dsm`、`feedback`、`control` 均为 `PASS`，
+  日志包含 `SUBSYSTEM_VCS_SIGNOFF_PASS`；feedback 使用异步时钟、129 个输入 beat，逐项
+  检查 `{data,last,user}` 的 FIFO 顺序。
+- 未完成项保持不变：完整 code coverage closure、formal proof/CDC/RDC、lint clean、
+  gate/SDF、当前主 SKU 的重新 routed/bitstream 以及真实 PA/ADC/RF feedback。
+
+## 2026-08-13：Subsystem Linux VCS 统一回归通过
+- 通过既有 `F:\sramc_uvm_bridge` 在 Rocky Linux 上执行统一回归。bridge 负责从 Windows
+  工作区接收命令、在 Linux 的 VCS 环境运行脚本、将日志和退出状态写回共享目录；它不参与 RTL
+  功能，也不替代 VCS/UVM。
+- 为 bridge 的非交互 shell 增加 Linux 本机 EDA 环境重新执行机制，避免在仓库中记录许可证
+  地址、服务器或其他本机凭据。此前的 `VCS_HOME` 与 license server 短暂不可达问题均已恢复。
+- 本轮结果：`last_exit=0`，日志包含 `SUBSYSTEM_VCS_SIGNOFF_PASS`；生成的
+  `verif/out_vcs_subsystem/subsystem_summary.csv` 显示 `tx_frontend`、`if_dsm`、`feedback`、
+  `control` 均为 `PASS`。
+- TX frontend、IF/DSM、feedback 分别通过 focused VCS SystemVerilog testbench 与 Python
+  reference；control 运行 8 个 Linux VCS UVM 用例，所有用例均为 `UVM_ERROR=0`、
+  `UVM_FATAL=0`。至此，当前 RTL revision 的四个 subsystem Linux VCS signoff 已完成。
+
+## 2026-08-13：Subsystem 正式验证路径迁移至 Linux VCS
+- 明确 Windows PowerShell 不能直接执行 `call settings64.bat`：`call` 是 `cmd.exe` 的批处理
+  内建命令；即使经 `cmd` 执行，其环境变量也不会回写到当前 PowerShell。此前 `xvlog.bat`
+  以 `0xC0000142` 启动失败属于 Vivado launcher/DLL 初始化问题，未进入 RTL 编译。
+- 新增 `run_subsystem_vcs_linux.sh` 和 `run_subsystem_vcs_bridge.ps1`。正式 subsystem
+  回归固定由 Linux VCS 执行，Windows 仅向既有 bridge 提交任务和读取结果。
+- TX frontend、IF/DSM、feedback 使用 focused SV testbench 与 Python 逐样本/状态 oracle；
+  control 使用现有 UVM AXI 回归。该划分避免将确定性 DSP 数值测试不必要地重写成 UVM，仍让
+  多接口协议、随机时序与覆盖率场景保持在 UVM 中。
+- XSim 的四项通过记录保留为 baseline evidence；Linux VCS 统一 subsystem suite 尚待 bridge
+  执行，完成前不将本 RTL revision 标记为 subsystem signoff completed。
+
 ## 2026-08-13 03:34 +08:00：IP-system UVM 功能覆盖收口
 - 新增 `dsm_axis_coverage_test` 与虚拟序列，定向覆盖 TX/OBS AXI-Stream 的
   `TLAST`、`TUSER[0]`、连续/短间隔/长间隔 transaction 组合；TX 和 OBS 分别使用符合各自

@@ -4,6 +4,7 @@ class dsm_memory_dpd_virtual_sequence extends uvm_sequence;
 
   string coeff_path = "";
   string vector_set = "memory_dpd_system";
+  bit randomize_axi_timing = 1'b0;
 
   function new(string name = "dsm_memory_dpd_virtual_sequence");
     super.new(name);
@@ -15,6 +16,11 @@ class dsm_memory_dpd_virtual_sequence extends uvm_sequence;
     seq = dsm_axi_lite_write_sequence::type_id::create(name);
     seq.addr = addr;
     seq.data = data;
+    if (randomize_axi_timing) begin
+      seq.addr_delay_cycles = $urandom_range(0, 16);
+      seq.data_delay_cycles = $urandom_range(0, 16);
+      seq.ready_delay_cycles = $urandom_range(0, 24);
+    end
     seq.start(p_sequencer.axi_sequencer);
     if (seq.resp != 2'b00)
       `uvm_error("AXI_RESP", $sformatf("%s response %0b", name, seq.resp))
@@ -25,6 +31,10 @@ class dsm_memory_dpd_virtual_sequence extends uvm_sequence;
     dsm_axi_lite_read_sequence seq;
     seq = dsm_axi_lite_read_sequence::type_id::create(name);
     seq.addr = addr;
+    if (randomize_axi_timing) begin
+      seq.addr_delay_cycles = $urandom_range(0, 16);
+      seq.ready_delay_cycles = $urandom_range(0, 24);
+    end
     seq.start(p_sequencer.axi_sequencer);
     data = seq.rdata;
     if (seq.resp != 2'b00)
@@ -134,10 +144,12 @@ class dsm_memory_dpd_safety_virtual_sequence extends uvm_sequence;
 
   task body();
     bit [31:0] status;
-    bit [31:0] active_bank;
+    bit [31:0] active_bank_before;
+    bit [31:0] active_bank_after;
     bit [31:0] error_status;
     bit failed;
 
+    read_reg(DSM_REG_MP_COMMIT, active_bank_before, "unsafe_active_bank_before");
     write_reg(DSM_REG_DPD_CTRL, 32'h0000_0100, "dpd_safety_enable");
     write_reg(DSM_REG_MP_SELECT, 32'h0000_0400, "unsafe_mp_select");
     write_reg(DSM_REG_MP_DATA, 32'h0000_6001, "unsafe_mp_data");
@@ -153,8 +165,8 @@ class dsm_memory_dpd_safety_virtual_sequence extends uvm_sequence;
     end
     if (!failed)
       `uvm_error("MP_SAFETY", "Unsafe memory-DPD package was not rejected")
-    read_reg(DSM_REG_MP_COMMIT, active_bank, "unsafe_active_bank");
-    if (active_bank[0] != 1'b0)
+    read_reg(DSM_REG_MP_COMMIT, active_bank_after, "unsafe_active_bank_after");
+    if (active_bank_after[0] != active_bank_before[0])
       `uvm_error("MP_SAFETY", "Unsafe package changed the active coefficient bank")
     read_reg(DSM_REG_ERROR, error_status, "unsafe_error_status");
     if (!error_status[3])

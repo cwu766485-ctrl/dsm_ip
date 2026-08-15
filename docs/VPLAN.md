@@ -1,7 +1,7 @@
 # BP EFDSM2 数字发射机 IP 验证计划
 
-文档版本：2.5
-更新时间：2026-08-13
+文档版本：2.6
+更新时间：2026-08-13 22:35 +08:00
 适用顶层：`dsm_ip_axi_top`
 
 ## 1. 验证范围
@@ -74,21 +74,39 @@ source list 必须与 Vivado/DC 主 SKU 一致。
 
 ### 2.4 IP-system UVM 功能覆盖收口证据
 
-- Linux VCS V-2023.12-SP1 已完成 12 项主 SKU 系统回归，全部为
+- Linux VCS V-2023.12-SP1 已完成 19 项主 SKU 系统回归，全部为
   `UVM_ERROR=0`、`UVM_FATAL=0`：`dsm_bp_test`、performance bit-true、memory-DPD
   bit-true、memory-DPD safety、AXI protocol 三个 seed、control stress 三个 seed，以及
-  AXI-Stream sideband coverage 两个 seed。
+  memory-DPD commit stress 三个 seed、AXI-Stream sideband coverage 三个 seed、system
+  closure 三个 seed。
 - 统一结果位于生成物
   `uvm_verif/sim/out/vcs/ip_coverage_summary.csv`；该文件、VCS 编译产物、coverage
   database 与 waveform 均不纳入版本控制。
-- Function coverage 已达到定义的 100%：AXI-Lite control、RF 输出编码、TX AXI-Stream
-  sideband/stall，以及 OBS AXI-Stream sideband/wait。OBS 的 `TREADY` 由观测窗口状态机
-  控制，因此按“无等待/有等待”覆盖，而不把它误建模为短/长 backpressure。
-- 并发 SVA 未出现断言失败，并命中 soft reset 关闭 TX、commit 关闭 TX、bank 切换及
-  observer ready 四类 cover property。RF 编码中不可能的 `{rf_bit, rf_signed}` 组合被
-  明确排除，并由断言保留其正确性约束。
-- 当前 URG 总分为 65.87%（line 58.60%、condition 56.50%、toggle 62.02%、branch
-  40.33%、assert 77.78%、group 100.00%）。本轮结论是“既定功能点的 functional
+- 主 SKU 定义的 functional coverage 已达到 100%：AXI-Lite control、RF 输出编码、TX/OBS
+  AXI-Stream sideband/stall，以及 system closure 的 `DPD mode × commit outcome × reset ×
+  AXI response stall × observer window state`。system testcase 还检查 monitor/counter
+  readback、sticky error、bank/epoch 拒绝保持和 W1C clear。
+- 明确 exclusion：Poly/LUT DPD 为该 SKU 的编译裁剪路径；memory DPD 的 commit/reject 在
+  bypass 下完成后才可进入 memory mode；commit 与 observer measurement window 串行化；reset
+  期间不允许 commit outcome；干净完成窗口以 `clean_done` 表示而不重复计作 `done`；observer
+  active/clean-complete 下的零周期 AXI 读响应不增加状态机语义，idle CSR 已覆盖该零等待路径。
+- 并发 SVA 未出现断言失败：AXI-Lite、TX/OBS AXI-Stream stall payload 稳定；soft reset
+  关闭 TX 且清空 skid/datapath 可见状态；commit 串行化、bank/ack/epoch 契约、失败 commit
+  保持 active bank；observer ready 状态约束均已运行。RF 编码中不可能的
+  `{rf_bit, rf_signed}` 组合被明确排除，并由断言保留其正确性约束。
+- `feedback` subsystem 额外使用数据感知的异步 FIFO 顺序检查器：在异步源/目的时钟上记忆
+  `{data,last,user}` 输入序列，并在目的端逐 transaction 比较。因此 FIFO 顺序验证不只依赖
+  局部 ready/valid 属性。该检查器是仿真 collateral，不属于可综合 RTL。
+- Linux VCS SVA/FIFO 检查仍是仿真证据；此外，2026-08-15 已使用 VC Formal
+  `V-2023.12-SP2` 对固定 Performance SKU 的控制与协议边界完成独立 FPV：14/14 assertion
+  proven、18/18 non-vacuous、7/7 cover covered，且模型无 black box。该证明覆盖 AXI 响应
+  stall 稳定性、RF 编码、soft-reset drain、memory-DPD commit/bank/ack/epoch/failure 和
+  observer ready 状态约束。
+- FPV 中保持运行时 `soft_reset` 可达，并用专用 assertion/cover 检查；只排除默认假设
+  “复位仅用于初始化”的通用 reset-setup 规则。其余 setup 检查均为零违规。该结果不替代
+  CDC/RDC 静态分析、形式算术等价、其他 compile-time SKU 或门级/SDF 签核。
+- 当前 URG 总分为 66.58%（line 59.74%、condition 57.56%、toggle 62.79%、branch
+  41.99%、assert 77.42%、group 100.00%）。本轮结论是“既定功能点的 functional
   coverage closure”，不是全 RTL code coverage closure 或最终签核。
 - 可复跑入口为 `uvm_verif/sim/run_ip_coverage_linux.sh`；Windows 通过
   `uvm_verif/sim/run_ip_coverage_bridge.ps1` 向 Linux/VCS bridge 提交同一命令。
@@ -559,7 +577,7 @@ Memory-Poly5/4-tap datapath 已具备 system-level UVM 证据。
 IP-system 验证。该结论不包含 formal CDC/RDC、完整 lint、门级/SDF、物理实现或真实
 PA/ADC/RF feedback 签核。
 
-### 12.7 2026-08-12 Subsystem 验证收口
+### 12.7 Subsystem 功能验证状态
 
 - IF/DSM：`Fs/4 mixer -> BP EFDSM2` 已完成 4096 transaction 的 Python-to-RTL 零失配。
 - TX frontend：`DPD bypass -> x4 interpolation` 已完成 97 输入、388 输出的逐样本零失配，
@@ -577,18 +595,47 @@ PA/ADC/RF feedback 签核。
   transaction 后请求 `CTRL.soft_reset`。它断言复位窗口内 `TREADY=0`，并检查复位后
   16 个输入 transaction 全部恢复、软件复位计数增加一次、不会产生误报 sticky error，且可
   再次观察到 RF 输出。
-- 2026-08-12 已实际执行 `run_subsystem_signoff.ps1 -IfDsmSamples 4096 -TxInputs 97`，四个
-  子系统均通过；每个子系统的 testbench 位于各自 `verif/subsystem/<name>/tb/`，DUT、参考
-  模型和运行命令由其 README 直接说明。
+- 2026-08-12 的 XSim 基线显示四个子系统均通过，但 XSim 仅是 Windows 本地 smoke 证据。
+  当前正式 subsystem signoff 统一迁移到 Linux VCS bridge：TX frontend、IF/DSM、feedback
+  运行 focused SV testbench；control 运行已有 UVM AXI 多接口回归。
+- 2026-08-13 已通过 `run_subsystem_vcs_linux.sh` 生成统一 `subsystem_summary.csv`。bridge
+  返回 `last_exit=0` 且日志包含 `SUBSYSTEM_VCS_SIGNOFF_PASS`；TX frontend、IF/DSM、feedback
+  和 control 均为 `PASS`。其中前三项使用 focused VCS SV testbench，control 使用 8 项
+  Linux VCS UVM 回归，所有运行均为 `UVM_ERROR=0`、`UVM_FATAL=0`。当前 RTL revision 的
+  subsystem functional signoff 已收口。
 
-### 12.8 下一阶段：完整 IP-System UVM
+### 12.8 IP-System UVM 收口状态
 
-在 subsystem 收口后，UVM 验证的优先级为：
+subsystem 收口后的系统级任务已经落地：
 
-1. 增加随机 AXI-Lite AW/W 独立到达、B/R backpressure 与寄存器访问序列；
-2. 增加 TX/OBS AXI-Stream 长时随机 valid gap、backpressure、`tlast/tuser` 错误注入和 reset
-   during active stream；
-3. 将 performance 与 memory-DPD testcase 扩展为多 seed regression，并收集 mode、commit、
-   error、stall、reset 和 RF transaction 的 functional coverage；
-4. 保持 Python full-chain golden scoreboard，逐 transaction 比较 `rf_bit`、`rf_signed` 和
-   Fs/4 phase；UVM predictor 不取代复杂 DSP 的 Python/MATLAB reference。
+1. AXI-Lite 已覆盖 AW/W 独立到达、B/R backpressure、随机寄存器访问和多 seed 压力；
+2. TX/OBS AXI-Stream 已覆盖 valid gap、backpressure、`tlast/tuser` 场景及 active-stream
+   soft reset；
+3. performance、memory-DPD bit-true/safety/commit stress、AXI sideband 和 system closure
+   已纳入 19 项 Linux VCS 回归，定义的 functional coverage 为 100%；
+4. Python full-chain golden scoreboard 对 `rf_bit`、`rf_signed` 和 Fs/4 phase 做逐 transaction
+   比较，UVM predictor 不替代复杂 DSP 的 Python/MATLAB reference。
+
+当前结论是固定主 SKU 的 IP-system 功能验证和已定义功能覆盖已收口。URG code coverage
+总分 65.87% 不是全代码覆盖签核，后续若以 ASIC signoff 为目标，仍需针对不可达代码做分析、
+合理 exclusion，并补 lint、CDC/RDC 和门级/SDF。
+
+### 12.9 VC Formal FPV 状态
+
+2026-08-15 使用 VC Formal `V-2023.12-SP2` 对真实 `dsm_ip_axi_top` 的固定 Performance SKU
+执行 FPV。配置为 BP EFDSM2、Fs/4 IF、插值 bypass、Poly5、Memory-Poly5 4-tap，LUT DPD
+关闭；模型无 black box。
+
+- 14/14 assertion proven；
+- 18/18 vacuity check non-vacuous；
+- 7/7 cover reachable；
+- clock、glitch、组合/振荡环和 multi-driver setup 检查零违规。
+
+`core_rst_n` 包含可运行时触发的 `soft_reset`，因此不适用“复位只在初始化出现”的通用
+reset-setup 规则。该类别被显式排除，但 `soft_reset` 没有被约束为常零；TX closure、datapath
+drain、commit cancellation 和 reachability 仍在 FPV 中证明。FPV 发现并促成修复 sticky
+commit rejection 误关联新事务，以及 soft reset/commit completion 同拍导致 epoch 错增两个
+RTL 缺陷。修复后 memory-DPD bit-true 与 safety UVM 用例均复跑通过。
+
+该结论仅覆盖上述固定配置的控制/协议性质，不等同于 CDC/RDC、DPD 算术形式等价、所有 SKU、
+门级/SDF 或物理实现签核。

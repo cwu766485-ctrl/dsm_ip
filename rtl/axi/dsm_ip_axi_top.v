@@ -298,6 +298,16 @@ module dsm_ip_axi_top #(
   wire signed [15:0] mp_coeff_rdata_re;
   wire signed [15:0] mp_coeff_rdata_im;
   wire mp_active_bank;
+  wire mp_commit_success_event = mp_commit_inflight && !soft_reset &&
+                                 (mp_active_bank == mp_commit_target_bank);
+  // mp_commit_rejected is sticky inside the DPD frontend.  Do not consume a
+  // stale rejection while the new commit pulse is still being presented;
+  // wait until the frontend has had one edge to either switch the bank or
+  // report rejection for this transaction.
+  wire mp_commit_failure_event = mp_commit_inflight && !soft_reset &&
+                                 !mp_commit_pulse &&
+                                 (mp_active_bank != mp_commit_target_bank) &&
+                                 dpd_mp_commit_rejected;
   wire obs_active;
   wire obs_last_seen;
   wire [31:0] obs_paired_count;
@@ -563,12 +573,15 @@ module dsm_ip_axi_top #(
         mp_commit_inflight <= 1'b1;
         mp_commit_target_bank <= ~mp_active_bank;
       end
-      if (mp_commit_inflight) begin
-        if (mp_active_bank == mp_commit_target_bank) begin
+      // Software reset cancels the transaction.  Do not count a coincident
+      // bank transition as a successful commit; the reset block below clears
+      // the wrapper state and the DPD core restores bank zero.
+      if (mp_commit_inflight && !soft_reset) begin
+        if (mp_commit_success_event) begin
           mp_commit_inflight <= 1'b0;
           mp_commit_ack <= 1'b1;
           mp_commit_epoch <= mp_commit_epoch + 8'd1;
-        end else if (dpd_mp_commit_rejected) begin
+        end else if (mp_commit_failure_event) begin
           mp_commit_inflight <= 1'b0;
           mp_commit_failed <= 1'b1;
         end
@@ -782,8 +795,12 @@ module dsm_ip_axi_top #(
           end
           ADDR_OBS_WINDOW: obs_window_reg <= s_axi_wdata;
           ADDR_MP_COMMIT_STATUS: begin
-            if (s_axi_wstrb[0] && s_axi_wdata[0]) mp_commit_ack <= 1'b0;
-            if (s_axi_wstrb[0] && s_axi_wdata[3]) mp_commit_failed <= 1'b0;
+            // Hardware completion wins over a same-cycle software W1C.  This
+            // keeps ACK/epoch and FAILED/bank status observationally atomic.
+            if (s_axi_wstrb[0] && s_axi_wdata[0] && !mp_commit_success_event)
+              mp_commit_ack <= 1'b0;
+            if (s_axi_wstrb[0] && s_axi_wdata[3] && !mp_commit_failure_event)
+              mp_commit_failed <= 1'b0;
           end
           ADDR_OBS_SNAPSHOT: begin
             if (s_axi_wstrb[0] && s_axi_wdata[0]) begin
@@ -811,6 +828,18 @@ module dsm_ip_axi_top #(
 `undef s_axi_wstrb
       end else if (s_axi_bvalid && s_axi_bready) begin
         s_axi_bvalid <= 1'b0;
+      end
+
+      // CTRL.soft_reset resets the DPD coefficient-bank state.  Cancel any
+      // wrapper-side transaction at the same boundary so software never sees
+      // a stale pending/inflight request referring to the pre-reset bank.
+      if (soft_reset) begin
+        mp_commit_pulse <= 1'b0;
+        mp_commit_pending <= 1'b0;
+        mp_commit_inflight <= 1'b0;
+        mp_commit_ack <= 1'b0;
+        mp_commit_failed <= 1'b0;
+        mp_commit_target_bank <= 1'b0;
       end
     end
   end

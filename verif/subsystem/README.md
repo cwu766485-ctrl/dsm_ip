@@ -2,42 +2,43 @@
 
 Subsystem tests focus on width, latency, flow control, reset propagation, and
 state interaction across block boundaries. Each subsystem owns its testbench
-under `<subsystem>/tb/`; generated simulation output remains under
-`verif/out_xsim_*` and is ignored by Git.
+under `<subsystem>/tb/`. Linux VCS is the signoff simulator; Windows XSim is a
+local smoke-only path. Generated output remains ignored by Git.
 
 | Subsystem | Composition | Status |
 |---|---|---|
-| TX frontend | DPD bypass -> x4 interpolation | 2026-08-12: Python-to-RTL XSim bit-true passed, 97 inputs / 388 outputs / 140 output stalls |
-| IF/DSM | Fs/4 mixer -> BP EFDSM2 | 2026-08-12: Python-to-RTL XSim bit-true passed, 4096 transactions |
-| Feedback | async bridge -> observer | 2026-08-12: XSim integration passed, 129 samples / 117 pairs / 12 invalid / 191 source stalls |
-| Control | AXI-Lite registers -> commit/error/status | `control/tb/tb_dsm_ip_axi_control.sv` covers directed AXI-Lite/AXI-Stream control-in-context smoke; Linux VCS UVM passed memory-DPD bit-true and safety tests with 768 RF transactions and zero UVM error/fatal |
+| TX frontend | DPD bypass -> x4 interpolation | Linux VCS focused bit-true test passed |
+| IF/DSM | Fs/4 mixer -> BP EFDSM2 | Linux VCS focused bit-true test passed |
+| Feedback | async bridge -> observer | Linux VCS focused transport test passed |
+| Control | AXI-Lite registers -> commit/error/status | Linux VCS UVM regression passed |
 
 The complete IP system is verified by `uvm_verif/`; it is not duplicated here.
 
-Run the three arithmetic/streaming XSim subsystem regressions as one suite:
+Run the formal subsystem suite through the existing Linux/VCS bridge:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_subsystem_signoff.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_subsystem_vcs_bridge.ps1
 ```
 
-The control smoke is part of the reusable IP smoke runner:
+The 2026-08-13 unified regression passed. Its bridge status reported
+`last_exit=0`, the result log contained `SUBSYSTEM_VCS_SIGNOFF_PASS`, and the
+generated summary recorded all four subsystems as `PASS`:
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
+```text
+verif/out_vcs_subsystem/subsystem_summary.csv
 ```
 
-It also has a local subsystem entry point:
+The focused TX frontend, IF/DSM, and feedback tests remain plain SystemVerilog
+testbenches because they have deterministic numeric oracles. Control remains
+UVM because it spans AXI-Lite, TX/OBS AXI-Stream, reset, commit, error, and
+random timing behavior. XSim runners remain useful for local smoke only:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_control_subsystem.ps1
 ```
 
-## UVM Boundary
-
-Subsystems use focused SystemVerilog testbenches because their interface and
-state spaces are small and their golden checks are deterministic. `uvm_verif/`
-is the IP-system environment: it composes the AXI-Lite, TX AXI-Stream,
-observation AXI-Stream, and passive RF agents for cross-interface sequencing,
-random backpressure, error injection, scoreboarding, assertions, and coverage.
-There is no benefit in duplicating the entire UVM environment for each
-subsystem.
+`uvm_verif/` remains the full IP-system environment: it composes AXI-Lite, TX
+AXI-Stream, observation AXI-Stream, and passive RF agents for cross-interface
+sequencing, random backpressure, error injection, scoreboarding, assertions,
+and coverage. There is no benefit in duplicating the entire UVM environment
+for every arithmetic subsystem.
