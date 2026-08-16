@@ -23,7 +23,7 @@ file mkdir $out_dir
 # observation receiver is optional and must cross an async boundary outside the
 # DSM IP when its sampling clock is not pl_clk0.
 set expected_clk_hz 100000000
-set algorithm 2
+set algorithm 3
 set interp_mode 4
 set dpd_poly_order 5
 set dpd_mp_max_taps 4
@@ -88,7 +88,7 @@ foreach bd $bds {
       CONFIG.C_S_AXI_ADDR_WIDTH {9} \
       CONFIG.ALGORITHM $algorithm \
       CONFIG.INTERP_MODE $interp_mode \
-      CONFIG.DUC_MODE {0} \
+      CONFIG.DUC_MODE {3} \
       CONFIG.CLK_FREQ_HZ $expected_clk_hz \
       CONFIG.BB_SAMPLE_RATE_HZ {3125000} \
       CONFIG.SIGNAL_BW_HZ {2539062} \

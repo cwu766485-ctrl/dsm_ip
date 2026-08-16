@@ -21,6 +21,12 @@ class Case:
         return f"{safe_test}_seed{self.seed}"
 
 
+# This testcase intentionally sends no TX payload. Its pass criteria are
+# AXI-Lite commit rejection and sticky-error checks, so RF traffic is not a
+# meaningful completion condition for it.
+CONTROL_ONLY_TESTS = {"dsm_memory_dpd_safety_test"}
+
+
 def run_command(command, cwd):
     # Keep the controller runnable on Python 3.6 common in Linux EDA setups.
     # text/capture_output were added after Python 3.6.
@@ -36,6 +42,15 @@ def parse_uvm_summary(log_text):
     return errors, fatals
 
 
+def parse_completion_markers(log_text, requires_rf):
+    """Reject early or partially initialized simulations from a regression PASS."""
+    test_done = bool(re.search(r"\[TEST_DONE\]", log_text))
+    rf_matches = re.findall(r"\[BP_SCORE\]\s+rf=(\d+)", log_text)
+    rf_transactions = max([int(value) for value in rf_matches], default=0)
+    scoreboard_report = (rf_transactions > 0) if requires_rf else bool(rf_matches)
+    return test_done, scoreboard_report, rf_transactions
+
+
 def run_case(case, args, root):
     command = [
         "make", "-C", "uvm_verif/sim", f"{args.sim}-run-only",
@@ -47,7 +62,11 @@ def run_case(case, args, root):
     log_path = root / "uvm_verif" / "sim" / "out" / args.sim / "runs" / case.tag / "run.log"
     log_text = log_path.read_text(encoding="utf-8", errors="replace") if log_path.exists() else ""
     errors, fatals = parse_uvm_summary(log_text)
-    passed = result.returncode == 0 and errors == 0 and fatals == 0
+    requires_rf = case.test not in CONTROL_ONLY_TESTS
+    test_done, scoreboard_report, rf_transactions = parse_completion_markers(
+        log_text, requires_rf)
+    passed = (result.returncode == 0 and errors == 0 and fatals == 0 and
+              test_done and scoreboard_report)
     return {
         "test": case.test,
         "seed": case.seed,
@@ -56,6 +75,10 @@ def run_case(case, args, root):
         "returncode": result.returncode,
         "uvm_error": "MISSING" if errors is None else errors,
         "uvm_fatal": "MISSING" if fatals is None else fatals,
+        "test_done": int(test_done),
+        "scoreboard_report": int(scoreboard_report),
+        "rf_transactions": rf_transactions,
+        "requires_rf": int(requires_rf),
         "log": str(log_path.relative_to(root)),
         "stderr": result.stderr.strip(),
     }
@@ -110,13 +133,15 @@ def main():
             result = future.result()
             results.append(result)
             print(f"{result['status']:4} {result['tag']} errors={result['uvm_error']} "
-                  f"fatals={result['uvm_fatal']}")
+                  f"fatals={result['uvm_fatal']} done={result['test_done']} "
+                  f"scoreboard={result['scoreboard_report']}")
 
     results.sort(key=lambda row: (str(row["test"]), int(row["seed"])))
     summary_path = (root / args.summary) if args.summary else (
         root / "uvm_verif" / "sim" / "out" / args.sim / "regression_summary.csv")
     summary_path.parent.mkdir(parents=True, exist_ok=True)
-    fields = ["test", "seed", "tag", "status", "returncode", "uvm_error", "uvm_fatal", "log"]
+    fields = ["test", "seed", "tag", "status", "returncode", "uvm_error", "uvm_fatal",
+              "test_done", "scoreboard_report", "rf_transactions", "requires_rf", "log"]
     with summary_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()

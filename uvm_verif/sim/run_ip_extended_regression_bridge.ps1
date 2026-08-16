@@ -1,0 +1,24 @@
+param(
+  [string]$BridgeRoot = "F:\sramc_uvm_bridge"
+)
+
+$ErrorActionPreference = "Stop"
+$linuxCommand = Join-Path $PSScriptRoot "run_ip_extended_regression_linux.sh"
+$commandFile = Join-Path $BridgeRoot "command.sh"
+$activeFile = Join-Path $BridgeRoot "command.active.sh"
+$statusFile = Join-Path $BridgeRoot "status.txt"
+
+if (!(Test-Path -LiteralPath $linuxCommand)) {
+  throw "Repository command script is missing: $linuxCommand"
+}
+if (!(Test-Path -LiteralPath $statusFile)) {
+  throw "Bridge is not running: $statusFile is missing. Start the Linux bridge first."
+}
+if ((Test-Path -LiteralPath $commandFile) -or (Test-Path -LiteralPath $activeFile)) {
+  throw "Bridge already has a pending or active command. Inspect $statusFile before submitting another task."
+}
+
+Copy-Item -LiteralPath $linuxCommand -Destination $commandFile -Force
+Write-Host "Submitted 120-run extended system-UVM regression to $BridgeRoot"
+Get-Content -LiteralPath $statusFile
+Write-Host "Wait for last_exit=0, then inspect $BridgeRoot\result.log"

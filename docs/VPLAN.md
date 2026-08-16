@@ -454,8 +454,8 @@ UVM 签核至少要求：
 
 - RTL、MATLAB、PS 软件和离线策略已经形成较完整的工程框架；
 - directed regression、DPD OOC 和 28 nm pre-layout 有可追溯证据；
-- UVM 已完成模块化拆分并在 XSim 2024.1 通过真实 DUT 基础 smoke，但不能宣称完整 UVM signoff；
-- 当前 BP EFDSM2 主 SKU 尚缺新的 ZU15EG full-TX routed/bitstream 闭环；
+- Linux VCS 已完成固定主 SKU 的 20 项 system-UVM 回归，并使用 transaction 数、scoreboard 与正常结束标记防止假通过；完整 code-coverage closure 仍未完成；
+- 当前 BP EFDSM2 主 SKU已完成 ZU15EG routed OOC；仍缺 board bitstream、I/O/hold 和板级闭环；
 - behavioral DPA 结果可用于算法研究，但没有真实 PA/ADC 反馈，不能宣称实测 RF 改善。
 
 ## 12. Block、Subsystem 与 System 参考模型分层
@@ -623,7 +623,7 @@ subsystem 收口后的系统级任务已经落地：
 ### 12.9 VC Formal FPV 状态
 
 2026-08-15 使用 VC Formal `V-2023.12-SP2` 对真实 `dsm_ip_axi_top` 的固定 Performance SKU
-执行 FPV。配置为 BP EFDSM2、Fs/4 IF、插值 bypass、Poly5、Memory-Poly5 4-tap，LUT DPD
+执行 FPV。配置为 BP EFDSM2、Fs/4 IF、x32 CIC/compensation-FIR 插值、Poly5、Memory-Poly5 4-tap，LUT DPD
 关闭；模型无 black box。
 
 - 14/14 assertion proven；
@@ -639,3 +639,68 @@ RTL 缺陷。修复后 memory-DPD bit-true 与 safety UVM 用例均复跑通过�
 
 该结论仅覆盖上述固定配置的控制/协议性质，不等同于 CDC/RDC、DPD 算术形式等价、所有 SKU、
 门级/SDF 或物理实现签核。
+
+### 12.10 System UVM 负向场景与分层回归计划
+
+主 SKU 不做所有 DSM、插值和 DPD 选项的全笛卡尔积穷举。固定主链路
+`Memory-Poly5 4-tap -> interpolation x32 -> Fs/4 -> BP EFDSM2` 承担完整
+system-UVM、formal 和后续实现签核；其他 DSM、插值和 DPD 配置分别保持 block bit-true
+和 wrapper smoke 证据，并仅对高风险交叉组合追加定向测试。
+
+新增 `dsm_negative_control_test` 覆盖合法软件请求但硬件必须安全处理的情景：
+
+- 对未综合的 Poly/LUT DPD 请求，读回请求模式、bypass 有效模式和 `fallback` 状态；
+- TX `TUSER` 置位 `ERROR.bit1` 后，验证写零不会清除 W1C sticky error；
+- 对同一 bit 写一后，验证该 sticky error 正确清除。
+
+日常 `run_ip_coverage_linux.sh` 是 20-run 快速收口。另提供
+`run_ip_extended_regression_linux.sh`：六个协议/控制/system testcase 乘 20 个 seed，
+共 120 次 VCS 运行，用于夜间随机压力回归。仍未覆盖的 bin 应先区分不可达、配置裁剪和
+真实漏测，再通过 constraint 或专用 sequence 补齐，而不是为追求百分比违反接口契约。
+
+### 12.11 Regression PASS 门控
+
+回归不能只看 shell exit code。`run_regression.py` 对每个 testcase 同时要求：
+
+1. simulator return code 为 `0`；
+2. 最终 UVM summary 中 `UVM_ERROR=0` 且 `UVM_FATAL=0`；
+3. log 含 `[TEST_DONE]`，确认 run phase 正常结束；
+4. log 含 `[BP_SCORE] rf=<N>` 且 `N>0`，确认真实 scoreboard 已执行并至少观察到一个 RF
+   transaction。
+
+任一项缺失，该条回归在 CSV 中标为 `FAIL`。性能 SKU 的 bit-true testcase 还由
+scoreboard 强制检查 vector 可打开、RF transaction 数等于预期、队列完全 drain、`rf_bit`
+与 `rf_signed` 对齐；因此不能因零 transaction、过早结束或关闭 scoreboard 而误报通过。
+
+### 12.12 单 Lane 提速与并行化探索
+
+当前主 SKU 的单 lane 输出为 `Fs=100 MS/s`，采用 Fs/4 混频时中心 IF 为 `25 MHz`。
+后续提速先不修改已收口的功能实现，而是用完整主链路
+`Memory-Poly5 4-tap -> interpolation x32 -> Fs/4 mixer -> BP EFDSM2` 在 ZU15EG 上进行
+单 lane OOC 扫频。扫频点为 `150/175/200/225/250 MHz`，脚本为
+`syn/run_ooc_bp_ef2_lane_sweep.ps1`；每个点独立记录资源、WNS 与估算 Fmax。
+
+2026-08-16 完成完整 Performance SKU 的 ZU15EG `100 MHz` routed OOC：setup `WNS=+2.632 ns`、
+`TNS=0`、0 failing endpoints，估算 `Fmax=135.72 MHz`。此前 `WNS=+3.478 ns`、
+`Fmax=153.33 MHz` 仅为 pre-route OOC 结果；当前以 routed 结果为准。当前实现不应宣称
+满足 `200 MHz` 或 `312.5 MHz`；后两者保留为独立 RTL 优化或架构实验，不计入主 SKU。
+
+当前交付冻结为 `100 MHz` 单 lane，对应 `Fs=100 MS/s`、Fs/4 中心 IF `25 MHz`。routed OOC
+使用 `12,964` LUT、`15,316` FF、`266` DSP48、`0` BRAM/URAM；功耗估计为 `1.099 W` total
+(`0.389 W` dynamic)，因未回标真实活动，不能视为板级功耗。下一步是恢复本地 ZU15EG 工程后
+完成 bitstream、I/O/hold 和板级数字数据流复现，再考虑提速。
+
+该次实现仍包含 DSP `MREG/PREG` 流水建议，属于 PPA 改进项而不是功能或 100 MHz setup 失败。
+DC lint 的本轮复跑被 `DCSH-1` 许可证限制阻断，CDC/RDC、gate/SDF 与完整 code coverage
+closure 也不在当前 routed-OOC 结论内。
+
+`dsm_core_ef2` 的误差反馈计算包含 `e1/e2 -> coefficient multiply -> sum -> quantize -> e0`
+并在下一时钟沿写回状态。普通数据通路可通过增加寄存器级数提高 Fmax；该反馈环不能任意
+插入寄存器，否则改变状态更新顺序与 NTF。若单 lane 不能满足目标，后续应研究状态预测、
+loop unrolling 或并行 DSM 架构，并先用 Python/MATLAB 建立逐 bit 等价参考。
+
+并行探索从独立的 `parallel_dsm` 实验开始，不修改 Performance SKU。若一个 lane 为
+`200 MHz`，逻辑等效采样率为 `L * 200 MS/s`，且 Fs/4 中心频率为其四分之一；例如四 lane
+内部并行输出为 `800 MS/s` 等效采样、`200 MHz` IF。该结论仅表示数字并行吞吐，不表示
+FPGA 引脚可直接输出同速串行 RF。物理高速输出仍需要确定的时钟、lane deskew、SERDES/外部
+MUX、driver、DPA 与匹配网络。

@@ -1,5 +1,79 @@
 # 项目更新日志
 
+## 2026-08-16：冻结 Performance SKU 的 ZU15EG routed OOC 收口
+
+- 交付范围继续冻结为单 lane `100 MHz`：`Memory-Poly5, 4-tap -> x32 CIC/compensation-FIR -> Fs/4 BP EFDSM2`。本轮不推进 `312.5 MHz` 扫频或多 lane/interleaving；此前 `312.5 MHz` 命令在 PowerShell 参数转换阶段失败，未进入 Vivado，不得解释为 RTL 时序失败。
+- 实际运行 `syn/run_performance_sku_routed.ps1 -Part xczu15eg-ffvb1156-2-i -TargetMHz 100`，Vivado 2024.1 完成综合、实现、物理优化和布线。`dsm_ip_axi_top` 在 `aclk=100 MHz` 下 setup `WNS=+2.632 ns`、`TNS=0`、0 failing endpoints，估算 `Fmax=135.72 MHz`。
+- routed 资源为 `12,964` CLB LUT、`15,316` CLB registers、`266` DSP48、`0` BRAM/URAM；Vivado 功耗估计为总片上 `1.099 W`、动态 `0.389 W`、静态 `0.711 W`，置信度为 Medium，未使用 SAIF/VCD 活动文件，不能作为板级实测功耗。
+- routed DRC 无阻断错误，但保留 `DPOP-3`/`DPOP-4` 共 220 项 DSP `PREG/MREG` 流水建议，以及少量输入流水/无负载告警。它们不否定本次 100 MHz 时序收口，但说明 memory-DPD 乘加路径仍有后续 PPA 优化空间。
+- Linux VCS 重新运行 `bash uvm_verif/sim/run_ip_coverage_linux.sh`：20/20 testcase 满足 return code 0、`UVM_ERROR=0`、`UVM_FATAL=0`、`[TEST_DONE]` 和 scoreboard 门槛。带数据用例还确认 `BP_SCORE rf=<N>` 且 `N>0`；control-only safety 用例被显式标注，不以 RF 数量作为通过条件。
+- 尝试以 `/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell` 运行当前 RTL lint。工具已找到，但日志返回 `DCSH-1: Design Compiler is not enabled`，因此本轮没有新的 DC lint 通过结论；需恢复对应 DC 许可证后重跑。
+- 本地公开工作区仍缺少可重建板级 bitstream 所需的 ZU15EG `.xpr`、完整 BD 和板级 XDC。当前 routed OOC 不是 bitstream、I/O hold 或板级时序签核。
+
+## 2026-08-15：冻结当前交付范围并修正主 SKU 集成配置
+
+- 暂停单 lane 高频扫频和多 lane/interleaving 研究；`312.5 MHz` 的命令失败于 PowerShell 参数转换，未进入 Vivado，因此不是 RTL 时序失败，也不构成任何性能结论。
+- 当前交付唯一主 SKU 固定为 `Memory-Poly5, 4-tap -> x32 CIC/compensation-FIR interpolation -> Fs/4 BP EFDSM2`，`ALGORITHM=3`、`DUC_MODE=3`、`INTERP_MODE=4`、`100 MHz`。
+- 修正 `fpga/zu15eg/scripts/implement_full_tx.tcl` 的旧集成参数，使后续本地板级工程不会误综合 Cartesian EFDSM 历史基线。
+- 新增完整 routed-OOC 入口 `syn/run_performance_sku_routed.ps1/.tcl`。该流程精确使用主 SKU 参数、运行 placement/routing、报告资源/时序/功耗/DRC，但不生成 board bitstream。
+- 仍待完成：Linux VCS 防假 PASS 门槛复跑、主 SKU routed-OOC、DC lint 复跑；完整 board bitstream 依赖未纳入仓库的本地 ZU15EG Vivado 工程和板级约束。
+
+## 2026-08-15：单 Lane 提速探索入口
+
+- 更新 `syn/run_ooc_bp_ef2_axi.tcl`：支持通过 Tcl 参数指定目标时钟频率，默认仍为
+  `100 MHz`；综合 summary 新增 `Target_MHz` 字段。
+- 新增 `syn/run_ooc_bp_ef2_lane_sweep.ps1`：在 ZU15EG 上依次执行
+  `150/175/200/225/250 MHz` 的完整 BP-EFDSM2 AXI OOC 综合，并汇总每个频点的资源、WNS
+  与估算 Fmax。
+- 当前 `200 MHz` 是单 lane 的待验证目标。未改变 DSM 反馈环、定点格式、流水延迟或
+  MATLAB/RTL bit-true 语义；未运行 Vivado 扫频，因此尚无新的频率结论。
+- 首次真实 ZU15EG OOC 在 `100 MHz` 通过：`WNS=+3.478 ns`、估算 `Fmax=153.33 MHz`。
+  该数字来自完整 Performance SKU（Memory-Poly5 4-tap、x32 CIC/FIR、Fs/4 mixer、BP
+  EFDSM2），因此当前配置不能支持 `312.5 MHz` 的 3.2 ns 周期。312.5 MHz 保留为独立
+  RTL 优化/架构实验，不计入当前主 SKU 的交付承诺。
+- 修复 `run_ooc_bp_ef2_lane_sweep.ps1` 的 PowerShell 参数解析：现在既接受
+  `-TargetMHz 275,300,312.5,325`，也接受空格分隔的频率数组。同步修正 OOC Tcl 的
+  mixed-direction wildcard false-path 写法，移除无效 startpoint/endpoint 警告，同时仍只
+  评估内部 register-to-register 时序。
+- 在 `docs/ALL_DIGITAL_TX_SURVEY.md` 新增第 19 节，冻结
+  5 GHz Fs/4 的远期架构计算：`Fs=20 GS/s`，主选 `64 lanes x 312.5 MHz`。该章节同时
+  明确 32 lanes x 312.5 MHz 只能达到 2.5 GHz Fs/4 中心频率，除非提高到 625 MHz 或由
+  输出级实现每 lane 每周期两个时间序 bit。
+
+## 2026-08-15：Linux System-UVM 回归复跑与单 Lane 时序证据边界
+
+- 在 Linux VCS `V-2023.12-SP1`、Python `3.12` 与 Verdi `V-2023.12-SP2` 环境直接执行
+  `bash uvm_verif/sim/run_ip_coverage_linux.sh`。20/20 testcase 均满足 simulator return code
+  为零、`UVM_ERROR=0`、`UVM_FATAL=0`、`[TEST_DONE]` 与 `[BP_SCORE]`，因此本轮没有由早退、
+  未执行 scoreboard 或仅 shell 成功造成的假 PASS。
+- 强化 `run_regression.py` 的 scoreboard 门控：除 `[BP_SCORE]` 标记外，必须解析到
+  `rf=<N>` 且 `N>0`；CSV 增加 `rf_transactions` 字段。零 transaction 的伪完成用例将被
+  标为 `FAIL`。唯一的 `dsm_memory_dpd_safety_test` 是不发送 TX 的控制面负向用例，已显式
+  标为 control-only，仍要求 scoreboard、`TEST_DONE` 与零 UVM error/fatal。
+- 该结论仅说明当前固定 Performance SKU 的功能回归通过，不说明 ZU15EG 的高频时序通过。
+- 复核历史 `syn/reports/bp_ef2_axi_ooc_*` 目录后，未发现 `summary.csv` 或时序报告；目录仅有
+  `hs_err_pid*.log/.dmp`，对应 Vivado/Java launcher 异常。它们不得作为 `100 MHz` 或
+  `312.5 MHz` 的 OOC 证据。新的带频率标签扫频结果生成前，单 lane 最大频率仍为未验证状态。
+
+## 2026-08-15：负向控制覆盖与扩展随机回归
+
+- 新增 `dsm_negative_control_test`，在固定 Performance SKU 下验证禁用 Poly/LUT 模式的
+  安全 bypass 回退，以及 `ERROR` 寄存器的写一清除语义。
+- 日常 Linux VCS coverage 脚本纳入该 testcase，基线回归由 19 项扩展为 20 项。
+- 新增 20 seed、120 次运行的可选夜间 system-UVM 压力脚本；它复用同一 UVM env、agent、
+  sequence、scoreboard 与 Python reference，不复制 block 或 subsystem testbench。
+- 尚未执行本轮新增 testcase 与扩展回归；提交前必须至少运行新增 testcase，夜间回归按
+  计算资源执行并记录结果。
+
+## 2026-08-15：System UVM 回归防假通过门控
+
+- 强化 `uvm_verif/sim/run_regression.py`：单条 testcase 除 simulator exit code 与
+  `UVM_ERROR/UVM_FATAL` 外，还必须在 log 中出现 `[TEST_DONE]` 和 `[BP_SCORE]`。
+- 缺少 UVM summary、正常结束标记或 scoreboard 统计均会在 CSV 中标为 `FAIL`，避免
+  初始化失败、过早停止、未加载向量或 scoreboard 未执行时被 shell exit code 误判为 PASS。
+- 本次只修改回归判定逻辑，尚未在 Linux bridge 上重跑；待 bridge host 正常领取新
+  `command.sh` 后，以 20-run quick regression 的新 CSV 为准。
+
 ## 2026-08-15 02:38 +08:00：IP-system UVM 覆盖收口
 - 新增 `dsm_system_closure_test` 及其虚拟序列，将已有 control、memory-DPD 和 AXI-Stream
   场景组成单一系统用例：active-stream soft reset、有效/非法 bank commit、memory-DPD mode、

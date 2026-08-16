@@ -42,26 +42,24 @@ preferred path is Vitis bare-metal control. The retained PS Linux helper under
 `ps_linux/` is optional. The bare-metal smoke app under `baremetal/` is the
 main path for PS-controlled DPD and DMA validation.
 
-## Recommended Configuration
+## Frozen Performance SKU
 
-Start with the lightest compiled configuration:
-
-```text
-ALGORITHM   = 2   EFDSM 1-bit
-INTERP_MODE = 0   bypass
-DUC_MODE    = 0   fixed Fs/4
-Clock       = 100 MHz
-```
-
-After the baseline works, test the heavier routed-OOC configurations:
+The current integration and verification target is one compile-time fixed
+configuration. It is the only configuration that should be used for new
+ZU15EG implementation and board evidence:
 
 ```text
-ALGORITHM=6,  INTERP_MODE=4
-ALGORITHM=12, INTERP_MODE=4
+ALGORITHM          = 3   BP EFDSM2, 1-bit RF output
+INTERP_MODE        = 4   x32 CIC plus compensation FIR
+DUC_MODE           = 3   Fs/4 band-pass IF path
+DPD implementation = Memory-Polynomial, order 5, four taps
+Clock              = 100 MHz
 ```
 
-These two combinations already have retained ZU15EG routed OOC evidence in
-`docs/evidence/ooc`.
+The resulting RF stream is a synchronous 100 MS/s digital bitstream with a
+25 MHz Fs/4 IF center. It is not a direct multi-GHz physical RF interface.
+Older Cartesian/EFDSM board configurations are retained only as historical
+bring-up baselines and must not be used as signoff evidence for this SKU.
 
 ## Register Smoke Sequence
 

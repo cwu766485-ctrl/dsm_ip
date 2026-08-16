@@ -28,6 +28,7 @@ package dsm_uvm_pkg;
   `include "dsm_memory_dpd_virtual_sequences.svh"
   `include "dsm_protocol_virtual_sequences.svh"
   `include "dsm_control_virtual_sequences.svh"
+  `include "dsm_negative_control_virtual_sequences.svh"
   `include "dsm_axis_coverage_virtual_sequences.svh"
   `include "dsm_system_closure_virtual_sequences.svh"
   `include "dsm_base_test.svh"
@@ -36,6 +37,7 @@ package dsm_uvm_pkg;
   `include "dsm_performance_bittrue_test.svh"
   `include "dsm_memory_dpd_tests.svh"
   `include "dsm_control_stress_test.svh"
+  `include "dsm_negative_control_test.svh"
   `include "dsm_axis_coverage_test.svh"
   `include "dsm_system_closure_test.svh"
 endpackage

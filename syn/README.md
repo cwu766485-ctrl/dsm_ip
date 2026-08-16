@@ -47,6 +47,32 @@ low-pass I/Q merge. The 28 nm pre-layout DC launcher for the same complete AXI
 SKU is `run_bp_ef2_28nm_dc.sh`. Both need fresh tool output before any PPA
 claim is made.
 
+## Frozen Performance SKU Routed OOC
+
+The delivery configuration is fixed as follows:
+
+```text
+Memory-Poly5, 4 tap -> x32 CIC plus compensation FIR -> Fs/4 BP EFDSM2
+ALGORITHM=3, DUC_MODE=3, INTERP_MODE=4, 100 MHz
+```
+
+Run the complete routed OOC implementation on ZU15EG with:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_performance_sku_routed.ps1 `
+  -Part xczu15eg-ffvb1156-2-i -TargetMHz 100
+```
+
+The script runs synthesis, placement, routing, physical optimization, and
+reports timing, utilization, power estimate, and routed DRC. It does not use
+board XDC constraints, generate a bitstream, or sign off I/O hold timing.
+
+The 2026-08-16 routed artifact reports `WNS=+2.632 ns`, `TNS=0`, and no setup
+failing endpoints at 100 MHz. Its resource result is 12,964 LUTs, 15,316 FFs,
+266 DSP48s, and no BRAM/URAM. The corresponding power report is an estimate
+without activity annotation, not a measured board value. DSP pipeline DRC
+recommendations remain an RTL PPA improvement item.
+
 ## RTL lint-only check
 
 `run_lint_bp_ef2_axi.sh` runs the same BP EFDSM2 AXI source list and compile
@@ -60,3 +86,8 @@ From WSL/Linux:
 export DC_SHELL=/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell
 bash syn/run_lint_bp_ef2_axi.sh
 ```
+
+The tool path alone is insufficient: the 2026-08-16 rerun reached `dc_shell`
+but stopped with `DCSH-1: Design Compiler is not enabled`. Do not report lint
+as passing until the Design Compiler license is available and the script writes
+`LINT_PASS` plus all required reports.

@@ -46,8 +46,8 @@ restore a branch removed by a generate condition.
 - Coefficient shadow banks, safe commit, saturation detection, and fallback.
 - Digital observer, monitor proxies, and an asynchronous feedback bridge.
 - Bare-metal PS/DMA replay and bounded calibration-search framework.
-- Directed XSim/MATLAB regressions, a UVM scaffold, Vivado IP packaging,
-  ZU15EG OOC scripts, and 28 nm Design Compiler flows.
+- Directed XSim/MATLAB regressions, Linux VCS system-UVM regressions, Vivado IP
+  packaging, ZU15EG OOC scripts, and 28 nm Design Compiler flows.
 
 ## Interfaces
 
@@ -73,9 +73,12 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
 ```
 
-The UVM environment under `uvm_verif/` is currently a connectivity scaffold,
-not a completed signoff environment. See `docs/VPLAN.md` for the required
-protocol, safety, observer, monitor, and coverage matrix.
+The Linux VCS environment under `uvm_verif/` has a frozen-SKU system regression
+with Python integer reference scoreboarding. The 2026-08-16 run completed 20/20
+testcases with zero UVM errors/fatals and explicit anti-false-pass gates. This
+is a functional and functional-coverage closure for the frozen SKU; it is not
+100% RTL code coverage, CDC/RDC, gate-level, or all-SKU signoff. See
+`docs/VPLAN.md` for the full coverage and evidence boundary.
 
 ## Implementation Evidence
 
@@ -83,8 +86,14 @@ protocol, safety, observer, monitor, and coverage matrix.
   memory-polynomial 1/2/4/6-tap configurations.
 - A historical ZU15EG full-TX routed/bitstream result exists for the older
   Cartesian EFDSM/Fs4 `DUC_MODE=0` path.
-- The current BP EFDSM2 SKU has 28 nm pre-layout DC evidence, but its new
-  ZU15EG full-TX routed/bitstream closure is still pending.
+- The frozen BP EFDSM2 SKU has a ZU15EG routed OOC result at 100 MHz: setup
+  `WNS=+2.632 ns`, `TNS=0`, and zero setup failing endpoints. It uses 12,964
+  LUTs, 15,316 FFs, 266 DSP48s, and no BRAM/URAM. This is OOC evidence only;
+  a board XDC-constrained bitstream, I/O hold closure, and board replay remain
+  pending because the local board Vivado project is not in this repository.
+- The same BP SKU has retained 28 nm pre-layout DC evidence. A current structural
+  DC lint rerun is blocked by an unavailable Design Compiler license and must
+  not be reported as passing.
 - No physical PA/ADC feedback loop or measured RF signoff is claimed.
 
 ## Repository Map
