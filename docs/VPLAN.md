@@ -1,7 +1,7 @@
 # BP EFDSM2 数字发射机 IP 验证计划
 
-文档版本：2.6
-更新时间：2026-08-13 22:35 +08:00
+文档版本：2.7
+更新时间：2026-08-16 13:00 +08:00
 适用顶层：`dsm_ip_axi_top`
 
 ## 1. 验证范围
@@ -704,3 +704,26 @@ loop unrolling 或并行 DSM 架构，并先用 Python/MATLAB 建立逐 bit 等�
 内部并行输出为 `800 MS/s` 等效采样、`200 MHz` IF。该结论仅表示数字并行吞吐，不表示
 FPGA 引脚可直接输出同速串行 RF。物理高速输出仍需要确定的时钟、lane deskew、SERDES/外部
 MUX、driver、DPA 与匹配网络。
+
+### 12.13 代码覆盖率收口计划
+
+固定 Performance SKU 的功能 coverage 已达到 `100%`，但这不等同于 RTL code coverage
+签核。最近保留的 code-coverage 基线总分为 `66.58%`；其 line、condition、toggle、branch
+和 assertion 细项必须以重新生成的 URG 报告为准，不能用旧数据库推断新结果。
+
+收口目标是冻结主 SKU 的所有**可达**代码达到 `100%`，并形成可审计的 exclusion 清单：
+
+1. 恢复 VCS 编译许可证和 URG coverage 许可证，生成统一 `line/condition/toggle/branch/assert`
+   报告；
+2. 将未覆盖项分类为可达、compile-time 裁剪或协议不可达；
+3. 对可达项补定向场景，优先覆盖 reset/commit/window/overflow/fallback、AXI W1C、response
+   stall、TX/OBS long backpressure、`tlast/tuser` 错误注入和 observer FIFO 边界；
+4. 对 feature gate 关闭的 Poly/LUT 分支、禁止在 active stream 中切 bank 等项记录理由、相关
+   parameter 和审计位置，不为了覆盖率违反接口契约；
+5. 先运行 20 项快速回归，再执行 20 seed x 6 testcase 的 120-run 扩展回归，并保存 source hash、
+   command、coverage database 和汇总报告。
+
+2026-08-16 的 120-run 尝试在 VCS 编译阶段因 license server 不可连接而退出 `255`，未执行任何
+testcase。另一次 URG 报告生成因缺少 `VCSTools_Net` 或 `VT_CoverageURG` 许可证失败。两者均为
+环境阻塞，不构成 RTL pass/fail 结论；许可证恢复前，项目只能宣称“功能 coverage 收口”，不能
+宣称“code coverage 签核”。

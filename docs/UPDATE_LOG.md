@@ -1,5 +1,13 @@
 # 项目更新日志
 
+## 2026-08-16：System-UVM 代码覆盖率收口准备与许可证边界
+
+- 复核固定 Performance SKU 的快速 Linux VCS system-UVM 回归 CSV：20/20 testcase 为 `PASS`。每项同时满足 simulator return code `0`、`UVM_ERROR=0`、`UVM_FATAL=0`、`[TEST_DONE]` 和 `[BP_SCORE]`；带 TX 数据的用例还要求 `rf_transactions>0`，因此该结果不是仅靠 shell exit code 得出的假通过。
+- 已配置 20 seed x 6 testcase 的 120-run 扩展随机回归入口 `uvm_verif/sim/run_ip_extended_regression_linux.sh`。本轮实际启动时，VCS 在编译阶段因 Synopsys license server 不可连接而退出 `255`；没有 testcase 被执行，不能把该次运行记为 RTL/UVM 失败或通过。
+- 已确认 Linux 环境可找到 `urg`，但生成统一 code-coverage 报告时缺少 `VCSTools_Net` 或 `VT_CoverageURG` 许可证。当前记录的总 code coverage `66.58%` 仅作为已有基线，尚未完成逐 line/condition/branch 的可达性分析和 closure。
+- 后续覆盖率目标定义为：冻结主 SKU 的所有**可达** RTL 代码覆盖率达到 `100%`；compile-time feature gate 裁剪分支、被协议禁止的状态和工具生成不可达项必须有逐项审计 exclusion。不得通过违反 AXI/commit/reset 契约或伪造 transaction 只为提高百分比。
+- 代码覆盖率收口顺序固定为：恢复 VCS 与 URG 许可证；生成 URG 报告；对每个未覆盖项分类为可达/配置裁剪/协议不可达；为可达项增加 directed negative testcase；复跑快速 20-run、再复跑 120-run；保存 exclusion 清单、coverage database、命令和 source hash。
+
 ## 2026-08-16：冻结 Performance SKU 的 ZU15EG routed OOC 收口
 
 - 交付范围继续冻结为单 lane `100 MHz`：`Memory-Poly5, 4-tap -> x32 CIC/compensation-FIR -> Fs/4 BP EFDSM2`。本轮不推进 `312.5 MHz` 扫频或多 lane/interleaving；此前 `312.5 MHz` 命令在 PowerShell 参数转换阶段失败，未进入 Vivado，不得解释为 RTL 时序失败。
