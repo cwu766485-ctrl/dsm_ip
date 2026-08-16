@@ -14,7 +14,7 @@ make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1
 
 python3.12 uvm_verif/sim/run_regression.py \
   --sim vcs \
-  --tests dsm_bp_test,dsm_performance_bittrue_test,dsm_memory_dpd_bittrue_test,dsm_memory_dpd_safety_test,dsm_negative_control_test \
+  --tests dsm_bp_test,dsm_performance_bittrue_test,dsm_memory_dpd_bittrue_test,dsm_memory_dpd_safety_test,dsm_negative_control_test,dsm_register_corner_test \
   --seeds 1 \
   --jobs 2 \
   --summary uvm_verif/sim/out/vcs/ip_coverage_deterministic.csv \
@@ -50,6 +50,7 @@ dsm_performance_bittrue_test_seed1 \
 dsm_memory_dpd_bittrue_test_seed1 \
 dsm_memory_dpd_safety_test_seed1 \
 dsm_negative_control_test_seed1 \
+dsm_register_corner_test_seed1 \
 dsm_axi_protocol_test_seed1 dsm_axi_protocol_test_seed7 dsm_axi_protocol_test_seed31 \
 dsm_control_stress_test_seed1 dsm_control_stress_test_seed7 dsm_control_stress_test_seed31 \
 dsm_memory_dpd_commit_stress_test_seed1 dsm_memory_dpd_commit_stress_test_seed7 dsm_memory_dpd_commit_stress_test_seed31 \

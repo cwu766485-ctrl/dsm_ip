@@ -2,6 +2,7 @@ class dsm_axi_lite_item extends uvm_sequence_item;
   rand bit is_write;
   rand dsm_reg_addr_t addr;
   rand bit [31:0] data;
+  bit [3:0] wstrb = 4'hf;
   rand int unsigned addr_delay_cycles;
   rand int unsigned data_delay_cycles;
   rand int unsigned ready_delay_cycles;
@@ -20,6 +21,7 @@ class dsm_axi_lite_item extends uvm_sequence_item;
     `uvm_field_int(is_write, UVM_DEFAULT)
     `uvm_field_int(addr, UVM_DEFAULT)
     `uvm_field_int(data, UVM_DEFAULT)
+    `uvm_field_int(wstrb, UVM_DEFAULT)
     `uvm_field_int(addr_delay_cycles, UVM_DEFAULT)
     `uvm_field_int(data_delay_cycles, UVM_DEFAULT)
     `uvm_field_int(ready_delay_cycles, UVM_DEFAULT)

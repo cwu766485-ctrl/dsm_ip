@@ -137,6 +137,7 @@ uvm_verif/formal/out/
 dsm_ip_formal_harness_learn_dir/
 simv
 simv.daidir/
+csrc/
 traces/
 
 # Local server/license/secrets

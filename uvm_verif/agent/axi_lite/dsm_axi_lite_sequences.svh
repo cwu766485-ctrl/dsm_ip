@@ -2,6 +2,7 @@ class dsm_axi_lite_write_sequence extends uvm_sequence #(dsm_axi_lite_item);
   `uvm_object_utils(dsm_axi_lite_write_sequence)
   dsm_reg_addr_t addr;
   bit [31:0] data;
+  bit [3:0] wstrb = 4'hf;
   int unsigned addr_delay_cycles;
   int unsigned data_delay_cycles;
   int unsigned ready_delay_cycles;
@@ -18,6 +19,7 @@ class dsm_axi_lite_write_sequence extends uvm_sequence #(dsm_axi_lite_item);
     req.is_write = 1;
     req.addr = addr;
     req.data = data;
+    req.wstrb = wstrb;
     req.addr_delay_cycles = addr_delay_cycles;
     req.data_delay_cycles = data_delay_cycles;
     req.ready_delay_cycles = ready_delay_cycles;

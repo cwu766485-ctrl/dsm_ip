@@ -49,7 +49,7 @@ class dsm_axi_lite_driver extends uvm_driver #(dsm_axi_lite_item);
         int unsigned data_timeout;
         repeat (req.data_delay_cycles) @(posedge vif.aclk);
         vif.wdata <= req.data;
-        vif.wstrb <= 4'hf;
+        vif.wstrb <= req.wstrb;
         vif.wvalid <= 1;
         data_timeout = 0;
         do begin

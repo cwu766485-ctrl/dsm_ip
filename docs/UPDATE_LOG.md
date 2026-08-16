@@ -1,12 +1,14 @@
 # 项目更新日志
 
-## 2026-08-16：System-UVM 代码覆盖率收口准备与许可证边界
+## 2026-08-16 19:16 +08:00：System-UVM 代码覆盖率收口、寄存器角落场景与反馈 FIFO 溢出策略
 
-- 复核固定 Performance SKU 的快速 Linux VCS system-UVM 回归 CSV：20/20 testcase 为 `PASS`。每项同时满足 simulator return code `0`、`UVM_ERROR=0`、`UVM_FATAL=0`、`[TEST_DONE]` 和 `[BP_SCORE]`；带 TX 数据的用例还要求 `rf_transactions>0`，因此该结果不是仅靠 shell exit code 得出的假通过。
-- 已配置 20 seed x 6 testcase 的 120-run 扩展随机回归入口 `uvm_verif/sim/run_ip_extended_regression_linux.sh`。本轮实际启动时，VCS 在编译阶段因 Synopsys license server 不可连接而退出 `255`；没有 testcase 被执行，不能把该次运行记为 RTL/UVM 失败或通过。
-- 已确认 Linux 环境可找到 `urg`，但生成统一 code-coverage 报告时缺少 `VCSTools_Net` 或 `VT_CoverageURG` 许可证。当前记录的总 code coverage `66.58%` 仅作为已有基线，尚未完成逐 line/condition/branch 的可达性分析和 closure。
-- 后续覆盖率目标定义为：冻结主 SKU 的所有**可达** RTL 代码覆盖率达到 `100%`；compile-time feature gate 裁剪分支、被协议禁止的状态和工具生成不可达项必须有逐项审计 exclusion。不得通过违反 AXI/commit/reset 契约或伪造 transaction 只为提高百分比。
-- 代码覆盖率收口顺序固定为：恢复 VCS 与 URG 许可证；生成 URG 报告；对每个未覆盖项分类为可达/配置裁剪/协议不可达；为可达项增加 directed negative testcase；复跑快速 20-run、再复跑 120-run；保存 exclusion 清单、coverage database、命令和 source hash。
+- 固定 Performance SKU 的 Linux VCS 扩展回归已实际完成：`dsm_axi_protocol_test`、`dsm_control_stress_test`、`dsm_memory_dpd_commit_stress_test`、`dsm_axis_coverage_test`、`dsm_system_closure_test`、`dsm_negative_control_test` 与 `dsm_register_corner_test` 各运行 20 个 seed，共 `140/140 PASS`。每项同时满足 simulator return code `0`、`UVM_ERROR=0`、`UVM_FATAL=0`、`[TEST_DONE]` 和 `[BP_SCORE]`；带 TX 数据的用例还要求 `rf_transactions>0`，因此该结果不是仅靠 shell exit code 得出的假通过。
+- 已用 `run_ip_extended_coverage_linux.sh` 精确合并该 140 个 PASS 数据库。当前原始全工程 URG coverage 为：line `62.91%`、condition `61.37%`、toggle `64.52%`、branch `46.25%`、assert `77.42%`、functional group `100%`。此统计包含 UVM、testbench 和当前主 SKU 已裁剪的 Poly/LUT 分支，不能直接作为 DUT 可达代码签核分数。`dsm_ip_axi_top` 的局部结果为：line `88.91%`、condition `71.60%`、toggle `55.11%`、branch `63.30%`。
+- 依据 `dsm_ip_axi_top` 的 URG 未覆盖项，新增 `dsm_register_corner_test`：覆盖 core-disable 时的 TX backpressure/sticky error/W1C、condition metadata readback、observer snapshot/start/clear、memory-DPD commit ACK/FAILED W1C，以及 DPD coefficient/LUT 寄存器与 disabled Poly/LUT fallback。
+- AXI-Lite UVM transaction 新增 `WSTRB` 字段；driver 不再强制所有写为 `4'hf`。新 corner testcase 验证低半字、高半字及零字节使能写，确保未使能字节保持原值。这同时覆盖 RTL 中此前未触发的字节使能分支。
+- `dsm_register_corner_test` 的 seed 11 曾暴露 testbench 的固定等待竞态：随机 AXI 读写可使 enable 写事务晚于固定等待周期。已改为轮询寄存器掩码等待硬件状态；DUT RTL 未修改。修复后全部 140 次回归通过。
+- 新增 `tb_dpd_observer_async_bridge_drop.sv` 与 Linux VCS runner，验证 depth-4 异步反馈 FIFO 的 `DROP_ON_FULL=1` 策略。实际结果为 `sent=96`、`read=12`、`drops=84`，源端 stall 为零且 `read + drops = sent`。该模块不在当前单时钟 IP-system UVM DUT 内，因此 CDC/full/drop 策略保留为 focused block-level VCS 证据。
+- 覆盖率目标保持为：冻结主 SKU 的所有**可达** RTL 代码达到 `100%`，并为 compile-time feature gate 裁剪项、协议禁止项和工具生成项保留逐项审计 exclusion；不通过违反 AXI/commit/reset 契约伪造覆盖率。
 
 ## 2026-08-16：冻结 Performance SKU 的 ZU15EG routed OOC 收口
 

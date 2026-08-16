@@ -1,7 +1,7 @@
 # BP EFDSM2 数字发射机 IP 验证计划
 
-文档版本：2.7
-更新时间：2026-08-16 13:00 +08:00
+文档版本：2.9
+更新时间：2026-08-16 19:16 +08:00
 适用顶层：`dsm_ip_axi_top`
 
 ## 1. 验证范围
@@ -654,8 +654,8 @@ system-UVM、formal 和后续实现签核；其他 DSM、插值和 DPD 配置分
 - 对同一 bit 写一后，验证该 sticky error 正确清除。
 
 日常 `run_ip_coverage_linux.sh` 是 20-run 快速收口。另提供
-`run_ip_extended_regression_linux.sh`：六个协议/控制/system testcase 乘 20 个 seed，
-共 120 次 VCS 运行，用于夜间随机压力回归。仍未覆盖的 bin 应先区分不可达、配置裁剪和
+`run_ip_extended_regression_linux.sh`：七个协议/控制/system testcase 乘 20 个 seed，
+共 140 次 VCS 运行，用于夜间随机压力回归。仍未覆盖的 bin 应先区分不可达、配置裁剪和
 真实漏测，再通过 constraint 或专用 sequence 补齐，而不是为追求百分比违反接口契约。
 
 ### 12.11 Regression PASS 门控
@@ -720,10 +720,23 @@ MUX、driver、DPA 与匹配网络。
    stall、TX/OBS long backpressure、`tlast/tuser` 错误注入和 observer FIFO 边界；
 4. 对 feature gate 关闭的 Poly/LUT 分支、禁止在 active stream 中切 bank 等项记录理由、相关
    parameter 和审计位置，不为了覆盖率违反接口契约；
-5. 先运行 20 项快速回归，再执行 20 seed x 6 testcase 的 120-run 扩展回归，并保存 source hash、
+5. 先运行 20 项快速回归，再执行 20 seed x 7 testcase 的 140-run 扩展回归，并保存 source hash、
    command、coverage database 和汇总报告。
 
-2026-08-16 的 120-run 尝试在 VCS 编译阶段因 license server 不可连接而退出 `255`，未执行任何
-testcase。另一次 URG 报告生成因缺少 `VCSTools_Net` 或 `VT_CoverageURG` 许可证失败。两者均为
-环境阻塞，不构成 RTL pass/fail 结论；许可证恢复前，项目只能宣称“功能 coverage 收口”，不能
-宣称“code coverage 签核”。
+2026-08-16 已完成 `7 x 20 = 140` 次 Linux VCS 扩展回归，`140/140 PASS`；每一项均满足 return code、
+`UVM_ERROR=0`、`UVM_FATAL=0`、`[TEST_DONE]` 与 scoreboard 的防假 PASS 门槛。后续以精确提取的
+140 个 PASS VDB 重新合并 URG，原始全工程统计为 line `62.91%`、condition `61.37%`、toggle `64.52%`、
+branch `46.25%`、assert `77.42%`、functional group `100%`。其中 `dsm_ip_axi_top` 为 line `88.91%`、
+condition `71.60%`、toggle `55.11%`、branch `63.30%`。该统计混入 UVM/testbench 和当前 SKU 关闭的
+Poly/LUT 分支，仍不得直接宣称 DUT code coverage 签核。
+
+`dsm_register_corner_test` 已通过 20 个 seed，覆盖 `WSTRB` 部分写和零写保持、W1C、observer
+snapshot/clear、commit ACK/FAILED 清除、condition metadata readback 和 disabled Poly/LUT fallback。其
+seed 11 曾发现 testbench 对随机 AXI 事务使用固定等待周期的竞态，现改为轮询寄存器掩码等待，DUT RTL
+行为未改变。异步反馈 FIFO 的 `DROP_ON_FULL=1` 策略另以 focused Linux VCS block test 覆盖：96 个输入
+样本中读取 12 个、显式丢弃 84 个，且无源端 stall、无接受样本重排。该 FIFO 不在当前单时钟 system-UVM
+DUT 内，因此它不是 system coverage 的替代项，而是独立 CDC/full/drop 验证证据。
+
+后续对未覆盖项只采取三类动作：可达 RTL 由定向 sequence 补齐；compile-time feature gate 裁剪项记录
+parameter 与 source location；协议禁止项记录契约和审计理由。不可通过违反 reset/commit/AXI 契约伪造
+100% 覆盖率。

@@ -58,11 +58,14 @@ make -C uvm_verif/sim vcs-run
 这样可以避免继续读取旧的 `out/vcs/compile.log`。
 ## Regression Tiers
 
-`run_ip_coverage_linux.sh` is the standard 20-run functional-coverage closure.
-It includes the disabled Poly/LUT fallback and W1C sticky-error negative test.
+`run_ip_coverage_linux.sh` is the standard functional-coverage closure.
+It includes the disabled Poly/LUT fallback, W1C sticky-error negative test, and
+directed AXI-Lite register-corner test. Use
+`run_ip_extended_coverage_linux.sh` after the 140-run tier to merge exactly the
+140 passing VCS databases into one URG report.
 
-`run_ip_extended_regression_linux.sh` is the optional overnight tier: six
-protocol/control/system tests across 20 seeds (120 runs).  It increases random
+`run_ip_extended_regression_linux.sh` is the optional overnight tier: seven
+protocol/control/system tests across 20 seeds (140 runs). It increases random
 stress; it is not required for the quick pre-commit loop.
 
 On Windows, submit the overnight tier through
