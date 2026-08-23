@@ -241,7 +241,7 @@ decision tree. Generate and verify it with
 `verif/scripts/run_tinyml_tree_equivalence.ps1`. Python owns ratio formation
 and quantization; C and RTL consume the same 13 integer features. The standalone
 tree is intentionally not connected to AXI until XSim and retained board-trace
-replay pass. See `docs/DPD_AI_DPA.md` and `docs/IP_HANDOFF.md` for the
+replay pass. See `docs/SPEC.md` and `docs/IP_HANDOFF.md` for the
 calibration contract and limits.
 
 Run `entry_dpd_memory_tinyml_development_dataset` to create the 192-condition

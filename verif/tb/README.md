@@ -1,21 +1,12 @@
-# Directed IP and Route Tests
+# Legacy and Integration Testbenches
 
-This directory deliberately contains tests that are wider than one RTL block:
+This directory retains historical top-level and cross-module testbenches.
 
-- `tb_p0_*`: seven DSM P0 algorithm regressions.
-- `tb_dsm_ip_top_smoke.sv`: packaged IP-top smoke test.
-- `tx_analog_iq/` and the remaining `tx_bandpass_if/` test: retained
-  route-level integration tests.
+- `tb_p0_*`: P0 regression for the seven DSM algorithms.
+- `tb_dsm_ip_top_smoke.sv`: IP-top smoke test.
+- `tx_analog_iq/` and `tx_bandpass_if/`: broader transmitter-chain integration
+  testbenches.
 
-The AXI control smoke now lives in `verif/subsystem/control/tb/`; the
-AXI-wrapped BP route smoke now lives in `verif/subsystem/if_dsm/tb/`.
-
-Do not add new isolated DPD, interpolation, mixer, BP DSM, observer, or monitor
-testbenches here. Put them under `verif/block/<block>/tb/` with a vector entry
-and a documented runner.
-
-verif/tb/ 是保留的“跨模块/历史主回归”测试目录。
-tb_p0_*：七种 DSM 算法的 P0 RTL 回归。
-tb_dsm_ip_top_smoke.sv：IP 顶层 smoke。
-tx_analog_iq/、tx_bandpass_if/：较宽范围的历史发射链路/路由级集成测试。
-它不该再放新的独立 block TB；新的 block TB 应放在 verif/block/<block>/tb/，新的 subsystem TB 放在 verif/subsystem/<name>/tb/。
+New block tests belong in `verif/block/<block>/tb/`. New subsystem tests belong
+in `verif/subsystem/<name>/tb/`. UVM system tests are maintained under
+`uvm_verif/`.

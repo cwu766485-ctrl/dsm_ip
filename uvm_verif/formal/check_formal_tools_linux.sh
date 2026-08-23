@@ -32,7 +32,7 @@ if [[ "$found" -eq 0 ]]; then
   # Search only known EDA roots and the installed VCS neighborhood.  A full
   # filesystem crawl is deliberately avoided because shared EDA filesystems
   # can be large and slow.
-  declare -a roots=(/opt /eda /tools /apps /usr/local /home/ray)
+  declare -a roots=(/opt /eda /tools /apps /usr/local "$HOME")
   if [[ -n "$vcs_path" ]]; then
     vcs_real="$(readlink -f "$vcs_path" 2>/dev/null || printf '%s' "$vcs_path")"
     roots+=("$(dirname "$vcs_real")/..")

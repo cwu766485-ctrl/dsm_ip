@@ -91,3 +91,30 @@ The tool path alone is insufficient: the 2026-08-16 rerun reached `dc_shell`
 but stopped with `DCSH-1: Design Compiler is not enabled`. Do not report lint
 as passing until the Design Compiler license is available and the script writes
 `LINT_PASS` plus all required reports.
+
+## Reproducible ASIC PPA Flow
+
+`syn/asic/` contains the public pre-layout Design Compiler launcher for the
+frozen Performance SKU. Unlike the retained historical script, it has no
+default private PDK path. Supply a permitted standard-cell database at runtime:
+
+```bash
+export DSM_ASIC_STDCELL_DB=/path/to/standard_cell_tt.db
+export DSM_ASIC_NODE=28nm
+bash syn/asic/run_performance_sku_dc_sweep.sh 100 200 300 400 500
+```
+
+The values above are placeholders. Run the command from a Linux shell, not
+from a `dc_shell>` Tcl prompt. If `dc_shell` is available on `PATH`, the
+launcher finds it automatically; otherwise use
+`export DC_SHELL="$(command -v dc_shell)"` with the actual executable path.
+
+The flow emits one report bundle per target and a normalized `summary.csv`.
+It reports cell area, combinational/sequential area, timing, critical path,
+and power provenance. Without an annotated SAIF file, power is marked as a
+vectorless estimate and must not be presented as measured power.
+
+The flow validates the selected mapping library by its own library name and
+cell inventory before elaboration. `library.rpt` records that deterministic
+evidence directly; this avoids a tool-version-dependent generic `report_lib`
+redirect error without weakening synthesis, timing, or unmapped-logic checks.

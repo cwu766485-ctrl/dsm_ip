@@ -9,7 +9,8 @@ if [[ -z "${DSM_VCS_INTERACTIVE_ENV:-}" ]]; then
   exec bash -ic 'exec "$@"' bash "$0" "$@"
 fi
 
-cd /mnt/e/workspace/chip/dsm_ip
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "$SCRIPT_DIR/../.."
 
 summary=uvm_verif/sim/out/vcs/ip_extended_regression.csv
 if [[ ! -f "$summary" ]]; then
@@ -19,10 +20,14 @@ fi
 
 tags="$(awk -F, 'NR > 1 && $4 == "PASS" { print $3 }' "$summary" | sort -u | tr '\n' ' ')"
 tag_count="$(wc -w <<< "$tags")"
-if [[ "$tag_count" -ne 140 ]]; then
-  echo "ERROR: expected 140 passing extended-regression tags, found $tag_count" >&2
+if [[ "$tag_count" -ne 300 ]]; then
+  echo "ERROR: expected 300 passing extended-regression tags, found $tag_count" >&2
   exit 2
 fi
 
 echo "Merging $tag_count passing VCS coverage databases"
-make -C uvm_verif/sim coverage-merge RUN_TAGS="$tags"
+merge_args=("RUN_TAGS=$tags")
+if [[ -n "${URG_ELFILE:-}" ]]; then
+  merge_args+=("URG_ELFILE=$URG_ELFILE")
+fi
+make -C uvm_verif/sim coverage-merge "${merge_args[@]}"

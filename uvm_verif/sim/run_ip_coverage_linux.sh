@@ -8,13 +8,14 @@ if [[ -z "${DSM_VCS_INTERACTIVE_ENV:-}" ]]; then
   exec bash -ic 'exec "$@"' bash "$0" "$@"
 fi
 
-cd /mnt/e/workspace/chip/dsm_ip
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "$SCRIPT_DIR/../.."
 
 make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1
 
 python3.12 uvm_verif/sim/run_regression.py \
   --sim vcs \
-  --tests dsm_bp_test,dsm_performance_bittrue_test,dsm_memory_dpd_bittrue_test,dsm_memory_dpd_safety_test,dsm_negative_control_test,dsm_register_corner_test \
+  --tests dsm_bp_test,dsm_performance_bittrue_test,dsm_memory_dpd_bittrue_test,dsm_memory_dpd_safety_test,dsm_negative_control_test,dsm_register_corner_test,dsm_csr_monitor_coverage_test,dsm_wstrb_semantics_coverage_test \
   --seeds 1 \
   --jobs 2 \
   --summary uvm_verif/sim/out/vcs/ip_coverage_deterministic.csv \
@@ -51,6 +52,8 @@ dsm_memory_dpd_bittrue_test_seed1 \
 dsm_memory_dpd_safety_test_seed1 \
 dsm_negative_control_test_seed1 \
 dsm_register_corner_test_seed1 \
+dsm_csr_monitor_coverage_test_seed1 \
+dsm_wstrb_semantics_coverage_test_seed1 \
 dsm_axi_protocol_test_seed1 dsm_axi_protocol_test_seed7 dsm_axi_protocol_test_seed31 \
 dsm_control_stress_test_seed1 dsm_control_stress_test_seed7 dsm_control_stress_test_seed31 \
 dsm_memory_dpd_commit_stress_test_seed1 dsm_memory_dpd_commit_stress_test_seed7 dsm_memory_dpd_commit_stress_test_seed31 \

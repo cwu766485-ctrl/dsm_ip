@@ -3,7 +3,8 @@ set -euo pipefail
 
 # Formal subsystem regression path.  Focused SV testbenches are compiled by
 # VCS; AXI control is exercised through the existing UVM environment.
-ROOT=/mnt/e/workspace/chip/dsm_ip
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 PYTHON=${PYTHON:-python3.12}
 VCS=${VCS:-vcs}
 # The Windows bridge invokes non-interactive bash, while the local EDA tool

@@ -1,8 +1,11 @@
 param(
-  [string]$BridgeRoot = "F:\sramc_uvm_bridge"
+  [string]$BridgeRoot = $env:DSM_UVM_BRIDGE_ROOT
 )
 
 $ErrorActionPreference = "Stop"
+if ([string]::IsNullOrWhiteSpace($BridgeRoot)) {
+  throw "Pass -BridgeRoot <shared-folder> or set DSM_UVM_BRIDGE_ROOT."
+}
 $linuxCommand = Join-Path $PSScriptRoot "run_ip_coverage_linux.sh"
 $commandFile = Join-Path $BridgeRoot "command.sh"
 $activeFile = Join-Path $BridgeRoot "command.active.sh"

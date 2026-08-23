@@ -1,0 +1,4 @@
+begin
+  line+cond+fsm+tgl+branch
+  +tree dsm_uvm_tb.dut
+end

@@ -71,9 +71,9 @@ API. The generator creates a new cell and never overwrites a hand-edited ADS
 cell:
 
 ```powershell
-$env:HPEESOF_DIR = 'D:\ADS2025'
-$env:PATH = "D:\ADS2025\bin;D:\ADS2025\tools\python;$env:PATH"
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\generate_low_power_dpa.py
+$env:HPEESOF_DIR = '<ADS installation root>'
+$env:PATH = "$env:HPEESOF_DIR\bin;$env:HPEESOF_DIR\tools\python;$env:PATH"
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\generate_low_power_dpa.py
 ```
 
 The pulse-driven smoke cell is `workspace_lib:low_power_dpa_api_v10:schematic`.
@@ -93,21 +93,21 @@ The design variable remains `VDD = 1.2 V`.
 Run the generated transient baseline without relying on GUI state:
 
 ```powershell
-$env:HPEESOF_DIR = 'D:\ADS2025'
-$env:PATH = "D:\ADS2025\bin;D:\ADS2025\tools\python;$env:PATH"
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_low_power_dpa_tran.py
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\analyze_low_power_dpa_tran.py
+$env:HPEESOF_DIR = '<ADS installation root>'
+$env:PATH = "$env:HPEESOF_DIR\bin;$env:HPEESOF_DIR\tools\python;$env:PATH"
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_low_power_dpa_tran.py
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\analyze_low_power_dpa_tran.py
 ```
 
 Run the real MATLAB `rf_bit` PWL baseline:
 
 ```powershell
-cd E:\workspace\chip\dsm_ip
-$env:HPEESOF_DIR = 'D:\ADS2025'
-$env:PATH = "D:\ADS2025\bin;D:\ADS2025\tools\python;$env:PATH"
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\generate_low_power_dpa.py --cell low_power_dpa_api_v17 --drive pwl
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_low_power_dpa_tran.py --cell low_power_dpa_api_v17 --run-dir .\ads\low_power_dpa\simulation\low_power_dpa_api_v17_4096bit_pwl_tran
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\analyze_low_power_dpa_tran.py --cell low_power_dpa_api_v17 --run-dir .\ads\low_power_dpa\simulation\low_power_dpa_api_v17_4096bit_pwl_tran
+cd <repository-root>
+$env:HPEESOF_DIR = '<ADS installation root>'
+$env:PATH = "$env:HPEESOF_DIR\bin;$env:HPEESOF_DIR\tools\python;$env:PATH"
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\generate_low_power_dpa.py --cell low_power_dpa_api_v17 --drive pwl
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_low_power_dpa_tran.py --cell low_power_dpa_api_v17 --run-dir .\ads\low_power_dpa\simulation\low_power_dpa_api_v17_4096bit_pwl_tran
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\analyze_low_power_dpa_tran.py --cell low_power_dpa_api_v17 --run-dir .\ads\low_power_dpa\simulation\low_power_dpa_api_v17_4096bit_pwl_tran
 & 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\analyze_low_power_dpa_spectrum.py --cell low_power_dpa_api_v17 --run-dir .\ads\low_power_dpa\simulation\low_power_dpa_api_v17_4096bit_pwl_tran --settling-s 4e-6
 ```
 

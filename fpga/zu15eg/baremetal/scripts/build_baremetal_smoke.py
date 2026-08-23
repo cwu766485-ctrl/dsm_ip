@@ -100,6 +100,9 @@ if os.path.exists(tinyml_packages_path):
 waveform_path = os.path.join(src_dir, "dpd_tx_waveform.h")
 if os.path.exists(waveform_path):
     import_files.append("dpd_tx_waveform.h")
+ila_golden_path = os.path.join(src_dir, "ila_golden_waveform.h")
+if os.path.exists(ila_golden_path):
+    import_files.append("ila_golden_waveform.h")
 if os.path.exists(config_path):
     import_files.append("cal_config.h")
 app.import_files(

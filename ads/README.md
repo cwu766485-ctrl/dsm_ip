@@ -99,9 +99,9 @@ an extracted TSMC40 HSPICE model deck. It creates an ignored DC probe netlist;
 it neither copies PDK content nor stores an absolute PDK path in the project.
 
 ```powershell
-$env:HPEESOF_DIR = 'D:\ADS2025'
-$env:TSMC40_PDK_ROOT = 'F:\path\to\local\pdk'
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_hspice_probe.py
+$env:HPEESOF_DIR = '<ADS installation root>'
+$env:TSMC40_PDK_ROOT = '<approved local PDK root>'
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_hspice_probe.py
 ```
 
 A successful probe proves only that the local ADS installation can parse the
@@ -125,15 +125,15 @@ an explicitly estimated passive-loss proxy. The proxy is not a balun, package,
 PCB, EM, or extracted matching-network model.
 
 ```powershell
-$env:HPEESOF_DIR = 'D:\ADS2025'
-$env:TSMC40_PDK_ROOT = 'F:\path\to\local\pdk'
-$env:PATH = "D:\ADS2025\bin;D:\ADS2025\tools\python;$env:PATH"
+$env:HPEESOF_DIR = '<ADS installation root>'
+$env:TSMC40_PDK_ROOT = '<approved local PDK root>'
+$env:PATH = "$env:HPEESOF_DIR\bin;$env:HPEESOF_DIR\tools\python;$env:PATH"
 
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_hspice_probe.py
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_dpa_switch_core.py --nmos-w 1u --pmos-w 1u --fingers 16
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\analyze_tsmc40_dpa_switch_core.py
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_dpa_pvt_matrix.py
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_dpa_size_sweep.py
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_hspice_probe.py
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_dpa_switch_core.py --nmos-w 1u --pmos-w 1u --fingers 16
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\analyze_tsmc40_dpa_switch_core.py
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_dpa_pvt_matrix.py
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_dpa_size_sweep.py
 ```
 
 The checked 16-finger PVT screen passed 27/27 transient cases without a leg
@@ -179,7 +179,7 @@ PVT. The first centered estimate for 4.18 uH total inductance is 9.70 pF.
 Run the nominal 25 MHz screen before choosing a new DPA candidate:
 
 ```powershell
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_dpa_25mhz_screen.py
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_dpa_25mhz_screen.py
 ```
 
 It compares `C_BPF`, RF-MOS fingers, and PDK-driver fingers at TT/25 C/1.2 V
@@ -192,8 +192,8 @@ reliability signoff.
 Use the local-only commands below to reproduce the selected configuration:
 
 ```powershell
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_dpa_driver_deadtime_sweep.py --fingers 16 --driver-fingers 4 --switch-node-cap 100f --passive-model estimated
-& 'D:\ADS2025\tools\python\python.exe' .\ads\scripts\run_tsmc40_dpa_pvt_matrix.py --fingers 16 --gate-driver pdk --driver-fingers 4 --switch-node-cap 100f --dead-time 1n --passive-model estimated
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_dpa_driver_deadtime_sweep.py --fingers 16 --driver-fingers 4 --switch-node-cap 100f --passive-model estimated
+& "$env:HPEESOF_DIR\tools\python\python.exe" .\ads\scripts\run_tsmc40_dpa_pvt_matrix.py --fingers 16 --gate-driver pdk --driver-fingers 4 --switch-node-cap 100f --dead-time 1n --passive-model estimated
 ```
 
 `matlab/dpd/export_ads_dpd_candidate_pair.m` emits no-DPD and a

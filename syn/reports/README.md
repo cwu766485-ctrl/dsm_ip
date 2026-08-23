@@ -1,17 +1,9 @@
-# Synthesis reports
+# Generated Synthesis Reports
 
-Place **regenerated** Vivado (or other) reports here:
+This directory is intentionally empty in the public repository. Synthesis and
+implementation reports are generated locally and ignored by Git.
 
-- One subdirectory per tool run, e.g. `reports/2026-05-11_xc7z020_ooc_lpdsm/`
-- Include: utilization, timing summary, power (if enabled), and the exact Tcl / constraint set used.
-
-**Do not** commit large proprietary IP caches. Commit **text summaries** and scripts to reproduce.
-
-Naming convention (suggested):
-
-```text
-<date>_<part>_<ooc|impl>_<dsm_tag>/
-  timing_summary.rpt
-  utilization.rpt
-  runme.tcl
-```
+Keep the Tcl or shell command that reproduces a result in `syn/`. Commit only a
+small, non-proprietary summary when it is needed as engineering evidence. Do not
+commit vendor IP caches, technology libraries, bitstreams, or detailed board
+collateral.

@@ -10,7 +10,7 @@ STAMP=$(date +%Y%m%d_%H%M%S)
 OUT_ROOT=${DSM_ASIC_OUT_ROOT:-"$ROOT/syn/reports/finalists_asic_dc_${STAMP}"}
 RESUME=${DSM_ASIC_RESUME:-0}
 
-DB_28=${DSM28_STDCELL_DB:-/home/ray/pdk/TSMC28/standard_cell_rvt/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn28hpcplusbwp7t40p140_180a/tcbn28hpcplusbwp7t40p140tt0p9v25c.db}
+DB_28=${DSM28_STDCELL_DB:-}
 DB_40=${TSMC40_LIB_TC:-}
 NODES=${DSM_ASIC_NODES:-"28nm 40nm"}
 CASES=${DSM_ASIC_CASES:-"I0_D0_EFDSM:2 I0_D1_LPDSM2:1 I0_D3_MASH11:4 I0_D5_MB_EFDSM:9"}
@@ -25,6 +25,11 @@ overall_status=0
 
 run_node() {
   local node=$1 db=$2
+  if [[ -z "$db" || ! -f "$db" ]]; then
+    echo "ERROR: no approved readable standard-cell .db supplied for $node." >&2
+    overall_status=1
+    return
+  fi
   for item in $CASES; do
     local label=${item%%:*} algorithm=${item##*:}
     local run_dir="$OUT_ROOT/${node}/${label}"

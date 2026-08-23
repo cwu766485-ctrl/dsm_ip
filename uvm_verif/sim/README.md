@@ -1,74 +1,69 @@
-# 仿真层
+# UVM Simulation Flow
 
-- `uvm_filelist.f`：UVM 平台和真实 BP EFDSM2 AXI RTL 的文件清单；
-- `Makefile`：Linux VCS/Verdi 主流程，支持编译、单测、coverage merge 和 FSDB；
-- `run_regression.py`：testcase/seed 矩阵、并行任务、日志判定和 CSV 汇总；
-- `run_xsim_uvm.ps1`：Windows Vivado XSim 2024.1 编译、elaboration 和运行入口；
-- `out/`：编译日志、运行日志和临时仿真文件，不应提交。
+This directory is the Linux VCS/Verdi entry point for system-level verification.
+Windows XSim scripts under `verif/scripts/` are retained for local smoke runs;
+they are not the signoff flow.
 
-Windows XSim 只用于快速 smoke：
+## Main Files
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\uvm_verif\sim\run_xsim_uvm.ps1
-```
+- `Makefile`: compile, run, coverage merge, and Verdi targets.
+- `run_regression.py`: testcase/seed matrix, log checks, and CSV summaries.
+- `run_ip_coverage_linux.sh`: short system-coverage regression.
+- `run_ip_extended_regression_linux.sh`: 300-run stress regression.
+- `run_ip_extended_coverage_linux.sh`: merge passing stress-run VDBs.
+- `coverage/`: reviewed frozen-SKU coverage triage scripts and waivers.
 
-Linux VCS/Verdi 正式流程：
+Generated output is written under `out/` and is ignored by Git.
+
+## Prerequisites
+
+Use a Linux shell with VCS, URG, and Python 3.12 available. Tool licensing and
+environment setup are site-specific and are intentionally not stored here.
+
+## Common Commands
+
+From the repository root:
 
 ```bash
-make -C uvm_verif/sim help
 make -C uvm_verif/sim check-tools
-make -C uvm_verif/sim vcs-run
-python3 uvm_verif/sim/run_regression.py \
-  --tests dsm_bp_test,dsm_axi_protocol_test --seeds 1,2,3 --jobs 3
-make -C uvm_verif/sim coverage-merge
+make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1
+make -C uvm_verif/sim vcs-run-only \
+  UVM_TESTNAME=dsm_system_closure_test UVM_SEED=1 COVERAGE=1
 ```
 
-The reproducible IP-system closure entry point is:
+Run the short closure suite:
 
 ```bash
 bash uvm_verif/sim/run_ip_coverage_linux.sh
 ```
 
-It runs 19 regressions: deterministic bit-true/safety tests once; AXI protocol,
-control stress, and memory-DPD commit stress tests across seeds `1,7,31`; plus
-AXI-Stream sideband coverage and system-closure tests across seeds `1,7,31`.
-The system-closure testcase combines reset, DPD bank commit/reject, long random
-TX traffic, observer windows, monitor readback, sticky-error behavior, and
-counter clear checks. The Windows bridge submits this same Linux command; it is
-not a simulator itself.
-
-FSDB 调试示例：
+Run and merge the extended suite:
 
 ```bash
-make -C uvm_verif/sim vcs-run FSDB=1 VERDI_HOME=$VERDI_HOME \
-  UVM_TESTNAME=dsm_bp_test UVM_SEED=1
-make -C uvm_verif/sim verdi RUN_TAG=dsm_bp_test_seed1
+bash uvm_verif/sim/run_ip_extended_regression_linux.sh
+bash uvm_verif/sim/run_ip_extended_coverage_linux.sh
 ```
 
-PowerShell 脚本只负责调用 Windows Vivado 的 `xvlog/xelab/xsim`，不负责
-Linux VCS regression、coverage merge 或 Verdi 调试，也不是正式 signoff 入口。
+## Optional Windows-to-Linux Bridge
 
-每次重新编译前建议先执行：
+The `*_bridge.ps1` scripts only copy a Linux command into a user-managed shared
+folder. They never implement verification logic. Pass the folder explicitly:
 
-```bash
-make -C uvm_verif/sim clean
-make -C uvm_verif/sim vcs-run
+```powershell
+.\uvm_verif\sim\run_ip_extended_regression_bridge.ps1 `
+  -BridgeRoot 'D:\shared\dsm_uvm_bridge'
 ```
 
-这样可以避免继续读取旧的 `out/vcs/compile.log`。
-## Regression Tiers
+The Linux-side bridge is local infrastructure and must not be committed.
 
-`run_ip_coverage_linux.sh` is the standard functional-coverage closure.
-It includes the disabled Poly/LUT fallback, W1C sticky-error negative test, and
-directed AXI-Lite register-corner test. Use
-`run_ip_extended_coverage_linux.sh` after the 140-run tier to merge exactly the
-140 passing VCS databases into one URG report.
+## Pass Criteria
 
-`run_ip_extended_regression_linux.sh` is the optional overnight tier: seven
-protocol/control/system tests across 20 seeds (140 runs). It increases random
-stress; it is not required for the quick pre-commit loop.
+A run is accepted only when all of the following hold:
 
-On Windows, submit the overnight tier through
-`run_ip_extended_regression_bridge.ps1`; the bridge is only a file-based
-launcher into the Linux VCS host and does not implement or modify verification
-logic.
+1. The simulator exits with status zero.
+2. `UVM_ERROR` and `UVM_FATAL` are zero.
+3. The test completion marker is present.
+4. Bit-true tests drain all expected transactions.
+
+The regression parser rejects a run that satisfies only the process exit-code
+check.

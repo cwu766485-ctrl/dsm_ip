@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 PERIOD_NS=${DSM28_PERIOD_NS:-10.0}
-STDCELL_DB=${DSM28_STDCELL_DB:-/home/ray/pdk/TSMC28/standard_cell_rvt/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn28hpcplusbwp7t40p140_180a/tcbn28hpcplusbwp7t40p140tt0p9v25c.db}
+STDCELL_DB=${DSM28_STDCELL_DB:-}
 STAMP=$(date +%Y%m%d_%H%M%S)
 OUT_ROOT="$ROOT/syn/reports/finalists_28nm_dc_${STAMP}"
 mkdir -p "$OUT_ROOT"
@@ -19,8 +19,8 @@ if ! command -v dc_shell >/dev/null 2>&1; then
   echo "Finalist 28nm DC summary: $OUT_ROOT/summary.csv"
   exit 127
 fi
-if [[ ! -f "$STDCELL_DB" ]]; then
-  echo "ERROR: TSMC28 standard-cell DB is missing: $STDCELL_DB" >&2
+if [[ -z "$STDCELL_DB" || ! -f "$STDCELL_DB" ]]; then
+  echo "ERROR: set DSM28_STDCELL_DB to an approved readable 28 nm standard-cell .db file." >&2
   exit 2
 fi
 

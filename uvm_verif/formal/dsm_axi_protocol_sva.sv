@@ -70,6 +70,14 @@ module dsm_rf_protocol_sva (
     rf_valid |-> (rf_signed == (rf_bit ? 16'sh7fff : -16'sh7fff));
   endproperty
   a_rf_encoding: assert property (p_rf_encoding);
+
+  // The negative one-bit level is -32767, not the two's-complement minimum.
+  // This executable invariant supports the frozen-SKU waiver for abs_rf(min).
+  property p_rf_signed_not_min;
+    disable iff (!aresetn)
+    rf_valid |-> (rf_signed != 16'sh8000);
+  endproperty
+  a_rf_signed_not_min: assert property (p_rf_signed_not_min);
 endmodule
 
 module dsm_ip_control_sva (

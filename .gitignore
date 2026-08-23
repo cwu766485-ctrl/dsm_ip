@@ -22,6 +22,7 @@ codex-*.cmd
 matlab/out/
 matlab/**/out/
 fpga/zu15eg/out/
+fpga/zu15eg/baremetal/src/ila_golden_waveform.h
 *.mat
 
 # Vivado/Xilinx generated files
@@ -60,10 +61,13 @@ verif/out_xsim_feedback_subsystem/
 verif/out_safety_seed_policy/
 verif/out_xsim_tx_frontend/
 verif/out_vcs_subsystem/
+verif/out_vcs_dpd_memory_poly_random/
 uvm_verif/sim/out/
 uvm_verif/sim/ucli.key
 uvm_verif/refmodel/python/out/
 *.vdb/
+fullexclude.*
+fullexclude_module.*
 *.vcd
 *.fst
 *.ghw
@@ -85,8 +89,11 @@ ip/ip_repo/
 
 # Synthesis/report generated outputs
 reports/
+syn/asic/dc_local_config.tcl
 alib-*/
 cksum_dir/
+*.pvl
+*.syn
 *.svf
 *.mr
 *-verilog.pvl
@@ -111,9 +118,13 @@ syn/reports/axi_v11_*/
 data/board_validation/
 *.Wfm.csv
 fpga/zu15eg/local_hw/
+fpga/zu15eg/out/
+fpga/zu15eg/captures/
 
 # Restricted RFSoC board collateral
 fpga/hardware/
+fpga/rfsoc4x2/
+fpga/data/coe/
 
 # Third-party papers and downloaded references
 docs/papers/
@@ -137,8 +148,42 @@ uvm_verif/formal/out/
 dsm_ip_formal_harness_learn_dir/
 simv
 simv.daidir/
+*.daidir/
 csrc/
 traces/
+
+# Local EDA work directories and tool caches
+*.vdb
+vcst_rtdb.bak/
+.fsm.sch.verilog.xml
+cm.log
+command.log
+
+# Private technology and board collateral (keep local only)
+PDK/
+pdk/
+TSMC28/
+TSMC40/
+*.lef
+*.tf
+*.tluplus
+*.sdf
+*.spef
+*.lib
+*.db
+*.gds
+*.gdsii
+*.oas
+*.oa
+*.sch
+*.brd
+*.bom
+*.kicad_pcb
+*.kicad_sch
+*.xlsx
+
+# Historical MATLAB waveform intermediates
+matlab/**/signals/
 
 # Local server/license/secrets
 .env

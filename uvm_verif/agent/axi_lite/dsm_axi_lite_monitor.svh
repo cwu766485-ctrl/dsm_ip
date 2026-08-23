@@ -15,15 +15,13 @@ class dsm_axi_lite_monitor extends uvm_monitor;
   endfunction
 
   task run_phase(uvm_phase phase);
-    bit aw_pending, w_pending, ar_pending;
-    dsm_reg_addr_t awaddr, araddr;
-    bit [31:0] wdata;
+    bit ar_pending;
+    dsm_reg_addr_t awaddr_q[$], araddr;
+    bit [31:0] wdata_q[$];
+    int unsigned aw_cycle_q[$], w_cycle_q[$];
     dsm_axi_lite_item item;
     int unsigned cycle_count;
-    int unsigned aw_cycle, w_cycle;
     int unsigned b_stall_cycles, r_stall_cycles;
-    aw_pending = 0;
-    w_pending = 0;
     ar_pending = 0;
     cycle_count = 0;
     b_stall_cycles = 0;
@@ -32,35 +30,35 @@ class dsm_axi_lite_monitor extends uvm_monitor;
       @(posedge vif.aclk);
       cycle_count++;
       if (!vif.aresetn) begin
-        aw_pending = 0;
-        w_pending = 0;
+        awaddr_q.delete();
+        wdata_q.delete();
+        aw_cycle_q.delete();
+        w_cycle_q.delete();
         ar_pending = 0;
         b_stall_cycles = 0;
         r_stall_cycles = 0;
       end else begin
         if (vif.awvalid && vif.awready) begin
-          awaddr = vif.awaddr;
-          aw_pending = 1;
-          aw_cycle = cycle_count;
+          awaddr_q.push_back(vif.awaddr);
+          aw_cycle_q.push_back(cycle_count);
         end
         if (vif.wvalid && vif.wready) begin
-          wdata = vif.wdata;
-          w_pending = 1;
-          w_cycle = cycle_count;
+          wdata_q.push_back(vif.wdata);
+          w_cycle_q.push_back(cycle_count);
         end
         if (vif.bvalid && !vif.bready) b_stall_cycles++;
-        if (vif.bvalid && vif.bready && aw_pending && w_pending) begin
+        if (vif.bvalid && vif.bready && awaddr_q.size() && wdata_q.size()) begin
           item = dsm_axi_lite_item::type_id::create("write_item");
           item.is_write = 1;
-          item.addr = awaddr;
-          item.data = wdata;
+          item.addr = awaddr_q.pop_front();
+          item.data = wdata_q.pop_front();
           item.resp = vif.bresp;
-          item.observed_channel_skew_cycles = (aw_cycle >= w_cycle) ?
-              (aw_cycle - w_cycle) : (w_cycle - aw_cycle);
+          item.observed_channel_skew_cycles = (aw_cycle_q[0] >= w_cycle_q[0]) ?
+              (aw_cycle_q[0] - w_cycle_q[0]) : (w_cycle_q[0] - aw_cycle_q[0]);
+          void'(aw_cycle_q.pop_front());
+          void'(w_cycle_q.pop_front());
           item.observed_response_stall_cycles = b_stall_cycles;
           ap.write(item);
-          aw_pending = 0;
-          w_pending = 0;
           b_stall_cycles = 0;
         end
         if (vif.arvalid && vif.arready) begin

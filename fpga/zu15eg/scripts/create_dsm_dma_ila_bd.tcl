@@ -86,7 +86,7 @@ set_property -dict [list \
 
 set_property -dict [list \
   CONFIG.C_MONITOR_TYPE {Native} \
-  CONFIG.C_NUM_OF_PROBES {10} \
+  CONFIG.C_NUM_OF_PROBES {11} \
   CONFIG.C_PROBE0_WIDTH {1} \
   CONFIG.C_PROBE1_WIDTH {1} \
   CONFIG.C_PROBE2_WIDTH {32} \
@@ -96,7 +96,8 @@ set_property -dict [list \
   CONFIG.C_PROBE6_WIDTH {16} \
   CONFIG.C_PROBE7_WIDTH {1} \
   CONFIG.C_PROBE8_WIDTH {8} \
-  CONFIG.C_PROBE9_WIDTH {8} \
+  CONFIG.C_PROBE9_WIDTH {16} \
+  CONFIG.C_PROBE10_WIDTH {16} \
 ] [get_bd_cells ila_dsm_0]
 
 set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {0}] [get_bd_cells axis_tuser_zero]
@@ -151,12 +152,13 @@ connect_bd_net [get_bd_pins dsm_ip_0/s_axis_tvalid] [get_bd_pins ila_dsm_0/probe
 connect_bd_net [get_bd_pins dsm_ip_0/s_axis_tready] [get_bd_pins ila_dsm_0/probe1]
 connect_bd_net [get_bd_pins dsm_ip_0/s_axis_tdata]  [get_bd_pins ila_dsm_0/probe2]
 connect_bd_net [get_bd_pins dsm_ip_0/s_axis_tlast]  [get_bd_pins ila_dsm_0/probe3]
-connect_bd_net [get_bd_pins dsm_ip_0/s_axis_tuser]  [get_bd_pins ila_dsm_0/probe4]
-connect_bd_net [get_bd_pins dsm_ip_0/rf_valid]      [get_bd_pins ila_dsm_0/probe5]
+connect_bd_net [get_bd_pins dsm_ip_0/rf_valid]      [get_bd_pins ila_dsm_0/probe4]
+connect_bd_net [get_bd_pins dsm_ip_0/rf_bit]        [get_bd_pins ila_dsm_0/probe5]
 connect_bd_net [get_bd_pins dsm_ip_0/rf_signed]     [get_bd_pins ila_dsm_0/probe6]
 connect_bd_net [get_bd_pins dsm_ip_0/dsm_valid]     [get_bd_pins ila_dsm_0/probe7]
-connect_bd_net [get_bd_pins dsm_ip_0/i_yout]        [get_bd_pins ila_dsm_0/probe8]
-connect_bd_net [get_bd_pins dsm_ip_0/q_yout]        [get_bd_pins ila_dsm_0/probe9]
+connect_bd_net [get_bd_pins dsm_ip_0/phase_acc_dbg] [get_bd_pins ila_dsm_0/probe8]
+connect_bd_net [get_bd_pins dsm_ip_0/i_yout]        [get_bd_pins ila_dsm_0/probe9]
+connect_bd_net [get_bd_pins dsm_ip_0/q_yout]        [get_bd_pins ila_dsm_0/probe10]
 
 assign_bd_address
 validate_bd_design

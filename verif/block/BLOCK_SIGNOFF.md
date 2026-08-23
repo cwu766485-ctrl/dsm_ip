@@ -17,7 +17,7 @@ Every block requires all of the following:
 
 | Block | DUT boundary | Exact oracle | Random/boundary test | PASS marker |
 |---|---|---|---|---|
-| DPD | `dpd_poly`, `dpd_lut`, `dpd_memory_poly`, `dpd_frontend` | MATLAB fixed-point vectors for Poly3/5/7 and Memory-Poly | `tb_dpd_frontend_random_protocol`, protocol/safety/feature-gate/compile matrix | `DPD_RANDOM_PROTOCOL_PASS` plus DPD bit-true checks |
+| DPD | `dpd_poly`, `dpd_lut`, `dpd_memory_poly`, `dpd_frontend` | MATLAB fixed-point vectors for Poly3/5/7 and Memory-Poly | `tb_dpd_frontend_random_protocol`, protocol/safety/feature-gate/compile matrix, and direct `tb_dpd_memory_poly_random_protocol` | `DPD_RANDOM_PROTOCOL_PASS` plus DPD bit-true checks and `DPD_MEMORY_RANDOM_PROTOCOL_PASS` |
 | Interpolation | `dsm_interp_frontend` and FIR/CIC support RTL | MATLAB fixed-point vectors, modes 0 to 4 and x32 I0/I1/I2/I3 | `tb_interp_frontend_random_protocol` | `INTERP_RANDOM_PROTOCOL_PASS` |
 | Fs/4 mixer | `bp_fs4_iq_mixer` | Directed +I/+Q/-I/-Q and phase sequence | `tb_bp_fs4_iq_mixer_random` | `FS4_MIXER_RANDOM_PASS` |
 | BP EFDSM2 | `dsm_core_bp_ef2`, `dsm_core_ef2` | Python integer vector model | `tb_dsm_core_bp_ef2_random` using the same golden rows with enable bubbles | `BP_EFDSM2_RANDOM_PROTOCOL_PASS` |
@@ -55,6 +55,12 @@ code zero. The recorded configuration passed every matrix entry:
 - Monitor: MATLAB behavioral-window counters and a 129-sample random test
   with 12 invalid beats and counter clear.
 
-This closes the **project-level block signoff** for this fixed RTL revision.
-It excludes formal CDC/RDC, lint signoff, gate-level/SDF simulation, physical
-signoff, and measured RF feedback. Those remain separate verification phases.
+This is the historical baseline for the listed tests. The later direct
+Memory-Poly full-pipeline-stall test is required to close FSKU-010 and has not
+yet produced a trustworthy current XSim/VCS log: the Windows XSim launcher
+returns without emitting a log. Therefore the overall DPD block is not claimed
+fully re-signed after the new flow-control scope until the Linux/VCS command in
+`verif/block/dpd/README.md` reports its named PASS marker.
+
+Formal CDC/RDC, lint signoff, gate-level/SDF simulation, physical signoff, and
+measured RF feedback remain separate verification phases.

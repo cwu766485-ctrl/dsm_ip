@@ -57,7 +57,13 @@ static const u32 dsm_dpd_lut_packages[DSM_DPD_NUM_PACKAGES][DSM_DPD_LUT_LEN] = {
 #include "dpd_trace_policy.h"
 #endif
 
-#if __has_include("dpd_tx_waveform.h")
+#if defined(CAL_ILA_GOLDEN_ONLY) && (CAL_ILA_GOLDEN_ONLY != 0U)
+#if __has_include("ila_golden_waveform.h")
+#include "ila_golden_waveform.h"
+#else
+#error "CAL_ILA_GOLDEN_ONLY requires ila_golden_waveform.h"
+#endif
+#elif __has_include("dpd_tx_waveform.h")
 #include "dpd_tx_waveform.h"
 #endif
 
@@ -246,12 +252,12 @@ static const u32 dsm_dpd_lut_packages[DSM_DPD_NUM_PACKAGES][DSM_DPD_LUT_LEN] = {
 #endif
 #endif
 
-#define DMA_BYTES 0x00004000U
-#define DMA_WORDS (DMA_BYTES / 4U)
-
-#if DSM_DPD_TX_WAVEFORM_AVAILABLE && (DSM_DPD_TX_WAVEFORM_WORDS != DMA_WORDS)
-#error "Generated DPD TX waveform length must match the fixed DMA transfer length"
+#if DSM_DPD_TX_WAVEFORM_AVAILABLE
+#define DMA_WORDS DSM_DPD_TX_WAVEFORM_WORDS
+#else
+#define DMA_WORDS 4096U
 #endif
+#define DMA_BYTES (DMA_WORDS * 4U)
 
 #define DSM_CTRL                  0x00U
 #define DSM_VERSION               0x14U

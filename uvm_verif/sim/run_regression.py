@@ -24,7 +24,12 @@ class Case:
 # This testcase intentionally sends no TX payload. Its pass criteria are
 # AXI-Lite commit rejection and sticky-error checks, so RF traffic is not a
 # meaningful completion condition for it.
-CONTROL_ONLY_TESTS = {"dsm_memory_dpd_safety_test"}
+CONTROL_ONLY_TESTS = {
+    "dsm_memory_dpd_safety_test",
+    # This test deliberately exercises AXI-Lite write-channel behavior only.
+    # It does not send TX data, so an RF transaction would be an invalid gate.
+    "dsm_axi_lite_channel_backpressure_test",
+}
 
 
 def run_command(command, cwd):

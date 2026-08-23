@@ -15,7 +15,6 @@ IP handoff.
 | `../ads/` | ADS circuit-level low-power DPA baseline and its MATLAB PWL-stimulus handoff. |
 | `scripts/` | User-facing entry scripts for vector export, metric evaluation, calibration sweeps, and plots. |
 | `cartesian_dsm/` | Cartesian I/Q DSM algorithm workspace, including retained legacy flow, single-bit wrappers, and exploratory multibit models. |
-| `board_validation/` | Scope-capture recovery and board-output comparison scripts retained for hardware validation. |
 | `out/` | Generated CSV, MAT, PDF, and PNG result files |
 | `path_setup.m` | Adds the retained MATLAB source folders to the MATLAB path |
 
@@ -102,18 +101,14 @@ matlab/
           low-pass DSM waveform generation, reconstruction, metrics,
           legacy comparison, and RF diagnostic helper scripts
 
-  board_validation/
-    README.md
-    scope/RTL alignment, bit recovery, spectrum comparison, and
-    board-capture diagnostic scripts
-
   out/
     generated outputs only; this folder is ignored by Git
 ```
 
 The retained legacy file names under `cartesian_dsm/DSM_2nd/lp/core/` are kept
 for reproducibility. New top-level work should use the cleaner `entry_*` scripts
-under `matlab/scripts/`.
+under `matlab/scripts/`. Board captures and vendor-provided collateral are not
+part of this public repository.
 
 ## Setup
 
@@ -307,21 +302,4 @@ The generated CSV is:
 
 ```text
 matlab/out/dsm_multibit/dsm_multibit_metrics.csv
-```
-
-## Board Validation
-
-Board-validation scripts use the retained capture data in:
-
-```text
-data/board_validation/cartesian_dsm
-```
-
-Main entry points:
-
-```matlab
-recover_scope_rf_bits('DSM000')
-plot_dsm000_scope_vs_rtl_single
-plot_exact_69bit_anchor_overlay
-compute_recovered_bits_evm_sndr
 ```

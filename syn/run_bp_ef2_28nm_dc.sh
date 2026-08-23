@@ -9,7 +9,7 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 DC_SHELL=${DC_SHELL:-${DC_HOME:+$DC_HOME/bin/dc_shell}}
 PERIOD_NS=${DSM28_PERIOD_NS:-10.0}
-STDCELL_DB=${DSM28_STDCELL_DB:-/home/ray/pdk/TSMC28/standard_cell_rvt/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn28hpcplusbwp7t40p140_180a/tcbn28hpcplusbwp7t40p140tt0p9v25c.db}
+STDCELL_DB=${DSM28_STDCELL_DB:-}
 STAMP=$(date +%Y%m%d_%H%M%S)
 RUN_DIR=${DSM28_BP_OUT_DIR:-"$ROOT/syn/reports/bp_ef2_axi_28nm_dc_${STAMP}"}
 
@@ -17,8 +17,8 @@ if [[ -z "$DC_SHELL" || ! -x "$DC_SHELL" ]]; then
   echo "ERROR: dc_shell is unavailable; set DC_SHELL or DC_HOME." >&2
   exit 127
 fi
-if [[ ! -f "$STDCELL_DB" ]]; then
-  echo "ERROR: 28 nm standard-cell DB is missing: $STDCELL_DB" >&2
+if [[ -z "$STDCELL_DB" || ! -f "$STDCELL_DB" ]]; then
+  echo "ERROR: set DSM28_STDCELL_DB to an approved readable 28 nm standard-cell .db file." >&2
   exit 2
 fi
 

@@ -14,13 +14,15 @@ param(
     [int]$WaveformUsedSubcarriers = -1,
     [double]$WaveformInputBackoff = -1,
     [int]$WaveformFftSize = 256,
-    [int]$WaveformSeed = 1
+    [int]$WaveformSeed = 1,
+    [switch]$IlaGolden
 )
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..\..\..")
 $xsaPath = Resolve-Path (Join-Path $repoRoot $Xsa)
 $workspacePath = Join-Path $repoRoot $Workspace
+$ilaGoldenHeader = Join-Path $repoRoot "fpga\zu15eg\baremetal\src\ila_golden_waveform.h"
 
 if (!(Test-Path $VitisBat)) {
     throw "Vitis not found: $VitisBat"
@@ -88,6 +90,18 @@ if ($waveformArgsProvided -eq 3) {
     if (-not (Test-Path $waveformHeader)) {
         throw "No deterministic DMA waveform found: $waveformHeader. Supply all Waveform* arguments."
     }
+}
+
+if ($IlaGolden) {
+    $ilaGenerator = Join-Path $repoRoot "fpga\zu15eg\scripts\generate_ila_golden.py"
+    $ilaOutDir = Join-Path $repoRoot "fpga\zu15eg\out\ila_golden_memory_pkg0"
+    & python $ilaGenerator --out-dir $ilaOutDir --header $ilaGoldenHeader
+    if ($LASTEXITCODE -ne 0) {
+        throw "ILA golden-vector generation failed with exit code $LASTEXITCODE"
+    }
+    $Define += "CAL_ILA_GOLDEN_ONLY=1"
+} elseif (Test-Path $ilaGoldenHeader) {
+    Remove-Item -LiteralPath $ilaGoldenHeader -Force
 }
 
 New-Item -ItemType Directory -Force -Path $workspacePath | Out-Null

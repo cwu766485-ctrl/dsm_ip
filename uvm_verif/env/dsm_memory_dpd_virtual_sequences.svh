@@ -41,9 +41,9 @@ class dsm_memory_dpd_virtual_sequence extends uvm_sequence;
       `uvm_error("AXI_RESP", $sformatf("%s response %0b", name, seq.resp))
   endtask
 
-  task automatic wait_for_commit_ack();
+  task automatic wait_for_commit_ack(input int unsigned max_polls = 32);
     bit [31:0] status;
-    for (int unsigned poll = 0; poll < 32; poll++) begin
+    for (int unsigned poll = 0; poll < max_polls; poll++) begin
       read_reg(DSM_REG_MP_COMMIT_STATUS, status, $sformatf("mp_status_%0d", poll));
       if (status[3]) begin
         `uvm_fatal("MP_COMMIT", "Valid memory-DPD package was rejected")

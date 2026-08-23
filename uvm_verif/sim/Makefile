@@ -21,6 +21,7 @@ UVM_VERBOSITY ?= UVM_LOW
 UVM_SEED ?= 1
 RUN_TAG ?= $(UVM_TESTNAME)_seed$(UVM_SEED)
 RUN_TAGS ?= $(RUN_TAG)
+URG_ELFILE ?=
 COVERAGE ?= 1
 FSDB ?= 0
 
@@ -32,6 +33,7 @@ QUESTA_OUT := $(OUT)/questa
 
 VCS_COV_COMPILE := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
 VCS_COV_RUN := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert -cm_dir $(RUN_DIR)/simv.vdb,)
+VCS_COV_HIER := $(if $(filter 1,$(COVERAGE)),-cm_hier $(UVM_ROOT)/sim/dut_coverage.hier,)
 VCS_RUN_ARGS ?= -no_save
 VCS_FSDB_COMPILE :=
 VCS_FSDB_RUN :=
@@ -82,7 +84,7 @@ vcs:
 	@$(PYTHON) $(UVM_ROOT)/refmodel/python/generate_performance_sku_vectors.py
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm \
 		-timescale=1ns/1ps -f $(FILELIST) -Mdir=$(VCS_OUT)/csrc \
-		-kdb -debug_access+all $(VCS_COV_COMPILE) $(VCS_FSDB_COMPILE) \
+		-kdb -debug_access+all $(VCS_COV_COMPILE) $(VCS_COV_HIER) $(VCS_FSDB_COMPILE) \
 		-o $(VCS_BIN) -l $(VCS_LOG)
 
 vcs-run: vcs vcs-run-only
@@ -99,6 +101,7 @@ regression:
 coverage-merge:
 	@mkdir -p $(VCS_OUT)/coverage
 	@$(URG) -full64 -dir $(VCS_OUT)/simv.vdb $(foreach tag,$(RUN_TAGS),$(VCS_OUT)/runs/$(tag)/simv.vdb) \
+		$(if $(URG_ELFILE),-elfile $(URG_ELFILE),) \
 		-report $(VCS_OUT)/coverage -dbname dsm_uvm_merged
 
 verdi:

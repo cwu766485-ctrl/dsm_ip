@@ -14,7 +14,6 @@ function path_setup()
   addpath(genpath(fullfile(repo, 'matlab', 'models')));
   addpath(genpath(fullfile(repo, 'matlab', 'dpd')));
   addpath(genpath(fullfile(repo, 'matlab', 'bittrue')));
-  addpath(genpath(fullfile(repo, 'matlab', 'board_validation')));
   addpath(genpath(fullfile(repo, 'matlab', 'tx_analog_iq')));
   addpath(genpath(fullfile(repo, 'matlab', 'tx_bandpass_if')));
   addpath(genpath(fullfile(repo, 'matlab', 'cartesian_dsm', 'dsm_singlebit')));

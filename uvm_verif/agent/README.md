@@ -1,19 +1,15 @@
-# Agent 层
+# UVM Agents
 
-`interfaces/` 保存直接连接 DUT 的事务级接口：
+`interfaces/` holds the virtual interfaces connected to the DUT:
 
-- `dsm_axi_lite_if.sv`：AXI4-Lite 控制接口；
-- `dsm_axis_if.sv`：TX/feedback AXI4-Stream 接口；
-- `dsm_rf_if.sv`：BP 输出和调试观测接口。
+- `dsm_axi_lite_if.sv`: AXI4-Lite control interface.
+- `dsm_axis_if.sv`: TX and observation AXI4-Stream interface.
+- `dsm_rf_if.sv`: RF output and debug observation interface.
 
-三类 agent 按协议独立组织：
+Each protocol directory contains its transaction item, sequencer, driver,
+monitor, agent, and protocol-specific sequences. AXI4-Lite and AXI4-Stream can
+be active or passive. The current environment uses active AXI4-Lite, TX, and
+observation agents; RF is passive.
 
-- `axi_lite/`：item、sequencer、driver、monitor、agent 和寄存器协议 sequence；
-- `axis/`：item、sequencer、driver、monitor、agent 和数据流协议 sequence；
-- `rf/`：RF item、monitor 和 passive agent；
-- `interfaces/`：三类 SystemVerilog virtual interface。
-
-AXI-Lite 与 AXI-Stream agent 支持 `UVM_ACTIVE/UVM_PASSIVE`；当前 AXI-Lite、TX
-和 OBS 为 active，RF 为 passive。TX 与 OBS 复用同一种 AXI-Stream agent
-类型，但拥有独立实例和 virtual interface。RAL predictor 和完整协议 coverage
-仍是后续工作。
+Cross-protocol behavior belongs in `../env/` virtual sequences, not in an
+individual agent.

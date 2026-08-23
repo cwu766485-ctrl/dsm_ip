@@ -130,14 +130,77 @@ s_axis_tvalid
 s_axis_tready
 s_axis_tdata
 s_axis_tlast
-s_axis_tuser
 rf_valid
+rf_bit
 rf_signed
 dsm_valid
+phase_acc_dbg
 i_yout
 q_yout
-phase_acc_dbg
 ```
+
+For the fixed Performance SKU board comparison, use the ILA mapping created by
+`scripts/create_dsm_dma_ila_bd.tcl` rather than an older project's probe order:
+
+| ILA probe | Signal | Reason |
+|---:|---|---|
+| 0 | `s_axis_tvalid` | DMA has a valid word. |
+| 1 | `s_axis_tready` | DSM IP accepted the DMA word. |
+| 2 | `s_axis_tdata[31:0]` | Packed Q1.15 DMA input, `{Q,I}`. |
+| 3 | `s_axis_tlast` | DMA frame boundary. |
+| 4 | `rf_valid` | Trigger and qualification for output comparison. |
+| 5 | `rf_bit` | One-bit BP EFDSM2 output under test. |
+| 6 | `rf_signed[15:0]` | Signed representation of the same one-bit output. |
+| 7 | `dsm_valid` | BP DSM input-side valid indication. |
+| 8 | `phase_acc_dbg[7:0]` | Fs/4 phase; lower two bits match the golden phase. |
+| 9 | `i_yout[15:0]` | DPD/interpolation output I diagnostic. |
+| 10 | `q_yout[15:0]` | DPD/interpolation output Q diagnostic. |
+
+## ILA Golden Board Test
+
+The first hardware datapath proof is a digital bit-true test. It does not use
+an FMC output, DPA, PA, or observation receiver. It proves that the routed
+PS/DMA/AXI/Memory-DPD/interpolation/Fs4/BP-EFDSM2 chain emits the exact
+one-bit sequence predicted by the frozen integer reference.
+
+1. Recreate or update the BD with `scripts/create_dsm_dma_ila_bd.tcl`, then
+   implement and program the resulting ILA-enabled bitstream together with its
+   matching `.ltx` file.
+2. Build a dedicated short DMA ELF. It deterministically generates 24 packed
+   Q1.15 input samples and 768 expected `rf_bit` transactions for the current
+   memory-DPD package 0:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\build_baremetal_smoke.ps1 `
+  -Xsa .\fpga\zu15eg\out\full_tx\full_tx_zu15eg.xsa `
+  -Workspace .\fpga\zu15eg\out\vitis_ila_golden `
+  -IlaGolden `
+  -Define @("CAL_MEMORY_SKU_ONLY=1", "CAL_MEMORY_SKU_PACKAGE_IDX=0", "CAL_USE_SOFTWARE_SEED=0")
+```
+
+3. In one terminal arm the ILA. When it prints the armed message, start the
+   ELF in a second terminal. The ILA triggers at the first `rf_valid` sample.
+
+```powershell
+vivado -mode batch -source .\fpga\zu15eg\scripts\capture_ila_golden.tcl `
+  -tclargs .\fpga\zu15eg\out\ila_golden_capture.csv
+
+powershell -NoProfile -ExecutionPolicy Bypass -File .\fpga\zu15eg\baremetal\scripts\run_baremetal_smoke.ps1 `
+  -Elf .\fpga\zu15eg\out\vitis_ila_golden\dsm_dpd_baremetal_smoke\build\dsm_dpd_baremetal_smoke.elf
+```
+
+4. Compare the ILA capture exactly. `rf_valid` qualifies 768 samples; each
+   must match `rf_bit`, `rf_signed`, and the Fs/4 phase in `expected_rf.csv`.
+
+```powershell
+python .\fpga\zu15eg\scripts\compare_ila_golden.py `
+  .\fpga\zu15eg\out\ila_golden_capture.csv
+```
+
+`generate_ila_golden.py` writes `input_iq.csv`, `memory_dpd_coeff.csv`,
+`expected_rf.csv`, and `manifest.json` below `fpga/zu15eg/out/`. The manifest
+contains the vector configuration, required register state, and SHA-256 hashes
+for traceability. Generated capture files remain untracked by design.
 
 Expected first-pass behavior:
 

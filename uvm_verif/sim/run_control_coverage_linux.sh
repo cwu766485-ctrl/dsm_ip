@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd /mnt/e/workspace/chip/dsm_ip
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "$SCRIPT_DIR/../.."
 make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1
 python3.12 uvm_verif/sim/run_regression.py \
   --sim vcs \

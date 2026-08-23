@@ -25,7 +25,7 @@ $originalLocation = Get-Location
 try {
 Set-Location $work
 
-function Invoke-VivadoCmd($cmd) {
+function Invoke-VivadoCmd([string]$cmd, [string]$ExpectedMarker = "") {
   $log = $null
   if ($cmd -like "xvlog *") {
     $log = Join-Path (Get-Location) "xvlog.log"
@@ -36,21 +36,31 @@ function Invoke-VivadoCmd($cmd) {
   }
   if ($log) {
     Remove-Item -LiteralPath $log -Force -ErrorAction SilentlyContinue
+    if ($cmd -notmatch '(^|\s)-log(\s|$)') {
+      $cmd += " -log `"$log`""
+    }
   }
 
   $bat = "@echo off`r`n" +
          "call `"$vivadoSettings`" >nul`r`n" +
-         "$cmd`r`n"
+         "$cmd`r`n" +
+         "exit /b %ERRORLEVEL%`r`n"
   $tmp = Join-Path $env:TEMP ("run_xsim_dpd_" + [guid]::NewGuid().ToString() + ".cmd")
   Set-Content -Path $tmp -Value $bat -Encoding ASCII
   try {
     cmd.exe /c $tmp
     if ($LASTEXITCODE -ne 0) { throw "Command failed: $cmd" }
-    if ($log -and (Test-Path -LiteralPath $log)) {
+    if ($log -and -not (Test-Path -LiteralPath $log)) {
+      throw "Vivado emitted no log for: $cmd. The launcher or tool did not start correctly; do not treat this as a simulation pass."
+    }
+    if ($log) {
       $errors = Select-String -LiteralPath $log -Pattern "ERROR:" -SimpleMatch
       if ($errors) { throw "Vivado reported errors while running: $cmd" }
       $fatals = Select-String -LiteralPath $log -Pattern "Fatal:" -SimpleMatch
       if ($fatals) { throw "Simulation reported fatal failures while running: $cmd" }
+      if ($ExpectedMarker -and -not (Select-String -LiteralPath $log -Pattern $ExpectedMarker -SimpleMatch)) {
+        throw "Expected pass marker '$ExpectedMarker' was not found in $log."
+      }
     }
   } finally {
     Remove-Item $tmp -Force -ErrorAction SilentlyContinue
@@ -66,6 +76,7 @@ $dpdAsyncBridge = Join-Path $repo "rtl\dpd\dpd_observer_async_bridge.v"
 $dpdFrontend = Join-Path $repo "rtl\dpd\dpd_frontend.v"
 $tb = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend.sv"
 $tbMemory = Join-Path $repo "verif\block\dpd\tb\tb_dpd_memory_poly_bittrue.sv"
+$tbMemoryRandom = Join-Path $repo "verif\block\dpd\tb\tb_dpd_memory_poly_random_protocol.sv"
 $tbSafety = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend_safety.sv"
 $tbProtocol = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend_protocol.sv"
 $tbRandomProtocol = Join-Path $repo "verif\block\dpd\tb\tb_dpd_frontend_random_protocol.sv"
@@ -78,7 +89,7 @@ $tbFeatureGates = Join-Path $repo "verif\block\dpd\tb\tb_dpd_feature_gates.sv"
 $tbCompileMatrix = Join-Path $repo "verif\block\dpd\tb\tb_dpd_compile_matrix.sv"
 
 Write-Host "[xsim] compile DPD bit-true"
-Invoke-VivadoCmd "xvlog -sv `"$dpdPoly`" `"$dpdLut`" `"$dpdMemory`" `"$dpdObserver`" `"$dpdSeedPredictor`" `"$dpdAsyncBridge`" `"$dpdFrontend`" `"$tb`" `"$tbMemory`" `"$tbSafety`" `"$tbProtocol`" `"$tbRandomProtocol`" `"$tbPoly7`" `"$tbPoly7Directed`" `"$tbAsyncBridge`" `"$tbAsyncBridgeRandom`" `"$tbV11`" `"$tbFeatureGates`" `"$tbCompileMatrix`""
+Invoke-VivadoCmd "xvlog -sv `"$dpdPoly`" `"$dpdLut`" `"$dpdMemory`" `"$dpdObserver`" `"$dpdSeedPredictor`" `"$dpdAsyncBridge`" `"$dpdFrontend`" `"$tb`" `"$tbMemory`" `"$tbMemoryRandom`" `"$tbSafety`" `"$tbProtocol`" `"$tbRandomProtocol`" `"$tbPoly7`" `"$tbPoly7Directed`" `"$tbAsyncBridge`" `"$tbAsyncBridgeRandom`" `"$tbV11`" `"$tbFeatureGates`" `"$tbCompileMatrix`""
 
 if ($CompileOnly) {
   Write-Host "[xsim] compile command returned success; no elaboration artifact was checked."
@@ -121,6 +132,12 @@ Invoke-VivadoCmd "xelab -debug typical tb_dpd_memory_poly_bittrue -s sim_tb_dpd_
 
 Write-Host "[xsim] run DPD memory-polynomial bit-true"
 Invoke-VivadoCmd "xsim sim_tb_dpd_memory_poly_bittrue -runall"
+
+Write-Host "[xsim] elaborate randomized Memory-Poly flow control"
+Invoke-VivadoCmd "xelab -debug typical tb_dpd_memory_poly_random_protocol -s sim_tb_dpd_memory_poly_random_protocol"
+
+Write-Host "[xsim] run randomized Memory-Poly flow control"
+Invoke-VivadoCmd "xsim sim_tb_dpd_memory_poly_random_protocol -runall" "DPD_MEMORY_RANDOM_PROTOCOL_PASS"
 
 Write-Host "[xsim] elaborate DPD safety"
 Invoke-VivadoCmd "xelab -debug typical tb_dpd_frontend_safety -s sim_tb_dpd_frontend_safety"
