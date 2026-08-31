@@ -20,12 +20,9 @@ jobs:
             "CONTRIBUTING.md",
             "SECURITY.md",
             "AGENTS.md",
-            "docs/STATUS_AND_LIMITS.md",
             "docs/SPEC.md",
             "docs/VPLAN.md",
-            "docs/IP_HANDOFF.md",
-            "docs/PROJECT_GUIDE.md",
-            "docs/PPA_VERIFICATION_RELEASE.md",
+            "docs/CRITICAL_PATH_REPORT.md",
             "docs/README.md",
             "docs/UPDATE_LOG.md",
             "rtl/filelist_p0.f"
