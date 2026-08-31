@@ -3,6 +3,9 @@
 `bp_single_fs4_model.m` and `bp_ef2_fs4_model.m` are fixed-point references
 for the one-bit real-IF candidates. `bp_mash11_exploratory_model.m` keeps its
 native multilevel MASH output and therefore is not a current one-bit DPA model.
+There is currently no checked BPDSM2, BP EFDSM, BP MASH111, or BP MASH22
+state equation in this directory. Low-pass implementations with similar names
+are not substitutes for a band-pass comparison.
 
 The route must be assessed at the real RF aperture:
 

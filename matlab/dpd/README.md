@@ -13,6 +13,10 @@ evaluate coefficient packages for the deterministic DPD RTL.
 | `run_ai_assisted_dpd_sweep.m` | Runs a multi-scenario software calibration sweep, refines polynomial DPD coefficients with fixed-point coordinate search, exports polynomial/LUT DPD metrics, and emits AXI-Lite coefficient words |
 | `run_dpd_memory_pa_observation_sweep.m` | Adds a more realistic PA/observation model: memory polynomial PA taps, soft saturation, linear frequency response, gain/phase drift, observation noise, fixed-point optimized polynomial DPD, LUT DPD, and an assumed RF observation chain |
 | `run_dpd_memory_poly_training_comparison.m` | Trains Q2.14 memoryless and 4-tap memory-polynomial coefficients on disjoint fit/validation OFDM data, then compares both against no DPD on held-out test seeds under the same behavioral PA and observation conditions |
+| `run_bp_efdsm2_dpa_dpd_closed_loop.m` | Runs the frozen BP-EFDSM2 route through a behavioral switching-DPA, finite-Q analog RLC-equivalent output BPF, and coherent receiver; compares no DPD, Q2.14 memoryless DPD, and Q2.14 four-tap memory-polynomial DPD with EVM/SNDR, filtered and PA-side ACLR, plus behavioral Pout/Pdc/efficiency estimates |
+| `run_bp_efdsm2_dpa_stage_diagnostic.m` | Separates the no-DPD BP-EFDSM2 ideal-switch reconstruction baseline from the full behavioral switching-DPA endpoint before interpreting DPD improvement |
+| `run_bp_modulator_dpa_comparison.m` | Compares BP single-loop, one-bit BP EFDSM2, and native four-level BP MASH11 under one filter/receiver metric contract. MASH11 Pdc and efficiency are intentionally not reported because its four-level driver is not the binary DPA. |
+| `run_bp_efdsm2_parameter_sweep.m` | Sweeps B1/B2 feedback coefficients and deterministic dither at one nominal backoff across three test seeds; it reports, rather than conflates, transmit-power operating-point trade-offs |
 | `run_lpdsmdpa_bpf_dpd_closed_loop.m` | Runs the LPDSM2 one-bit DPA+BPF endpoint with disjoint fit, three-condition validation, and test windows; it compares no-DPD, endpoint-trained Q2.14 one-tap memoryless DPD, and endpoint-trained four-tap Memory-Poly DPD. Only the four-tap package is release-gated by every validation and held-out EVM/SNDR/OOB/limit check |
 | `run_dpd_model_selection_sweep.m` | Sweeps PA saturation, input backoff, polynomial order (3/5/7), and memory depth (1/2/4/6); rejects clipped candidates and emits a PPA-aware behavioral recommendation |
 | `run_dpd_memory_tinyml_dataset.m` | Generates six joint EVM/ACLR/safety memory-DPD package labels plus exact `aligned_complex_pa_monitor_v2` raw Q1.15 complex-feedback traces; `training` produces the 12-profile base matrix, `development` produces eight profile-LOSO/model-selection profiles, and `blind` produces three permanently isolated final-test profiles |
@@ -47,6 +51,11 @@ entry_dpd_bittrue_check
 entry_ai_assisted_dpd_sweep
 entry_dpd_memory_pa_observation_sweep
 entry_dpd_memory_poly_training_comparison
+entry_bp_efdsm2_dpa_dpd_closed_loop
+entry_bp_efdsm2_dpa_stage_diagnostic
+entry_bp_modulator_dpa_comparison
+entry_bp_efdsm2_parameter_sweep
+entry_bp_efdsm2_complete_study
 entry_dpd_model_selection_sweep
 entry_lpdsmdpa_bpf_dpd_closed_loop
 entry_lpdsmdpa_bpf_dpd_bittrue_prepare

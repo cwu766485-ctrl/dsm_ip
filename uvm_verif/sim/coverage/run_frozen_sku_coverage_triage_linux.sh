@@ -37,9 +37,17 @@ fi
 rm -rf "$template" "$reviewed"
 mkdir -p "$report_root/exclusions"
 
-urg -full64 -dir "$vdb" -dump full_exclusions -report "$template"
+# This triage flow generates line-only exclusions.  Some historical merged
+# VDBs contain no FSM coverage shape below the DUT hierarchy; asking URG for
+# every default metric then emits a partial HTML report but no
+# fullexclude.line template.  Limit this invocation to the only metric the
+# generated elfile is allowed to waive.
+urg -full64 -dir "$vdb" -metric line -dump full_exclusions -report "$template"
 bash uvm_verif/sim/coverage/generate_frozen_sku_elfile.sh \
   "$template/fullexclude.line" "$exclusions"
-urg -full64 -dir "$vdb" -elfile "$exclusions" -report "$reviewed"
+# Retain every DUT metric present in this frozen VDB, but do not request the
+# absent FSM shape.  The elfile above remains line-only by construction.
+urg -full64 -dir "$vdb" -metric line+cond+tgl+branch+assert \
+  -elfile "$exclusions" -report "$reviewed"
 
 echo "FROZEN_SKU_COVERAGE_TRIAGE_PASS report=$reviewed exclusions=$exclusions"

@@ -2,6 +2,28 @@
 
 This directory contains the P0 RTL set.
 
+## Reading Order
+
+For a top-down review of the reusable transmitter IP, read the following files
+in order:
+
+1. `axi/dsm_ip_axi_top.v`: AXI-Lite control plane, AXI-Stream boundaries,
+   register map, counters, and safety status. Read `axi/README.md` first for
+   its split between the stateful integration wrapper and the stateless
+   readback selector.
+2. `ip/dsm_ip_top.v`: integrated TX datapath and compile-time route selection.
+3. `dpd/dpd_frontend.v`: DPD mode selection, coefficient banks, safety
+   fallback, and the aligned ready/valid pipeline.
+4. `interp/dsm_interp_frontend.sv`: compile-time interpolation mode and
+   implementation selection.
+5. `ip/dsm_ip_core.sv`: reusable DSM-core and DUC selection.
+6. `tx_bandpass_if/`: full-precision Fs/4 mixer and the primary one-bit BP
+   EFDSM2 IF route.
+
+The arithmetic cores deliberately retain their fixed-point expressions and
+register placement. Those details are bit-true contracts with the MATLAB and
+Python reference models, not formatting choices.
+
 Included top levels:
 
 - `p0_top_lp1`
@@ -19,6 +41,7 @@ Directory layout:
 | `dsm/singlebit/` | Existing single-bit and native MASH baseline DSM cores |
 | `dsm/multibit/` | Multibit Cartesian DSM RTL cores and per-algorithm wrappers |
 | `axis/` | Small AXI-Stream helper blocks |
+| `axi/` | AXI-Lite integration wrapper and stateless readback selector |
 | `interp/` | Standalone interpolation/filter frontend RTL |
 | `duc/` | Fs/4 merge and NCO upconversion blocks |
 | `tx_analog_iq/` | Low-pass I/Q DSM route for external reconstruction and analog IQ mixing |

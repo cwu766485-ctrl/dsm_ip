@@ -56,13 +56,33 @@ module dsm_ip_core #(
   output logic [PHASE_W-1:0] phase_acc_dbg
 );
 
+  // Compile-time algorithm IDs. Keep these values aligned with the
+  // configuration documentation and AXI capability register.
+  localparam integer ALGO_LPDSM      = 0;
+  localparam integer ALGO_LPDSM2     = 1;
+  localparam integer ALGO_EFDSM      = 2;
+  localparam integer ALGO_EFDSM2     = 3;
+  localparam integer ALGO_MASH11     = 4;
+  localparam integer ALGO_MASH111    = 5;
+  localparam integer ALGO_MASH22     = 6;
+  localparam integer ALGO_MB_LPDSM   = 7;
+  localparam integer ALGO_MB_LPDSM2  = 8;
+  localparam integer ALGO_MB_EFDSM   = 9;
+  localparam integer ALGO_MB_EFDSM2  = 10;
+  localparam integer ALGO_MB_MASH11  = 11;
+  localparam integer ALGO_MB_MASH111 = 12;
+  localparam integer ALGO_MB_MASH22  = 13;
+
+  localparam integer DUC_MODE_FS4 = 0;
+  localparam integer DUC_MODE_NCO = 1;
+
   localparam logic signed [DSM_OUT_W-1:0] DSM_POS_ONE = {{(DSM_OUT_W-1){1'b0}}, 1'b1};
   localparam logic signed [DSM_OUT_W-1:0] DSM_NEG_ONE = -DSM_POS_ONE;
 
   assign dsm_valid = in_valid;
 
   generate
-    if (ALGORITHM == 0) begin : g_lp1
+    if (ALGORITHM == ALGO_LPDSM) begin : g_lp1
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core #(.W_IN(W), .ACC_W(ACC_W_LP1), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in),
@@ -72,7 +92,7 @@ module dsm_ip_core #(
         .y_bit(q_bit), .y_signed(yq_signed), .v_state());
       assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
       assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
-    end else if (ALGORITHM == 1) begin : g_lp2
+    end else if (ALGORITHM == ALGO_LPDSM2) begin : g_lp2
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core_dsm2 #(.W_IN(W), .ACC_W(ACC_W_LP2), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in),
@@ -82,7 +102,7 @@ module dsm_ip_core #(
         .y_bit(q_bit), .y_signed(yq_signed), .v1_state(), .v2_state());
       assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
       assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
-    end else if (ALGORITHM == 2) begin : g_ef1
+    end else if (ALGORITHM == ALGO_EFDSM) begin : g_ef1
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core_ef1 #(.W_IN(W), .ACC_W(ACC_W_EF), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in),
@@ -92,7 +112,7 @@ module dsm_ip_core #(
         .y_bit(q_bit), .y_signed(yq_signed), .v_state());
       assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
       assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
-    end else if (ALGORITHM == 3) begin : g_ef2
+    end else if (ALGORITHM == ALGO_EFDSM2) begin : g_ef2
       logic signed [W-1:0] yi_signed, yq_signed;
       dsm_core_ef2 #(.W_IN(W), .ACC_W(ACC_W_EF), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE),
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_i (
@@ -104,7 +124,7 @@ module dsm_ip_core #(
         .y_bit(q_bit), .y_signed(yq_signed), .v_state());
       assign i_yout = i_bit ? DSM_POS_ONE : DSM_NEG_ONE;
       assign q_yout = q_bit ? DSM_POS_ONE : DSM_NEG_ONE;
-    end else if (ALGORITHM == 4) begin : g_mash11
+    end else if (ALGORITHM == ALGO_MASH11) begin : g_mash11
       logic y1i, y2i, y1q, y2q;
       logic signed [2:0] yi3, yq3;
       dsm_core_mash11 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
@@ -115,7 +135,7 @@ module dsm_ip_core #(
         .y_bit(q_bit), .y1_bit(y1q), .y2_bit(y2q), .y_mash_signed(yq3), .v1_state(), .v2_state());
       assign i_yout = {{(DSM_OUT_W-3){yi3[2]}}, yi3};
       assign q_yout = {{(DSM_OUT_W-3){yq3[2]}}, yq3};
-    end else if (ALGORITHM == 5) begin : g_mash111
+    end else if (ALGORITHM == ALGO_MASH111) begin : g_mash111
       logic y1i, y2i, y3i, y1q, y2q, y3q;
       logic signed [3:0] yi4, yq4;
       dsm_core_mash111 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)) u_i (
@@ -128,7 +148,7 @@ module dsm_ip_core #(
         .y_mash_signed(yq4), .v1_state(), .v2_state(), .v3_state());
       assign i_yout = {{(DSM_OUT_W-4){yi4[3]}}, yi4};
       assign q_yout = {{(DSM_OUT_W-4){yq4[3]}}, yq4};
-    end else if (ALGORITHM == 6) begin : g_mash22
+    end else if (ALGORITHM == ALGO_MASH22) begin : g_mash22
       logic y1i, y2i, y1q, y2q;
       logic signed [3:0] yi4, yq4;
       dsm_core_mash22 #(.W_IN(W), .ACC_W(ACC_W_MASH), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE),
@@ -141,38 +161,39 @@ module dsm_ip_core #(
         .y_bit(q_bit), .y1_bit(y1q), .y2_bit(y2q), .y_mash_signed(yq4), .v1_state(), .v2_state());
       assign i_yout = {{(DSM_OUT_W-4){yi4[3]}}, yi4};
       assign q_yout = {{(DSM_OUT_W-4){yq4[3]}}, yq4};
-    end else if (ALGORITHM == 7) begin : g_mb_lp1
+    end else if (ALGORITHM == ALGO_MB_LPDSM) begin : g_mb_lp1
       dsm_core_multibit_lp1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
       dsm_core_multibit_lp1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
-    end else if (ALGORITHM == 8) begin : g_mb_lp2
+    end else if (ALGORITHM == ALGO_MB_LPDSM2) begin : g_mb_lp2
       dsm_core_multibit_lp2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
       dsm_core_multibit_lp2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
-    end else if (ALGORITHM == 9) begin : g_mb_ef1
+    end else if (ALGORITHM == ALGO_MB_EFDSM) begin : g_mb_ef1
       dsm_core_multibit_ef1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
       dsm_core_multibit_ef1 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
-    end else if (ALGORITHM == 10) begin : g_mb_ef2
+    end else if (ALGORITHM == ALGO_MB_EFDSM2) begin : g_mb_ef2
       dsm_core_multibit_ef2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
       dsm_core_multibit_ef2 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
-    end else if (ALGORITHM == 11) begin : g_mb_mash11
+    end else if (ALGORITHM == ALGO_MB_MASH11) begin : g_mb_mash11
       dsm_core_multibit_mash11 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
       dsm_core_multibit_mash11 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
-    end else if (ALGORITHM == 12) begin : g_mb_mash111
+    end else if (ALGORITHM == ALGO_MB_MASH111) begin : g_mb_mash111
       dsm_core_multibit_mash111 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_i (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(i_in), .y_bit(i_bit), .y_code(i_yout), .v1_state(), .v2_state());
       dsm_core_multibit_mash111 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0)) u_q (
         .clk(clk), .rst_n(rst_n), .enable(in_valid), .x_in(q_in), .y_bit(q_bit), .y_code(q_yout), .v1_state(), .v2_state());
+    // Preserve the historical compatibility default for unsupported IDs.
     end else begin : g_mb_mash22
       dsm_core_multibit_mash22 #(.W_IN(W), .ACC_W(ACC_W_MB), .OUT_W(DSM_OUT_W), .Q_BITS(MB_Q_BITS), .IN_SHIFT(IN_SHIFT), .SATURATE(1'b0),
         .COEFF_W(COEFF_W), .B1_NUM(B1_NUM), .B2_NUM(B2_NUM), .COEFF_SHIFT(COEFF_SHIFT)) u_i (
@@ -184,7 +205,7 @@ module dsm_ip_core #(
   endgenerate
 
   generate
-    if (DUC_MODE == 0) begin : g_fixed_fs4_duc
+    if (DUC_MODE == DUC_MODE_FS4) begin : g_fixed_fs4_duc
       logic [1:0] fs4_phase;
 
       if (ALGORITHM < 4) begin : g_1bit_fs4
@@ -214,7 +235,7 @@ module dsm_ip_core #(
       end
 
       assign phase_acc_dbg = {{(PHASE_W-2){1'b0}}, fs4_phase};
-    end else if (DUC_MODE == 1) begin : g_nco_duc
+    end else if (DUC_MODE == DUC_MODE_NCO) begin : g_nco_duc
       duc_nco_mix_signed #(
         .W_IN(DSM_OUT_W),
         .W_OUT(RF_W),

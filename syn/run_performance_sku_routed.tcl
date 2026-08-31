@@ -55,6 +55,7 @@ set rtl [list \
   [file join $root rtl tx_bandpass_if tx_bp_if_top.sv] \
   [file join $root rtl ip dsm_ip_core.sv] \
   [file join $root rtl ip dsm_ip_top.v] \
+  [file join $root rtl axi dsm_ip_axi_read_mux.v] \
   [file join $root rtl axi dsm_ip_axi_top.v] \
 ]
 foreach source_file $rtl {

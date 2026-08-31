@@ -71,6 +71,7 @@ analyze -format sverilog [list \
   $RTL/tx_bandpass_if/tx_bp_if_top.sv \
   $RTL/ip/dsm_ip_core.sv \
   $RTL/ip/dsm_ip_top.v \
+  $RTL/axi/dsm_ip_axi_read_mux.v \
   $RTL/axi/dsm_ip_axi_top.v \
 ]
 

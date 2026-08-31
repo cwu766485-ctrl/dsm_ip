@@ -26,6 +26,7 @@ rtl/tx_bandpass_if/dsm_core_bp_ef2.sv
 rtl/tx_bandpass_if/tx_bp_if_top.sv
 rtl/ip/dsm_ip_core.sv
 rtl/ip/dsm_ip_top.v
+rtl/axi/dsm_ip_axi_read_mux.v
 rtl/axi/dsm_ip_axi_top.v
 uvm_verif/formal/dsm_axi_protocol_sva.sv
 uvm_verif/tb/dsm_uvm_tb.sv

@@ -43,6 +43,7 @@ $lines = @(
   "$RepoRoot\rtl\tx_bandpass_if\tx_bp_if_top.sv",
   "$RepoRoot\rtl\ip\dsm_ip_core.sv",
   "$RepoRoot\rtl\ip\dsm_ip_top.v",
+  "$RepoRoot\rtl\axi\dsm_ip_axi_read_mux.v",
   "$RepoRoot\rtl\axi\dsm_ip_axi_top.v",
   "$RepoRoot\rtl\top\p0_top_lp1.v",
   "$RepoRoot\rtl\top\p0_top_lp2.v",

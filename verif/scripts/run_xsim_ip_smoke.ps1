@@ -65,6 +65,7 @@ $rtlFiles = @(
   "$repo\rtl\tx_bandpass_if\tx_bp_if_top.sv",
   "$repo\rtl\ip\dsm_ip_core.sv",
   "$repo\rtl\ip\dsm_ip_top.v",
+  "$repo\rtl\axi\dsm_ip_axi_read_mux.v",
   "$repo\rtl\axi\dsm_ip_axi_top.v"
 )
 Set-Content -Path $filelist -Value ($rtlFiles -join "`r`n") -Encoding ASCII

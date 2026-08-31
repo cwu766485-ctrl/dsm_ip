@@ -82,6 +82,7 @@ module dpd_frontend #(
   // Keep bypass, LUT, and polynomial paths aligned with the ten-stage
   // memory-polynomial pipeline.
   localparam integer PIPE_STAGES = 10;
+  localparam integer LAST_PIPE_STAGE = PIPE_STAGES - 1;
   localparam integer MAX_MP_TAPS = MP_MAX_TAPS;
   localparam [2:0] MAX_MP_TAPS_U = MAX_MP_TAPS;
 
@@ -127,8 +128,11 @@ module dpd_frontend #(
   reg mp_shadow_invalid;
   reg lut_shadow_invalid;
 
-  wire pipe_ce = out_ready | !valid_pipe[PIPE_STAGES-1];
-  wire pipe_out_valid = valid_pipe[PIPE_STAGES-1];
+  // A single clock-enable advances every aligned path together.  This keeps
+  // the bypass, LUT, polynomial, and memory-polynomial results coherent when
+  // the downstream AXI-Stream sink applies backpressure.
+  wire pipe_ce = out_ready | !valid_pipe[LAST_PIPE_STAGE];
+  wire pipe_out_valid = valid_pipe[LAST_PIPE_STAGE];
   wire output_fire = out_valid & out_ready;
   wire poly_sat_event = (poly_saturation_count != poly_saturation_count_d);
   wire mp_sat_event = (mp_saturation_count != mp_saturation_count_d);
@@ -155,15 +159,15 @@ module dpd_frontend #(
   assign effective_mode_out = effective_mode;
   assign busy = |valid_pipe;
   assign i_out =
-      (mode_pipe[PIPE_STAGES-1] == DPD_MODE_POLY) ? poly_i_align :
-      (mode_pipe[PIPE_STAGES-1] == DPD_MODE_LUT)  ? lut_i_pipe[PIPE_STAGES-1] :
-      (mode_pipe[PIPE_STAGES-1] == DPD_MODE_MEMORY) ? mp_i :
-                                                    bypass_i_pipe[PIPE_STAGES-1];
+      (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_POLY) ? poly_i_align :
+      (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_LUT)  ? lut_i_pipe[LAST_PIPE_STAGE] :
+      (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_MEMORY) ? mp_i :
+                                                       bypass_i_pipe[LAST_PIPE_STAGE];
   assign q_out =
-      (mode_pipe[PIPE_STAGES-1] == DPD_MODE_POLY) ? poly_q_align :
-      (mode_pipe[PIPE_STAGES-1] == DPD_MODE_LUT)  ? lut_q_pipe[PIPE_STAGES-1] :
-      (mode_pipe[PIPE_STAGES-1] == DPD_MODE_MEMORY) ? mp_q :
-                                                    bypass_q_pipe[PIPE_STAGES-1];
+      (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_POLY) ? poly_q_align :
+      (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_LUT)  ? lut_q_pipe[LAST_PIPE_STAGE] :
+      (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_MEMORY) ? mp_q :
+                                                       bypass_q_pipe[LAST_PIPE_STAGE];
 
   assign mp_coeff_rdata_re = (ENABLE_DPD_MEMORY && (mp_coeff_order < 3)) ?
       (mp_active_bank ? mp_coeff_re_mem0[mp_coeff_tap][mp_coeff_order] :
@@ -420,14 +424,14 @@ module dpd_frontend #(
         end
 
         if (output_fire) begin
-          case (mode_pipe[PIPE_STAGES-1])
+          case (mode_pipe[LAST_PIPE_STAGE])
             DPD_MODE_POLY: begin
               if (poly_sat_event) begin
                 saturation_count <= saturation_count + 32'd1;
               end
             end
             DPD_MODE_LUT: begin
-              if (lut_sat_pipe[PIPE_STAGES-1]) begin
+              if (lut_sat_pipe[LAST_PIPE_STAGE]) begin
                 saturation_count <= saturation_count + 32'd1;
               end
             end
@@ -441,9 +445,9 @@ module dpd_frontend #(
         end
 
         if (safety_enable && output_fire &&
-            ((mode_pipe[PIPE_STAGES-1] == DPD_MODE_POLY && poly_sat_event) ||
-             (mode_pipe[PIPE_STAGES-1] == DPD_MODE_LUT && lut_sat_pipe[PIPE_STAGES-1]) ||
-             (mode_pipe[PIPE_STAGES-1] == DPD_MODE_MEMORY && mp_sat_event))) begin
+            ((mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_POLY && poly_sat_event) ||
+             (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_LUT && lut_sat_pipe[LAST_PIPE_STAGE]) ||
+             (mode_pipe[LAST_PIPE_STAGE] == DPD_MODE_MEMORY && mp_sat_event))) begin
           safety_fault <= 1'b1;
         end
 

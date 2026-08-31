@@ -33,7 +33,7 @@ set rtl_files [list \
   $RTL/duc/duc_fs4_merge.sv $RTL/duc/duc_fs4_merge_signed.sv $RTL/duc/duc_nco_mix_signed.v \
   $RTL/tx_bandpass_if/bp_fs4_iq_mixer.sv $RTL/tx_bandpass_if/dsm_core_bp_single.sv \
   $RTL/tx_bandpass_if/dsm_core_bp_ef2.sv $RTL/tx_bandpass_if/tx_bp_if_top.sv \
-  $RTL/ip/dsm_ip_core.sv $RTL/ip/dsm_ip_top.v $RTL/axi/dsm_ip_axi_top.v]
+  $RTL/ip/dsm_ip_core.sv $RTL/ip/dsm_ip_top.v $RTL/axi/dsm_ip_axi_read_mux.v $RTL/axi/dsm_ip_axi_top.v]
 foreach f $rtl_files { if {![file exists $f]} { error "RTL source is missing: $f" } }
 
 puts "BP EFDSM2 AXI DC lint: analyze [llength $rtl_files] RTL files"

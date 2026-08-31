@@ -194,3 +194,7 @@ secrets/
 *password*
 *passwd*
 *token*
+# Local agent instructions and private career material
+.agents/
+docs/Interview.md
+docs/RESUME.md

@@ -22,13 +22,28 @@ module dsm_interp_frontend #(
   input  wire                     out_ready
 );
 
+  // Compile-time interpolation modes. These values are part of the public IP
+  // configuration contract and must remain stable.
+  localparam integer INTERP_MODE_BYPASS = 0;
+  localparam integer INTERP_MODE_X4     = 1;
+  localparam integer INTERP_MODE_X8     = 2;
+  localparam integer INTERP_MODE_X16    = 3;
+  localparam integer INTERP_MODE_X32    = 4;
+
+  // x32 implementation alternatives selected only with INTERP_MODE_X32.
+  localparam integer INTERP_IMPL_CIC_EQ_FIR = 0;
+  localparam integer INTERP_IMPL_DIRECT_CIC = 1;
+  localparam integer INTERP_IMPL_X32_POLY   = 2;
+  localparam integer INTERP_IMPL_X8_POLY    = 3;
+
   generate
-    if (INTERP_MODE == 0) begin : g_bypass
+    if (INTERP_MODE == INTERP_MODE_BYPASS) begin : g_bypass
       assign in_ready = out_ready;
       assign i_out = i_in;
       assign q_out = q_in;
       assign out_valid = enable && in_valid;
-    end else if ((INTERP_MODE == 4) && (INTERP_IMPL == 2)) begin : g_i2_mode4
+    end else if ((INTERP_MODE == INTERP_MODE_X32) &&
+                 (INTERP_IMPL == INTERP_IMPL_X32_POLY)) begin : g_i2_mode4
       dsm_interp_fir_i2_polyphase #(
         .W_IN(W_IN), .W_OUT(W_OUT)
       ) u_i2_i (
@@ -43,7 +58,7 @@ module dsm_interp_frontend #(
         .in_data(q_in), .in_valid(in_valid), .in_ready(),
         .out_data(q_out), .out_valid(), .out_ready(out_ready)
       );
-    end else if (INTERP_MODE == 4) begin : g_mode4
+    end else if (INTERP_MODE == INTERP_MODE_X32) begin : g_mode4
       wire signed [W_OUT-1:0] si [0:4];
       wire signed [W_OUT-1:0] sq [0:4];
       wire                    sv [0:4];
@@ -67,7 +82,7 @@ module dsm_interp_frontend #(
         );
       end
 
-      if (INTERP_IMPL == 1) begin : g_i1_direct_cic
+      if (INTERP_IMPL == INTERP_IMPL_DIRECT_CIC) begin : g_i1_direct_cic
         dsm_interp_cic_direct #(
           .W_IN(W_OUT), .W_OUT(W_OUT), .RATE(8), .ORDER(4)
         ) u_cic_i (
@@ -82,7 +97,7 @@ module dsm_interp_frontend #(
           .in_data(sq[2]), .in_valid(sv[2]), .in_ready(),
           .out_data(sq[3]), .out_valid(), .out_ready(sr[3])
         );
-      end else if (INTERP_IMPL == 3) begin : g_i3_polyphase
+      end else if (INTERP_IMPL == INTERP_IMPL_X8_POLY) begin : g_i3_polyphase
         dsm_interp_fir_polyphase #(
           .W_IN(W_OUT), .W_OUT(W_OUT), .NTAPS(29), .INTERP(8)
         ) u_cic_i (
@@ -135,9 +150,9 @@ module dsm_interp_frontend #(
       assign out_valid = sv[4];
     end else begin : g_hb
       localparam int NSTAGES =
-        (INTERP_MODE == 1) ? 2 :
-        (INTERP_MODE == 2) ? 3 :
-        (INTERP_MODE == 3) ? 4 : 0;
+        (INTERP_MODE == INTERP_MODE_X4)  ? 2 :
+        (INTERP_MODE == INTERP_MODE_X8)  ? 3 :
+        (INTERP_MODE == INTERP_MODE_X16) ? 4 : 0;
 
       wire signed [W_OUT-1:0] si [0:NSTAGES];
       wire signed [W_OUT-1:0] sq [0:NSTAGES];

@@ -58,6 +58,7 @@ set rtl_files [list \
   [file join $ip_root rtl tx_bandpass_if tx_bp_if_top.sv] \
   [file join $ip_root rtl ip dsm_ip_core.sv] \
   [file join $ip_root rtl ip dsm_ip_top.v] \
+  [file join $ip_root rtl axi dsm_ip_axi_read_mux.v] \
   [file join $ip_root rtl axi dsm_ip_axi_top.v] \
 ]
 

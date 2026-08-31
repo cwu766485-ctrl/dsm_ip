@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Compare initial Fs/4 bandpass DSM candidates on the checked P0 vector.
+"""Compare defined Fs/4 bandpass DSM candidates on the checked P0 vector.
 
 Every entry uses the same aperture:
 
     Q1.15 I/Q -> full-precision Fs/4 IF -> DSM -> 1.2x-channel IF BPF
             -> coherent DDC -> CP-removed OFDM FFT -> equalized EVM/SNDR
 
-The BP MASH candidate has a native multilevel output. Its hard-limited one-bit
-result is separately reported because the current DPA accepts only one bit.
+Native MASH output is retained as multilevel data. It is intentionally not
+hard-limited: a binary limiter changes the MASH output contract and is not a
+valid native-MASH comparison. Candidate rows without a checked BP algorithm
+are emitted as NOT_IMPLEMENTED rather than being substituted with LP models.
 """
 
 from __future__ import annotations
@@ -128,6 +130,7 @@ def measure_candidate(
     )
     metrics = ofdm_metrics(recovered, reference)
     return {
+        "Status": "MEASURED",
         "Candidate": name,
         "OutputContract": output_contract,
         "Current1bitDPACompatible": dpa_compatible,
@@ -146,6 +149,29 @@ def measure_candidate(
     }
 
 
+def unavailable_candidate(name: str, output_contract: str, notes: str) -> dict[str, object]:
+    """Keep the matrix explicit when a BP candidate has not been implemented."""
+
+    return {
+        "Status": "NOT_IMPLEMENTED",
+        "Candidate": name,
+        "OutputContract": output_contract,
+        "Current1bitDPACompatible": "not assessed",
+        "EVM_percent": "",
+        "SNDR_dB": "",
+        "Correlation": "",
+        "DecimationPhase": "",
+        "BasebandLag": "",
+        "EqualizedSymbols": "",
+        "OutputLevels": "",
+        "Fs_Hz": f"{FS_HZ:.0f}",
+        "IF_Hz": f"{IF_HZ:.0f}",
+        "BPF_Bandwidth_Hz": f"{1.2 * CHANNEL_BW_HZ:.3f}",
+        "Notes": notes,
+        "EvidenceBoundary": "No checked BP state equations, MATLAB reference, or RTL implementation",
+    }
+
+
 def main() -> None:
     args = parse_args()
     i_q15 = read_mem_i16(args.i_mem)
@@ -158,19 +184,27 @@ def main() -> None:
     single = bp_single_registered_output_bits(if_q15)
     ef2 = bp_ef2_registered_output_bits(if_q15)
     mash_multi = bp_mash11_multilevel(if_q15)
-    mash_hard_limited = np.where(mash_multi >= 0.0, 1.0, -1.0)
-
     rows = [
         measure_candidate(
-            "BP single-loop resonator",
+            "BP DSM single-loop resonator",
             single,
             reference,
             "one-bit {-1,+1}",
             "yes",
             "Initial resonator loop, NTF=1+z^-2.",
         ),
+        unavailable_candidate(
+            "BP DSM2",
+            "not defined",
+            "LPDSM2 is a low-pass topology and cannot be relabelled as a BP model.",
+        ),
+        unavailable_candidate(
+            "BP EFDSM",
+            "not defined",
+            "Only the second-order BP error-feedback state equations are checked in.",
+        ),
         measure_candidate(
-            "BP error-feedback second-order",
+            "BP EFDSM2 error-feedback second-order",
             ef2,
             reference,
             "one-bit {-1,+1}",
@@ -178,20 +212,22 @@ def main() -> None:
             "dsm_core_bp_ef2, NTF=1+z^-2.",
         ),
         measure_candidate(
-            "BP MASH 1-1 exploratory native",
+            "BP MASH11 exploratory native",
             mash_multi,
             reference,
             "multilevel {-3,-1,+1,+3}",
             "no",
             "Exploratory multilevel MASH combiner; not a released BP MASH topology.",
         ),
-        measure_candidate(
-            "BP MASH 1-1 exploratory hard-limited",
-            mash_hard_limited,
-            reference,
-            "one-bit hard limit of native MASH output",
-            "no",
-            "Hard limiting destroys the exploratory MASH noise cancellation.",
+        unavailable_candidate(
+            "BP MASH111 native",
+            "not defined",
+            "No BP MASH111 noise-transfer function, fixed-point reference, or RTL is checked in.",
+        ),
+        unavailable_candidate(
+            "BP MASH22 native",
+            "not defined",
+            "No BP MASH22 noise-transfer function, fixed-point reference, or RTL is checked in.",
         ),
     ]
 
@@ -202,8 +238,9 @@ def main() -> None:
         writer.writerows(rows)
     for row in rows:
         print(
-            f"{row['Candidate']}: EVM={row['EVM_percent']}%, "
-            f"SNDR={row['SNDR_dB']} dB, DPA={row['Current1bitDPACompatible']}"
+            f"{row['Candidate']}: status={row['Status']}, "
+            f"EVM={row['EVM_percent']}%, SNDR={row['SNDR_dB']} dB, "
+            f"DPA={row['Current1bitDPACompatible']}"
         )
     print(f"Saved: {args.out_csv}")
 

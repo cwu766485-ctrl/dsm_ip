@@ -48,6 +48,12 @@ module dsm_ip_top #(
   output wire [PHASE_W-1:0] phase_acc_dbg
 );
 
+  // DUC mode 3 is owned by this integration wrapper because it mixes the
+  // full-precision interpolated I/Q stream before the one-bit BP DSM.
+  localparam integer DUC_MODE_BP_EFDSM2 = 3;
+
+  // TX datapath: optional interpolation followed by either the BP EFDSM2
+  // IF route or the reusable DSM/DUC core.
   wire signed [W-1:0] interp_i;
   wire signed [W-1:0] interp_q;
   wire interp_valid;
@@ -72,7 +78,7 @@ module dsm_ip_top #(
   );
 
   generate
-    if (DUC_MODE == 3) begin : g_bp_ef2_if
+    if (DUC_MODE == DUC_MODE_BP_EFDSM2) begin : g_bp_ef2_if
       // The BP route mixes the full-precision interpolated I/Q sample before
       // its one-bit quantizer.  It must not reuse the legacy low-pass DSM
       // followed by the one-bit Fs/4 merge.

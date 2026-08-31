@@ -9,7 +9,7 @@ instance path. Generate it from the exact VDB used by the intended merge:
 ```bash
 cd <repository-root>
 mkdir -p uvm_verif/sim/out/vcs/coverage/exclusions
-urg -full64 -dir uvm_verif/sim/out/vcs/simv.vdb \
+urg -full64 -dir uvm_verif/sim/out/vcs/simv.vdb -metric line \
   -dump full_exclusions \
   -report uvm_verif/sim/out/vcs/coverage/exclusion_template
 bash uvm_verif/sim/coverage/generate_frozen_sku_elfile.sh \

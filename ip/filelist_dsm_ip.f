@@ -30,4 +30,5 @@
 ../rtl/duc/duc_nco_mix_signed.v
 ../rtl/ip/dsm_ip_core.sv
 ../rtl/ip/dsm_ip_top.v
+../rtl/axi/dsm_ip_axi_read_mux.v
 ../rtl/axi/dsm_ip_axi_top.v

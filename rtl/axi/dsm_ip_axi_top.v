@@ -74,7 +74,15 @@ module dsm_ip_axi_top #(
   output wire [PHASE_W-1:0] phase_acc_dbg
 );
 
+  // --------------------------------------------------------------------------
+  // AXI-Lite register map
+  // Address constants are word indices decoded from AXI byte address bits
+  // [8:2]. Keep this map synchronized with the software driver and IP spec.
+  // --------------------------------------------------------------------------
   localparam [31:0] CORE_VERSION = 32'h0001_0005;
+  localparam integer AXI_READ_WORD_COUNT = 72;
+
+  // Core control, stream accounting, and legacy DPD registers.
   localparam [6:0] ADDR_CTRL       = 7'h00;
   localparam [5:0] ADDR_STATUS     = 6'h01;
   localparam [5:0] ADDR_PHASE_INC  = 6'h02;
@@ -122,6 +130,7 @@ module dsm_ip_axi_top #(
   localparam [5:0] ADDR_OBS_DROP_COUNT = 6'h2c;
   localparam [5:0] ADDR_OBS_ERROR_LO = 6'h2d;
   localparam [5:0] ADDR_OBS_ERROR_HI = 6'h2e;
+  // Observer, calibration-condition, and monitor telemetry registers.
   localparam [6:0] ADDR_COND_CTRL = 7'h2f;
   localparam [5:0] ADDR_COND_QAM = 6'h30;
   localparam [5:0] ADDR_COND_BW = 6'h31;
@@ -139,7 +148,8 @@ module dsm_ip_axi_top #(
   localparam [5:0] ADDR_OBS_SPEC_BIN1 = 6'h3d;
   localparam [5:0] ADDR_OBS_SPEC_BIN2 = 6'h3e;
   localparam [6:0] ADDR_OBS_SPEC_ADJ = 7'h3f;
-  // Extended bank: preserves the legacy 0x00-0xfc byte address map.
+  // Extended bank preserves the legacy 0x00-0xfc byte address map.
+  // It holds features added after the initial control-plane release.
   localparam [6:0] ADDR_DPD_C7 = 7'h40;
   localparam [6:0] ADDR_DSM_CTRL = 7'h41;
   localparam [6:0] ADDR_CAPABILITY = 7'h42;
@@ -150,6 +160,11 @@ module dsm_ip_axi_top #(
   localparam [6:0] ADDR_OBS_SNAPSHOT_ERROR_HI = 7'h47;
   localparam [W-1:0] MON_CLIP_LEVEL = {1'b0, {(W-4){1'b1}}, 3'b000};
 
+  // --------------------------------------------------------------------------
+  // Software-programmable state
+  // Runtime writes select behavior already compiled into this SKU. Structural
+  // DSM, DUC, and interpolation choices remain compile-time parameters.
+  // --------------------------------------------------------------------------
   reg [31:0] ctrl_reg;
   // Runtime DSM attenuation is intentionally limited to a signed right shift;
   // structural DSM/DUC/interpolator choices remain compile-time SKU controls.
@@ -240,12 +255,24 @@ module dsm_ip_axi_top #(
   wire core_enable = ctrl_reg[0];
   wire soft_reset = soft_reset_pulse;
   wire core_rst_n = aresetn & ~soft_reset;
+
+  // AXI-Lite address normalization.  The register map is word addressed,
+  // while the bus presents byte addresses.  AW is held independently below;
+  // AR can be decoded directly because the read channel accepts one request
+  // only when no response is outstanding.
   wire [8:0] s_axi_awaddr_ext = {{(9-C_S_AXI_ADDR_WIDTH){1'b0}}, aw_hold_addr};
   wire [8:0] s_axi_araddr_ext = {{(9-C_S_AXI_ADDR_WIDTH){1'b0}}, s_axi_araddr};
   wire [6:0] axi_aw_word_addr = s_axi_awaddr_ext[8:2];
   wire [6:0] axi_ar_word_addr = s_axi_araddr_ext[8:2];
+  // Each entry is a fully packed 32-bit register read value. Address decode is
+  // intentionally delegated to dsm_ip_axi_read_mux; write semantics remain in
+  // this wrapper to preserve the established control-plane priority rules.
+  wire [(AXI_READ_WORD_COUNT*32)-1:0] axi_read_words;
+  wire [31:0] axi_read_data;
   wire axis_fire = s_axis_tvalid & s_axis_tready;
   wire frontend_fire;
+  // A write commits only after both independently handshaken AXI-Lite AW and
+  // W channels have been captured.  This prevents address/data reordering.
   wire axi_write_fire = !s_axi_bvalid && aw_hold_valid && w_hold_valid;
   wire clear_status_req = axi_write_fire &
                           (axi_aw_word_addr == ADDR_CTRL) &
@@ -434,6 +461,8 @@ module dsm_ip_axi_top #(
     end
   endfunction
 
+  // One-entry AXI-Stream buffer decouples the input source from the DPD
+  // pipeline and provides a well-defined backpressure point for safe commits.
   axis_skid_buffer #(
     .DATA_W(C_S_AXIS_TDATA_WIDTH),
     .USER_W(C_S_AXIS_TUSER_WIDTH)
@@ -461,6 +490,14 @@ module dsm_ip_axi_top #(
                          !mp_commit_pending & !mp_commit_inflight;
   assign frontend_fire = dpd_valid & dsm_input_ready & core_enable & core_rst_n;
 
+  // --------------------------------------------------------------------------
+  // AXI-Lite write side effects and runtime telemetry
+  //
+  // This process intentionally owns all write-side state so simultaneous
+  // events retain their original priority.  The sections below are ordered as
+  // transaction capture, commit control, stream accounting, sticky status,
+  // software clear, register write decode, and reset cleanup.
+  // --------------------------------------------------------------------------
   always @(posedge aclk or negedge aresetn) begin
     if (!aresetn) begin
       s_axi_bresp <= 2'b00;
@@ -567,6 +604,9 @@ module dsm_ip_axi_top #(
         w_hold_strb <= s_axi_wstrb;
       end
 
+      // Launch the bank switch only after the streaming datapath reaches its
+      // explicit idle boundary.  The frontend reports success or rejection on
+      // later cycles through the event wires above.
       if (mp_commit_pending && !mp_commit_inflight && commit_safe_boundary) begin
         mp_commit_pulse <= 1'b1;
         mp_commit_pending <= 1'b0;
@@ -587,6 +627,8 @@ module dsm_ip_axi_top #(
         end
       end
 
+      // Input, frontend, and RF events each advance their own counters.  They
+      // are deliberately not combined because pipeline latency separates them.
       if (axis_fire) begin
         input_sample_count <= input_sample_count + 32'd1;
         mon_input_power_acc <= mon_input_power_acc + {{(32-W){1'b0}}, axis_mag_sat};
@@ -643,6 +685,8 @@ module dsm_ip_axi_top #(
         input_stall_count <= input_stall_count + 32'd1;
       end
 
+      // Sticky errors record protocol/safety observations until software clears
+      // them through ADDR_ERROR using write-one-to-clear semantics.
       if (stream_while_disabled) begin
         error_status_reg[0] <= 1'b1;
       end
@@ -650,6 +694,8 @@ module dsm_ip_axi_top #(
       if (dpd_mp_commit_rejected) error_status_reg[3] <= 1'b1;
       if (dpd_lut_commit_rejected) error_status_reg[4] <= 1'b1;
 
+      // CTRL.clear_status clears telemetry only.  It does not modify active
+      // DPD coefficients, the selected bank, or normal control configuration.
       if (clear_status_req) begin
         input_sample_count <= 32'd0;
         frontend_sample_count <= 32'd0;
@@ -677,6 +723,11 @@ module dsm_ip_axi_top #(
         mon_spec_bin2_acc <= 32'sd0;
       end
 
+      // ----------------------------------------------------------------------
+      // AXI-Lite register writes
+      // Each write honors WSTRB.  Pulse registers are defaulted low at the
+      // beginning of this clock cycle and therefore remain one-cycle strobes.
+      // ----------------------------------------------------------------------
       if (axi_write_fire) begin
         aw_hold_valid <= 1'b0;
         w_hold_valid <= 1'b0;
@@ -844,6 +895,122 @@ module dsm_ip_axi_top #(
     end
   end
 
+  // --------------------------------------------------------------------------
+  // AXI-Lite readback word packing
+  // Keep the word indices identical to the documented byte-address map after
+  // division by four.  This is combinational only; response timing remains in
+  // the sequential AXI-Lite read channel below.
+  // --------------------------------------------------------------------------
+  // Core identity, stream status, and frame/error counters (0x00-0x0f).
+  assign axi_read_words[32*ADDR_CTRL +: 32] = ctrl_reg;
+  assign axi_read_words[32*ADDR_STATUS +: 32] = {25'b0, axis_buf_full,
+      |error_status_reg, s_axis_tready, rf_valid, dsm_valid, soft_reset, core_enable};
+  assign axi_read_words[32*ADDR_PHASE_INC +: 32] = {{(32-PHASE_W){1'b0}}, phase_inc_reg};
+  assign axi_read_words[32*ADDR_ALGORITHM +: 32] = ALGORITHM[31:0];
+  assign axi_read_words[32*ADDR_DUC_MODE +: 32] = DUC_MODE[31:0];
+  assign axi_read_words[32*ADDR_VERSION +: 32] = CORE_VERSION;
+  assign axi_read_words[32*ADDR_IN_COUNT +: 32] = input_sample_count;
+  assign axi_read_words[32*ADDR_OUT_COUNT +: 32] = output_sample_count;
+  assign axi_read_words[32*ADDR_RESET_CNT +: 32] = software_reset_count;
+  assign axi_read_words[32*ADDR_ERROR +: 32] = error_status_reg;
+  assign axi_read_words[32*ADDR_FRONT_COUNT +: 32] = frontend_sample_count;
+  assign axi_read_words[32*ADDR_STALL_COUNT +: 32] = input_stall_count;
+  assign axi_read_words[32*ADDR_INTERP_MODE +: 32] = INTERP_MODE[31:0];
+  assign axi_read_words[32*ADDR_FRAME_COUNT +: 32] = input_frame_count;
+  assign axi_read_words[32*ADDR_LAST_TUSER +: 32] = {{(32-C_S_AXIS_TUSER_WIDTH){1'b0}}, last_tuser_reg};
+  assign axi_read_words[32*ADDR_USER_ERR_COUNT +: 32] = user_error_count;
+
+  // Memoryless DPD controls, LUT state, and TX-side monitor telemetry
+  // (0x10-0x23).
+  assign axi_read_words[32*ADDR_DPD_CTRL +: 32] = dpd_ctrl_reg;
+  assign axi_read_words[32*ADDR_DPD_C1 +: 32] = {dpd_c1_im_reg, dpd_c1_re_reg};
+  assign axi_read_words[32*ADDR_DPD_C3 +: 32] = {dpd_c3_im_reg, dpd_c3_re_reg};
+  assign axi_read_words[32*ADDR_DPD_C5 +: 32] = {dpd_c5_im_reg, dpd_c5_re_reg};
+  assign axi_read_words[32*ADDR_DPD_COUNT +: 32] = dpd_sample_count;
+  assign axi_read_words[32*ADDR_DPD_SAT_COUNT +: 32] = dpd_saturation_count;
+  assign axi_read_words[32*ADDR_DPD_LUT_ADDR +: 32] = {{(32-DPD_LUT_AW){1'b0}}, dpd_lut_addr_reg};
+  assign axi_read_words[32*ADDR_DPD_LUT_DATA +: 32] = {dpd_lut_rgain_im, dpd_lut_rgain_re};
+  assign axi_read_words[32*ADDR_DPD_LUT_COMMIT +: 32] = {31'b0, dpd_lut_active_bank};
+  assign axi_read_words[32*ADDR_MON_IN_POWER +: 32] = mon_input_power_acc;
+  assign axi_read_words[32*ADDR_MON_OUT_POWER +: 32] = mon_output_power_acc;
+  assign axi_read_words[32*ADDR_MON_CLIP_COUNT +: 32] = mon_input_clip_count;
+  assign axi_read_words[32*ADDR_MON_PEAK +: 32] = {{(16-RF_W){1'b0}}, mon_output_peak[RF_W-1:0],
+      {(16-W){1'b0}}, mon_input_peak[W-1:0]};
+  assign axi_read_words[32*ADDR_MON_AVG_MAG +: 32] = {{(16-RF_W){1'b0}}, mon_output_avg_mag[RF_W-1:0],
+      {(16-W){1'b0}}, mon_input_avg_mag[W-1:0]};
+  assign axi_read_words[32*ADDR_MON_EVM_PROXY +: 32] = mon_evm_proxy_acc;
+  assign axi_read_words[32*ADDR_MON_ACPR_PROXY +: 32] = mon_acpr_proxy_acc;
+  assign axi_read_words[32*ADDR_MON_SPEC_BIN0 +: 32] = mon_spec_bin0_mag;
+  assign axi_read_words[32*ADDR_MON_SPEC_BIN1 +: 32] = mon_spec_bin1_mag;
+  assign axi_read_words[32*ADDR_MON_SPEC_BIN2 +: 32] = mon_spec_bin2_mag;
+  assign axi_read_words[32*ADDR_MON_SPEC_ADJ +: 32] = mon_spec_adj_mag;
+
+  // Memory-polynomial coefficient access, commit state, and observation
+  // receiver control/status (0x24-0x2e).
+  assign axi_read_words[32*ADDR_MP_SELECT +: 32] = {21'd0, mp_active_taps_reg, 4'd0,
+      mp_coeff_order_reg, mp_coeff_tap_reg};
+  assign axi_read_words[32*ADDR_MP_DATA +: 32] = {mp_coeff_rdata_im, mp_coeff_rdata_re};
+  assign axi_read_words[32*ADDR_MP_COMMIT +: 32] = {31'd0, mp_active_bank};
+  assign axi_read_words[32*ADDR_OBS_CTRL +: 32] = {15'd0, obs_irq_enable_reg, 3'd0, obs_delay_reg,
+      5'd0, obs_clear_pulse, obs_start_pulse, obs_enable_reg};
+  assign axi_read_words[32*ADDR_OBS_GAIN +: 32] = {obs_gain_im_reg, obs_gain_re_reg};
+  assign axi_read_words[32*ADDR_OBS_WINDOW +: 32] = obs_window_reg;
+  assign axi_read_words[32*ADDR_OBS_STATUS +: 32] = {24'd0, obs_snapshot_valid, |obs_overflow_flags,
+      (obs_done && (obs_dropped_count == 0) && !(|obs_overflow_flags)),
+      obs_last_seen, obs_done, obs_active, s_axis_obs_tready};
+  assign axi_read_words[32*ADDR_OBS_PAIR_COUNT +: 32] = obs_paired_count;
+  assign axi_read_words[32*ADDR_OBS_DROP_COUNT +: 32] = obs_dropped_count;
+  assign axi_read_words[32*ADDR_OBS_ERROR_LO +: 32] = obs_error_acc[31:0];
+  assign axi_read_words[32*ADDR_OBS_ERROR_HI +: 32] = obs_error_acc[63:32];
+
+  // Calibration condition inputs and observation summary telemetry
+  // (0x2f-0x3f).
+  assign axi_read_words[32*ADDR_COND_CTRL +: 32] = {16'd0, condition_version_reg, 7'd0,
+      condition_valid_reg};
+  assign axi_read_words[32*ADDR_COND_QAM +: 32] = {16'd0, condition_qam_reg};
+  assign axi_read_words[32*ADDR_COND_BW +: 32] = condition_bw_khz_reg;
+  assign axi_read_words[32*ADDR_COND_BACKOFF +: 32] = condition_backoff_ppm_reg;
+  assign axi_read_words[32*ADDR_COND_ENV +: 32] = {condition_temperature_reg, condition_power_reg};
+  assign axi_read_words[32*ADDR_COND_MONITOR +: 32] = condition_monitor_reg;
+  assign axi_read_words[32*ADDR_SEED_STATUS +: 32] = {26'd0, seed_local_search_required,
+      seed_fallback_required, condition_known, seed_package};
+  assign axi_read_words[32*ADDR_OBS_ENV +: 32] = {8'd2, 8'd0, obs_latched_temperature};
+  assign axi_read_words[32*ADDR_OBS_REF_MAG +: 32] = obs_ref_mag_acc;
+  assign axi_read_words[32*ADDR_OBS_MAG +: 32] = obs_mag_acc;
+  assign axi_read_words[32*ADDR_OBS_PEAK +: 32] = obs_peak;
+  assign axi_read_words[32*ADDR_OBS_CLIP_SAT +: 32] = {obs_saturation_count, obs_clip_count};
+  assign axi_read_words[32*ADDR_OBS_SLEW +: 32] = obs_slew_acc;
+  assign axi_read_words[32*ADDR_OBS_SPEC_BIN0 +: 32] = obs_spec_bin0;
+  assign axi_read_words[32*ADDR_OBS_SPEC_BIN1 +: 32] = obs_spec_bin1;
+  assign axi_read_words[32*ADDR_OBS_SPEC_BIN2 +: 32] = obs_spec_bin2;
+  assign axi_read_words[32*ADDR_OBS_SPEC_ADJ +: 32] = obs_spec_adj;
+
+  // Extended controls and snapshot/commit status (0x40-0x47).
+  assign axi_read_words[32*ADDR_DPD_C7 +: 32] = {dpd_c7_im_reg, dpd_c7_re_reg};
+  assign axi_read_words[32*ADDR_DSM_CTRL +: 32] = {28'd0, dsm_input_shift_reg};
+  assign axi_read_words[32*ADDR_CAPABILITY +: 32] = capability_word;
+  assign axi_read_words[32*ADDR_EFFECTIVE_STATUS +: 32] = {19'd0, mp_commit_failed, mp_commit_inflight,
+      mp_commit_pending, dpd_mode_fallback, dpd_safety_fault, mp_effective_taps,
+      mp_active_bank, dpd_effective_mode, dpd_ctrl_reg[1:0]};
+  assign axi_read_words[32*ADDR_MP_COMMIT_STATUS +: 32] = {16'd0, mp_commit_epoch, 4'd0,
+      mp_commit_failed, mp_commit_inflight, mp_commit_pending, mp_commit_ack};
+  assign axi_read_words[32*ADDR_OBS_SNAPSHOT +: 32] = {31'd0, obs_snapshot_valid};
+  assign axi_read_words[32*ADDR_OBS_SNAPSHOT_ERROR_LO +: 32] = obs_error_snapshot[31:0];
+  assign axi_read_words[32*ADDR_OBS_SNAPSHOT_ERROR_HI +: 32] = obs_error_snapshot[63:32];
+
+  dsm_ip_axi_read_mux #(
+    .WORD_COUNT(AXI_READ_WORD_COUNT)
+  ) u_axi_read_mux (
+    .read_addr(axi_ar_word_addr),
+    .read_words(axi_read_words),
+    .read_data(axi_read_data)
+  );
+
+  // --------------------------------------------------------------------------
+  // AXI-Lite read response channel
+  // Read data is captured once when AR is accepted and remains stable while
+  // RVALID waits for RREADY, as required by AXI-Lite.
+  // --------------------------------------------------------------------------
   always @(posedge aclk or negedge aresetn) begin
     if (!aresetn) begin
       s_axi_arready <= 1'b0;
@@ -857,101 +1024,7 @@ module dsm_ip_axi_top #(
         s_axi_arready <= 1'b1;
         s_axi_rvalid <= 1'b1;
         s_axi_rresp <= 2'b00;
-        case (axi_ar_word_addr)
-          ADDR_CTRL:      s_axi_rdata <= ctrl_reg;
-          ADDR_STATUS:    s_axi_rdata <= {25'b0, axis_buf_full, |error_status_reg, s_axis_tready, rf_valid, dsm_valid, soft_reset, core_enable};
-          ADDR_PHASE_INC: s_axi_rdata <= {{(32-PHASE_W){1'b0}}, phase_inc_reg};
-          ADDR_DSM_CTRL:  s_axi_rdata <= {28'd0, dsm_input_shift_reg};
-          ADDR_ALGORITHM: s_axi_rdata <= ALGORITHM[31:0];
-          ADDR_DUC_MODE:  s_axi_rdata <= DUC_MODE[31:0];
-          ADDR_VERSION:   s_axi_rdata <= CORE_VERSION;
-          ADDR_IN_COUNT:  s_axi_rdata <= input_sample_count;
-          ADDR_OUT_COUNT: s_axi_rdata <= output_sample_count;
-          ADDR_RESET_CNT: s_axi_rdata <= software_reset_count;
-          ADDR_ERROR:     s_axi_rdata <= error_status_reg;
-          ADDR_FRONT_COUNT: s_axi_rdata <= frontend_sample_count;
-          ADDR_STALL_COUNT: s_axi_rdata <= input_stall_count;
-          ADDR_INTERP_MODE: s_axi_rdata <= INTERP_MODE[31:0];
-          ADDR_FRAME_COUNT: s_axi_rdata <= input_frame_count;
-          ADDR_LAST_TUSER:  s_axi_rdata <= {{(32-C_S_AXIS_TUSER_WIDTH){1'b0}}, last_tuser_reg};
-          ADDR_USER_ERR_COUNT: s_axi_rdata <= user_error_count;
-          ADDR_DPD_CTRL:    s_axi_rdata <= dpd_ctrl_reg;
-          ADDR_DPD_C1:      s_axi_rdata <= {dpd_c1_im_reg, dpd_c1_re_reg};
-          ADDR_DPD_C3:      s_axi_rdata <= {dpd_c3_im_reg, dpd_c3_re_reg};
-          ADDR_DPD_C5:      s_axi_rdata <= {dpd_c5_im_reg, dpd_c5_re_reg};
-          ADDR_DPD_C7:      s_axi_rdata <= {dpd_c7_im_reg, dpd_c7_re_reg};
-          ADDR_CAPABILITY:  s_axi_rdata <= capability_word;
-          ADDR_EFFECTIVE_STATUS: s_axi_rdata <= {
-              19'd0, mp_commit_failed, mp_commit_inflight, mp_commit_pending,
-              dpd_mode_fallback, dpd_safety_fault, mp_effective_taps,
-              mp_active_bank, dpd_effective_mode, dpd_ctrl_reg[1:0]};
-          ADDR_DPD_COUNT:   s_axi_rdata <= dpd_sample_count;
-          ADDR_DPD_SAT_COUNT: s_axi_rdata <= dpd_saturation_count;
-          ADDR_DPD_LUT_ADDR: s_axi_rdata <= {{(32-DPD_LUT_AW){1'b0}}, dpd_lut_addr_reg};
-          ADDR_DPD_LUT_DATA: s_axi_rdata <= {dpd_lut_rgain_im, dpd_lut_rgain_re};
-          ADDR_DPD_LUT_COMMIT: s_axi_rdata <= {31'b0, dpd_lut_active_bank};
-          ADDR_MON_IN_POWER: s_axi_rdata <= mon_input_power_acc;
-          ADDR_MON_OUT_POWER: s_axi_rdata <= mon_output_power_acc;
-          ADDR_MON_CLIP_COUNT: s_axi_rdata <= mon_input_clip_count;
-          ADDR_MON_PEAK: s_axi_rdata <= {{(16-RF_W){1'b0}}, mon_output_peak[RF_W-1:0], {(16-W){1'b0}}, mon_input_peak[W-1:0]};
-          ADDR_MON_AVG_MAG: s_axi_rdata <= {{(16-RF_W){1'b0}}, mon_output_avg_mag[RF_W-1:0], {(16-W){1'b0}}, mon_input_avg_mag[W-1:0]};
-          ADDR_MON_EVM_PROXY: s_axi_rdata <= mon_evm_proxy_acc;
-          ADDR_MON_ACPR_PROXY: s_axi_rdata <= mon_acpr_proxy_acc;
-          ADDR_MON_SPEC_BIN0: s_axi_rdata <= mon_spec_bin0_mag;
-          ADDR_MON_SPEC_BIN1: s_axi_rdata <= mon_spec_bin1_mag;
-          ADDR_MON_SPEC_BIN2: s_axi_rdata <= mon_spec_bin2_mag;
-          ADDR_MON_SPEC_ADJ:  s_axi_rdata <= mon_spec_adj_mag;
-          ADDR_MP_SELECT: s_axi_rdata <= {21'd0, mp_active_taps_reg, 4'd0,
-                                           mp_coeff_order_reg, mp_coeff_tap_reg};
-          ADDR_MP_DATA: s_axi_rdata <= {mp_coeff_rdata_im, mp_coeff_rdata_re};
-          ADDR_MP_COMMIT: s_axi_rdata <= {31'd0, mp_active_bank};
-          ADDR_MP_COMMIT_STATUS: s_axi_rdata <= {16'd0, mp_commit_epoch,
-                                                  4'd0, mp_commit_failed,
-                                                  mp_commit_inflight,
-                                                  mp_commit_pending,
-                                                  mp_commit_ack};
-          ADDR_OBS_CTRL: s_axi_rdata <= {15'd0, obs_irq_enable_reg, 3'd0, obs_delay_reg, 5'd0,
-                                         obs_clear_pulse, obs_start_pulse,
-                                         obs_enable_reg};
-          ADDR_OBS_GAIN: s_axi_rdata <= {obs_gain_im_reg, obs_gain_re_reg};
-          ADDR_OBS_WINDOW: s_axi_rdata <= obs_window_reg;
-          ADDR_OBS_STATUS: s_axi_rdata <= {24'd0, obs_snapshot_valid,
-                                           |obs_overflow_flags,
-                                           (obs_done && (obs_dropped_count == 0) &&
-                                            !(|obs_overflow_flags)),
-                                           obs_last_seen, obs_done,
-                                           obs_active, s_axis_obs_tready};
-          ADDR_OBS_PAIR_COUNT: s_axi_rdata <= obs_paired_count;
-          ADDR_OBS_DROP_COUNT: s_axi_rdata <= obs_dropped_count;
-          ADDR_OBS_ERROR_LO: s_axi_rdata <= obs_error_acc[31:0];
-          ADDR_OBS_ERROR_HI: s_axi_rdata <= obs_error_acc[63:32];
-          ADDR_COND_CTRL: s_axi_rdata <= {16'd0, condition_version_reg, 7'd0,
-                                          condition_valid_reg};
-          ADDR_COND_QAM: s_axi_rdata <= {16'd0, condition_qam_reg};
-          ADDR_COND_BW: s_axi_rdata <= condition_bw_khz_reg;
-          ADDR_COND_BACKOFF: s_axi_rdata <= condition_backoff_ppm_reg;
-          ADDR_COND_ENV: s_axi_rdata <= {condition_temperature_reg,
-                                         condition_power_reg};
-          ADDR_COND_MONITOR: s_axi_rdata <= condition_monitor_reg;
-          ADDR_SEED_STATUS: s_axi_rdata <= {26'd0, seed_local_search_required,
-                                            seed_fallback_required,
-                                            condition_known, seed_package};
-          ADDR_OBS_ENV: s_axi_rdata <= {8'd2, 8'd0, obs_latched_temperature};
-          ADDR_OBS_REF_MAG: s_axi_rdata <= obs_ref_mag_acc;
-          ADDR_OBS_MAG: s_axi_rdata <= obs_mag_acc;
-          ADDR_OBS_PEAK: s_axi_rdata <= obs_peak;
-          ADDR_OBS_CLIP_SAT: s_axi_rdata <= {obs_saturation_count,
-                                             obs_clip_count};
-          ADDR_OBS_SLEW: s_axi_rdata <= obs_slew_acc;
-          ADDR_OBS_SPEC_BIN0: s_axi_rdata <= obs_spec_bin0;
-          ADDR_OBS_SPEC_BIN1: s_axi_rdata <= obs_spec_bin1;
-          ADDR_OBS_SPEC_BIN2: s_axi_rdata <= obs_spec_bin2;
-          ADDR_OBS_SPEC_ADJ: s_axi_rdata <= obs_spec_adj;
-          ADDR_OBS_SNAPSHOT: s_axi_rdata <= {31'd0, obs_snapshot_valid};
-          ADDR_OBS_SNAPSHOT_ERROR_LO: s_axi_rdata <= obs_error_snapshot[31:0];
-          ADDR_OBS_SNAPSHOT_ERROR_HI: s_axi_rdata <= obs_error_snapshot[63:32];
-          default: s_axi_rdata <= 32'h0000_0000;
-        endcase
+        s_axi_rdata <= axi_read_data;
       end else if (s_axi_rvalid && s_axi_rready) begin
         s_axi_rvalid <= 1'b0;
       end
