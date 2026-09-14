@@ -14,5 +14,4 @@ The test suite includes:
   recovery;
 - directed coverage tests for reachable corner behavior.
 
-The full test matrix and closure boundary are maintained in `docs/VPLAN.md`
-and `docs/evidence/SYSTEM_CODE_COVERAGE_AUDIT.md`.
+The full test matrix and closure boundary are maintained in `docs/VPLAN.md`.

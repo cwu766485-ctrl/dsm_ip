@@ -23,6 +23,29 @@
 
 其他 DSM、插值实现和 DPD 分支保留为 block 或 wrapper 级研究对象，不与冻结主 SKU 的 system-UVM 覆盖率混用。
 
+### 2.1 Cartesian x4/TI64 verification-first gate
+
+The 16-I/Q-word to 64-lane TI64/raw-GTH prototype is a separate verification
+target. Its existing directed oracle, P0 and IP-smoke results establish a
+short deterministic path only; they are insufficient for functional signoff.
+The following gates must pass before treating it as ready for FPGA board work
+or ASIC implementation:
+
+| Gate | Required evidence | Pass criterion |
+|---|---|---|
+| Bit-true stress | Independent FIR/DPD/TI64 oracle over at least 4,096 accepted input words, including zero, signed extremes, word-boundary history and both supported DPD modes | Every 64-bit GT word matches; no lost, duplicated or reordered samples |
+| Protocol/reset | Randomized input gaps, output backpressure and reset at every elastic-pipeline occupancy; assertions for stable payload during stall and exact flush semantics | No assertion failures; all accepted transactions drain exactly once |
+| System regression | Dedicated UVM or equivalent SV constrained-random test with reproducible vectors and scoreboard queue accounting | Simulator clean exit, zero errors/fatals, complete queue drain and regression CSV PASS |
+| Structural verification | Lint plus CDC/RDC review of source ingress, GTH user-clock/reset and any real-data CDC | No unwaived error; every waiver has a source-linked rationale |
+| Coverage review | Functional coverage for DPD mode, FIR boundary/history, lane 0/63 ordering, stalls and reset; code coverage reachability classification | All planned bins hit; reachable uncovered code has a directed test or reviewed waiver |
+| Implementation correlation | OOC/routed reports use the actual x4 top, part and 218.75 MHz constraints | Setup and hold pass with zero critical warnings |
+
+Only after these digital gates are met should the board be used for SFP0
+loopback/ILA word-order evidence. ASIC starts after the same gates plus a
+target-library lint/CDC/DFT plan, synthesis/STA across required corners, and a
+power/clock/reset implementation plan. FPGA and ASIC do not replace the
+verification gate; they validate different physical-realization risks.
+
 ## 3. 验证分层与 DUT
 
 | 层级 | DUT/范围 | 主要输入与检查 | 当前证据定位 |
@@ -48,6 +71,20 @@ Block 层优先使用轻量 SV testbench 和确定性向量；System UVM 负责�
 | bit-true 数据链 | `dsm_system_closure_test`、`dsm_seed_observer_datapath_coverage_test` | Python 产生 I/Q、DPD、插值、mixer、BP EFDSM2 参考；RF transaction 逐项 drain |
 | 安全负向 | `dsm_negative_control_test`、`dsm_commit_during_stream_test`、`dsm_commit_reset_interlock_test` | reset/stream/window 中的非法请求被拒绝或延后，sticky error、fallback 与恢复行为正确 |
 | 监控与观测 | `dsm_csr_monitor_coverage_test`、`dsm_wstrb_semantics_coverage_test` | monitor 读回、窗口状态、counter clear、字节写语义、observer 语义 |
+
+### 4.1 Long-run constrained-random extension
+
+The current long-run extension is separate from the recorded 300-run result and its declared functional-coverage closure. It adds two reproducible stress scopes:
+
+| Scope | Test / stimulus | Required checks |
+|---|---|---|
+| Long-run bit-true data path | dsm_longrun_bittrue_test drives 4,096 deterministic PRBS-like Q1.15 I/Q inputs with zero and signed-extreme segments. The UVM seed randomizes legal AXI4-Stream valid gaps and AXI4-Lite enable timing. | Compare 131,072 Python-generated RF transactions per run for bit, signed encoding, Fs/4 phase, order, and count; require complete expected-queue drain. |
+| Communication-waveform bit-true data path | dsm_qam_ofdm_bittrue_test drives a MATLAB-exported 16-QAM OFDM baseband record: 128 symbols x (64-point IFFT + 16-sample CP) = 10,240 Q1.15 I/Q input transactions. The DUT, not MATLAB, performs x32 interpolation. The UVM seed randomizes legal AXI4-Stream gaps and AXI4-Lite enable timing. | Compare 327,680 Python-generated RF transactions per run for bit, signed encoding, Fs/4 phase, order, and count; require complete expected-queue drain. |
+| Long-run control/data closure | dsm_system_closure_test drives 4,096 randomized TX items after directed reset, observer, bank-commit, rejection, and recovery flows. | Check protocol/status/counter outcomes and sticky-error recovery; this test is not a static RF bit-true oracle. |
+
+The PRBS vector and QAM-OFDM vector have different purposes. The former deliberately includes zero, near-full-scale, and signed-minimum values to probe fixed-point boundaries. The latter is a representative communication waveform with 10,240 inputs; its length follows 128 complete OFDM symbols with cyclic prefix, not an architectural limit. A 10,000-point arbitrary cut would split the final OFDM symbol. A larger whole-symbol record can be selected by increasing `nsym`; it increases simulation cost linearly and should be justified by coverage or a longer channel/DPD-memory scenario.
+
+The MATLAB exporter, Python RF-golden generator, and UVM test are implemented. The test is included in the separate extended 20-seed matrix, but no VCS compile/run result is recorded until the Rocky VCS installation is repaired. Future protocol-aware randomized reset/commit schedules must update or segment the reference-model state; arbitrary register-write randomization is not a valid oracle-based test strategy.
 
 ## 5. Golden、scoreboard 与通过准则
 
@@ -103,3 +140,4 @@ make -C uvm_verif/sim vcs-run-only UVM_TESTNAME=dsm_system_closure_test UVM_SEED
 2. 使用已授权静态工具执行 lint、CDC/RDC，并记录版本、规则集和 waiver。
 3. 重建冻结 SKU 的完整 ZU15EG routed implementation、bitstream、I/O timing 和 DMA/ILA 回放。
 4. 在明确的 PA、反馈接收机和测量口径下，单独评估 DPD 对 EVM/SNDR/ACLR 的改善；该结果不能由数字 monitor proxy 替代。
+5. Run and archive the long-run constrained-random extension across its selected seed matrix before using its scale or outcome in external claims.

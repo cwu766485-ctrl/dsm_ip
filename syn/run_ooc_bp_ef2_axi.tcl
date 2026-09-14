@@ -4,6 +4,13 @@
 # Optional Tcl arguments:
 #   1: FPGA part
 #   2: target clock frequency in MHz
+#
+# Vivado Tcl Console usage:
+#   set ::argv [list xczu15eg-ffvb1156-2-i 218.75]
+#   source syn/run_ooc_bp_ef2_axi.tcl
+#
+# `source script part frequency` is invalid Tcl: source accepts a script path,
+# not positional arguments. The wrapper below exists for a one-command GUI run.
 
 set script_dir [file dirname [file normalize [info script]]]
 set root [file normalize [file join $script_dir ".."]]
@@ -13,6 +20,7 @@ if {$target_mhz <= 0.0} {
   error "Target clock frequency must be positive: $target_mhz"
 }
 set target_period_ns [expr {1000.0 / $target_mhz}]
+set target_clk_hz [expr {wide(round($target_mhz * 1000000.0))}]
 set target_label [string map {"." "p"} [format %.2f $target_mhz]]
 set tag [string map {"-" "_" "." "_"} $part]
 set stamp [clock format [clock seconds] -format %Y%m%d_%H%M%S]
@@ -69,10 +77,12 @@ read_verilog -sv $rtl
 # helper. Keep this OOC run single-threaded so the implementation evidence is
 # reproducible from the GUI Tcl console as well as batch mode.
 set_param general.maxThreads 1
+set_param synth.maxThreads 1
 synth_design -top dsm_ip_axi_top -part $part -mode out_of_context \
   -generic ALGORITHM=3 -generic DUC_MODE=3 -generic INTERP_MODE=4 \
   -generic INTERP_IMPL=0 -generic DPD_POLY_ORDER=5 -generic DPD_MP_MAX_TAPS=4 \
-  -generic ENABLE_DPD_POLY=0 -generic ENABLE_DPD_LUT=0 -generic ENABLE_DPD_MEMORY=1
+  -generic ENABLE_DPD_POLY=0 -generic ENABLE_DPD_LUT=0 -generic ENABLE_DPD_MEMORY=1 \
+  -generic [format "CLK_FREQ_HZ=%d" $target_clk_hz]
 create_clock -name aclk -period $target_period_ns [get_ports aclk]
 # OOC timing must cover internal register-to-register paths. Primary I/O timing
 # belongs to the parent integration, so suppress only complete input/output paths

@@ -29,8 +29,7 @@ are compiled out for this SKU.
 Key system tests cover deterministic Python-to-RTL RF comparison, memory-DPD
 bank programming and rejection, AXI ordering and backpressure, observer
 windows, reset, error handling, and directed coverage corners. The current
-coverage boundary is documented in
-`docs/evidence/SYSTEM_CODE_COVERAGE_AUDIT.md`.
+coverage boundary is documented in `docs/VPLAN.md`.
 
 ## Running VCS
 

@@ -92,6 +92,7 @@ class dsm_axis_csv_sequence extends uvm_sequence #(dsm_axis_item);
   `uvm_object_utils(dsm_axis_csv_sequence)
   string vector_set = "performance_sku";
   string csv_path = "";
+  int unsigned max_random_valid_gap = 0;
 
   function new(string name = "dsm_axis_csv_sequence");
     super.new(name);
@@ -121,7 +122,8 @@ class dsm_axis_csv_sequence extends uvm_sequence #(dsm_axis_item);
         req.q_sample = q_value;
         req.last = last_value[0];
         req.user_error = 1'b0;
-        req.valid_gap_cycles = 0;
+        req.valid_gap_cycles = (max_random_valid_gap == 0) ? 0 :
+                               $urandom_range(0, max_random_valid_gap);
         finish_item(req);
       end else if (code != -1) begin
         `uvm_fatal("VECTOR_PARSE", $sformatf("Malformed row in %s", csv_path))

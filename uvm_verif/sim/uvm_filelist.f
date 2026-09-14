@@ -4,6 +4,7 @@
 +incdir+uvm_verif/agent/rf
 +incdir+uvm_verif/env
 +incdir+uvm_verif/tests
++incdir+verif/uvm
 uvm_verif/agent/interfaces/dsm_axi_lite_if.sv
 uvm_verif/agent/interfaces/dsm_axis_if.sv
 uvm_verif/agent/interfaces/dsm_rf_if.sv

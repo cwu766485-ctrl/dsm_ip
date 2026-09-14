@@ -6,7 +6,7 @@ class dsm_system_closure_virtual_sequence extends uvm_sequence;
   `uvm_object_utils(dsm_system_closure_virtual_sequence)
   `uvm_declare_p_sequencer(dsm_virtual_sequencer)
 
-  localparam int unsigned LONG_TX_ITEMS = 512;
+  localparam int unsigned LONG_TX_ITEMS = 4096;
 
   function new(string name = "dsm_system_closure_virtual_sequence");
     super.new(name);

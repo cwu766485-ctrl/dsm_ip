@@ -93,9 +93,18 @@ Record:
 
 For every task:
 
-1. Read the relevant files.
+1. Read `docs/exec-plans/active/execution-frontier.md` and the relevant files.
 2. Identify the source of truth.
 3. Make the smallest safe change.
 4. Run the required checks.
 5. Update docs if needed.
 6. Report the result with exact checks and remaining risks.
+
+## Execution Frontier
+
+`docs/exec-plans/active/execution-frontier.md` is the concise source of truth
+for active execution state. Read it before work. Update it when a failure is
+reproduced, a root cause is confirmed, an implementation or verification
+milestone materially changes, work is paused/handed off, or the next action
+changes. Move completed module plans to `docs/exec-plans/inactive/`; do not
+use the frontier as a chat transcript.

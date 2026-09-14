@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "description": "Audited local EDA task catalog. Commands are static; no arbitrary shell text is accepted.",
+  "tasks": [
+    {
+      "id": "xsim-p0",
+      "runner": "powershell",
+      "script": "verif/scripts/run_xsim_p0_all.ps1",
+      "description": "Run the required P0 XSim regression."
+    },
+    {
+      "id": "xsim-ip-smoke",
+      "runner": "powershell",
+      "script": "verif/scripts/run_xsim_ip_smoke.ps1",
+      "description": "Run the required packaged-IP smoke regression."
+    },
+    {
+      "id": "xsim-ti64-core",
+      "runner": "powershell",
+      "script": "verif/scripts/run_xsim_ti64_lp1_fs4_gt_tx.ps1",
+      "description": "Verify ordered TI64 LP1 bits at the raw GT boundary."
+    },
+    {
+      "id": "xsim-ti64-frontend",
+      "runner": "powershell",
+      "script": "verif/scripts/run_xsim_ti64_cartesian_frontend_tx.ps1",
+      "description": "Verify the Cartesian x1 frontend and TI64 boundary."
+    },
+    {
+      "id": "xsim-ti64-x4-frontend",
+      "runner": "powershell",
+      "script": "verif/scripts/run_xsim_ti64_cartesian_x4_frontend_tx.ps1",
+      "description": "Verify 16-lane DPD, x4 vector polyphase, TI64 and raw-GT ordering."
+    },
+    {
+      "id": "ooc-ti64-core",
+      "runner": "powershell",
+      "script": "syn/run_ooc_ti64_lp1_fs4_gt_tx.ps1",
+      "description": "Run ZU15EG fabric-only OOC for the bare TI64 core."
+    },
+    {
+      "id": "ooc-ti64-frontend",
+      "runner": "powershell",
+      "script": "syn/run_ooc_ti64_cartesian_frontend_tx.ps1",
+      "description": "Run ZU15EG fabric-only OOC for the Cartesian x1 frontend."
+    },
+    {
+      "id": "ooc-ti64-x4-frontend",
+      "runner": "powershell",
+      "script": "syn/run_ooc_ti64_cartesian_x4_frontend_tx.ps1",
+      "description": "Run ZU15EG fabric-only OOC for the Cartesian x4 vector frontend."
+    },
+    {
+      "id": "generate-zu15eg-raw-gt14",
+      "runner": "vivado-tcl",
+      "script": "fpga/zu15eg/scripts/generate_ti64_raw_gt14_ip.tcl",
+      "requires_output_directory": true,
+      "description": "Generate and validate the raw 14-Gb/s ZU15EG GTH Wizard IP outside the repository."
+    },
+    {
+      "id": "build-zu15eg-raw-gt14-sfp0-loopback",
+      "runner": "vivado-tcl",
+      "script": "fpga/zu15eg/scripts/build_ti64_raw_gt14_sfp0_loopback.tcl",
+      "requires_output_directory": true,
+      "description": "Build the SFP0 raw-GTH known-word loopback bitstream and ILA outside the repository."
+    },
+    {
+      "id": "build-zu15eg-raw-gt14-sfp0-x4",
+      "runner": "vivado-tcl",
+      "script": "fpga/zu15eg/scripts/build_ti64_raw_gt14_sfp0_x4.tcl",
+      "requires_output_directory": true,
+      "description": "Build the SFP0 Cartesian-x4/TI64/raw-GTH bring-up bitstream and ILA outside the repository."
+    }
+  ]
+}

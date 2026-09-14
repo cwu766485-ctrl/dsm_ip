@@ -132,9 +132,8 @@ SNDR 提升 0.230552 dB。MASH1-1 的 native 多级输出不是一比特二值 D
 x32 相对 x16 增加 451 LUT、547 FF 和 342 DSP；估算 Fmax 降低 15.36 MHz。
 这说明高倍率插值和补偿 FIR 是主链的重要 PPA 成本。
 
-历史集成与 ASIC 预布局证据、routed OOC 子集以及缺失的 raw timing endpoint
-详见 [CRITICAL_PATH_REPORT.md](CRITICAL_PATH_REPORT.md)。除非重新执行并归档
-同一 top/part/constraint 的实现报告，不能把任何历史 OOC 数字表述为当前完整
+历史集成、ASIC 预布局和 routed OOC 属于不同 top、part 和约束阶段；除非重新执行并
+归档同一 top/part/constraint 的实现报告，不能把任何历史 OOC 数字表述为当前完整
 routed/bitstream signoff。
 
 ## 7. 验证与 CDC 状态
@@ -167,28 +166,266 @@ ILA 捕获 `rf_valid/rf_bit/rf_signed/phase`，再由 Python 与同一输入向�
 golden 逐 transaction 比较。该路径是数字 FPGA 原型和回放接口，不是实际 PA
 或天线性能的替代测量。
 
-## 9. Future Plan
+### 8.1 Cartesian x4/TI64 raw-GTH prototype
+
+This prototype is separate from the frozen BP-EFDSM2 SKU. It accepts sixteen
+ordered I/Q samples per word, applies vector DPD (bypass or memoryless
+polynomial), a x4 polyphase FIR, Fs/4 real mapping, 64 independent LP1 TI64
+lanes, and a raw 64-bit GTH word. Lane 0 is the earliest sample. It is a
+64-way time-interleaved LP1 implementation, not temporal BP-EFDSM2 and not
+MASH.
+
+The x4 FIR has five elastic stages. It preserves the prior fixed-point result
+`(low + middle) + high`, rounding, saturation, history and lane order; only
+latency changes. The ZU15EG `X1Y12` raw-GTH implementation closes at
+`TXUSRCLK2=218.75 MHz`: WNS `+0.387 ns`, WHS `+0.010 ns`, TNS/THS `0`,
+20,835 LUTs, 21,203 FFs, 385 DSPs and 4 BRAM. This is implementation evidence
+at a 14 Gb/s raw one-bit serial boundary. `Fs/4` places the intended digital
+center at 3.5 GHz; it is not evidence of a 14 GHz RF carrier or a physical
+SFP0 link.
+
+Before FPGA programming or ASIC migration, the x4 prototype must meet the
+dedicated verification gates in `VPLAN.md`: long randomized bit-true testing,
+transaction/lane-order assertions, reset/backpressure tests, lint and CDC/RDC
+review, and coverage closure. Board loopback then verifies the physical serial
+word order; ASIC work additionally requires a target-library synthesis, STA,
+power and DFT plan.
+
+## 9. 未来规划
 
 ### 9.1 RTL 与验证
 
-- 将 `dsm_ip_axi_top.v` 进一步拆成 AXI-Lite slave、register file、commit control
-  和 status monitor；保持端口、地址、优先级、延迟与 bit-true 行为不变。
-- 对主 SKU 做可达代码覆盖率 triage；对 feature-gated Poly/LUT 和数学不可达分支
-  建立 source-linked exclusion/waiver，不制造违反协议的测试来追求 raw 100%。
-- 补静态 lint、CDC/RDC、门级/SDF 及主 SKU 完整 routed implementation、bitstream
-  与 DMA/ILA replay。
+- 继续将 `dsm_ip_axi_top.v` 按 AXI-Lite 从机、寄存器文件、commit 控制和状态监控
+  拆分；必须保持端口、地址、优先级、延迟与 bit-true 行为不变。
+- 对冻结主 SKU 做可达代码覆盖率审计。对编译期关闭的 Poly/LUT 分支及已证明的数学
+  不可达分支，建立可追溯的 exclusion/waiver；不通过破坏协议制造测试来追求原始
+  代码覆盖率的表面数字。
+- 补齐 lint、CDC/RDC、门级/SDF、主 SKU 的完整 routed implementation、bitstream 与
+  DMA/ILA 回放。当前文档中的 OOC 与历史 routed 结果不能替代这些检查。
 
-### 9.2 PPA 与高吞吐研究
+### 9.2 PPA 与高吞吐研究原则
 
-- 先归档 raw `report_timing -from/-to`、utilization 与 power，比较 EFDSM/EFDSM2、
-  x16/x32 和 DPD memory depth 的面积、频率与功耗。
-- 高吞吐方案应拆分为低速前端、可展开的高频 DSM kernel、确定性 lane ordering，
-  以及高速 serializer/external MUX/RF driver。x4/x8 并行数字验证可在 FPGA 进行；
-  20 GHz 物理开关输出需要专用高速 I/O、低抖动时钟、deskew、driver 和 RFIC/ASIC，
-  不能由普通 GPIO/FMC GPIO 直接承担。
-- AI-assisted 校准保持在慢速控制面：观测 PA/DPA 输出、估计初始系数、受限搜索，
-  再写入 inactive bank 并安全 commit；目前不宣称完成真实 PA+ADC 下的 AI 闭环
-  性能签核。
+- 归档原始 `report_timing -from/-to`、utilization 与 power，量化 EFDSM/EFDSM2、
+  x16/x32 插值和 DPD memory depth 的面积、频率及功耗取舍。
+- 高吞吐设计拆为低速前端、可展开的高频 DSM 内核、确定性 lane 排序，以及高速
+  serializer/external MUX/RF driver。x4/x8 并行数字架构可先在 FPGA 上验证；物理
+  多 Gb/s 开关输出仍需要专用高速 I/O、低抖动时钟、deskew、driver 与 RFIC/ASIC，
+  普通 GPIO 或普通 FMC SelectIO 不能直接承担。
+- AI-assisted 校准保留在慢速控制面：观测 PA/DPA 输出，估计初始系数并进行受限搜索，
+  随后写入 inactive bank 并安全 commit。当前不宣称已经完成真实 PA+ADC 反馈下的
+  AI 闭环性能签核。
+
+### 9.3 高速并行 DSM 研究目标（规划，不是当前实现结论）
+
+本节基于 [`Cartesian_DSM_Survey.md`](Cartesian_DSM_Survey.md)
+记录后续架构研究。它不表示当前 IP、板卡或连接器已经能输出多 GS/s 开关波形。
+
+#### 速率与带宽定义
+
+对一比特 DSM，单个采样点产生一个输出 bit：
+
+```text
+原始一比特数据率 = Fs × 1 bit/sample
+Fs/4 载波中心频率 = Fs / 4
+OSR = Fs / (2 × 占用带宽)
+复数基带输入采样率 = Fs / 插值倍数
+```
+
+因此，`14 GS/s` 对应 `14 Gb/s` 的一比特原始数据负载，并不等价于 14 GHz RF
+载波。采用 `Fs/4` 上变频时，`Fs=14 GS/s` 对应 3.5 GHz 数字 IF 中心。若经过线码、
+成帧或高速串行链路，物理链路速率会高于这一定义下的原始一比特数据率。
+
+插值倍数 `x32` 和 OSR 不是同一个参数：`x32` 仅表示采样率从复数输入域提高 32 倍；
+OSR 则由最终采样率和实际占用带宽共同决定。只使用较少 OFDM 子载波时，实际带宽更窄，
+OSR 会大于规划值；这不是矛盾，而是额外的带宽保护和噪声整形余量。
+
+#### 当前已验证审计波形
+
+当前 100 MS/s 审计使用确定性的 16QAM OFDM：`NFFT=64`、24 个有效子载波
+（`-12:-1`、`+1:+12`）和 `CP=16`。其复数输入率为 3.125 MS/s：
+
+```text
+子载波间隔 = 3.125 MS/s / 64 = 48.828125 kHz
+名义占用带宽 = 24 × 48.828125 kHz = 1.171875 MHz
+审计 OSR = 100 MS/s / (2 × 1.171875 MHz) = 42.67
+```
+
+循环前缀降低有效载荷效率，但不增加占用 RF 带宽。插值提高采样率并将频谱镜像推远，
+不会自动扩大信息带宽；信息带宽由 modem 的有效子载波数、子载波间隔和复数输入
+采样率决定。
+
+#### 冻结的首个 3.5 GHz 并行研究点
+
+选择 3.5 GHz 作为第一阶段中心频率。它保留无乘法 `Fs/4` DUC，因此需要：
+
+```text
+中心频率 fc = 3.5 GHz
+最终 DSM 采样率 Fs = 4 × fc = 14 GS/s
+并行 lane 数 = 64
+每 lane 速率 = 14 GS/s / 64 = 218.75 MS/s
+插值倍数 = x32
+复数基带输入率 = 14 GS/s / 32 = 437.5 MS/s
+```
+
+首个目标选择 **OSR=32、占用带宽 218.75 MHz**：
+
+```text
+占用带宽 = 14 GS/s / (2 × 32) = 218.75 MHz
+```
+
+这比 OSR=16、占用带宽 437.5 MHz 更适合作为第一阶段目标：OSR=32 给一比特 DSM
+更多带内量化噪声整形余量，也让插值镜像抑制、定点范围、并行状态展开和 64QAM/256QAM
+EVM 目标更可控。OSR=16 可作为后续高带宽扩展点，但不应在未完成新的并行 DSM、
+滤波器与 PPA 验证前作为首个承诺。
+
+| 场景 | Fs/4 中心 | 最终 Fs | 原始一比特数据率 | 占用带宽 | OSR | x32 复数输入率 | 64-lane 时钟 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 当前已验证审计 | 25 MHz | 100 MS/s | 100 Mb/s | 1.171875 MHz | 42.67 | 3.125 MS/s | 未并行化 |
+| 3.5 GHz 窄带备选 | 3.5 GHz | 14 GS/s | 14 Gb/s | 100 MHz | 70 | 437.5 MS/s | 218.75 MHz |
+| **3.5 GHz 冻结研究点** | **3.5 GHz** | **14 GS/s** | **14 Gb/s** | **218.75 MHz** | **32** | **437.5 MS/s** | **218.75 MHz** |
+| 后续高带宽扩展 | 3.5 GHz | 14 GS/s | 14 Gb/s | 437.5 MHz | 16 | 437.5 MS/s | 218.75 MHz |
+
+`x32` 给出 `437.5 MS/s -> 14 GS/s` 的采样率关系，不会自行固定 100 MHz 或
+218.75 MHz 的业务带宽。未来 OFDM modem 需要定义 `NFFT`、有效子载波数和保护带，
+使其占用带宽不超过 218.75 MHz。当前 100 MHz 仅作为更保守的窄带备选 profile，
+不再作为主研究点的默认带宽。
+
+#### 64 lane、插值率与带宽的边界
+
+64 lane 是**时间交织**，不是将一个宽带信号按频率切成 64 个独立子带。每条 lane
+携带串行一比特流中每隔 64 个时间槽的一个样本；只有按照确定的 lane 顺序重新合并后，
+才恢复同一条 14 GS/s 的 DSM 序列。因此，不能将业务带宽直接除以 64。
+
+| 量 | 冻结研究点数值 | 含义 |
+|---|---:|---|
+| 最终 DSM 采样率 `Fs` | 14 GS/s | 合并 64 lane 后的一比特序列采样率 |
+| 每 lane 速率 `Fs/64` | 218.75 MS/s | 每条并行 DSM lane 的时间槽速率，不是每 lane 的独立业务带宽 |
+| x32 复数输入率 `Fs/32` | 437.5 MS/s | 进入插值器前的聚合复数 I/Q 采样率 |
+| OSR=32 的总占用带宽 `Fs/(2*OSR)` | 218.75 MHz | 整个发射信号的目标占用带宽，不是每 lane 218.75 MHz |
+
+若将低速复数前端也实现为 64 路向量化，其每路输入速率是
+`437.5 MS/s / 64 = 6.8359375 MS/s`。这是**每路输入样本率**，不是 6.8359375 MHz
+的独立射频带宽；单独观察解交织后的 lane 会发生频谱折叠，不能把它当作一个独立的
+6.8359375 MHz 通信信道。只有采用额外的 64 路滤波器组/频分信道化架构时，才可以
+讨论将总业务带宽划分为若干独立子带。
+
+结论是：在 `Fs=14 GS/s`、64 lane、`OSR=32` 的当前规划中，
+**218.75 MS/s 是每 lane 的工作速率，218.75 MHz 是整个系统的目标占用带宽，
+437.5 MS/s 是 x32 插值前的复数输入率。** 若把 OSR 放宽至 16，系统总占用带宽
+才扩展为 437.5 MHz。
+
+#### 质量目标与验证边界
+
+冻结目标为：
+
+```text
+EVM_rms <= 3%
+数字链路 SNDR 目标 >= 33 dB
+```
+
+在误差已对齐且可近似为附加噪声的理想条件下：
+
+```text
+SNDR_ideal ≈ -20 × log10(EVM_rms)
+EVM = 3% 时，SNDR_ideal ≈ 30.46 dB
+```
+
+因此 33 dB 是约 2.24% 理想等效 EVM 的实现余量目标。EVM 与 SNDR 在完整
+RF 链路中并不严格等价；最终 EVM/ACLR 仍取决于重构滤波、DPA/PA、相位噪声、
+时钟抖动和观测接收机。33 dB 仅是后续数字架构审计门限，而不是当前 FPGA 或 RF
+性能结论。
+
+#### 架构边界
+
+```text
+DDR / modem / DMA
+  -> 共享 DPD + 插值前端
+  -> 宽复数采样接口
+  -> 含状态预测与 lane 顺序控制的并行 BP-DSM 内核
+  -> serializer 或外部高速 MUX
+  -> retiming、deskew、非重叠控制、gate driver
+  -> switching DPA、RF BPF 与匹配网络
+```
+
+前端不应盲目复制 64 份；并行展开应集中在高频 DSM 内核。有效的 64-lane 设计必须
+经状态预测或 loop unrolling 产生与单路串行参考一致的 DSM 序列，而不能将 64 个
+彼此独立的反馈 DSM 环路随意交织。
+
+当前 XCZU15EG RTL 适合进行 x4/x8 架构实验、lane 顺序验证和 PPA 探索。物理 14 Gb/s
+一比特输出还需要经实物原理图确认的 GT/MGT 路由、参考时钟、serializer/MUX、SI
+收敛以及兼容的外部接收端或 RF driver；普通 FPGA GPIO 和普通 FMC SelectIO 不能作为
+这一物理接口的替代。
+
+#### 当前高频实施顺序
+
+当前先把 `218.75 MHz` 定义为单个并行 lane 的时钟/时间槽目标。它对应
+`14 GS/s / 64` 的规划数值，时钟周期约为 `4.5714 ns`。这一步只验证冻结
+BP-EFDSM2 主链在该时钟约束下的综合时序，不代表当前 FPGA 已经实现 64 lane、
+8 lane 或 14 GS/s 物理输出。
+
+实施顺序固定为：
+
+1. 对现有单路 BP-EFDSM2 主链执行 `218.75 MHz` OOC 时序检查；
+2. 建立 8-lane 时间交织的 lane map、串行参考和逐 bit 重组检查；
+3. 对 8-lane BP 内核执行状态展开/预测设计，并与单路参考逐 bit 对齐；
+4. 只有在 bit-true、时序和 PPA 均通过后，才讨论更高 lane 数或物理高速 I/O。
+
+首个 8-lane 原型位于 `rtl/tx_bandpass_if/bp_ef2_parallel8.sv`。随后加入的
+参数化实现 `rtl/tx_bandpass_if/bp_ef2_parallel.sv` 与包装模块
+`rtl/tx_bandpass_if/bp_ef2_parallel64.sv` 将 64 个连续样本在一个时钟内按
+时间顺序展开，并输出 `y_vec[0]` 到 `y_vec[63]`。这些模块当前都是独立
+实验入口，不接入冻结 `dsm_ip_axi_top`；接入主链前必须完成标量 EFDSM2 的
+逐 bit、signed 输出、状态和 reset/valid gap 等价验证。
+配套 Python golden 生成器为
+`uvm_verif/refmodel/python/generate_bp_ef2_parallel8_vectors.py`，XSim 入口为
+`verif/scripts/run_xsim_bp_ef2_parallel8.ps1`。
+8-lane 原型的独立综合入口为 `syn/run_ooc_bp_ef2_parallel8.ps1`，64-lane
+原型的独立综合入口为 `syn/run_ooc_bp_ef2_parallel64.ps1`；这些入口仅用于衡量
+sample 展开的时序和资源，不等价于已经完成 GTY 物理串行输出。
+64-lane 的 VCS 回归位于 `verif/block/bp_dsm/vcs_parallel64/`；64-lane
+`218.75 MHz` 的 Vivado OOC 结果必须以新生成的 `summary.csv` 为准。当前
+Vivado OOC 已正常完成综合，但在 `218.75 MHz` 下得到 WNS=`-58.303 ns`、
+估算 Fmax=`15.90 MHz`，因此该结构不满足目标。综合成功、功能通过和时序达标
+必须分开记录。
+工程主线只保留 `bp_ef2_parallel64` temporal64：64 个连续时间样本在一个
+fabric 周期内展开，并通过 exact even/odd polyphase 变换保持原始反馈语义。
+偶数样本和奇数样本各自形成 32-sample 状态链，最后按原始时间顺序交织输出。
+独立状态 64-core 候选的可执行实现已经移除；历史报告仅作为审计记录，不属于
+冻结 SKU、主 SPEC 或主 PPA 结论。
+
+`syn/run_ooc_bp_ef2_lane_sweep.ps1` 已将 `218.75 MHz` 纳入默认目标列表。
+该目标的 PASS 必须来自本次 OOC 运行生成的 `summary.csv`；历史的
+`240.79 MHz` x32 结果不能替代本次单 lane 高频约束结果。
+28 nm ASIC 预布局主线入口为 `syn/run_bp_ef2_parallel64_28nm_dc.sh`，其
+`DSM28_STDCELL_DB` 必须指向包含 INV/BUF/NAND/NOR 等逻辑单元的完整映射库。
+只有 library 非空、面积非零且没有 unmapped logic 时，28 nm PPA 才有效。
+也可使用 `syn/run_ooc_bp_ef2_218p75.ps1` 只运行该目标。该脚本会同时将
+`create_clock` 约束和 `CLK_FREQ_HZ` RTL 参数设置为 `218750000`。
+
+#### temporal64 时序优化实验
+
+为缩短反馈路径，已完成两个保持 bit-true 的调度实验：
+
+| 版本 | 每周期计算 | II | 218.75 MHz 结果 | bit-true | 结论 |
+|---|---:|---:|---:|---|---|
+| `bp_ef2_parallel64` | 64 samples | 1 | Fmax 15.90 MHz | PASS | 原始 temporal64 基线，时序失败 |
+| `bp_ef2_pipeline64` | 8 samples | 8 | Fmax 115.00 MHz | PASS | 路径改善，但吞吐率不足 |
+| `bp_ef2_pipeline64_group4` | 4 samples | 16 | Fmax 243.05 MHz | PASS | 时序通过，但有效吞吐约 875 MS/s |
+
+`bp_ef2_pipeline64_ii1_group4` 是失败的 II=1 实验，不属于当前 SKU。原因是
+普通组间寄存器只能延迟数据，不能提前得到前一个 64-sample transaction 的最终
+反馈状态。要同时保持 II=1、bit-true 和 14 GS/s，必须设计并证明精确的非线性
+look-ahead/state-prediction 变换；不能把普通流水线结果当成这个目标已经实现。
+
+#### 声称高速结果前的必要证据
+
+1. 建立串行参考，证明 x4/x8/x64 并行输出在 reset、valid 间隙和 lane-skew 故障注入
+   下保持逐 bit 一致。
+2. 在目标时钟约束下综合并行内核，归档资源、原始时序端点和功耗估计。
+3. 核对实际板卡高速收发器路由，并完成 BER、眼图或链路测试后，才能声称物理串行
+   输出速率。
+4. 将 RF 声称独立处理：DPA、BPF、匹配、PA 效率、EVM 与 ACLR 必须有明确的物理端点
+   和测量方法。
 
 ## 10. 规范性声明
 

@@ -1,7 +1,10 @@
 param(
   [string]$VivadoBat = "D:\Xilinx\Vivado\2024.1\bin\vivado.bat",
   [string]$Part = "xczu15eg-ffvb1156-2-i",
-  [string[]]$TargetMHz = @("150", "175", "200", "225", "250")
+  # 218.75 MHz is the first high-rate lane target from SPEC.md. Keep the
+  # lower points as a diagnostic sweep, but make the contractual target
+  # explicit instead of hiding it behind a rounded 225 MHz point.
+  [string[]]$TargetMHz = @("150", "175", "200", "218.75", "225", "250")
 )
 
 $ErrorActionPreference = "Stop"
