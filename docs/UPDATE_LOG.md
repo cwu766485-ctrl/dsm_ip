@@ -29,3 +29,10 @@
 - Retained every static EDA task and its current source dependency: P0, IP smoke, TI64 core/frontend/x4 frontend, OOC, GT generation, and ZU15EG build flows.
 - Removed explicitly scoped ignored Vivado/XSim/VCS caches, generated vectors, crash dumps, logs, and temporary PDF text; `.gitignore` now prevents their reintroduction.
 - Checks: P0 XSim 7/7 PASS, IP smoke PASS, and Cartesian x4/TI64 frontend XSim PASS after cleanup. Restricted `fpga/hardware/`, `ads/`, and `data/` content was intentionally left untouched.
+
+## 2026-09-14 22:55 +08:00 - Rocky VCS and board-connectivity preflight
+
+- Added reviewed Rocky bridge tasks for a read-only VCS installation audit and linux64 compiler-launch probe.
+- The VCS compiler exists at `V-2023.12-SP1/linux64/bin/vcs1`, but it explicitly rejects the active WSL2 kernel. The QAM-OFDM UVM task therefore fails before RTL compilation; no UVM or coverage result is claimed.
+- Vivado 2024.1 Hardware Manager and local hw_server start correctly, but no JTAG target is visible at `127.0.0.1:3121`; no bitstream was programmed.
+- Next action: connect and power the ZU15EG USB-JTAG path (or provide a reachable remote hw_server), then repeat target discovery before programming the x4/TI64 bitstream.

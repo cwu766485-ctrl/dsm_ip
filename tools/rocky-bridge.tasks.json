@@ -10,6 +10,22 @@
         "set -e; echo '== OS =='; cat /etc/os-release; echo '== Tools =='; command -v python3; python3 --version; for tool in vcs dc_shell vivado; do if command -v \"$tool\" >/dev/null 2>&1; then printf '%s=' \"$tool\"; command -v \"$tool\"; else printf '%s=NOT_FOUND\\n' \"$tool\"; fi; done"
       ]
     },
+    "vcs-install-audit": {
+      "description": "Read-only VCS alias, selected-home, and installed-compiler audit.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; echo '== VCS selection =='; type -a vcs || true; printf 'VCS_HOME=%s\\n' \"${VCS_HOME:-UNSET}\"; if [ -n \"${VCS_HOME:-}\" ]; then ls -ld \"$VCS_HOME\" \"$VCS_HOME/bin\" 2>&1 || true; ls -l \"$VCS_HOME/bin/vcs1\" 2>&1 || true; fi; echo '== installed vcs1 candidates =='; find /opt/Synopsys -maxdepth 6 -type f -name vcs1 -print 2>/dev/null | sort"
+      ]
+    },
+    "vcs-linux64-smoke": {
+      "description": "Read-only VCS compiler launch probe with the installed linux64 architecture.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; export VCS_ARCH_OVERRIDE=linux64; vcs -ID"
+      ]
+    },
     "uvm-qam-ofdm-bittrue": {
       "description": "Compile and run the MATLAB-quantized 10,240-sample QAM-OFDM UVM bit-true testcase.",
       "executable": "bash",
