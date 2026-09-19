@@ -154,8 +154,8 @@ module tb_ti64_cartesian_x4_frontend_tx;
         case (lane % 4)
           0: value_x = interp_i[lane];
           1: value_x = interp_q[lane];
-          2: value_x = -interp_i[lane];
-          default: value_x = -interp_q[lane];
+          2: value_x = interp_i[lane];
+          default: value_x = interp_q[lane];
         endcase
         value_v = value_x + dsm_state[lane];
         if (value_v > V_MAX) value_v = V_MAX;

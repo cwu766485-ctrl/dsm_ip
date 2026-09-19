@@ -82,6 +82,56 @@ class BpEf2:
         )
 
 
+BpEf4Step = namedtuple("BpEf4Step", [
+    "registered_bit", "core_bit", "signed_output", "quantizer_input",
+])
+
+
+class BpEf4:
+    """Bit-exact experimental Fs/4 EF4 core with NTF (1 + z^-2)^2."""
+
+    def __init__(self, input_width=16, accumulator_width=28, input_shift=0,
+                 saturate=True):
+        self.input_width = input_width
+        self.accumulator_width = accumulator_width
+        self.input_shift = input_shift
+        self.saturate = saturate
+        self.reset()
+
+    @property
+    def positive_level(self):
+        return (1 << (self.input_width - 1)) - 1
+
+    def reset(self):
+        self.error_1 = self.error_2 = self.error_3 = self.error_4 = 0
+        self.output_bit = 1
+
+    def step(self, sample):
+        sample = check_signed(sample, self.input_width, "sample")
+        registered_bit = self.output_bit
+        raw = (sample >> self.input_shift) - 2 * self.error_2 - self.error_4
+        if self.saturate:
+            quantizer_input = saturate_signed(raw, self.accumulator_width)
+        else:
+            quantizer_input = wrap_signed(raw, self.accumulator_width)
+        core_bit = int(quantizer_input >= 0)
+        signed_output = self.positive_level if core_bit else -self.positive_level
+        error_0 = wrap_signed(
+            quantizer_input - signed_output, self.accumulator_width
+        )
+        self.error_4 = self.error_3
+        self.error_3 = self.error_2
+        self.error_2 = self.error_1
+        self.error_1 = error_0
+        self.output_bit = core_bit
+        return BpEf4Step(
+            registered_bit=registered_bit,
+            core_bit=core_bit,
+            signed_output=signed_output,
+            quantizer_input=quantizer_input,
+        )
+
+
 TxBpEf2Step = namedtuple("TxBpEf2Step", [
     "phase", "if_sample", "registered_bit", "rf_bit", "rf_signed", "quantizer_input",
 ])

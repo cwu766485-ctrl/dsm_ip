@@ -40,6 +40,7 @@ $lines = @(
   "$RepoRoot\rtl\tx_bandpass_if\bp_fs4_iq_mixer.sv",
   "$RepoRoot\rtl\tx_bandpass_if\dsm_core_bp_single.sv",
   "$RepoRoot\rtl\tx_bandpass_if\dsm_core_bp_ef2.sv",
+  "$RepoRoot\rtl\tx_bandpass_if\dsm_core_bp_ef4.sv",
   "$RepoRoot\rtl\tx_bandpass_if\tx_bp_if_top.sv",
   "$RepoRoot\rtl\ip\dsm_ip_core.sv",
   "$RepoRoot\rtl\ip\dsm_ip_top.v",

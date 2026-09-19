@@ -33,6 +33,14 @@
         "-lic",
         "set -e; cd /mnt/e/workspace/chip/dsm_ip; bash ./uvm_verif/sim/run_qam_ofdm_bittrue_vcs_linux.sh"
       ]
+    },
+    "asic-dc-preflight": {
+      "description": "Read-only Design Compiler and standard-cell mapping preflight for the existing ASIC flow.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; echo 'DSM_ASIC_STDCELL_DB='\"${DSM_ASIC_STDCELL_DB:-UNSET}\"; bash ./syn/asic/run_stdcell_probe.sh"
+      ]
     }
   }
 }

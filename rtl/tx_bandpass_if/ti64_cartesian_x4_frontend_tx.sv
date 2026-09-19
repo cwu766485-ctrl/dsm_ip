@@ -6,8 +6,9 @@
 //
 // One accepted 16-lane input word contains consecutive baseband I/Q samples.
 // Vector DPD is applied before the x4 interpolation.  The polyphase block
-// produces 64 consecutive I/Q samples, which are mapped to real IF as
-// [I, Q, -I, -Q] and quantized by TI64 for the raw-GT user-data boundary.
+// produces 64 consecutive I/Q samples. TI64 receives the baseband-interleaved
+// [I, Q, I, Q] sequence and applies the sole +,+,-,- Fs/4 translation at its
+// one-bit output. Applying signs here as well would cancel that translation.
 //------------------------------------------------------------------------------
 module ti64_cartesian_x4_frontend_tx #(
   parameter int W = 16,
@@ -47,7 +48,7 @@ module ti64_cartesian_x4_frontend_tx #(
   wire logic interp_out_ready;
   wire logic signed [LANES_OUT*W-1:0] interp_i_vec;
   wire logic signed [LANES_OUT*W-1:0] interp_q_vec;
-  logic signed [LANES_OUT*W-1:0] real_if_vec;
+  logic signed [LANES_OUT*W-1:0] ti_baseband_vec;
   wire logic ti64_in_ready;
 
   dpd_vector16_frontend #(
@@ -74,13 +75,11 @@ module ti64_cartesian_x4_frontend_tx #(
     .out_valid(interp_out_valid), .out_ready(interp_out_ready)
   );
 
-  for (genvar lane = 0; lane < LANES_OUT; lane = lane + 1) begin : g_real_if
+  for (genvar lane = 0; lane < LANES_OUT; lane = lane + 1) begin : g_ti_baseband
     always_comb begin
       unique case (lane % 4)
-        0: real_if_vec[lane*W +: W] = interp_i_vec[lane*W +: W];
-        1: real_if_vec[lane*W +: W] = interp_q_vec[lane*W +: W];
-        2: real_if_vec[lane*W +: W] = -interp_i_vec[lane*W +: W];
-        default: real_if_vec[lane*W +: W] = -interp_q_vec[lane*W +: W];
+        0, 2: ti_baseband_vec[lane*W +: W] = interp_i_vec[lane*W +: W];
+        default: ti_baseband_vec[lane*W +: W] = interp_q_vec[lane*W +: W];
       endcase
     end
   end
@@ -89,7 +88,7 @@ module ti64_cartesian_x4_frontend_tx #(
     .W_IN(W), .ACC_W(ACC_W), .SATURATE(SATURATE)
   ) u_ti64 (
     .clk(clk), .rst_n(rst_n), .in_valid(interp_out_valid),
-    .in_ready(interp_out_ready), .in_x_vec(real_if_vec),
+    .in_ready(interp_out_ready), .in_x_vec(ti_baseband_vec),
     .gt_valid(gt_valid), .gt_ready(gt_ready), .gt_data(gt_data)
   );
 endmodule

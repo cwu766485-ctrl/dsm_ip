@@ -5,7 +5,11 @@ module dpd_memory_poly #(
   parameter integer W = 16,
   parameter integer COEFF_W = 16,
   parameter integer COEFF_FRAC = 14,
-  parameter integer MAX_TAPS = 4
+  parameter integer MAX_TAPS = 4,
+  // When set, each tap window is supplied by a vector wrapper.  This is
+  // required for a packed stream: lane k must see samples k, k-1, ... rather
+  // than the history of lane k from preceding words.
+  parameter integer USE_EXTERNAL_TAPS = 0
 ) (
   input wire clk,
   input wire rst_n,
@@ -18,6 +22,8 @@ module dpd_memory_poly #(
   input wire signed [(MAX_TAPS*COEFF_W)-1:0] c5_im,
   input wire signed [W-1:0] i_in,
   input wire signed [W-1:0] q_in,
+  input wire signed [(MAX_TAPS*W)-1:0] i_tap_vec,
+  input wire signed [(MAX_TAPS*W)-1:0] q_tap_vec,
   input wire in_valid,
   output wire in_ready,
   output wire signed [W-1:0] i_out,
@@ -34,7 +40,10 @@ module dpd_memory_poly #(
   localparam integer ACC_W = 64;
   // The extra register after the complex products gives Vivado a dedicated
   // DSP output stage before the subtract/add and Q2.14 rescale stage.
-  localparam integer PIPE_STAGES = 10;
+  // Stage the four-tap reduction as a balanced registered tree.  This changes
+  // latency only; arithmetic, rounding, saturation and sample ordering remain
+  // identical to the scalar fixed-point model.
+  localparam integer PIPE_STAGES = 11;
   // Keep a legal declaration for the compile-time one-tap configuration.
   localparam integer HISTORY_TAPS = (MAX_TAPS > 1) ? (MAX_TAPS - 1) : 1;
 
@@ -116,8 +125,14 @@ module dpd_memory_poly #(
 
   reg signed [ACC_W-1:0] term_i_s8 [0:MAX_TAPS-1];
   reg signed [ACC_W-1:0] term_q_s8 [0:MAX_TAPS-1];
-  reg signed [ACC_W-1:0] sum_i_s8;
-  reg signed [ACC_W-1:0] sum_q_s8;
+  reg signed [ACC_W-1:0] sum_i_pair0_s8;
+  reg signed [ACC_W-1:0] sum_q_pair0_s8;
+  reg signed [ACC_W-1:0] sum_i_pair1_s8;
+  reg signed [ACC_W-1:0] sum_q_pair1_s8;
+  reg signed [ACC_W-1:0] sum_i_pair0_comb;
+  reg signed [ACC_W-1:0] sum_q_pair0_comb;
+  reg signed [ACC_W-1:0] sum_i_pair1_comb;
+  reg signed [ACC_W-1:0] sum_q_pair1_comb;
   reg signed [ACC_W-1:0] sum_i_s9;
   reg signed [ACC_W-1:0] sum_q_s9;
   wire signed [(2*PWR_W)-1:0] r4_full_s2 [0:MAX_TAPS-1];
@@ -163,11 +178,18 @@ module dpd_memory_poly #(
 
   integer comb_tap;
   always @* begin
-    sum_i_s8 = {ACC_W{1'b0}};
-    sum_q_s8 = {ACC_W{1'b0}};
+    sum_i_pair0_comb = {ACC_W{1'b0}};
+    sum_q_pair0_comb = {ACC_W{1'b0}};
+    sum_i_pair1_comb = {ACC_W{1'b0}};
+    sum_q_pair1_comb = {ACC_W{1'b0}};
     for (comb_tap = 0; comb_tap < MAX_TAPS; comb_tap = comb_tap + 1) begin
-      sum_i_s8 = sum_i_s8 + term_i_s8[comb_tap];
-      sum_q_s8 = sum_q_s8 + term_q_s8[comb_tap];
+      if (comb_tap < ((MAX_TAPS + 1) / 2)) begin
+        sum_i_pair0_comb = sum_i_pair0_comb + term_i_s8[comb_tap];
+        sum_q_pair0_comb = sum_q_pair0_comb + term_q_s8[comb_tap];
+      end else begin
+        sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];
+        sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];
+      end
     end
   end
 
@@ -177,6 +199,10 @@ module dpd_memory_poly #(
       valid_pipe <= {PIPE_STAGES{1'b0}};
       sample_count <= 32'd0;
       saturation_count <= 32'd0;
+      sum_i_pair0_s8 <= {ACC_W{1'b0}};
+      sum_q_pair0_s8 <= {ACC_W{1'b0}};
+      sum_i_pair1_s8 <= {ACC_W{1'b0}};
+      sum_q_pair1_s8 <= {ACC_W{1'b0}};
       sum_i_s9 <= {ACC_W{1'b0}};
       sum_q_s9 <= {ACC_W{1'b0}};
       for (tap = 0; tap < MAX_TAPS-1; tap = tap + 1) begin
@@ -197,11 +223,18 @@ module dpd_memory_poly #(
       end
     end else if (pipe_ce) begin
       valid_pipe <= {valid_pipe[PIPE_STAGES-2:0], in_valid};
-      sum_i_s9 <= sum_i_s8;
-      sum_q_s9 <= sum_q_s8;
+      sum_i_pair0_s8 <= sum_i_pair0_comb;
+      sum_q_pair0_s8 <= sum_q_pair0_comb;
+      sum_i_pair1_s8 <= sum_i_pair1_comb;
+      sum_q_pair1_s8 <= sum_q_pair1_comb;
+      sum_i_s9 <= sum_i_pair0_s8 + sum_i_pair1_s8;
+      sum_q_s9 <= sum_q_pair0_s8 + sum_q_pair1_s8;
 
       for (tap = 0; tap < MAX_TAPS; tap = tap + 1) begin
-        if (tap == 0) begin
+        if (USE_EXTERNAL_TAPS != 0) begin
+          i_s0[tap] <= i_tap_vec[(tap*W) +: W];
+          q_s0[tap] <= q_tap_vec[(tap*W) +: W];
+        end else if (tap == 0) begin
           i_s0[tap] <= i_in;
           q_s0[tap] <= q_in;
         end else begin

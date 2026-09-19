@@ -137,7 +137,11 @@ module dsm_core_mash11 #(
       e1_state      <= '0;
       e2_state      <= '0;
       e1_reg        <= '0;
-      y2_pm_prev    <= 3'sd0;
+      // This delay element is the z^-1 cancellation state.  The checked P0
+      // fixed-point contract initializes it to zero, so the first enabled
+      // sample may contain a transient level before the normal four-level
+      // MASH sequence begins.
+      y2_pm_prev    <= '0;
       y1_pm_reg     <= PM_POS;
       y1_bit_reg    <= 1'b1;
       y1_int_reg    <= '0;

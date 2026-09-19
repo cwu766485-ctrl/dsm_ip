@@ -55,9 +55,17 @@ module tx_bp_if_top #(
         .y_bit(rf_bit), .y_signed(rf_signed),
         .s1_state(s1_state), .s2_state(s2_state)
       );
-    end else begin : g_bp_ef2
+    end else if (BP_ALGORITHM == 1) begin : g_bp_ef2
       logic signed [ACC_W-1:0] bp_state;
       dsm_core_bp_ef2 #(
+        .W_IN(W), .ACC_W(ACC_W), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)
+      ) u_bp_dsm (
+        .clk(clk), .rst_n(rst_n), .enable(if_valid), .x_in(if_sample_reg),
+        .y_bit(rf_bit), .y_signed(rf_signed), .v_state(bp_state)
+      );
+    end else begin : g_bp_ef4
+      logic signed [ACC_W-1:0] bp_state;
+      dsm_core_bp_ef4 #(
         .W_IN(W), .ACC_W(ACC_W), .IN_SHIFT(IN_SHIFT), .SATURATE(SATURATE)
       ) u_bp_dsm (
         .clk(clk), .rst_n(rst_n), .enable(if_valid), .x_in(if_sample_reg),

@@ -36,12 +36,14 @@ without updating golden models and verification evidence.
  -> 16-way vector DPD (bypass or memoryless polynomial)
  -> x4 vector polyphase FIR
  -> 64 ordered I/Q samples
- -> [I, Q, -I, -Q]
- -> 64 independent LP1 TI64 lanes
+ -> [I, Q, I, Q]
+ -> 64 independent LP1 TI64 lanes; one output-side +,+,-,- Fs/4 translation
  -> ordered 64-bit raw-GTH user word
 ```
 
-Lane 0 is the earliest temporal sample. TI64 is a 64-way time-interleaved LP1
+Lane 0 is the earliest temporal sample. The Fs/4 translation is owned exactly
+once by TI64; applying it both before and after the lane quantizers cancels
+under odd-symmetric lane quantization. TI64 is a 64-way time-interleaved LP1
 implementation; it is not temporal BP-EFDSM2 and it is not MASH. The FIR
 retains seven source-rate history samples across words. Its five elastic stages
 preserve `(low + middle) + high` fixed-point arithmetic, rounding, saturation,
