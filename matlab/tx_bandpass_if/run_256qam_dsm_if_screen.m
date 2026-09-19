@@ -10,7 +10,7 @@ function results = run_256qam_dsm_if_screen(varargin)
   cfg.bp3l_threshold_num = 1; cfg.bp3l_threshold_den = 2;
   for k = 1:2:numel(varargin), cfg.(varargin{k}) = varargin{k+1}; end
   if ~exist(cfg.out_dir,'dir'), mkdir(cfg.out_dir); end
-  names = ["cartesian_ef1" "ti64_lp1" "bpdsm2_single" "bp_efdsm2" "bp_efdsm4" "bp3l_efdsm2" "bp3l_efdsm4" "crfb_smash2" "ti64_bp2" "smash_bp2"];
+  names = ["cartesian_ef1" "ti64_lp1" "bpdsm2_single" "bp_efdsm2" "bp_efdsm4" "bp3l_efdsm2" "bp3l_efdsm4" "ti64_bp2" "smash_bp2"];
   rows = repmat(empty_row(),numel(cfg.bandwidth_hz)*numel(names),1); r = 0;
   for bw = cfg.bandwidth_hz
     [x, actual_bw] = make_ofdm(cfg,bw);
@@ -65,9 +65,6 @@ function y = modulate(x,name,c)
     case "smash_bp2"
       % Existing BP MASH1-1 is multilevel; retain its combiner amplitude.
       in=xi; in(ph==1)=xq(ph==1); in(ph==2)=-xi(ph==2); in(ph==3)=-xq(ph==3); y=double(bp_mash11_exploratory_model(in));
-    case "crfb_smash2"
-      in=xi; in(ph==1)=xq(ph==1); in(ph==2)=-xi(ph==2); in(ph==3)=-xq(ph==3);
-      o=crfb_smash2_fs4_model(in); y=double(o.v1)/32767;
   end
 end
 

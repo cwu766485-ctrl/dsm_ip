@@ -19,11 +19,11 @@ SNDR `>= 29.12 dB`。
 `-> 16-lane, shared-history Q2.14 4-tap 1/3/5-order memory-DPD interface`
 `-> x2 polyphase`
 `-> 32-lane thermometric Cartesian TID`
-`-> two 64-bit raw words`
-`-> dual 14-Gb/s GTH / two switching-PA paths`
-`-> equal-weight combiner -> BPF -> Fs/4 DDC -> OFDM receiver`。
+`-> four 64-bit thermo5 raw words`
+`-> four serializer / switching-PA-model paths`
+`-> equal-weight behavioural combiner -> BPF -> Fs/4 DDC -> OFDM receiver`。
 输入 lane 0 是最早样本；两级 x2 不填零 lane。
-两条 PA bitstream 等权合成为 `{−1, 0, +1}` 三电平等效 RF 输出。
+四条 PA-model bitstream 采用等权 thermometric 合成 `{−2, -1, 0, +1, +2}` 五电平等效输出；当前没有四路物理 PA/GTH 板级证据。
 启动后 feeder FIFO 必须连续供样；TID 输入 underflow 视为错误，不允许插入 bubble。
 ## 已签核的数字与时序证据
 - 完整前端 MATLAB-to-XSim：64 ingress words / 2,048 最终复样本，两条 PA raw stream 均为 0 mismatch。
@@ -68,7 +68,7 @@ SNDR `>= 29.12 dB`。
 - memory-DPD 尚未通过泛化门禁，禁止写入 RTL/FPGA 寄存器。
 - 板级缺少 JTAG target，故尚无 GTH loopback/BERT；Rocky 的 `dc_shell` 可用但 `DSM_ASIC_STDCELL_DB` 未设置，ASIC 综合尚无合法映射库。
 - 当前 BPF 是行为级二阶模型，只用于可重复的数字系统仿真。
-- 高阶 BP/EFDSM/CRFB 方案未证明可流水 TID，不得以 scalar 或 temporal64 组合合约冒充 218.75 MHz 实现。
+- 已移除 CRFB temporal8/temporal64 和 TID-MASH11 实验实现：它们没有形成可部署的 64-lane 闭环。保留标量 BP/EFDSM/MASH 基础 IP 与 P0 回归；不再维护这些高阶并行递推候选。
 ## 当前验收矩阵
 ### A. 样本节拍
 - 外部输入：8 个复样本 / 1.75 GHz。
@@ -115,7 +115,7 @@ SNDR `>= 29.12 dB`。
 ## 下一步（按依赖顺序）
 1. 冻结数字签核 baseline：当前 17.08984375 MHz 端到端 256-QAM case、固定向量、profile、接收机和评分脚本。
 2. 五电平 thermo5 的 raw Fs/4 DDC 已在 250 MHz 三组隔离 seed 通过；完整两级 x2 的严格 fair-RMS=0.095 复验仅 1/3 通过，但不裁剪的 peak-normalized 12/10/12-symbol、mild-DPA/BPF/DDC 三 seed 全部通过（最差 EVM `3.1831 %` / SNDR `29.9432 dB`，全部 raw mismatch 0）。同口径的 Q2.14 四 tap memory-DPD 仅第 3 组微幅改善、前两组 validation/held-out 退化，部署拒绝，RTL 保持 identity。这是参数化仿真的完整 250-MHz 通过点，不是恒定 RMS、实测 PA、四路 GTH 或板级签核。下一步扫 step/drive/polyphase，保持这组三 seed 资格门槛；只有稳健改善才再次训练 DPD。
-3. 两级 MASH-TID 已有 RTL/XSim/OOC 证据但 256-QAM STF 失败；在推导并验收新的标量 stage/error-transfer 方程前，禁止堆叠更多 MASH stage。
+3. 冻结并清理未闭环的 CRFB/MASH temporal 候选；若将来重启，必须先有可流水 state-transfer 架构与独立标量等价证明，不能复用已移除的组合链实验。
 4. Q2.14 streaming frame-gain sideband 与 `8-lane -> x2 -> identity memory-DPD -> x2 -> thermo5` 全前端已完成：64 word / 2,048 输出样本 / 四平面 MATLAB-to-XSim 0 mismatch；ZU15EG 218.75-MHz routed OOC PASS，WNS `+0.178 ns`、WHS `+0.027 ns`、70,233 LUT / 88,839 FF / 2,064 DSP / 0 BRAM。OOC 的 `HD.CLK_SRC` 与边界 `HD.PARTPIN_LOCS` warning 限制其为 fabric 证据，不能替代 GTH/板级签核。
 5. 已定义四支路 serializer/PA 合同并完成全链路 XSim：共享 218.75-MHz user clock、64x 14-Gb/s bit0-first、公共 reset、all-or-none ready；完整 thermo5 前端经四个 serializer/loopback 恢复 64 word / 每支路 4,096 bit，逐 word PASS。当前板仅有 dual-SFP 映射；四路物理 GTH/PA 的引脚、refclk 与 reset 资源尚未提供，不得伪称板级验证。
 6. 在同一三 seed 门槛扫 step/drive/polyphase；memoryless/LUT/4-tap DPD 仅在 validation、held-out EVM/SNDR/ACLR 全部改善且不限幅时重训和部署。
@@ -132,7 +132,8 @@ SNDR `>= 29.12 dB`。
 - 同一 peak-normalized 250-MHz 三 seed 的 Q2.14 四 tap memory-DPD：seed `101` 从 `2.8221 % / 30.9884 dB` 退化至 `2.9352 % / 30.6472 dB`，seed `307` 从 `3.0846 % / 30.2161 dB` 退化至 `3.1281 % / 30.0945 dB`，仅 seed `503` 从 `3.1830 % / 29.9432 dB` 微幅至 `3.1796 % / 29.9525 dB`。前两组 validation 亦退化，故 `HeldOutDeploymentAccepted=0`，DPD RTL 系数继续 identity。
 - 最新 MATLAB P0：`LPDSM`、`LPDSM2`、`EFDSM`、`EFDSM2`、`MASH11`、`MASH111`、`MASH22` 均为 65,536 samples / 0 mismatch / PASS。
 - 250-MHz 插值探索：6-tap causal Lagrange 的 ideal-PA EVM 为 `5.0474 %`，优于 legacy 4-tap 的 `5.4454 %` 但仍失败；31-tap windowed-sinc 试验因插值群延迟与当前 OFDM crop/equalizer 契约不一致而为 `5.7814 %`，不进入 RTL。默认 MATLAB/RTL 仍为原 4-tap bit-true 核。
-- `tid32_mash11_fs4_multipa_tx` 本轮 XSim 再次逐 bit PASS（128 words / 4,096 samples）；其既有 OOC 仍为 WNS `+1.315 ns`、WHS `+0.029 ns`，但 OFDM STF 失败，未进入 GTH。
+- 已清除未闭环的 CRFB temporal8/temporal64 和 TID-MASH11 实验 RTL、模型、TB 及 OOC 脚本；基础标量 DSM P0 回归不依赖它们。
+- 清理后 MATLAB P0（7×65,536 samples）、项目 P0 XSim（7/7）和 IP smoke（5/5）均 PASS。
 - 本轮全前端 routed OOC 与全部回归：thermo5 frame-gain / 两级 x2 / identity memory-DPD wrapper 为 WNS `+0.178 ns`、WHS `+0.027 ns`、0 critical warning / 0 error；前端 XSim 64 word / 2,048 samples / 四平面 0 mismatch，MATLAB P0 7/7、项目 P0 XSim 7/7 与 IP smoke 5/5 均 PASS。
 - 四支路 serializer/PA 数字链路：完整前端到四个 raw-64 bit0-first serializer/loopback 的 XSim PASS，64 word、每路 4,096 serial bits；共享 user/serial clock 比为 218.75 MHz/14 Gb/s，公共 reset 与 all-or-none ready 均被验证。它不是 GT 或板级 BERT。
 - 已完成模块和历史细节见 `docs/exec-plans/completed/20260917-152449-completed-history.md`。

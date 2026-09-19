@@ -1,5 +1,13 @@
 # Update Log
 
+## 2026-09-19 - Retire unclosed temporal BP/SMASH experiments
+
+- Removed the CRFB-SMASH temporal8/temporal64 prototype and the TID32 MASH1-1 experiment, including their dedicated MATLAB models, vectors, XSim testbenches, and OOC scripts.  They had useful research evidence but did not constitute a deployable 64-lane streaming implementation.
+- Retained scalar BP/EFDSM/MASH IP, the P0 regression set, and the thermo5 frontend.  The behavioural screening script no longer advertises the removed CRFB candidate.
+- Rationale: keep the repository focused on the bit-true, routed thermo5 digital frontend and prevent unclosed experimental temporal chains from being mistaken for a 218.75-MHz implementation.
+- Checks after removal: MATLAB P0 passed all seven designs at 65,536 samples with zero mismatch; XSim P0 passed 7/7; IP smoke passed top, AXI, active-reset, BP-AXI, and DPD-v1.1.
+- Remaining limitation: this cleanup does not create four physical GTH or PA paths; serializer/PA evidence remains simulation-only until board resources exist.
+
 ## 2026-09-19 - Four-path raw serializer loopback contract
 
 - Added a simulation-only four-path raw-64 serializer/receiver model and a full thermo5 frontend loopback test.  Each path serializes `TXDATA[0]` first at a 64x serial clock, and all paths share reset and word cadence.
