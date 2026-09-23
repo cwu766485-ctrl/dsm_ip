@@ -924,3 +924,12 @@
   mapped runs emit reports; power is vectorless without SAIF.
 - Fixed `syn/asic/parse_dc_reports.py` to run on Rocky's Python 3.6 (removed
   unsupported future annotations and newer union/generic type syntax).
+- Project organization pass: generated `docs/ai-native/` navigation, added the
+  physical migration map and target skeleton directories, and reduced the root
+  `AGENTS.md` to 130 lines. `verif/` and `uvm_verif/` were trial-moved then
+  reverted before consumer edits because their root-relative filelists and
+  launchers are not yet migration-closed; they are documented protected
+  compatibility boundaries.
+- The active thermo3 DC session ended with `Process terminated by hangup` during
+  compile mapping optimization. Intermediate checks exist, but no final ASIC
+  area/timing/power/netlist result is claimed.

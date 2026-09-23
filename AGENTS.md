@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 ## Project
 
@@ -108,3 +108,23 @@ reproduced, a root cause is confirmed, an implementation or verification
 milestone materially changes, work is paused/handed off, or the next action
 changes. Move completed module plans to `docs/exec-plans/inactive/`; do not
 use the frontier as a chat transcript.
+
+
+## Navigation and current status
+
+Read `docs/ai-native/repository-map.md`, `docs/ai-native/design-verification-index.md`, `docs/ai-native/commands.md`, and `docs/exec-plans/active/execution-frontier.md` before work.
+
+- ASIC manifest: `eda.yaml`; DC top: `tid32_thermo3_axis_frontend_tx_asic_dc`.
+- FPGA thermo3/thermo5 routed OOC evidence is signed off at 218.75 MHz.
+- TSMC28 DC thermo3/thermo5 runs are unfinished; do not claim ASIC PASS until mapped reports and netlists exist.
+- `rtl/` is canonical RTL; `verif/` is directed DV; `uvm_verif/` is Linux UVM/formal. They remain root paths because established filelists and scripts consume them directly; see the migration map.
+- `syn/asic/` is the ASIC DC flow; `fpga/` is the vendor/device boundary; `matlab/` is the algorithm source of truth.
+
+Before changes: run `git status`, preserve generated/vendor/PDK content, and update the frontier after each non-trivial flow. Required smoke commands are listed in `docs/ai-native/commands.md`. Never treat unavailable tools or intermediate reports as PASS.
+
+## Migration status
+
+- Physical migration map: `docs/exec-plans/active/physical-migration-map.json`.
+- `verif/` and `uvm_verif/` are explicitly retained protected compatibility boundaries for now; a move would require updating and validating many root-relative filelists and scripts.
+- Canonical target skeleton now includes `docs/spec/`, `docs/architecture/`, `docs/verification/`, `docs/exec-plans/{active,completed}/`, `tools/hw/`, `config/`, and `runs/`.
+<!-- organize-chip-project:generated-end -->

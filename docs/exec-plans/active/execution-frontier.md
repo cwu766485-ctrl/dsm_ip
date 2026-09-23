@@ -2,6 +2,20 @@
 
 ## Mission
 
+Repository organization is now tracked by
+`docs/exec-plans/active/physical-migration-map.json`. The AI-native navigation
+layer is generated under `docs/ai-native/`; `rtl/`, `verif/`, and `uvm_verif/`
+remain canonical paths. A trial move of verification trees was reverted before
+any consumer changed because the root-relative filelist/script closure was not
+yet validated.
+
+The first full TSMC28 thermo3 DC run (`syn/reports/asic_thermo3_tsmc28_20260923_213624`)
+was terminated by hangup during `compile_ultra` mapping optimization. It produced
+`library.rpt`, `check_design.rpt`, and `check_timing_pre.rpt`, but no final area,
+setup/hold, power, DDC, or mapped-netlist reports. This is an incomplete run, not
+an ASIC timing or synthesis PASS. The next attempt should use a persistent Rocky
+terminal/session and a bounded DC compile strategy before retrying thermo5.
+
 Deliver a reviewable FPGA/ASIC-oriented digital transmitter IP handoff.
 
 - Device: `xczu15eg-ffvb1156-2-i` for FPGA evidence.

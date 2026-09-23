@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "project_root": ".",
+  "entries": [
+    {
+      "from": "verif/",
+      "to": "dv/",
+      "role": "directed simulation, block and subsystem verification",
+      "action": "retain_protected",
+      "consumers": ["rtl/filelist_p0.f", "README.md", "docs/VPLAN.md", "scripts", "fpga/zu15eg/scripts"],
+      "validation": ["run_xsim_p0_all.ps1", "run_xsim_ip_smoke.ps1", "run_xsim_gt_link_bringup_bist.ps1"],
+      "status": "complete",
+      "reason": "Root-relative XSim filelists, runners, READMEs, and scripts consume verif/ directly; migration was reverted before any functional path was changed."
+    },
+    {
+      "from": "uvm_verif/",
+      "to": "dv/uvm/",
+      "role": "Linux VCS/UVM, formal harness, Python reference model",
+      "action": "retain_protected",
+      "consumers": ["README.md", "docs/VPLAN.md", "verif scripts", "rtl/filelists"],
+      "validation": ["make -C dv/uvm/sim check-tools"],
+      "status": "complete",
+      "reason": "VCS/UVM Makefiles, filelists, formal scripts, and Python launchers consume uvm_verif/ directly; migration was reverted before any functional path was changed."
+    },
+    {
+      "from": "syn/constraints/",
+      "to": "constraints/",
+      "role": "FPGA timing constraints",
+      "action": "move",
+      "consumers": ["syn Tcl scripts"],
+      "validation": ["Vivado OOC flow source-resolution check"],
+      "status": "planned"
+    },
+    {
+      "from": "scripts/",
+      "to": "tools/legacy-scripts/",
+      "role": "existing project entry scripts",
+      "action": "retain_protected",
+      "reason": "many established Windows/WSL commands use root-relative script paths; retain until a closed path update is validated",
+      "status": "planned"
+    },
+    {
+      "from": "fpga/",
+      "to": "fpga/",
+      "role": "vendor/device-specific implementation boundary",
+      "action": "retain_protected",
+      "reason": "Vivado, GT Wizard, board and package collateral are tool/device scoped",
+      "status": "planned"
+    },
+    {
+      "from": "matlab/",
+      "to": "matlab/",
+      "role": "algorithm reference and RF evaluation boundary",
+      "action": "retain_protected",
+      "reason": "existing MATLAB entry points and generated-output conventions are canonical",
+      "status": "planned"
+    }
+  ]
+}
