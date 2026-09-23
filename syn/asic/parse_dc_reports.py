@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Extract portable PPA summaries from Design Compiler text reports."""
 
-from __future__ import annotations
-
 import argparse
 import csv
 import re
 from pathlib import Path
+from typing import Dict, Optional, Tuple
 
 
 FIELDS = [
@@ -22,7 +21,7 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
 
 
-def first_float(text: str, pattern: str) -> float | None:
+def first_float(text: str, pattern: str) -> Optional[float]:
     match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
     return float(match.group(1)) if match else None
 
@@ -32,8 +31,8 @@ def first_text(text: str, pattern: str) -> str:
     return match.group(1).strip() if match else ""
 
 
-def metadata(path: Path) -> dict[str, str]:
-    values: dict[str, str] = {}
+def metadata(path: Path) -> Dict[str, str]:
+    values = {}  # type: Dict[str, str]
     for line in read_text(path).splitlines():
         if "=" in line:
             key, value = line.split("=", 1)
@@ -41,14 +40,14 @@ def metadata(path: Path) -> dict[str, str]:
     return values
 
 
-def power_to_mw(value: float | None, unit: str) -> float | None:
+def power_to_mw(value: Optional[float], unit: str) -> Optional[float]:
     if value is None:
         return None
     scale = {"w": 1000.0, "mw": 1.0, "uw": 0.001, "nw": 0.000001}
     return value * scale.get(unit.lower(), 1.0)
 
 
-def parse_power(text: str) -> tuple[float | None, float | None, float | None]:
+def parse_power(text: str) -> Tuple[Optional[float], Optional[float], Optional[float]]:
     dynamic = first_float(text, r"Total\s+Dynamic\s+Power\s*=\s*([0-9.eE+-]+)")
     leakage = first_float(text, r"Cell\s+Leakage\s+Power\s*=\s*([0-9.eE+-]+)")
     total_match = re.search(r"Total\s+Power\s*=\s*([0-9.eE+-]+)\s*([mun]?W)", text, re.I)
@@ -68,11 +67,11 @@ def parse_power(text: str) -> tuple[float | None, float | None, float | None]:
     return dynamic_mw, (leakage_mw * 1000.0 if leakage_mw is not None else None), total_mw
 
 
-def number(value: float | None) -> str:
+def number(value: Optional[float]) -> str:
     return "" if value is None else f"{value:.6f}"
 
 
-def parse_run(run_dir: Path) -> dict[str, str]:
+def parse_run(run_dir: Path) -> Dict[str, str]:
     reports = run_dir / "reports"
     meta = metadata(run_dir / "metadata.txt")
     timing = read_text(reports / "timing.rpt")
@@ -110,7 +109,7 @@ def parse_run(run_dir: Path) -> dict[str, str]:
     }
 
 
-def write_csv(path: Path, rows: list[dict[str, str]]) -> None:
+def write_csv(path: Path, rows):
     with path.open("w", newline="", encoding="ascii") as handle:
         writer = csv.DictWriter(handle, fieldnames=FIELDS)
         writer.writeheader()

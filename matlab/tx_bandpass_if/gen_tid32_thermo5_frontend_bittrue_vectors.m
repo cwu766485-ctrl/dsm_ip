@@ -1,6 +1,6 @@
 function gen_tid32_thermo5_frontend_bittrue_vectors(output_dir, words, seed, step)
 %GEN_TID32_THERMO5_FRONTEND_BITTRUE_VECTORS Packed reference for frame-gain,
-% two x2 interpolators, identity Q2.14 memory-DPD, and five-level TID.
+% two x2 interpolators, DPD-free primary path, and five-level TID.
 if nargin < 1, output_dir = pwd; end
 if nargin < 2, words = 64; end
 if nargin < 3, seed = 20260918; end
@@ -15,14 +15,13 @@ qq(:,1) = int64([32767;24000;1;0;-1;-12000;-24000;-32768]);
 frame_start = false(words,1); frame_start([1, 17, 39]) = true;
 frame_gain = repmat(int64(16384),words,1);
 frame_gain(1) = int64(16384); frame_gain(17) = int64(14336); frame_gain(39) = int64(12288);
-h1i = zeros(3,1,'int64'); h1q = h1i; hdi = h1i; hdq = h1i; h2i = h1i; h2q = h1i;
+h1i = zeros(3,1,'int64'); h1q = h1i; h2i = h1i; h2q = h1i;
 state = []; pa = false(64,words,4); active_gain = int64(16384);
 for word = 1:words
     if frame_start(word), active_gain = frame_gain(word); end
     [gi,gq] = local_apply_gain(ii(:,word),qq(:,word),active_gain);
     [x1i,x1q,h1i,h1q] = local_x2(gi,gq,h1i,h1q);
-    [di,dq,hdi,hdq] = local_identity_dpd(x1i,x1q,hdi,hdq);
-    [x2i,x2q,h2i,h2q] = local_x2(di,dq,h2i,h2q);
+    [x2i,x2q,h2i,h2q] = local_x2(x1i,x1q,h2i,h2q);
     [raw_word,state] = tid_thermo5_pipelined_step(x2i,x2q,state,w,step);
     for branch = 1:4
         pa(:,word,branch) = raw_word(:,branch);
@@ -58,12 +57,6 @@ for lane=1:lanes
     yo_i(2*lane)=local_round_sat(ai,14); yo_q(2*lane)=local_round_sat(aq,14);
 end
 next_i=flipud(xi(end-2:end)); next_q=flipud(xq(end-2:end));
-end
-
-function [yo_i,yo_q,next_i,next_q] = local_identity_dpd(xi,xq,history_i,history_q)
-% Keep the same packed history contract as the vector memory DPD while its
-% production coefficient set is identity (one active tap, c1=1, c3=c5=0).
-yo_i=xi; yo_q=xq; next_i=flipud(xi(end-2:end)); next_q=flipud(xq(end-2:end));
 end
 
 function y=local_round_sat(x,frac), if x>=0, y=bitsra(x+bitshift(int64(1),frac-1),frac); else, y=-bitsra(-x+bitshift(int64(1),frac-1),frac); end, y=local_sat16(y); end

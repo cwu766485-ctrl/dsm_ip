@@ -36,7 +36,8 @@ module ti64_raw_gt14_sfp0_loopback_top (
         .tx_ready       (tx_ready),
         .rx_word        (rx_word),
         .rx_usrclk2     (rx_usrclk2),
-        .rx_ready       (rx_ready)
+        .rx_ready       (rx_ready),
+        .rx_slide       (1'b0)
     );
 
     // Active-high on this board.  Keep the optical transmitter disabled

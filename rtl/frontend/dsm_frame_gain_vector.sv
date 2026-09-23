@@ -6,7 +6,7 @@
 //
 // `in_frame_start` is asserted only with an accepted first word.  Its Q2.14
 // gain is applied to that same word and retained for subsequent words until
-// the next accepted frame start.  The module has two elastic stages, so it
+// the next accepted frame start.  The module has three elastic stages, so it
 // neither inserts nor removes samples under downstream backpressure.
 //------------------------------------------------------------------------------
 module dsm_frame_gain_vector #(
@@ -34,7 +34,10 @@ module dsm_frame_gain_vector #(
   logic                                    s0_valid;
   logic signed [LANES*W-1:0]               s0_i_vec, s0_q_vec;
   logic signed [GAIN_W-1:0]                s0_gain, active_gain;
-  wire logic s1_ready = !out_valid || out_ready;
+  logic                                    s1_valid;
+  logic signed [LANES*PROD_W-1:0]          s1_prod_i, s1_prod_q;
+  wire logic s2_ready = !out_valid || out_ready;
+  wire logic s1_ready = !s1_valid || s2_ready;
   wire logic s0_ready = !s0_valid || s1_ready;
 
   assign in_ready = enable && s0_ready;
@@ -57,23 +60,38 @@ module dsm_frame_gain_vector #(
   endfunction
 
   always_ff @(posedge clk) begin : p_gain
-    logic signed [PROD_W-1:0] prod_i, prod_q;
     if (!rst_n || !enable) begin
       s0_valid <= 1'b0;
+      s1_valid <= 1'b0;
       out_valid <= 1'b0;
       active_gain <= RESET_GAIN;
       s0_gain <= RESET_GAIN;
+      s1_prod_i <= '0;
+      s1_prod_q <= '0;
       out_i_vec <= '0;
       out_q_vec <= '0;
     end else begin
+      // Product and round/saturate are deliberately in separate elastic
+      // stages.  At 218.75 MHz this prevents a DSP multiply, signed round,
+      // saturation comparison, and vector output register from sharing one
+      // cycle.  The frame contract and arithmetic are otherwise unchanged.
+      if (s2_ready) begin
+        out_valid <= s1_valid;
+        if (s1_valid) begin
+          for (int lane = 0; lane < LANES; lane = lane + 1) begin
+            out_i_vec[lane*W +: W] <= round_sat(s1_prod_i[lane*PROD_W +: PROD_W]);
+            out_q_vec[lane*W +: W] <= round_sat(s1_prod_q[lane*PROD_W +: PROD_W]);
+          end
+        end
+      end
       if (s1_ready) begin
-        out_valid <= s0_valid;
+        s1_valid <= s0_valid;
         if (s0_valid) begin
           for (int lane = 0; lane < LANES; lane = lane + 1) begin
-            prod_i = $signed(s0_i_vec[lane*W +: W]) * $signed(s0_gain);
-            prod_q = $signed(s0_q_vec[lane*W +: W]) * $signed(s0_gain);
-            out_i_vec[lane*W +: W] <= round_sat(prod_i);
-            out_q_vec[lane*W +: W] <= round_sat(prod_q);
+            s1_prod_i[lane*PROD_W +: PROD_W] <=
+              $signed(s0_i_vec[lane*W +: W]) * $signed(s0_gain);
+            s1_prod_q[lane*PROD_W +: PROD_W] <=
+              $signed(s0_q_vec[lane*W +: W]) * $signed(s0_gain);
           end
         end
       end

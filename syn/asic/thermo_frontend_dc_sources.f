@@ -1,0 +1,17 @@
+rtl/axis/dsm_reset_sync.sv
+rtl/axis/dsm_async_fifo.sv
+rtl/axis/dsm_axis14_to_core8_cdc.sv
+rtl/frontend/dsm_frame_gain_vector.sv
+rtl/dpd/dpd_poly.v
+rtl/dpd/dpd_memory_poly.v
+rtl/dpd/dpd_vector16_memory_poly.sv
+rtl/dpd/dpd_vector_elastic_buffer.sv
+rtl/interp/dsm_interp_x2_polyphase_vector.sv
+rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv
+rtl/tx_bandpass_if/tid32_thermo3_fs4_multipa_tx.sv
+rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv
+rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv
+rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv
+rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv
+rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv
+syn/rtl/tid32_thermo_asic_frontend_dc.sv

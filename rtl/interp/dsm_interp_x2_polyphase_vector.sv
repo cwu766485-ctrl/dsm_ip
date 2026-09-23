@@ -11,7 +11,8 @@
 //   [5, 15, -5, 1] / 16.
 //
 // The three-sample history is transferred at every accepted vector word.  Two
-// elastic pipeline stages keep DSP multiplication, arithmetic and output
+// elastic pipeline stages keep DSP multiplication, accumulation, rounding and
+// output
 // backpressure separate.
 //------------------------------------------------------------------------------
 module dsm_interp_x2_polyphase_vector #(
@@ -37,16 +38,28 @@ module dsm_interp_x2_polyphase_vector #(
 
   logic signed [W-1:0] history_i [0:HISTORY-1];
   logic signed [W-1:0] history_q [0:HISTORY-1];
-  logic s0_valid;
+  // Per-lane copies prevent one word-valid net from directly driving every
+  // lane's DSP CE.  lane 0 remains the formal word transaction; assertions
+  // prove all replicas stay identical.
+  (* KEEP = "TRUE", MAX_FANOUT = 4 *) logic [LANES_IN-1:0] s0_valid_lane;
   logic signed [LANES_IN*W-1:0] s0_i_vec, s0_q_vec;
   logic signed [W-1:0] s0_history_i [0:HISTORY-1];
   logic signed [W-1:0] s0_history_q [0:HISTORY-1];
-  logic s1_valid;
+  (* KEEP = "TRUE", MAX_FANOUT = 4 *) logic [LANES_IN-1:0] s1_valid_lane;
   logic signed [LANES_IN*W-1:0] s1_phase0_i, s1_phase0_q;
   logic signed [ACC_W-1:0] s1_prod_i [0:LANES_IN-1][0:3];
   logic signed [ACC_W-1:0] s1_prod_q [0:LANES_IN-1][0:3];
+  logic s2_valid;
+  logic signed [LANES_IN*W-1:0] s2_phase0_i, s2_phase0_q;
+  // Keep the accumulation width identical to the legacy procedural
+  // accumulator.  The new register changes latency only, not arithmetic.
+  logic signed [ACC_W-1:0] s2_acc_i [0:LANES_IN-1];
+  logic signed [ACC_W-1:0] s2_acc_q [0:LANES_IN-1];
 
-  wire logic s2_ready = !out_valid || out_ready;
+  wire logic s0_valid = s0_valid_lane[0];
+  wire logic s1_valid = s1_valid_lane[0];
+  wire logic s3_ready = !out_valid || out_ready;
+  wire logic s2_ready = !s2_valid || s3_ready;
   wire logic s1_ready = !s1_valid || s2_ready;
   wire logic s0_ready = !s0_valid || s1_ready;
   assign in_ready = enable && s0_ready;
@@ -72,8 +85,9 @@ module dsm_interp_x2_polyphase_vector #(
     logic signed [W-1:0] si, sq;
     logic signed [ACC_W-1:0] acc_i, acc_q;
     if (!rst_n || !enable) begin
-      s0_valid <= 1'b0;
-      s1_valid <= 1'b0;
+      s0_valid_lane <= '0;
+      s1_valid_lane <= '0;
+      s2_valid <= 1'b0;
       out_valid <= 1'b0;
       out_i_vec <= '0;
       out_q_vec <= '0;
@@ -82,26 +96,43 @@ module dsm_interp_x2_polyphase_vector #(
         history_q[h] <= '0;
       end
     end else begin
+      if (s3_ready) begin
+        out_valid <= s2_valid;
+        // The output payload is deliberately written even for an invalid
+        // elastic slot.  It is ignored whenever out_valid is low, while this
+        // prevents word_valid from becoming a high-fanout CE on every output
+        // register.  A valid word is still strictly word-atomic.
+        for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
+            out_i_vec[(2*lane)*W +: W] <= s2_phase0_i[lane*W +: W];
+            out_q_vec[(2*lane)*W +: W] <= s2_phase0_q[lane*W +: W];
+            out_i_vec[(2*lane+1)*W +: W] <= round_sat(s2_acc_i[lane]);
+            out_q_vec[(2*lane+1)*W +: W] <= round_sat(s2_acc_q[lane]);
+        end
+      end
+
       if (s2_ready) begin
-        out_valid <= s1_valid;
-        if (s1_valid) begin
-          for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
-            acc_i = s1_prod_i[lane][0] + s1_prod_i[lane][1] +
-                    s1_prod_i[lane][2] + s1_prod_i[lane][3];
-            acc_q = s1_prod_q[lane][0] + s1_prod_q[lane][1] +
-                    s1_prod_q[lane][2] + s1_prod_q[lane][3];
-            out_i_vec[(2*lane)*W +: W] <= s1_phase0_i[lane*W +: W];
-            out_q_vec[(2*lane)*W +: W] <= s1_phase0_q[lane*W +: W];
-            out_i_vec[(2*lane+1)*W +: W] <= round_sat(acc_i);
-            out_q_vec[(2*lane+1)*W +: W] <= round_sat(acc_q);
-          end
+        s2_valid <= s1_valid;
+        // Register the legacy ACC_W sum before rounding/saturation.  Payload
+        // writes are unconditional so s1_valid cannot become a large CE net.
+        for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
+          acc_i = s1_prod_i[lane][0] + s1_prod_i[lane][1] +
+                  s1_prod_i[lane][2] + s1_prod_i[lane][3];
+          acc_q = s1_prod_q[lane][0] + s1_prod_q[lane][1] +
+                  s1_prod_q[lane][2] + s1_prod_q[lane][3];
+          s2_phase0_i[lane*W +: W] <= s1_phase0_i[lane*W +: W];
+          s2_phase0_q[lane*W +: W] <= s1_phase0_q[lane*W +: W];
+          s2_acc_i[lane] <= acc_i;
+          s2_acc_q[lane] <= acc_q;
         end
       end
 
       if (s1_ready) begin
-        s1_valid <= s0_valid;
-        if (s0_valid) begin
-          for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
+        s1_valid_lane <= s0_valid_lane;
+        // As above, invalid payload values are don't-care.  Updating these
+        // product registers unconditionally removes the global valid signal
+        // from the inferred DSP CEA pins; only the small valid pipeline
+        // carries transaction control.
+        for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
             s1_phase0_i[lane*W +: W] <= s0_i_vec[lane*W +: W];
             s1_phase0_q[lane*W +: W] <= s0_q_vec[lane*W +: W];
             for (int tap = 0; tap < 4; tap = tap + 1) begin
@@ -120,14 +151,17 @@ module dsm_interp_x2_polyphase_vector #(
               endcase
             end
           end
-        end
       end
 
       if (s0_ready) begin
-        s0_valid <= in_valid;
+        s0_valid_lane <= {LANES_IN{in_valid}};
+        // Capture payload whenever the elastic slot advances.  If in_valid is
+        // low it is unreachable at the output because s0_valid_lane is zero;
+        // the recursive history remains protected below and is updated only
+        // for an accepted source word.
+        s0_i_vec <= in_i_vec;
+        s0_q_vec <= in_q_vec;
         if (in_valid) begin
-          s0_i_vec <= in_i_vec;
-          s0_q_vec <= in_q_vec;
           for (int h = 0; h < HISTORY; h = h + 1) begin
             s0_history_i[h] <= history_i[h];
             s0_history_q[h] <= history_q[h];
@@ -143,6 +177,17 @@ module dsm_interp_x2_polyphase_vector #(
       end
     end
   end
+
+`ifndef SYNTHESIS
+  always @(posedge clk) begin
+    if (rst_n && enable) begin
+      assert (s0_valid_lane == {LANES_IN{s0_valid_lane[0]}})
+        else $error("interpolator s0 valid replicas diverged: %b", s0_valid_lane);
+      assert (s1_valid_lane == {LANES_IN{s1_valid_lane[0]}})
+        else $error("interpolator s1 valid replicas diverged: %b", s1_valid_lane);
+    end
+  end
+`endif
 endmodule
 
 `default_nettype wire

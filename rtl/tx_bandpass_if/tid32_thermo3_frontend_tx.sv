@@ -38,14 +38,24 @@ module tid32_thermo3_frontend_tx #(
   output wire logic [63:0]                               pa_m_data,
   input  wire logic                                      pa_m_ready
 );
-  logic i1_valid, i1_ready, dpd_valid, dpd_ready, i2_valid, i2_ready;
-  logic signed [DPD_LANES*W-1:0] i1_i, i1_q, dpd_i, dpd_q;
+  logic i1_valid, i1_ready, i1_buf_valid, i1_buf_ready, dpd_valid, dpd_ready, dpd_buf_valid, dpd_buf_ready, i2_valid, i2_ready;
+  logic signed [DPD_LANES*W-1:0] i1_i, i1_q, i1_buf_i, i1_buf_q, dpd_i, dpd_q, dpd_buf_i, dpd_buf_q;
   logic signed [2*DPD_LANES*W-1:0] i2_i, i2_q;
 
   dsm_interp_x2_polyphase_vector #(.W(W), .LANES_IN(IN_LANES)) u_interp_1 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
     .in_valid(in_valid), .in_ready(in_ready), .in_i_vec(in_i_vec), .in_q_vec(in_q_vec),
     .out_valid(i1_valid), .out_ready(i1_ready), .out_i_vec(i1_i), .out_q_vec(i1_q)
+  );
+
+  // Register the full first-x2 word before it fans out into the sixteen
+  // memory-DPD lanes.  This is a word-atomic elastic boundary: it preserves
+  // chronological history semantics while preventing an inter-module 512-bit
+  // route from becoming a single-cycle DSP input path.
+  dpd_vector_elastic_buffer #(.W(W), .LANES(DPD_LANES)) u_interp_to_dpd_elastic (
+    .clk(clk), .rst_n(rst_n),
+    .in_valid(i1_valid), .in_ready(i1_ready), .in_i_vec(i1_i), .in_q_vec(i1_q),
+    .out_valid(i1_buf_valid), .out_ready(i1_buf_ready), .out_i_vec(i1_buf_i), .out_q_vec(i1_buf_q)
   );
 
   dpd_vector16_memory_poly #(
@@ -55,13 +65,19 @@ module tid32_thermo3_frontend_tx #(
     .clk(clk), .rst_n(rst_n), .active_taps(dpd_active_taps),
     .c1_re(c1_re), .c1_im(c1_im), .c3_re(c3_re), .c3_im(c3_im),
     .c5_re(c5_re), .c5_im(c5_im),
-    .in_valid(i1_valid), .in_ready(i1_ready), .in_i_vec(i1_i), .in_q_vec(i1_q),
+    .in_valid(i1_buf_valid), .in_ready(i1_buf_ready), .in_i_vec(i1_buf_i), .in_q_vec(i1_buf_q),
     .out_valid(dpd_valid), .out_ready(dpd_ready), .out_i_vec(dpd_i), .out_q_vec(dpd_q)
+  );
+
+  dpd_vector_elastic_buffer #(.W(W), .LANES(DPD_LANES)) u_dpd_to_interp_elastic (
+    .clk(clk), .rst_n(rst_n),
+    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_i_vec(dpd_i), .in_q_vec(dpd_q),
+    .out_valid(dpd_buf_valid), .out_ready(dpd_buf_ready), .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
   );
 
   dsm_interp_x2_polyphase_vector #(.W(W), .LANES_IN(DPD_LANES)) u_interp_2 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_i_vec(dpd_i), .in_q_vec(dpd_q),
+    .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
     .out_valid(i2_valid), .out_ready(i2_ready), .out_i_vec(i2_i), .out_q_vec(i2_q)
   );
 

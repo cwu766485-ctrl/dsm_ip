@@ -38,8 +38,13 @@ module dpd_vector16_memory_poly #(
   logic [LANES-1:0] lane_in_ready, lane_out_valid;
   logic signed [LANES*MAX_TAPS*W-1:0] lane_i_taps, lane_q_taps;
 
-  assign in_ready = &lane_in_ready;
-  assign out_valid = &lane_out_valid;
+  // The lanes are one atomic temporal word, not independently backpressured
+  // streams.  Every dpd_memory_poly instance has the same control pipeline;
+  // use lane 0 as the registered word transaction control.  This avoids a
+  // wide reduction tree on the timing-critical DPD -> interpolator boundary.
+  // Simulation assertions below make the lockstep contract executable.
+  assign in_ready = lane_in_ready[0];
+  assign out_valid = lane_out_valid[0];
 
   always_comb begin
     for (int lane = 0; lane < LANES; lane = lane + 1) begin
@@ -91,6 +96,17 @@ module dpd_vector16_memory_poly #(
       .sample_count(), .saturation_count()
     );
   end
+
+`ifndef SYNTHESIS
+  always @(posedge clk) begin
+    if (rst_n) begin
+      assert (lane_in_ready == {LANES{lane_in_ready[0]}})
+        else $error("DPD lane ready lost word atomicity: %b", lane_in_ready);
+      assert (lane_out_valid == {LANES{lane_out_valid[0]}})
+        else $error("DPD lane valid lost word atomicity: %b", lane_out_valid);
+    end
+  end
+`endif
 endmodule
 
 `default_nettype wire

@@ -19,7 +19,9 @@
 
 module tid32_cartesian_fs4_gt_tx #(
   parameter int W = 16,
-  parameter int CHANNELS = 32
+  parameter int CHANNELS = 32,
+  // Four lanes per local valid bank at the default 32-channel width.
+  parameter int VALID_BANKS = 8
 ) (
   input  wire logic                            clk,
   input  wire logic                            rst_n,
@@ -43,18 +45,26 @@ module tid32_cartesian_fs4_gt_tx #(
   logic [2*CHANNELS-1:0] raw_word;
   logic tid_valid;
   logic tid_ready;
-  logic enable;
+  localparam int BANK_LANES = CHANNELS / VALID_BANKS;
+  // The input payload is registered once.  Its word-valid is then fanned out
+  // through independent local bank registers rather than one CE net spanning
+  // the full state matrix.  This is a fixed one-cycle pipeline stage.
+  logic signed [CHANNELS*W-1:0] in_i_pipe, in_q_pipe;
+  (* KEEP = "TRUE", DONT_TOUCH = "TRUE", MAX_FANOUT = 4 *)
+    logic [VALID_BANKS-1:0] bank_enable;
+  logic accept_word;
   integer p;
   integer q;
 
   initial begin
-    if (CHANNELS < 2 || (CHANNELS % 2) != 0) begin
-      $error("CHANNELS must be an even value of at least two");
+    if (CHANNELS < 2 || (CHANNELS % 2) != 0 ||
+        VALID_BANKS < 1 || (CHANNELS % VALID_BANKS) != 0) begin
+      $error("CHANNELS must be even and divisible by VALID_BANKS");
     end
   end
 
   assign in_ready = tid_ready;
-  assign enable = in_valid && in_ready;
+  assign accept_word = in_valid && in_ready;
 
   always_comb begin
     for (integer lane = 0; lane < CHANNELS; lane = lane + 1) begin
@@ -81,6 +91,9 @@ module tid32_cartesian_fs4_gt_tx #(
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       tid_valid <= 1'b0;
+      in_i_pipe <= '0;
+      in_q_pipe <= '0;
+      bank_enable <= '0;
       for (p = 0; p < CHANNELS; p = p + 1) begin
         v_i[p] <= '0;
         v_q[p] <= '0;
@@ -93,13 +106,19 @@ module tid32_cartesian_fs4_gt_tx #(
       // A TID result exists exactly for an accepted input word.  Keeping this
       // asserted through an input bubble duplicates the previous raw-GT word
       // and corrupts the temporal sequence whenever a real feeder stalls.
-      tid_valid <= enable;
-      if (enable) begin
-        for (p = 0; p < CHANNELS; p = p + 1) begin
+      // Keep the payload flops free-running.  The bank-valid pipeline is the
+      // only transaction qualifier, so an invalid or stalled input cannot
+      // alter state but also cannot turn this wide payload bus into a CE tree.
+      in_i_pipe <= in_i_poly_vec;
+      in_q_pipe <= in_q_poly_vec;
+      bank_enable <= {VALID_BANKS{accept_word}};
+      tid_valid <= bank_enable[0];
+      for (p = 0; p < CHANNELS; p = p + 1) begin
+        if (bank_enable[p / BANK_LANES]) begin
           for (q = 0; q < CHANNELS; q = q + 1) begin
             if (q == 0) begin
-              a_i[p][q] <= {1'b0, in_i_poly_vec[p*W +: W] ^ {1'b1, {(W-1){1'b0}}}};
-              a_q[p][q] <= {1'b0, in_q_poly_vec[p*W +: W] ^ {1'b1, {(W-1){1'b0}}}};
+              a_i[p][q] <= {1'b0, in_i_pipe[p*W +: W] ^ {1'b1, {(W-1){1'b0}}}};
+              a_q[p][q] <= {1'b0, in_q_pipe[p*W +: W] ^ {1'b1, {(W-1){1'b0}}}};
             end else if (p == q) begin
               a_i[p][q] <= a_i[p-1][q-1] + a_i[p][q-1];
               a_q[p][q] <= a_q[p-1][q-1] + a_q[p][q-1];
@@ -114,6 +133,15 @@ module tid32_cartesian_fs4_gt_tx #(
       end
     end
   end
+
+`ifndef SYNTHESIS
+  always @(posedge clk) begin
+    if (rst_n) begin
+      assert (bank_enable == {VALID_BANKS{bank_enable[0]}})
+        else $error("TID bank enables lost word atomicity: %b", bank_enable);
+    end
+  end
+`endif
 
   gt_tx_raw64_boundary #(.DATA_W(2*CHANNELS)) u_raw_boundary (
     .clk(clk), .rst_n(rst_n), .in_valid(tid_valid), .in_ready(tid_ready),

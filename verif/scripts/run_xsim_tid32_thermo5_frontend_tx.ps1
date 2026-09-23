@@ -9,7 +9,7 @@ if($LASTEXITCODE -ne 0){throw 'Thermo5 frontend MATLAB vector generation failed.
 $src=@(
   'rtl\frontend\dsm_frame_gain_vector.sv',
   'rtl\gt\gt_tx_user_bridge.sv','rtl\gt\gt_tx_raw64_boundary.sv',
-  'rtl\dpd\dpd_poly.v','rtl\dpd\dpd_memory_poly.v','rtl\dpd\dpd_vector16_memory_poly.sv',
+  'rtl\dpd\dpd_poly.v','rtl\dpd\dpd_memory_poly.v','rtl\dpd\dpd_vector16_memory_poly.sv','rtl\dpd\dpd_vector_elastic_buffer.sv',
   'rtl\interp\dsm_interp_x2_polyphase_vector.sv',
   'rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_fs4_multipa_tx.sv',

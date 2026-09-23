@@ -1,5 +1,162 @@
 # Update Log
 
+## 2026-09-22 - ASIC tool/library environment audit
+
+- Rocky-8.10 WSL contains Synopsys DC V-2023.12-SP1 at
+  `/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell`; `dc_shell -version` runs.
+- No usable 28nm standard-cell `.db` was found in the available WSL/project
+  paths, and the earlier `/tmp/lumen28/std_ss.db` path is absent.  The DSM
+  ASIC flow remains blocked until a licensed, readable 28nm mapping library
+  with matching max/min corners is supplied.
+
+## 2026-09-23 - Rocky TSMC28 standard-cell probe confirmation
+
+- The active Rocky terminal successfully ran the DSM standard-cell probe with
+  the TSMC28 RVT TT library.  DC loaded the library and reported 839 cells
+  with 15 inverter-name matches; this is valid mapping-library evidence.
+- The previously referenced SRAM macro `.db` under
+  `/home/ray/ic/CIMForge/syn/out/pdk_cache/` was not found.  Full macro-aware
+  synthesis remains blocked; standard-cell-only synthesis can proceed now.
+
+## 2026-09-21 23:58 SGT - Thermo5 routed closure and CDC/serializer verification
+
+- Completed the thermo5 full AXI/FIFO/frontend routed OOC on
+  `xczu15eg-ffvb1156-2-i` at 125/218.75 MHz.  The full
+  `opt_design -> place_design -> phys_opt_design -> route_design` flow passed
+  with WNS/WHS `+0.308/+0.027 ns`, TNS/THS `0/0`, zero errors, and zero
+  critical warnings.  Utilization is 71,869 total LUTs, 97,249 registers, 6.5
+  BRAM tiles, and 2,032 DSP48E2.
+- Froze the thermo3/thermo5 routed PPA, timing, pipeline-depth, and fanout
+  comparison in `docs/THERMO3_THERMO5_ROUTED_PPA.md`.  Relative to thermo3,
+  thermo5 adds 11,948 total LUTs, 13,452 registers, and 2 DSPs.  Both now have
+  the same fixed core pipeline depth and positive 218.75 MHz timing margin.
+- Added simulation-only assertions for reset release, generic-FIFO Gray-pointer
+  transitions, prohibited full/empty transactions, legal gearbox residual
+  counts, frame-boundary alignment, and stable backpressured output.  The CDC
+  test now explicitly requires four accepted source words before core enable
+  and rejects any pre-enable core output.  Generic and XPM CDC tests both pass.
+- Fixed the thermo5 serializer-loopback file list to include the frontend's
+  elastic-buffer dependency.  The four-path ideal behavioral serializer test
+  passes 64 recovered words / 4,096 bits per path against MATLAB golden data.
+  This is not a GT primitive, electrical channel, BERT, or board result.
+- Required checks after the RTL/assertion changes: project P0 XSim `7/7` PASS;
+  IP smoke PASS; generic CDC XSim PASS; XPM CDC XSim PASS.  The thermo5 full
+  routed OOC and four-path behavioral serializer loopback also PASS.
+- Added `docs/GT_VERIFICATION_WITHOUT_HARDWARE.md` to separate simulation and
+  implementation evidence from measurements that require physical hardware.
+
+## 2026-09-22 - Vendor-neutral raw-link PRBS31/BERT endpoint
+
+- Added `rtl/gt/gt_link_bringup_bist.sv`, a synthesizable 64-bit user-word
+  endpoint above the physical GT.  It provides known-word training, PRBS31
+  generator/checker, ready filtering, link/reset FSM, sticky error and error
+  counters, clear/retrain recovery, and deterministic error injection.
+- Added executable protocol assertions for TX valid/ready state ownership,
+  link-up versus enable, and error-counter/sticky-status consistency.
+- Added `verif/block/gt/tb_gt_link_bringup_bist.sv` and
+  `verif/scripts/run_xsim_gt_link_bringup_bist.ps1`.  XSim passes the clean
+  PRBS31 loopback, injected-error detection, sticky status, clear/retrain, and
+  known-word recovery sequence:
+  `GT_LINK_BRINGUP_BIST_PASS prbs_words=49 errors_detected=0`.
+- The endpoint is vendor-neutral and attaches to the existing 64-bit raw user
+  boundary.  This evidence does not claim GTH PLL/CDR lock, electrical BER,
+  eye/jitter, package/channel behavior, or board loopback.
+
+## 2026-09-22 - ZU15EG GT Wizard generation probe
+
+- Ran `fpga/zu15eg/scripts/generate_ti64_raw_gt14_ip.tcl` with Vivado 2024.1
+  for part `xczu15eg-ffvb1156-2-i`.  The generated configuration is GTH
+  `X1Y12`, TX/RX 14.0 Gb/s, 125 MHz refclk, 64-bit RAW user data, and both
+  synthesis and simulation targets.  Vivado accepted the IP and wrote the XCI
+  and generated HDL under `tmp/gt_wizard_probe_20260922/` outside the source
+  RTL tree.
+- This is an IP-generation/configuration PASS only.  Vendor behavioral GT
+  simulation, package-constrained implementation, PLL/CDR lock, physical
+  loopback, BER/BERT, eye, and jitter remain separate gates.
+  Changed source/check files are `rtl/axis/dsm_reset_sync.sv`,
+  `rtl/axis/dsm_async_fifo.sv`, `rtl/axis/dsm_axis14_to_core8_cdc.sv`,
+  `verif/block/axis/tb_dsm_axis14_to_core8_cdc.sv`, and
+  `verif/scripts/run_xsim_tid32_thermo5_serdes_loopback.ps1`.
+
+## 2026-09-21 - Refresh active execution frontier
+
+- Replaced the stale and partially encoded active execution frontier with a concise English source of truth. It records the passing full thermo3 OOC, the active AXI/FIFO/identity-DPD architecture, checked functional evidence, RF-model limits, and the thermo5/CDC/low-power/PPA next steps.
+- No RTL, algorithm, constraints, or generated implementation artifact changed in this documentation-only update.
+
+## 2026-09-21 - Close full thermo3 AXI/FIFO/frontend routed OOC
+
+- Completed the full timing-driven implementation of `tid32_thermo3_axis_frontend_tx_ooc` on `xczu15eg-ffvb1156-2-i` at the unchanged 218.75 MHz core clock and 125 MHz AXI clock.  The result is `PASS`: WNS `+0.290 ns`, WHS `+0.027 ns`, TNS/THS zero, 0 errors, and 0 critical warnings.  This used `opt_design -> place_design -> phys_opt_design -> route_design`, not the earlier Quick diagnostic flow.
+- The final core clock has 208,286 setup and hold endpoints with no failures; the AXI clock has 145 setup/hold endpoints with WNS/WHS `+4.966/+0.047 ns`.  Post-route utilization is 59,921 LUT (17.56%), 83,797 registers (12.28%), 6.5 BRAM tiles (0.87%), and 2,030 DSPs (57.54%).
+- The word-atomic pre/post-DPD elastic slices remain functionally covered by targeted thermo3/thermo5 bit-true XSim (64 words / 2,048 output complex samples, zero mismatch), project P0 7/7, and IP smoke 5/5.  The full passing OOC is fabric-only: it does not prove GTH target timing, physical serializer/PA paths, board loopback, or RF performance.
+- Remaining warnings include OOC `HD.CLK_SRC`/`HD.PARTPIN_LOCS` estimation warnings and synthesis trimming messages.  They are non-critical in this OOC run, but actual board/GT integration must supply real clock and boundary constraints.  Next action: run the equivalent full thermo5 OOC rather than extrapolating from thermo3.
+
+## 2026-09-21 - Runtime identity-DPD input route isolation
+
+- The last complete thermo3 AXI/FIFO/frontend routed OOC (`20260920_230344`) is `FAIL_SETUP`: WNS `-1.524 ns`, WHS `-0.019 ns`, with 0 errors and 0 critical warnings.  The limiting path is an inter-module route from first-x2 output to a memory-DPD DSP input: `5.809 ns`, of which `5.732 ns` is routing (fanout 173).  It is not a DSP arithmetic path.
+- Added a word-atomic elastic buffer before the 16-lane runtime identity memory-DPD; the existing post-DPD buffer is retained.  The change preserves all fixed-point data and DPD-history semantics and adds only fixed latency.  Fresh targeted thermo3/thermo5 XSim both pass 64 words / 2,048 complex output samples with zero mismatch (940 ns / 970 ns respectively).  Required P0 runs 7/7 and the five IP-smoke tests complete without errors.
+- Vivado 2024.1 then reproduced two optional realtime-helper failures while opening vendor `unimacro_vhdl.tcl` and `unimacro_verilog.tcl`; both files exist and are SHA-256 readable.  Updated the OOC Tcl to unset `BUILTIN_SYNTH` before `synth_design`, disabling only the helper pre-spawn path while retaining normal synth/place/route/STA.  A new thermo3 routed OOC is in progress; no new WNS/WHS is claimed until its `summary.csv` exists.
+- The rerun completed routed implementation with 0 errors and 0 critical warnings but remains `FAIL_SETUP`: WNS `-1.392 ns`, WHS `-0.019 ns`.  The input elastic buffer is preserved in the netlist, but the worst setup path is still its packed-data register to a memory-DPD DSP input (`5.656 ns`, `5.578 ns` routing, fanout 173).  This is a `+0.132 ns` setup improvement over the preceding `-1.524 ns`, not closure.  Vivado reports that timing-driven physical synthesis was skipped in the current `place_design -directive Quick` flow; a full timing-driven implementation is required for a fair comparison to the earlier single-clock passing OOC.
+- Added explicit `quick|full` implementation selection to the OOC scripts.  The `full` mode retains the same RTL and clock targets but runs `opt_design -> place_design -> phys_opt_design -> route_design`.  A direct environment-variable workaround did not reliably suppress Vivado's internal helper; the OOC Tcl now restores the vendor realtime database and explicitly sets `enableParallelHelperSpawn=false`.  The resulting full thermo3 run passes the previous helper-startup point and is in synthesis; no full-flow WNS/WHS is available yet.
+
+## 2026-09-20 - OOC rerun helper failure
+
+- The first routed-OOC retry after adding the accumulation stage did not reach HDL elaboration or STA: Vivado 2024.1 failed during `synth_design` because its realtime helper reported `retarget_vhdl.tcl` unreadable.  The referenced vendor file exists at the reported path; this is an intermittent tool/helper failure rather than RTL, DRC, or timing evidence.
+- Retried the identical isolated thermo3 OOC in a new Vivado process.  The prior valid routed result remains WNS `-0.397 ns`, WHS `+0.001 ns`; no substitute timing conclusion is made from the failed retry.
+- A second fresh process repeated a missing helper-Tcl error; a third passed helper startup and RTL component statistics but terminated with `EXCEPTION_BREAKPOINT` before placement.  Vendor Tcl files were independently verified present and hash-readable, and no stale Vivado process or memory exhaustion was found.  Further timing closure is blocked on a stable Vivado execution, not a reproducible RTL failure.
+
+## 2026-09-20 - Pipeline second-interpolator accumulation
+
+- The routed thermo3 OOC after removing the DSP clock-enable fanout completed with WNS `-0.397 ns` and WHS `+0.001 ns`.  Setup is improved by `+1.598 ns` over the preceding run and hold is now closed, but the design remains `FAIL_SETUP`.
+- The worst path is now arithmetic-only: second-x2-interpolator DSP product register through four-term ACC_W addition and signed round/saturate to an output register (`4.918 ns`, 12 logic levels).  The former valid/CE route is no longer the limiting path.
+- Added a third elastic stage between accumulation and round/saturate.  Its accumulator uses the exact legacy ACC_W procedural sum; valid remains word-atomic and datapath writes stay unconditional for invalid slots.  Thus the change adds one fixed core cycle only.
+- Thermo3/thermo5 bit-true XSim pass after the change (64 words / 2,048 output complex samples).  Project P0 completes 7/7 PASS and IP smoke completes 5/5 PASS.  A new complete thermo3 routed OOC is running at the unchanged 218.75 MHz target.
+
+## 2026-09-20 - Remove second-interpolator valid clock-enable fanout
+
+- The third full thermo3 routed OOC completed at WNS `-1.995 ns`, WHS `-0.019 ns`, with 0 errors and 0 critical warnings.  It improved setup by `+0.219 ns` over the frame-gain-pipelined run but remains unclosed.
+- Root cause moved to the second x2 interpolator: elastic occupancy `full_reg` drove the stage-1 multiplier DSP `CEA2` enable through a fanout-672 control net (`6.219 ns` route in a `6.386 ns` path).  It is a control-distribution path, not a multiplier arithmetic limit.
+- Changed the two elastic interpolator stages to write payload datapath registers whenever their slot advances.  Invalid payload values are explicitly don't-care and remain blocked by the separately pipelined word-valid bit; history still changes only for an accepted valid input word.  This preserves coefficient, fixed-point, ordering, state, and latency contracts.
+- Targeted thermo3 and thermo5 bit-true XSim pass (64 words / 2,048 output complex samples).  Project P0 completes 7/7 PASS and IP smoke completes all five tests PASS.  A new thermo3 routed OOC is running; no timing-pass claim is made before its final WNS/WHS are available.
+
+## 2026-09-20 - Localize runtime-DPD valid control for frontend timing closure
+
+- Replaced the thermo TID's single enable with eight registered lane-bank enables per TID plane.  A single accepted packed word is first captured in a fixed one-core-cycle input register; each bank then updates only its local four-lane state slice.  This preserves the temporal state transition, quantization, raw-bit ordering, and only adds fixed latency.
+- Changed the post-DPD elastic slice so a valid DPD word controls only its one-bit occupancy state; when the slice is writable it captures the wide payload unconditionally.  This removes the `in_valid` clock-enable fanout to 512 payload registers without changing valid/ready semantics.
+- Targeted thermo3/thermo5 MATLAB-to-XSim vectors pass (64 words / 2,048 output complex samples, zero raw mismatch).  The required P0 regression is 7/7 PASS and the DSM IP smoke suite is PASS.
+- A fresh full ZU15EG thermo3 routed OOC after the lane-bank change completed with WNS `-3.052 ns`, WHS `-0.019 ns`, 0 errors, and 0 critical warnings.  This is an improvement from `-7.183 ns`; its new limiting net is the DPD output-valid to the elastic payload CE (fanout 513, 7.439 ns route), confirming the remaining control-fanout root cause.
+- The follow-up implementation with the elastic-payload CE removal is currently running.  No 218.75 MHz timing-pass or GTH/board claim is made until that routed STA completes.
+
+## 2026-09-20 - Move thermo3 frontend bottleneck from control to frame-gain datapath
+
+- The routed thermo3 OOC with the elastic-payload CE removal completed at WNS `-2.214 ns`, WHS `-0.019 ns`.  This is a further `+0.838 ns` setup improvement.  The DPD-valid fanout is no longer the worst path.
+- The new worst path is `dsm_frame_gain_vector`: Q2.14 gain register to output vector register through one DSP48E2 multiply, signed round/saturate logic, and 13 logic levels (`6.768 ns`, including `4.359 ns` route).  This is an arithmetic-pipeline issue, not a CDC or FIFO failure.
+- Split gain multiply and round/saturate into separate elastic stages.  The change adds one fixed core-clock latency without changing Q2.14 arithmetic, frame-start gain selection, sample ordering, or backpressure behavior.  Thermo5 bit-true XSim, P0 7/7, and IP smoke all pass after the change.
+- A third full ZU15EG thermo3 routed OOC is running to measure this datapath-pipeline change.  Timing remains unclosed until it produces a positive setup and hold result.
+
+## 2026-09-19 - Close ZU15EG CDC gearbox routed STA
+
+- Replaced the optional 14:8 CDC gearbox's dynamic residual part-select/mux network with the equivalent fixed seven-state sequence (`0, 6, 12, 4, 10, 2, 8` residual samples).  This preserves 14-complex AXI beats to 8-complex core words, lane-0-first ordering, frame/gain rules, and the exact 1.75 GS/s average rate while producing a regular synthesis network.
+- The generic Gray FIFO and FPGA XPM FIFO asynchronous XSim tests both passed after the change: 112 contiguous complex samples, 14 core words, zero order/frame/gain mismatches, no bubbles, no underflow, and no protocol error.
+- Routed the complete XPM CDC wrapper on `xczu15eg-ffvb1156-2-i` with 125 MHz and 218.75 MHz asynchronous clock groups.  The result passes: WNS `+1.807 ns`, WHS `+0.042 ns`, TNS/THS zero, 896 LUT, 749 FF, 6.5 BRAM tiles, and 0 DSP.  This supersedes the earlier tool-crash-only CDC status; it is fabric/CDC PPA evidence, not a thermo5 frontend or GTH target signoff.
+- Re-ran required project regressions: P0 XSim 7/7 PASS and IP smoke (top, AXI, active reset, BP AXI, DPD v1.1) PASS.  The required baseline DSM OOC run on `xc7z020clg400-1` found 12/14 PASS; `p0_ooc_mb_ef2` fails 100 MHz setup by `-0.093 ns`, and `p0_ooc_mb_mash22` by `-0.688 ns`.  These two independent base-IP timing risks are recorded for follow-up and are not attributed to the CDC wrapper.
+- Remaining limitation: no four-GTH target STA, board loopback/BERT, or physical PA evidence exists.  The next implementation action is the distinct DPD-free thermo5 frontend routed OOC, then the main-path PPA comparison.
+
+## 2026-09-19 - Add FPGA XPM CDC implementation and reproduce tool failure
+
+- Added an FPGA-only `xpm_fifo_async` implementation for the optional `125 MHz / 14-complex AXI-S -> 218.75 MHz / 8-complex` ingress, while retaining the existing Gray-pointer FIFO as the generic RTL reference.  XPM uses a common reset, so source traffic begins only after both clock domains leave reset and the FIFO prefill contract is satisfied.
+- Added an XPM-specific asynchronous-clock XSim and updated the existing CDC test to prefill before enabling the recursive core.  Both generic and XPM tests pass 112 contiguous complex samples through the 14:8 gearbox with no order, frame/gain, bubble, underflow, or protocol mismatch.
+- Repeated the ZU15EG CDC OOC with XPM block memory and the same `AreaOptimized_high` directive as the known-good thermo5 core.  RTL parsing and `synth_design` completed, but Vivado 2024.1 crashed with `EXCEPTION_ACCESS_VIOLATION` while loading part/timing information before checkpoint, utilization, placement, or STA.  No CDC WNS/WHS/resource result is claimed.
+- Added isolated routed XPM probes to distinguish the FIFO primitive from the full wrapper.  Both pass on `xczu15eg-ffvb1156-2-i`: 32-bit FIFO WNS/WHS `+3.250/+0.041 ns`, 0.5 BRAM tile; production-width 465-bit FIFO WNS/WHS `+2.907/+0.039 ns`.  This is valid FIFO PPA evidence, but not full CDC-wrapper timing.
+- Revised the FPGA XPM branch to use the AXI/system reset as its single FIFO reset; `core_aresetn` separately resets the gearbox/consumer, and integration must assert both resets together.  The XPM CDC test remains bit-true.
+- Full CDC OOC remains blocked by intermittent Vivado realtime-helper failures (`rtSynthCleanup.tcl`/`unimacro_vhdl.tcl` reported absent despite existing on disk) or `EXCEPTION_ACCESS_VIOLATION`.  Checks: CDC generic XSim PASS; CDC XPM XSim PASS; project P0 XSim 7/7 PASS; DSM IP smoke (top, AXI, active reset, BP AXI, DPD v1.1) PASS.  Next action is to rerun full CDC OOC in a stable Vivado process or repaired installation before recording full PPA.
+
+## 2026-09-19 - Make thermo5 primary path DPD-free
+
+- Set `tid32_thermo5_frontend_tx` to `BYPASS_DPD=1` by default.  The selected generate branch directly joins the two x2 interpolators, so no memory-DPD module is instantiated or synthesized; coefficient ports remain only as a stable compatibility boundary.
+- Updated the MATLAB oracle and XSim compilation list to exclude the identity-DPD stage and all DPD RTL.  The DPD-free frontend XSim passed 64 ingress words, 2,048 final complex samples, and all four raw planes with zero mismatch.
+- Two fresh ZU15EG OOC attempts failed before HDL elaboration in the Vivado realtime helper (`missing realtime Tcl`, then `rt-undefined`).  No new WNS/WHS or resource result is claimed; the older identity-DPD OOC remains historical evidence only.
+- Next action: repair or isolate the Vivado helper environment, rerun routed DPD-free OOC, then compare thermo3/thermo5 and interpolation choices for PPA.
+
 ## 2026-09-19 - Retire unclosed temporal BP/SMASH experiments
 
 - Removed the CRFB-SMASH temporal8/temporal64 prototype and the TID32 MASH1-1 experiment, including their dedicated MATLAB models, vectors, XSim testbenches, and OOC scripts.  They had useful research evidence but did not constitute a deployable 64-lane streaming implementation.
@@ -688,3 +845,82 @@
   independently stepped scalar thermo3 reference after the known 1,056-sample
   TID latency. The gate passed with 0 mismatches, which eliminates raw-word
   order, branch polarity, and TID latency as causes of the RF-model mismatch.
+# 2026-09-19 - Add optional 125-MHz AXI-stream CDC ingress
+
+- Added `dsm_async_fifo`, per-domain reset synchronizers, and the exact 14-complex-to-8-complex CDC gearbox.
+- Added the optional `tid32_thermo5_axis_frontend_tx` integration wrapper.  The existing 218.75-MHz 8-lane frontend remains unchanged.
+- The ingress contract is 14 complex samples at 125 MHz and word-aligned frame starts every 56 samples.  This preserves 1.75 GS/s complex throughput and the core's frame-granular state contract.
+- `run_xsim_axis14_to_core8_cdc.ps1` passed: 8 source words became 14 ordered core words without frame/gain mismatch, bubble, or underflow.
+- Project RTL P0 regression passed 7/7; IP smoke passed 5/5.
+- Added a two-clock CDC OOC flow.  The first Vivado run ended in `EXCEPTION_ACCESS_VIOLATION` before a timing/resource report; no CDC timing result is claimed.
+- A second isolated CDC OOC reproduced the same Vivado access violation after successful `synth_design`, while loading ZU15EG timing/device information.  It also reported that the generic asynchronous-read FIFO cannot infer BRAM and is implemented in registers; this is a future PPA decision, not a functional failure.
+
+# 2026-09-20 - Full AXI/FIFO frontend OOC baseline
+
+- Added the thermo3 AXI/FIFO frontend wrapper and a shared ZU15EG OOC flow for thermo3 and thermo5.  Both flows include the 125-MHz AXI ingress, XPM asynchronous FIFO, 14:8 gearbox, frame gain, two x2 interpolators, and a structurally instantiated four-tap memory-polynomial DPD configured with runtime identity coefficients.
+- Thermo5 identity-DPD frontend XSim passed 64 words / 2,048 complex output samples with zero raw-plane mismatches; the existing thermo3 frontend bit-true XSim also passed.  A composition XSim for the new thermo3 AXI wrapper remains pending.
+- The first fully routed thermo3 AXI frontend run completed without errors or critical warnings but failed 218.75-MHz setup: WNS `-4.407 ns`, WHS `+0.001 ns`, 5,159 setup endpoints.  The worst path is the high-fanout `dpd_vector16_memory_poly` valid reduction into the second interpolator enable, with 8.416 ns of routing delay in an 8.796 ns data path.  This is a real full-chain timing failure, not a functional failure; runtime DPD coefficient ports also create OOC part-pin/clock-source warnings that must not be treated as board constraints.
+
+# 2026-09-22 - ZU15EG GT/BERT integration entry points
+
+- Added `ti64_raw_gt14_sfp0_bert_top.sv`, connecting the vendor GT Wizard user
+  port to the PRBS31/known-word endpoint through an asynchronous RX-word FIFO.
+- Added RAW RXSLIDE alignment and repeat-seed acquisition hooks, plus vendor
+  behavioral simulation and implementation Tcl scripts.
+- The vendor model reaches TX/RX active/done, power-good, and CDR-stable.  The
+  current model still exposes variable-latency PRBS acquisition; no vendor
+  BERT PASS or routed GT timing claim is made yet.
+- The ZU15EG BERT top implementation then completed with 0 DRC errors and
+  constrained setup/hold slack of +1.844/+0.052 ns.  This is not board BER
+  evidence.
+
+# 2026-09-22 - GT BERT training boundary and regression hardening
+
+- Added an explicit run-arm/drain state in `gt_link_bringup_bist.sv` so the
+  one-word loopback latency cannot shift the first PRBS31 word.
+- Corrected the training-aware protocol assertion and hardened the XSim
+  launcher to require the PASS marker and reject fatal/error diagnostics.
+- Checks: GT BERT XSim PASS, P0 regression 7/7 PASS, IP smoke PASS.
+
+# 2026-09-20 - Word-atomic DPD control and elastic timing cut
+
+- Replaced the vector-DPD AND reductions with lane-0 word-transaction control
+  and executable simulation assertions that every lane's `valid` and `ready`
+  remains lockstep.  The data, history update, coefficient interface, Q2.14
+  arithmetic, rounding, saturation, and temporal lane order are unchanged.
+- Added `dpd_vector_elastic_buffer` between the memory-DPD and the second x2
+  interpolator.  It holds one complete complex word and adds exactly one core
+  clock of latency, preventing the DPD output-valid pipeline from directly
+  driving the interpolator enable network.
+- Replicated the second-stage interpolator's internal valid state per lane,
+  with `KEEP`/`MAX_FANOUT` guidance and simulation assertions.  Lane 0 remains
+  the word-level handshake, while local replicas gate their corresponding lane
+  datapaths.
+- Checks passed after the change: thermo3 frontend XSim and thermo5 frontend
+  XSim each matched 64 input words / 2,048 final complex samples bit-for-bit;
+  all new control assertions passed.  Project P0 regression passed 7/7.
+- The replacement thermo3 full AXI/FIFO frontend OOC completed synthesis with
+  0 errors and 0 critical warnings (2,058 DSP48E2) and is currently in
+  placement/routing.  Final WNS/WHS are not yet available; the prior thermo3
+  `-4.407 ns` and thermo5 `-3.968 ns` reports are explicitly pre-fix baselines.
+
+- The replacement thermo3 routed OOC completed: 0 errors and 0 critical
+  warnings, but it failed 218.75-MHz timing with WNS `-7.183 ns` and WHS
+  `-0.019 ns`.  The DPD reduction path is absent from the worst path.  The new
+  critical net is `u_interp_2/out_valid_reg -> u_tid/u_p/in_valid`, with
+  14,294 routed loads and 11.569 ns of routing delay (zero combinational logic).
+  Therefore this change is functionally correct but not a timing fix; the next
+  implementation must distribute registered valid/ready at the TID plane
+  boundary before rerunning thermo3 and thermo5.
+2026-09-23
+- Added `eda.yaml`, ASIC thermo3/thermo5 DC wrappers, source list, dual-clock SDC,
+  and reproducible TSMC28 DC launcher under `syn/asic`.
+- Fixed the existing 8-lane vector width declarations in the AXI thermo wrappers;
+  DC elaboration had exposed the mismatch against the CDC and frame-gain ports.
+- Checks: Rocky-8.10 DC V-2023.12-SP1 invoked with TSMC28 RVT TT DB; thermo3
+  mapping run is active, thermo5 baseline launch previously completed only with
+  the pre-fix empty/unmapped result and must be rerun after thermo3 completes.
+- Limitations: no ASIC final area/timing/power claim until the current real
+  mapped runs emit reports; power is vectorless without SAIF.
+- Fixed `syn/asic/parse_dc_reports.py` to run on Rocky's Python 3.6 (removed
+  unsupported future annotations and newer union/generic type syntax).

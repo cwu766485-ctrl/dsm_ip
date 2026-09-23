@@ -19,7 +19,8 @@ module ti64_raw_gt14_sfp0_link (
     output wire        tx_ready,
     output wire [63:0] rx_word,
     output wire        rx_usrclk2,
-    output wire        rx_ready
+    output wire        rx_ready,
+    input  wire        rx_slide
 );
 
     wire freerun_clk;
@@ -91,6 +92,7 @@ module ti64_raw_gt14_sfp0_link (
         .gtwiz_reset_rx_done_out            (rx_done_i),
         .gtwiz_userdata_tx_in               (tx_word),
         .gtwiz_userdata_rx_out              (rx_word),
+        .rxslide_in                         ({rx_slide}),
         .gtrefclk00_in                      ({gt_refclk}),
         .qpll0outclk_out                    (qpll0outclk_unused),
         .qpll0outrefclk_out                 (qpll0outrefclk_unused),
