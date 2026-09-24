@@ -179,7 +179,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_lpd
 
 This command checks that the release gate reports `ACCEPT`, requires all three
 validation and independent-test EVM/SNDR/OOB checks to pass with zero limits,
-then runs Memory-Poly XSim in `verif/out_xsim_lpdsmdpa_bpf_dpd`. If MATLAB must
+then runs Memory-Poly XSim in `dv/verif/out_xsim_lpdsmdpa_bpf_dpd`. If MATLAB must
 run from its GUI, first run `entry_lpdsmdpa_bpf_dpd_bittrue_prepare`, invoke
 the PowerShell command with `-SkipMatlabPrep -SkipMatlabCompare`, then run
 `entry_lpdsmdpa_bpf_dpd_bittrue_compare`. A zero mismatch signs off only the
@@ -247,7 +247,7 @@ memory-polynomial hardware path remains limited to C1/C3/C5.
 
 The first learned package selector is now frozen as a depth-4 signed-Q12.20
 decision tree. Generate and verify it with
-`verif/scripts/run_tinyml_tree_equivalence.ps1`. Python owns ratio formation
+`dv/verif/scripts/run_tinyml_tree_equivalence.ps1`. Python owns ratio formation
 and quantization; C and RTL consume the same 13 integer features. The standalone
 tree is intentionally not connected to AXI until XSim and retained board-trace
 replay pass. See `docs/SPEC.md` and `docs/IP_HANDOFF.md` for the

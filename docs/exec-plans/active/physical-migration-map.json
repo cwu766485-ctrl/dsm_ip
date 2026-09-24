@@ -4,23 +4,23 @@
   "entries": [
     {
       "from": "verif/",
-      "to": "dv/",
+      "to": "dv/verif/",
       "role": "directed simulation, block and subsystem verification",
-      "action": "retain_protected",
+      "action": "move",
       "consumers": ["rtl/filelist_p0.f", "README.md", "docs/VPLAN.md", "scripts", "fpga/zu15eg/scripts"],
       "validation": ["run_xsim_p0_all.ps1", "run_xsim_ip_smoke.ps1", "run_xsim_gt_link_bringup_bist.ps1"],
       "status": "complete",
-      "reason": "Root-relative XSim filelists, runners, READMEs, and scripts consume verif/ directly; migration was reverted before any functional path was changed."
+      "reason": "Directed verification tree physically moved and discovered consumers were rewritten."
     },
     {
       "from": "uvm_verif/",
       "to": "dv/uvm/",
       "role": "Linux VCS/UVM, formal harness, Python reference model",
-      "action": "retain_protected",
+      "action": "move",
       "consumers": ["README.md", "docs/VPLAN.md", "verif scripts", "rtl/filelists"],
       "validation": ["make -C dv/uvm/sim check-tools"],
       "status": "complete",
-      "reason": "VCS/UVM Makefiles, filelists, formal scripts, and Python launchers consume uvm_verif/ directly; migration was reverted before any functional path was changed."
+      "reason": "Linux VCS/UVM, formal, and Python consumers were rewritten to the new canonical path."
     },
     {
       "from": "syn/constraints/",

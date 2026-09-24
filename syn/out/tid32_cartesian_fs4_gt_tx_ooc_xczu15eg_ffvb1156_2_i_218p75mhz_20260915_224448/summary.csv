@@ -1,0 +1,2 @@
+Part,Block,Target_MHz,Status,WNS_ns,WHS_ns,Fmax_est_MHz
+xczu15eg-ffvb1156-2-i,tid32_cartesian_fs4_gt_tx_ooc,218.75,PASS,3.053,0.032,658.58

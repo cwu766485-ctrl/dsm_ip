@@ -5,31 +5,31 @@
     {
       "id": "xsim-p0",
       "runner": "powershell",
-      "script": "verif/scripts/run_xsim_p0_all.ps1",
+      "script": "dv/verif/scripts/run_xsim_p0_all.ps1",
       "description": "Run the required P0 XSim regression."
     },
     {
       "id": "xsim-ip-smoke",
       "runner": "powershell",
-      "script": "verif/scripts/run_xsim_ip_smoke.ps1",
+      "script": "dv/verif/scripts/run_xsim_ip_smoke.ps1",
       "description": "Run the required packaged-IP smoke regression."
     },
     {
       "id": "xsim-ti64-core",
       "runner": "powershell",
-      "script": "verif/scripts/run_xsim_ti64_lp1_fs4_gt_tx.ps1",
+      "script": "dv/verif/scripts/run_xsim_ti64_lp1_fs4_gt_tx.ps1",
       "description": "Verify ordered TI64 LP1 bits at the raw GT boundary."
     },
     {
       "id": "xsim-ti64-frontend",
       "runner": "powershell",
-      "script": "verif/scripts/run_xsim_ti64_cartesian_frontend_tx.ps1",
+      "script": "dv/verif/scripts/run_xsim_ti64_cartesian_frontend_tx.ps1",
       "description": "Verify the Cartesian x1 frontend and TI64 boundary."
     },
     {
       "id": "xsim-ti64-x4-frontend",
       "runner": "powershell",
-      "script": "verif/scripts/run_xsim_ti64_cartesian_x4_frontend_tx.ps1",
+      "script": "dv/verif/scripts/run_xsim_ti64_cartesian_x4_frontend_tx.ps1",
       "description": "Verify 16-lane DPD, x4 vector polyphase, TI64 and raw-GT ordering."
     },
     {

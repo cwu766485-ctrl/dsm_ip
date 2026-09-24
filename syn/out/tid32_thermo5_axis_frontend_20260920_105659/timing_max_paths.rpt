@@ -1,0 +1,1178 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2024.1 (win64) Build 5076996 Wed May 22 18:37:14 MDT 2024
+| Date              : Sun Sep 20 11:32:12 2026
+| Host              : LAPTOP-KNBVGAN8 running 64-bit major release  (build 9200)
+| Command           : report_timing -max_paths 20 -file E:/workspace/chip/dsm_ip/syn/out/tid32_thermo5_axis_frontend_20260920_105659/timing_max_paths.rpt
+| Design            : tid32_thermo5_axis_frontend_tx_ooc
+| Device            : xczu15eg-ffvb1156
+| Speed File        : -2  PRODUCTION 1.30 05-15-2022
+| Design State      : Routed
+| Temperature Grade : I
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -3.968ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[224]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[224]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[224]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_AFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[224]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.968    
+
+Slack (VIOLATED) :        -3.968ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[227]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[227]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[227]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_BFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[227]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.968    
+
+Slack (VIOLATED) :        -3.968ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[228]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[228]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[228]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_CFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[228]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.968    
+
+Slack (VIOLATED) :        -3.968ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[229]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[229]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[229]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_DFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[229]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.968    
+
+Slack (VIOLATED) :        -3.967ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[230]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[230]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[230]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_AFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[230]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.967    
+
+Slack (VIOLATED) :        -3.967ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[233]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[233]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[233]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_BFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[233]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.967    
+
+Slack (VIOLATED) :        -3.967ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[236]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[236]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[236]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_CFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[236]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.967    
+
+Slack (VIOLATED) :        -3.967ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[237]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        8.433ns  (logic 0.371ns (4.399%)  route 8.062ns (95.601%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         4.329     8.463    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[237]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X79Y115        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[237]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X79Y115        FDRE (Setup_DFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[237]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -8.463    
+  -------------------------------------------------------------------
+                         slack                                 -3.967    
+
+Slack (VIOLATED) :        -3.420ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__30/DSP_A_B_DATA_INST/CEA2
+                            (rising edge-triggered cell DSP_A_B_DATA clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.810ns  (logic 0.371ns (4.750%)  route 7.439ns (95.250%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        0.013ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.043ns = ( 4.614 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.705     7.840    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__30/CEA2
+    DSP48E2_X22Y81       DSP_A_B_DATA                                 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__30/DSP_A_B_DATA_INST/CEA2
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.043     4.614    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__30/CLK
+    DSP48E2_X22Y81       DSP_A_B_DATA                                 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__30/DSP_A_B_DATA_INST/CLK
+                         clock pessimism              0.000     4.614    
+                         clock uncertainty           -0.035     4.579    
+    DSP48E2_X22Y81       DSP_A_B_DATA (Setup_DSP_A_B_DATA_DSP48E2_CLK_CEA2)
+                                                     -0.159     4.420    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__30/DSP_A_B_DATA_INST
+  -------------------------------------------------------------------
+                         required time                          4.420    
+                         arrival time                          -7.840    
+  -------------------------------------------------------------------
+                         slack                                 -3.420    
+
+Slack (VIOLATED) :        -3.316ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_C_DATA_INST/CEC
+                            (rising edge-triggered cell DSP_C_DATA clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.705ns  (logic 0.371ns (4.815%)  route 7.334ns (95.185%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        0.013ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.043ns = ( 4.614 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.600     7.735    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/CEC
+    DSP48E2_X20Y82       DSP_C_DATA                                   r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_C_DATA_INST/CEC
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.043     4.614    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/CLK
+    DSP48E2_X20Y82       DSP_C_DATA                                   r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_C_DATA_INST/CLK
+                         clock pessimism              0.000     4.614    
+                         clock uncertainty           -0.035     4.579    
+    DSP48E2_X20Y82       DSP_C_DATA (Setup_DSP_C_DATA_DSP48E2_CLK_CEC)
+                                                     -0.160     4.419    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_C_DATA_INST
+  -------------------------------------------------------------------
+                         required time                          4.419    
+                         arrival time                          -7.735    
+  -------------------------------------------------------------------
+                         slack                                 -3.316    
+
+Slack (VIOLATED) :        -3.270ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[201]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.736ns  (logic 0.371ns (4.796%)  route 7.365ns (95.204%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.631     7.766    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X93Y202        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[201]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X93Y202        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[201]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X93Y202        FDRE (Setup_HFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[201]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.766    
+  -------------------------------------------------------------------
+                         slack                                 -3.270    
+
+Slack (VIOLATED) :        -3.270ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[203]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.736ns  (logic 0.371ns (4.796%)  route 7.365ns (95.204%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.631     7.766    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X93Y202        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[203]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X93Y202        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[203]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X93Y202        FDRE (Setup_GFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[203]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.766    
+  -------------------------------------------------------------------
+                         slack                                 -3.270    
+
+Slack (VIOLATED) :        -3.270ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[204]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.736ns  (logic 0.371ns (4.796%)  route 7.365ns (95.204%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.631     7.766    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X93Y202        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[204]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X93Y202        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[204]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X93Y202        FDRE (Setup_FFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[204]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.766    
+  -------------------------------------------------------------------
+                         slack                                 -3.270    
+
+Slack (VIOLATED) :        -3.237ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_A_B_DATA_INST/CEA2
+                            (rising edge-triggered cell DSP_A_B_DATA clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.627ns  (logic 0.371ns (4.864%)  route 7.256ns (95.136%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        0.013ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.043ns = ( 4.614 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.522     7.657    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/CEA2
+    DSP48E2_X20Y82       DSP_A_B_DATA                                 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_A_B_DATA_INST/CEA2
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.043     4.614    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/CLK
+    DSP48E2_X20Y82       DSP_A_B_DATA                                 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_A_B_DATA_INST/CLK
+                         clock pessimism              0.000     4.614    
+                         clock uncertainty           -0.035     4.579    
+    DSP48E2_X20Y82       DSP_A_B_DATA (Setup_DSP_A_B_DATA_DSP48E2_CLK_CEA2)
+                                                     -0.159     4.420    u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value__27/DSP_A_B_DATA_INST
+  -------------------------------------------------------------------
+                         required time                          4.420    
+                         arrival time                          -7.657    
+  -------------------------------------------------------------------
+                         slack                                 -3.237    
+
+Slack (VIOLATED) :        -3.227ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[221]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.693ns  (logic 0.371ns (4.823%)  route 7.322ns (95.177%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.588     7.723    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X96Y205        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[221]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X96Y205        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[221]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X96Y205        FDRE (Setup_HFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[221]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.723    
+  -------------------------------------------------------------------
+                         slack                                 -3.227    
+
+Slack (VIOLATED) :        -3.227ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[222]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.693ns  (logic 0.371ns (4.823%)  route 7.322ns (95.177%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.588     7.723    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X96Y205        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[222]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X96Y205        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[222]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X96Y205        FDRE (Setup_GFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[222]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.723    
+  -------------------------------------------------------------------
+                         slack                                 -3.227    
+
+Slack (VIOLATED) :        -3.216ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[196]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.682ns  (logic 0.371ns (4.830%)  route 7.311ns (95.170%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.010ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.577     7.712    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X95Y201        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[196]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.020     4.591    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X95Y201        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[196]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X95Y201        FDRE (Setup_HFF2_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[196]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.712    
+  -------------------------------------------------------------------
+                         slack                                 -3.216    
+
+Slack (VIOLATED) :        -3.196ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[219]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.662ns  (logic 0.371ns (4.842%)  route 7.291ns (95.158%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.010ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.557     7.692    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X98Y205        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[219]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.020     4.591    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X98Y205        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[219]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X98Y205        FDRE (Setup_EFF2_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[219]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.692    
+  -------------------------------------------------------------------
+                         slack                                 -3.196    
+
+Slack (VIOLATED) :        -3.163ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[192]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.629ns  (logic 0.371ns (4.863%)  route 7.258ns (95.137%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.524     7.659    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X96Y201        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[192]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X96Y201        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[192]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X96Y201        FDRE (Setup_EFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[192]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.659    
+  -------------------------------------------------------------------
+                         slack                                 -3.163    
+
+Slack (VIOLATED) :        -3.163ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_interp_2/s0_q_vec_reg[193]/CE
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.629ns  (logic 0.371ns (4.863%)  route 7.258ns (95.137%))
+  Logic Levels:           3  (LUT2=1 LUT6=2)
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.030ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=113471, unset)       0.030     0.030    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/clk
+    SLICE_X79Y79         FDCE                                         r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X79Y79         FDCE (Prop_DFF2_SLICEM_C_Q)
+                                                      0.080     0.110 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/g_lane[12].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=1, routed)           0.725     0.835    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/lane_out_valid[12]
+    SLICE_X73Y127        LUT6 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.148     0.983 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1/O
+                         net (fo=1, routed)           1.465     2.448    u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0_i_1_n_0
+    SLICE_X72Y311        LUT6 (Prop_H6LUT_SLICEL_I0_O)
+                                                      0.090     2.538 r  u_dut/u_frontend/g_memory_dpd.u_memory_dpd/out_valid_INST_0/O
+                         net (fo=98, routed)          1.544     4.082    u_dut/u_frontend/u_interp_2/in_valid
+    SLICE_X93Y237        LUT2 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.053     4.135 r  u_dut/u_frontend/u_interp_2/p_interp.(null)[0].value_i_1/O
+                         net (fo=672, routed)         3.524     7.659    u_dut/u_frontend/u_interp_2/s0_history_i
+    SLICE_X96Y201        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[193]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=113471, unset)       0.021     4.592    u_dut/u_frontend/u_interp_2/clk
+    SLICE_X96Y201        FDRE                                         r  u_dut/u_frontend/u_interp_2/s0_q_vec_reg[193]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X96Y201        FDRE (Setup_FFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_interp_2/s0_q_vec_reg[193]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.659    
+  -------------------------------------------------------------------
+                         slack                                 -3.163    
+
+
+
+

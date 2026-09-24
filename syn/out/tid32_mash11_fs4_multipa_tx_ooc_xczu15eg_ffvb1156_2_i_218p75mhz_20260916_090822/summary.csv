@@ -1,0 +1,2 @@
+Part,Block,Target_MHz,Status,WNS_ns,WHS_ns,Fmax_est_MHz
+xczu15eg-ffvb1156-2-i,tid32_mash11_fs4_multipa_tx_ooc,218.75,PASS,1.315,0.029,307.08

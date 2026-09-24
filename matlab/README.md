@@ -121,7 +121,7 @@ path_setup
 
 ## Bit-True RTL Comparison
 
-Run after XSim has produced `verif/out_xsim_p0/`:
+Run after XSim has produced `dv/verif/out_xsim_p0/`:
 
 ```matlab
 T = p0_compare_rtl_xsim();

@@ -22,5 +22,5 @@ It is not interchangeable with the native low-pass I/Q metric.
   `rf_valid` transaction.
 
 Run `compare_python_bp_ef2_reference` after generating vectors under
-`uvm_verif/refmodel/python/` to prove that both latency views match the Python
+`dv/uvm/refmodel/python/` to prove that both latency views match the Python
 integer model sample by sample.

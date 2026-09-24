@@ -1,0 +1,2 @@
+Part,Block,Source_MHz,Core_MHz,DPD_Implementation,Status,WNS_ns,WHS_ns
+xczu15eg-ffvb1156-2-i,tid32_thermo3_axis_frontend_tx_ooc,125.00,218.75,memory_poly_identity_runtime,FAIL_SETUP,-1.392,-0.019

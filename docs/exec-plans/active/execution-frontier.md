@@ -4,10 +4,10 @@
 
 Repository organization is now tracked by
 `docs/exec-plans/active/physical-migration-map.json`. The AI-native navigation
-layer is generated under `docs/ai-native/`; `rtl/`, `verif/`, and `uvm_verif/`
-remain canonical paths. A trial move of verification trees was reverted before
-any consumer changed because the root-relative filelist/script closure was not
-yet validated.
+layer is generated under `docs/ai-native/`; `rtl/`, `dv/verif/`, and `dv/uvm/`
+are the canonical paths. The verification trees were physically migrated with
+Git history preserved and root-relative consumers rewritten; targeted path and
+filelist checks are the acceptance gate.
 
 The first full TSMC28 thermo3 DC run (`syn/reports/asic_thermo3_tsmc28_20260923_213624`)
 was terminated by hangup during `compile_ultra` mapping optimization. It produced
@@ -15,6 +15,13 @@ was terminated by hangup during `compile_ultra` mapping optimization. It produce
 setup/hold, power, DDC, or mapped-netlist reports. This is an incomplete run, not
 an ASIC timing or synthesis PASS. The next attempt should use a persistent Rocky
 terminal/session and a bounded DC compile strategy before retrying thermo5.
+
+The persistent bounded thermo3 and thermo5 runs launched on 2026-09-24 are still
+active in `runs/20260924_103939-dc-thermo3-tsmc28/` and
+`runs/20260924_105002-dc-thermo5-tsmc28/`. Each has passed analyze/elaborate/link
+and is in mapping; final reports are not yet available. The post-migration GT
+BERT XSim compile/elaboration succeeds, but the Windows simulator returns
+`-1073741790` during execution, so no new simulation PASS is claimed.
 
 Deliver a reviewable FPGA/ASIC-oriented digital transmitter IP handoff.
 

@@ -1,0 +1,2 @@
+part,top,steps,target_mhz,status,wns_ns,whs_ns
+xczu15eg-ffvb1156-2-i,crfb_smash2_temporal8_ooc,1,218.75,FAIL,-0.909,0.074

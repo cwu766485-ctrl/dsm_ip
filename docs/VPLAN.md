@@ -50,17 +50,17 @@ verification gate; they validate different physical-realization risks.
 
 | 层级 | DUT/范围 | 主要输入与检查 | 当前证据定位 |
 |---|---|---|---|
-| 模型层 | DSM、DPD、插值、DUC 定点行为 | MATLAB fixed-point 与 Python integer 对齐；位宽、截断、饱和、状态更新、延迟 | `matlab/`、`uvm_verif/refmodel/python/` |
-| Block 层 | DPD、插值、Fs/4 mixer、BP DSM、observer、monitor | 定向、随机、边界、reset、ready/valid 与 bit-true 向量 | `verif/block/` |
-| Subsystem 层 | TX frontend、IF/DSM、feedback、control | 模块间位宽、延迟、流控、commit、observer 配对 | `verif/subsystem/` |
-| System 层 | AXI-Lite、TX/OBS AXI-Stream、冻结数据链 | UVM agent、Python scoreboard、SVA、随机回归与功能覆盖率 | `uvm_verif/` |
+| 模型层 | DSM、DPD、插值、DUC 定点行为 | MATLAB fixed-point 与 Python integer 对齐；位宽、截断、饱和、状态更新、延迟 | `matlab/`、`dv/uvm/refmodel/python/` |
+| Block 层 | DPD、插值、Fs/4 mixer、BP DSM、observer、monitor | 定向、随机、边界、reset、ready/valid 与 bit-true 向量 | `dv/verif/block/` |
+| Subsystem 层 | TX frontend、IF/DSM、feedback、control | 模块间位宽、延迟、流控、commit、observer 配对 | `dv/verif/subsystem/` |
+| System 层 | AXI-Lite、TX/OBS AXI-Stream、冻结数据链 | UVM agent、Python scoreboard、SVA、随机回归与功能覆盖率 | `dv/uvm/` |
 | 集成层 | 时钟、实现、DMA/ILA 预留接口 | OOC/routed 证据、时序报告、板级回放脚本 | `syn/`、`fpga/`、`docs/evidence/` |
 
 Block 层优先使用轻量 SV testbench 和确定性向量；System UVM 负责跨接口的事务、随机协议交互和覆盖率闭环。不能因为 block test 通过而省略 system 层的跨模块握手、reset 和寄存器安全场景。
 
 ## 4. 冻结主 SKU 的系统 UVM 矩阵
 
-历史 300-run 回归由 15 类 test、每类 20 个 seed 构成。下表列出主覆盖意图；具体 class、sequence 和 filelist 以 `uvm_verif/` 为准。
+历史 300-run 回归由 15 类 test、每类 20 个 seed 构成。下表列出主覆盖意图；具体 class、sequence 和 filelist 以 `dv/uvm/` 为准。
 
 | 分组 | 代表测试 | 核心检查点 |
 |---|---|---|
@@ -121,15 +121,15 @@ VC Formal/FPV 覆盖的是冻结 SKU 的选定 AXI-Lite 控制面安全属性，
 
 ## 8. 可复现执行入口
 
-Linux/VCS 主入口位于 `uvm_verif/sim/`，Makefile 负责 filelist、编译依赖、testcase 选择、coverage database 合并；Python 负责向量生成、回归编排、日志和 CSV 汇总；shell 脚本负责加载 EDA 环境并调用工具。Windows PowerShell 脚本仅用于 Vivado/XSim 或跨 Windows-WSL 的便利启动，不是数字 IC 验证的唯一或首选执行环境。
+Linux/VCS 主入口位于 `dv/uvm/sim/`，Makefile 负责 filelist、编译依赖、testcase 选择、coverage database 合并；Python 负责向量生成、回归编排、日志和 CSV 汇总；shell 脚本负责加载 EDA 环境并调用工具。Windows PowerShell 脚本仅用于 Vivado/XSim 或跨 Windows-WSL 的便利启动，不是数字 IC 验证的唯一或首选执行环境。
 
 推荐在已配置许可证的 Linux EDA shell 中执行：
 
 ```bash
 cd /mnt/e/workspace/chip/dsm_ip
-make -C uvm_verif/sim check-tools
-make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1
-make -C uvm_verif/sim vcs-run-only UVM_TESTNAME=dsm_system_closure_test UVM_SEED=1 COVERAGE=1
+make -C dv/uvm/sim check-tools
+make -C dv/uvm/sim vcs PYTHON=python3.12 COVERAGE=1
+make -C dv/uvm/sim vcs-run-only UVM_TESTNAME=dsm_system_closure_test UVM_SEED=1 COVERAGE=1
 ```
 
 实际回归应使用仓库中当前的 shell/Python 编排脚本；执行后必须审阅 CSV、日志标记和 coverage database，不能只看启动脚本是否返回。

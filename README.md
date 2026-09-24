@@ -73,7 +73,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_
 powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
 ```
 
-The Linux VCS environment under `uvm_verif/` has a frozen-SKU system regression
+The Linux VCS environment under `dv/uvm/` has a frozen-SKU system regression
 with Python integer reference scoreboarding. The 2026-08-16 run completed 20/20
 testcases with zero UVM errors/fatals and explicit anti-false-pass gates. This
 is a functional and functional-coverage closure for the frozen SKU; it is not
@@ -102,8 +102,8 @@ is a functional and functional-coverage closure for the frozen SKU; it is not
 |---|---|
 | `rtl/` | Synthesizable datapath and wrappers |
 | `matlab/` | Fixed-point references, vectors, DPD models, and metrics |
-| `verif/` | Directed SystemVerilog/XSim tests |
-| `uvm_verif/` | UVM verification scaffold |
+| `dv/verif/` | Directed SystemVerilog/XSim tests |
+| `dv/uvm/` | UVM verification scaffold |
 | `ip/` | Vivado IP packaging |
 | `syn/` | Vivado and Design Compiler flows |
 | `fpga/zu15eg/` | ZU15EG integration and bare-metal support |

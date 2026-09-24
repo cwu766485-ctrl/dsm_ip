@@ -53,8 +53,8 @@
   counters, clear/retrain recovery, and deterministic error injection.
 - Added executable protocol assertions for TX valid/ready state ownership,
   link-up versus enable, and error-counter/sticky-status consistency.
-- Added `verif/block/gt/tb_gt_link_bringup_bist.sv` and
-  `verif/scripts/run_xsim_gt_link_bringup_bist.ps1`.  XSim passes the clean
+- Added `dv/verif/block/gt/tb_gt_link_bringup_bist.sv` and
+  `dv/verif/scripts/run_xsim_gt_link_bringup_bist.ps1`.  XSim passes the clean
   PRBS31 loopback, injected-error detection, sticky status, clear/retrain, and
   known-word recovery sequence:
   `GT_LINK_BRINGUP_BIST_PASS prbs_words=49 errors_detected=0`.
@@ -75,8 +75,8 @@
   loopback, BER/BERT, eye, and jitter remain separate gates.
   Changed source/check files are `rtl/axis/dsm_reset_sync.sv`,
   `rtl/axis/dsm_async_fifo.sv`, `rtl/axis/dsm_axis14_to_core8_cdc.sv`,
-  `verif/block/axis/tb_dsm_axis14_to_core8_cdc.sv`, and
-  `verif/scripts/run_xsim_tid32_thermo5_serdes_loopback.ps1`.
+  `dv/verif/block/axis/tb_dsm_axis14_to_core8_cdc.sv`, and
+  `dv/verif/scripts/run_xsim_tid32_thermo5_serdes_loopback.ps1`.
 
 ## 2026-09-21 - Refresh active execution frontier
 
@@ -301,7 +301,7 @@
 
 ## 2026-09-15 — TID32 RTL word-level contract
 
-- Added: `matlab/tx_bandpass_if/gen_tid32_bittrue_vectors.m`, `verif/block/bp_dsm/tb/tb_tid32_cartesian_fs4_gt_tx_bittrue.sv`, `verif/scripts/run_xsim_tid32_cartesian_fs4_gt_tx.ps1`.
+- Added: `matlab/tx_bandpass_if/gen_tid32_bittrue_vectors.m`, `dv/verif/block/bp_dsm/tb/tb_tid32_cartesian_fs4_gt_tx_bittrue.sv`, `dv/verif/scripts/run_xsim_tid32_cartesian_fs4_gt_tx.ps1`.
 - Added the payload-target board top and build Tcl.  SFP0 receives the actual TID32 raw word; SFP1 retains a distinct known word.  Its local source is explicitly a board smoke pattern, not a substitution for the future 256-QAM sample feeder.
 - Checks: `run_xsim_tid32_cartesian_fs4_gt_tx.ps1` PASS — 128 words / 4,096 samples, MATLAB-to-RTL 64-bit GT word 0 mismatch.
 
@@ -328,7 +328,7 @@
 
 ## 2026-09-16 — Regression after TID32/GTH integration
 
-- Checks: `verif/scripts/run_xsim_p0_all.ps1` PASS — 7/7 configurations, 65,536 samples each, Failed=0. `verif/scripts/run_xsim_ip_smoke.ps1` PASS, including BP AXI route and DPD v1.1 smoke.
+- Checks: `dv/verif/scripts/run_xsim_p0_all.ps1` PASS — 7/7 configurations, 65,536 samples each, Failed=0. `dv/verif/scripts/run_xsim_ip_smoke.ps1` PASS, including BP AXI route and DPD v1.1 smoke.
 
 ## 2026-09-15 20:55 - Seven DSM scalar reference/temporal64 contracts
 
@@ -924,12 +924,13 @@
   mapped runs emit reports; power is vectorless without SAIF.
 - Fixed `syn/asic/parse_dc_reports.py` to run on Rocky's Python 3.6 (removed
   unsupported future annotations and newer union/generic type syntax).
-- Project organization pass: generated `docs/ai-native/` navigation, added the
-  physical migration map and target skeleton directories, and reduced the root
-  `AGENTS.md` to 130 lines. `verif/` and `uvm_verif/` were trial-moved then
-  reverted before consumer edits because their root-relative filelists and
-  launchers are not yet migration-closed; they are documented protected
-  compatibility boundaries.
+- Project organization pass: physically migrated `verif/` to `dv/verif/` and
+  `uvm_verif/` to `dv/uvm/` with `git mv`, updated root-relative filelists,
+  Makefiles, formal/Tcl/Python/PowerShell consumers, and corrected the UVM
+  include path. The migration map records the completed moves.
+- Post-migration GT BERT XSim reached compile/elaboration but the existing
+  Vivado Windows simulator returned `-1073741790` at run time; this is recorded
+  as an unavailable simulator result, not a migration PASS.
 - The active thermo3 DC session ended with `Process terminated by hangup` during
   compile mapping optimization. Intermediate checks exist, but no final ASIC
   area/timing/power/netlist result is claimed.

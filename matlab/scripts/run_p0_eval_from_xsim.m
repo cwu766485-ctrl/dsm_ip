@@ -4,7 +4,7 @@
 % It reuses the existing evaluator:
 %   plot_nominal_ofdm16qam_osr32_compare_v1(...)
 %
-% Required xsim dumps in verif/out_xsim_p0:
+% Required xsim dumps in dv/verif/out_xsim_p0:
 %   sim_bits_01.txt
 %   sim_bits_01_ef1.txt
 %   sim_bits_01_dsm2.txt

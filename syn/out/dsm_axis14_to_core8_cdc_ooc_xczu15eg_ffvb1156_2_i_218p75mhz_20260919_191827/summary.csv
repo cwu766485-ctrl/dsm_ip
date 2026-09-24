@@ -1,0 +1,2 @@
+Part,Block,Source_MHz,Core_MHz,Status,WNS_ns,WHS_ns
+xczu15eg-ffvb1156-2-i,dsm_axis14_to_core8_cdc_ooc,125.00,218.75,PASS,1.807,0.042

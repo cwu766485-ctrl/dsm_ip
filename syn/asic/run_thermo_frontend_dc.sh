@@ -6,8 +6,10 @@ DB=${DSM_ASIC_STDCELL_DB:?set DSM_ASIC_STDCELL_DB to the TSMC28 RVT .db}
 FLAVOUR=${DSM_ASIC_FLAVOUR:?set DSM_ASIC_FLAVOUR to thermo3 or thermo5}
 STAMP=$(date +%Y%m%d_%H%M%S)
 RUN=${DSM_ASIC_RUN_DIR:-$ROOT/syn/reports/asic_${FLAVOUR}_tsmc28_${STAMP}}
+COMPILE_MODE=${DSM_ASIC_COMPILE_MODE:-bounded}
 mkdir -p "$RUN"
 DSM_ASIC_STDCELL_DB="$DB" DSM_ASIC_RUN_DIR="$RUN" DSM_ASIC_FLAVOUR="$FLAVOUR" \
+DSM_ASIC_COMPILE_MODE="$COMPILE_MODE" DSM_ASIC_INPUT_DDC="${DSM_ASIC_INPUT_DDC:-}" \
   "$DC_SHELL" -f "$ROOT/syn/asic/dc_thermo_frontend.tcl" >"$RUN/dc.log" 2>&1
 grep -q THERMO_ASIC_DC_COMPLETE "$RUN/dc.log"
 if grep -Eq '^Error:|No target library found|unmapped logic|Unable to match ports|Width mismatch' "$RUN/dc.log"; then

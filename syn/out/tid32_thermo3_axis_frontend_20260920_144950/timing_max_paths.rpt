@@ -1,0 +1,998 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2024.1 (win64) Build 5076996 Wed May 22 18:37:14 MDT 2024
+| Date              : Sun Sep 20 15:37:11 2026
+| Host              : LAPTOP-KNBVGAN8 running 64-bit major release  (build 9200)
+| Command           : report_timing -max_paths 20 -file E:/workspace/chip/dsm_ip/syn/out/tid32_thermo3_axis_frontend_20260920_144950/timing_max_paths.rpt
+| Design            : tid32_thermo3_axis_frontend_tx_ooc
+| Device            : xczu15eg-ffvb1156
+| Speed File        : -2  PRODUCTION 1.30 05-15-2022
+| Design State      : Routed
+| Temperature Grade : I
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -3.052ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[230]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.519ns  (logic 0.080ns (1.064%)  route 7.439ns (98.936%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.439     7.548    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X64Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[230]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X64Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[230]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X64Y70         FDCE (Setup_HFF2_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[230]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.548    
+  -------------------------------------------------------------------
+                         slack                                 -3.052    
+
+Slack (VIOLATED) :        -3.050ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[229]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.517ns  (logic 0.080ns (1.064%)  route 7.437ns (98.936%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.437     7.546    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X64Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[229]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X64Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[229]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X64Y70         FDCE (Setup_HFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[229]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.546    
+  -------------------------------------------------------------------
+                         slack                                 -3.050    
+
+Slack (VIOLATED) :        -2.959ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[211]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.426ns  (logic 0.080ns (1.077%)  route 7.346ns (98.923%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.346     7.455    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[211]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[211]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X71Y93         FDCE (Setup_DFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[211]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.455    
+  -------------------------------------------------------------------
+                         slack                                 -2.959    
+
+Slack (VIOLATED) :        -2.959ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[213]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.426ns  (logic 0.080ns (1.077%)  route 7.346ns (98.923%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.346     7.455    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[213]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[213]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X71Y93         FDCE (Setup_CFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[213]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.455    
+  -------------------------------------------------------------------
+                         slack                                 -2.959    
+
+Slack (VIOLATED) :        -2.959ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[217]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.426ns  (logic 0.080ns (1.077%)  route 7.346ns (98.923%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.346     7.455    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[217]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[217]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X71Y93         FDCE (Setup_BFF_SLICEM_C_CE)
+                                                     -0.061     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[217]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.455    
+  -------------------------------------------------------------------
+                         slack                                 -2.959    
+
+Slack (VIOLATED) :        -2.958ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[212]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.426ns  (logic 0.080ns (1.077%)  route 7.346ns (98.923%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.346     7.455    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[212]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[212]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X71Y93         FDCE (Setup_DFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[212]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.455    
+  -------------------------------------------------------------------
+                         slack                                 -2.958    
+
+Slack (VIOLATED) :        -2.958ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[214]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.426ns  (logic 0.080ns (1.077%)  route 7.346ns (98.923%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.346     7.455    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[214]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[214]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X71Y93         FDCE (Setup_CFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[214]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.455    
+  -------------------------------------------------------------------
+                         slack                                 -2.958    
+
+Slack (VIOLATED) :        -2.958ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[218]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.426ns  (logic 0.080ns (1.077%)  route 7.346ns (98.923%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.346     7.455    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[218]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X71Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[218]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X71Y93         FDCE (Setup_BFF2_SLICEM_C_CE)
+                                                     -0.060     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[218]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.455    
+  -------------------------------------------------------------------
+                         slack                                 -2.958    
+
+Slack (VIOLATED) :        -2.954ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[210]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.422ns  (logic 0.080ns (1.078%)  route 7.342ns (98.922%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.342     7.451    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[210]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[210]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X72Y93         FDCE (Setup_CFF2_SLICEL_C_CE)
+                                                     -0.059     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[210]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.451    
+  -------------------------------------------------------------------
+                         slack                                 -2.954    
+
+Slack (VIOLATED) :        -2.954ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[222]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.422ns  (logic 0.080ns (1.078%)  route 7.342ns (98.922%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.342     7.451    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[222]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[222]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X72Y93         FDCE (Setup_DFF2_SLICEL_C_CE)
+                                                     -0.059     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[222]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.451    
+  -------------------------------------------------------------------
+                         slack                                 -2.954    
+
+Slack (VIOLATED) :        -2.954ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[209]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.421ns  (logic 0.080ns (1.078%)  route 7.341ns (98.922%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.341     7.450    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[209]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[209]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X72Y93         FDCE (Setup_CFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[209]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.450    
+  -------------------------------------------------------------------
+                         slack                                 -2.954    
+
+Slack (VIOLATED) :        -2.954ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[221]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.421ns  (logic 0.080ns (1.078%)  route 7.341ns (98.922%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.341     7.450    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[221]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X72Y93         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[221]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X72Y93         FDCE (Setup_DFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_q_reg[221]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.450    
+  -------------------------------------------------------------------
+                         slack                                 -2.954    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[224]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.401ns  (logic 0.080ns (1.081%)  route 7.321ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.321     7.430    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X67Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[224]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X67Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[224]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X67Y70         FDCE (Setup_DFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[224]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.430    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[225]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.401ns  (logic 0.080ns (1.081%)  route 7.321ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.321     7.430    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[225]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[225]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X66Y70         FDCE (Setup_CFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[225]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.430    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[226]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.402ns  (logic 0.080ns (1.081%)  route 7.322ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.322     7.431    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[226]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[226]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X66Y70         FDCE (Setup_CFF2_SLICEL_C_CE)
+                                                     -0.059     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[226]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.431    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[227]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.401ns  (logic 0.080ns (1.081%)  route 7.321ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.321     7.430    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[227]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[227]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X66Y70         FDCE (Setup_BFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[227]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.430    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[228]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.402ns  (logic 0.080ns (1.081%)  route 7.322ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.322     7.431    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[228]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[228]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X66Y70         FDCE (Setup_BFF2_SLICEL_C_CE)
+                                                     -0.059     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[228]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.431    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[229]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.401ns  (logic 0.080ns (1.081%)  route 7.321ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.321     7.430    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X67Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[229]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X67Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[229]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X67Y70         FDCE (Setup_CFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[229]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.430    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[230]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.402ns  (logic 0.080ns (1.081%)  route 7.322ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.322     7.431    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X67Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[230]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X67Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[230]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X67Y70         FDCE (Setup_CFF2_SLICEL_C_CE)
+                                                     -0.059     4.497    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[230]
+  -------------------------------------------------------------------
+                         required time                          4.497    
+                         arrival time                          -7.431    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+Slack (VIOLATED) :        -2.935ns  (required time - arrival time)
+  Source:                 u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[235]/CE
+                            (rising edge-triggered cell FDCE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        7.401ns  (logic 0.080ns (1.081%)  route 7.321ns (98.919%))
+  Logic Levels:           0  
+  Clock Path Skew:        -0.009ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.029ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.029     0.029    u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/clk
+    SLICE_X36Y317        FDCE                                         r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X36Y317        FDCE (Prop_HFF2_SLICEL_C_Q)
+                                                      0.080     0.109 r  u_dut/u_frontend/u_memory_dpd/g_lane[0].u_dpd/valid_pipe_reg[10]/Q
+                         net (fo=513, routed)         7.321     7.430    u_dut/u_frontend/u_dpd_to_interp_elastic/in_valid
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[235]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frontend/u_dpd_to_interp_elastic/clk
+    SLICE_X66Y70         FDCE                                         r  u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[235]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X66Y70         FDCE (Setup_DFF_SLICEL_C_CE)
+                                                     -0.060     4.496    u_dut/u_frontend/u_dpd_to_interp_elastic/data_i_reg[235]
+  -------------------------------------------------------------------
+                         required time                          4.496    
+                         arrival time                          -7.430    
+  -------------------------------------------------------------------
+                         slack                                 -2.935    
+
+
+
+

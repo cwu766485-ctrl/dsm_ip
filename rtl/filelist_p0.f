@@ -46,4 +46,4 @@
 ../rtl/top/p0_top_mash111_mb.v
 ../rtl/top/p0_top_mash22_mb.v
 
-# Testbenches live in verif/tb and are compiled by the runner.
+# Testbenches live in dv/verif/tb and are compiled by the runner.

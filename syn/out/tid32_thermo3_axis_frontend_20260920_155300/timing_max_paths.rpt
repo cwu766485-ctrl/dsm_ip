@@ -1,0 +1,1805 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2024.1 (win64) Build 5076996 Wed May 22 18:37:14 MDT 2024
+| Date              : Sun Sep 20 16:33:45 2026
+| Host              : LAPTOP-KNBVGAN8 running 64-bit major release  (build 9200)
+| Command           : report_timing -max_paths 20 -file E:/workspace/chip/dsm_ip/syn/out/tid32_thermo3_axis_frontend_20260920_155300/timing_max_paths.rpt
+| Design            : tid32_thermo3_axis_frontend_tx_ooc
+| Device            : xczu15eg-ffvb1156
+| Speed File        : -2  PRODUCTION 1.30 05-15-2022
+| Design State      : Routed
+| Temperature Grade : I
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -2.214ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[56]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.768ns  (logic 2.409ns (35.594%)  route 4.359ns (64.406%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.643     6.653    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y186        LUT5 (Prop_A6LUT_SLICEM_I0_O)
+                                                      0.090     6.743 r  u_dut/u_frame_gain/out_q_vec[56]_i_1/O
+                         net (fo=1, routed)           0.053     6.796    u_dut/u_frame_gain/p_16_out__0[56]
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[56]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[56]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y186        FDRE (Setup_AFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[56]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.796    
+  -------------------------------------------------------------------
+                         slack                                 -2.214    
+
+Slack (VIOLATED) :        -2.211ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[54]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.765ns  (logic 2.444ns (36.127%)  route 4.321ns (63.873%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.599     6.609    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y186        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.125     6.734 r  u_dut/u_frame_gain/out_q_vec[54]_i_1/O
+                         net (fo=1, routed)           0.059     6.793    u_dut/u_frame_gain/p_16_out__0[54]
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[54]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[54]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y186        FDRE (Setup_BFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[54]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.793    
+  -------------------------------------------------------------------
+                         slack                                 -2.211    
+
+Slack (VIOLATED) :        -2.170ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[49]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.724ns  (logic 2.356ns (35.038%)  route 4.368ns (64.961%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.639     6.649    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y186        LUT5 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.037     6.686 r  u_dut/u_frame_gain/out_q_vec[49]_i_1/O
+                         net (fo=1, routed)           0.066     6.752    u_dut/u_frame_gain/p_16_out__0[49]
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[49]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[49]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y186        FDRE (Setup_CFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[49]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.752    
+  -------------------------------------------------------------------
+                         slack                                 -2.170    
+
+Slack (VIOLATED) :        -2.161ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[48]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.715ns  (logic 2.441ns (36.353%)  route 4.274ns (63.647%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.539     6.549    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y186        LUT5 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     6.671 r  u_dut/u_frame_gain/out_q_vec[48]_i_1/O
+                         net (fo=1, routed)           0.072     6.743    u_dut/u_frame_gain/p_16_out__0[48]
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[48]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[48]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y186        FDRE (Setup_DFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[48]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.743    
+  -------------------------------------------------------------------
+                         slack                                 -2.161    
+
+Slack (VIOLATED) :        -2.150ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[63]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.704ns  (logic 2.442ns (36.427%)  route 4.262ns (63.573%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.540     6.550    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y186        LUT5 (Prop_G6LUT_SLICEM_I4_O)
+                                                      0.123     6.673 r  u_dut/u_frame_gain/out_q_vec[63]_i_1/O
+                         net (fo=1, routed)           0.059     6.732    u_dut/u_frame_gain/out_q_vec[63]_i_1_n_0
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[63]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[63]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y186        FDRE (Setup_GFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[63]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.732    
+  -------------------------------------------------------------------
+                         slack                                 -2.150    
+
+Slack (VIOLATED) :        -2.141ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[55]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.695ns  (logic 2.444ns (36.505%)  route 4.251ns (63.495%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.530     6.540    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y186        LUT5 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.125     6.665 r  u_dut/u_frame_gain/out_q_vec[55]_i_1/O
+                         net (fo=1, routed)           0.058     6.723    u_dut/u_frame_gain/p_16_out__0[55]
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[55]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y186        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[55]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y186        FDRE (Setup_HFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[55]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.723    
+  -------------------------------------------------------------------
+                         slack                                 -2.141    
+
+Slack (VIOLATED) :        -2.112ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[57]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.664ns  (logic 2.424ns (36.373%)  route 4.240ns (63.627%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     5.248 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.274    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_0
+    SLICE_X41Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     5.330 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_33/O[0]
+                         net (fo=24, routed)          0.218     5.548    u_dut/u_frame_gain/out_q_vec_reg[63]_i_33_n_15
+    SLICE_X42Y183        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.149     5.697 r  u_dut/u_frame_gain/out_q_vec[63]_i_31/O
+                         net (fo=1, routed)           0.016     5.713    u_dut/u_frame_gain/out_q_vec[63]_i_31_n_0
+    SLICE_X42Y183        CARRY8 (Prop_CARRY8_SLICEM_S[1]_CO[7])
+                                                      0.190     5.903 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_13/CO[7]
+                         net (fo=1, routed)           0.026     5.929    u_dut/u_frame_gain/out_q_vec_reg[63]_i_13_n_0
+    SLICE_X42Y184        CARRY8 (Prop_CARRY8_SLICEM_CI_CO[0])
+                                                      0.052     5.981 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_3/CO[0]
+                         net (fo=16, routed)          0.609     6.590    u_dut/u_frame_gain/out_q_vec_reg[63]_i_3_n_7
+    SLICE_X43Y185        LUT5 (Prop_H6LUT_SLICEL_I1_O)
+                                                      0.051     6.641 r  u_dut/u_frame_gain/out_q_vec[57]_i_1/O
+                         net (fo=1, routed)           0.051     6.692    u_dut/u_frame_gain/p_16_out__0[57]
+    SLICE_X43Y185        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[57]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frame_gain/clk
+    SLICE_X43Y185        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[57]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X43Y185        FDRE (Setup_HFF_SLICEL_C_D)
+                                                      0.025     4.581    u_dut/u_frame_gain/out_q_vec_reg[57]
+  -------------------------------------------------------------------
+                         required time                          4.581    
+                         arrival time                          -6.692    
+  -------------------------------------------------------------------
+                         slack                                 -2.112    
+
+Slack (VIOLATED) :        -2.107ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[62]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.659ns  (logic 2.423ns (36.385%)  route 4.236ns (63.615%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.008ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.020ns = ( 4.591 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     5.248 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.274    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_0
+    SLICE_X41Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     5.330 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_33/O[0]
+                         net (fo=24, routed)          0.218     5.548    u_dut/u_frame_gain/out_q_vec_reg[63]_i_33_n_15
+    SLICE_X42Y183        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.149     5.697 r  u_dut/u_frame_gain/out_q_vec[63]_i_31/O
+                         net (fo=1, routed)           0.016     5.713    u_dut/u_frame_gain/out_q_vec[63]_i_31_n_0
+    SLICE_X42Y183        CARRY8 (Prop_CARRY8_SLICEM_S[1]_CO[7])
+                                                      0.190     5.903 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_13/CO[7]
+                         net (fo=1, routed)           0.026     5.929    u_dut/u_frame_gain/out_q_vec_reg[63]_i_13_n_0
+    SLICE_X42Y184        CARRY8 (Prop_CARRY8_SLICEM_CI_CO[0])
+                                                      0.052     5.981 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_3/CO[0]
+                         net (fo=16, routed)          0.608     6.589    u_dut/u_frame_gain/out_q_vec_reg[63]_i_3_n_7
+    SLICE_X43Y185        LUT5 (Prop_G6LUT_SLICEL_I1_O)
+                                                      0.050     6.639 r  u_dut/u_frame_gain/out_q_vec[62]_i_1/O
+                         net (fo=1, routed)           0.048     6.687    u_dut/u_frame_gain/p_16_out__0[62]
+    SLICE_X43Y185        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[62]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.020     4.591    u_dut/u_frame_gain/clk
+    SLICE_X43Y185        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[62]/C
+                         clock pessimism              0.000     4.591    
+                         clock uncertainty           -0.035     4.556    
+    SLICE_X43Y185        FDRE (Setup_GFF_SLICEL_C_D)
+                                                      0.025     4.581    u_dut/u_frame_gain/out_q_vec_reg[62]
+  -------------------------------------------------------------------
+                         required time                          4.581    
+                         arrival time                          -6.687    
+  -------------------------------------------------------------------
+                         slack                                 -2.107    
+
+Slack (VIOLATED) :        -2.093ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[53]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.646ns  (logic 2.473ns (37.209%)  route 4.173ns (62.791%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     5.248 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.274    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_0
+    SLICE_X41Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     5.330 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_33/O[0]
+                         net (fo=24, routed)          0.218     5.548    u_dut/u_frame_gain/out_q_vec_reg[63]_i_33_n_15
+    SLICE_X42Y183        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.149     5.697 r  u_dut/u_frame_gain/out_q_vec[63]_i_31/O
+                         net (fo=1, routed)           0.016     5.713    u_dut/u_frame_gain/out_q_vec[63]_i_31_n_0
+    SLICE_X42Y183        CARRY8 (Prop_CARRY8_SLICEM_S[1]_CO[7])
+                                                      0.190     5.903 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_13/CO[7]
+                         net (fo=1, routed)           0.026     5.929    u_dut/u_frame_gain/out_q_vec_reg[63]_i_13_n_0
+    SLICE_X42Y184        CARRY8 (Prop_CARRY8_SLICEM_CI_CO[0])
+                                                      0.052     5.981 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_3/CO[0]
+                         net (fo=16, routed)          0.540     6.521    u_dut/u_frame_gain/out_q_vec_reg[63]_i_3_n_7
+    SLICE_X46Y181        LUT5 (Prop_A6LUT_SLICEM_I1_O)
+                                                      0.100     6.621 r  u_dut/u_frame_gain/out_q_vec[53]_i_1/O
+                         net (fo=1, routed)           0.053     6.674    u_dut/u_frame_gain/p_16_out__0[53]
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[53]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[53]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y181        FDRE (Setup_AFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[53]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.674    
+  -------------------------------------------------------------------
+                         slack                                 -2.093    
+
+Slack (VIOLATED) :        -2.085ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[52]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.638ns  (logic 2.462ns (37.089%)  route 4.176ns (62.911%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     5.248 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.274    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_0
+    SLICE_X41Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     5.330 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_33/O[0]
+                         net (fo=24, routed)          0.218     5.548    u_dut/u_frame_gain/out_q_vec_reg[63]_i_33_n_15
+    SLICE_X42Y183        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.149     5.697 r  u_dut/u_frame_gain/out_q_vec[63]_i_31/O
+                         net (fo=1, routed)           0.016     5.713    u_dut/u_frame_gain/out_q_vec[63]_i_31_n_0
+    SLICE_X42Y183        CARRY8 (Prop_CARRY8_SLICEM_S[1]_CO[7])
+                                                      0.190     5.903 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_13/CO[7]
+                         net (fo=1, routed)           0.026     5.929    u_dut/u_frame_gain/out_q_vec_reg[63]_i_13_n_0
+    SLICE_X42Y184        CARRY8 (Prop_CARRY8_SLICEM_CI_CO[0])
+                                                      0.052     5.981 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_3/CO[0]
+                         net (fo=16, routed)          0.537     6.518    u_dut/u_frame_gain/out_q_vec_reg[63]_i_3_n_7
+    SLICE_X46Y181        LUT5 (Prop_B6LUT_SLICEM_I1_O)
+                                                      0.089     6.607 r  u_dut/u_frame_gain/out_q_vec[52]_i_1/O
+                         net (fo=1, routed)           0.059     6.666    u_dut/u_frame_gain/p_16_out__0[52]
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[52]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[52]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y181        FDRE (Setup_BFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[52]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.666    
+  -------------------------------------------------------------------
+                         slack                                 -2.085    
+
+Slack (VIOLATED) :        -2.055ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[50]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.609ns  (logic 2.424ns (36.678%)  route 4.185ns (63.322%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     5.248 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.274    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_0
+    SLICE_X41Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     5.330 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_33/O[0]
+                         net (fo=24, routed)          0.218     5.548    u_dut/u_frame_gain/out_q_vec_reg[63]_i_33_n_15
+    SLICE_X42Y183        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.149     5.697 r  u_dut/u_frame_gain/out_q_vec[63]_i_31/O
+                         net (fo=1, routed)           0.016     5.713    u_dut/u_frame_gain/out_q_vec[63]_i_31_n_0
+    SLICE_X42Y183        CARRY8 (Prop_CARRY8_SLICEM_S[1]_CO[7])
+                                                      0.190     5.903 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_13/CO[7]
+                         net (fo=1, routed)           0.026     5.929    u_dut/u_frame_gain/out_q_vec_reg[63]_i_13_n_0
+    SLICE_X42Y184        CARRY8 (Prop_CARRY8_SLICEM_CI_CO[0])
+                                                      0.052     5.981 f  u_dut/u_frame_gain/out_q_vec_reg[63]_i_3/CO[0]
+                         net (fo=16, routed)          0.533     6.514    u_dut/u_frame_gain/out_q_vec_reg[63]_i_3_n_7
+    SLICE_X46Y181        LUT5 (Prop_D6LUT_SLICEM_I1_O)
+                                                      0.051     6.565 r  u_dut/u_frame_gain/out_q_vec[50]_i_1/O
+                         net (fo=1, routed)           0.072     6.637    u_dut/u_frame_gain/p_16_out__0[50]
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[50]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[50]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y181        FDRE (Setup_DFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[50]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.637    
+  -------------------------------------------------------------------
+                         slack                                 -2.055    
+
+Slack (VIOLATED) :        -2.054ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[51]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.607ns  (logic 2.407ns (36.428%)  route 4.200ns (63.572%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.472     6.481    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X46Y181        LUT5 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.088     6.569 r  u_dut/u_frame_gain/out_q_vec[51]_i_1/O
+                         net (fo=1, routed)           0.066     6.635    u_dut/u_frame_gain/p_16_out__0[51]
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[51]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X46Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[51]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X46Y181        FDRE (Setup_CFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[51]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.635    
+  -------------------------------------------------------------------
+                         slack                                 -2.054    
+
+Slack (VIOLATED) :        -1.867ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[58]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.420ns  (logic 2.444ns (38.067%)  route 3.976ns (61.933%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.256     6.265    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X42Y181        LUT5 (Prop_H6LUT_SLICEM_I0_O)
+                                                      0.125     6.390 r  u_dut/u_frame_gain/out_q_vec[58]_i_1/O
+                         net (fo=1, routed)           0.058     6.448    u_dut/u_frame_gain/p_16_out__0[58]
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[58]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[58]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X42Y181        FDRE (Setup_HFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[58]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.448    
+  -------------------------------------------------------------------
+                         slack                                 -1.867    
+
+Slack (VIOLATED) :        -1.844ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[59]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.398ns  (logic 2.442ns (38.168%)  route 3.956ns (61.832%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.234     6.244    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X42Y181        LUT5 (Prop_G6LUT_SLICEM_I0_O)
+                                                      0.123     6.367 r  u_dut/u_frame_gain/out_q_vec[59]_i_1/O
+                         net (fo=1, routed)           0.059     6.426    u_dut/u_frame_gain/p_16_out__0[59]
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[59]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[59]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X42Y181        FDRE (Setup_GFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[59]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.426    
+  -------------------------------------------------------------------
+                         slack                                 -1.844    
+
+Slack (VIOLATED) :        -1.827ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[60]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.380ns  (logic 2.407ns (37.726%)  route 3.973ns (62.274%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.244     6.253    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X42Y181        LUT5 (Prop_F6LUT_SLICEM_I0_O)
+                                                      0.088     6.341 r  u_dut/u_frame_gain/out_q_vec[60]_i_1/O
+                         net (fo=1, routed)           0.067     6.408    u_dut/u_frame_gain/p_16_out__0[60]
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[60]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[60]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X42Y181        FDRE (Setup_FFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[60]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.408    
+  -------------------------------------------------------------------
+                         slack                                 -1.827    
+
+Slack (VIOLATED) :        -1.821ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[61]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.374ns  (logic 2.410ns (37.809%)  route 3.964ns (62.191%))
+  Logic Levels:           13  (CARRY8=4 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          2.453     2.560    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/B[6]
+    DSP48E2_X7Y63        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     2.711 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     2.711    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X7Y63        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.784 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.784    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X7Y63        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     3.393 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     3.393    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_MULTIPLIER.V<14>
+    DSP48E2_X7Y63        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     3.439 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     3.439    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X7Y63        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     4.010 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     4.010    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X7Y63        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     4.119 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.548     4.667    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__9_n_91
+    SLICE_X42Y181        LUT1 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.122     4.789 r  u_dut/u_frame_gain/out_q_vec[56]_i_3/O
+                         net (fo=1, routed)           0.267     5.056    u_dut/u_frame_gain/out_q_vec[56]_i_3_n_0
+    SLICE_X41Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     5.207 r  u_dut/u_frame_gain/out_q_vec_reg[56]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     5.233    u_dut/u_frame_gain/out_q_vec_reg[56]_i_2_n_0
+    SLICE_X41Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_O[5])
+                                                      0.116     5.349 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_2/O[5]
+                         net (fo=3, routed)           0.334     5.683    u_dut/u_frame_gain/out_q_vec_reg[63]_i_2_n_10
+    SLICE_X43Y183        LUT5 (Prop_A6LUT_SLICEL_I4_O)
+                                                      0.050     5.733 r  u_dut/u_frame_gain/out_q_vec[63]_i_43/O
+                         net (fo=1, routed)           0.009     5.742    u_dut/u_frame_gain/out_q_vec[63]_i_43_n_0
+    SLICE_X43Y183        CARRY8 (Prop_CARRY8_SLICEL_S[0]_CO[7])
+                                                      0.190     5.932 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.958    u_dut/u_frame_gain/out_q_vec_reg[63]_i_15_n_0
+    SLICE_X43Y184        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     6.010 r  u_dut/u_frame_gain/out_q_vec_reg[63]_i_4/CO[0]
+                         net (fo=16, routed)          0.247     6.256    u_dut/u_frame_gain/out_q_vec_reg[63]_i_4_n_7
+    SLICE_X42Y181        LUT5 (Prop_E6LUT_SLICEM_I0_O)
+                                                      0.091     6.347 r  u_dut/u_frame_gain/out_q_vec[61]_i_1/O
+                         net (fo=1, routed)           0.055     6.402    u_dut/u_frame_gain/p_16_out__0[61]
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[61]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X42Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[61]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X42Y181        FDRE (Setup_EFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[61]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.402    
+  -------------------------------------------------------------------
+                         slack                                 -1.821    
+
+Slack (VIOLATED) :        -1.534ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[72]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.088ns  (logic 2.519ns (41.379%)  route 3.569ns (58.621%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          1.698     1.805    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/B[6]
+    DSP48E2_X9Y72        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     1.956 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     1.956    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X9Y72        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.029 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.029    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X9Y72        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     2.638 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     2.638    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER.V<14>
+    DSP48E2_X9Y72        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     2.684 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     2.684    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X9Y72        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     3.255 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     3.255    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X9Y72        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     3.364 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.339     3.703    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10_n_91
+    SLICE_X51Y181        LUT1 (Prop_A6LUT_SLICEM_I0_O)
+                                                      0.150     3.853 r  u_dut/u_frame_gain/out_q_vec[72]_i_3/O
+                         net (fo=1, routed)           0.224     4.077    u_dut/u_frame_gain/out_q_vec[72]_i_3_n_0
+    SLICE_X47Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     4.228 r  u_dut/u_frame_gain/out_q_vec_reg[72]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.254    u_dut/u_frame_gain/out_q_vec_reg[72]_i_2_n_0
+    SLICE_X47Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     4.269 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.295    u_dut/u_frame_gain/out_q_vec_reg[79]_i_2_n_0
+    SLICE_X47Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     4.351 f  u_dut/u_frame_gain/out_q_vec_reg[79]_i_33/O[0]
+                         net (fo=24, routed)          0.370     4.722    u_dut/u_frame_gain/out_q_vec_reg[79]_i_33_n_15
+    SLICE_X43Y181        LUT5 (Prop_B6LUT_SLICEL_I0_O)
+                                                      0.148     4.870 r  u_dut/u_frame_gain/out_q_vec[79]_i_42/O
+                         net (fo=1, routed)           0.009     4.879    u_dut/u_frame_gain/out_q_vec[79]_i_42_n_0
+    SLICE_X43Y181        CARRY8 (Prop_CARRY8_SLICEL_S[1]_CO[7])
+                                                      0.186     5.065 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.091    u_dut/u_frame_gain/out_q_vec_reg[79]_i_15_n_0
+    SLICE_X43Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     5.143 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_4/CO[0]
+                         net (fo=16, routed)          0.791     5.934    u_dut/u_frame_gain/out_q_vec_reg[79]_i_4_n_7
+    SLICE_X51Y181        LUT5 (Prop_G6LUT_SLICEM_I0_O)
+                                                      0.123     6.057 r  u_dut/u_frame_gain/out_q_vec[72]_i_1/O
+                         net (fo=1, routed)           0.059     6.116    u_dut/u_frame_gain/p_16_out__0[72]
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[72]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[72]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X51Y181        FDRE (Setup_GFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[72]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.116    
+  -------------------------------------------------------------------
+                         slack                                 -1.534    
+
+Slack (VIOLATED) :        -1.526ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[64]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        6.080ns  (logic 2.541ns (41.795%)  route 3.539ns (58.205%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          1.698     1.805    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/B[6]
+    DSP48E2_X9Y72        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     1.956 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     1.956    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X9Y72        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.029 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.029    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X9Y72        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     2.638 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     2.638    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER.V<14>
+    DSP48E2_X9Y72        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     2.684 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     2.684    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X9Y72        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     3.255 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     3.255    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X9Y72        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     3.364 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.339     3.703    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10_n_91
+    SLICE_X51Y181        LUT1 (Prop_A6LUT_SLICEM_I0_O)
+                                                      0.150     3.853 r  u_dut/u_frame_gain/out_q_vec[72]_i_3/O
+                         net (fo=1, routed)           0.224     4.077    u_dut/u_frame_gain/out_q_vec[72]_i_3_n_0
+    SLICE_X47Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     4.228 r  u_dut/u_frame_gain/out_q_vec_reg[72]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.254    u_dut/u_frame_gain/out_q_vec_reg[72]_i_2_n_0
+    SLICE_X47Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     4.269 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.295    u_dut/u_frame_gain/out_q_vec_reg[79]_i_2_n_0
+    SLICE_X47Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     4.351 f  u_dut/u_frame_gain/out_q_vec_reg[79]_i_33/O[0]
+                         net (fo=24, routed)          0.370     4.722    u_dut/u_frame_gain/out_q_vec_reg[79]_i_33_n_15
+    SLICE_X43Y181        LUT5 (Prop_B6LUT_SLICEL_I0_O)
+                                                      0.148     4.870 r  u_dut/u_frame_gain/out_q_vec[79]_i_42/O
+                         net (fo=1, routed)           0.009     4.879    u_dut/u_frame_gain/out_q_vec[79]_i_42_n_0
+    SLICE_X43Y181        CARRY8 (Prop_CARRY8_SLICEL_S[1]_CO[7])
+                                                      0.186     5.065 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.091    u_dut/u_frame_gain/out_q_vec_reg[79]_i_15_n_0
+    SLICE_X43Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     5.143 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_4/CO[0]
+                         net (fo=16, routed)          0.748     5.891    u_dut/u_frame_gain/out_q_vec_reg[79]_i_4_n_7
+    SLICE_X51Y181        LUT5 (Prop_D6LUT_SLICEM_I0_O)
+                                                      0.145     6.036 r  u_dut/u_frame_gain/out_q_vec[64]_i_1/O
+                         net (fo=1, routed)           0.072     6.108    u_dut/u_frame_gain/p_16_out__0[64]
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[64]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[64]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X51Y181        FDRE (Setup_DFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[64]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.108    
+  -------------------------------------------------------------------
+                         slack                                 -1.526    
+
+Slack (VIOLATED) :        -1.445ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[70]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        5.998ns  (logic 2.496ns (41.612%)  route 3.502ns (58.388%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          1.698     1.805    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/B[6]
+    DSP48E2_X9Y72        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     1.956 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     1.956    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X9Y72        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.029 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.029    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X9Y72        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     2.638 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     2.638    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER.V<14>
+    DSP48E2_X9Y72        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     2.684 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     2.684    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X9Y72        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     3.255 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     3.255    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X9Y72        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     3.364 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.339     3.703    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10_n_91
+    SLICE_X51Y181        LUT1 (Prop_A6LUT_SLICEM_I0_O)
+                                                      0.150     3.853 r  u_dut/u_frame_gain/out_q_vec[72]_i_3/O
+                         net (fo=1, routed)           0.224     4.077    u_dut/u_frame_gain/out_q_vec[72]_i_3_n_0
+    SLICE_X47Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     4.228 r  u_dut/u_frame_gain/out_q_vec_reg[72]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.254    u_dut/u_frame_gain/out_q_vec_reg[72]_i_2_n_0
+    SLICE_X47Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     4.269 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.295    u_dut/u_frame_gain/out_q_vec_reg[79]_i_2_n_0
+    SLICE_X47Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     4.351 f  u_dut/u_frame_gain/out_q_vec_reg[79]_i_33/O[0]
+                         net (fo=24, routed)          0.370     4.722    u_dut/u_frame_gain/out_q_vec_reg[79]_i_33_n_15
+    SLICE_X43Y181        LUT5 (Prop_B6LUT_SLICEL_I0_O)
+                                                      0.148     4.870 r  u_dut/u_frame_gain/out_q_vec[79]_i_42/O
+                         net (fo=1, routed)           0.009     4.879    u_dut/u_frame_gain/out_q_vec[79]_i_42_n_0
+    SLICE_X43Y181        CARRY8 (Prop_CARRY8_SLICEL_S[1]_CO[7])
+                                                      0.186     5.065 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.091    u_dut/u_frame_gain/out_q_vec_reg[79]_i_15_n_0
+    SLICE_X43Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     5.143 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_4/CO[0]
+                         net (fo=16, routed)          0.725     5.867    u_dut/u_frame_gain/out_q_vec_reg[79]_i_4_n_7
+    SLICE_X51Y181        LUT5 (Prop_B6LUT_SLICEM_I0_O)
+                                                      0.100     5.967 r  u_dut/u_frame_gain/out_q_vec[70]_i_1/O
+                         net (fo=1, routed)           0.059     6.026    u_dut/u_frame_gain/p_16_out__0[70]
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[70]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[70]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X51Y181        FDRE (Setup_BFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[70]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -6.026    
+  -------------------------------------------------------------------
+                         slack                                 -1.445    
+
+Slack (VIOLATED) :        -1.412ns  (required time - arrival time)
+  Source:                 u_dut/u_frame_gain/s0_gain_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Destination:            u_dut/u_frame_gain/out_q_vec_reg[68]/D
+                            (rising edge-triggered cell FDRE clocked by core_clk  {rise@0.000ns fall@2.286ns period=4.571ns})
+  Path Group:             core_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            4.571ns  (core_clk rise@4.571ns - core_clk rise@0.000ns)
+  Data Path Delay:        5.966ns  (logic 2.447ns (41.018%)  route 3.519ns (58.982%))
+  Logic Levels:           14  (CARRY8=5 DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT1=1 LUT5=2)
+  Clock Path Skew:        -0.007ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.021ns = ( 4.592 - 4.571 ) 
+    Source Clock Delay      (SCD):    0.028ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock core_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk218 (IN)
+                         net (fo=101429, unset)       0.028     0.028    u_dut/u_frame_gain/clk
+    SLICE_X41Y195        FDRE                                         r  u_dut/u_frame_gain/s0_gain_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X41Y195        FDRE (Prop_CFF_SLICEL_C_Q)
+                                                      0.079     0.107 f  u_dut/u_frame_gain/s0_gain_reg[6]/Q
+                         net (fo=42, routed)          1.698     1.805    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/B[6]
+    DSP48E2_X9Y72        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_B[6]_B2_DATA[6])
+                                                      0.151     1.956 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA_INST/B2_DATA[6]
+                         net (fo=1, routed)           0.000     1.956    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_A_B_DATA.B2_DATA<6>
+    DSP48E2_X9Y72        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_B2_DATA[6]_B2B1[6])
+                                                      0.073     2.029 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA_INST/B2B1[6]
+                         net (fo=1, routed)           0.000     2.029    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_PREADD_DATA.B2B1<6>
+    DSP48E2_X9Y72        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_B2B1[6]_V[14])
+                                                      0.609     2.638 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER_INST/V[14]
+                         net (fo=1, routed)           0.000     2.638    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_MULTIPLIER.V<14>
+    DSP48E2_X9Y72        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_V[14]_V_DATA[14])
+                                                      0.046     2.684 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA_INST/V_DATA[14]
+                         net (fo=1, routed)           0.000     2.684    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_M_DATA.V_DATA<14>
+    DSP48E2_X9Y72        DSP_ALU (Prop_DSP_ALU_DSP48E2_V_DATA[14]_ALU_OUT[14])
+                                                      0.571     3.255 r  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU_INST/ALU_OUT[14]
+                         net (fo=1, routed)           0.000     3.255    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_ALU.ALU_OUT<14>
+    DSP48E2_X9Y72        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
+                                                      0.109     3.364 f  u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10/DSP_OUTPUT_INST/P[14]
+                         net (fo=2, routed)           0.339     3.703    u_dut/u_frame_gain/p_gain.(null)[0].rounded2__10_n_91
+    SLICE_X51Y181        LUT1 (Prop_A6LUT_SLICEM_I0_O)
+                                                      0.150     3.853 r  u_dut/u_frame_gain/out_q_vec[72]_i_3/O
+                         net (fo=1, routed)           0.224     4.077    u_dut/u_frame_gain/out_q_vec[72]_i_3_n_0
+    SLICE_X47Y181        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.151     4.228 r  u_dut/u_frame_gain/out_q_vec_reg[72]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.254    u_dut/u_frame_gain/out_q_vec_reg[72]_i_2_n_0
+    SLICE_X47Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[7])
+                                                      0.015     4.269 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_2/CO[7]
+                         net (fo=1, routed)           0.026     4.295    u_dut/u_frame_gain/out_q_vec_reg[79]_i_2_n_0
+    SLICE_X47Y183        CARRY8 (Prop_CARRY8_SLICEL_CI_O[0])
+                                                      0.056     4.351 f  u_dut/u_frame_gain/out_q_vec_reg[79]_i_33/O[0]
+                         net (fo=24, routed)          0.370     4.722    u_dut/u_frame_gain/out_q_vec_reg[79]_i_33_n_15
+    SLICE_X43Y181        LUT5 (Prop_B6LUT_SLICEL_I0_O)
+                                                      0.148     4.870 r  u_dut/u_frame_gain/out_q_vec[79]_i_42/O
+                         net (fo=1, routed)           0.009     4.879    u_dut/u_frame_gain/out_q_vec[79]_i_42_n_0
+    SLICE_X43Y181        CARRY8 (Prop_CARRY8_SLICEL_S[1]_CO[7])
+                                                      0.186     5.065 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_15/CO[7]
+                         net (fo=1, routed)           0.026     5.091    u_dut/u_frame_gain/out_q_vec_reg[79]_i_15_n_0
+    SLICE_X43Y182        CARRY8 (Prop_CARRY8_SLICEL_CI_CO[0])
+                                                      0.052     5.143 r  u_dut/u_frame_gain/out_q_vec_reg[79]_i_4/CO[0]
+                         net (fo=16, routed)          0.734     5.877    u_dut/u_frame_gain/out_q_vec_reg[79]_i_4_n_7
+    SLICE_X51Y181        LUT5 (Prop_C6LUT_SLICEM_I0_O)
+                                                      0.051     5.928 r  u_dut/u_frame_gain/out_q_vec[68]_i_1/O
+                         net (fo=1, routed)           0.066     5.994    u_dut/u_frame_gain/p_16_out__0[68]
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[68]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock core_clk rise edge)
+                                                      4.571     4.571 r  
+                                                      0.000     4.571 r  clk218 (IN)
+                         net (fo=101429, unset)       0.021     4.592    u_dut/u_frame_gain/clk
+    SLICE_X51Y181        FDRE                                         r  u_dut/u_frame_gain/out_q_vec_reg[68]/C
+                         clock pessimism              0.000     4.592    
+                         clock uncertainty           -0.035     4.557    
+    SLICE_X51Y181        FDRE (Setup_CFF_SLICEM_C_D)
+                                                      0.025     4.582    u_dut/u_frame_gain/out_q_vec_reg[68]
+  -------------------------------------------------------------------
+                         required time                          4.582    
+                         arrival time                          -5.994    
+  -------------------------------------------------------------------
+                         slack                                 -1.412    
+
+
+
+

@@ -8,6 +8,7 @@ set db [file normalize $::env(DSM_ASIC_STDCELL_DB)]
 if {![file exists $db]} { error "standard-cell DB does not exist: $db" }
 set run [file normalize $::env(DSM_ASIC_RUN_DIR)]
 set rep "$run/reports"
+set compile_mode [expr {[info exists ::env(DSM_ASIC_COMPILE_MODE)] ? $::env(DSM_ASIC_COMPILE_MODE) : "bounded"}]
 file mkdir $rep
 file mkdir "$run/netlist"
 set_app_var search_path [list "$ROOT/rtl" "$ROOT/syn/rtl"]
@@ -60,7 +61,23 @@ set_false_path -from [get_ports {rst125_n rst218_n}]
 set_input_delay 0.20 -clock clk125 [get_ports {s_valid s_frame_start s_i_vec s_q_vec s_frame_gain dpd_active_taps c1_re c1_im c3_re c3_im c5_re c5_im}]
 set_output_delay 0.20 -clock clk218 [all_outputs]
 set_fix_multiple_port_nets -all -buffer_constants
-compile_ultra
+if {$compile_mode eq "bounded"} {
+  # The complete frontend is very large when FPGA DSP/BRAM resources are
+  # mapped into standard cells.  Start with the lower-memory classic mapper;
+  # the resulting DDC is a checkpoint for a later incremental high-effort run.
+  compile -map_effort medium -area_effort medium
+} elseif {$compile_mode eq "ultra"} {
+  compile_ultra
+} elseif {$compile_mode eq "incremental"} {
+  if {![info exists ::env(DSM_ASIC_INPUT_DDC)] || ![file exists $::env(DSM_ASIC_INPUT_DDC)]} {
+    error "incremental mode requires DSM_ASIC_INPUT_DDC"
+  }
+  read_ddc $::env(DSM_ASIC_INPUT_DDC)
+  current_design $top
+  compile_ultra -incremental
+} else {
+  error "DSM_ASIC_COMPILE_MODE must be bounded, ultra, or incremental"
+}
 compile -incremental -only_hold_time
 redirect -file "$rep/qor.rpt" {report_qor}
 redirect -file "$rep/area.rpt" {report_area -hierarchy}
@@ -77,6 +94,7 @@ puts $mf "top=$top"
 puts $mf "flavour=$::env(DSM_ASIC_FLAVOUR)"
 puts $mf "mapping_library=$libname"
 puts $mf "power_basis=vectorless_estimate"
+puts $mf "compile_mode=$compile_mode"
 puts $mf "clk125_period_ns=8.000"
 puts $mf "clk218_period_ns=4.571428"
 close $mf

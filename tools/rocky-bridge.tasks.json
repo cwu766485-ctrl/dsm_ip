@@ -31,7 +31,7 @@
       "executable": "bash",
       "arguments": [
         "-lic",
-        "set -e; cd /mnt/e/workspace/chip/dsm_ip; bash ./uvm_verif/sim/run_qam_ofdm_bittrue_vcs_linux.sh"
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; bash ./dv/uvm/sim/run_qam_ofdm_bittrue_vcs_linux.sh"
       ]
     },
     "asic-dc-preflight": {

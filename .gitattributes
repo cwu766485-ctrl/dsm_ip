@@ -30,4 +30,4 @@
 ip/ip_repo/** linguist-generated=true
 syn/reports/** linguist-generated=true
 matlab/out/** linguist-generated=true
-verif/out_xsim_p0/** linguist-generated=true
+dv/verif/out_xsim_p0/** linguist-generated=true

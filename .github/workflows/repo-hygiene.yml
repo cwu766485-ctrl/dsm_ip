@@ -78,7 +78,7 @@ jobs:
         shell: pwsh
         run: |
           $files = git ls-files
-          $bad = $files | Select-String -Pattern '(^|/)(\.Xil|xsim\.dir|__pycache__|cksum_dir|\.matlab_pref|\.matlab_prefs)(/|$)|\.jou$|\.log$|\.backup\.(jou|log)$|\.mr$|-verilog\.(pvl|syn)$|ucli\.key$|^ip/build/|^verif/out_xsim_ip_smoke/'
+          $bad = $files | Select-String -Pattern '(^|/)(\.Xil|xsim\.dir|__pycache__|cksum_dir|\.matlab_pref|\.matlab_prefs)(/|$)|\.jou$|\.log$|\.backup\.(jou|log)$|\.mr$|-verilog\.(pvl|syn)$|ucli\.key$|^ip/build/|^dv/verif/out_xsim_ip_smoke/'
           if ($bad) {
             $bad
             throw "Generated temp files should not be tracked"

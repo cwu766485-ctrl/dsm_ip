@@ -1,0 +1,2 @@
+Part,Block,Target_MHz,Status,WNS_ns,WHS_ns
+xczu15eg-ffvb1156-2-i,tid32_thermo5_frontend_tx_ooc,218.75,PASS,0.178,0.027

@@ -39,8 +39,8 @@ from measure_p0_lp2_fs4_frontend import (
 def parse_args() -> argparse.Namespace:
     repo = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--i-mem", type=Path, default=repo / "verif/vectors/p0/rom_i.mem")
-    parser.add_argument("--q-mem", type=Path, default=repo / "verif/vectors/p0/rom_q.mem")
+    parser.add_argument("--i-mem", type=Path, default=repo / "dv/verif/vectors/p0/rom_i.mem")
+    parser.add_argument("--q-mem", type=Path, default=repo / "dv/verif/vectors/p0/rom_q.mem")
     parser.add_argument(
         "--out-csv",
         type=Path,

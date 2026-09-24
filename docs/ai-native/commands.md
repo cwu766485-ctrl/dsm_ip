@@ -870,7 +870,7 @@ Only commands evidenced by repository text are listed. Validate environment and 
 - `fpga/hardware/xczu15eg/15eg_demo/6.qspi_test/prj/qspi_test/qspi_test.vitis/top/zynqmp_pmufw/zynqmp_pmufw_bsp/psu_pmu_0/libsrc/xilskey_v7_3/src/Makefile`: `libs`, `libxilskey.a`, `print_msg_xilskey`, `include`, `libxilskey_includes`, `clean`
 - `fpga/hardware/xczu15eg/15eg_demo/6.qspi_test/prj/qspi_test/qspi_test.vitis/top/zynqmp_pmufw/zynqmp_pmufw_bsp/psu_pmu_0/libsrc/zdma_v1_14/src/Makefile`: `libs`, `include`, `clean`
 - `fpga/hardware/xczu15eg/15eg_demo/6.qspi_test/prj/qspi_test/qspi_test.vitis/xqspipsu_generic_flash_non_blocking_read_example_1/Debug/src/subdir.mk`: `src/%.o`
-- `uvm_verif/sim/Makefile`: `help`, `check-tools`, `formal-check-tools`, `vcs`, `vcs-run`, `vcs-run-only`, `regression`, `coverage-merge`, `verdi`, `questa`, `questa-run`, `questa-run-only`, `run`, `clean`
+- `dv/uvm/sim/Makefile`: `help`, `check-tools`, `formal-check-tools`, `vcs`, `vcs-run`, `vcs-run-only`, `regression`, `coverage-merge`, `verdi`, `questa`, `questa-run`, `questa-run-only`, `run`, `clean`
 
 ## Commands found in guidance/CI
 
@@ -886,17 +886,17 @@ Only commands evidenced by repository text are listed. Validate environment and 
 - `python .\fpga\zu15eg\scripts\build_dsm_aware_dpd_dataset.py`
 - `Run:`
 - `Python reference models, not formatting choices.`
-- `make -C uvm_verif/sim check-tools`
-- `make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1`
-- `make -C uvm_verif/sim vcs-run UVM_TESTNAME=dsm_memory_dpd_bittrue_test \`
+- `make -C dv/uvm/sim check-tools`
+- `make -C dv/uvm/sim vcs PYTHON=python3.12 COVERAGE=1`
+- `make -C dv/uvm/sim vcs-run UVM_TESTNAME=dsm_memory_dpd_bittrue_test \`
 - `make two's-complement width, wrap, saturation, state order, and latency`
 - `python -m unittest discover -s tests -v`
 - `python generate_bp_ef2_vectors.py`
 - `python compare_matlab_fixed_vectors.py`
 - `python compare_xsim_fixed_vectors.py`
 - `python generate_performance_sku_vectors.py`
-- `make -C uvm_verif/sim vcs-run-only \`
-- `make -C uvm_verif/sim coverage-merge RUN_TAGS="$tags" \`
+- `make -C dv/uvm/sim vcs-run-only \`
+- `make -C dv/uvm/sim coverage-merge RUN_TAGS="$tags" \`
 - `Python source:`
 - `Python Memory-Poly5 reference.`
 - `Python/MATLAB-generated vectors, XSim/VCS output, VDBs, and waveforms are`

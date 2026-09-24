@@ -427,9 +427,9 @@
       "tmp/gt_bert_impl_20260922/gt_ip/impl/ti64_raw_gt14_sfp0_bert.runs/synth_1/runme.sh",
       "tmp/gt_bert_impl_20260922/gt_ip/impl/ti64_raw_gt14_sfp0_bert.runs/ti64_raw_gt14_synth_1/ISEWrap.sh",
       "tmp/gt_bert_impl_20260922/gt_ip/impl/ti64_raw_gt14_sfp0_bert.runs/ti64_raw_gt14_synth_1/runme.sh",
-      "verif/block/dpd/run_memory_poly_random_vcs.sh",
-      "verif/block/observer/run_vcs_drop_on_full.sh",
-      "verif/scripts/run_subsystem_vcs_linux.sh"
+      "dv/verif/block/dpd/run_memory_poly_random_vcs.sh",
+      "dv/verif/block/observer/run_vcs_drop_on_full.sh",
+      "dv/verif/scripts/run_subsystem_vcs_linux.sh"
     ],
     "design / verification documentation": [
       "docs/Cartesian_DSM_Survey.md",
@@ -695,16 +695,16 @@
       "tmp/gt_bert_impl_20260922/gt_ip/impl/ti64_raw_gt14_sfp0_bert.runs/synth_1/ti64_raw_gt14_sfp0_bert_top.tcl",
       "tmp/gt_bert_impl_20260922/gt_ip/impl/ti64_raw_gt14_sfp0_bert.runs/ti64_raw_gt14_synth_1/ti64_raw_gt14.tcl",
       "tools/query_zynq_gt.tcl",
-      "verif/out_xsim_axis14_to_core8_cdc/xsim.dir/sim_axis14_cdc/xsim_script.tcl",
-      "verif/out_xsim_axis14_to_core8_cdc_xpm/xsim.dir/sim_axis14_cdc_xpm/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_block/xsim.dir/sim_bp_dsm_block/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_block/xsim.dir/sim_bp_dsm_random/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_map_compose_id_pipe/xsim.dir/sim_id_pipe/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_map_compose_pipe/xsim.dir/sim_map_pipe/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_parallel64/xsim.dir/sim_bp_ef2_parallel64/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_pipeline64/xsim.dir/sim_bp_ef2_pipeline64/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_pipeline64_group4/xsim.dir/sim_bp_ef2_pipeline64_group4/xsim_script.tcl",
-      "verif/out_xsim_bp_dsm_pipeline64_ii1_group4/xsim.dir/sim_bp_ef2_pipeline64_ii1_group4/xsim_script.tcl"
+      "dv/verif/out_xsim_axis14_to_core8_cdc/xsim.dir/sim_axis14_cdc/xsim_script.tcl",
+      "dv/verif/out_xsim_axis14_to_core8_cdc_xpm/xsim.dir/sim_axis14_cdc_xpm/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_block/xsim.dir/sim_bp_dsm_block/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_block/xsim.dir/sim_bp_dsm_random/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_map_compose_id_pipe/xsim.dir/sim_id_pipe/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_map_compose_pipe/xsim.dir/sim_map_pipe/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_parallel64/xsim.dir/sim_bp_ef2_parallel64/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_pipeline64/xsim.dir/sim_bp_ef2_pipeline64/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_pipeline64_group4/xsim.dir/sim_bp_ef2_pipeline64_group4/xsim_script.tcl",
+      "dv/verif/out_xsim_bp_dsm_pipeline64_ii1_group4/xsim.dir/sim_bp_ef2_pipeline64_ii1_group4/xsim_script.tcl"
     ],
     "vendor / external boundary": [
       "ip/filelist_dsm_ip.f",
@@ -789,7 +789,7 @@
       "tmp/gt_bert_vendor_20260922/gt_ip/sim/ti64_raw_gt14_bert_sim.sim/sim_1/behav/xsim/xelab.pb"
     ],
     "generated-source / output boundary": [
-      "uvm_verif/sim/dsm_uvm_merged.vdb/snps/coverage/db/shape/fsm.verilog.generated_config.txt"
+      "dv/uvm/sim/dsm_uvm_merged.vdb/snps/coverage/db/shape/fsm.verilog.generated_config.txt"
     ]
   },
   "flow_targets": {
@@ -6068,7 +6068,7 @@
     "fpga/hardware/xczu15eg/15eg_demo/6.qspi_test/prj/qspi_test/qspi_test.vitis/xqspipsu_generic_flash_non_blocking_read_example_1/Debug/src/subdir.mk": [
       "src/%.o"
     ],
-    "uvm_verif/sim/Makefile": [
+    "dv/uvm/sim/Makefile": [
       "help",
       "check-tools",
       "formal-check-tools",
@@ -6098,17 +6098,17 @@
     "python .\\fpga\\zu15eg\\scripts\\build_dsm_aware_dpd_dataset.py",
     "Run:",
     "Python reference models, not formatting choices.",
-    "make -C uvm_verif/sim check-tools",
-    "make -C uvm_verif/sim vcs PYTHON=python3.12 COVERAGE=1",
-    "make -C uvm_verif/sim vcs-run UVM_TESTNAME=dsm_memory_dpd_bittrue_test \\",
+    "make -C dv/uvm/sim check-tools",
+    "make -C dv/uvm/sim vcs PYTHON=python3.12 COVERAGE=1",
+    "make -C dv/uvm/sim vcs-run UVM_TESTNAME=dsm_memory_dpd_bittrue_test \\",
     "make two's-complement width, wrap, saturation, state order, and latency",
     "python -m unittest discover -s tests -v",
     "python generate_bp_ef2_vectors.py",
     "python compare_matlab_fixed_vectors.py",
     "python compare_xsim_fixed_vectors.py",
     "python generate_performance_sku_vectors.py",
-    "make -C uvm_verif/sim vcs-run-only \\",
-    "make -C uvm_verif/sim coverage-merge RUN_TAGS=\"$tags\" \\",
+    "make -C dv/uvm/sim vcs-run-only \\",
+    "make -C dv/uvm/sim coverage-merge RUN_TAGS=\"$tags\" \\",
     "Python source:",
     "Python Memory-Poly5 reference.",
     "Python/MATLAB-generated vectors, XSim/VCS output, VDBs, and waveforms are",

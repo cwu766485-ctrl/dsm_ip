@@ -33,8 +33,8 @@ def read_hex16(path: Path) -> list[int]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--i-mem", default="verif/vectors/p0/rom_i.mem")
-    parser.add_argument("--q-mem", default="verif/vectors/p0/rom_q.mem")
+    parser.add_argument("--i-mem", default="dv/verif/vectors/p0/rom_i.mem")
+    parser.add_argument("--q-mem", default="dv/verif/vectors/p0/rom_q.mem")
     parser.add_argument("--out", default="fpga/zu15eg/p0_iq_dma_words.bin")
     parser.add_argument("--limit", type=int, default=0, help="optional sample limit")
     args = parser.parse_args()

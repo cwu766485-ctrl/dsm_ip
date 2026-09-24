@@ -4,7 +4,7 @@
 %   - .mem (hex per line) for $readmemh simulation (rom_reader USE_FILE_ROM)
 %
 % Output directory:
-%   verif/vectors/p0/
+%   dv/verif/vectors/p0/
 %
 % Usage:
 %   cd matlab

@@ -18,8 +18,8 @@ Generated from a bounded scan; verify any heuristic before relying on it.
 - `syn/`
 - `tmp/`
 - `tools/`
-- `uvm_verif/`
-- `verif/`
+- `dv/uvm/`
+- `dv/verif/`
 - `.gitattributes`
 - `.gitignore`
 - `AGENTS.md`
@@ -279,7 +279,7 @@ Generated from a bounded scan; verify any heuristic before relying on it.
 
 ### generated-source / output boundary
 
-- `uvm_verif/sim/dsm_uvm_merged.vdb/snps/coverage/db/shape/fsm.verilog.generated_config.txt`
+- `dv/uvm/sim/dsm_uvm_merged.vdb/snps/coverage/db/shape/fsm.verilog.generated_config.txt`
 
 ### project artifact
 
