@@ -18,6 +18,9 @@ env \
   DSM_ASIC_RUN_DIR="$RUN" \
   DSM_ASIC_INPUT_DDC="${DSM_ASIC_INPUT_DDC:-}" \
   nohup bash -lc '
+    # Non-interactive login shells do not consistently source the Rocky user
+    # tool setup.  Restore the Synopsys/DC and license environment explicitly.
+    if [ -f "$HOME/.bashrc" ]; then . "$HOME/.bashrc"; fi
     set +e
     "$0/syn/asic/run_thermo_frontend_dc.sh" >"$1/launcher.log" 2>&1
     rc=$?

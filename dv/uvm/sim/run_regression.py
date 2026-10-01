@@ -64,7 +64,7 @@ def run_case(case, args, root):
         f"COVERAGE={int(args.coverage)}", f"FSDB={int(args.fsdb)}",
     ]
     result = run_command(command, root)
-    log_path = root / "uvm_verif" / "sim" / "out" / args.sim / "runs" / case.tag / "run.log"
+    log_path = root / "dv" / "uvm" / "sim" / "out" / args.sim / "runs" / case.tag / "run.log"
     log_text = log_path.read_text(encoding="utf-8", errors="replace") if log_path.exists() else ""
     errors, fatals = parse_uvm_summary(log_text)
     requires_rf = case.test not in CONTROL_ONLY_TESTS
@@ -114,7 +114,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    root = Path(__file__).resolve().parents[2]
+    root = Path(__file__).resolve().parents[3]
     tests = [item.strip() for item in args.tests.split(",") if item.strip()]
     seeds = [int(item) for item in args.seeds.split(",") if item.strip()]
     cases = [Case(test, seed) for test in tests for seed in seeds]
@@ -143,7 +143,7 @@ def main():
 
     results.sort(key=lambda row: (str(row["test"]), int(row["seed"])))
     summary_path = (root / args.summary) if args.summary else (
-        root / "uvm_verif" / "sim" / "out" / args.sim / "regression_summary.csv")
+        root / "dv" / "uvm" / "sim" / "out" / args.sim / "regression_summary.csv")
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     fields = ["test", "seed", "tag", "status", "returncode", "uvm_error", "uvm_fatal",
               "test_done", "scoreboard_report", "rf_transactions", "requires_rf", "log"]

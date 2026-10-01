@@ -1,12 +1,16 @@
 # Python Bit-Exact Reference Model
 
-This model is the Linux/VCS regression reference. It uses Python integers to
+This model is the older AXI-IP Linux/VCS regression reference. It uses Python integers to
 make two's-complement width, wrap, saturation, state order, and latency
 explicit. It is not a floating-point approximation of the MATLAB model.
 
 MATLAB remains the algorithm and fixed-point signoff reference. Python must
 match MATLAB sample by sample before its vectors are used by the UVM
 scoreboard.
+
+The frozen thermo5 subsystem does **not** use this Python model as its
+four-plane oracle. Its authoritative MATLAB generator and `.mem` outputs are
+documented in `docs/verification/thermo5-uvm-architecture.md`.
 
 Run the unit tests and deterministic MATLAB-vector comparison from this directory:
 

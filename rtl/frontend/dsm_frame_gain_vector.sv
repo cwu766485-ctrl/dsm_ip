@@ -14,6 +14,7 @@ module dsm_frame_gain_vector #(
   parameter int LANES = 8,
   parameter int GAIN_W = 16,
   parameter int GAIN_FRAC = 14,
+  parameter bit HOLD_STATE_ON_DISABLE = 1'b0,
   parameter logic signed [GAIN_W-1:0] RESET_GAIN = (1 <<< GAIN_FRAC)
 ) (
   input  wire logic                       clk,
@@ -60,7 +61,7 @@ module dsm_frame_gain_vector #(
   endfunction
 
   always_ff @(posedge clk) begin : p_gain
-    if (!rst_n || !enable) begin
+    if (!rst_n) begin
       s0_valid <= 1'b0;
       s1_valid <= 1'b0;
       out_valid <= 1'b0;
@@ -70,6 +71,18 @@ module dsm_frame_gain_vector #(
       s1_prod_q <= '0;
       out_i_vec <= '0;
       out_q_vec <= '0;
+    end else if (!enable) begin
+      s0_valid <= 1'b0;
+      s1_valid <= 1'b0;
+      out_valid <= 1'b0;
+      if (!HOLD_STATE_ON_DISABLE) begin
+        active_gain <= RESET_GAIN;
+        s0_gain <= RESET_GAIN;
+        s1_prod_i <= '0;
+        s1_prod_q <= '0;
+        out_i_vec <= '0;
+        out_q_vec <= '0;
+      end
     end else begin
       // Product and round/saturate are deliberately in separate elastic
       // stages.  At 218.75 MHz this prevents a DSP multiply, signed round,

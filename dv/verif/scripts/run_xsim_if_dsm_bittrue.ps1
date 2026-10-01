@@ -20,7 +20,7 @@ if ((Test-Path -LiteralPath $work) -and -not $KeepWork) {
 }
 New-Item -ItemType Directory -Force -Path $work | Out-Null
 
-$generator = Join-Path $repo "uvm_verif\refmodel\python\generate_bp_ef2_vectors.py"
+$generator = Join-Path $repo "dv\uvm\refmodel\python\generate_bp_ef2_vectors.py"
 $vectors = Join-Path $work "bp_ef2_equivalence.csv"
 & $Python $generator --samples $Samples --output $vectors
 if ($LASTEXITCODE -ne 0) { throw "Python vector generation failed." }

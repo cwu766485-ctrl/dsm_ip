@@ -78,10 +78,10 @@ def main() -> int:
     args = parser.parse_args()
 
     root = repo_root()
-    sys.path.insert(0, str(root / "uvm_verif" / "refmodel" / "python"))
+    sys.path.insert(0, str(root / "dv" / "uvm" / "refmodel" / "python"))
     from dsm_refmodel import ComplexCoeff, TxBpEf2Model, interp_frontend, memory_poly
 
-    input_path = root / "uvm_verif" / "refmodel" / "python" / "out" / "memory_dpd_system_input.csv"
+    input_path = root / "dv" / "uvm" / "refmodel" / "python" / "out" / "memory_dpd_system_input.csv"
     package_path = root / "fpga" / "zu15eg" / "baremetal" / "src" / "dpd_tinyml_packages_v2.h"
     samples = read_inputs(input_path)
     words = read_package(package_path, args.package_index)

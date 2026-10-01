@@ -11,7 +11,7 @@ $settings = Join-Path (Split-Path -Parent (Split-Path -Parent $VivadoBat)) 'sett
 if (!(Test-Path $VivadoBat) -or !(Test-Path $settings)) { throw 'Vivado installation is unavailable' }
 $work = Join-Path $repo 'verif\out_xsim_ti64_lp1_fs4_gt_tx'
 New-Item -Force -ItemType Directory $work | Out-Null
-& $Python (Join-Path $repo 'uvm_verif\refmodel\python\generate_ti32_lp1_fs4_vectors.py') `
+& $Python (Join-Path $repo 'dv\uvm\refmodel\python\generate_ti32_lp1_fs4_vectors.py') `
   --vectors $Vectors --lanes 64 --seed $Seed --output (Join-Path $work 'ti64_lp1_fs4_vectors.csv')
 if ($LASTEXITCODE -ne 0) { throw 'TI64 vector generation failed' }
 $sources = @(

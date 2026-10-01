@@ -63,13 +63,13 @@ by Git. The sign-off source files are:
 Probe the installed tools and license:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\uvm_verif\formal\run_formal_tool_check_wsl.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\uvm\formal\run_formal_tool_check_wsl.ps1
 ```
 
 Run the proof directly through Rocky WSL:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\uvm_verif\formal\run_dsm_ip_fpv_wsl.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\uvm\formal\run_dsm_ip_fpv_wsl.ps1
 ```
 
 The runner fails if the selected setup audit has a nonzero violation count, a

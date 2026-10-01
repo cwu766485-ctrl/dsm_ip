@@ -4,7 +4,7 @@ function result = compare_python_bp_ef2_reference(csv_path)
   if nargin < 1 || isempty(csv_path)
     here = fileparts(mfilename('fullpath'));
     repo = fileparts(fileparts(here));
-    csv_path = fullfile(repo, 'uvm_verif', 'refmodel', 'python', 'out', ...
+    csv_path = fullfile(repo, 'dv', 'uvm', 'refmodel', 'python', 'out', ...
       'bp_ef2_equivalence.csv');
   end
 

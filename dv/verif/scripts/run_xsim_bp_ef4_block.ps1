@@ -6,7 +6,7 @@ $settings = "D:\Xilinx\Vivado\2024.1\settings64.bat"
 if (-not (Test-Path -LiteralPath $settings)) { throw "Vivado settings not found: $settings" }
 $work = Join-Path $repo "verif\out_xsim_bp_ef4_block"
 New-Item -ItemType Directory -Force -Path $work | Out-Null
-& $Python (Join-Path $repo "uvm_verif\refmodel\python\generate_bp_ef4_vectors.py") --samples $Samples --seed $Seed --output (Join-Path $work "bp_ef4_equivalence.csv")
+& $Python (Join-Path $repo "dv\uvm\refmodel\python\generate_bp_ef4_vectors.py") --samples $Samples --seed $Seed --output (Join-Path $work "bp_ef4_equivalence.csv")
 if ($LASTEXITCODE -ne 0) { throw "BP EFDSM4 vector generation failed." }
 $rtl = Join-Path $repo "rtl\tx_bandpass_if\dsm_core_bp_ef4.sv"
 $tb = Join-Path $repo "verif\block\bp_dsm\tb\tb_dsm_core_bp_ef4_bittrue.sv"

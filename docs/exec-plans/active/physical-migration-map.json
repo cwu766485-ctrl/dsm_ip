@@ -3,6 +3,61 @@
   "project_root": ".",
   "entries": [
     {
+      "from": "dv/uvm/env/*_virtual_sequences.svh",
+      "to": "dv/uvm/sequences/*_virtual_sequences.svh",
+      "role": "AXI-IP cross-interface virtual sequences",
+      "action": "move",
+      "consumers": ["dv/uvm/env/dsm_uvm_pkg.sv", "dv/uvm/sim/uvm_filelist.f"],
+      "validation": ["source preservation inventory", "VCS compile", "thermo5 VCS regression"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/verif/uvm/dsm_longrun_virtual_sequences.svh",
+      "to": "dv/uvm/sequences/dsm_longrun_virtual_sequences.svh",
+      "role": "AXI-IP long-run virtual sequence",
+      "action": "move",
+      "consumers": ["dv/uvm/env/dsm_uvm_pkg.sv"],
+      "validation": ["VCS compile"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/verif/uvm/*_bittrue_test.svh",
+      "to": "dv/uvm/tests/*_bittrue_test.svh",
+      "role": "AXI-IP long-run and QAM/OFDM tests",
+      "action": "move",
+      "consumers": ["dv/uvm/env/dsm_uvm_pkg.sv"],
+      "validation": ["VCS compile"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/thermo5_sku/thermo5_sku_uvm_tb.sv",
+      "to": "dv/uvm/tb/thermo5_sku_uvm_tb.sv",
+      "role": "thermo5 two-clock UVM testbench",
+      "action": "move",
+      "consumers": ["thermo5 UVM filelist", "thermo5 VCS target"],
+      "validation": ["VCS filelist resolution", "XSim UVM syntax parse"],
+      "status": "complete",
+      "reason": "Monolithic top was separated into existing agent, env, tests, and tb roles; class behavior was retained."
+    },
+    {
+      "from": "dv/uvm/thermo5_sku/uvm_filelist.f",
+      "to": "dv/uvm/sim/thermo5_sku_filelist.f",
+      "role": "thermo5 UVM RTL/source manifest",
+      "action": "move",
+      "consumers": ["dv/uvm/sim/Makefile"],
+      "validation": ["VCS filelist resolution"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/thermo5_sku/generate_vectors.ps1",
+      "to": "dv/uvm/sim/generate_thermo5_sku_vectors.ps1",
+      "role": "MATLAB reference-vector launcher",
+      "action": "move",
+      "consumers": ["dv/uvm/README.md", "dv/verif/scripts/run_xsim_thermo5_i2_d1_axis.ps1"],
+      "validation": ["MATLAB vector generation", "directed XSim"],
+      "status": "complete"
+    },
+    {
       "from": "verif/",
       "to": "dv/verif/",
       "role": "directed simulation, block and subsystem verification",
@@ -21,6 +76,69 @@
       "validation": ["make -C dv/uvm/sim check-tools"],
       "status": "complete",
       "reason": "Linux VCS/UVM, formal, and Python consumers were rewritten to the new canonical path."
+    },
+    {
+      "from": "dv/uvm/env/dsm_*.svh and dsm_uvm_pkg.sv",
+      "to": "dv/uvm/env/axi_ip/",
+      "role": "AXI-IP target environment, configuration, scoreboard, register map and package",
+      "action": "move",
+      "consumers": ["dv/uvm/sim/uvm_filelist.f", "dv/uvm/env/dsm_uvm_pkg.sv"],
+      "validation": ["VCS AXI-IP compile and dsm_bp_test"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/env/thermo5_*.svh and thermo5_sku_uvm_pkg.sv",
+      "to": "dv/uvm/env/thermo5/",
+      "role": "thermo5 target environment, configuration, coverage, control BFM and package",
+      "action": "move",
+      "consumers": ["dv/uvm/sim/thermo5_sku_filelist.f"],
+      "validation": ["VCS thermo5 six-case regression"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/sequences/dsm_*.svh",
+      "to": "dv/uvm/sequences/axi_ip/",
+      "role": "AXI-IP cross-agent virtual scenarios",
+      "action": "move",
+      "consumers": ["dv/uvm/env/axi_ip/dsm_uvm_pkg.sv", "dv/uvm/sim/uvm_filelist.f"],
+      "validation": ["VCS AXI-IP compile and dsm_bp_test"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/sequences/thermo5_source_sequence.svh",
+      "to": "dv/uvm/sequences/thermo5/thermo5_source_sequence.svh",
+      "role": "thermo5 MATLAB-vector source scenario",
+      "action": "move",
+      "consumers": ["dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv", "dv/uvm/sim/thermo5_sku_filelist.f"],
+      "validation": ["VCS thermo5 six-case regression"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/tests/dsm_*.svh",
+      "to": "dv/uvm/tests/axi_ip/",
+      "role": "AXI-IP test family",
+      "action": "move",
+      "consumers": ["dv/uvm/env/axi_ip/dsm_uvm_pkg.sv", "dv/uvm/sim/uvm_filelist.f"],
+      "validation": ["VCS AXI-IP compile and dsm_bp_test"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm/tests/thermo5_*.svh",
+      "to": "dv/uvm/tests/thermo5/",
+      "role": "thermo5 test family",
+      "action": "move",
+      "consumers": ["dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv", "dv/uvm/sim/thermo5_sku_filelist.f"],
+      "validation": ["VCS thermo5 six-case regression"],
+      "status": "complete"
+    },
+    {
+      "from": "dv/uvm_verif/refmodel/python/out/",
+      "to": "runs/uvm_legacy_generated_duplicate_20261001/",
+      "role": "untracked generated duplicate vectors from stale relative output path",
+      "action": "move",
+      "consumers": ["dv/uvm/refmodel/python/generate_performance_sku_vectors.py"],
+      "validation": ["SHA-256 equality against canonical dv/uvm/refmodel/python/out before move", "corrected generator path"],
+      "status": "complete"
     },
     {
       "from": "syn/constraints/",

@@ -122,8 +122,8 @@ def write_qam_ofdm_expected_vectors(out_dir):
 
 
 def main():
-    root = Path(__file__).resolve().parents[3]
-    out_dir = root / "uvm_verif" / "refmodel" / "python" / "out"
+    root = Path(__file__).resolve().parents[4]
+    out_dir = root / "dv" / "uvm" / "refmodel" / "python" / "out"
     out_dir.mkdir(parents=True, exist_ok=True)
     inputs = [(4096 if index < 12 else -4096, 2048 if index & 1 else -2048)
               for index in range(24)]

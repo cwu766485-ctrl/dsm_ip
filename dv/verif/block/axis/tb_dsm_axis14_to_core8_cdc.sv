@@ -28,7 +28,7 @@ module tb_dsm_axis14_to_core8_cdc #(
     .s_axis_aclk(s_clk), .s_axis_aresetn(s_rst_n), .s_axis_tvalid(s_valid), .s_axis_tready(s_ready),
     .s_axis_i_vec(s_i), .s_axis_q_vec(s_q), .s_axis_tuser_frame_start(s_frame_start),
     .s_axis_tuser_frame_gain(s_gain), .s_axis_fifo_full(fifo_full),
-    .core_clk(c_clk), .core_aresetn(c_rst_n), .core_enable(c_enable),
+    .core_clk(c_clk), .core_aresetn(c_rst_n), .core_enable(c_enable), .core_drain(1'b0),
     .core_valid(c_valid), .core_ready(c_ready), .core_i_vec(c_i), .core_q_vec(c_q),
     .core_frame_start(c_frame_start), .core_frame_gain(c_gain),
     .core_underflow(c_underflow), .core_protocol_error(c_protocol_error)

@@ -118,3 +118,20 @@ The flow validates the selected mapping library by its own library name and
 cell inventory before elaboration. `library.rpt` records that deterministic
 evidence directly; this avoids a tool-version-dependent generic `report_lib`
 redirect error without weakening synthesis, timing, or unmapped-logic checks.
+
+## FPGA Low-Power SAIF A/B
+
+The canonical activity-based comparison is:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_lp_power_ab.ps1 -Flavour thermo3
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_lp_power_ab.ps1 -Flavour thermo5
+```
+
+For each flavour the flow runs baseline and LP simulations for `continuous`,
+`burst`, and `idle`, rejects any output-count or digest mismatch, produces a
+mode-specific SAIF, builds each managed OOC design once, and reopens a clean
+routed checkpoint for every power report. The final CSV includes dynamic and
+total power, reduction percentage, and Vivado's SAIF matched-net coverage.
+Do not quote a reduction when simulation, routed timing, or SAIF coverage is
+missing.

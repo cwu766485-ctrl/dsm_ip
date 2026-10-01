@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $settings)) { throw "Vivado settings not found:
 
 $work = Join-Path $repo "verif\out_xsim_bp_dsm_block"
 New-Item -ItemType Directory -Force -Path $work | Out-Null
-$generator = Join-Path $repo "uvm_verif\refmodel\python\generate_bp_ef2_vectors.py"
+$generator = Join-Path $repo "dv\uvm\refmodel\python\generate_bp_ef2_vectors.py"
 & $Python $generator --samples $Samples --seed $Seed --output (Join-Path $work "bp_ef2_equivalence.csv")
 if ($LASTEXITCODE -ne 0) { throw "BP EFDSM2 Python vector generation failed." }
 

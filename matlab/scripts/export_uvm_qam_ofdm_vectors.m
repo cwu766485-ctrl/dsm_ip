@@ -65,7 +65,7 @@ function cfg = default_cfg()
   cfg.nsym = 128;
   cfg.used_sc = [-12:-1, 1:12];
   cfg.drive_rms = 0.25;
-  cfg.output_csv = fullfile(repo_root, 'uvm_verif', 'refmodel', 'python', 'out', ...
+  cfg.output_csv = fullfile(repo_root, 'dv', 'uvm', 'refmodel', 'python', 'out', ...
                             'qam_ofdm_input.csv');
 end
 

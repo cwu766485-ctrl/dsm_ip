@@ -35,6 +35,8 @@ set src [list \
   "$ROOT/rtl/dpd/dpd_vector16_memory_poly.sv" \
   "$ROOT/rtl/dpd/dpd_vector_elastic_buffer.sv" \
   "$ROOT/rtl/interp/dsm_interp_x2_polyphase_vector.sv" \
+  "$ROOT/rtl/gt/gt_tx_raw64_boundary.sv" \
+  "$ROOT/rtl/gt/gt_tx_user_bridge.sv" \
   "$ROOT/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv" \
   "$ROOT/rtl/tx_bandpass_if/tid32_thermo3_fs4_multipa_tx.sv" \
   "$ROOT/rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv" \

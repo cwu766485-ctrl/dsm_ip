@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $settings)) { throw "Vivado settings not found:
 $work = Join-Path $repo "verif\out_xsim_tx_frontend"
 if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force }
 New-Item -ItemType Directory -Path $work | Out-Null
-$generator = Join-Path $repo "uvm_verif\refmodel\python\generate_tx_frontend_vectors.py"
+$generator = Join-Path $repo "dv\uvm\refmodel\python\generate_tx_frontend_vectors.py"
 & $Python $generator --inputs $Inputs --mode 1 --output (Join-Path $work "tx_frontend_equivalence.csv")
 if ($LASTEXITCODE -ne 0) { throw "TX frontend Python vector generation failed." }
 

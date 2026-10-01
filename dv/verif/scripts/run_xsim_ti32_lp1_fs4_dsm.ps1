@@ -5,7 +5,7 @@ $settings = Join-Path (Split-Path -Parent (Split-Path -Parent $VivadoBat)) 'sett
 if (!(Test-Path $VivadoBat) -or !(Test-Path $settings)) { throw 'Vivado installation is unavailable' }
 $work = Join-Path $repo 'verif\out_xsim_ti32_lp1_fs4_dsm'
 New-Item -Force -ItemType Directory $work | Out-Null
-& $Python (Join-Path $repo 'uvm_verif\refmodel\python\generate_ti32_lp1_fs4_vectors.py') --vectors $Vectors --seed $Seed --output (Join-Path $work 'ti32_lp1_fs4_vectors.csv')
+& $Python (Join-Path $repo 'dv\uvm\refmodel\python\generate_ti32_lp1_fs4_vectors.py') --vectors $Vectors --seed $Seed --output (Join-Path $work 'ti32_lp1_fs4_vectors.csv')
 if ($LASTEXITCODE -ne 0) { throw 'TI32 vector generation failed' }
 $sources = @((Join-Path $repo 'rtl\tx_bandpass_if\ti32_lp1_fs4_dsm.sv'), (Join-Path $repo 'verif\block\bp_dsm\tb\tb_ti32_lp1_fs4_dsm.sv'))
 Push-Location $work

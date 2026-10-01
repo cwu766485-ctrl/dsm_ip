@@ -29,6 +29,9 @@ module dsm_axis14_to_core8_cdc #(
   input  wire logic                                  core_clk,
   input  wire logic                                  core_aresetn,
   input  wire logic                                  core_enable,
+  // Legal end-of-run drain.  When asserted, an empty FIFO after the final
+  // gearbox word is quiescence rather than a streaming underflow.
+  input  wire logic                                  core_drain,
   output wire logic                                  core_valid,
   input  wire logic                                  core_ready,
   output wire logic signed [CORE_LANES*W-1:0]        core_i_vec,
@@ -184,7 +187,7 @@ module dsm_axis14_to_core8_cdc #(
               // Do not flag the same edge that consumes a legal final word.
               // A true streaming underflow is an observable following core
               // cycle with no valid replacement word.
-              if (stream_started_q && !out_valid_q)
+              if (stream_started_q && !out_valid_q && !core_drain)
                 core_underflow <= 1'b1;
             end
           end
@@ -202,6 +205,11 @@ module dsm_axis14_to_core8_cdc #(
 `ifndef SYNTHESIS
   // These checks document the fixed 14:8 gearbox and frame-boundary contract
   // as executable invariants without changing the synthesized datapath.
+  logic stalled_last;
+  always_ff @(posedge core_clk or negedge c_rst_n) begin
+    if (!c_rst_n) stalled_last <= 1'b0;
+    else stalled_last <= core_valid && !core_ready;
+  end
   always_ff @(posedge core_clk) begin
     if (c_rst_n) begin
       assert ((rem_count_q == 0) || (rem_count_q == 2) ||
@@ -212,7 +220,7 @@ module dsm_axis14_to_core8_cdc #(
       if (fifo_rd_valid && fifo_rd_ready && fifo_frame_start)
         assert (rem_count_q == 0)
           else $error("DSM frame_start was not aligned to a 56-sample boundary");
-      if (core_valid && !core_ready) begin
+      if (stalled_last) begin
         assert ($stable(core_i_vec) && $stable(core_q_vec) &&
                 $stable(core_frame_start) && $stable(core_frame_gain))
           else $error("DSM core output changed while backpressured");

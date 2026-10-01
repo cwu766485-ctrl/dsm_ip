@@ -14,11 +14,19 @@
 // elastic pipeline stages keep DSP multiplication, accumulation, rounding and
 // output
 // backpressure separate.
+//
+// INTERP_TAPS selects a causal half-sample fractional-delay preset.  The
+// default 4-tap cubic coefficients are bit-for-bit unchanged.  Smaller
+// presets are normalized to unity DC gain and exist only as explicit PPA
+// study SKUs; they must be evaluated by the matching MATLAB model before a
+// communication-quality claim is made.
 //------------------------------------------------------------------------------
 module dsm_interp_x2_polyphase_vector #(
   parameter int W = 16,
   parameter int LANES_IN = 8,
-  parameter int COEFF_FRAC = 14
+  parameter int COEFF_FRAC = 14,
+  parameter int INTERP_TAPS = 4,
+  parameter bit HOLD_STATE_ON_DISABLE = 1'b0
 ) (
   input  wire logic                             clk,
   input  wire logic                             rst_n,
@@ -32,7 +40,7 @@ module dsm_interp_x2_polyphase_vector #(
   output logic signed [2*LANES_IN*W-1:0]       out_i_vec,
   output logic signed [2*LANES_IN*W-1:0]       out_q_vec
 );
-  localparam int HISTORY = 3;
+  localparam int HISTORY = (INTERP_TAPS > 1) ? INTERP_TAPS-1 : 1;
   localparam int LANES_OUT = 2*LANES_IN;
   localparam int ACC_W = W + COEFF_FRAC + 3;
 
@@ -47,8 +55,8 @@ module dsm_interp_x2_polyphase_vector #(
   logic signed [W-1:0] s0_history_q [0:HISTORY-1];
   (* KEEP = "TRUE", MAX_FANOUT = 4 *) logic [LANES_IN-1:0] s1_valid_lane;
   logic signed [LANES_IN*W-1:0] s1_phase0_i, s1_phase0_q;
-  logic signed [ACC_W-1:0] s1_prod_i [0:LANES_IN-1][0:3];
-  logic signed [ACC_W-1:0] s1_prod_q [0:LANES_IN-1][0:3];
+  logic signed [ACC_W-1:0] s1_prod_i [0:LANES_IN-1][0:INTERP_TAPS-1];
+  logic signed [ACC_W-1:0] s1_prod_q [0:LANES_IN-1][0:INTERP_TAPS-1];
   logic s2_valid;
   logic signed [LANES_IN*W-1:0] s2_phase0_i, s2_phase0_q;
   // Keep the accumulation width identical to the legacy procedural
@@ -63,6 +71,11 @@ module dsm_interp_x2_polyphase_vector #(
   wire logic s1_ready = !s1_valid || s2_ready;
   wire logic s0_ready = !s0_valid || s1_ready;
   assign in_ready = enable && s0_ready;
+
+  initial begin
+    if (INTERP_TAPS < 2 || INTERP_TAPS > 4)
+      $error("INTERP_TAPS must be 2, 3, or 4; got %0d", INTERP_TAPS);
+  end
 
   function automatic logic signed [W-1:0] round_sat(
     input logic signed [ACC_W-1:0] value
@@ -84,7 +97,7 @@ module dsm_interp_x2_polyphase_vector #(
   always_ff @(posedge clk) begin : p_interp
     logic signed [W-1:0] si, sq;
     logic signed [ACC_W-1:0] acc_i, acc_q;
-    if (!rst_n || !enable) begin
+    if (!rst_n) begin
       s0_valid_lane <= '0;
       s1_valid_lane <= '0;
       s2_valid <= 1'b0;
@@ -94,6 +107,19 @@ module dsm_interp_x2_polyphase_vector #(
       for (int h = 0; h < HISTORY; h = h + 1) begin
         history_i[h] <= '0;
         history_q[h] <= '0;
+      end
+    end else if (!enable) begin
+      s0_valid_lane <= '0;
+      s1_valid_lane <= '0;
+      s2_valid <= 1'b0;
+      out_valid <= 1'b0;
+      if (!HOLD_STATE_ON_DISABLE) begin
+        out_i_vec <= '0;
+        out_q_vec <= '0;
+        for (int h = 0; h < HISTORY; h = h + 1) begin
+          history_i[h] <= '0;
+          history_q[h] <= '0;
+        end
       end
     end else begin
       if (s3_ready) begin
@@ -115,10 +141,12 @@ module dsm_interp_x2_polyphase_vector #(
         // Register the legacy ACC_W sum before rounding/saturation.  Payload
         // writes are unconditional so s1_valid cannot become a large CE net.
         for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
-          acc_i = s1_prod_i[lane][0] + s1_prod_i[lane][1] +
-                  s1_prod_i[lane][2] + s1_prod_i[lane][3];
-          acc_q = s1_prod_q[lane][0] + s1_prod_q[lane][1] +
-                  s1_prod_q[lane][2] + s1_prod_q[lane][3];
+          acc_i = '0;
+          acc_q = '0;
+          for (int tap = 0; tap < INTERP_TAPS; tap = tap + 1) begin
+            acc_i = acc_i + s1_prod_i[lane][tap];
+            acc_q = acc_q + s1_prod_q[lane][tap];
+          end
           s2_phase0_i[lane*W +: W] <= s1_phase0_i[lane*W +: W];
           s2_phase0_q[lane*W +: W] <= s1_phase0_q[lane*W +: W];
           s2_acc_i[lane] <= acc_i;
@@ -135,7 +163,7 @@ module dsm_interp_x2_polyphase_vector #(
         for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
             s1_phase0_i[lane*W +: W] <= s0_i_vec[lane*W +: W];
             s1_phase0_q[lane*W +: W] <= s0_q_vec[lane*W +: W];
-            for (int tap = 0; tap < 4; tap = tap + 1) begin
+            for (int tap = 0; tap < INTERP_TAPS; tap = tap + 1) begin
               if (tap <= lane) begin
                 si = s0_i_vec[(lane-tap)*W +: W];
                 sq = s0_q_vec[(lane-tap)*W +: W];
@@ -143,12 +171,26 @@ module dsm_interp_x2_polyphase_vector #(
                 si = s0_history_i[tap-lane-1];
                 sq = s0_history_q[tap-lane-1];
               end
-              case (tap)
-                0: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd5120;  s1_prod_q[lane][tap] <= signed'(sq)*16'sd5120;  end
-                1: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd15360; s1_prod_q[lane][tap] <= signed'(sq)*16'sd15360; end
-                2: begin s1_prod_i[lane][tap] <= -signed'(si)*16'sd5120; s1_prod_q[lane][tap] <= -signed'(sq)*16'sd5120; end
-                default: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd1024; s1_prod_q[lane][tap] <= signed'(sq)*16'sd1024; end
-              endcase
+              if (INTERP_TAPS == 2) begin
+                // Linear: [1/2, 1/2].
+                s1_prod_i[lane][tap] <= signed'(si)*16'sd8192;
+                s1_prod_q[lane][tap] <= signed'(sq)*16'sd8192;
+              end else if (INTERP_TAPS == 3) begin
+                // Causal quadratic: [3, 6, -1] / 8.
+                case (tap)
+                  0: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd6144;  s1_prod_q[lane][tap] <= signed'(sq)*16'sd6144;  end
+                  1: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd12288; s1_prod_q[lane][tap] <= signed'(sq)*16'sd12288; end
+                  default: begin s1_prod_i[lane][tap] <= -signed'(si)*16'sd2048; s1_prod_q[lane][tap] <= -signed'(sq)*16'sd2048; end
+                endcase
+              end else begin
+                // Cubic: [5, 15, -5, 1] / 16 (legacy default).
+                case (tap)
+                  0: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd5120;  s1_prod_q[lane][tap] <= signed'(sq)*16'sd5120;  end
+                  1: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd15360; s1_prod_q[lane][tap] <= signed'(sq)*16'sd15360; end
+                  2: begin s1_prod_i[lane][tap] <= -signed'(si)*16'sd5120; s1_prod_q[lane][tap] <= -signed'(sq)*16'sd5120; end
+                  default: begin s1_prod_i[lane][tap] <= signed'(si)*16'sd1024; s1_prod_q[lane][tap] <= signed'(sq)*16'sd1024; end
+                endcase
+              end
             end
           end
       end

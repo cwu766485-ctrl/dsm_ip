@@ -2,13 +2,14 @@
 +incdir+dv/uvm/agent/axi_lite
 +incdir+dv/uvm/agent/axis
 +incdir+dv/uvm/agent/rf
-+incdir+dv/uvm/env
-+incdir+dv/uvm/tests
++incdir+dv/uvm/env/axi_ip
++incdir+dv/uvm/sequences/axi_ip
++incdir+dv/uvm/tests/axi_ip
 +incdir+dv/uvm
 dv/uvm/agent/interfaces/dsm_axi_lite_if.sv
 dv/uvm/agent/interfaces/dsm_axis_if.sv
 dv/uvm/agent/interfaces/dsm_rf_if.sv
-dv/uvm/env/dsm_uvm_pkg.sv
+dv/uvm/env/axi_ip/dsm_uvm_pkg.sv
 rtl/axis/axis_skid_buffer.sv
 rtl/dsm/singlebit/dsm_core.sv
 rtl/dsm/singlebit/dsm_core_ef2.sv

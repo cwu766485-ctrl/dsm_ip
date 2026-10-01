@@ -1,4 +1,5 @@
 rtl/axis/dsm_reset_sync.sv
+rtl/axis/dsm_frame_power_ctrl.sv
 rtl/axis/dsm_async_fifo.sv
 rtl/axis/dsm_axis14_to_core8_cdc.sv
 rtl/frontend/dsm_frame_gain_vector.sv

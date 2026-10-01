@@ -11,10 +11,10 @@ function T = p0_compare_rtl_xsim(varargin)
   here = fileparts(mfilename('fullpath'));
   repo = fullfile(here, '..', '..');
   if isempty(cfg.xsim_dir)
-    cfg.xsim_dir = fullfile(repo, 'verif', 'out_xsim_p0');
+    cfg.xsim_dir = fullfile(repo, 'dv', 'verif', 'out_xsim_p0');
   end
   if isempty(cfg.vec_dir)
-    cfg.vec_dir = fullfile(repo, 'verif', 'vectors', 'p0');
+    cfg.vec_dir = fullfile(repo, 'dv', 'verif', 'vectors', 'p0');
   end
   if isempty(cfg.out_csv)
     cfg.out_csv = fullfile(repo, 'matlab', 'out', 'p0_bittrue_compare.csv');

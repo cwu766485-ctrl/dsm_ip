@@ -19,11 +19,13 @@ module tid32_thermo5_frontend_tx #(
   parameter int IN_LANES = 8,
   parameter int DPD_LANES = 16,
   parameter int MAX_TAPS = 4,
+  parameter int INTERP_TAPS = 4,
   parameter int COEFF_W = 16,
   parameter int COEFF_FRAC = 14,
   parameter int GAIN_W = 16,
   parameter int GAIN_FRAC = 14,
   parameter int STEP = 7168,
+  parameter bit HOLD_STATE_ON_DISABLE = 1'b0,
   parameter bit BYPASS_DPD = 1'b0
 ) (
   input  wire logic                                      clk,
@@ -49,7 +51,8 @@ module tid32_thermo5_frontend_tx #(
   logic signed [2*DPD_LANES*W-1:0] i2_i, i2_q;
 
   dsm_frame_gain_vector #(
-    .W(W), .LANES(IN_LANES), .GAIN_W(GAIN_W), .GAIN_FRAC(GAIN_FRAC)
+    .W(W), .LANES(IN_LANES), .GAIN_W(GAIN_W), .GAIN_FRAC(GAIN_FRAC),
+    .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
   ) u_frame_gain (
     .clk(clk), .rst_n(rst_n), .enable(enable),
     .in_valid(in_valid), .in_ready(in_ready),
@@ -58,7 +61,10 @@ module tid32_thermo5_frontend_tx #(
     .out_valid(gain_valid), .out_ready(gain_ready), .out_i_vec(gain_i), .out_q_vec(gain_q)
   );
 
-  dsm_interp_x2_polyphase_vector #(.W(W), .LANES_IN(IN_LANES)) u_interp_1 (
+  dsm_interp_x2_polyphase_vector #(
+    .W(W), .LANES_IN(IN_LANES), .INTERP_TAPS(INTERP_TAPS),
+    .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
+  ) u_interp_1 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
     .in_valid(gain_valid), .in_ready(gain_ready), .in_i_vec(gain_i), .in_q_vec(gain_q),
     .out_valid(i1_valid), .out_ready(i1_ready), .out_i_vec(i1_i), .out_q_vec(i1_q)
@@ -98,7 +104,10 @@ module tid32_thermo5_frontend_tx #(
     .out_valid(dpd_buf_valid), .out_ready(dpd_buf_ready), .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
   );
 
-  dsm_interp_x2_polyphase_vector #(.W(W), .LANES_IN(DPD_LANES)) u_interp_2 (
+  dsm_interp_x2_polyphase_vector #(
+    .W(W), .LANES_IN(DPD_LANES), .INTERP_TAPS(INTERP_TAPS),
+    .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
+  ) u_interp_2 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
     .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
     .out_valid(i2_valid), .out_ready(i2_ready), .out_i_vec(i2_i), .out_q_vec(i2_q)

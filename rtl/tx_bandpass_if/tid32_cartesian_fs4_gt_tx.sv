@@ -102,7 +102,10 @@ module tid32_cartesian_fs4_gt_tx #(
           a_q[p][q] <= '0;
         end
       end
-    end else begin
+    end else if (tid_ready) begin
+      // The raw boundary holds one word.  When it is full and the receiver
+      // stalls, hold both pipeline-valid stages and every recursive state.
+      // Advancing any of them would drop or duplicate a temporal word.
       // A TID result exists exactly for an accepted input word.  Keeping this
       // asserted through an input bubble duplicates the previous raw-GT word
       // and corrupts the temporal sequence whenever a real feeder stalls.

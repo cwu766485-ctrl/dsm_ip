@@ -11,7 +11,7 @@ $filelist = Join-Path $PSScriptRoot "uvm_filelist.f"
 $xvlog = Join-Path $VivadoRoot "bin\xvlog.bat"
 $xelab = Join-Path $VivadoRoot "bin\xelab.bat"
 $xsim = Join-Path $VivadoRoot "bin\xsim.bat"
-$vectorDir = Join-Path $repo "uvm_verif\refmodel\python\out"
+$vectorDir = Join-Path $repo "dv\uvm\refmodel\python\out"
 
 foreach ($tool in @($xvlog, $xelab, $xsim)) {
   if (-not (Test-Path -LiteralPath $tool)) {
@@ -20,7 +20,7 @@ foreach ($tool in @($xvlog, $xelab, $xsim)) {
 }
 
 New-Item -ItemType Directory -Force -Path $work | Out-Null
-& python (Join-Path $repo "uvm_verif\refmodel\python\generate_performance_sku_vectors.py")
+& python (Join-Path $repo "dv\uvm\refmodel\python\generate_performance_sku_vectors.py")
 if ($LASTEXITCODE -ne 0) { throw "Python system-vector generation failed with exit code $LASTEXITCODE" }
 $compileArgs = @("-sv", "-L", "uvm")
 foreach ($line in Get-Content -LiteralPath $filelist) {

@@ -77,7 +77,7 @@ function Invoke-VivadoCmd($cmd) {
 
 Write-Host "[xsim] xvlog compile"
 $inc = Join-Path $repo "dv\verif\tb"
-Invoke-VivadoCmd "xvlog -sv -i `"$inc`" -f `"$filelist`" `"$repo\verif\tb\tb_p0_lp1.sv`" `"$repo\verif\tb\tb_p0_lp2.sv`" `"$repo\verif\tb\tb_p0_ef1.sv`" `"$repo\verif\tb\tb_p0_ef2.sv`" `"$repo\verif\tb\tb_p0_mash11_mb.sv`" `"$repo\verif\tb\tb_p0_mash111_mb.sv`" `"$repo\verif\tb\tb_p0_mash22_mb.sv`""
+Invoke-VivadoCmd "xvlog -sv -i `"$inc`" -f `"$filelist`" `"$repo\dv\verif\tb\tb_p0_lp1.sv`" `"$repo\dv\verif\tb\tb_p0_lp2.sv`" `"$repo\dv\verif\tb\tb_p0_ef1.sv`" `"$repo\dv\verif\tb\tb_p0_ef2.sv`" `"$repo\dv\verif\tb\tb_p0_mash11_mb.sv`" `"$repo\dv\verif\tb\tb_p0_mash111_mb.sv`" `"$repo\dv\verif\tb\tb_p0_mash22_mb.sv`""
 
 $tops = @(
   @{ top="tb_p0_lp1"; out="sim_bits_01_lp1.txt" },

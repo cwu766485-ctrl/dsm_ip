@@ -11,5 +11,11 @@ monitor, agent, and protocol-specific sequences. AXI4-Lite and AXI4-Stream can
 be active or passive. The current environment uses active AXI4-Lite, TX, and
 observation agents; RF is passive.
 
-Cross-protocol behavior belongs in `../env/` virtual sequences, not in an
+Cross-protocol behavior belongs in `../sequences/` virtual sequences, not in an
 individual agent.
+
+The thermo5 subsystem has a separate active source agent: source item,
+sequencer, driver, and accepted-beat monitor. The MATLAB-vector source
+sequence lives in `../sequences/`; the driver owns pins but not vector files
+or accepted counts. The four-plane PA-word monitor is passive. The older
+AXI-IP environment's agents do not drive the thermo5 DUT.

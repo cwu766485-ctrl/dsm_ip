@@ -1,8 +1,14 @@
 # UVM Tests
 
-`dsm_base_test.svh` creates the configuration and environment. Individual test
+`axi_ip/dsm_base_test.svh` creates the original AXI-IP configuration and
+environment. Individual test
 classes select a scenario, start a virtual sequence, and manage objections;
 they do not drive DUT pins directly.
+
+`thermo5/` is a separate test family for the two-clock, four-plane transmitter.
+Its tests inherit from the thermo5 base test, start the MATLAB-vector source
+sequence, and require specific monitor/checker events. The two families have
+different filelists and DUT tops; neither is a base class for the other.
 
 The test suite includes:
 
