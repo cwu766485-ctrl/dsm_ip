@@ -1,5 +1,21 @@
 # Formal Verification
 
+## Thermo5 scoped coverage proofs
+
+```bash
+python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --out-dir runs/thermo5_formal_review
+```
+
+`thermo5_gap_harness.sv` instantiates production reset and DPD RTL. The reset
+model allows runtime reassertion but changes reset only on the falling edge;
+the exact active-edge collision cover is uncoverable within that model. The
+counter model independently counts acceptances and bounds them to 2072 per
+reset epoch. It proves counter equality/bounds and zero bits31:12, with
+accept/stall/recovery covers. The runner gates setup, assertions, expected
+cover outcomes, vacuity and **zero black boxes**, recording commands, source
+hashes and tool banners. These proofs do not replace full-chain URG hits or
+prove unrestricted asynchronous timing and unlimited counter operation.
+
 This directory contains the VC Formal FPV flow for the frozen DSM IP
 Performance SKU control and protocol boundary.
 
@@ -82,6 +98,21 @@ new evidence. The direct WSL runner is preferred on this workstation because
 the Synopsys PATH is loaded by the interactive shell.
 
 ## Boundary
+
+Thermo5 gap runner also supports `--unbounded-counter`: production 32-bit
+counter, external-tap identity configuration, no acceptance budget, 35
+assertions (including each bit/carry relationship), four covers, zero-black-box
+and vacuity gates. Run in a new `runs/` directory. Latest passing evidence
+and coverage boundaries are in
+`docs/verification/thermo5-coverage100-assessment.md`.
+Optional `--identity-and-residual` adds expensive arithmetic/gearbox
+experiments; arithmetic remains inconclusive. The completed residual repeat
+at `runs/thermo5_coverage100_residual_exact_20261006/` passes four assertions
+and nine covers after constructing a registered legal source and setting
+exact 7:4 clock periods; source stability is non-vacuous and black boxes zero.
+`--residual-only` adds this job without arithmetic; `--jobs cdc_residual`
+runs only that job. Original reset/budget defaults remain. Proofs do not
+become URG hits, and no exclusions are applied.
 
 This FPV result is not a CDC/RDC report, formal arithmetic equivalence proof,
 gate-level/SDF sign-off, physical implementation sign-off, or proof of every

@@ -18,4 +18,12 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic restart_source = 0;
   int restart_epoch = 0;
   logic [3:0] cdc_residual;
+  // Observation only: named pipeline combinations, never driven by UVM.
+  logic interp1_empty_blocked, interp2_empty_blocked, dpd_empty_blocked;
+  logic interp1_stage1_empty_blocked;
+  logic interp1_stall_window;
+  logic interp1_stage1_held, interp1_stage0_held, interp2_stage1_held;
+  logic interp1_output_held, interp2_output_held;
+  logic interp1_output_empty_blocked, interp2_stage1_empty_blocked;
+  wire [31:0] dpd_sample_count[0:15], dpd_saturation_count[0:15];
 endinterface

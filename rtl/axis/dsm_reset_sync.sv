@@ -8,7 +8,7 @@ module dsm_reset_sync (
   input  wire logic arst_n,
   output wire logic srst_n
 );
-  logic [1:0] sync_q;
+  (* ASYNC_REG = "TRUE" *) logic [1:0] sync_q;
 
   always_ff @(posedge clk or negedge arst_n) begin
     if (!arst_n)

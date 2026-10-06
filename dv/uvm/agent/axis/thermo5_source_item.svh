@@ -4,5 +4,6 @@ class thermo5_source_item extends uvm_sequence_item;
   logic frame_start;
   logic signed [15:0] frame_gain;
   int beat_index;
+  int unsigned valid_gap_cycles;
   function new(string name = "thermo5_source_item"); super.new(name); endfunction
 endclass

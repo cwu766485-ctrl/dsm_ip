@@ -66,14 +66,14 @@ module dsm_axis14_to_core8_cdc #(
 
   generate
     if (USE_XPM_FIFO) begin : g_xpm_fifo
-      // The FPGA XPM has one reset shared by both pointer domains.  The AXI
-      // reset is therefore the designated system FIFO reset.  Integration
-      // must assert core_aresetn with s_axis_aresetn; core_aresetn separately
-      // resets the gearbox and recursive consumer state below.
+      // The XPM wrapper synchronizes both local reset requests into wr_clk
+      // before asserting its required wr_clk-synchronous common reset. The
+      // parent asserts both domains in one reset epoch; each public handshake
+      // remains gated by its own local reset.
       dsm_xpm_async_fifo #(.DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W)) u_async_fifo (
         .wr_clk(s_axis_aclk), .wr_rst_n(s_axis_aresetn), .wr_data_vec(fifo_wr_data),
         .wr_valid(s_axis_tvalid), .wr_ready(s_axis_tready), .wr_full(s_axis_fifo_full),
-        .rd_clk(core_clk), .rd_rst_n(s_axis_aresetn), .rd_data(fifo_rd_data),
+        .rd_clk(core_clk), .rd_rst_n(core_aresetn), .rd_data(fifo_rd_data),
         .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
       );
     end else begin : g_generic_fifo
