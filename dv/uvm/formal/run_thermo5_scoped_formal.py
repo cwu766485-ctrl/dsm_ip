@@ -61,7 +61,7 @@ def main():
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
             expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 4 if kind=='cdc_residual' else 3
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind=='cdc_residual' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
             ok=ok and len(covers)==expected_covers and all(
                 s==('uncoverable' if n.endswith('.c_collision_bin') else 'covered') for s,n in covers)

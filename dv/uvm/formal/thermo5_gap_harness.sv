@@ -129,6 +129,12 @@ module thermo5_cdc_residual_harness(
     dut.rem_count_q inside {0,2,4,6,8,10,12});
   a_residual_even: assert property (disable iff(!dut.c_rst_n) !dut.rem_count_q[0]);
   a_residual_bound: assert property (disable iff(!dut.c_rst_n) dut.rem_count_q<=12);
+  a_frame_marker_has_valid: assert property (disable iff(!dut.c_rst_n)
+    dut.out_frame_start_q |-> dut.out_valid_q);
+  a_unused_residual_i_zero: assert property (disable iff(!dut.c_rst_n)
+    dut.rem_i_q[223:192]==0);
+  a_unused_residual_q_zero: assert property (disable iff(!dut.c_rst_n)
+    dut.rem_q_q[223:192]==0);
   for(genvar r=0;r<7;r++) begin : g_residual
     c_residual: cover property (disable iff(!dut.c_rst_n) dut.rem_count_q==2*r);
   end

@@ -34,7 +34,7 @@ jobs:
       - name: Stage local independent oracle sets
         env:
           THERMO5_VECTOR_ROOT: ${{ vars.THERMO5_VECTOR_ROOT }}
-        shell: bash -l {0}
+        shell: bash -il {0}
         run: |
           test -n "$THERMO5_VECTOR_ROOT"
           mkdir -p runs/uvm_thermo5_i2_d1 runs/uvm_thermo5_payload_20261003 runs/uvm_thermo5_extreme_20261003
@@ -48,12 +48,12 @@ jobs:
           THERMO5_XPM_ROOT: ${{ vars.THERMO5_XPM_ROOT }}
           THERMO5_RANGE_VECTORS: ${{ vars.THERMO5_RANGE_VECTORS }}
           THERMO5_GAIN_VECTORS: ${{ vars.THERMO5_GAIN_VECTORS }}
-        shell: bash -l {0}
+        shell: bash -il {0}
         run: |
           source "$HOME/.bashrc"
           python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root "$THERMO5_XPM_ROOT" --range-vectors "$THERMO5_RANGE_VECTORS" --range-words 16387 --gain-vectors "$THERMO5_GAIN_VECTORS" --unbounded-counter --residual-only --out-dir "runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
       - name: SpyGlass frozen SKU lint
-        shell: bash -l {0}
+        shell: bash -il {0}
         run: |
           source "$HOME/.bashrc"
           export THERMO5_LINT_RUN="$PWD/runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}/lint"
