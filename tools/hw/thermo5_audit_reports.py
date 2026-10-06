@@ -77,7 +77,8 @@ def condition_rows(directory, include_covered_toggles=False):
         r'<pre class="code">\s*LINE\s+(\d+)\s+(.*?)</pre>\s*<table.*?</table>', re.S
     )
     bin_re = re.compile(r'<tr class="(uRed|uGreen)">(.*?)</tr>', re.S)
-    cell_re = re.compile(r"<td[^>]*>(.*?)</td>", re.S)
+    # URG sensitive-expression rows omit </td> before the next cell.
+    cell_re = re.compile(r"<td[^>]*>(.*?)(?:</td>|(?=<td|</tr>|$))", re.S)
     for file in sorted(directory.glob("mod*.html")):
         page = file.read_text(encoding="utf-8", errors="replace")
         for tag_name, block, single in instance_blocks(page):

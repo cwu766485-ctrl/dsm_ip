@@ -1,4 +1,5 @@
 set ROOT [file normalize [file join [file dirname [info script]] .. ..]]
+set_host_options -max_cores 2
 foreach v {DSM_ASIC_STDCELL_DB DSM_ASIC_RUN_DIR} {
   if {![info exists ::env($v)] || $::env($v) eq ""} {error "missing $v"}
 }
@@ -27,7 +28,7 @@ set_fix_multiple_port_nets -all -buffer_constants
 # Expose fixed identity coefficient ties before technology mapping. Otherwise
 # the classic bottom-up mapper synthesizes unused nonlinear multipliers first.
 ungroup -all -flatten
-compile -map_effort medium -area_effort medium
+compile_ultra
 compile -incremental -only_hold_time
 redirect -file $run/reports/check_design.rpt {check_design}
 redirect -file $run/reports/check_timing.rpt {check_timing}
