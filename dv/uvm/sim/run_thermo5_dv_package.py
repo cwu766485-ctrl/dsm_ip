@@ -38,6 +38,7 @@ def main():
     ap.add_argument('--range-vectors',required=True)
     ap.add_argument('--range-words',type=int,default=2072)
     ap.add_argument('--gain-vectors',type=Path)
+    ap.add_argument('--gain-toggle-vectors',type=Path)
     ap.add_argument('--unbounded-counter',action='store_true')
     ap.add_argument('--residual-only',action='store_true')
     ap.add_argument('--endpoint-vectors',default=str(ROOT/'runs/uvm_thermo5_extreme_20261003'))
@@ -55,6 +56,7 @@ def main():
           ('bugs',[sys.executable,str(ROOT/'dv/uvm/sim/run_commit_bug_repro.py'),
             '--simulator','vcs','--out-dir',str(out/'bugs')])]
     if args.gain_vectors: jobs[0][1].extend(['--gain-vectors',str(args.gain_vectors)])
+    if args.gain_toggle_vectors: jobs[0][1].extend(['--gain-toggle-vectors',str(args.gain_toggle_vectors)])
     if args.unbounded_counter: jobs[1][1].append('--unbounded-counter')
     if args.residual_only: jobs[1][1].append('--residual-only')
     result={'created_utc':frozen.now(),'status':'DRY_RUN' if args.dry_run else 'FAIL',

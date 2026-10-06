@@ -24,6 +24,9 @@ if {![link]} {error "unresolved reference at link"}
 if {![check_design]} {error "precompile check_design failed"}
 source $ROOT/syn/asic/thermo5_frozen.sdc
 set_fix_multiple_port_nets -all -buffer_constants
+# Expose fixed identity coefficient ties before technology mapping. Otherwise
+# the classic bottom-up mapper synthesizes unused nonlinear multipliers first.
+ungroup -all -flatten
 compile -map_effort medium -area_effort medium
 compile -incremental -only_hold_time
 redirect -file $run/reports/check_design.rpt {check_design}

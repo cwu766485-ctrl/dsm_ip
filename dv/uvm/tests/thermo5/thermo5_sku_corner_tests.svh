@@ -359,6 +359,12 @@ class thermo5_sku_illegal_frame_test extends thermo5_sku_bittrue_test;
             if (env.coverage.protocol_error_cycles==0)
               `uvm_fatal("COVERAGE","Illegal-frame sticky error was not sampled")
             `uvm_info("NEGATIVE","THERMO5_ILLEGAL_FRAME_OBSERVED; expected RTL assertion must also appear",UVM_NONE)
+            @(negedge vif.core_clk);
+            env.control.reset_both();
+            repeat(3) @(negedge vif.core_clk);
+            if (vif.protocol_error !== 1'b0)
+              `uvm_fatal("PROTOCOL_RESET","Sticky protocol error failed public reset")
+            `uvm_info("NEGATIVE","THERMO5_PROTOCOL_ERROR_RESET_PASS sticky error cleared by public reset",UVM_NONE)
           end
         join_any
         disable fork;

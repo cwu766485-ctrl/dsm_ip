@@ -64,6 +64,8 @@ def main():
                     help='Independent oracle words; >=2072 and a multiple of seven')
     ap.add_argument('--gain-vectors',type=Path,
                     help='Optional 56-word MATLAB extreme-payload/saturating-gain oracle')
+    ap.add_argument('--gain-toggle-vectors',type=Path,
+                    help='Optional legal gain 0/max/min independent oracle')
     ap.add_argument('--endpoint-vectors',default=str(ROOT/'runs/uvm_thermo5_extreme_20261003'))
     ap.add_argument('--dry-run',action='store_true')
     args=ap.parse_args()
@@ -76,6 +78,7 @@ def main():
     if not args.dry_run:
         sets=[(vectors,args.range_words),(Path(args.endpoint_vectors),56)]
         if args.gain_vectors: sets.append((args.gain_vectors,56))
+        if args.gain_toggle_vectors: sets.append((args.gain_toggle_vectors,56))
         for vec,words in sets:
             for suffix in ('i','q','frame_start','frame_gain','pa0','pa1','pa2','pa3'):
                 path=vec/f'tid32_thermo5_frontend_{suffix}.mem'
@@ -110,6 +113,9 @@ def main():
                         '+EXPECT_SIGNED_EXTREMES',56,'THERMO5_SKU_UVM_PASS')]
                 if args.gain_vectors:
                     tests.append(('thermo5_sku_bittrue_test',610082,args.gain_vectors,
+                        '+EXPECT_SIGNED_EXTREMES +STRESS_PA_READY',56,'THERMO5_SKU_UVM_PASS'))
+                if args.gain_toggle_vectors:
+                    tests.append(('thermo5_sku_bittrue_test',610084,args.gain_toggle_vectors,
                         '+EXPECT_SIGNED_EXTREMES +STRESS_PA_READY',56,'THERMO5_SKU_UVM_PASS'))
                 extra=[]
                 for name,seed,vec,plus,words,marker in tests:

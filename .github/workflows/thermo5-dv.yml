@@ -48,10 +48,11 @@ jobs:
           THERMO5_XPM_ROOT: ${{ vars.THERMO5_XPM_ROOT }}
           THERMO5_RANGE_VECTORS: ${{ vars.THERMO5_RANGE_VECTORS }}
           THERMO5_GAIN_VECTORS: ${{ vars.THERMO5_GAIN_VECTORS }}
+          THERMO5_GAIN_TOGGLE_VECTORS: ${{ vars.THERMO5_GAIN_TOGGLE_VECTORS }}
         shell: bash -il {0}
         run: |
           source "$HOME/.bashrc"
-          python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root "$THERMO5_XPM_ROOT" --range-vectors "$THERMO5_RANGE_VECTORS" --range-words 16387 --gain-vectors "$THERMO5_GAIN_VECTORS" --unbounded-counter --residual-only --out-dir "runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
+          python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root "$THERMO5_XPM_ROOT" --range-vectors "$THERMO5_RANGE_VECTORS" --range-words 16387 --gain-vectors "$THERMO5_GAIN_VECTORS" --gain-toggle-vectors "$THERMO5_GAIN_TOGGLE_VECTORS" --unbounded-counter --residual-only --out-dir "runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
       - name: SpyGlass frozen SKU lint
         shell: bash -il {0}
         run: |

@@ -21,11 +21,15 @@ def classify(instance, metric, key, hint):
         return 'ARITHMETIC_INTERVAL_PROOF', 'Two nonnegative 8192 coefficients; rounded convex average stays in [-32768,32767].'
     if 'EXTERNAL_TAPS' in hint or 'HISTORY_OR_UNUSED_PAIR1' in hint or 'VECTOR_HISTORY_UNUSED' in hint or 'pair1' in key:
         return 'CONFIGURATION_PROOF', 'MAX_TAPS=1, USE_EXTERNAL_TAPS=1: history/pair1 alternative implementation absent or zero.'
-    if 'FIXED' in hint or any(s in key for s in ('c1_re[','c1_im[','c3_re[','c3_im[','c5_re[','c5_im[','active_taps[','lp_state','lp_outstanding','lp_ingress_enable','core_drain')):
+    if 'FIXED' in hint or any(s in key for s in ('c1_re[','c1_im[','c3_re[','c3_im[','c5_re[','c5_im[','active_taps[','lp_state','lp_outstanding','lp_ingress_enable','lp_datapath_enable','core_drain')):
         return 'CONFIGURATION_PROOF', 'Frozen elaboration parameters/identity coefficient ports; see SKU TB and parameter guards.'
     if metric=='cond' and 'u_reset' in instance or metric=='cond' and instance.endswith(('.u_s_reset','.u_c_reset')):
         return 'SCOPED_FORMAL_PROVEN', 'Reset collision operand 1/0 uncoverable with falling-edge runtime reset; other normal/reset covers hit.'
-    if 'RESIDUAL' in hint or key=='rem_count_q[0]':
+    if metric=='cond' and instance.endswith('.u_cdc') and key=='117:0/1/1':
+        return 'SCOPED_FORMAL_PROVEN', 'Expanded generic CDC proof: out_frame_start_q implies out_valid_q; core_enable=0 makes core_ready=0 in integrated frontend. Exact 7:4 clock/reset scope.'
+    if 'rem_i_q[' in key or 'rem_q_q[' in key:
+        return 'SCOPED_FORMAL_PROVEN', 'Expanded generic CDC proof: bits223:192 stay zero after reset; nine nonvacuous operating covers. XPM transfer not inferred.'
+    if 'RESIDUAL' in hint or 'rem_count_q[0]' in key:
         return 'SCOPED_FORMAL_PROVEN' if '.g_generic_fifo' in instance or instance.endswith('.u_cdc') else 'OPEN', 'Generic FIFO exact 7:4 clocks: residual {0,2,4,6,8,10,12}; nine covers. XPM transfer not inferred.'
     return 'OPEN', 'Needs legal stimulus/checker/URG hit or specific proof; do not exclude.'
 
@@ -41,6 +45,7 @@ def main():
         records=[]
         def add(instance,metric,key,hint,raw):
             status,reason=classify(instance,metric,key,hint)
+            if fifo=='xpm' and status=='SCOPED_FORMAL_PROVEN' and 'generic CDC' in reason: status='OPEN_XPM_PROOF_TRANSFER'
             if fifo=='xpm' and status=='SCOPED_FORMAL_PROVEN' and 'residual' in reason.lower(): status='OPEN_XPM_PROOF_TRANSFER'
             identity='|'.join((fifo,instance,metric,key))
             records.append(dict(bin_id=hashlib.sha256(identity.encode()).hexdigest()[:20],
