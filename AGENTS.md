@@ -1,6 +1,6 @@
 ﻿# AGENTS.md
 
-## Project
+## Project purpose
 
 This repository is a reusable DSM digital IP handoff package for digital IC design and verification.
 
@@ -53,8 +53,8 @@ When information conflicts, follow this order:
 After RTL changes:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_p0_all.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_ip_smoke.ps1
 ```
 
 After MATLAB or algorithm changes:
@@ -116,7 +116,7 @@ Read `docs/ai-native/repository-map.md`, `docs/ai-native/design-verification-ind
 
 - ASIC manifest: `eda.yaml`; DC top: `tid32_thermo3_axis_frontend_tx_asic_dc`.
 - FPGA thermo3/thermo5 routed OOC evidence is signed off at 218.75 MHz.
-- TSMC28 DC thermo3/thermo5 runs are unfinished; do not claim ASIC PASS until mapped reports and netlists exist.
+- Frozen thermo5 ASIC DC mapping is PASS with reports/netlist/SVF; LEC is running and full timing/constraint signoff remains OPEN. This result does not sign off the default thermo3 top; see the frontier.
 - `rtl/` is canonical RTL; `dv/verif/` is directed DV; `dv/uvm/` is Linux UVM/formal. Both verification trees were physically migrated and consumers updated; see the migration map.
 - `syn/asic/` is the ASIC DC flow; `fpga/` is the vendor/device boundary; `matlab/` is the algorithm source of truth.
 

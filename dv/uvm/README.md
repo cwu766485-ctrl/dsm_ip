@@ -1,5 +1,10 @@
 # UVM Verification Environment
 
+Graduate-DV review entry: `sim/run_thermo5_dv_package_wsl.ps1` on Windows,
+or `sim/run_thermo5_dv_package.py` in a licensed Linux login shell. The
+coverage and bug tables, prerequisites and limitations are in
+`docs/verification/thermo5-dv-portfolio.md`.
+
 This tree contains two DUT targets: the original `rtl/axi/dsm_ip_axi_top.v`
 IP-system regression and the frozen two-clock thermo5 transmitter subsystem.
 They share the verification directory and Makefile, but require distinct
@@ -85,9 +90,15 @@ must produce the RTL 56-sample alignment assertion and the UVM observation
 marker; it is not treated as an ordinary clean simulation. The runnable directed full-chain
 XSim test is `dv/verif/scripts/run_xsim_thermo5_i2_d1_axis.ps1`. Its
 `-XpmFifo` switch selects the vendor XPM FIFO model; the 2026-10-01 XPM
-full-chain simulation passed seeds 7/8/9 with PA-ready stalls. The VCS UVM
-testbench remains generic-FIFO only. The old IP-system regression is preserved
-below.
+full-chain simulation passed seeds 7/8/9 with PA-ready stalls. On
+2026-10-03 the same UVM top gained a separately compiled XPM target using
+`THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>`; its seven-case VCS
+regression and independent URG merge passed after adding a full-chain AXI
+valid-gap/empty-pipeline-backpressure test. Three independent MATLAB
+payloads also passed in both FIFO configurations. The generic-FIFO target and
+coverage database remain separate. See `sim/README.md` for commands and
+`docs/verification/thermo5-uvm-coverage.md` for the remaining CDC/coverage
+boundary. The old IP-system regression is preserved below.
 
 ## Frozen Performance SKU
 

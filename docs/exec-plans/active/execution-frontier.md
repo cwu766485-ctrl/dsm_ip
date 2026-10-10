@@ -1,559 +1,125 @@
 # Execution frontier
 
-## UVM target-role directory migration (2026-10-01)
-
-The two existing UVM targets now have separate `env/{axi_ip,thermo5}`,
-`sequences/{axi_ip,thermo5}`, and `tests/{axi_ip,thermo5}` directories; 47
-source files moved byte-for-byte without changing RTL, class behavior, or
-MATLAB golden vectors. Reusable protocol agents stay in `agent/`. Both target
-filelists resolve; licensed VCS thermo5 six-case regression and old AXI-IP
-`dsm_bp_test` PASS. URG merge remains 86.59%; MATLAB P0 7/7 PASS. The stale
-Python generator/regression paths were corrected; seven hash-identical
-generated duplicates under `dv/uvm_verif/` were moved recoverably to `runs/`.
-The DUT port map, RTL chain, and MATLAB oracle ownership are documented in
-`docs/verification/thermo5-uvm-architecture.md`. Next: keep the two DUT
-regressions independent, close named uncovered bins by test/check/coverage
-mapping, and avoid calling XPM/GT/PA verified from generic-FIFO UVM.
-
-## Reachable coverage follow-up (2026-10-01)
-
-Added separate VCS/URG block tests for frozen 2-tap interpolation bubbles,
-backpressure, and reset-with-enable, plus programmable one-tap memory-DPD
-empty-pipeline backpressure and I/Q saturation. Both PASS with checked data
-and counters; URG confirms the targeted line-70 and line-140 condition rows
-and valid-output I/Q saturation rows. No RTL/MATLAB change and no merge into
-the frozen six-case UVM score (still 86.59%). Fixed DPD1/identity and
-low-power-off holes are justified one by one in
-`docs/verification/thermo5-uvm-coverage.md`; no blanket waiver. Remaining:
-triage other instance/bin holes and the DPD invalid-slot saturation row,
-then programmable-DPD and low-power-on coverage targets if those modes are
-promoted to supported SKUs.
-
-## Thermo5 UVM responsibility refactor (2026-10-01)
-
-The frozen generic-FIFO thermo5 SKU now uses a real active AXI source agent
-(item/sequencer/driver/accepted-beat monitor), MATLAB-vector source sequence,
-control BFM for reset/core-enable/PA-ready, and a dual-analysis-port
-source/PA scoreboard with reset epochs. No DUT RTL or golden vectors changed.
-Licensed VCS six-case regression, URG merge, and 10 seeds each of PA-stall
-and FIFO-boundary stress pass. URG reports functional groups 100%, overall
-86.59%, and CDC FSM 7/7 states plus 12/12 transitions. Full-chain directed
-XSim with vendor XPM FIFO and PA stalls passes seeds 7/8/9; this is separate
-from the generic-FIFO UVM coverage database. The old AXI-IP VCS compile and
-`dsm_bp_test` smoke also pass. Detailed test/bin ownership and unhit RTL
-triage are in `docs/verification/thermo5-uvm-coverage.md`. Remaining work:
-line-level closure for legal condition/branch/toggle holes, then broader
-payload seeds and FPGA/GT hardware verification when available.
-
-## UVM layout checkpoint (2026-10-01)
-
-The two UVM targets remain separate: `thermo5_sku_uvm_tb` compiles the frozen
-two-clock thermo5/2-tap/DPD1 frontend, while `dsm_uvm_tb` compiles the older
-AXI-IP top. Fifteen AXI-IP virtual-sequence files now live in
-`dv/uvm/sequences/`; two previously stranded bit-true tests were restored to
-`dv/uvm/tests/`. The legacy filelist adds the sequence include directory.
-No DUT RTL, transaction behavior, or still-referenced UVM source was removed.
-Licensed VCS: thermo5 six-case regression PASS; AXI-IP `make vcs` and
-`dsm_bp_test` PASS with zero UVM errors/fatals. The later responsibility
-refactor added a real AXI source agent; XPM FIFO and physical GT remain
-outside this UVM signoff.
-
-## Mission
-
-Repository organization is now tracked by
-`docs/exec-plans/active/physical-migration-map.json`. The AI-native navigation
-layer is generated under `docs/ai-native/`; `rtl/`, `dv/verif/`, and `dv/uvm/`
-are the canonical paths. The verification trees were physically migrated with
-Git history preserved and root-relative consumers rewritten; targeted path and
-filelist checks are the acceptance gate.
-
-The first full TSMC28 thermo3 DC run (`syn/reports/asic_thermo3_tsmc28_20260923_213624`)
-was terminated by hangup during `compile_ultra` mapping optimization. It produced
-`library.rpt`, `check_design.rpt`, and `check_timing_pre.rpt`, but no final area,
-setup/hold, power, DDC, or mapped-netlist reports. This is an incomplete run, not
-an ASIC timing or synthesis PASS. The next attempt should use a persistent Rocky
-terminal/session and a bounded DC compile strategy before retrying thermo5.
-
-The persistent bounded thermo3 and thermo5 runs launched on 2026-09-24 remain
-active in `runs/20260924_103939-dc-thermo3-tsmc28/` and
-`runs/20260924_105002-dc-thermo5-tsmc28/` (Rocky processes `common_shell_exec`
-PIDs 836 and 1038 at the last audit). Both entered standard-cell mapping, but
-the log shows an unresolved `gt_tx_raw64_boundary` reference because the ASIC
-source list does not yet include that RTL dependency. No final reports, DDC,
-or mapped netlists exist; this run is invalid for signoff and must be restarted
-after resolving the source list. Therefore ASIC synthesis/STA/power is still
-pending, not PASS. The post-migration GT BERT XSim compile/elaboration
-succeeds, but the Windows simulator returns `-1073741790` during execution,
-so no new simulation PASS is claimed.
-
-The corrected thermo3 restart at `runs/20260924_123132-dc-thermo3-tsmc28/`
-did not enter synthesis: DC exited immediately with `DCSH-1`. A later audit
-confirmed the local FlexNet server is now UP (`lmutil lmstat` reports `SSS` 1
-issued/0 in use). A new explicitly licensed thermo3 bounded run is active at
-`runs/20260924_1240-dc-thermo3-tsmc28/`; it has loaded all 17 designs including
-the GT boundary and is currently in pre-compile constraint/check processing.
-No final reports or netlist exist yet, so ASIC PASS is still not claimed.
-
-The subsequent thermo3 run at `runs/20260924_1240-dc-thermo3-tsmc28/` completed
-with all reports and both mapped netlist formats. It has zero timing violations
-at 125/218.75 MHz and no unresolved design references; the remaining `unmapped
-MV Cells` text is a zero-count multivoltage summary, not unmapped logic. This
-is a standard-cell-only, TT, vectorless-power pre-layout result.
-
-Deliver a reviewable FPGA/ASIC-oriented digital transmitter IP handoff.
-
-- Device: `xczu15eg-ffvb1156-2-i` for FPGA evidence.
-- Core cadence: `64 x 218.75 MHz = 14 GS/s` real-sample output cadence.
-- Digital carrier mapping: one `Fs/4` mapping produces a 3.5 GHz IF.
-- A `14 Gb/s` value refers to raw GT serial line rate, not a 14 GHz RF carrier.
-- QAM acceptance uses one fixed OFDM/BPF/DDC/synchronization/demodulation path:
-  EVM <= 3.5% and SNDR >= 29.12 dB.
-
-## Active implementation
-
-The thermo3 baseline and thermo5 extended frontend are both timing-closed
-with a runtime identity memory-DPD wrapper. The wrapper is physically
-implemented, with identity coefficients; it is not a DPD-free synthesis
-shortcut.
-
-```text
-125 MHz AXI-S, 14 complex samples/beat
-  -> asynchronous FIFO
-  -> fixed 14:8 gearbox
-  -> 218.75 MHz core, 8 complex samples/word
-  -> Q2.14 frame gain
-  -> x2 polyphase interpolator
-  -> 16-lane 4-tap memory-DPD (identity coefficients)
-  -> x2 polyphase interpolator
-  -> 32-lane Cartesian thermometric TID
-  -> two thermo3 raw planes, 64 raw bits/plane/core word
-```
-
-- Both clock domains sustain exactly 1.75 GS/s complex input throughput.
-- Lane 0 is the earliest sample; interpolated lanes are new time samples,
-  never zero-filled lanes.
-- `frame_start` is legal only on a 56-sample superframe boundary.
-- The FIFO must prefill before the recursive core is enabled.
-- Underflow or a bubble in an active frame is an error.
-- The pre- and post-DPD elastic slices preserve word atomicity and add only
-  fixed latency; coefficients, history, quantization, ordering, and state
-  update order are unchanged.
-
-## Signed-off FPGA fabric evidence
-
-Full routed OOC, not a Quick diagnostic:
-
-| Item | Result |
-|---|---|
-| Top | `tid32_thermo3_axis_frontend_tx_ooc` |
-| Flow | `opt_design -> place_design -> phys_opt_design -> route_design` |
-| Core clock | 218.75 MHz (4.571 ns) |
-| AXI clock | 125 MHz (8.000 ns) |
-| Setup / hold | WNS `+0.290 ns`, WHS `+0.027 ns` |
-| Aggregate slack | TNS/THS `0 / 0` |
-| Tool result | 0 errors, 0 critical warnings |
-| Core endpoints | 208,286 setup and hold endpoints, zero failing |
-| AXI endpoints | 145 setup and hold endpoints, WNS/WHS `+4.966/+0.047 ns` |
-| Utilization | 59,921 LUT, 83,797 FF, 6.5 BRAM, 2,030 DSP |
-
-Artifact: `syn/out/tid32_thermo3_axis_frontend_20260921_104738/`.
-
-The identically scoped thermo5 full routed OOC also passes at 218.75 MHz:
-WNS/WHS `+0.308/+0.027 ns`, TNS/THS `0/0`, with 0 errors and 0 critical
-warnings.  It uses 71,869 total LUTs (62,308 logic and 9,561 memory), 97,249
-registers, 6.5 BRAM tiles, and 2,032 DSP48E2.  Artifact:
-`syn/out/tid32_thermo5_axis_frontend_20260921_213551/`.
-
-The frozen comparison is in `docs/THERMO3_THERMO5_ROUTED_PPA.md`.  Thermo5
-adds 11,948 total LUTs, 13,452 registers, and 2 DSPs, while retaining slightly
-more setup margin.  Both worst paths are ten-level memory-DPD DSP/carry paths.
-The reported 103,766/121,078 high-fanout nets are the routed global core clock,
-not failing valid/data nets.  Both variants have the same fixed core pipeline
-depth and one-word-per-core-clock steady-state throughput.
-
-The independent XPM CDC wrapper also has a routed ZU15EG result:
-WNS/WHS `+1.807/+0.042 ns`, 896 LUT, 749 FF, 6.5 BRAM, and 0 DSP.
-This proves neither the complete frontend nor a GT target.
-
-## Functional evidence
-
-- Thermo3 and thermo5 frontend MATLAB-to-XSim tests: PASS.
-- Each test covers 64 input words and 2,048 final complex samples.
-- Raw output mismatch: zero for every checked plane.
-- Project P0 regression: 7/7 PASS, 65,536 samples/design, zero mismatch.
-- IP smoke regression: 5/5 PASS.
-- Generic Gray FIFO and FPGA XPM FIFO CDC tests: PASS for 112 contiguous
-  samples, 14 core words, no order/frame/gain mismatch, bubble, or underflow.
-- CDC executable checks cover asynchronous-assert/two-edge synchronous reset
-  release, single-bit-or-zero local Gray-pointer updates, no accepted
-  full/empty transaction, legal 14:8 residual populations, 56-sample frame
-  boundaries, stable backpressured payload/metadata, a four-source-word FIFO
-  prefill, and no core output before explicit enable.
-- Thermo5 four-plane behavioral serializer loopback: PASS for 64 words and
-  4,096 serial bits per path, with recovered words matching MATLAB golden
-  words.  This is an ideal model and not GT or board evidence.
-- Vendor-neutral raw-link bring-up/BERT endpoint XSim: PASS.  The endpoint
-  implements known-word training, PRBS31 word generation/checking, link/reset
-  state transitions, sticky error and error counters, clear/retrain recovery,
-  single-cycle error injection, and protocol assertions.  It is connected at
-  the same 64-bit user-word boundary used by `gt_tx_raw64_boundary`; it does
-  not model GTH analog/CDR behavior.
-- Training-to-run uses an explicit run-arm/drain cycle to absorb the one-word
-  loopback latency before PRBS phase starts.  The launcher requires the PASS
-  marker and rejects fatal/error diagnostics instead of trusting exit status.
-- Vivado 2024.1 GT Wizard generation: PASS for ZU15EG GTH `X1Y12`, RAW
-  14.0-Gb/s TX/RX, 125-MHz refclk, 64-bit user data, with synthesis and
-  simulation targets generated outside the source tree.  Vendor GT behavioral
-  integration and routed GT implementation remain pending; no board claim is
-  made.  The BERT top now has a routed implementation entry point; the run
-  completed with 0 DRC errors and positive constrained setup/hold slack, while
-  vendor PRBS acquisition remains a behavioral-model limitation.
-- Added a concrete GT/BERT integration top with RXSLIDE alignment, an
-  asynchronous RX-word FIFO, vendor behavioral simulation script, and routed
-  implementation script.  GT behavioral simulation reaches all GT ready/lock
-  status outputs; PRBS acquisition still needs final closure for the model's
-  variable RX latency and is not claimed PASS.
-
-## RF-model evidence and limits
-
-- Full frontend plus behavioural switching-DPA/BPF/DDC passes 256-QAM at
-  17.08984375 MHz: identity EVM `2.3917%`, SNDR `32.4257 dB`.
-- A 250 MHz thermo5 peak-normalized mild-profile simulation passed three
-  isolated seeds; it is not a constant-RMS, physical-PA, or board result.
-- The 4-tap memory-DPD candidate failed held-out deployment acceptance;
-  active coefficients remain identity.
-- DPA, BPF, ACLR, and PA results are parameterized digital simulations, not
-  measured RF hardware characterization.
-
-## Explicitly not signed off
-
-- Board discovery attempt (2026-09-26): Vivado Hardware Manager reached
-  `127.0.0.1:3121/xilinx_tcf/Xilinx/15051A`, proving the host-to-cable path.
-  `open_hw_target` reported no JTAG devices, so no FPGA part, configuration,
-  ILA, GT, or board-loopback evidence is available yet. This probe was
-  read-only: it did not program, reset, or otherwise modify the target.
-- No four-lane physical GT/serializer timing or board mapping exists.
-- Existing dual-SFP GT evidence uses a deterministic smoke payload, not this
-  QAM frontend, and has no loopback/BERT/recovered-word result.
-- No physical PA, coupler feedback, RF channel, antenna, or measured ACLR
-  claim exists.
-- OOC warnings about `HD.CLK_SRC` and `HD.PARTPIN_LOCS` are non-critical for
-  this result; real top-level/GT integration must provide actual constraints.
-
-## Current execution order
-
-1. Complete the activity-based low-power comparison. Thermo3/thermo5 LP full
-   routed OOC now close at 218.75 MHz; the remaining experiment must use the
-   same workload-derived SAIF, device, constraints, and full implementation
-   flow for baseline and LP. Do not infer savings from vectorless estimates.
-2. Run fixed-point algorithm/PPA sweeps for interpolation taps, thermometric
-   step/drive, and frame scaling. Every point must preserve bit-true
-   contracts and report EVM/SNDR together with resource/timing cost.
-3. Connect the completed BERT endpoint to the generated ZU15EG GT Wizard user
-   port, run vendor behavioral simulation, and perform GT-aware implementation
-   with the actual refclk/package XDC.  Keep physical CDR/BER/eye results
-   explicitly deferred until hardware is available.
-4. Add a vendor-neutral PRBS31/known-word generator and checker, link/reset
-   FSM, error counters, sticky status, assertions, and behavioral error
-   injection.  Keep the ideal serializer result distinct from physical GT.
-   (The endpoint is implemented; next step is integration with the selected
-   GT Wizard user port.)
-5. When a valid 28 nm `.db` standard-cell library is supplied, build a
-   separate ASIC pre-layout synthesis/STA SKU. Do not infer ASIC results
-   from FPGA OOC or require analog PA/serializer libraries for digital RTL
-   synthesis.
-   Environment audit: Rocky-8.10 WSL has Synopsys DC V-2023.12-SP1 at
-   `/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell`. The standard-cell probe
-   completed successfully against the TSMC28 RVT TT `.db`, reporting 839
-   cells and 15 inverter-name matches. ASIC-specific thermo3/thermo5 wrappers,
-   source list, dual-clock SDC, and DC flow are now present under `syn/asic`.
-   The first real thermo3 run reached mapping optimization after fixing an
-   existing 8-lane wrapper width mismatch; final reports are still pending.
-   The referenced SRAM `.db` path under `/home/ray/ic/CIMForge/syn/out/`
-   `pdk_cache/TS1N28HPCPL2SVTB4096X32M4MWBASO_tt0p9v25c.db` is absent, so
-   macro-aware synthesis remains blocked until that library is restored.
-6. Perform GT/board loopback or BERT only when actual port, reference-clock,
-   reset, and loopback resources are available.
-
-## Handoff checkpoint (2026-09-24)
-
-- Verification trees are physically organized under `dv/verif/` and `dv/uvm/`;
-  root `verif/` and `uvm_verif/` no longer exist. Filelists and consumers were
-  updated and the migration map marks both moves complete.
-- The two DC runs above are the next execution frontier. When either exits,
-  require `area.rpt`, setup/hold timing, power, DDC, and mapped Verilog before
-  parsing or claiming a result; keep standard-cell-only and vectorless-power
-  limitations explicit.
-- Runtime files (`realTime.*`, run PID files) are now ignored. They were
-  already present in an earlier Git commit and could not be removed from the
-  index in this restricted session because `.git/index` denied creation of
-  `index.lock`; remove them with `git rm --cached` in a normal writable clone.
-
-## Digital-IC portfolio narrative
-
-- Multi-clock streaming IP: rate-matched AXI ingress, asynchronous FIFO,
-  reset contract, and deterministic 14:8 gearbox.
-- Timing closure: converted a routing/fanout-limited `-1.524 ns` frontend
-  failure into a full-flow `+0.290/+0.027 ns` setup/hold pass at 218.75 MHz
-  without lowering frequency or changing numerical behavior.
-- Verification: MATLAB fixed-point oracle, bit-true XSim, assertions, P0,
-  IP smoke, routed STA, and explicit evidence boundaries.
-- PPA trade-offs: scalable thermo3/thermo5 output architecture, pipelining,
-  local valid distribution, FIFO BRAM cost, DSP use, latency, and timing.
-- Low power: a measurable FPGA activity/clock-enable study that maps cleanly
-  to ASIC ICG/UPF intent later, rather than an unsupported UPF claim today.
-  Stage-1 controller states are RESET/IDLE/PREFILL/RUN/DRAIN/ERROR. The
-  controller requires four accepted AXI words (one 56-sample superframe) before
-  enabling the core and drains in-flight words before returning to IDLE.
-
-The pre-run-request Stage-1 low-power timing implementation closed. Two
-independent managed Vivado OOC projects are under `fpga/thermo3_lp/` and
-`fpga/thermo5_lp/`.
-Vivado 2024.1 full synthesis, placement, physical optimization, and routing on
-`xczu15eg-ffvb1156-2-i` produced the following results at 218.75 MHz:
-
-| LP project | WNS | WHS | CLB LUT | CLB registers | BRAM | DSP |
-|---|---:|---:|---:|---:|---:|---:|
-| thermo3 | +0.147 ns | +0.027 ns | 60,094 | 84,693 | 6.5 | 2,032 |
-| thermo5 | +0.103 ns | +0.026 ns | 71,713 | 97,796 | 6.5 | 2,032 |
-
-Both routed runs have TNS/THS 0, zero implementation errors, zero critical
-warnings, and complete routed checkpoints. The focused power-controller XSim
-test also passes. Vectorless routed estimates are 6.040 W for thermo3 and
-6.540 W for thermo5, both with Medium confidence; these pre-revision vectorless
-figures are retained for historical PPA context. They are not evidence of
-low-power savings; the matched-SAIF results below are the current power
-evidence. ASIC ICG mapping remains pending.
-
-The pre-revision audit classified this as an activity-gating prototype, not
-complete low-power signoff: its OOC wrappers tied `core_enable` high, the
-vectorless analysis never exercised IDLE/DRAIN, and `lp_ingress_enable` did not
-gate AXI/FIFO acceptance. Those limitations motivated the revision below.
-
-The next RTL revision now exposes `run_request` on all thermo OOC tops, gates
-LP AXI acceptance with the source-domain ingress qualifier, lets the LP
-controller own the CDC enable through DRAIN, and adds an explicit CDC
-`core_drain` protocol so legal end-of-run FIFO empty does not become a sticky
-underflow. A common activity testbench and reproducible scripts generate and
-compare baseline/LP continuous, burst, and long-idle transactions, produce
-mode-specific SAIF, rebuild each routed design once, and report matched-net
-coverage plus dynamic-power reduction.
-
-The activity contract now uses a 512-beat no-bubble continuous workload and
-fixed core-clock observation windows for every baseline/LP pair. Burst and
-long-idle runs carry the same useful words in both modes. Power analysis is
-blocked unless accepted-word count, output-word count, output digest, and
-observation-cycle count agree, both implementations close setup and hold, and
-Vivado reports the configured minimum SAIF design-net matching. The current
-run uses a 5% minimum because only directly matched RTL nets are counted;
-Vivado propagates activity to the remaining implementation nets. This prevents
-drain latency or an unmapped activity file from creating a false reduction
-claim.
-
-The following historical execution note is superseded by the completed
-2026-09-26 run below. In the earlier restricted Windows session
-`xvlog` exits before parsing RTL with `-1073741790` and an empty log; the
-focused controller launcher now checks tool exit codes and correctly reports
-this failure instead of accepting a stale PASS log. Rocky WSL/VCS fallback was
-also unavailable because WSL access escalation failed in the host approval
-service. Consequently the retained `+0.147/+0.027 ns` and `+0.103/+0.026 ns`
-checkpoints were pre-revision evidence only. The required execution has now
-completed; see `Matched-SAIF low-power closure (2026-09-26)` above.
-
-A user-terminal rerun on 2026-09-26 progressed through `xvlog` and exposed a
-separate launcher defect at elaboration: PowerShell redirected process output
-to `xelab.log` while `xelab` simultaneously tried to create its default
-`xelab.log`, producing `[Common 17-183] Failed to open handle xelab.log` for
-both thermo3 and thermo5. The launcher now passes explicit `-log xelab.log`
-and `-log xsim.log` options without shell redirection, eliminating the Windows
-exclusive-file collision. A post-fix run is still required; the restricted
-agent process again terminated `xvlog` before it emitted a log, and its
-external-execution approval service did not provide a runnable session.
-
-The prior quick-OOC failures and Vivado realtime-helper crashes are superseded
-by these clean managed-project runs. OOC `HD.CLK_SRC` and `HD.PARTPIN_LOCS`
-warnings remain expected integration limitations until a device-level parent
-provides physical clock and partition-pin constraints.
-
-## Matched-SAIF low-power closure (2026-09-26)
-
-The revised run-request/ingress-gating RTL is now functionally and physically
-closed for both thermo variants. Each flavour completed continuous, burst, and
-long-idle baseline/LP activity simulation with identical accepted words,
-output words, digest, and observation cycles. Six SAIF files per flavour were
-generated and consumed by fresh routed DCPs.
-
-Thermo3 evidence is in
-`runs/lp_power_ab/20260926_121341_thermo3/power_comparison.csv`:
-baseline/LP timing is `+0.308/+0.027 ns` and `+0.235/+0.027 ns` (WNS/WHS);
-dynamic-power reduction is 1.14% continuous, 5.45% burst, and 4.01% idle.
-
-Thermo5 evidence is in
-`runs/lp_power_ab/20260926_152500_thermo5/power_comparison.csv`:
-baseline/LP timing is `+0.089/+0.023 ns` and `+0.139/+0.017 ns` (WNS/WHS);
-dynamic-power reduction is 1.76% continuous, 6.02% burst, and 4.63% idle.
-All six thermo5 reports have 7% direct SAIF net matching with zero baseline/LP
-coverage delta. Confidence is Medium: RTL-SAIF direct matching plus Vivado
-activity propagation. These are routed FPGA estimates, not ASIC or silicon
-power signoff.
-
-The matched-SAIF experiment is complete for thermo3 and thermo5. Remaining
-low-power work is optional refinement (broader workloads, SAIF coverage
-improvement, and ASIC ICG/UPF mapping), not a missing FPGA timing result.
-
-## SAIF mapping audit (2026-09-26)
-
-The thermo3 routed-DCP/RTL-SAIF mapping was rechecked with the recorded
-`tb_tid32_thermo3_baseline_lp_power/u_tb` strip path. Vivado again annotated
-`19,984/293,705` design nets (7%). The SAIF contains the complete `u_dut`
-hierarchy, so this is not a missing-DUT or strip-path defect; it is the
-expected name/optimization gap between RTL simulation and the routed FPGA
-netlist. Do not claim higher coverage by changing the strip string. A
-material coverage increase requires functional/post-synthesis netlist
-simulation (or an equivalent implementation-netlist activity source).
-
-## Post-route activity and algorithm/PPA screen (2026-09-26)
-
-- Added `syn/write_funcsim_netlist.tcl` and
-  `dv/verif/scripts/run_xsim_lp_power_postroute_activity.ps1`.  A thermo3
-  baseline routed checkpoint was successfully exported as a 55.6-MB Vivado
-  functional netlist and compiled/elaborated with the common LP activity
-  testbench.  The launcher now selects the escaped generated DUT hierarchy
-  through `get_objects -r *u_dut*`, rather than an invalid slash path.
-- Full post-route activity completion is **not yet available** on this host:
-  elaborating the 2,030-DSP functional netlist consumes about 7.7 GB and did
-  not finish within the bounded interactive run.  Therefore the current 7%
-  direct RTL-SAIF match and the 1.14--6.02% dynamic reductions remain
-  Medium-confidence FPGA estimates, not upgraded post-route-SAIF evidence.
-  The reusable export/simulation flow is ready for a long-run workstation
-  job; do not substitute a smaller RTL activity file for that job.
-- Added and ran
-  `matlab/tx_bandpass_if/run_tid32_thermo_algorithm_ppa_screen.m` with the
-  fixed 218.75-MHz/14-GS/s raw-Fs/4/DDC receiver contract.  At 99.121 MHz,
-  default thermo3 (offset 8192) and thermo5 (step 7168) pass all three seeds,
-  with respectively 1.685--1.954% / 34.18--35.47 dB and
-  1.591--1.810% / 34.85--35.97 dB EVM/SNDR.  At 249.512 MHz, thermo3 fails
-  all three seeds (4.299--4.426%, 27.08--27.33 dB), while thermo5 passes all
-  three (3.119--3.225%, 29.83--30.12 dB), with zero raw-stream mismatches.
-  Results are retained under `matlab/out/tid32_thermo_algorithm_ppa_screen*/`.
-- The screen joins only the two actually routed default PPA points:
-  thermo3: 59,921 LUT / 83,797 FF / 2,030 DSP / +0.290/+0.027 ns;
-  thermo5: 71,869 LUT / 97,249 FF / 2,032 DSP / +0.308/+0.027 ns.
-  Non-default offset/step rows are deliberately marked `default_only`; an
-  interpolation-tap or DPD-tap PPA claim requires parameterized RTL and a
-  separate routed run.
-
-## Parameterized interpolation/DPD PPA SKUs (2026-09-26, running)
-
-- The synthesis boundary now exposes real structural parameters:
-  `INTERP_TAPS={2,3,4}` and `DPD_MAX_TAPS={1,2,4}`.  Four-tap cubic
-  interpolation and four memory taps remain the default, bit-compatible
-  configuration.  New two-tap linear and three-tap causal-quadratic presets
-  retain unity DC gain but require separate communication-quality evaluation.
-- OOC tops may additionally set `DPD_ACTIVE_TAPS` as a compile-time constant.
-  This is intentionally distinct from the deployed runtime `active_taps`
-  port: only the compile-time mode enables synthesis to remove unselected
-  memory-polynomial structures.  All summaries record the selected SKU.
-- Default thermo3 and thermo5 frontend bit-true XSim both pass after the
-  parameter plumbing.  The P0 XSim runner's stale pre-migration testbench
-  paths were corrected; its seven-test full completion is pending an
-  uninterrupted host run.
-- The first actual timing SKU is running as a full 218.75-MHz routed OOC:
-  `thermo5 / INTERP_TAPS=2 / DPD_MAX_TAPS=1 / DPD_ACTIVE_TAPS=1`.
-  Do not infer its PPA or timing result until its `summary.csv` exists.
-- Corrected the P0 MATLAB comparator's stale pre-migration paths to
-  `dv/verif/{vectors,out_xsim_p0}` and reran
-  `scripts/run_matlab_p0_bittrue_check.cmd`: all seven 65,536-sample designs
-  pass with zero mismatches.
-## LP timing/power revision (2026-09-24)
-
-## Fair SKU matrix and TDD sparse-power workload (2026-09-27, historical run)
-
-- Added a reproducible 18-SKU matrix: `thermo3|thermo5` × interpolation
-  `2|3|4` taps × identity memory-DPD wrapper `1|2|4` taps.  Every algorithm
-  point uses the same 250-MHz 256-QAM OFDM payload, synthetic-mild DPA/BPF/DDC
-  profile, fair-RMS drive, and three isolated held-out seed sets.  Identity
-  DPD has tap0=1 and delayed coefficients=0; it is a PPA/latency comparison,
-  not an asserted RF-quality benefit.
-- A first full-chain smoke point, thermo5/2-tap/1-tap, passed all three seeds:
-  worst EVM 3.2533%, worst SNDR 29.7536 dB, filtered ACLR -30.5331 dBc, and
-  zero raw-word mismatches.  Full algorithm matrix output is running at
-  `runs/thermo_sku_matrix/algorithm_full_20260927_111823/`.
-- The matching full-routed OOC matrix is running at
-  `runs/thermo_sku_matrix/ooc_20260927_111823/`; each row is a separate
-  218.75-MHz route with its own utilization and timing reports.  No pending
-  row may be represented by a default-SKU result.
-- Added a four-grant sparse TDD downlink workload (32 accepted AXI words in a
-  common 4,608-cycle window).  RTL XSim passes for thermo3 and thermo5,
-  baseline and LP: output count/digest match in each pair and LP has no
-  underflow.  Routed-DCP SAIF power reporting is in progress; do not claim a
-  new power percentage until both reports are emitted.
-
-- Added registered local CE qualifiers at the frame-gain and thermo frontend
-  boundaries. The AXI/CDC ready/valid path remains unchanged; baseline uses a
-  generate branch with direct `core_enable`.
-- Added `syn/run_lp_power_compare.ps1`. It requires an explicit SAIF file and
-  runs baseline and LP with the same device and full implementation flow,
-  emitting a comparison CSV and activity provenance. No power percentage is
-  claimed until both runs complete.
-## 18-SKU matrix closure and frozen verification target (2026-09-29)
-
-- All 18 independent ZU15EG full OOC routes are complete and pass 218.75-MHz
-  setup and hold. Evidence is under
-  `runs/thermo_sku_matrix/ooc_20260927_111823/`.
-- At the fixed 250-MHz, three-seed, fair-RMS numerical gate (EVM <= 3.5% and
-  SNDR >= 29.12 dB), only thermo5 with two-tap interpolation qualifies. The
-  identity memory-DPD depths have equivalent communication results; DPD1 is
-  selected because it has the lowest implemented cost and the largest timing
-  margin: worst EVM 3.2739%, worst SNDR 29.6988 dB, filtered ACLR -30.391 dBc,
-  zero raw-word mismatches, WNS/WHS +0.316/+0.027 ns, 39,512 LUT, 50,181 FF,
-  6.5 BRAM, and 496 DSP.
-- `thermo5 / INTERP_TAPS=2 / DPD_MAX_TAPS=1 / DPD_ACTIVE_TAPS=1` is frozen as
-  the UVM and static-analysis target. Next actions are a real UVM regression,
-  formal lint/CDC/RDC, and mapped 28-nm DC reports. No SpyGlass or ASIC
-  signoff is claimed until those reports exist.
-- The two-clock thermo5 UVM smoke is integrated into the existing
-  `dv/uvm/{agent,env,tests,tb,sim}/` tree and shared Makefile as a separate DUT target;
-  the older `dsm_ip_axi_top` tests remain available.
-  MATLAB generated 32 source beats / 56 core words with legal frame starts
-  and four independent 64-bit plane references. The user restarted the local
-  Synopsys license service on 2026-10-01; VCS reached HDL compilation and the
-  six-case UVM regression now passes. Directed seed-2 random-stall XSim,
-  frozen 2-tap/DPD1 core XSim, and MATLAB P0 7/7 also pass.
-- Thermo5 UVM corner suite now includes reset/replay, FIFO-full/backpressure,
-  FIFO-empty/underflow, illegal frame-start assertion, and sampled functional
-  coverage with per-test event gates. VCS V-2023.12-SP1 completed the full
-  `thermo5-vcs-regression`: normal 56-word bit-true with PA stalls; FIFO full
-  and backpressure/recovery with 56 bit-true words; four-beat FIFO starvation
-  with seven bit-true words followed by expected underflow; midstream reset
-  after 24 source beats followed by a fresh 32-beat/56-word bit-true replay;
-  five additional resets at CDC residuals 2/4/6/10/12 followed by bit-true
-  replay; and the expected 56-sample frame-alignment assertion plus sticky error.
-  Each UVM test has zero UVM error/fatal; the illegal-frame case is an
-  intentional RTL assertion, not a clean positive test. URG merged all six
-  test VDBs with the compiled design VDB: functional groups 100%, overall
-  87.30%, DUT hierarchy 86.76%, and CDC FSM 100% (7/7 states, 12/12
-  transitions). Remaining condition/branch/toggle holes require triage;
-  neither all-config coverage nor XPM FIFO UVM signoff is
-  claimed. A finite source may assert sticky underflow only after its final
-  beat while pipeline output drains; normal tests reject earlier starvation.
-- A directed full-chain XSim reproduced a temporal-pipeline data mismatch under
-  PA-ready stalls. The TID pipeline now holds payload, valid, and recursive
-  state together while its raw-word boundary is blocked; the CDC stability
-  assertion checks the cycle following a stall. The 32-source-beat/56-output-
-  word four-plane test now passes with continuous ready and randomized stalls.
-  Three randomized-ready XSim seeds (1/2/3) pass with 8/35/20 stalled cycles;
-  P0 XSim 7/7 and IP smoke 5/5 pass after the RTL change. A fresh full routed
-  OOC routed timing under `runs/uvm_thermo5_i2_d1/ooc_stallfix_retry1/`
-  reports WNS +0.346 ns and WHS +0.026 ns at 218.75 MHz, with 39,512 LUT,
-  50,181 FF, 6.5 BRAM, and 496 DSP. The final Tcl exited nonzero only after
-  writing the routed reports and summary because of a power-provenance string
-  expression; that formatting line has been fixed but not rerun end-to-end.
-
-## Vivado runtime audit (2026-09-24)
-
-- A minimal Vivado 2024.1 batch smoke (`puts [version -short]; exit`) exits
-  with Windows status `-1073741790` and an empty log. The LP RTL diagnostic
-  fails identically before producing any Vivado output. This proves the current
-  host Vivado runtime is crashing before project parsing/synthesis; no LP RTL
-  timing conclusion can be drawn from these attempts.
+Updated: 2026-10-09 14:12 SGT. Status: active, board-free graduate DV/DE closure.
+This is the source of truth for current execution state. Detailed next actions
+and exit gates are in [the closure plan](thermo5-gap-closure.md).
+
+## Target and source of truth
+
+- Digital DUT: `tid32_thermo5_axis_frontend_tx`, W16, INTERP_TAPS2,
+  DPD_MAX_TAPS1, identity coefficients, low-power control disabled.
+- DV: generic and real XPM FIFO compiled/reported separately. Filelist:
+  `dv/uvm/sim/thermo5_sku_filelist.f`; MATLAB is the independent bit-true oracle.
+- ASIC: `syn/rtl/thermo5_frozen_asic.sv`, generic FIFO; sources and constraints:
+  `syn/asic/thermo_frontend_dc_sources.f`, `syn/asic/thermo5_frozen.sdc`.
+  The default `eda.yaml` thermo3 top is a different configuration.
+- Clocks: AXI125 MHz, core218.75 MHz. One32-beat frame yields56 ordered
+  four-plane64-bit words. Preserve widths, signedness, reset, latency and oracle.
+- Canonical paths: RTL `rtl/`, directed DV `dv/verif/`, UVM/formal `dv/uvm/`,
+  ASIC flows `syn/asic/`, vendor/board boundary `fpga/`. No board is available.
+
+## Current evidence
+
+| Workstream | Actual result | Evidence / remaining limit |
+| --- | --- | --- |
+| Licensed DV and hosted CI | Local current-source package PASS; hosted CI OPEN | Fresh Rocky package `runs/thermo5_current_source_dv_resume_20261008/dv_package.json`: coverage, formal and bug jobs PASS for digest `0e1d0d9040bb4f7aba2905295cf7f117d432a2fdf1b2ebfe38300674ca1089f8` (202 RTL/DV files). GitHub Actions37462007850 applies only to commit `a9b0bc6f67f575e9bb98085b1e064f9eddc886f2`; no hosted result covers the dirty source. |
+| UVM/scoreboard and coverage | Same-source bit22 long-stream PASS; full coverage OPEN | Generic/XPM each passed 4,194,309 output words bit-true; all16 DPD counters reset; zero UVM errors/fatals. Raw URG is87.16%/80.12%. `sample_count[22]` both directions hit in all16 lanes for both FIFOs; adjusted report remains bit21-only. |
+| Exact XPM reset bins | Core-first test complete; exact residual rows remain OPEN | Latest same-binary report and exact deltas: `runs/thermo5_gap_closure_fwftmon_20261008/exact_final_delta.json`. Line52 tuple `1/0` changed Not Covered -> Covered; line57 tuple `1/1/1/0` and line59 tuples `1/0/1/1`, `1/1/1/0` stay OPEN. |
+| Counter and other coverage gaps | Partial coverage remains OPEN | Bit22 raw URG covers both directions for `sample_count[22:0]` in all16 instances. Bits31:23 remain288 reachable directions/FIFO OPEN; never waive these. Generic has four interpolation lines/arms open. XPM has vendor line/condition/branch/toggle gaps and `stage1_valid->invalid` OPEN (8/9). |
+| Scoped VC Formal | Scoped milestones proven; full payload OPEN | Oct7 DPD19/20 assertions proven including no-saturation/count-zero; full identity payload inconclusive. Valid interpolation16 assertions/5 covers PASS; actual XPM residual7/9 PASS; legal XPM reset2 assertions/4 covers/2 unreachable reentries PASS. Qualified FWFT cover inconclusive. Exact matching-source manifests in convergence record. |
+| Exact missing-bin audit | AUDITED_OPEN | `runs/thermo5_coverage_reasons_20261007/`: every missing code/condition/signal and reason; exact XPM FSM transitions. Not an URG exclusion/signoff report. |
+| SpyGlass | Zero errors/blackboxes; review OPEN |39 warnings +4 synthesis warnings; two physical reset-use/RDC items remain. See lint review. |
+| Two real bug reconstructions | Fixed/faulty controls PASS | Both XSim and VCS reproduce historical AXI-Lite commit mechanisms on isolated copies. See bug walkthrough. |
+| Fault injection | Four XSim mutants detected; VCS-UVM attempt blocked before compile | Fresh XSim evidence `runs/thermo5_fault_detection_xsim_20261009/summary.txt`: PA-plane swap, stall corruption, late gain and stale FIFO reset all detected. New runner `dv/uvm/sim/run_thermo5_fault_detection_vcs.py`; first compile attempt could not connect to VCS license server, so VCS mutation status remains OPEN. |
+| Clean local CI syntax | PASS; hosted current-source CI OPEN | New clean scratch-copy syntax check `runs/thermo5_clean_ci_syntax_20261009/`; it is not a clean licensed regression nor a GitHub Actions result. Workflow syntax list includes the new runner/helper. |
+| ASIC DC mapping | PASS | `runs/thermo5_asic_retest_20261006_2016/`: mapped Verilog/DDC/SDC/SVF, zero unmapped cells,544463 cells,170605 sequential; area507779.648216 library units. |
+| ASIC pre-layout timing | Partial; constraints OPEN | Setup slack clk125 +6.79ns / clk218 +1.76ns; minimum reported hold0.00ns. Max-capacitance and zero leakage-target violations remain. TT/ideal clocks/assumed I/O budgets are not physical signoff. |
+| RTL/netlist Formality LEC | PASS | `runs/thermo5_fm_restored_20261007_retry1/`:170869 matched compare points,0 unmatched,26148 SVF commands accepted/0 rejected. No DUT hierarchy blackbox paths. All170869 compare points equivalent, zero failing/aborted; PASS manifest and unchanged mapped artifacts. |
+| Required Windows checks | Existing P0/IP smoke PASS; OOC12/14 | P0 XSim7/7 and IP smoke recorded PASS. Fresh Oct7 OOC reproduces mb_ef2 -0.093ns / mb_mash22 -0.688ns FAIL_TIMING; `syn/reports/ooc_xc7z020clg400_1_20261007_112340/summary_all.csv`. |
+| FPGA parent/GT/board | OPEN | Direct route WNS +0.264ns / WHS +0.011ns under provisional budgets; two GT CDC-11 paths, real I/O, RX recovery, serial deskew and board/RF output remain OPEN. |
+
+## Current-source package and exact remaining ledger
+
+The fresh Rocky licensed package completed on the current dirty source with
+digest `0e1d0d9040bb4f7aba2905295cf7f117d432a2fdf1b2ebfe38300674ca1089f8`
+(202 RTL/DV source files). Coverage, scoped formal and historical bug controls
+all PASS. Its same-binary 131075-word closure measured generic87.49% and
+XPM80.27%. Bit18/19/20/21/22 long streams passed on generic and real XPM.
+Latest bit22 raw URG scores are generic87.16% and XPM80.12%; reviewed adjusted
+views are bit21-only at99.66%/96.71%, not100%. `sample_count[22:0]` toggles
+both ways in all16 counters/FIFO; bits31:23 remain reachable/open (288
+directions/FIFO). The 4,194,309-word integer oracle first matched all eight
+files of its MATLAB-validated fixture. Seeds610078/610079 then passed
+4,194,309 four-plane output words with zero UVM errors/fatals and the public
+reset/all-counter check. Same-binary URG confirms bit22 in 16/16 instances for
+both FIFO builds. Logs and raw reports are under
+`runs/thermo5_frozen_regression_fwftmon_20261008/` and
+`runs/thermo5_bit22_urg_20261008/`. Hosted current-source CI remains OPEN.
+An initial optional bit18 MATLAB vector attempt stopped after about32minutes
+near the30-minute resource cap before writing vectors; its record remains at
+`runs/thermo5_bit18_20261008/attempt.json`. A later MATLAB process also ran
+for about four hours without output and was stopped after its exact command
+and empty target were verified. The independent NumPy integer oracle matched
+all eight outputs of a MATLAB fixture and generated 262150 words. Same-source
+generic and XPM VCS tests passed; exact same-binary URG confirms bit21 in both
+directions for all16 DPD counters/FIFO. The bit21 logs show 2,097,158 output
+words checked and all16 lane counters cleared. Full details:
+`docs/verification/thermo5-reachability-closure-20261008.md`.
+
+## Remaining priority
+
+1. Current generic/XPM raw counter remainder:288 reachable directions across
+   bits31:23 in all16 DPD counters; later high bits remain OPEN until hit.
+   Generic retains four interpolation
+   clamp lines and four branch arms; valid-payload proof does not cover invalid
+   startup payload evaluation.
+2. Current XPM adjusted view still has vendor line/condition/branch/toggle
+   bins and one FWFT transition OPEN. Nineteen exact vendor candidates did not
+   map to native signatures and are not excluded. Current manifests/reports:
+   `runs/thermo5_bit21_reviewed_exclusions_20261008/`.
+3. Historical Oct7 XPM candidate counts (15 lines,32 conditions,461 toggle
+   directions,50 branches,one FWFT transition) are superseded by the bit21
+   exact raw/adjusted inventory. Do not reuse those old counts as current.
+   Historical CSVs remain under
+   `runs/thermo5_followup_long_20261007/remaining_final/`; current vendor
+   signature mappings and unreviewed records remain OPEN.
+4. Keep the XPM FWFT `stage1_valid->invalid` transition OPEN: the final
+   same-binary full-run report for this source is8/9 (the earlier isolated
+   experiment-only report was7/9). The legal common-reset attempt observed
+   stage1_valid with `rd_rst_i=0` but did not hit the transition. Do not force
+   internal pins or exclude it; continue reset-default and memory collision/
+   clock-window goals with exact native signatures and denominators.
+5. The parent drives both public reset requests in one epoch. A source-only or
+   core-only **full-chain** reset is outside that parent contract. The legal
+   common-assert/core-first-release test now hits line52 tuple `1/0`; remaining
+   line57/59 rows stay OPEN as listed in the exact delta report.
+6. Next natural threshold is bit23. A complete 8,388,615-word run is estimated
+   at roughly 105 minutes per FIFO using measured bit22 wall throughput; first
+   bit31 is roughly 19 days per FIFO. These are cost estimates, not proofs of
+   unreachability. Never relabel unrun reachable bins as unreachable.
+7. Restore VCS license connectivity and run the new VCS-UVM fault runner; then
+   dispatch licensed CI from a clean checkout. XSim mutation controls pass, but
+   that does not close the VCS-UVM fault-injection request.
+8. Review physical lint/RDC, ASIC cap/leakage constraints and measured stalled
+   throughput; actual mapped LEC is already PASS and needs no repeated run until
+   implementation changes.
+9. Board clocks/pins/parent I/O/RX/serial deskew/RF output remain independent OPEN
+   work. No board is available; digital coverage does not imply board signoff.
+
+Never rename partial adjusted scores or analytical disposition accounting100%.
+The source of truth is actual URG plus exact remaining bins and proof contracts.
+
+## Evidence navigation and maintenance
+
+- [Coverage reasons](../../verification/thermo5-coverage-reasons-20261007.md)
+- [DV/DE delivery](../../verification/thermo5-dv-de-delivery.md)
+- [SpyGlass review](../../verification/thermo5-spyglass-review.md)
+- [Two bug walkthroughs](../../verification/commit-bug-case-studies.md)
+- [Oct 9 coverage/fault/CI resume](../../verification/thermo5-coverage-resume-20261009.md)
+- [Reset/CDC evidence](../../verification/thermo5-reset-cdc-evidence.md)
+- Tool commands: `dv/uvm/sim/README.md`, `dv/uvm/formal/README.md`,
+  `docs/ai-native/commands.md`. Use unique run directories and source hashes.
+
+Update this frontier and `docs/UPDATE_LOG.md` after a material result or next-action
+change. Keep generated reports, vendor/PDK files and licenses out of commits.
+Historical plans are under `../inactive/`; their scores/blockers are historical.

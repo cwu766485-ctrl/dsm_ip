@@ -26,6 +26,158 @@
         "set -e; export VCS_ARCH_OVERRIDE=linux64; vcs -ID"
       ]
     },
+    "synopsys-license-health": {
+      "description": "Read-only Synopsys license availability probe; print only whether configuration and server response are present, never license values or addresses.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; if [ -z \"${SNPSLMD_LICENSE_FILE:-}\" ]; then echo 'SNPSLMD_LICENSE_FILE=NOT_SET'; exit 3; fi; echo 'SNPSLMD_LICENSE_FILE=SET'; if command -v lmutil >/dev/null 2>&1; then if timeout 10 lmutil lmstat -c \"$SNPSLMD_LICENSE_FILE\" >/dev/null 2>&1; then echo 'LICENSE_SERVER=RESPONDING'; else echo 'LICENSE_SERVER=UNREACHABLE_OR_REJECTED'; exit 4; fi; else echo 'LMUTIL=NOT_FOUND'; exit 5; fi"
+      ]
+    },
+    "thermo5-xpm-preflight": {
+      "description": "Read-only preflight for the frozen thermo5 UVM regression with Vivado 2024.1 XPM sources.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; echo '== XPM source paths =='; test -f /mnt/d/Xilinx/Vivado/2024.1/data/verilog/src/glbl.v; echo 'FOUND: glbl.v'; test -f /mnt/d/Xilinx/Vivado/2024.1/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv; echo 'FOUND: xpm_cdc.sv'; test -f /mnt/d/Xilinx/Vivado/2024.1/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv; echo 'FOUND: xpm_memory.sv'; test -f /mnt/d/Xilinx/Vivado/2024.1/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv; echo 'FOUND: xpm_fifo.sv'; echo '== vectors =='; test -f runs/uvm_thermo5_i2_d1/vectors/tid32_thermo5_frontend_pa3.mem; echo 'FOUND: thermo5 vector'; echo '== tool availability =='; command -v make; command -v vcs; command -v urg; vcs -ID"
+      ]
+    },
+    "thermo5-current-source-dv-20261007": {
+      "description": "Run the reviewed current-source thermo5 DV package with independent 16387-word/gain vectors and real XPM models in a unique output directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_current_source_dv_20261007_02 || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --range-vectors runs/thermo5_coverage100_vectors_20261006/range_long --range-words 16387 --gain-vectors runs/thermo5_coverage100_vectors_20261006/gain_saturation --gain-toggle-vectors runs/thermo5_gain_toggle_delivery_20261006 --unbounded-counter --residual-only --out-dir runs/thermo5_current_source_dv_20261007_02"
+      ]
+    },
+    "thermo5-current-source-dv-20261008": {
+      "description": "Run a fresh same-source thermo5 generic/XPM coverage and checker package with independent 131075-word four-plane vectors and real XPM models.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_current_source_dv_20261008_retry2 || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --range-vectors runs/thermo5_range131075_20261007 --range-words 131075 --gain-vectors runs/thermo5_coverage100_vectors_20261006/gain_saturation --gain-toggle-vectors runs/thermo5_gain_toggle_delivery_20261006 --unbounded-counter --residual-only --out-dir runs/thermo5_current_source_dv_20261008_retry2"
+      ]
+    },
+    "thermo5-current-source-dv-resumption-20261008": {
+      "description": "Fresh licensed current-source thermo5 generic/XPM package with independent 131075-word four-plane vectors and real XPM models.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_current_source_dv_resume_20261008 || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --range-vectors runs/thermo5_range131075_20261007 --range-words 131075 --gain-vectors runs/thermo5_coverage100_vectors_20261006/gain_saturation --gain-toggle-vectors runs/thermo5_gain_toggle_delivery_20261006 --unbounded-counter --residual-only --out-dir runs/thermo5_current_source_dv_resume_20261008"
+      ]
+    },
+    "thermo5-xpm-core-first-release-probe-20261008": {
+      "description": "Compile one XPM binary, measure baseline URG, then run one legal common-reset/core-first-release 56-word oracle replay and compare exact matching-binary URG bins.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; probe_out=runs/thermo5_xpm_core_first_probe_20261008_retry1; test ! -e \"$probe_out\" || { echo 'ERROR: output directory already exists'; exit 2; }; mkdir -p \"$probe_out\"; sha256sum dv/uvm/env/thermo5/thermo5_control_bfm.svh dv/uvm/tests/thermo5/thermo5_sku_corner_tests.svh > \"$probe_out/source_before.sha256\"; make -C dv/uvm/sim thermo5-vcs THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$probe_out THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_COVERAGE=1; sha256sum \"$probe_out/simv\" > \"$probe_out/simv.sha256\"; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$probe_out THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_bittrue_test UVM_SEED=610220 THERMO5_EXTRA_ARGS=+STRESS_PA_READY THERMO5_COVERAGE=1; urg -full64 -dir \"$probe_out/simv.vdb\" \"$probe_out/cov_thermo5_sku_bittrue_test_seed610220.vdb\" -report \"$probe_out/coverage_before\" -dbname core_first_before > \"$probe_out/urg_before.log\" 2>&1; ! grep -Eq 'Error-|Design Not Loaded' \"$probe_out/urg_before.log\"; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$probe_out THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_fifo_reset_phase_test UVM_SEED=610221 'THERMO5_EXTRA_ARGS=+FIFO_RESET_DELAY=0 +FIFO_RESET_CORE_FIRST' THERMO5_COVERAGE=1; urg -full64 -dir \"$probe_out/simv.vdb\" \"$probe_out/cov_thermo5_sku_bittrue_test_seed610220.vdb\" \"$probe_out/cov_thermo5_sku_fifo_reset_phase_test_seed610221.vdb\" -report \"$probe_out/coverage_after\" -dbname core_first_after > \"$probe_out/urg_after.log\" 2>&1; ! grep -Eq 'Error-|Design Not Loaded' \"$probe_out/urg_after.log\"; sha256sum dv/uvm/env/thermo5/thermo5_control_bfm.svh dv/uvm/tests/thermo5/thermo5_sku_corner_tests.svh > \"$probe_out/source_after.sha256\"; cmp \"$probe_out/source_before.sha256\" \"$probe_out/source_after.sha256\"; echo CORE_FIRST_XPM_PROBE_PASS"
+      ]
+    },
+    "thermo5-signed-extremes-generic": {
+      "description": "Compile and run the signed-endpoint-gated thermo5 bit-true UVM case with the generic FIFO in a unique output directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_dv_closure_generic_20261006 || { echo 'ERROR: output directory already exists'; exit 2; }; make -C dv/uvm/sim thermo5-vcs-run THERMO5_FIFO_IMPL=generic THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/thermo5_dv_closure_generic_20261006 THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_extreme_20261003 THERMO5_TESTNAME=thermo5_sku_bittrue_test THERMO5_EXTRA_ARGS=+EXPECT_SIGNED_EXTREMES UVM_SEED=606101 THERMO5_COVERAGE=1; grep -E 'SKU_COVERAGE|THERMO5_SKU_UVM_PASS|UVM_ERROR|UVM_FATAL' runs/thermo5_dv_closure_generic_20261006/thermo5_sku_bittrue_test_seed606101.log"
+      ]
+    },
+    "thermo5-signed-extremes-xpm": {
+      "description": "Compile and run the signed-endpoint-gated thermo5 bit-true UVM case with Vivado 2024.1 XPM FIFO in a unique output directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_dv_closure_xpm_20261006 || { echo 'ERROR: output directory already exists'; exit 2; }; make -C dv/uvm/sim thermo5-vcs-run THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/thermo5_dv_closure_xpm_20261006 THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_extreme_20261003 THERMO5_TESTNAME=thermo5_sku_bittrue_test THERMO5_EXTRA_ARGS=+EXPECT_SIGNED_EXTREMES UVM_SEED=606102 THERMO5_COVERAGE=1; grep -E 'SKU_COVERAGE|THERMO5_SKU_UVM_PASS|UVM_ERROR|UVM_FATAL' runs/thermo5_dv_closure_xpm_20261006/thermo5_sku_bittrue_test_seed606102.log"
+      ]
+    },
+    "thermo5-frozen-regression-20261006": {
+      "description": "Run the reviewed frozen thermo5 generic/XPM VCS and URG package once in a new output directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_frozen_regression_20261006_rocky || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_frozen_regression.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --out-dir runs/thermo5_frozen_regression_20261006_rocky"
+      ]
+    },
+    "thermo5-frozen-regression-hardened-20261006": {
+      "description": "Repeat the frozen thermo5 generic/XPM VCS and URG package after fail-fast scoreboard hardening.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_frozen_regression_hardened_20261006 || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_frozen_regression.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --out-dir runs/thermo5_frozen_regression_hardened_20261006"
+      ]
+    },
+    "thermo5-frozen-regression-20261008": {
+      "description": "Run the current modified-source frozen generic/XPM VCS regression and URG baseline in a unique output directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_frozen_regression_20261008 || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_frozen_regression.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --out-dir runs/thermo5_frozen_regression_20261008"
+      ]
+    },
+    "thermo5-modified-source-gap-closure-20261008": {
+      "description": "Reuse the PASS modified-source generic/XPM binary, run 131075-word independent-oracle closure, then add core-first XPM replay and produce one combined matching-binary URG report.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; out_dir=runs/thermo5_modified_source_gap_closure_20261008; base=runs/thermo5_frozen_regression_20261008; test ! -e \"$out_dir\" || { echo 'ERROR: output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_gap_closure.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --range-vectors runs/thermo5_range131075_20261007 --range-words 131075 --gain-vectors runs/thermo5_coverage100_vectors_20261006/gain_saturation --gain-toggle-vectors runs/thermo5_gain_toggle_delivery_20261006 --baseline-dir \"$base\" --out-dir \"$out_dir\"; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$base/xpm THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_fifo_reset_phase_test UVM_SEED=610221 'THERMO5_EXTRA_ARGS=+FIFO_RESET_DELAY=0 +FIFO_RESET_CORE_FIRST' THERMO5_COVERAGE=1; urg -full64 -dir \"$base/xpm/simv.vdb\" \"$base/xpm\"/cov_*.vdb -report \"$out_dir/xpm_coverage_core_first_final\" -dbname thermo5_xpm_modified_source_core_first > \"$out_dir/xpm_urg_core_first_final.log\" 2>&1; ! grep -Eq 'Error-|Design Not Loaded' \"$out_dir/xpm_urg_core_first_final.log\"; echo MODIFIED_SOURCE_GAP_CLOSURE_PASS"
+      ]
+    },
+    "thermo5-xpm-fwft-reset-attempt-20261008": {
+      "description": "Compile a fresh XPM UVM binary with read-only FWFT-state observation, run a legal common-public-reset attempt only after observing stage1_valid, validate the complete oracle replay, and compare same-binary URG reports.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; out=runs/thermo5_xpm_fwft_reset_attempt_20261008; test ! -e \"$out\" || { echo 'ERROR: output directory already exists'; exit 2; }; mkdir -p \"$out\"; sha256sum dv/uvm/agent/interfaces/thermo5_sku_if.sv dv/uvm/tb/thermo5_sku_uvm_tb.sv dv/uvm/tests/thermo5/thermo5_sku_corner_tests.svh > \"$out/source.sha256\"; make -C dv/uvm/sim thermo5-vcs THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$out THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_COVERAGE=1; sha256sum \"$out/simv\" > \"$out/simv.sha256\"; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$out THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_bittrue_test UVM_SEED=610222 THERMO5_COVERAGE=1; urg -full64 -dir \"$out/simv.vdb\" \"$out/cov_thermo5_sku_bittrue_test_seed610222.vdb\" -report \"$out/urg_before\" -dbname fwft_before > \"$out/urg_before.log\" 2>&1; ! grep -Eq 'Error-|Design Not Loaded' \"$out/urg_before.log\"; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$out THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_fifo_reset_phase_test UVM_SEED=610223 'THERMO5_EXTRA_ARGS=+FIFO_RESET_PREFETCH_ONLY +FIFO_RESET_WAIT_FWFT_STAGE1 +FIFO_RESET_DELAY=2' THERMO5_COVERAGE=1; grep -q 'Observed stage1_valid with rd_rst_i=0 before common public reset' \"$out/thermo5_sku_fifo_reset_phase_test_seed610223.log\"; urg -full64 -dir \"$out/simv.vdb\" \"$out/cov_thermo5_sku_bittrue_test_seed610222.vdb\" \"$out/cov_thermo5_sku_fifo_reset_phase_test_seed610223.vdb\" -report \"$out/urg_after\" -dbname fwft_after > \"$out/urg_after.log\" 2>&1; ! grep -Eq 'Error-|Design Not Loaded' \"$out/urg_after.log\"; echo THERMO5_XPM_FWFT_RESET_ATTEMPT_COMPLETE"
+      ]
+    },
+    "thermo5-fwftmon-full-closure-20261008": {
+      "description": "Run the full frozen generic/XPM regression and 131075-word four-plane closure from the current source including the read-only FWFT observer, in unique output directories without cross-binary VDB merges.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; base=runs/thermo5_frozen_regression_fwftmon_20261008; out=runs/thermo5_gap_closure_fwftmon_20261008; test ! -e \"$base\" || { echo 'ERROR: baseline output directory already exists'; exit 2; }; test ! -e \"$out\" || { echo 'ERROR: closure output directory already exists'; exit 2; }; python3.12 dv/uvm/sim/run_thermo5_frozen_regression.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --out-dir \"$base\"; python3.12 dv/uvm/sim/run_thermo5_gap_closure.py --xpm-root /mnt/d/Xilinx/Vivado/2024.1 --range-vectors runs/thermo5_range131075_20261007 --range-words 131075 --gain-vectors runs/thermo5_coverage100_vectors_20261006/gain_saturation --gain-toggle-vectors runs/thermo5_gain_toggle_delivery_20261006 --baseline-dir \"$base\" --out-dir \"$out\"; echo FWFTMON_FULL_REGRESSION_AND_GAP_CLOSURE_PASS"
+      ]
+    },
+    "thermo5-fwftmon-final-xpm-merge-20261008": {
+      "description": "Run core-first and read-only FWFT-target reset tests on the same fresh current-source baseline XPM simv, then URG-merge only VDBs from that binary.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; base=runs/thermo5_frozen_regression_fwftmon_20261008; out=runs/thermo5_gap_closure_fwftmon_20261008; test -x \"$base/xpm/simv\"; test ! -e \"$out/xpm_coverage_final_with_reset_fwft\" || { echo 'ERROR: final report directory already exists'; exit 2; }; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$base/xpm THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_fifo_reset_phase_test UVM_SEED=610224 'THERMO5_EXTRA_ARGS=+FIFO_RESET_DELAY=0 +FIFO_RESET_CORE_FIRST' THERMO5_COVERAGE=1; make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/$base/xpm THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_TESTNAME=thermo5_sku_fifo_reset_phase_test UVM_SEED=610225 'THERMO5_EXTRA_ARGS=+FIFO_RESET_PREFETCH_ONLY +FIFO_RESET_WAIT_FWFT_STAGE1 +FIFO_RESET_DELAY=2' THERMO5_COVERAGE=1; grep -q 'Observed stage1_valid with rd_rst_i=0 before common public reset' \"$base/xpm/thermo5_sku_fifo_reset_phase_test_seed610225.log\"; urg -full64 -dir \"$base/xpm/simv.vdb\" \"$base/xpm\"/cov_*.vdb -report \"$out/xpm_coverage_final_with_reset_fwft\" -dbname thermo5_fwftmon_current_final > \"$out/xpm_urg_final_with_reset_fwft.log\" 2>&1; ! grep -Eq 'Error-|Design Not Loaded' \"$out/xpm_urg_final_with_reset_fwft.log\"; echo FWFTMON_CURRENT_SOURCE_FINAL_XPM_MERGE_PASS"
+      ]
+    },
+    "thermo5-interp1-empty-blocked-20261006": {
+      "description": "Run the directed thermo5 generic-FIFO legal AXI-gap/PA-stall case and require the exact interp1 line 71 URG bin in a unique run directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_interp1_empty_blocked_20261006 || { echo 'ERROR: output directory already exists'; exit 2; }; bash dv/uvm/sim/run_thermo5_interp1_empty_blocked.sh"
+      ]
+    },
+    "thermo5-interp1-empty-blocked-retry-20261006": {
+      "description": "Retry the directed thermo5 interp1 line 71 closure in a separate unique run after preserving the interrupted compile output.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_interp1_empty_blocked_20261006_attempt2 || { echo 'ERROR: output directory already exists'; exit 2; }; bash dv/uvm/sim/run_thermo5_interp1_empty_blocked.sh runs/thermo5_interp1_empty_blocked_20261006_attempt2"
+      ]
+    },
+    "thermo5-reset-sync-release-audit-vcs-20261006": {
+      "description": "Run a focused two-clock reset synchronizer release and exact operand-sample audit with VCS and URG in a fresh output directory.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; cd /mnt/e/workspace/chip/dsm_ip; test ! -e runs/thermo5_reset_bin_audit_20261006_05 || { echo 'ERROR: output directory already exists'; exit 2; }; bash dv/verif/block/axis/run_thermo5_reset_sync_release_audit.sh runs/thermo5_reset_bin_audit_20261006_05"
+      ]
+    },
+    "thermo5-python-preflight": {
+      "description": "Read-only interpreter availability check for the frozen thermo5 regression launcher.",
+      "executable": "bash",
+      "arguments": [
+        "-lic",
+        "set -e; for py in python3 python3.8 python3.9 python3.10 python3.11 python3.12; do if command -v \"$py\" >/dev/null 2>&1; then command -v \"$py\"; \"$py\" --version; fi; done; printf 'PATH=%s\\n' \"$PATH\""
+      ]
+    },
     "uvm-qam-ofdm-bittrue": {
       "description": "Compile and run the MATLAB-quantized 10,240-sample QAM-OFDM UVM bit-true testcase.",
       "executable": "bash",

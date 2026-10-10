@@ -30,8 +30,15 @@ VCS_BIN := $(VCS_OUT)/simv
 VCS_LOG := $(VCS_OUT)/compile.log
 RUN_DIR := $(VCS_OUT)/runs/$(RUN_TAG)
 QUESTA_OUT := $(OUT)/questa
-THERMO5_OUT := $(ROOT)/runs/uvm_thermo5_i2_d1
-THERMO5_VECTORS := $(THERMO5_OUT)/vectors
+THERMO5_FIFO_IMPL ?= generic
+THERMO5_XPM_ROOT ?=
+THERMO5_OUT := $(ROOT)/runs/uvm_thermo5_i2_d1$(if $(filter xpm,$(THERMO5_FIFO_IMPL)),_xpm,)
+THERMO5_XPM_SOURCES := $(THERMO5_XPM_ROOT)/data/verilog/src/glbl.v \
+  $(THERMO5_XPM_ROOT)/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv \
+  $(THERMO5_XPM_ROOT)/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv \
+  $(THERMO5_XPM_ROOT)/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv
+THERMO5_XPM_ARGS := $(if $(filter xpm,$(THERMO5_FIFO_IMPL)),+define+THERMO5_XPM_FIFO $(THERMO5_XPM_SOURCES) -top glbl,)
+THERMO5_VECTORS := $(ROOT)/runs/uvm_thermo5_i2_d1/vectors
 THERMO5_FILELIST := $(UVM_ROOT)/sim/thermo5_sku_filelist.f
 THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
@@ -39,6 +46,7 @@ THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
 THERMO5_COV_ARGS := $(if $(filter 1,$(THERMO5_COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
 THERMO5_STRESS_SEEDS ?= 11 12 13 14 15 16 17 18 19 20
+THERMO5_URG_EXTRA_VDBS ?=
 
 VCS_COV_COMPILE := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
 VCS_COV_RUN := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert -cm_dir $(RUN_DIR)/simv.vdb,)
@@ -73,6 +81,7 @@ help:
 	@echo "  make thermo5-vcs-run     Compile/run two-clock thermo5/2-tap/DPD1 subsystem"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
+	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
 	@echo "  make thermo5-coverage-merge  Merge passing thermo5 VCS VDBs with URG"
 	@echo "  make formal-check-tools  Probe the Linux EDA environment for a formal engine"
 	@echo "  IP functional closure: ./dv/uvm/sim/run_ip_coverage_linux.sh"
@@ -108,10 +117,15 @@ vcs-run: vcs vcs-run-only
 # regression remains intact; the thermo5 subsystem is not that IP instance.
 thermo5-vcs:
 	@command -v $(VCS) >/dev/null 2>&1 || { echo "ERROR: VCS not found"; exit 127; }
+	@test '$(THERMO5_FIFO_IMPL)' = generic -o '$(THERMO5_FIFO_IMPL)' = xpm || { echo "ERROR: THERMO5_FIFO_IMPL must be generic or xpm"; exit 2; }
+	@if [ '$(THERMO5_FIFO_IMPL)' = xpm ]; then \
+	  test -n '$(THERMO5_XPM_ROOT)' || { echo "ERROR: set THERMO5_XPM_ROOT to the Vivado installation root"; exit 2; }; \
+	  for src in $(THERMO5_XPM_SOURCES); do test -f "$$src" || { echo "ERROR: missing XPM source $$src"; exit 2; }; done; \
+	fi
 	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 MATLAB vectors first"; exit 2; }
 	@mkdir -p $(THERMO5_OUT)
-	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm \
-		-timescale=1ns/1ps -f $(THERMO5_FILELIST) \
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L \
+		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) \
 		-top thermo5_sku_uvm_tb -Mdir=$(THERMO5_OUT)/csrc \
 		$(THERMO5_COV_ARGS) \
 		-o $(THERMO5_OUT)/simv -l $(THERMO5_OUT)/compile.log
@@ -145,6 +159,7 @@ thermo5-vcs-negative:
 
 thermo5-vcs-regression: thermo5-vcs
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=1 THERMO5_TESTNAME=thermo5_sku_bittrue_test THERMO5_EXTRA_ARGS=+STRESS_PA_READY
+	@$(MAKE) thermo5-vcs-run-only UVM_SEED=2 THERMO5_TESTNAME=thermo5_sku_bubble_backpressure_test
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=2 THERMO5_TESTNAME=thermo5_sku_fifo_boundary_test
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=5 THERMO5_TESTNAME=thermo5_sku_fifo_empty_test
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=3 THERMO5_TESTNAME=thermo5_sku_reset_test
@@ -165,18 +180,21 @@ thermo5-coverage-merge:
 	@command -v $(URG) >/dev/null 2>&1 || { echo "ERROR: URG not found"; exit 127; }
 	@test -d $(THERMO5_OUT)/simv.vdb || { echo "ERROR: compiled design VDB missing"; exit 2; }
 	@test -d $(THERMO5_OUT)/cov_thermo5_sku_bittrue_test_seed1.vdb
+	@test -d $(THERMO5_OUT)/cov_thermo5_sku_bubble_backpressure_test_seed2.vdb
 	@test -d $(THERMO5_OUT)/cov_thermo5_sku_fifo_boundary_test_seed2.vdb
 	@test -d $(THERMO5_OUT)/cov_thermo5_sku_fifo_empty_test_seed5.vdb
 	@test -d $(THERMO5_OUT)/cov_thermo5_sku_reset_test_seed3.vdb
 	@test -d $(THERMO5_OUT)/cov_thermo5_sku_reset_sweep_test_seed6.vdb
 	@test -d $(THERMO5_OUT)/cov_illegal_frame_seed4.vdb
+	@for vdb in $(THERMO5_URG_EXTRA_VDBS); do test -d "$$vdb" || { echo "ERROR: missing extra VDB $$vdb"; exit 2; }; done
 	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_bittrue_test_seed1.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_bubble_backpressure_test_seed2.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_fifo_boundary_test_seed2.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_fifo_empty_test_seed5.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_reset_test_seed3.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_reset_sweep_test_seed6.vdb \
-		$(THERMO5_OUT)/cov_illegal_frame_seed4.vdb \
+		$(THERMO5_OUT)/cov_illegal_frame_seed4.vdb $(THERMO5_URG_EXTRA_VDBS) \
 		-report $(THERMO5_OUT)/coverage -dbname thermo5_sku_merged \
 		> $(THERMO5_OUT)/coverage_merge.log 2>&1
 	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/coverage_merge.log || \

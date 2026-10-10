@@ -1,0 +1,74 @@
+name: Thermo5 digital verification
+
+on:
+  push:
+    branches: ['dv-de-portfolio-20261006']
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'rtl/**'
+      - 'dv/uvm/**'
+      - 'tools/hw/**'
+      - '.github/workflows/thermo5-dv.yml'
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python syntax and whitespace
+        run: |
+          python -m py_compile dv/uvm/sim/run_thermo5_dv_package.py dv/uvm/sim/run_thermo5_gap_closure.py dv/uvm/sim/run_thermo5_fault_detection_vcs.py dv/uvm/formal/run_thermo5_scoped_formal.py tools/hw/thermo5_audit_reports.py tools/hw/thermo5_coverage_denominator.py tools/hw/thermo5_long_counter_delta.py
+          git diff --check
+
+  licensed-dv:
+    # Enable only on a trusted licensed runner. No vendor models, vectors,
+    # tool logs, or licenses are installed on the public hosted runner.
+    if: (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/dv-de-portfolio-20261006') && vars.THERMO5_LICENSED_CI == 'enabled'
+    runs-on: [self-hosted, linux, synopsys]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stage local independent oracle sets
+        env:
+          THERMO5_VECTOR_ROOT: ${{ vars.THERMO5_VECTOR_ROOT }}
+        shell: bash -il {0}
+        run: |
+          test -n "$THERMO5_VECTOR_ROOT"
+          mkdir -p runs/uvm_thermo5_i2_d1 runs/uvm_thermo5_payload_20261003 runs/uvm_thermo5_extreme_20261003
+          cp -R "$THERMO5_VECTOR_ROOT/base" runs/uvm_thermo5_i2_d1/vectors
+          for seed in 101 202 303; do
+            cp -R "$THERMO5_VECTOR_ROOT/vectors_seed$seed" "runs/uvm_thermo5_payload_20261003/vectors_seed$seed"
+          done
+          cp "$THERMO5_VECTOR_ROOT/endpoint/"*.mem runs/uvm_thermo5_extreme_20261003/
+      - name: Smoke, scoreboard, compiler lint diagnostics, and scoped formal
+        env:
+          THERMO5_XPM_ROOT: ${{ vars.THERMO5_XPM_ROOT }}
+          THERMO5_RANGE_VECTORS: ${{ vars.THERMO5_RANGE_VECTORS }}
+          THERMO5_GAIN_VECTORS: ${{ vars.THERMO5_GAIN_VECTORS }}
+          THERMO5_GAIN_TOGGLE_VECTORS: ${{ vars.THERMO5_GAIN_TOGGLE_VECTORS }}
+        shell: bash -il {0}
+        run: |
+          source "$HOME/.bashrc"
+          python3.12 dv/uvm/sim/run_thermo5_dv_package.py --xpm-root "$THERMO5_XPM_ROOT" --range-vectors "$THERMO5_RANGE_VECTORS" --range-words 16387 --gain-vectors "$THERMO5_GAIN_VECTORS" --gain-toggle-vectors "$THERMO5_GAIN_TOGGLE_VECTORS" --unbounded-counter --residual-only --out-dir "runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
+      - name: SpyGlass frozen SKU lint
+        shell: bash -il {0}
+        run: |
+          source "$HOME/.bashrc"
+          export THERMO5_LINT_RUN="$PWD/runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}/lint"
+          mkdir -p "$THERMO5_LINT_RUN"
+          sg_shell -tcl dv/uvm/sim/run_thermo5_spyglass.tcl > "$THERMO5_LINT_RUN/spyglass.log" 2>&1
+          python3.12 tools/hw/thermo5_lint_summary.py "$THERMO5_LINT_RUN/moresimple.rpt"
+      - name: Keep normalized results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thermo5-dv-summary
+          path: |
+            runs/ci_*/dv_package.json
+            runs/ci_*/diagnostics.json
+            runs/ci_*/coverage/coverage_summary.md
+            runs/ci_*/formal/formal_summary.json
+            runs/ci_*/lint/lint_summary.json

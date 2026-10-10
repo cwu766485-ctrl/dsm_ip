@@ -88,7 +88,12 @@ ip/ip_repo/
 # Synopsys/DC and shell runtime artifacts
 realTime.cmd.*
 realTime.log.*
-runs/*/pid.txt
+# Run databases and local experiment outputs stay out of source control; their
+# reviewed summaries and rerun commands belong under docs/ and syn/.
+/runs/
+/syn/out/
+/verif/out_xsim_*/
+/tight_setup_hold_pins.txt
 *.sim/
 *.gen/
 *.srcs/

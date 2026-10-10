@@ -13,14 +13,15 @@ module tb_tid32_thermo5_frontend_serdes_loopback;
   logic [W-1:0] i_mem[0:LANES*WORDS-1], q_mem[0:LANES*WORDS-1];
   logic [W-1:0] frame_start_mem[0:WORDS-1], frame_gain_mem[0:WORDS-1];
   logic [63:0] pa_mem[0:3][0:WORDS-1];
-  logic signed [63:0] c1_re,c1_im,c3_re,c3_im,c5_re,c5_im;
+  logic signed [W-1:0] c1_re,c1_im,c3_re,c3_im,c5_re,c5_im;
   integer sent, got[0:3], lane, branch, errors, cycles;
 
   // 218.75 MHz user clock and exact 64x 14-GHz raw serial clock.
   always #2285.714 usr_clk=~usr_clk;
   always #35.71428125 ser_clk=~ser_clk;
 
-  tid32_thermo5_frontend_tx #(.STEP(7168)) dut (
+  // Frozen communication SKU: 2-tap x2 stages and instantiated DPD1 identity.
+  tid32_thermo5_frontend_tx #(.STEP(7168), .INTERP_TAPS(2), .MAX_TAPS(1)) dut (
     .clk(usr_clk),.rst_n(rst_n),.enable(enable),.in_valid(in_valid),.in_ready(in_ready),
     .in_frame_start(in_frame_start),.in_frame_gain(in_frame_gain),.in_i_vec(in_i_vec),.in_q_vec(in_q_vec),
     .dpd_active_taps(3'd1),.c1_re(c1_re),.c1_im(c1_im),.c3_re(c3_re),.c3_im(c3_im),.c5_re(c5_re),.c5_im(c5_im),
@@ -40,7 +41,7 @@ module tb_tid32_thermo5_frontend_serdes_loopback;
     $readmemh("tid32_thermo5_frontend_frame_start.mem",frame_start_mem); $readmemh("tid32_thermo5_frontend_frame_gain.mem",frame_gain_mem);
     $readmemh("tid32_thermo5_frontend_pa0.mem",pa_mem[0]); $readmemh("tid32_thermo5_frontend_pa1.mem",pa_mem[1]);
     $readmemh("tid32_thermo5_frontend_pa2.mem",pa_mem[2]); $readmemh("tid32_thermo5_frontend_pa3.mem",pa_mem[3]);
-    c1_re={48'sd0,16'sd16384}; c1_im='0; c3_re='0; c3_im='0; c5_re='0; c5_im='0;
+    c1_re=16'sd16384; c1_im='0; c3_re='0; c3_im='0; c5_re='0; c5_im='0;
     sent=0; errors=0; cycles=0; for(branch=0;branch<4;branch=branch+1) got[branch]=0;
     repeat(6) @(negedge usr_clk); rst_n=1'b1;
     while(got[0]<WORDS || got[1]<WORDS || got[2]<WORDS || got[3]<WORDS) begin

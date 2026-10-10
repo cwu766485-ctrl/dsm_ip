@@ -1,8 +1,9 @@
-param([switch]$StressPaReady,[switch]$XpmFifo,[int]$Seed=1)
+param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='')
 $ErrorActionPreference='Stop'
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
-$work=Join-Path $repo $(if($XpmFifo){"runs\uvm_thermo5_i2_d1\axis_xsim_xpm_seed$Seed"}else{'runs\uvm_thermo5_i2_d1\axis_xsim'})
-$vectors=Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'
+$work=Join-Path $repo $(if($XpmFifo){"runs\uvm_thermo5_i2_d1\axis_xsim_xpm_seed${Seed}_words$Words"}else{"runs\uvm_thermo5_i2_d1\axis_xsim_seed${Seed}_words$Words"})
+$vectors=if($VectorDir -eq ''){Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'}else{[System.IO.Path]::GetFullPath($VectorDir)}
+if($Words -ne 56 -and $Words -ne 1008){throw 'Supported Words values are 56 and 1008.'}
 if (!(Test-Path -LiteralPath (Join-Path $vectors 'tid32_thermo5_frontend_pa3.mem'))) {
   throw 'Run dv/uvm/sim/generate_thermo5_sku_vectors.ps1 first.'
 }
@@ -26,6 +27,7 @@ $relative=@(
 )
 $vendor=@()
 $define=''
+if($Words -eq 1008){$define='-d THERMO5_LONG_1008'}
 if($XpmFifo){
   $vendor=@(
     'D:\Xilinx\Vivado\2024.1\data\verilog\src\glbl.v',
@@ -34,7 +36,7 @@ if($XpmFifo){
     'D:\Xilinx\Vivado\2024.1\data\ip\xpm\xpm_fifo\hdl\xpm_fifo.sv'
   )
   foreach($path in $vendor){if(!(Test-Path -LiteralPath $path)){throw "Missing vendor XPM model: $path"}}
-  $define='-d THERMO5_XPM_FIFO'
+  $define+=' -d THERMO5_XPM_FIFO'
 }
 $source=(($vendor + ($relative | ForEach-Object { Join-Path $repo $_ })) | ForEach-Object { '"'+$_+'"' }) -join ' '
 Push-Location $work
@@ -45,7 +47,10 @@ try {
   cmd.exe /d /c "call $settings >nul && xelab $tops -s sim_thermo5_i2_d1_axis > console_xelab.log 2>&1"
   if ($LASTEXITCODE -ne 0) { throw "xelab failed: $work\console_xelab.log" }
   Copy-Item -Path (Join-Path $vectors '*.mem') -Destination $work
-  $plusarg=if($StressPaReady){'-testplusarg STRESS_PA_READY'}else{''}
+  $plusargs=@()
+  if($StressPaReady){$plusargs+='-testplusarg STRESS_PA_READY'}
+  if($ProbeInterp1EmptyBlocked){$plusargs+='-testplusarg INTERP1_GAP_STALL'}
+  $plusarg=$plusargs -join ' '
   cmd.exe /d /c "call $settings >nul && xsim sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg > console_xsim.log 2>&1"
   if ($LASTEXITCODE -ne 0) { throw "xsim failed: $work\console_xsim.log" }
 } finally { Pop-Location }

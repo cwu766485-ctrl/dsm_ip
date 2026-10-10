@@ -1,5 +1,954 @@
 # Update Log
 
+## 2026-10-10 - Remove two unreferenced standalone testbenches
+
+- Removed `dv/verif/block/interp/tb/tb_interp_cic_polyphase_unit.sv` and
+  `dv/verif/block/dpd/tb/tb_dpd_poly.sv` after checking all project source,
+  filelists, scripts, and docs for consumers. Neither had a regression entry;
+  the DPD bench also requires CSV inputs absent from the repository.
+- Kept all RTL modules: the first-pass source/reference scan found no
+  unreferenced RTL module definitions. Preserved generated `runs/` and root
+  `verif/` artifacts, plus all current user changes.
+- Checks: reference scan before/after; no RTL behavior changed. Full DV was not
+  rerun because neither removed bench was part of any configured regression.
+
+## 2026-10-09 14:12 SGT - Thermo5 fault-injection and CI resume
+
+- Re-ran the existing isolated XSim fault-detection suite. Clean controls
+  passed and four injected faults were detected: PA-plane swap, output-stall
+  corruption, late gain activation, and stale FIFO data after reset.
+- Added `dv/uvm/sim/run_thermo5_fault_detection_vcs.py` for isolated
+  full-chain VCS-UVM mutations (baseline plus plane-swap, late-gain and
+  interpolation-LSB faults). The first run stopped before compile because VCS
+  could not connect to the license server; no VCS-UVM fault-detection PASS is
+  claimed.
+- Extended the clean-runner CI Python syntax list to include the VCS mutation
+  runner and natural counter audit helper. A copied clean scratch workspace
+  passed Python compilation/workflow-structure smoke checks. GitHub Actions and
+  a clean licensed checkout regression remain OPEN.
+- Updated the execution frontier and added
+  `docs/verification/thermo5-coverage-resume-20261009.md`. Natural counter bits
+  23-31, four generic interpolation clamp bins/arms, exact XPM reset tuples,
+  XPM FWFT stage1-valid-to-invalid, and other unreviewed XPM bins remain OPEN.
+- No canonical RTL, MATLAB arithmetic, golden vectors, or scoreboarding
+  criteria were changed. Generated tool output stays under `runs/`.
+
+## 2026-10-08 21:35 SGT - Thermo5 bit21 natural-counter closure
+
+- Generated a 2,097,158-word independent integer oracle and checked its eight
+  files against the 36-word MATLAB fixture. Generic and real Vivado XPM
+  long-counter UVM tests both passed four-plane bit-true checking, reset all16
+  DPD lane counters, and reported zero UVM errors/fatals. CPU times were
+  1,434.900s / 1,444.450s.
+- Same-binary URG explicitly included the nested `bit21/cov_bit21.vdb` in
+  addition to all root coverage databases. An initial merge omitted that nested
+  VDB and was not used. Correct raw scores are generic87.52% / XPM80.31%; both
+  hit both directions through `sample_count[21:0]`. Bits31:22 remain320
+  reachable toggle directions/FIFO OPEN.
+- Regenerated exact exclusion files and reran adjusted URG with the same VDB
+  inputs. Scores are generic99.66% / XPM96.71%, still partial rather than
+  100%. Generic retains four interpolation lines/arms and320 reachable
+  counter toggles. XPM retains14 vendor line,44 condition,46 branch,37 toggle
+  bins and one FWFT transition;19 exact vendor branch candidates remain
+  unmapped and OPEN, not excluded.
+- Updated coverage/frontier docs. Evidence:
+  `docs/verification/thermo5-reachability-closure-20261008.md`,
+  `runs/thermo5_bit21_oracle_20261008/`,
+  `runs/thermo5_bit21_urg_20261008/`, and
+  `runs/thermo5_bit21_reviewed_exclusions_20261008/`.
+- No RTL, MATLAB model, UVM testbench, or bit-true checker was changed.
+
+## 2026-10-08 20:44 SGT - Thermo5 bit20 coverage and reviewed exclusions
+
+- Generated an independent 1,048,579-word range-stress oracle; all eight
+  outputs matched the MATLAB fixture. Generic and real Vivado XPM frozen-SKU
+  VCS tests passed all four-plane comparisons, then verified all16 DPD counters
+  clear on reset. Zero UVM errors/fatals.
+- Same-binary raw URG is generic87.51% and XPM80.31%. The `sample_count[20:0]`
+  group toggled both ways in all16 counters; bits31:21 remain352 reachable
+  toggle directions per FIFO and are not waived.
+- Generated exact exclusions only for current-source configuration/scoped
+  evidence, reran URG with those `.el` files, and recorded adjusted scores
+  generic99.66% / XPM96.71%. These are partial adjusted views, not100% or
+  raw coverage. Generic interpolation payload bins, XPM vendor gaps, and the
+  missing FWFT transition remain open. Nineteen XPM vendor candidate bins did
+  not map to reviewed native signatures and were left unexcluded.
+- Evidence: `docs/verification/thermo5-reachability-closure-20261008.md`;
+  detailed raw/adjusted reports and manifests are under
+  `runs/thermo5_bit20_urg_20261008/` and
+  `runs/thermo5_bit20_reviewed_exclusions_20261008/`.
+- Began a bit21 natural-toggle closure attempt after MATLAB fixture validation;
+  its generic simulation is still running. No RTL, MATLAB fixed-point model,
+  testbench, or scoreboard criterion was changed.
+- Updated `docs/exec-plans/active/execution-frontier.md` to the current status.
+
+## 2026-10-08 19:10 SGT - Thermo5 bit18 counter coverage closure
+
+- Generated a 262150-word independent integer range-stress oracle after the
+  long MATLAB call remained CPU-active for about four hours without emitting
+  vectors. All eight oracle outputs matched the 36-word MATLAB fixture;
+  fast/legacy MATLAB outputs matched across 18 short configurations (144
+  `.mem` files), plus an extreme-gain/nondefault-step probe.
+- Generic and real-XPM current-source VCS long-counter tests passed at seed
+  610073 with 262150 four-plane words checked, 16-counter post-stream reset,
+  and zero UVM errors/fatals. Exact same-binary final URG merges cover bit18
+  in both directions in all 16 DPD counters/FIFO; bits 19 through 31 remain OPEN
+  (416 directions/FIFO). Raw DUT scores: generic87.50%, XPM80.30%. No waivers.
+- Required MATLAB P0 persisted result: `matlab/out/p0_bittrue_compare.csv`,
+  seven designs x 65536 samples, zero mismatch; command is
+  `scripts/run_matlab_p0_bittrue_check.cmd`.
+- Evidence and remaining bins: `docs/verification/thermo5-bit18-counter-closure-20261008.md`.
+- Updated source-matched raw per-bin ledger:
+  `runs/thermo5_high_counter_xpm_bin_audit_after_bit18_20261008.json`.
+- Changed `matlab/tx_bandpass_if/gen_tid32_thermo5_frontend_bittrue_vectors.m`
+  to add a selectable generator-local fast TID engine while retaining the
+  legacy oracle; fixed-point production models and RTL were not changed.
+  The earlier 32-minute MATLAB attempt record remains unchanged and describes
+  that separate attempt.
+
+## 2026-10-08 13:58 SGT - Current-source licensed package and coverage resumption
+
+- Ran a fresh Rocky licensed package at
+  `runs/thermo5_current_source_dv_resume_20261008/dv_package.json`. Coverage,
+  scoped formal, and historical bug-control jobs all PASS on RTL/DV digest
+  `0e1d0d9040bb4f7aba2905295cf7f117d432a2fdf1b2ebfe38300674ca1089f8`
+  (202 source files). The independent 131075-word/four-plane closure measured
+  raw generic87.49% and XPM80.27%; exact current-source details are in the
+  coverage docs and run directory. Hosted current-source CI remains OPEN.
+- Confirmed the earlier XPM final same-binary record is8/9 FWFT transitions;
+  its earlier isolated experiment-only report was7/9. The remaining
+  `stage1_valid->invalid` transition and XPM reset tuples stay OPEN.
+- Re-audited adjusted-coverage ledger applicability. Raw denominators match,
+  but4,358 project dispositions cite a changed UVM testbench hash and6,124
+  vendor XPM records are unhashed. Adjusted URG is NOT_RECOMPUTED; no old
+  candidate dispositions or exclusions were applied.
+- Attempted one legal bit18 counter stream using
+  `generate_thermo5_sku_vectors.ps1 -Profile range_stress -Words 262150
+  -Seed 610073`. MATLAB remained CPU-active, but the process was stopped at
+  after about32minutes near the agreed30-minute resource cap before producing vectors (launcher exit
+  `MATLAB vector generation failed: -1`). No VCS test ran and no coverage hit
+  is claimed. Exact attempt details are in
+  `runs/thermo5_bit18_20261008/attempt.json`. This is NOT_RUN/OPEN, not a
+  verification failure.
+- Updated `docs/exec-plans/active/execution-frontier.md`,
+  `docs/verification/thermo5-coverage100-assessment.md`, and
+  `docs/verification/thermo5-uvm-coverage.md`, and
+  `docs/verification/thermo5-xpm-exact-followup-20261007.md`; added the
+  reviewed unique-run task in `tools/rocky-bridge.tasks.json`. No production
+  RTL or numerical behavior changed. No commit was created.
+
+## 2026-10-08 12:43 SGT - Modified-source UVM regression and XPM core-first release
+
+- Added an optional core-first release to the common-reset UVM BFM and reset
+  phase test. Both reset requests still assert together. The test now checks
+  for source and PA handshakes throughout the common reset epoch, then checks
+  a 56-word independent four-plane oracle replay.
+- The modified-source generic/XPM frozen regression passed with digest
+  `33a22d92726cd7a5f3c9681ed7687a049eede8fb628ecb86865120209e69b0fe` at
+  `runs/thermo5_frozen_regression_20261008/manifest.json`. The 131075-word
+  same-build closure passed at
+  `runs/thermo5_modified_source_gap_closure_20261008/closure.json`. Final raw
+  DUT scores are87.49% generic and80.29% XPM.
+- The exact condition delta is
+  `runs/thermo5_modified_source_gap_closure_20261008/xpm_coverage_core_first_final/exact_condition_delta.json`.
+  Same-binary URG newly hit wrapper line52 tuple `1/0`; line57 tuple
+  `1/1/0/1` was already covered in the frozen baseline. Line57 tuple
+  `1/1/1/0` and line59 tuples `1/0/1/1`, `1/1/1/0` remain OPEN. The adjusted
+  full-regression score was not recomputed. No RTL or vendor source changed.
+- Corrected stale VHDX/license-blocker descriptions. Rocky and the license
+  server responded; hosted CI for the dirty source remains unrun.
+
+## 2026-10-07 23:38 SGT - Rocky restored; current-source DV blocked by license server
+
+- Changed `tools/rocky-bridge.tasks.json`,
+  `docs/exec-plans/active/execution-frontier.md`, and
+  `docs/verification/thermo5-xpm-exact-followup-20261007.md` to record a
+  source-bound licensed run and a redacted license-health check. No RTL,
+  MATLAB, bit-true oracle or coverage database was changed.
+- The Rocky/XPM preflight passed. The first package attempt used a 1008-word
+  vector where 16387 words were required and stopped before coverage. The
+  corrected unique run `runs/thermo5_current_source_dv_20261007_02/` matched
+  source SHA256 `5257dffafaeddd7eb0b063b8e85faf00c68843927f52c4f2b9d98d4d43a0e979`
+  but both VCS compiles failed with `Cannot connect to the license server`.
+  No current-source VCS/URG/CI PASS was produced. A redacted `lmutil lmstat`
+  check found a configured license variable but no server response.
+- Reviewed parent reset RTL against the XPM missing conditions. Full-chain
+  single-sided resets are outside the common parent reset epoch. A legal
+  core-first release is a candidate test, not a coverage hit or proof.
+  Remaining: restore licensed compile, run exact XPM directed tests and
+  same-source package, preserve raw high-counter misses. Previous raw
+  87.49%/80.27% and adjusted 99.64%/97.08% remain the latest complete run.
+
+## 2026-10-07 22:53 SGT - Current-source CI preflight blocked; exact XPM triage
+
+- Added `docs/verification/thermo5-xpm-exact-followup-20261007.md` and
+  updated `docs/exec-plans/active/{execution-frontier,thermo5-gap-closure}.md`
+  plus `docs/verification/{thermo5-uvm-coverage,thermo5-convergence-20261007}.md`.
+  The latest adjusted
+  XPM remainder is explicitly partitioned: 15 line, 32 condition, 461 toggle
+  directions (448 high DPD counter directions plus 13 other directions), 50
+  branch arms and one FWFT FSM transition. Source-only/core-only reset,
+  stage1-valid reset, collision-window proof and exact vendor mappings are
+  separate OPEN checks; no bulk vendor exclusion was applied.
+- The reviewed `thermo5-xpm-preflight` Rocky bridge command exited 1 before
+  tools: the registered distro's `F:\WSL\Rocky-8.10\ext4.vhdx` is missing and
+  the F: drive is absent. `wsl --list --verbose`, `Get-PSDrive F` and
+  `Test-Path` confirm the environment issue; the failure status is preserved at
+  `runs/thermo5_current_source_ci_preflight_20261007/manifest.json`.
+  No VCS/URG/SpyGlass or GitHub
+  current-source CI result was generated by this attempt; no automatic retry.
+- Checks: inspected exact same-build XPM remaining CSVs, production reset
+  wrapper and UVM test, read-only Vivado 2024.1 XPM source, scoped reset-default
+  and FWFT formal manifests. Fixed-clock half-period proof is limited to the
+  exact 125/218.75-MHz testbench and has not been applied as a URG exclusion.
+  Remaining: restore a licensed Rocky environment,
+  run source-hash-bound DV CI, then measure each exact XPM candidate.
+
+## 2026-10-07 22:45 SGT - Current thermo5 evidence synchronized before CI
+
+- Updated `docs/exec-plans/active/execution-frontier.md` from the completed
+  `runs/thermo5_followup_long_20261007/evidence_index.json` and same-build
+  VCS/URG logs. Both FIFO variants passed an independent 131075-word,
+  four-plane bit-true stream with 74900 accepted AXI beats. Raw coverage is
+  87.49% generic / 80.27% XPM; scoped adjusted coverage is 99.64% / 97.08%.
+  The remaining adjusted directions are 448 generic and 461 XPM toggles;
+  neither raw nor adjusted coverage is 100%.
+- Reason: the active frontier still cited the earlier 65541-word run and
+  older XPM adjusted ledger. This change is documentation only; RTL, MATLAB,
+  UVM behavior, synthesis scripts and constraints were not modified.
+- Checks: read the follow-up evidence index, closure PASS manifest, both
+  131075-word VCS logs (four-plane PASS; zero UVM errors/fatals), independent
+  oracle manifest and adjusted remainder inventory. Current-source licensed
+  CI is the next gate; the previous GitHub PASS belongs to an older commit.
+- Limitations: XPM exact residual bins, high counter bits, scoped formal
+  boundaries, physical RDC/GT/board timing and current-source CI remain OPEN.
+
+## 2026-10-07 13:32 SGT - Actual coverage convergence and scoped proof delivery
+
+- Added thermo5_convergence_harness.sv, run_thermo5_convergence.{py,tcl}, public
+  UVM FIFO reset phase test0..11 and same-source baseline reuse in gap closure.
+  Added tools/hw/thermo5_urg_exclusions.py, thermo5_xpm_bin_review.py; extended
+  thermo5_gap_ledger.py for flat matching-baseline reports and portable paths.
+- Generated MATLAB65541-word range_stress seed610701 oracle without changing
+  arithmetic. Ran VCS fresh20-case baseline and24 legal directed cases PASS;
+  both FIFOs checked four PA planes, all16 lane counts and post-stream reset.
+  TID162 rows hit both directions; bit15/16 add64 directions per FIFO;
+  remaining reachable directions544 ->480. No force/deposit/width/VDB edits.
+- Actual same-binary URG raw87.01 ->87.49 generic,79.96 ->80.26 XPM. Strict
+  native configuration/scoped exclusions give99.63%/96.40%; raw retained.
+  Exact bin/instance/checksum/proof/vendor hashes recorded. Reviewed5845/5990
+  vendor records;145 unreviewed. No blanket vendor/file/hierarchy exclusion.
+- Final scoped formal: DPD19/20 assertions proven, no-saturation/count-zero
+  closed, full identity inconclusive; valid interpolation16/5 PASS; actual
+  XPM residual7/9 PASS; reset2 assertions/4 covers/2 unreachable reentries PASS.
+  All exact finalized source hashes match, no blackboxes/setup violations.
+  Qualified FWFT reset cover remains inconclusive; unqualified initial covers
+  and failed phase12 are excluded. Valid-only interpolation lemma deliberately
+  does not exclude invalid-slot clamp bins.
+- LEC now actually PASS:170869 compare points equivalent, zero fail/abort/
+  unmatched with original mapped netlist/SVF. Updated convergence record,
+  execution-frontier and active closure plan to remove stale running-LEC and
+  generating-oracle instructions. Evidence index under
+  runs/thermo5_converge_long_20261007 links raw/adjusted/remaining artifacts.
+- Checks: actual VCS/URG/formal above; source/binary/vendor/proof/exclusion and
+  counter-delta gates PASS; Python compilation and selected diff checks.
+  Remaining: generic4 line/0 condition/480 toggle/4 branch; XPM26/45/517/60,
+  FWFT transition, full identity formal, current-source CI, physical lint/RDC,
+  ASIC cap/leakage and GT/board boundaries. Full100% is NOT achieved. No new
+  production RTL/MATLAB/synthesis edit; corresponding implementation checks
+  were not repeated for this verification-only change.
+
+## 2026-10-07 12:08 SGT - Execution-plan consolidation and cleanup
+
+- Replaced docs/exec-plans/active/execution-frontier.md with one current
+  status table, authoritative paths, exact live LEC inspection steps,
+  residual limits and next priorities. Deleted obsolete/contradictory status
+  paragraphs, repeated coverage scores and stale license/task assignments
+  from the active frontier.
+- Rewrote active/thermo5-gap-closure.md with remaining DV/DE work and explicit
+  exit gates: LEC, incremental legal counter streams, exact XPM transitions,
+  proof transfer/arithmetic, lint/RDC, cap/leakage, CI and board boundaries.
+- Preserved byte-identical snapshots of the three old plans in inactive/;
+  removed the already-delivered thermo5-dv-closure.md from active/ after
+  archive hash verification. Added inactive/README.md and docs/README.md links.
+- Corrected AGENTS.md migrated P0/IP-smoke paths and stale frozen-thermo5
+  mapping status. Original raw run evidence, RTL/DV/MATLAB, vendor/PDK content
+  and the live Formality process are retained.
+- At12:08SGT actual Formality remains RUNNING in verify; no final PASS claimed.
+  DV CI37462007850 PASS, raw87.48/80.26 and ASIC constraint/GT/board OPEN
+  limits are preserved. Checks: archive hashes, local document links,
+  navigation validation and git diff --check; no implementation rerun is
+  needed for this documentation-only change. Archive hash/local link/migrated
+  command-path checks, navigation validation and git diff --check PASS.
+
+## 2026-10-07 11:25 SGT - Actual restored-feature LEC retry and source gaps
+
+- Launched actual Formality V-2023.12-SP3 equivalence-only run at
+  runs/thermo5_fm_restored_20261007_retry1 using the original DC mapped
+  netlist/SVF. Reference RTL elaborated; implementation netlist is reading.
+  Actual equivalence is RUNNING; no PASS or fresh license failure claimed.
+- Updated execution-frontier.md, thermo5-dv-de-delivery.md and
+  thermo5-coverage-reasons-20261007.md with current execution and concrete
+  unhit source locations, counter thresholds and proof/configuration limits.
+  Corrected stale mapping status and toggle-denominator wording.
+- tools/hw/thermo5_coverage_reason_report.py now preserves actual saved
+  URG statements/conditions/predicates/signals in reasons CSVs, including
+  vendor records without inventing vendor source hashes; audit rerun PASS.
+  Detailed URG FSM extraction additionally reconciles the three missing
+  XPM transitions to the two original aggregate records and hashes reports.
+- Exact reason/hash/denominator audit and Python syntax checks PASS;
+  git diff --check PASS. Raw URG remains87.48/80.26%, no exclusions.
+- Mandatory run_ooc_all_dsm.ps1 -Part xc7z020clg400-1 actually launched;
+  completed reports under syn/reports/ooc_xc7z020clg400_1_20261007_112340.
+  Actual summary12/14PASS; mb_ef2=-0.093ns and mb_mash22=-0.688ns
+  FAIL_TIMING reproduced. Command process exit is not a full timing PASS.
+- Canonical RTL/MATLAB unchanged. Counter544 directions per FIFO, XPM5990
+  vendor/134 proof-transfer records and physical integration remain OPEN.
+- At11:56 SGT actual FM still RUNNING in verify;170869 compare points
+  matched,0 unmatched compare points,26148 SVF commands accepted/0 rejected.
+  No DUT hierarchy paths in blackbox report. Kept process running; final
+  status/failing/aborted reports and provenance manifest await completion.
+
+## 2026-10-07 - Exact missing-bin reasons and restored Formality request
+
+- Added tools/hw/thermo5_coverage_reason_report.py and corresponding
+  verification document. Both FIFO reasons CSVs reconcile every missing
+  line/condition/branch/toggle to original URG denominators and gate hashes.
+  Candidate generic disposition line/cond/branch100%, toggle99.3461%;544
+  reachable directions remain OPEN. Raw87.48/80.26 unchanged; no exclusions.
+- Detailed parameter guards, external taps/history/pair1, identity/average
+  bounds, reset/CDC scope and vendor proof limits. Corrected coefficient-port
+  explanation and URG toggle-denominator note. XPM5990 vendor/134 transfer
+  records remain OPEN, FSM detail aggregate only. Generated bit15..31 legal
+  counter plan with measured simulation extrapolation (~16days for bit31).
+- FM script/runner now supports separate mapped input and fresh outputs,
+  checks DC provenance/library/RTL and mapped artifact hashes, exports
+  blackbox report. Original mapped evidence is preserved.
+- Python compile/help, actual local reason extraction/hash/denominator
+  gates and git diff --check PASS. No canonical RTL/MATLAB change.
+- WSL retest unavailable: sandbox E_ACCESSDENIED; auto-review403 model
+  authorization error prevented escalation execution. User's latest
+  Formality restoration not tested. Actual FM and required FPGA OOC after
+  flow edits remain unrun pending execution-access recovery.
+
+## 2026-10-06 20:22 SGT - Restored-license retest
+
+- Fresh ordinary DC/Formality startup and checkout PASS. Actual frozen
+  ASIC compile_ultra/max2 run is in progress; no mapped or equivalence
+  PASS is claimed before reports exist.
+- Actual GitHub Actions37462007850 at commit a9b0bc6f67f575e9bb98085b1e064f9eddc886f2
+  passes hosted syntax and licensed VCS/UVM/URG, four scoped VC Formal jobs,
+  four fixed/faulty bug controls and SpyGlass. Latest protocol-error reset
+  test passes both FIFOs. Ephemeral runner auto-unregistered.
+- Same-build raw generic87.01->87.48%, XPM79.96->80.26%; no exclusions.
+  Fresh exact ledger/reports copied to runs/thermo5_real_ci_37462007850;
+  no extraction gaps. Formal48 assertions proven across four jobs; raw
+  high counters544 directional records per FIFO remain reachable/unhit.
+  XPM vendor5990 records and134 generic-proof transfer records remain OPEN.
+- Unified logs:12 expected negative controls,3 compiler warnings, zero
+  unexpected checker/assertion diagnostics. SpyGlass39 warnings+4 synthesis
+  warnings, zero errors; physical reset-use review remains OPEN.
+- Updated frontier, DV/DE delivery, coverage, lint review and bug evidence.
+  Fresh normalized-evidence validation and git diff --check PASS.
+  No canonical RTL or MATLAB change in this retest; previous mandatory
+  Windows check results and unrelated FPGA OOC failures are retained.
+
+## 2026-10-06 20:01 SGT - Separate DV/DE delivery and actual CI
+
+Final20:09SGT: Rocky recovered; DC ultra DCSH-1, valid license service
+missing. Modified license-check preloads are not used. ASIC mapping/FM/area
+blocked on valid permitted license. Follow-up CI37460826993 cancelled for
+license failures and licensed CI variable disabled. Required OOC complete
+12/14PASS; mb_ef2=-0.093ns and mb_mash22=-0.688ns FAIL_TIMING. Documentation
+distinguishes last successful commit from later untested protocol-reset fix.
+
+- Added explicit frozen thermo5 ASIC wrapper, dual-domain min/max SDC,
+  DC/SVF and Formality scripts, reproducible hash/exit manifest runner and
+  mapped area/architectural-rate summary. Fixed missing GT boundary sources
+  in ASIC filelist; original configurable tops unchanged.
+- Actual SpyGlass zero errors/blackboxes,39 warnings,4 synthesis warnings;
+  individual review records retain two reset-use RDC items OPEN. Added
+  machine-readable lint summary and exact coverage gap ledger; corrected
+  omitted-cell-close URG parser, recovering24 vendor condition records.
+- Real GitHub Actions37458132897 passed hosted syntax and licensed VCS,
+  same-build URG, four scoped formal jobs, bug controls and SpyGlass on
+  review branch; local evidence copied. Ephemeral runner auto-unregistered.
+- Fresh VCS/XSim bug fixed/faulty controls pass; case-study interview table
+  added. Expanded generic CDC formal7 assertions/9 covers PASS. Legal
+  gain0/max/min closes33 generic toggle directions, raw87.48%; XPM80.25%.
+- Added public-reset check after protocol-error negative control. Initial
+  CI37459008266 failed on an old source transaction crossing reset epoch;
+  corrected stimulus waits for source completion. This change still needs
+  licensed CI retest after Rocky recovery; failure is retained.
+- P0 XSim7/7 and IP smoke PASS; mandatory FPGA OOC reproduces mb_ef2
+  WNS=-0.093ns (not thermo5 ASIC timing). Final OOC row still running.
+- Classic DC mapping runs stopped without netlists; huge flattened mapping
+  made WSL unresponsive. WSL restart returned HCS connection timeout;
+  service restart unavailable to current process. ASIC mapping/FM/area
+  remain OPEN, next attempt compile_ultra/max2 cores. No raw100% claim,
+  no exclusions, no board/real-parent timing claim.
+
+## 2026-10-06 17:59 SGT - Generic residual formal closure
+
+- Replaced the large AXIS payload stability assumption with a constructed
+  registered source and executable stability assertion. Corrected formal
+  clocks to exact integral 7:4 periods; the rounded 4.572-ns clock made an
+  unnecessarily expensive time grid. Added focused `--jobs` diagnosis.
+- `runs/thermo5_coverage100_residual_exact_20261006/` passes four assertions,
+  all nine covers, non-vacuous source stability, zero black boxes and selected
+  setup checks, completing in 47.93 seconds. Earlier inconclusive experiments
+  are retained. Generic residual default is unreachable within this modeled
+  environment. No raw URG exclusion or vendor-XPM/metastability claim.
+- Updated assessment, coverage record, gap plan, formal README and frontier.
+  Raw generic/XPM scores remain 87.47/80.25; arithmetic formal and all
+  previously stated hardware/vendor/high-counter URG limits remain OPEN.
+- The intermediate registered-source run with rounded clocks at
+  `runs/thermo5_coverage100_formal_driver_20261006/` was interrupted after
+  the exact-ratio replacement passed; it has no completed summary and is
+  not PASS evidence. Final syntax, whitespace and exact closure validation pass.
+
+## 2026-10-06 17:52 SGT - Board-free coverage follow-up and 100% assessment
+
+- Extended MATLAB vector generator with optional signed frame gains while
+  preserving defaults. Added `-SaturatingGain`; generated independent legal
+  endpoint/gain and 16,387-word plateau vectors. Required MATLAB P0 check
+  passed seven x 65,536 samples, zero mismatches.
+- Added pre-first-frame quiet-core UVM test and post-long-stream public reset
+  count checks. Gap runner accepts configurable oracle length and gain set.
+  Fresh baseline plus ten directed VCS runs pass; exact validation passes
+  TID 162/162, all sixteen counter bits5:14 both directions and gain branches.
+  Raw matching-build URG: generic 87.00 -> 87.47, XPM 79.96 -> 80.25.
+- Fixed URG audit omission of single-instance shared sections and modules
+  without condition coverage. Added complete denominator/line/branch/FSM/
+  assertion exporter and strict exact-bin validator. Macro header aggregates
+  and expanded dotted lines are counted once; split source pages included.
+- Added unbounded full-width production counter proofs (35 assertions, four
+  covers, zero black boxes). Optional identity/residual experiment is not
+  PASS: identity latency proven but arithmetic inconclusive; residual three
+  assertions prove, six of nine covers hit, remaining covers and assumption
+  vacuity inconclusive. Retain failed experiment; no waivers follow from it.
+- Extended package/Windows launcher flags, validated DRY_RUN and syntax;
+  complete extended package not rerun as one job. GitHub CI not executed.
+  Initial launcher tuple-list mutation failed during DRY_RUN and was fixed
+  before successful validation. Canonical RTL not edited in this follow-up.
+- Updated coverage assessment, portfolio, coverage record, gap plan, formal
+  README and frontier. Raw all-DUT 100% cannot be claimed for this frozen SKU;
+  no exclusions applied. Counter31:15, scoped reset timing, vendor bins,
+  SpyGlass lint signoff, ASIC mapping, GT CDC-11/I/O/RX/physical board remain OPEN.
+
+## 2026-10-06 17:05 SGT - Graduate-DV coverage closure and engineering package
+
+- Changed the interpolation test to arm public PA backpressure from an
+  observed empty-stage1/occupied-stage2+output state at a core falling edge,
+  following 24 accepted beats and an 80-cycle legal source bubble. Fresh
+  generic/XPM VCS tests observe 138/139 target cycles and independently
+  check 32 beats / 56 four-plane MATLAB words. Generic exact line71 bin is
+  newly Covered; XPM baseline already covers it.
+- Added complete URG toggle row export and per-bit expansion in
+  `tools/hw/thermo5_audit_reports.py` and
+  `dv/uvm/sim/run_thermo5_gap_closure.py`. Same-build endpoint+plateau merge
+  hits both directions for all 162 TID gaps per FIFO and counter bits5:10
+  in all 16 lanes. Raw DUT scores: generic 87.00% -> 87.19%, XPM
+  79.96% -> 80.06%; different hierarchy, not comparable to each other.
+- Added `thermo5_gap_harness.sv`, `run_thermo5_gap_fpv.tcl` and
+  `run_thermo5_scoped_formal.py`. Reset scope is runtime falling-edge
+  assertion/release: three proven/non-vacuous assertions, four covered
+  normal scenarios, exact collision cover uncoverable. Counter scope is
+  <=2072 accepted samples/reset epoch: equality, budget and high-zero
+  assertions proven; four acceptance/stall/recovery covers hit; assumptions
+  non-vacuous. Review found missing saturation helper definitions; added
+  production `dpd_poly.v` and a zero-black-box gate before accepting proof.
+- Added Python and Windows/Rocky one-command package, automatic coverage
+  summary and normalized checker/assertion/negative-control diagnostics.
+  Source state, hashes, tool banners, seeds, commands, exit codes and VDBs
+  are recorded. Missing vector/oracle/report/checker or unexpected diagnostic
+  fails the package. Added compiler port-lint diagnostics to thermo5 VCS.
+- Added `.github/workflows/thermo5-dv.yml` for hosted syntax and explicitly
+  enabled trusted licensed CI simulation/formal. GitHub itself was not run;
+  local package execution is the current evidence. Compiler diagnostics are
+  not SpyGlass lint signoff. An optional SpyGlass probe is preserved under
+  `runs/`; its first Tcl command was rejected. Its exploratory default-top
+  run then completed with 3 errors and 49 warnings (missing XPM model and
+  tool memory threshold among the errors), so no frozen-SKU lint PASS is
+  inferred. The package uses VCS lint diagnostics and scoped formal gates.
+- Added `thermo5-dv-portfolio.md` with both requested review tables and
+  updated coverage, counter/reset/TID audits, handoff, UVM/formal READMEs,
+  the active gap plan and frontier. Corrected an accidental literal newline
+  marker in the frontier and Linux formal shell-script CRLF execution issue.
+  Scoped formal uses absolute source paths while keeping its runtime and
+  learned data under the selected `runs/` directory; older root-level
+  learned data was preserved in its originating evidence directory.
+- Checks: fresh complete VCS/URG baseline and directed follow-ups; scoped
+  VC Formal; fixed/faulty historical commit VCS controls; Python compilation
+  and package dry-run. The final package manifest is PASS with zero errors;
+  reset/counter proofs have zero black boxes. CI YAML parsing, Windows
+  launcher PowerShell parsing, and diagnostic negative controls pass (four
+  expected negative lines and one deliberately unexpected BITTRUE fatal are
+  correctly separated). The final real diagnostics contain only three
+  known compile warnings and 12 expected negative-control lines. Scoped
+  `git diff --check` passes. Evidence directory:
+  `runs/thermo5_dv_package_delivery_20261006/`. No canonical RTL or MATLAB
+  arithmetic changed. Raw reset/high-counter coverage, unrestricted counter
+  and asynchronous reset timing, GT CDC-11, real I/O, RX, and physical board
+  remain outside the completed scope.
+
+## 2026-10-06 16:10 SGT - Commit bug evidence and long-stream DV
+
+- Added `dv/uvm/tb/tb_dsm_commit_bug_repro.sv`,
+  `dv/uvm/sim/run_commit_bug_repro.py`, and
+  `docs/verification/commit-bug-case-studies.md`. XSim and VCS each pass two
+  current-RTL cases and detect two isolated historical regressions. Legal
+  AXI-Lite stimulus reproduces stale-rejection contamination and reset
+  cancellation failure during a busy commit; source hashes are in manifests.
+- Extended the thermo5 vector generator with an isolated `range_stress`
+  profile and UVM source/oracle arrays with configurable word counts.
+  MATLAB P0 passes 7/7 with zero mismatches. A fresh generic/XPM frozen VCS
+  regression passes 14 cases and six payload runs; additional 2072-word
+  runs pass all four golden planes and all 16 sample/saturation counters.
+- Added the same-build gap closure runner and legal interpolation timing
+  probes. The exact interpolation schedule is still being retargeted;
+  no condition hit is claimed from failed probes. Focused reset VCS/URG
+  succeeds, but both `1/0` condition bins remain unhit and OPEN.
+- Updated the execution frontier. Remaining limits: URG per-direction
+  toggle review, exact interpolation hit, scoped reset disposition, two
+  GT CDC-11 paths, real parent timing provenance, RX loopback, and absent
+  physical board. No canonical RTL was changed in this follow-up.
+
+## 2026-10-06 - Instance-level thermo5 gap closure started
+
+- Added `docs/exec-plans/active/thermo5-gap-closure.md` and linked it from
+  the execution frontier. The priority is the exact full-chain interpolator
+  condition, both reset-release condition bins, and both GT CDC-11 paths;
+  then DPD branch/counter and TID input-range toggle rows. Each row requires
+  a new instance-level hit, parameter/RTL proof, or an explicit OPEN result.
+  No new coverage or CDC closure is claimed by the plan itself.
+
+## 2026-10-06 - Frozen thermo5 DV traceability, endpoints, and fault detection
+
+- Added `docs/verification/thermo5-frozen-sku-signoff-plan.md` and enhanced
+  `tools/hw/thermo5_audit_reports.py` to inventory instance/source-level
+  condition, branch, toggle, and assertion coverage for generic and XPM
+  separately. Updated `docs/verification/thermo5-uvm-coverage.md`; the
+  remaining reachable/uncertain bins are OPEN, not waived.
+- Added accepted signed-min/max functional bins and an explicit test gate.
+  Fresh licensed VCS runs passed generic seed 606101 and real-XPM seed
+  606102: each observed 32 accepted beats, 56 golden-matched four-plane
+  words, 32 min-hit and 32 max-hit beats, with zero UVM errors/fatals.
+  These one-case VDBs were not merged into the earlier seven-case URG scores.
+- Added the isolated XSim fault-detection runner and documented four
+  compiled/detected mutants in `docs/verification/thermo5-fault-detection.md`:
+  plane swap, PA-stall word drop, early gain, and stale FIFO after reset.
+  Matching clean baselines passed; this is not a VCS-UVM mutation result.
+  Review exposed a soft-error/PASS-marker risk; source/PA scoreboard
+  mismatches now call `uvm_fatal` before incrementing checked counts.
+- Added `dv/uvm/sim/run_thermo5_frozen_regression.py` and
+  `docs/verification/thermo5-regression-handoff.md`. Dry-run and parser
+  checks passed. The default WSL Python 3.6 stopped the first launch before
+  simulation; Rocky Python 3.12 enabled a fresh full licensed PASS. The
+  post-checker-hardening repeat also passed at
+  `runs/thermo5_frozen_regression_hardened_20261006/manifest.json`: 14
+  directed-case results, six independent-payload results, two separate URG
+  merges, all ten commands exit zero, and zero launcher errors. Merged DUT
+  hierarchy scores are 87.00% generic and 79.96% XPM, not comparable across
+  vendor hierarchy. The new per-instance gap inventories remain OPEN where
+  no hit or scoped proof exists.
+
+## 2026-10-06 00:01 +08:00 - Thermo5 reset/CDC evidence inventory
+
+- Added `docs/verification/thermo5-reset-cdc-evidence.md`, mapping the latest
+  routed report's two XPM Gray-pointer CDC-6 rows, both reset-request paths,
+  XPM common-reset propagation, and both GT TX-active CDC-11 rows to exact
+  instances, source, directed checks, and remaining OPEN items.
+- Reran `dv/verif/scripts/run_xsim_xpm_async_fifo_reset.ps1`; XSim exited 0
+  and logged `DSM_XPM_ASYNC_FIFO_RESET_PASS` in
+  `verif/out_xsim_xpm_async_fifo_reset/console_xsim.log`. No RTL, constraint,
+  UVM, waiver, or false-path change was made for this evidence inventory.
+- The parent reset-only GT test remains indirect evidence for the generated
+  reset controller. Its RX comparison was skipped. No CDC/RDC or board-level
+  signoff is claimed.
+
+## 2026-10-05 - Thermo5 DV closure work packages opened
+
+- Added `docs/exec-plans/active/thermo5-dv-closure.md` with five scoped work
+  packages: requirement/test/checker/bin traceability, owned-RTL coverage
+  audit, isolated fault-detection experiments, clock/reset and GT evidence,
+  and reproducible generic/XPM regression handoff. The work is planned and
+  in progress; this entry does not claim new tests or coverage hits.
+- Updated `docs/exec-plans/active/execution-frontier.md` with the next DV
+  action. Read-only baseline review covered the existing thermo5 filelist,
+  seven-case Makefile regression, functional covergroups, scoreboard, and
+  coverage record. The dirty worktree and unrelated user changes were left
+  intact. No RTL, MATLAB, or tool output was changed in this planning step.
+
+## 2026-10-05 22:28 +08:00 - Fresh direct parent route and GT CDC-11 audit
+
+- Generated a new current-source parent `synthesized.dcp` and routed it in
+  `runs/thermo5_parent_cleanroute_20261005_2117/`.  The direct end-of-route
+  report is WNS `+0.264 ns`, WHS `+0.011 ns`, TNS/THS zero and zero failing
+  setup/hold endpoints under provisional OOC I/O budgets.  This is a new
+  direct-route result; it does not erase the earlier direct/reopened-report
+  discrepancy, and the 11-ps hold margin is deliberately recorded as fragile.
+  The synthesis wrapper again ended with a late Vivado feature-license error
+  after writing the checkpoint, so no clean synthesis-wrapper PASS is claimed.
+- Reran parent reset-only XSim in that same output directory.  It passed 64
+  accepted AXI beats to 112 TX words, idle, power-good recovery, TX-active
+  recovery and common-reset recovery.  RX comparison was intentionally
+  skipped; four-lane RX recovery remains open.
+- Audited both remaining CDC-11 paths without a false-path or waiver.  One is
+  the parent `ASYNC_REG` TX-active two-flop synchronizer and is exercised by
+  the directed active-loss/recovery test.  The other is the generated Wizard
+  reset controller's explicit `bit_synchronizer`.  Both remain OPEN pending a
+  supported GT reset/CDC disposition; source-side duplication is unsafe when
+  the TX user clock stops on link loss.  Updated the active frontier and the
+  integration CDC contract.
+
+## 2026-10-05 21:02 +08:00 - Real-XPM UVM and current-source parent reroute
+
+- Used the Windows Vivado 2024.1 XPM sources mounted at
+  `/mnt/d/Xilinx/Vivado/2024.1` in licensed Rocky VCS. Seven thermo5 UVM
+  cases and their URG merge passed; evidence is in
+  `runs/uvm_thermo5_i2_d1_xpm_rerun2_20261005/`. XPM-inclusive score is
+  81.38%; the separate generic regression reports 87.22%, and the hierarchy
+  makes these percentages non-equivalent. Instance-level open bins remain.
+- VCS exposed `ICPD_INIT` single-writer errors on the initialized reset-sync
+  registers. In `rtl/axis/dsm_xpm_async_fifo.sv`, changed only three
+  `always_ff` keywords to clocked `always`; no event control, assignment,
+  reset/data behavior, or fixed-point arithmetic changed. Fresh focused XPM
+  reset XSim, P0 XSim 7/7 (65,536 samples each, zero errors) and IP smoke
+  passed. Source SHA256:
+  `53C6143CA99AC2743A64C9C1CF09B1463EF51262D8FCD82E89362EEE70FA174B`.
+- An independent route of the immediately preceding CDC-fix checkpoint
+  completed at `runs/thermo5_parent_cdcfix_synth_retry_20261005/`: provisional
+  OOC WNS +0.292 ns, WHS +0.012 ns, TNS/THS zero. Prior CDC-7/10 critical
+  rows disappeared, but two GT TX-active CDC-11 critical rows remain OPEN.
+- The new current-source synth wrote
+  `runs/thermo5_parent_cdcfix_vcsfix_20261005_164803/synthesized.dcp`
+  but its wrapper exited 1 due a late Vivado feature-license error; do not
+  label synthesis clean PASS. Route from the **same output directory** opened
+  that DCP and completed with exit 0. The direct end-of-route report gives
+  WNS +0.301 ns/TNS 0 and WHS -0.106 ns/THS -0.106 ns at one short TID
+  hold path; the route checkpoint reopened in a fresh Vivado process gives
+  WNS +0.301 ns, WHS +0.011 ns, TNS/THS 0 and all specified timing met.
+  `phys_opt_design -hold_fix` performed no modification because the reopened
+  analysis was already positive. Both reports are retained; this is a report-
+  state discrepancy, not a claimed physical hold repair.
+- Updated `docs/verification/thermo5-uvm-coverage.md`, the CDC contract and
+  active frontier. Added a reusable Rocky XPM source preflight task, but
+  removed a one-off regression task that hard-coded a used output directory.
+- Added `syn/holdfix_thermo5_qsfp_gt14_parent.{tcl,ps1}` as a reproducible
+  post-route audit/hold-repair flow. On this checkpoint it made no physical
+  modification because the freshly reopened timing state was already positive.
+  Remaining: retain/reproduce the direct-route versus checkpoint-timing
+  discrepancy, inspect critical CDC/RDC, obtain real parent I/O/clock/board
+  data, resolve GT RX comparison and instance-level coverage bins. No board
+  RF output claim.
+
+## 2026-10-05 11:33 +08:00 - Retry licensed VCS environment access
+
+- Retried the reviewed Rocky bridge's read-only `toolchain-doctor` after the
+  user enabled the VCS license. The bridge failed while enumerating WSL
+  distributions (exit code -1), before entering Rocky or invoking VCS.
+- No generic/XPM UVM simulation or URG merge ran; prior coverage scores remain
+  historical and unchanged. The next attempt requires a Codex WSL runtime or
+  a user-opened licensed Rocky terminal.
+
+## 2026-10-05 11:15 +08:00 - CDC fix candidate and rerun availability
+
+- Routed CDC path review located the prior CDC-7/10 critical reset paths at
+  the parent `tx_active` asynchronous-clear use. Added an unverified RTL
+  candidate: synchronize TX-active in the free-running domain for link/reset
+  qualification, preserve raw TX-active only in the immediate PA blanking
+  gate, and synchronize reset release into the health controller.
+- Required validation could not be rerun from this Windows agent: Vivado
+  launchers returned exit 1 with empty stdout. P0 and IP smoke both stopped at
+  `xvlog` before producing logs. WSL enumeration returned
+  `Wsl/EnumerateDistros/Service/E_ACCESSDENIED`. No fresh simulation, synth,
+  routed CDC/STA, VCS VDB, or URG result is claimed for the candidate.
+- The actual SI5341 register table/lock procedure and real parent SoC clock
+  launch/capture delays are not present in the repository. Existing 125-MHz
+  reference and I/O min/max values remain assumptions; no guessed timing was
+  written into the board constraints.
+- Updated the execution frontier and CDC/UVM coverage notes to distinguish
+  the unverified candidate and tool access boundary from measured evidence.
+
+## 2026-10-05 10:40 +08:00 - Parent route/CDC audit and GT RX experiment
+
+- Completed the detached four-GTH parent route at
+  `runs/thermo5_qsfp_parent_route_retry_20261005_0015/`: WNS +0.278 ns,
+  WHS +0.010 ns, TNS/THS 0, and no setup/hold failing endpoints against the
+  currently applied provisional budgets. Utilization is 32,389 LUT logic,
+  7,640 LUTRAM, 48,213 FF, 496 DSP, 6.5 BRAM tiles, four GTH channels.
+  This is not board/system I/O signoff: actual clock sources, package pin
+  locations, and measured I/O min/max delays are still missing.
+- Routed CDC report no longer lists the previous eight XPM reset CDC-1 or two
+  parent CDC-11 rows, but now reports four CDC-10 critical async-clear paths
+  from `gtwiz_userclk_tx_active` to `health_meta_reg[4:7]/CLR` and one CDC-7
+  critical path to `link_ready_q_reg/CLR`. CDC-15, CDC-26 and XPM CDC-6
+  warnings remain open; no blanket waiver was added.
+- GT parent reset-only XSim passes 64 accepted AXI beats / 112 TX words and
+  power-good, TX-active and common-reset recovery. A PMA near-end loopback
+  configuration synthesizes, but full RX comparison times out with no RX
+  frame (`rx_done=1`, `rx_cdr=1`, `rx_clk=0`, data `55...`). Its reset-only
+  diagnostic passes; neither proves RX data recovery or physical deskew.
+- No new UVM/URG database was generated; coverage closure is unchanged.
+- Updated the execution frontier, CDC contract and four-PA contract with the
+  exact pass/fail boundary. `git diff --check` ran; all EDA output stays under
+  the corresponding `runs/` directory. Remaining: CDC-7/10 root-cause work,
+  real parent timing inputs, RX loopback recovery, and UVM coverage closure.
+
+## 2026-10-04 22:12 +08:00 - Reset/CDC, parent I/O and loopback closure attempt
+
+- Synchronized both XPM FIFO reset requests into `wr_clk`; either request now
+  immediately blocks both public FIFO handshakes during synchronization.
+  Remote reset guards asynchronously assert and synchronously release in the
+  opposite clock domain. Added a focused supported-depth XSim for initial,
+  read-only and write-only reset, stale data
+  flush and recovery. Corrected the initial depth-4 test setup to XPM's
+  supported minimum of 16. The focused XSim passes.
+- Updated the four-GT parent health controller to remove its extra
+  `tx_active` status synchronizer fanout; `tx_active` now asynchronously
+  asserts readiness reset/PA blanking and recovery remains freerun-qualified.
+  Added provisional min/max I/O delays to the parent XDC and expanded the
+  parent TB source for three four-lane, 56-word RX loopback comparisons,
+  power-good/TX-active loss, a deliberate mid-frame interruption, common
+  reset and replay. The modified parent TB has not yet run.
+- Added UVM observation/stimulus for the still-open interpolator stage-1
+  empty/downstream-blocked condition and reset-with-enable. The stimulus has
+  not been run; licensed VCS in Rocky WSL fails before compile with
+  `Cannot find license file`. New related URG evidence does not exist.
+- Added a reproducible route-from-synth-checkpoint command, preserving the
+  fresh synthesis evidence while collecting routed timing, utilization, CDC,
+  clock interaction, check_timing, methodology and DRC reports.
+- Verification: raw-64 mid-frame/plane/health-loss XSim, XPM reset XSim,
+  fresh P0 XSim 7/7 and IP smoke PASS. Final parent synth with recovered
+  RX-word min/max delay is running in
+  `runs/thermo5_qsfp_parent_closure_20261004_2216/`; no STA result yet.
+  route, generated-GT RX-loopback simulation, P0 XSim, IP smoke, generic/XPM
+  UVM and URG are pending. No updated parent CDC/RDC or routed STA closure is
+  claimed. The prior eight XPM CDC-1 and two GT CDC-11 rows remain open until
+  a fresh routed checkpoint is audited; the vendor-owned CDC-11 is not waived.
+- Archived the previous long execution frontier at
+  `docs/exec-plans/completed/execution-frontier-archive-20261004.md` and
+  replaced the active frontier with a 100-150-line current-state handoff.
+
+## 2026-10-04 20:07 +08:00 - Route and audit the four-GT parent revision
+
+- Changed `fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv` to keep the
+  continuous TX boundary's readiness in the 218.75-MHz domain and feed the
+  two reset synchronizers from registered GT health. No arithmetic, vector,
+  coefficient or lane-order behavior changed. Updated the parent verification
+  contract and execution frontier with the exact routed evidence.
+- Checks: generated-GT parent XSim PASS (32 AXI beats, 56 four-plane words,
+  post-frame idle/stop/reset); P0 XSim 7/7 PASS; IP smoke PASS. The second
+  parent implementation produced `routed.dcp` and formal internal routed
+  WNS/WHS +0.257/+0.010 ns at 218.75 MHz, TNS/THS zero, four GTH, with
+  40,027 LUT, 48,207 FF, 496 DSP and 6.5 BRAM tiles. Independent read-only
+  DCP audit of methodology, DRC and worst setup/hold paths completed. CDC-1
+  reduced 273 to eight; CDC-10 reduced two to zero.
+- Tool caveat: the route wrapper surfaced a late Vivado feature-license
+  failure despite completed route/reports/checkpoint and a normal Vivado exit
+  marker; the DCP was independently reopened for audit. The eight XPM-reset
+  CDC-1 and two GT-related CDC-11 critical rows remain open. There are 468
+  inputs and six outputs without parent I/O delays, missing AXI/free-run
+  `HD.CLK_SRC`, no dedicated RDC signoff, no proved serial phase alignment,
+  no verified board 125-MHz reference or PA blanking timing. Hardware/RF
+  output is not claimed. The required legacy xc7z020/100-MHz P0 OOC
+  regression completed 12/14 PASS. `p0_ooc_mb_ef2` (-0.093 ns) and
+  `p0_ooc_mb_mash22` (-0.688 ns) fail timing with identical status and
+  slacks in the 2026-09-19 baseline report; this is not a new thermo5
+  GT-parent regression. The complete CSV is
+  `syn/reports/ooc_xc7z020clg400_1_20261004_200739/summary_all.csv`.
+
+## 2026-10-04 15:50 +08:00 - Correct four-GT parent reset crossings and rerun integration
+
+- Changed `rtl/axis/dsm_xpm_async_fifo.sv`,
+  `rtl/axis/dsm_axis14_to_core8_cdc.sv`, and
+  `fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv`: each XPM handshake is
+  gated by its local reset, while the common FIFO reset still spans both
+  domains; GT health is synchronized and stable-qualified before releasing
+  source/core reset. Added explicit asynchronous AXI/free-run/GT clock
+  groups in `syn/run_thermo5_qsfp_gt14_parent.tcl`. No sample arithmetic,
+  coefficients, bit order or golden vectors changed.
+- The first routed parent had WNS -1.336 ns, WHS +0.006 ns; read-only
+  asynchronous-clock re-timing showed WNS +0.293 ns, WHS -0.011 ns. Its CDC
+  report motivated the reset-control changes. Checks after the edits:
+  generated-GT XSim PASS (32 AXI beats / 56 four-plane words), XPM full-chain
+  bit-true PASS, continuous-boundary XSim PASS including link loss, P0 7/7
+  PASS and IP smoke PASS. The GT simulation launcher now checks the PASS
+  marker after Vivado exits because `simulate.log` is buffered in-process.
+- The corrected run `runs/thermo5_qsfp_parent_20261004_141521/` has a
+  synthesized checkpoint with a 4.571-ns GT user clock and four GTH
+  channels; place/route is ongoing. No corrected routed WNS/WHS, final CDC
+  disposition, physical lane phase alignment, programmed 125-MHz board
+  reference, PA blanking calibration or RF output is claimed yet.
+
+## 2026-10-03 23:15 +08:00 - Integrate frozen thermo5 with continuous four-GTH TX boundary
+
+- Added the 14.000-Gb/s/125-MHz four-channel GT Wizard parent and its
+  package-clock/pin constraints, a continuously consumed raw64 four-plane
+  boundary, directed XSim tests, and reproducible GT simulation/OOC scripts.
+  The boundary uses idle `0xAAAA...` words with `pa_enable=0`, detects
+  partial plane-valid, mid-frame gaps, partial-frame stop and stopped
+  residual payload, and permits idle only between 56-word superframes.
+  Added `ASYNC_REG` to the existing two-flop reset synchronizer; no
+  arithmetic, quantization, bit order, or golden vector was changed.
+- Checks: continuous-boundary XSim PASS, including a complete-frame clean
+  stop; generated-GT parent XSim PASS with 32 AXI beats/56 four-plane words,
+  post-frame idle, clean stop, and common-reset recovery. P0 XSim 7/7 PASS;
+  IP smoke PASS. `git diff --check` has no whitespace errors. A parent route
+  attempt is still running; a previous attempt stopped during netlist
+  optimization after Vivado reported loss of its `vivado` license feature.
+- Remaining: no routed parent WNS/WHS, CDC/RDC disposition, full board I/O
+  timing budgets, deterministic four-lane serial phase alignment, calibrated
+  PA blanking, verified SI5341 125-MHz reference, or hardware/RF output.
+  Generated GT IP and behavioral XSim are not physical output signoff.
+
+## 2026-10-03 - Separate digital GT contract from board clock validation
+
+- Changed `docs/exec-plans/active/execution-frontier.md` and
+  `docs/verification/thermo5-integration-cdc-contract.md` to make the ideal
+  125-MHz GT reference clock an explicit digital integration assumption.
+  This unblocks digital verification planning without silently claiming a
+  programmed SI5341 or measured 14.000-Gb/s board output.
+- Checks: reviewed the existing four-lane GT Wizard feasibility probe and
+  frozen thermo5 clock/reset contract. Re-ran
+  `dv/verif/scripts/run_xsim_tid32_thermo5_serdes_loopback.ps1`: PASS, 64
+  input words and 4,096 serial bits on each of four planes. Changed only the
+  testbench coefficient declaration from 64 to 16 bits (the DUT port width
+  for DPD1) to remove an XSim width warning; the identity value is unchanged.
+  No transmitter RTL, MATLAB model or timing constraints changed.
+- Remaining: parent CDC/RDC and routed STA; SI5341 configuration, power
+  repair and physical output measurement are board-level gates.
+
+## 2026-10-03 20:00 +08:00 - Audit four-lane QSFP parent feasibility
+
+- Added read-only Vivado package-pin and GT Wizard feasibility probes;
+  generated projects/logs are isolated under `runs/`. Updated the four-PA
+  serializer contract, integration CDC contract and execution frontier.
+  No transmitter RTL, bit-true arithmetic or frozen clock target changed.
+- Checks: target `xczu15eg-ffvb1156-2-i` package audit confirms four QSFP
+  TX/RX lanes at `GTHE4_CHANNEL_X0Y4..X0Y7` and bank-128 common refclk;
+  schematic pages 8/19/25 show the connector and 156.25-MHz source.
+  Four-channel GT Wizard rejects 14.0 Gb/s / 156.25 MHz, but generates
+  14.0625 / 156.25 and 14.0 / 125 MHz configurations. IP generation is
+  not synthesis, route or STA.
+- Remaining: no verified 125-MHz SI5341 bank-128 output configuration or
+  powered board. The exact-14.0-Gb/s parent, coordinated resets, CDC/RDC,
+  constraints and routed STA cannot yet be signed off. Do not substitute
+  14.0625 Gb/s without a new architecture decision.
+
+## 2026-10-03 15:39 +08:00 - Recompile and merge thermo5 boundary coverage
+
+- Changed `dv/uvm/sim/Makefile` to accept an explicit extra VDB in the
+  thermo5 URG merge and refined `tools/hw/thermo5_audit_reports.py` so the
+  remaining interpolation stage-1 bin stays open. Updated coverage/frontier
+  documents. No DUT RTL, arithmetic, or latency changed.
+- Checks: licensed generic and real-XPM seven-case VCS UVM regressions PASS;
+  independent extreme seed 404 passes 32 source beats/56 words on all four
+  planes in both configurations; both eight-VDB URG merges PASS. Generic
+  overall/condition/toggle 87.20/79.79/84.20%, 69/216 condition bins unhit;
+  XPM 80.16/69.68/81.56%, 74/228 unhit (vendor hierarchy included).
+  Full-chain extreme 576/1,008 XSim passes generic/XPM with 16 DPD lane
+  counters checked; exhaustive DPD1 VCS/XSim, two-tap interval proof,
+  interpolator block reset/stall XSim, MATLAB P0 7/7, GT BERT and ideal
+  serializer loopback pass. Generated reports remain in `runs/`.
+- Remaining: one additional interpolation stage-1-empty condition, full-chain
+  reset-with-enable, other per-instance condition/branch/toggle gaps, parent
+  run-request/reset CDC/RDC, physical GT/board/RF verification. The board
+  power fault is unresolved; no hardware output is claimed.
+
+## 2026-10-03 15:19 +08:00 - Close directed thermo5 boundary stimuli; retain licensing/signoff gates
+
+- Changed `dv/uvm/tests/thermo5/thermo5_sku_corner_tests.svh` to require both
+  empty/backpressured interpolation states after legal AXI bubble/PA-stall
+  phasing. Added a reproducible phase probe, exhaustive DPD1 RTL testbench,
+  independent 16-bit arithmetic and two-tap interval checkers, an optional
+  `extreme` MATLAB vector profile, XSim boundary runners, and corrected
+  migrated GT/serializer runner paths. The ideal serializer test now uses
+  frozen 2-tap/DPD1 rather than a default 4-tap frontend. DUT RTL unchanged.
+- Checks: existing generic/XPM `simv` seed-2 targeted runs PASS and count
+  empty/backpressured states 13/39 and 42/14, respectively; both extreme
+  payload runs PASS 32/56 four-plane bit-true. XSim actual DPD1 pipeline
+  exhausts 196,608 accepted/output complex samples with zero saturation;
+  interpolator reset/bubble, GT BERT, and frozen four-plane ideal serializer
+  loopback XSim PASS. MATLAB P0 7/7 and two arithmetic checkers PASS.
+  Generated evidence stays under `runs/`.
+- Remaining: the new DPD VCS compile attempt failed because no license
+  environment was configured, so the changed UVM source was not recompiled;
+  URG merge failed with `URG-NLC` missing coverage key. No new
+  merged score or fresh instance/bin hit list is claimed. DPD counter bits
+  above bit 17, TID toggle closure, full-chain reset/release bins, parent
+  CDC/RDC/STA and physical four-lane GTH/board output remain open.
+
+## 2026-10-03 - Exercise full-chain bubbles and independent payloads
+
+- Changed thermo5 UVM source items/sequence/driver to insert legal AXI valid
+  gaps, added observation-only interpolator/DPD backpressure probes and a
+  seventh directed full-chain test, and made PA stall percentage configurable.
+  Updated the UVM Makefile, MATLAB-vector launcher output selection, and
+  added `dv/uvm/sim/run_thermo5_payload_matrix.sh`. No DUT RTL, golden model,
+  fixed-point behavior, or interface changed.
+- Checks: generic and real-XPM seven-case VCS regressions PASS with zero UVM
+  errors/fatals (expected negative illegal-frame assertion); both final URG
+  merges PASS sequentially. Generic total/condition 86.97%/78.72%, XPM
+  80.14%/69.83% including vendor hierarchy. The targeted probes hit valid
+  pipeline holds at i1 stage 0/1, i2 stage 1, both outputs, plus existing
+  empty-blocked bubbles; two additional empty/backpressure condition probes
+  remained at zero and were left open. MATLAB R2025a generated
+  independent payloads 101/202/303; all six generic/XPM payload simulations
+  PASS 32 AXI beats/56 four-plane bit-true words. Python audit parser and
+  shell syntax checks pass; output and SHA-256 manifests remain under `runs/`.
+- Remaining: 70 generic condition bins, 248 toggle gap rows, and 20 branch
+  gap rows still need full-chain tests or exact proof; see the per-instance
+  coverage CSV and `docs/verification/thermo5-uvm-coverage.md`. Parent-level
+  request/reset CDC/RDC and GT boundary are not signed off.
+
+## 2026-10-03 - Define thermo5 integration timing contract and inventory CDC/URG bins
+
+- Added `syn/thermo5_integration_contract.tcl`,
+  `tools/hw/thermo5_audit_reports.py`, and
+  `docs/verification/thermo5-integration-cdc-contract.md`; updated the
+  coverage record and execution frontier. No RTL, MATLAB, or golden vectors
+  changed. The Tcl requires explicit parent I/O budgets and does not waive
+  `run_request` or either reset.
+- Reparsed the archived routed Vivado CDC report into 46,427 exact paths:
+  four clock-to-clock XPM synchronizer paths and 46,423 OOC input-port-clock
+  paths. Reparsed generic-FIFO URG into 216 condition bins in 30 DUT
+  instances, with 88 uncovered, plus toggle-signal and branch-instance
+  inventories. Generated CSV is under `runs/`, not committed.
+- Checks: parser completed and counts match the Vivado CDC summary; Tcl
+  contract syntax/control flow ran under `tclsh` with mock Vivado commands;
+  Python syntax and `git diff --check` checked. No new place/route, UVM simulation,
+  parent-level STA, SpyGlass CDC/RDC, or URG merge was run. CDC/RDC and code
+  coverage signoff remain open, especially reset release, core-synchronous
+  request integration, and full-chain reachable bins.
+
+## 2026-10-03 09:19 +08:00 - Run frozen thermo5 UVM with real XPM and audit routed CDC
+
+- Changed `dv/uvm/tb/thermo5_sku_uvm_tb.sv` and `dv/uvm/sim/Makefile` to
+  select generic or vendor XPM FIFO at compile time, with separate run and
+  coverage databases; MATLAB vectors and RTL numerical behavior are unchanged.
+  Added `syn/report_thermo5_cdc.tcl` and updated UVM simulation/status docs.
+- Checks: VCS V-2023.12-SP1 compiled Vivado 2024.1 XPM sources; six-case
+  XPM UVM regression PASS, zero UVM errors/fatals (illegal-frame assertion
+  intentionally expected); XPM URG merge PASS with 100% functional groups
+  and 80.60% overall including vendor internals. The generic-FIFO six-case
+  regression also reran PASS. XSim vendor-XPM seed 10 PASS: 32 input beats,
+  56 four-plane bit-true words, 14 PA stalls.
+- Vivado 2024.1 opened the frozen `thermo5_i2_d1_a1` routed checkpoint and
+  produced CDC/clock-interaction/timing reports. Internal timing remains
+  WNS/WHS +0.316/+0.027 ns. Real source/core clock-pair crossings include
+  XPM Gray-pointer/reset synchronizers, but raw OOC `report_cdc` also emits
+  24,512 CDC-1, 2,578 CDC-13, and 32 CDC-7 critical findings, dominated by
+  unclocked reset/control interface paths. No blanket waiver or CDC/RDC
+  signoff is claimed. The report notes 565 input and 264 output ports without
+  delay constraints; integration-level interface assumptions remain open.
+- Re-read URG source-level red lines and documented configuration-excluded
+  versus still-open categories in `docs/verification/thermo5-uvm-coverage.md`.
+  Per-instance condition/branch/toggle closure and SpyGlass lint/CDC/RDC
+  remain to be done; XPM's overall URG score is not compared numerically
+  against the generic-FIFO score because vendor internals are included.
+
 ## 2026-10-01 20:31 +08:00 - Separate UVM DUT targets and repair migrated vector paths
 
 - Moved 47 unchanged UVM class/package files into target-specific
@@ -1340,3 +2289,119 @@
   smoke passed three held-out seeds with zero raw-word mismatches. Full MATLAB
   and independent full-routed OOC matrices were launched; pending rows remain
   pending rather than inferred from default PPA.
+
+## 2026-10-07 10:44 SGT - Mapped ASIC result and equivalence retest
+
+DC mapped synthesis completed PASS at runs/thermo5_asic_retest_20261006_2016:
+unmapped_cells=0, zero macros/blackboxes, 544463 cells (170605 sequential),
+cell area507779.648216 library units. Actual mapped Verilog/DDC/SDC/SVF and
+reports exist. Original DC source before/after hashes match. Dual-domain
+pre-layout TT setup slack: clk125 +6.79ns, clk218 +1.76ns; reported hold
+minimum rounds to0.00ns, no setup/hold violating paths. check_timing reports
+no missing input delays or unconstrained endpoints in its selected checks.
+Electrical/constraint signoff is NOT PASS: one rd_bin_q[3] max-capacitance
+violation and a zero max_leakage_power target violation remain. High-fanout
+modeling/ideal clocks and assumed parent I/O budgets remain limitations.
+Do not quote library area as square micrometres without the unit basis.
+Architectural ideal limits:1.75G complex input samples/s,7G interpolated
+samples/s,14G code bits/s per plane; these are not measured sustained rates.
+
+Initial Formality failed before verification on unsupported read_verilog -sv.
+Corrected syn/asic/fm_thermo5_frozen.tcl to read_sverilog -r and report_status
+using installed command manuals; canonical RTL is unchanged. Preserved
+fm_shell_initial_option_failure.log and flow_manifest_mapping_initial.json.
+Fresh equivalence-only retest on2026-10-07 fails License Failure(-16):
+Not authorized for feature Formality. No RTL/netlist equivalence result
+exists; latest flow_manifest.json is FAIL for the equivalence-only attempt.
+The restored-license DV CI37462007850 remains PASS at its recorded commit.
+Next: restore permitted Formality feature authorization, rerun equivalence
+against this mapped netlist/SVF, and close the cap/leakage constraint items.
+Do not rerun the completed multi-hour synthesis just for the FM option fix.
+## 2026-10-08 12:48 SGT — bounded XPM FWFT reset attempt
+
+- Changed: added read-only FWFT state/reset observation and a plusarg-gated
+  legal reset-phase target in `dv/uvm/agent/interfaces/thermo5_sku_if.sv`,
+  `dv/uvm/tb/thermo5_sku_uvm_tb.sv`, and
+  `dv/uvm/tests/thermo5/thermo5_sku_corner_tests.svh`.
+- Reason: test whether a legal common public reset can hit the remaining XPM
+  `stage1_valid->invalid` FSM transition without force/deposit.
+- Checks: VCS XPM baseline bittrue PASS (56 words/four planes); directed common
+  reset test PASS after observing `stage1_valid` with `rd_rst_i=0`, then complete
+  56-word/four-plane replay; same-binary URG before/after PASS. Exact transition
+  remained Not Covered (7/9 transitions before and after). Experiment-only
+  total score 72.07% -> 72.24%; not a full regression score.
+- Evidence: `runs/thermo5_xpm_fwft_reset_attempt_20261008/` and exact JSON delta.
+  Frontier and exact-bin follow-up updated. No RTL/vendor source or waiver
+  changed; FWFT target remains OPEN.
+
+## 2026-10-08 12:58 SGT — latest-source frozen regression and exact XPM merge
+
+- Checks: full frozen generic/XPM regression PASS and 131075-word four-plane
+  gap closure PASS after the read-only FWFT observation edit. RTL/DV digest:
+  `0e1d0d9040bb4f7aba2905295cf7f117d432a2fdf1b2ebfe38300674ca1089f8`.
+- Raw generic/XPM DUT scores: 87.49% / 80.27% after closure; final XPM is
+  80.29% after core-first release. Core-first and FWFT-target resets both ran
+  on the new baseline XPM `simv`; no VDB from another binary was merged.
+- Exact same-binary results: wrapper line 52 tuple `1/0` changed Not Covered to
+  Covered; line 57 tuple `1/1/1/0`, line 59 tuples `1/0/1/1` and `1/1/1/0`, and
+  FWFT `stage1_valid->invalid` remain OPEN. FWFT remains 8/9 transitions.
+- Evidence: `runs/thermo5_frozen_regression_fwftmon_20261008/manifest.json`,
+  `runs/thermo5_gap_closure_fwftmon_20261008/closure.json`, and
+  `runs/thermo5_gap_closure_fwftmon_20261008/exact_final_delta.json`.
+  Adjusted score not recomputed; no waiver/exclusion added. Hosted current-source
+  CI remains unrun.
+
+## 2026-10-08 23:00 SGT - Graduate DV closure refresh and bit22 run
+
+- Updated `docs/verification/thermo5-frozen-sku-signoff-plan.md` with the
+  current-source raw/adjusted coverage, scope limits, package digest, and links
+  to the exact bin ledger and four-fault detection record. Added a current
+  status pointer in `dv/uvm/sim/README.md` so historical score tables are not
+  mistaken for the latest result. Updated `execution-frontier.md` with this
+  active experiment.
+- Confirmed the local licensed one-command package report is PASS for current
+  RTL/DV digest `0e1d0d9040bb4f7aba2905295cf7f117d432a2fdf1b2ebfe38300674ca1089f8`
+  (202 source files); this is a dirty-worktree local result, not hosted CI.
+- Generated `runs/thermo5_bit22_oracle_20261008/` for 4,194,309 output words.
+  Before generation, the independent integer model matched all eight files of
+  the 2,097,158-word MATLAB-validated fixture. Generic/XPM VCS full-chain
+  bit22 tests are running on the same-source compiled binaries with seeds
+  610078/610079; their coverage is not credited until scoreboard, reset, and
+  same-binary URG gates pass.
+- Remaining limits: reachable high counter directions above bit22, four
+  generic interpolation line/branch bins, XPM vendor/FWFT bins, and
+  board/GT/system signoff remain open. No exclusions or RTL changes were made.
+
+## 2026-10-08 23:47 SGT - Bit22 generic/XPM closure and report refresh
+
+- Changed: added `tools/hw/thermo5_long_counter_delta.py` to expand same-source
+  URG toggle ranges and require a both-direction hit for all 16 instances of a
+  selected DPD sample-counter bit. Refreshed the frozen-SKU signoff matrix,
+  reachability ledger, DV portfolio, simulation README, and execution frontier.
+- Checks: generic seed610078 and real-XPM seed610079 passed 4,194,309 ordered
+  four-plane words with zero UVM errors/fatals; both passed the public-reset
+  check clearing all16 DPD counters. Same-source URG merges passed. Exact
+  delta audit hit `sample_count[22]` both ways in 16/16 lanes for both FIFO
+  models. Latest raw DUT coverage is generic87.16%, XPM80.12%; no exclusion was
+  added. `python -m py_compile tools/hw/thermo5_long_counter_delta.py` passed.
+- Evidence: `runs/thermo5_bit22_oracle_20261008/`,
+  `runs/thermo5_frozen_regression_fwftmon_20261008/`, and
+  `runs/thermo5_bit22_urg_20261008/`. Adjusted scores remain the reviewed
+  bit21-only view and are not paired with the bit22 raw report.
+- Remaining: bits31:23 (288 reachable directions/FIFO), four generic
+  interpolation line/branch bins, XPM vendor/FWFT residual bins, hosted CI,
+  and system/GT/board signoff remain open. No RTL or testbench behavior changed.
+
+## 2026-10-10 14:27 SGT - Local build-artifact cleanup and Git hygiene
+
+- Added ignore rules for local `runs/`, `syn/out/`, and root `verif/out_xsim_*`
+  products. These paths contain generated databases and experiment outputs;
+  reviewed summaries/reports and rerun scripts remain the shareable record.
+- Inventory identified about 3.2 GiB of re-creatable simulator/project caches
+  and old Vivado outputs. The environment rejected the recursive deletion
+  command, so no local generated files were removed. All run-level reports,
+  MATLAB vectors, routed checkpoints, ASIC netlists/LEC evidence, and the two
+  report sets referenced by `docs/THERMO3_THERMO5_ROUTED_PPA.md` remain intact.
+- Validation: path-scoped cleanup inventory and `git diff --check`; no RTL or
+  testbench behavior changed. A project-wide regression was not rerun because
+  only ignore rules and documentation changed.
