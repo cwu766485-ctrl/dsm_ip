@@ -9,5 +9,6 @@ class thermo5_sku_config extends uvm_object;
   int unsigned pa_stall_percent = 25;
   bit illegal_frame;
   bit expect_pa = 1;
+  bit axil_control;
   function new(string name = "thermo5_sku_config"); super.new(name); endfunction
 endclass

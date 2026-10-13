@@ -18,24 +18,29 @@ module dpd_vector_elastic_buffer #(
   input  wire logic                         rst_n,
   input  wire logic                         in_valid,
   output wire logic                         in_ready,
+  input  wire logic                         in_frame_start,
   input  wire logic signed [LANES*W-1:0]    in_i_vec,
   input  wire logic signed [LANES*W-1:0]    in_q_vec,
   output wire logic                         out_valid,
+  output wire logic                         out_frame_start,
   input  wire logic                         out_ready,
   output wire logic signed [LANES*W-1:0]    out_i_vec,
   output wire logic signed [LANES*W-1:0]    out_q_vec
 );
   logic full;
+  logic frame_start_q;
   logic signed [LANES*W-1:0] data_i, data_q;
 
   assign in_ready = !full || out_ready;
   assign out_valid = full;
+  assign out_frame_start = full && frame_start_q;
   assign out_i_vec = data_i;
   assign out_q_vec = data_q;
 
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       full <= 1'b0;
+      frame_start_q <= 1'b0;
       data_i <= '0;
       data_q <= '0;
     end else if (in_ready) begin
@@ -46,6 +51,7 @@ module dpd_vector_elastic_buffer #(
       // becoming the clock-enable of all 512 payload flops; it now drives
       // only the one-bit full state.
       full <= in_valid;
+      frame_start_q <= in_valid && in_frame_start;
       data_i <= in_i_vec;
       data_q <= in_q_vec;
     end

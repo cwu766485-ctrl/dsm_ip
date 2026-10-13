@@ -11,6 +11,11 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic fifo_full;
   logic core_enable = 0;
   logic underflow, protocol_error;
+  logic cfg_busy, cfg_done, cfg_error;
+  logic [2:0] dpd_active_taps;
+  logic dpd_config_boundary;
+  // Read-only AXI-Lite CDC payload observation for atomic-commit checking.
+  logic [386:0] cfg_mailbox_payload, cfg_pending_payload, cfg_active_payload;
   logic [3:0] pa_valid;
   logic [63:0] pa_data [0:3];
   logic [3:0] pa_ready = 4'hf;

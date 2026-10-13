@@ -49,8 +49,10 @@ module tid32_thermo3_frontend_tx #(
     .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
   ) u_interp_1 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(in_valid), .in_ready(in_ready), .in_i_vec(in_i_vec), .in_q_vec(in_q_vec),
-    .out_valid(i1_valid), .out_ready(i1_ready), .out_i_vec(i1_i), .out_q_vec(i1_q)
+    .in_valid(in_valid), .in_ready(in_ready), .in_frame_start(1'b0),
+    .in_i_vec(in_i_vec), .in_q_vec(in_q_vec),
+    .out_valid(i1_valid), .out_frame_start(), .out_ready(i1_ready),
+    .out_i_vec(i1_i), .out_q_vec(i1_q)
   );
 
   // Register the full first-x2 word before it fans out into the sixteen
@@ -59,8 +61,10 @@ module tid32_thermo3_frontend_tx #(
   // route from becoming a single-cycle DSP input path.
   dpd_vector_elastic_buffer #(.W(W), .LANES(DPD_LANES)) u_interp_to_dpd_elastic (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(i1_valid), .in_ready(i1_ready), .in_i_vec(i1_i), .in_q_vec(i1_q),
-    .out_valid(i1_buf_valid), .out_ready(i1_buf_ready), .out_i_vec(i1_buf_i), .out_q_vec(i1_buf_q)
+    .in_valid(i1_valid), .in_ready(i1_ready), .in_frame_start(1'b0),
+    .in_i_vec(i1_i), .in_q_vec(i1_q),
+    .out_valid(i1_buf_valid), .out_frame_start(), .out_ready(i1_buf_ready),
+    .out_i_vec(i1_buf_i), .out_q_vec(i1_buf_q)
   );
 
   dpd_vector16_memory_poly #(
@@ -76,8 +80,10 @@ module tid32_thermo3_frontend_tx #(
 
   dpd_vector_elastic_buffer #(.W(W), .LANES(DPD_LANES)) u_dpd_to_interp_elastic (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_i_vec(dpd_i), .in_q_vec(dpd_q),
-    .out_valid(dpd_buf_valid), .out_ready(dpd_buf_ready), .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
+    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_frame_start(1'b0),
+    .in_i_vec(dpd_i), .in_q_vec(dpd_q),
+    .out_valid(dpd_buf_valid), .out_frame_start(), .out_ready(dpd_buf_ready),
+    .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
   );
 
   dsm_interp_x2_polyphase_vector #(
@@ -85,8 +91,10 @@ module tid32_thermo3_frontend_tx #(
     .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
   ) u_interp_2 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
-    .out_valid(i2_valid), .out_ready(i2_ready), .out_i_vec(i2_i), .out_q_vec(i2_q)
+    .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_frame_start(1'b0),
+    .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
+    .out_valid(i2_valid), .out_frame_start(), .out_ready(i2_ready),
+    .out_i_vec(i2_i), .out_q_vec(i2_q)
   );
 
   tid32_thermo3_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES), .THRESHOLD(THRESHOLD)) u_tid (

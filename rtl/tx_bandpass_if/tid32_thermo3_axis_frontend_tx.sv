@@ -132,7 +132,8 @@ module tid32_thermo3_axis_frontend_tx #(
     .clk(core_clk), .rst_n(core_aresetn), .enable(gain_enable_q),
     .in_valid(core_valid), .in_ready(core_ready), .in_frame_start(core_frame_start),
     .in_frame_gain(core_frame_gain), .in_i_vec(core_i_vec), .in_q_vec(core_q_vec),
-    .out_valid(gain_valid), .out_ready(gain_ready), .out_i_vec(gain_i_vec), .out_q_vec(gain_q_vec)
+    .out_valid(gain_valid), .out_frame_start(), .out_ready(gain_ready),
+    .out_i_vec(gain_i_vec), .out_q_vec(gain_q_vec)
   );
 
   tid32_thermo3_frontend_tx #(

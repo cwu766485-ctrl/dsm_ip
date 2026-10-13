@@ -56,6 +56,82 @@ def oracle(words):
     return dict(i=i.ravel(),q=q.ravel(),frame_start=frame,frame_gain=np.full(words,16384),
                 **{f'pa{b}':result[:,b] for b in range(4)})
 
+def interpolate_chunk(x, previous_sample):
+    """Interpolate one contiguous chunk while carrying the prior sample."""
+    flat=x.ravel(); previous=np.empty_like(flat)
+    previous[0]=previous_sample; previous[1:]=flat[:-1]
+    acc=(flat+previous)*8192
+    rounded=np.where(acc>=0,(acc+8192)//16384,-((-acc+8192)//16384))
+    result=np.empty(flat.size*2,dtype=np.int64)
+    result[::2]=flat; result[1::2]=np.clip(rounded,-32768,32767)
+    return result.reshape(len(x),-1),int(flat[-1])
+
+def oracle_chunks(words, chunk_words):
+    """Yield exact oracle data chunks with interpolation and DSM state retained."""
+    offsets=np.array([3,1,-1,-3],dtype=np.int64)*7168
+    weights=np.left_shift(np.uint64(1),np.arange(64,dtype=np.uint64))
+    index=np.arange(1,32)
+    ai=np.zeros((4,32,32),dtype=np.int64); aq=ai.copy()
+    vi=np.zeros((4,32),dtype=np.int64); vq=vi.copy()
+    previous_raw_i=previous_raw_q=0
+    previous_interp_i=previous_interp_q=0
+
+    def wrap(x): return (x+65536)%131072-65536
+
+    for start in range(0,words,chunk_words):
+        count=min(chunk_words,words-start)
+        absolute=np.arange(start,start+count)
+        low=((absolute//4)%2)==0
+        i=np.where(low[:,None],-32768,32767)*np.ones((1,8),dtype=np.int64)
+        q=np.where(low[:,None],32767,-32768)*np.ones((1,8),dtype=np.int64)
+        if start==0:
+            i[0]=[-32768,-24000,-1,0,1,12000,24000,32767]
+            q[0]=[32767,24000,1,0,-1,-12000,-24000,-32768]
+
+        i1,previous_raw_i=interpolate_chunk(i,previous_raw_i)
+        q1,previous_raw_q=interpolate_chunk(q,previous_raw_q)
+        xi,previous_interp_i=interpolate_chunk(i1,previous_interp_i)
+        xq,previous_interp_q=interpolate_chunk(q1,previous_interp_q)
+        result=np.empty((count,4),dtype=np.uint64)
+
+        for word in range(count):
+            ni=np.empty_like(ai); nq=np.empty_like(aq)
+            ni[:,:,0]=wrap((np.clip(xi[word][None,:]+offsets[:,None],-32768,32767)+32768)%65536)
+            nq[:,:,0]=wrap((np.clip(xq[word][None,:]+offsets[:,None],-32768,32767)+32768)%65536)
+            ni[:,:,1:]=ai[:,:,:-1]; nq[:,:,1:]=aq[:,:,:-1]
+            ni[:,index,index]=wrap(ai[:,index-1,index-1]+ai[:,index,index-1])
+            nq[:,index,index]=wrap(aq[:,index-1,index-1]+aq[:,index,index-1])
+            vi=wrap(ai[:,:,31]+(vi[:,31]%65536)[:,None])
+            vq=wrap(aq[:,:,31]+(vq[:,31]%65536)[:,None])
+            ai,aq=ni,nq
+
+            yi=vi<0; yq=vq<0
+            yi[:,1:]=yi[:,1:]^yi[:,:-1]; yq[:,1:]=yq[:,1:]^yq[:,:-1]
+            yi[:,1::2]=~yi[:,1::2]; yq[:,::2]=~yq[:,::2]
+            bits=np.empty((4,64),dtype=np.uint64)
+            bits[:,::2]=yi; bits[:,1::2]=yq
+            result[word]=bits@weights
+
+        frame=np.zeros(count,dtype=np.int64)
+        for marker in (0,14,35):
+            if start<=marker<start+count: frame[marker-start]=1
+        yield dict(i=i.ravel(),q=q.ravel(),frame_start=frame,
+                   frame_gain=np.full(count,16384,dtype=np.int64),
+                   **{f'pa{plane}':result[:,plane] for plane in range(4)})
+
+def write_oracle_chunks(words, chunk_words, out):
+    """Stream formatted vectors to disk to cap peak memory for long runs."""
+    for name in NAMES:
+        with (out/f'tid32_thermo5_frontend_{name}.mem').open('w',encoding='ascii',newline='\n'):
+            pass
+    for chunk in oracle_chunks(words,chunk_words):
+        for name,values in chunk.items():
+            width=16 if name.startswith('pa') else 4
+            mask=2**64-1 if width==16 else 65535
+            path=out/f'tid32_thermo5_frontend_{name}.mem'
+            with path.open('a',encoding='ascii',newline='\n') as stream:
+                stream.write(''.join(f'{int(v)&mask:0{width}X}\n' for v in values))
+
 def read(p):return np.array([int(s,16) for s in p.read_text().split()],dtype=np.uint64)
 
 def main():
@@ -63,8 +139,11 @@ def main():
     ap.add_argument('--matlab-fixture',type=Path,required=True)
     ap.add_argument('--words',type=int,required=True)
     ap.add_argument('--out',type=Path,required=True)
+    ap.add_argument('--chunk-words',type=int,default=65536,
+                    help='Maximum output words computed in one in-memory chunk')
     args=ap.parse_args()
     assert args.words>=56 and args.words%7==0
+    assert args.chunk_words>=1
     assert ROOT/'runs' in args.out.resolve().parents and not args.out.exists()
     count=len((args.matlab_fixture/'tid32_thermo5_frontend_pa0.mem').read_text().split())
     validation=oracle(count);hashes={}
@@ -73,13 +152,10 @@ def main():
         assert np.array_equal(validation[name].astype(np.uint64) & (65535 if name in ('i','q') else 2**64-1),read(path)),('MATLAB mismatch',name)
         hashes[path.name]=hashlib.sha256(path.read_bytes()).hexdigest()
     print(f'MATLAB_ALL_EIGHT_FILES_MATCH words={count}',flush=True)
-    vectors=oracle(args.words);args.out.mkdir(parents=True)
-    for name,values in vectors.items():
-        width=16 if name.startswith('pa') else 4
-        mask=2**64-1 if width==16 else 65535
-        (args.out/f'tid32_thermo5_frontend_{name}.mem').write_text(''.join(f'{int(v)&mask:0{width}X}\n' for v in values),newline='\n')
+    args.out.mkdir(parents=True)
+    write_oracle_chunks(args.words,args.chunk_words,args.out)
     sources=[ROOT/'tools/hw/thermo5_range_oracle.py',*[ROOT/'matlab/tx_bandpass_if'/n for n in ('gen_tid32_thermo5_frontend_bittrue_vectors.m','tid_thermo5_pipelined_step.m','tid_pipelined_first_order_step.m')]]
-    manifest={'status':'MATLAB_VALIDATED_INDEPENDENT_INTEGER_ORACLE','words':args.words,'fixture_words':count,'fixture_sha256':hashes,'source_sha256':{p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},'output_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in args.out.glob('*.mem')}}
+    manifest={'status':'MATLAB_VALIDATED_INDEPENDENT_INTEGER_ORACLE','words':args.words,'chunk_words':args.chunk_words,'fixture_words':count,'fixture_sha256':hashes,'source_sha256':{p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sources},'output_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in args.out.glob('*.mem')}}
     (args.out/'oracle_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(f'ORACLE_COMPLETE words={args.words}',flush=True)
 

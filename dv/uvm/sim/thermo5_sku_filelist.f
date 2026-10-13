@@ -1,9 +1,11 @@
 +incdir+dv/uvm/agent/axis
++incdir+dv/uvm/agent/axi_lite_thermo5
 +incdir+dv/uvm/agent/rf
 +incdir+dv/uvm/env/thermo5
 +incdir+dv/uvm/sequences/thermo5
 +incdir+dv/uvm/tests/thermo5
 dv/uvm/agent/interfaces/thermo5_sku_if.sv
+dv/uvm/agent/interfaces/thermo5_axil_if.sv
 rtl/axis/dsm_reset_sync.sv
 rtl/axis/dsm_frame_power_ctrl.sv
 rtl/axis/dsm_async_fifo.sv
@@ -21,5 +23,7 @@ rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv
 rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv
 rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv
 rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv
+rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv
+rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
 dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv
 dv/uvm/tb/thermo5_sku_uvm_tb.sv

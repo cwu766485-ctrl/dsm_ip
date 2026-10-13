@@ -27,15 +27,18 @@ module dsm_frame_gain_vector #(
   input  wire logic signed [LANES*W-1:0]  in_i_vec,
   input  wire logic signed [LANES*W-1:0]  in_q_vec,
   output logic                            out_valid,
+  output logic                            out_frame_start,
   input  wire logic                       out_ready,
   output logic signed [LANES*W-1:0]       out_i_vec,
   output logic signed [LANES*W-1:0]       out_q_vec
 );
   localparam int PROD_W = W + GAIN_W;
   logic                                    s0_valid;
+  logic                                    s0_frame_start;
   logic signed [LANES*W-1:0]               s0_i_vec, s0_q_vec;
   logic signed [GAIN_W-1:0]                s0_gain, active_gain;
   logic                                    s1_valid;
+  logic                                    s1_frame_start;
   logic signed [LANES*PROD_W-1:0]          s1_prod_i, s1_prod_q;
   wire logic s2_ready = !out_valid || out_ready;
   wire logic s1_ready = !s1_valid || s2_ready;
@@ -63,8 +66,11 @@ module dsm_frame_gain_vector #(
   always_ff @(posedge clk) begin : p_gain
     if (!rst_n) begin
       s0_valid <= 1'b0;
+      s0_frame_start <= 1'b0;
       s1_valid <= 1'b0;
+      s1_frame_start <= 1'b0;
       out_valid <= 1'b0;
+      out_frame_start <= 1'b0;
       active_gain <= RESET_GAIN;
       s0_gain <= RESET_GAIN;
       s1_prod_i <= '0;
@@ -73,8 +79,11 @@ module dsm_frame_gain_vector #(
       out_q_vec <= '0;
     end else if (!enable) begin
       s0_valid <= 1'b0;
+      s0_frame_start <= 1'b0;
       s1_valid <= 1'b0;
+      s1_frame_start <= 1'b0;
       out_valid <= 1'b0;
+      out_frame_start <= 1'b0;
       if (!HOLD_STATE_ON_DISABLE) begin
         active_gain <= RESET_GAIN;
         s0_gain <= RESET_GAIN;
@@ -90,6 +99,7 @@ module dsm_frame_gain_vector #(
       // cycle.  The frame contract and arithmetic are otherwise unchanged.
       if (s2_ready) begin
         out_valid <= s1_valid;
+        out_frame_start <= s1_valid && s1_frame_start;
         if (s1_valid) begin
           for (int lane = 0; lane < LANES; lane = lane + 1) begin
             out_i_vec[lane*W +: W] <= round_sat(s1_prod_i[lane*PROD_W +: PROD_W]);
@@ -99,6 +109,7 @@ module dsm_frame_gain_vector #(
       end
       if (s1_ready) begin
         s1_valid <= s0_valid;
+        s1_frame_start <= s0_valid && s0_frame_start;
         if (s0_valid) begin
           for (int lane = 0; lane < LANES; lane = lane + 1) begin
             s1_prod_i[lane*PROD_W +: PROD_W] <=
@@ -110,6 +121,7 @@ module dsm_frame_gain_vector #(
       end
       if (s0_ready) begin
         s0_valid <= in_valid;
+        s0_frame_start <= in_valid && in_frame_start;
         if (in_valid) begin
           s0_i_vec <= in_i_vec;
           s0_q_vec <= in_q_vec;

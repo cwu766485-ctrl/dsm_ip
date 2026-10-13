@@ -5,6 +5,7 @@ class thermo5_sku_env extends uvm_env;
   thermo5_pa_scoreboard scoreboard;
   thermo5_sku_coverage coverage;
   thermo5_control_bfm control;
+  thermo5_axil_agent axil;
   thermo5_sku_config cfg;
   function new(string name, uvm_component parent); super.new(name,parent); endfunction
   function void build_phase(uvm_phase phase);
@@ -17,6 +18,8 @@ class thermo5_sku_env extends uvm_env;
     scoreboard=thermo5_pa_scoreboard::type_id::create("scoreboard",this);
     coverage=thermo5_sku_coverage::type_id::create("coverage",this);
     control=thermo5_control_bfm::type_id::create("control",this);
+    if (cfg.axil_control)
+      axil=thermo5_axil_agent::type_id::create("axil",this);
   endfunction
   function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);

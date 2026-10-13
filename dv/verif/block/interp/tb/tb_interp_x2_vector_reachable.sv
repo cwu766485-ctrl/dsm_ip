@@ -7,6 +7,8 @@ module tb_interp_x2_vector_reachable;
   localparam int N = 12;
   logic clk = 0, rst_n = 0, enable = 1;
   logic in_valid = 0, out_ready = 1;
+  logic in_frame_start = 0;
+  wire out_frame_start;
   logic signed [15:0] in_i_vec = 0, in_q_vec = 0;
   wire in_ready, out_valid;
   wire signed [31:0] out_i_vec, out_q_vec;

@@ -42,6 +42,10 @@ THERMO5_VECTORS := $(ROOT)/runs/uvm_thermo5_i2_d1/vectors
 THERMO5_FILELIST := $(UVM_ROOT)/sim/thermo5_sku_filelist.f
 THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
+THERMO5_USE_AXIL ?= 0
+THERMO5_TOP ?= thermo5_sku_uvm_tb
+THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,)
+THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
 THERMO5_COV_ARGS := $(if $(filter 1,$(THERMO5_COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
@@ -70,7 +74,9 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
 
 .PHONY: help check-tools formal-check-tools vcs vcs-run vcs-run-only regression coverage-merge \
         verdi questa questa-run questa-run-only run clean thermo5-vcs thermo5-vcs-run \
-        thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed
+        thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
+        thermo5-axil-config-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
+        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression
 
 help:
 	@echo "Primary targets:"
@@ -79,6 +85,8 @@ help:
 	@echo "  make regression          Run Python test/seed matrix"
 	@echo "  make coverage-merge      Merge selected VCS coverage databases with URG"
 	@echo "  make thermo5-vcs-run     Compile/run two-clock thermo5/2-tap/DPD1 subsystem"
+	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
+	@echo "  make thermo5-axil-vcs-regression  Run AXI-Lite positive/negative tests and URG merge"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
 	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
@@ -125,12 +133,16 @@ thermo5-vcs:
 	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 MATLAB vectors first"; exit 2; }
 	@mkdir -p $(THERMO5_OUT)
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L \
-		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) \
-		-top thermo5_sku_uvm_tb -Mdir=$(THERMO5_OUT)/csrc \
-		$(THERMO5_COV_ARGS) \
+		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) \
+		-top $(THERMO5_TOP) -Mdir=$(THERMO5_OUT)/csrc \
+		$(THERMO5_COV_ARGS) $(THERMO5_DEBUG_ARGS) \
 		-o $(THERMO5_OUT)/simv -l $(THERMO5_OUT)/compile.log
 
 thermo5-vcs-run: thermo5-vcs thermo5-vcs-run-only
+
+thermo5-axil-config-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test
 
 thermo5-vcs-run-only:
 	@test -x $(THERMO5_OUT)/simv || { echo "ERROR: run thermo5-vcs first"; exit 2; }
@@ -156,6 +168,82 @@ thermo5-vcs-negative:
 		grep -q 'THERMO5_ILLEGAL_FRAME_OBSERVED' $(THERMO5_OUT)/illegal_frame_seed$(UVM_SEED).log; \
 		grep -q 'UVM_FATAL *: *0' $(THERMO5_OUT)/illegal_frame_seed$(UVM_SEED).log; \
 		echo "Expected negative assertion observed (simulator exit $$status)"
+
+# Full AXI-Lite wrapper integration coverage is intentionally a distinct
+# configuration from the frozen parallel-config SKU suite. The positive test
+# covers register/mailbox operation, PA backpressure, bit-true output and reset
+# defaults; the negative test expects the illegal-frame RTL assertion.
+thermo5-axil-vcs-negative:
+	@test -x $(THERMO5_OUT)/simv || { echo "ERROR: run thermo5-vcs with THERMO5_USE_AXIL=1 first"; exit 2; }
+	@set +e; cd $(ROOT) && $(THERMO5_OUT)/simv \
+		+UVM_TESTNAME=thermo5_sku_axil_illegal_frame_test \
+		+VEC_DIR=$(THERMO5_VECTORS) +ntb_random_seed=420102 \
+		$(THERMO5_COV_ARGS) -cm_dir $(THERMO5_OUT)/cov_axil_illegal_frame_seed420102.vdb \
+		-l $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	status=$$?; set -e; \
+	grep -q 'DSM frame_start was not aligned to a 56-sample boundary' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'THERMO5_AXIL_ILLEGAL_FRAME_UVM_PASS' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'UVM_WARNING *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'UVM_ERROR *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'UVM_FATAL *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	echo "Expected AXI-Lite negative assertion observed (simulator exit $$status)"
+
+thermo5-axil-vcs-mailbox-negative:
+	@test -x $(THERMO5_OUT)/simv || { echo "ERROR: run thermo5-vcs with THERMO5_USE_AXIL=1 first"; exit 2; }
+	@set +e; cd $(ROOT) && $(THERMO5_OUT)/simv \
+		+UVM_TESTNAME=thermo5_sku_axil_mailbox_fault_test \
+		+VEC_DIR=$(THERMO5_VECTORS) +ntb_random_seed=420103 \
+		$(THERMO5_COV_ARGS) -cm_dir $(THERMO5_OUT)/cov_axil_mailbox_fault_seed420103.vdb \
+		-l $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	status=$$?; set -e; \
+	grep -q 'thermo5 DPD CDC mailbox changed before acknowledgement' $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	grep -q 'THERMO5_AXIL_MAILBOX_CORRUPTION_OBSERVED' $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	grep -q 'THERMO5_AXIL_MAILBOX_FAULT_UVM_PASS' $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	grep -q 'UVM_WARNING *: *0' $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	grep -q 'UVM_ERROR *: *0' $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	grep -q 'UVM_FATAL *: *0' $(THERMO5_OUT)/axil_mailbox_fault_seed420103.log; \
+	 echo "Expected mailbox fault assertion observed (simulator exit $$status)"
+
+# Parameter guard is deliberately tested in a tiny negative top. It is not a
+# legal runtime configuration and is reported separately from the frozen SKU.
+thermo5-axil-vcs-parameter-guard:
+	@mkdir -p $(THERMO5_OUT)/parameter_guard/csrc
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
+		$(THERMO5_COV_ARGS) -top thermo5_axil_parameter_guard_tb \
+		-Mdir=$(THERMO5_OUT)/parameter_guard/csrc \
+		rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv \
+		dv/uvm/tb/thermo5_axil_parameter_guard_tb.sv \
+		-o $(THERMO5_OUT)/parameter_guard/simv \
+		-l $(THERMO5_OUT)/parameter_guard/compile.log
+	@set +e; cd $(ROOT) && $(THERMO5_OUT)/parameter_guard/simv \
+		$(THERMO5_COV_ARGS) -cm_dir $(THERMO5_OUT)/parameter_guard/guard.vdb \
+		-l $(THERMO5_OUT)/parameter_guard/run.log; \
+	status=$$?; set -e; \
+	count=$$(grep -c 'MAX_TAPS must be in \[1,4\]' $(THERMO5_OUT)/parameter_guard/run.log || true); \
+	test "$$count" = 2; \
+	grep -q 'got 0' $(THERMO5_OUT)/parameter_guard/run.log; \
+	grep -q 'got 5' $(THERMO5_OUT)/parameter_guard/run.log; \
+	grep -q 'THERMO5_AXIL_PARAMETER_GUARD_TEST_COMPLETE' $(THERMO5_OUT)/parameter_guard/run.log; \
+	echo "THERMO5_AXIL_PARAMETER_GUARD_PASS expected_errors=$$count simulator_exit=$$status"
+
+thermo5-axil-vcs-regression:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420101 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test \
+		THERMO5_EXTRA_ARGS=+THERMO5_AXIL_INTERNAL_COVERAGE_PROBE
+	@$(MAKE) --no-print-directory thermo5-axil-vcs-negative THERMO5_USE_AXIL=1
+	@$(MAKE) --no-print-directory thermo5-axil-vcs-mailbox-negative THERMO5_USE_AXIL=1
+	@$(MAKE) --no-print-directory thermo5-axil-vcs-parameter-guard THERMO5_USE_AXIL=1
+	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_config_test_seed420101.vdb \
+		$(THERMO5_OUT)/cov_axil_illegal_frame_seed420102.vdb \
+		$(THERMO5_OUT)/cov_axil_mailbox_fault_seed420103.vdb \
+		-report $(THERMO5_OUT)/coverage -dbname thermo5_axil_merged \
+		> $(THERMO5_OUT)/coverage_merge.log 2>&1
+	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/coverage_merge.log || \
+		{ echo "ERROR: AXI-Lite URG merge failed; inspect coverage_merge.log"; exit 1; }
+	@echo "THERMO5_AXIL_COVERAGE_MERGE_PASS report=$(THERMO5_OUT)/coverage"
 
 thermo5-vcs-regression: thermo5-vcs
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=1 THERMO5_TESTNAME=thermo5_sku_bittrue_test THERMO5_EXTRA_ARGS=+STRESS_PA_READY

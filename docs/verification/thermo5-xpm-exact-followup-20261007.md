@@ -111,3 +111,55 @@ the separate exact same-binary comparison. Adjusted URG was
 NOT_RECOMPUTED: the old candidate ledger denominator matches, but4,358 project
 rows cite a changed testbench source hash and6,124 vendor rows are unhashed.
 No exclusions or prior candidate dispositions were carried forward.
+
+## Public-reset FWFT phase follow-up (2026-10-12)
+
+A fresh XPM UVM binary was compiled from the current source with VCS
+V-2023.12-SP1 and the Vivado 2024.1 XPM simulation models. Using only public
+reset requests and read-only FWFT observation, the same binary ran:
+
+- 16 prefetch-only attempts that waited until `stage1_valid` was observed and
+  then asserted the common public reset at source-clock phases from0 to7.5ns
+  in0.5ns steps;
+- 400 prefetch-only reset-request trials (all 16 source-clock phases times 25
+  core-clock delays); and
+- 48 four-beat-prefix reset trials (four source-clock phases times 12 delays).
+
+All 464 reset trials completed the 56-word four-plane oracle replay with zero
+UVM errors/fatals. A baseline 56-word bit-true run was merged with these VDBs
+using URG from the exact same binary. Report:
+`runs/thermo5_xpm_fwft_phase_sweep_20261012/coverage_all_16phase_reset_sweeps/`.
+`curr_fwft_state` is now 8/9 transitions: the previously missing
+`both_stages_valid -> invalid` reset transition is Covered, but
+`stage1_valid -> invalid` at vendor line1277 remains Not Covered. The isolated
+post-stage1 attempt observed state `2'b10` with `rd_rst_i=0`, but waiting until
+that observation before requesting reset is too late to align the internally
+synchronized reset to the next FWFT edge. Expanding the legal public-reset
+request search over all 16 source phases and 25 core delays did not hit the
+transition either. It remains OPEN; no internal force/deposit or waiver was
+used.
+
+Per-run logs and VDBs are in the same run directory. The next experiment should
+assert the public reset request before the stage1 window and correlate the
+read-only `curr_fwft_state`/`rd_rst_i` values at each core edge. This remains a
+testbench phase-search task, not a claim that the transition is unreachable.
+
+## Edge-aligned observation follow-up (2026-10-12)
+
+The reset-phase UVM test now optionally samples XPM FWFT state and `rd_rst_i`
+before and after each `posedge core_clk` using `+FIFO_RESET_EDGE_OBSERVE`. For a
+prefetch-only attempt, `+FIFO_RESET_WAIT_FWFT_STAGE1` asserts the common public
+reset immediately when `stage1_valid` is observed instead of waiting another
+core edge. The compiled XPM run passed its bit-true baseline and targeted reset
+replay with zero UVM errors/fatals. Its trace observed `stage1_valid` with
+`rd_rst_i=0`, then `stage2_valid`; `rd_rst_i` asserted two core edges later.
+The exact target transition was not hit.
+
+A new 400-point edge-observed public-reset search swept16 source-clock phases
+by25 core delays. All trials passed their four-plane replay and UVM error/fatal
+checks; across the sweep there were 5,464 stage1 edge samples, zero samples
+with stage1 and `rd_rst_i` simultaneously asserted, and zero
+`stage1_valid->invalid` transitions. This is phase-search evidence only, not a
+formal reachability proof or waiver. The transition remains OPEN. Runner,
+summary, and logs are under `runs/thermo5_xpm_fwft_edge_observe_20261012/`;
+runner: `dv/uvm/sim/run_thermo5_xpm_fwft_edge_sweep.sh`.

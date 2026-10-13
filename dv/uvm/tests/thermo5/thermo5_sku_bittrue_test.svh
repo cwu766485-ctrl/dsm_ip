@@ -18,8 +18,13 @@ class thermo5_sku_bittrue_test extends uvm_test;
     if (!uvm_config_db#(virtual thermo5_sku_if)::get(this,"","vif",vif))
       `uvm_fatal("NOVIF","thermo5 test interface is missing")
     cfg=thermo5_sku_config::type_id::create("cfg");
-    if (!$value$plusargs("VEC_DIR=%s",cfg.vector_dir))
+    if (!$value$plusargs("VEC_DIR=%s",cfg.vector_dir)) begin
+`ifdef THERMO5_AXIL_CONTROL
+      cfg.vector_dir="../uvm_thermo5_i2_d1/vectors";
+`else
       `uvm_fatal("NOVEC","Pass +VEC_DIR=<MATLAB vector directory>")
+`endif
+    end
     configure_case();
     uvm_config_db#(thermo5_sku_config)::set(this,"env","cfg",cfg);
     env=thermo5_sku_env::type_id::create("env",this);

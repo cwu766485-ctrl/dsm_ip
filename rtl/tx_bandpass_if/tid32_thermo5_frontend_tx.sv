@@ -43,9 +43,12 @@ module tid32_thermo5_frontend_tx #(
   input  wire logic signed [MAX_TAPS*COEFF_W-1:0]        c5_re, c5_im,
   output wire logic [3:0]                                pa_valid,
   output wire logic [63:0]                               pa_data [0:3],
+  output wire logic                                      dpd_config_boundary,
   input  wire logic [3:0]                                pa_ready
 );
-  logic gain_valid, gain_ready, i1_valid, i1_ready, i1_buf_valid, i1_buf_ready, dpd_valid, dpd_ready, dpd_buf_valid, dpd_buf_ready, i2_valid, i2_ready;
+  logic gain_valid, gain_ready, gain_frame_start;
+  logic i1_valid, i1_ready, i1_frame_start, i1_buf_valid, i1_buf_ready, i1_buf_frame_start;
+  logic dpd_valid, dpd_ready, dpd_buf_valid, dpd_buf_ready, i2_valid, i2_ready;
   logic signed [IN_LANES*W-1:0] gain_i, gain_q;
   logic signed [DPD_LANES*W-1:0] i1_i, i1_q, i1_buf_i, i1_buf_q, dpd_i, dpd_q, dpd_buf_i, dpd_buf_q;
   logic signed [2*DPD_LANES*W-1:0] i2_i, i2_q;
@@ -58,7 +61,8 @@ module tid32_thermo5_frontend_tx #(
     .in_valid(in_valid), .in_ready(in_ready),
     .in_frame_start(in_frame_start), .in_frame_gain(in_frame_gain),
     .in_i_vec(in_i_vec), .in_q_vec(in_q_vec),
-    .out_valid(gain_valid), .out_ready(gain_ready), .out_i_vec(gain_i), .out_q_vec(gain_q)
+    .out_valid(gain_valid), .out_frame_start(gain_frame_start),
+    .out_ready(gain_ready), .out_i_vec(gain_i), .out_q_vec(gain_q)
   );
 
   dsm_interp_x2_polyphase_vector #(
@@ -66,17 +70,25 @@ module tid32_thermo5_frontend_tx #(
     .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
   ) u_interp_1 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(gain_valid), .in_ready(gain_ready), .in_i_vec(gain_i), .in_q_vec(gain_q),
-    .out_valid(i1_valid), .out_ready(i1_ready), .out_i_vec(i1_i), .out_q_vec(i1_q)
+    .in_valid(gain_valid), .in_ready(gain_ready), .in_frame_start(gain_frame_start),
+    .in_i_vec(gain_i), .in_q_vec(gain_q),
+    .out_valid(i1_valid), .out_frame_start(i1_frame_start), .out_ready(i1_ready),
+    .out_i_vec(i1_i), .out_q_vec(i1_q)
   );
 
   // This word-atomic register boundary is also retained in the bypass option
   // so both configurations share the same temporal and timing contract.
   dpd_vector_elastic_buffer #(.W(W), .LANES(DPD_LANES)) u_interp_to_dpd_elastic (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(i1_valid), .in_ready(i1_ready), .in_i_vec(i1_i), .in_q_vec(i1_q),
-    .out_valid(i1_buf_valid), .out_ready(i1_buf_ready), .out_i_vec(i1_buf_i), .out_q_vec(i1_buf_q)
+    .in_valid(i1_valid), .in_ready(i1_ready), .in_frame_start(i1_frame_start),
+    .in_i_vec(i1_i), .in_q_vec(i1_q),
+    .out_valid(i1_buf_valid), .out_frame_start(i1_buf_frame_start), .out_ready(i1_buf_ready),
+    .out_i_vec(i1_buf_i), .out_q_vec(i1_buf_q)
   );
+
+  // The configuration controller commits on the exact DPD input transaction,
+  // after the frame marker has traversed the same elastic path as its data.
+  assign dpd_config_boundary = i1_buf_valid && i1_buf_ready && i1_buf_frame_start;
 
   generate
     if (BYPASS_DPD) begin : g_no_dpd
@@ -100,8 +112,10 @@ module tid32_thermo5_frontend_tx #(
 
   dpd_vector_elastic_buffer #(.W(W), .LANES(DPD_LANES)) u_dpd_to_interp_elastic (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_i_vec(dpd_i), .in_q_vec(dpd_q),
-    .out_valid(dpd_buf_valid), .out_ready(dpd_buf_ready), .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
+    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_frame_start(1'b0),
+    .in_i_vec(dpd_i), .in_q_vec(dpd_q),
+    .out_valid(dpd_buf_valid), .out_frame_start(), .out_ready(dpd_buf_ready),
+    .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
   );
 
   dsm_interp_x2_polyphase_vector #(
@@ -109,8 +123,9 @@ module tid32_thermo5_frontend_tx #(
     .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
   ) u_interp_2 (
     .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
-    .out_valid(i2_valid), .out_ready(i2_ready), .out_i_vec(i2_i), .out_q_vec(i2_q)
+    .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_frame_start(1'b0),
+    .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
+    .out_valid(i2_valid), .out_frame_start(), .out_ready(i2_ready), .out_i_vec(i2_i), .out_q_vec(i2_q)
   );
 
   tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES), .STEP(STEP)) u_tid (

@@ -119,7 +119,7 @@ module tid32_thermo5_axis_frontend_tx #(
     .dpd_active_taps(dpd_active_taps), .c1_re(c1_re[DPD_MAX_TAPS*16-1:0]), .c1_im(c1_im[DPD_MAX_TAPS*16-1:0]),
     .c3_re(c3_re[DPD_MAX_TAPS*16-1:0]), .c3_im(c3_im[DPD_MAX_TAPS*16-1:0]),
     .c5_re(c5_re[DPD_MAX_TAPS*16-1:0]), .c5_im(c5_im[DPD_MAX_TAPS*16-1:0]),
-    .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
+    .pa_valid(pa_valid), .pa_data(pa_data), .dpd_config_boundary(), .pa_ready(pa_ready)
   );
 endmodule
 

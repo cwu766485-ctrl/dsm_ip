@@ -1,5 +1,324 @@
 # Update Log
 
+## 2026-10-13 10:12 SGT - Bit24 URG blocked by missing coverage license
+
+- Generic bit24 URG attempt exited1 with `URG-NLC No license key` and no report;
+  its simulation VDB remains preserved for a later merge. XPM VCS retry seed610707
+  exited255 before test start because the VCS license server could not be
+  reached. Neither is a DUT failure or a coverage hit.
+- Bit24 functionally PASSes generic only; its per-binary URG/lane audit is OPEN.
+  XPM bit24 simulation is OPEN. Previously completed bit23 audits remain PASS.
+- No raw 100% coverage claim or new waiver. Resume only after both VCS and URG
+  license checks succeed in the execution shell.
+
+## 2026-10-13 10:08 SGT - Generic bit24 URG active; XPM blocked by license connection
+
+- Detached XPM seed610707 exited255 with `Cannot connect to the license
+  server` before UVM test start. Its VDB is excluded; this is an EDA
+  environment failure, not an RTL/UVM result. Earlier SIGHUP seed610706 and
+  memory-terminated seed610705 partial VDBs also remain excluded.
+- Started the generic-only same-binary URG merge for seed610704 and the exact
+  bit24/16-lane toggle audit. XPM bit24 remains pending until licensed checkout
+  works from the execution shell. No new bins are waived and code coverage is
+  not100%.
+
+## 2026-10-13 10:04 SGT - XPM bit24 foreground run interrupted; detached retry
+
+- Serial XPM seed610706 received SIGHUP before any UVM completion marker. Its
+  partial VDB is invalid for coverage and remains excluded. Generic seed610704
+  PASS is unaffected.
+- Confirmed an interactive Rocky login shell has VCS license environment
+  available without exposing license values. Added ignored run helpers for a
+  detached `nohup/setsid` seed610707 retry and an exit-status-gated URG
+  finalizer. A fresh VDB avoids mixing with the interrupted attempt.
+- XPM seed610707 and both matching URG audits are pending; raw code coverage
+  remains OPEN and no bins were waived. See
+  `docs/verification/thermo5-bit24-counter-closure-20261012.md`.
+
+## 2026-10-12 22:55 SGT - Generic bit24 long-stream PASS; XPM retry active
+
+- Generic seed610704 completed the16,777,222-word four-plane bit-true stream,
+  checked signed endpoints, and verified all16 DPD lane counters clear after
+  public reset. UVM_ERROR/FATAL=0; source coverage100%, core coverage87.5%; CPU
+  time11512.180s. Generic URG and exact bit24 toggle audit are queued until the
+  matching XPM run completes.
+- Serial real-XPM seed610706 is active using the same oracle and an independent
+  VDB. It must pass the same full-stream and reset checks before its separate
+  URG. The incomplete concurrent seed610705 database remains excluded.
+- Added `docs/verification/thermo5-bit24-counter-closure-20261012.md` and
+  updated the execution frontier. Raw code coverage remains OPEN; bits25-31
+  are reachable and no bins were waived.
+
+## 2026-10-12 19:38 SGT - Bit24 oracle complete; generic/XPM long runs active
+
+- Generated the 16,777,222-word independent integer oracle using the
+  chunked writer. MATLAB fixture comparison, exact record-count checks, and
+  re-computed SHA-256 checks for all eight vector files PASS; manifest is
+  `runs/thermo5_bit24_oracle_20261012/oracle_manifest.json`.
+- Started separate generic seed610704 and real-XPM seed610705
+  `thermo5_sku_long_counter_test` runs using their existing same-binary builds.
+  Each checks all four output planes, signed endpoints and post-stream reset.
+  The two VCS simulations are still active; no bit24 functional or URG PASS is
+  claimed yet. Their VDBs will be merged only with the matching FIFO build.
+- Bit23 remains closed in 16/16 lanes for both directions on both binaries.
+  Bits24-31 and the XPM `stage1_valid->invalid` FWFT transition remain OPEN;
+  no waiver was added. Raw generic/XPM score is still 87.00%/80.17% until a
+  completed, same-binary URG merge produces updated numbers.
+- No RTL behavior changed. Checks completed: MATLAB fixture compare, eight-file
+  length/hash validation, interactive licensed Rocky VCS launch.
+
+## 2026-10-12 19:42 SGT - Serialize bit24 VCS runs after memory pressure
+
+- Observed the concurrent generic/XPM VCS processes each grow to about5.0 GB
+  RSS, leaving only about50 MB WSL MemAvailable and consuming about1.4 GB swap.
+  Sent SIGTERM only to the verified XPM seed610705 process before any PASS
+  marker; its partial log/VDB is not a valid test result and is excluded.
+- Generic seed610704 remains active alone (about5.7 GB RSS); available WSL
+  memory recovered to about5.7 GB. The XPM bit24 run will be retried after the
+  generic run completes. This is resource scheduling only; no source/RTL change.
+
+## 2026-10-12 19:11 SGT - Memory-bounded bit24 oracle generation
+
+- The first 16,777,222-word whole-array oracle attempt was interrupted before
+  creating an output directory when its working set reached8.99 GB. No partial
+  vectors were used by simulation.
+- Updated `tools/hw/thermo5_range_oracle.py` to preserve interpolation history
+  and DSM recursive state across bounded 65,536-word chunks and stream each
+  completed chunk to the ignored `runs/` vector files. The chunk implementation
+  exactly matches the prior oracle for all eight files at 56 and 2,072 words
+  across five chunk-size cases; Python compile and diff checks pass.
+- The bit24 fixture was revalidated (`MATLAB_ALL_EIGHT_FILES_MATCH words=36`)
+  and generation of 16,777,222 words is in progress under
+  `runs/thermo5_bit24_oracle_20261012/`. Generic/XPM VCS has not started; only
+  a completed manifest and output hashes will authorize the long runs.
+
+## 2026-10-12 18:46 SGT - Reset-phase sweep audit
+
+- Checks: same-binary generic seeds610501-610508 and XPM seeds610601-610608
+  passed the full 56-word/four-plane reset-and-replay test for delays1-8;
+  zero UVM errors/fatals. Their VDBs were explicitly merged with the accepted
+  baseline/gain VDBs in `coverage_current_gain_reset_safe/` for each FIFO.
+- Coverage result: no newly closed condition, branch, or toggle rows; raw DUT
+  scores are unchanged at generic87.00% and XPM80.17%. Generic delay9 seed610509
+  hit the early-FIFO-starvation guard and was excluded from the formal merge.
+  The test currently accepts a requested delay up to11, although delay9 is not
+  safe for the four-beat prefix; fix/clarify this test bound before a wider
+  reset-phase sweep.
+- Remaining code-coverage gaps stay open; no waiver was added and no RTL
+  behavior changed. Evidence is under the two bit23 VCS run directories and
+  `docs/verification/thermo5-bit23-counter-closure-20261012.md`.
+
+## 2026-10-12 18:38 SGT - Gain-vector coverage follow-up
+
+- Checks: replayed the existing 56-word `gain_saturation` and
+  `gain_toggle_delivery` MATLAB vector sets on the already-built generic and
+  real-XPM VCS/UVM binaries (seeds610300-610303). All four tests passed the
+  four-plane bit-true oracle with signed-extreme and PA-ready stress enabled;
+  UVM_ERROR/UVM_FATAL were zero.
+- URG: rebuilt the same-binary merges from the explicit approved VDB list plus
+  those four new runs, excluding exploratory XPM seed610192. Latest raw DUT
+  scores are generic87.00% (line87.09, condition76.46, toggle85.46, FSM100,
+  branch73.00, assertion100) and XPM80.17% (line76.99, condition67.89,
+  toggle82.88, FSM90.91, branch62.37, assertion100). This does not close raw
+  code coverage; denominator includes vendor XPM cells only in the XPM result.
+- Remaining: bits24-31 are reachable/open (256 directions per FIFO); exact
+  DPD saturation, parameter-inactive, interpolation/frame-marker, vendor and
+  FWFT gaps need directed hits or item-specific proof/review. No waivers or RTL
+  behavior changes were made.
+- Evidence: `runs/thermo5_bit23_vcs_{generic,xpm}_20261012/` and
+  `docs/verification/thermo5-bit23-counter-closure-20261012.md`.
+
+## 2026-10-12 18:30 SGT - Bit23 closure and edge-observed XPM FWFT search
+
+- Checks: generic seed610080 and real-XPM seed610081 each PASSed 8,388,611
+  four-plane bit-true output words, signed endpoints, public reset of all16
+  DPD counters, and zero UVM errors/fatals. Separate same-binary URG deltas
+  confirm `sample_count[23]` both-direction toggle in all16 lanes for each
+  FIFO. Current full test-set raw DUT scores: generic86.78%, XPM79.98%.
+- Remaining: bits24-31 are 256 reachable toggle directions per FIFO. The
+  current test-set URG is not 100%; no reachable counter bins were waived.
+  Generic interpolation and XPM vendor code bins remain open.
+- FWFT: added optional pre/post-edge observation to the reset-phase UVM test
+  and a reusable 400-point phase/delay search runner. All400 tests passed,
+  sampling5,464 `stage1_valid` edges but zero edges with `rd_rst_i=1` and zero
+  `stage1_valid->invalid` transitions. This is not an unreachability proof;
+  the exact vendor transition remains OPEN with no waiver.
+- Evidence: `runs/thermo5_bit23_vcs_{generic,xpm}_20261012/`,
+  `runs/thermo5_xpm_fwft_edge_observe_20261012/`, and the two verification
+  records/frontier. No RTL or MATLAB behavior changed.
+
+## 2026-10-12 16:49 SGT - Expanded XPM FWFT public-reset phase search
+
+- Extended the same current-source XPM UVM binary's prefetch-only public-reset
+  request grid from four phases to all 16 source phases and all 25 core-delay
+  points (400 trials). Together with 16 post-stage1 trials and 48 full-prefix
+  trials, all 464 reset trials plus the baseline completed their 56-word,
+  four-plane oracle checks with zero UVM errors/fatals.
+- Same-binary URG completed at
+  `runs/thermo5_xpm_fwft_phase_sweep_20261012/coverage_all_16phase_reset_sweeps/`.
+  `curr_fwft_state` remains 8/9 transitions: `both_stages_valid->invalid` is
+  covered, while `stage1_valid->invalid` remains Not Covered and OPEN. No
+  internal force/deposit or waiver was used.
+- Generic bit23 seed610080 and real-XPM bit23 seed610081 remain active in
+  separate VCS processes; neither has reached its PASS/URG closure gate yet.
+- Checks: 464 public-reset phase trials and baseline PASS; expanded same-binary
+  URG completed; no RTL or algorithm changes.
+
+## 2026-10-12 16:40 SGT - Parallel generic/XPM bit23 long-stream launch
+
+- Started the current-source generic long-counter UVM run with seed610080 and
+  the XPM counterpart with seed610081 against the same MATLAB-fixture-validated
+  8,388,611-word oracle set. Each FIFO implementation has a separate compiled
+  VCS binary, output directory and coverage database. Both simulations are
+  still running; no PASS, URG bit23 closure, or cross-binary merge is claimed.
+- Current run outputs: `runs/thermo5_bit23_vcs_generic_20261012/` and
+  `runs/thermo5_bit23_vcs_xpm_20261012/`. Expected wall time is about 100
+  minutes per FIFO based on the prior measured 4.19M-word throughput.
+- Generic source compiled and entered simulation; XPM source compiled and
+  entered simulation. Current VCS process memory remains below the available
+  Rocky WSL memory budget.
+
+## 2026-10-12 16:30 SGT - Coefficient VCS/URG and XPM FWFT reset-phase follow-up
+
+- Re-ran the AXI-Lite coefficient-transport UVM test in the interactive Rocky
+  shell (the VCS license setup is sourced there; a non-interactive launch does
+  not inherit it). Generic seed435509 and Vivado XPM seed435510 both PASS with
+  zero UVM warnings/errors/fatals, exact mailbox/pending/active images, reset
+  defaults, and 56 four-plane bit-true output words. Targeted module URG is
+  line98.12%, condition95.95%, toggle78.49%, branch95.00% for both.
+- Reviewed native coefficient toggle bins: the upper48-bit coefficient slices
+  toggle in both directions, while the low16-bit tap0 slice is Not Covered in
+  `cfg_mailbox_q`, `cfg_pending_core`, `cfg_active_core`, and `cfg_for_dpd`.
+  Legal payload transfer is functionally verified, but full coefficient-toggle
+  coverage stays OPEN; no waiver was added.
+- Recompiled one current-source XPM VCS binary and ran 164 public-reset phase
+  tests plus one bit-true baseline. All complete 56-word four-plane replay with
+  zero UVM errors/fatals. Same-binary URG improved `curr_fwft_state` to8/9:
+  `both_stages_valid->invalid` is Covered; `stage1_valid->invalid` remains
+  Not Covered and OPEN. No internal force/deposit or waiver was used.
+- Generated 8,388,611 bit23 oracle words from a 36-word MATLAB-validated
+  fixture. The generator confirmed all eight fixture files match and wrote a
+  source/output hash manifest. Current-source generic VCS long-counter UVM
+  seed610080 is now running in
+  `runs/thermo5_bit23_vcs_generic_20261012/`; no bit23 PASS or URG closure is
+  claimed yet. The XPM long-stream run is pending the generic run.
+- Documentation updated: execution frontier, AXI-Lite code-coverage record,
+  XPM exact-followup record, and new bit23 closure status.
+- Checks: generic/XPM coefficient VCS-UVM and URG completed PASS as above;
+  164 XPM reset-phase tests and same-binary URG completed; oracle generation
+  fixture validation PASS; generic bit23 compile PASS and simulation is still
+  running. No synthesizable RTL changed.
+
+## 2026-10-12 15:40 SGT - Legal AXI-Lite coverage closure and coefficient CDC exercise
+
+- Closed the reachable AXI-Lite line315 tuple `(cfg_req_sync2,pending,boundary)=(1,0,1)` with legal public RUN/COMMIT stimulus: early BREADY, AW/W gap=1, and 20 AXI clock phases. The tuple was observed in 15/20 runs and the merged URG row is Covered. This brings the passing legal phase/bus matrix to 461 trials; all have zero UVM errors/fatals and 56 bit-true four-plane words. No DUT state was forced.
+- Reviewed the matching-source VC Formal report: line88 tuple `(bvalid,aw_pending||aw_take,w_pending||w_take)=(0,1,1)` is proven unreachable and has one exact reviewed disposition in `docs/evidence/THERMO5_AXIL_COVERAGE_WAIVERS.csv`; raw URG remains unchanged. The distinct line315 `(0,1,1)` proof is inconclusive at depth10 and remains OPEN, with no waiver.
+- Added `AXIL_COEFF_TRANSPORT` UVM mode. Legal AXI writes program nonzero coefficient values in inactive taps 1..3 while preserving the active one-tap identity transfer; the test checks exact mailbox, core-pending, core-active payloads, reset-default restoration, and the 56-word bit-true stream. Generic and XPM Vivado XSim runs passed (seeds 435505/435506), as did the normal AXI-Lite configuration runs (seeds 435507/435508). XSim functional PASS is not a VCS toggle-coverage result.
+- Added the XSim-specific no-DPI `uvm_hdl_release` signature guard and `-CoefficientTransport` replay option. No synthesizable RTL changed.
+- Coefficient transport VCS/URG toggle closure remains OPEN. The current Rocky WSL process has the VCS executable but no `LM_LICENSE_FILE` or `SNPSLMD_LICENSE_FILE`; a compile/run attempt stops at license discovery. Frozen-SKU `sample_count[31:23]` (288 reachable toggle directions/FIFO) and XPM FWFT `stage1_valid->invalid` (last report8/9) remain separate OPEN items, not waived.
+- Evidence: AXI-Lite coverage record, waiver ledger, legal boundary sweep report, and four XSim run directories are listed in `docs/verification/thermo5-axil-code-coverage-closure-20261012.md`.
+- Checks: generic/XPM AXI-Lite UVM in XSim PASS for normal and coefficient-transport modes; matching-source formal report rechecked; VCS run blocked by missing current-shell license environment; PowerShell and Bash script syntax checks PASS; `git diff --check` PASS (Git reports only existing line-ending normalization warnings).
+
+## 2026-10-12 15:05 SGT - AXI-Lite boundary-bin external phase search
+
+- Added a legal public-interface UVM test that phase-sweeps AXI-Lite RUN+COMMIT
+  against accepted DPD frame boundaries. Extended the UVM testbench with
+  optional AXI/source clock phase controls and added reproducible VCS/URG sweep
+  scripts. No DUT state is forced and RTL arithmetic/latency is unchanged.
+- Completed 441 named matrix trials: the initial 186 offset/AW-gap/phase runs,
+  19 RUN-relative commit-delay runs, 16 source-clock phases, 20 early-commit
+  AXI phases, and 200 fine AXI-phase points across offsets 9/10. All completed
+  the 56-word four-plane bit-true check with zero UVM errors/fatals. Seven URG
+  merges still report the line315 `(1,0,1)` target Not Covered.
+- Added RUN-relative commit scheduling and a configurable legal source start
+  point. A legal 16-cycle pause before beat 8 triggered the expected
+  early-FIFO-starvation checker and is not counted as closure evidence.
+- Result: target remains OPEN; no waiver. Finite simulation does not prove
+  unreachability. VCF is available in Rocky WSL; a matching-source integrated
+  proof has not yet been run. The line88 and line315 `(0,1,1)` candidates also
+  remain unwaived pending proof. Coefficient toggle, bits31:23 counter bins,
+  and XPM/FWFT gaps remain separate OPEN items.
+- Evidence is under
+  `runs/thermo5_axil_boundary_phase_generic_20261012/`; focused test and
+  replay scripts are under `dv/uvm/tests/thermo5/` and `dv/uvm/sim/`.
+- Checks: latest VCS compile PASS; phase matrices PASS bit-true; fine-phase
+  URG merge completed but did not cover target; `git diff --check` pending.
+
+## 2026-10-12 12:51 SGT - AXI-Lite exception coverage and checkpoint validation
+
+- Added negative tests for invalid `MAX_TAPS=0/5`, VPI mailbox corruption,
+  illegal frame, coefficient-read helper default, zero-strobe CONTROL/STATUS,
+  and legal AR backpressure behind an outstanding R response. Generic and XPM
+  AXI-Lite targeted VCS/URG runs passed; functional groups are 100%.
+- Latest three-test merged code views are documented separately from the full
+  frozen-SKU regression. `thermo5_dpd_axi_lite_cfg` is line99.38%,
+  condition95.95%, toggle33.50%, branch97.50%; no waivers were applied.
+  Two protocol-invariant candidate tuples remain unproven/unwaived, one
+  request-boundary tuple remains OPEN as reachable, and coefficient toggles
+  remain incomplete.
+- Added a standalone parameter-guard TB and a read-only Vivado checkpoint
+  validator. The 2026-10-12 synthesis emitted a 56,924,304-byte checkpoint and
+  resource report (71,537 LUTs, 52,255 FFs, 1,936 DSP48E2, 334.5 BRAM tiles).
+  Vivado reopened the checkpoint and regenerated utilization. The original
+  wrapper command exited nonzero after checkpoint creation with a feature-load
+  message; routed STA is still OPEN.
+- Checks: generic/XPM AXI-Lite VCS regression targets PASS; parameter-guard
+  negative test PASS; checkpoint open/report PASS; `git diff --check` pending.
+
+## 2026-10-12 11:38 SGT - Licensed VCS and AXI-Lite wrapper status
+
+- Restored Linux VCS V-2023.12-SP1 and ran the AXI-Lite configuration UVM test
+  against generic FIFO (seed 420101) and Vivado XPM FIFO (seed 420102). Both
+  runs PASS with zero UVM warnings/errors/fatals. The log confirms illegal tap
+  rejection, configuration mailbox wait until a DPD frame boundary, legal
+  identity-equivalent two-tap apply, and 56 four-plane bit-true output words.
+  Logs/VDBs are under `runs/thermo5_axil_vcs_generic_20261012/` and
+  `runs/thermo5_axil_vcs_xpm_20261012/`.
+- The first VCS compile found a testbench multi-driver issue: `axil_rst_n` had
+  both a declaration initializer and an `always_ff` reset synchronizer. Removed
+  the initializer so the synchronizer is its sole procedural driver. This was
+  a testbench compile issue, not a DUT functional failure. The first test-local
+  report was `source_cg=100%`, `core_cg=75%`, and `reset_reassertions=0` (the
+  latter is an event counter, not the reset coverpoint). This targeted pass was
+  not complete SKU coverage closure.
+- The latest completed wrapper synthesis remains
+  `runs/thermo5_axil_ooc_full_20261011/`: `synthesized.dcp` plus utilization
+  report for `xczu15eg-ffvb1156-2-i`, 218.75 MHz core, 100 MHz AXI-Lite,
+  INTERP_TAPS=2, DPD_MAX_TAPS=4, XPM FIFO. Resources: 71,537 LUTs, 52,255
+  registers, 1,936 DSPs, and 334.5 BRAM tiles. No routed checkpoint, timing
+  summary, WNS/WHS, or implementation PASS exists for this wrapper yet.
+- A clean full OOC rerun was started in
+  `runs/thermo5_axil_ooc_full_20261012/` but manually stopped during synthesis
+  after host free memory fell to about 0.26 GiB. It produced no new checkpoint
+  or timing result. Re-run implementation when host memory is available.
+  Parent-level I/O timing, CDC/RDC, mailbox bundled-data timing review, and
+  independent reset stress remain OPEN.
+
+## 2026-10-11 - Optional thermo5 AXI-Lite DPD control plane
+
+- Added an optional AXI4-Lite thermo5 wrapper with shadow tap/coefficient
+  registers, COMMIT snapshot, a bundled-data request/ack mailbox CDC, sticky
+  status/W1C, and synchronized run control. The existing parallel-config SKU
+  remains available. Configuration changes apply atomically on the next
+  accepted DPD input vector carrying the frame-start marker.
+- Carried the one-bit frame marker alongside valid data through the frame-gain
+  stages, first x2 interpolation stages, and the DPD input elastic buffer; the
+  payload math and legacy top-level interfaces remain unchanged.
+- Added a reusable AXI-Lite UVM agent/access sequence/configuration test and
+  `dv/uvm/sim/run_thermo5_axil_xsim.ps1`. Fixed the new test's early-exit race
+  so it waits for both source sequence completion and configuration/scoreboard
+  checks. The UVM top releases AXI-Lite reset synchronously in its own clock
+  domain after the common reset assertion.
+- Checks run: Windows XSim P0 regression 7/7 PASS; DSM IP smoke PASS; direct
+  56-word four-plane MATLAB bit-true test PASS for generic and XPM FIFO builds;
+  new Vivado UVM 1.2 test PASS for generic and XPM (seed 101, zero UVM
+  errors/fatals). `git diff --check` PASS.
+- VCS-UVM was initially blocked by unavailable license checkout; the focused
+  AXI-Lite generic/XPM test was later rerun successfully as recorded above.
+  Wrapper synthesis is complete, but implementation has not produced routed
+  WNS/WHS. CDC/RDC analysis, bundled mailbox data timing constraint signoff,
+  and calibrated nonlinear DPD oracle remain OPEN.
+
 ## 2026-10-10 - Remove two unreferenced standalone testbenches
 
 - Removed `dv/verif/block/interp/tb/tb_interp_cic_polyphase_unit.sv` and
@@ -2405,3 +2724,105 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Validation: path-scoped cleanup inventory and `git diff --check`; no RTL or
   testbench behavior changed. A project-wide regression was not rerun because
   only ignore rules and documentation changed.
+
+## 2026-10-12 12:02 SGT - AXI-Lite UVM functional coverage closure
+
+- Changed: expanded `thermo5_sku_axil_config_test` with PA backpressure,
+  post-traffic common-reset/default readback, busy-commit rejection, DONE W1C,
+  all coefficient shadow-register read/write paths, byte strobes, and unmapped
+  address DECERR checks. Added an AXI-Lite illegal-frame negative test and the
+  reusable `thermo5-axil-vcs-regression` Make target. Updated the UVM README and
+  execution frontier.
+- Checks: generic and real-XPM AXI-Lite VCS regression each passed the positive
+  56-word/four-plane MATLAB bit-true test and expected illegal-frame assertion
+  plus reset recovery; zero UVM warnings/errors/fatals. Both same-binary URG
+  merges report 100.00% functional groups. Positive-test counters now report
+  one public reset reassertion and five PA-stall cycles. `git diff --check` was
+  run after edits.
+- Raw code coverage is not 100% and is not represented as such. The AXI-Lite
+  top-level instance reports generic score80.05 (line90.75, condition72.00,
+  toggle74.48, FSM66.67, branch76.39) and XPM score77.16 (line80.07,
+  condition66.38, toggle73.36, FSM78.79, branch64.39); XPM includes vendor
+  hierarchy. The AXI-Lite config-register module line coverage is98.12%; its
+  remaining source lines are a valid-parameter guard, an unreachable default
+  selected by the coefficient-read helper's caller, and the intentional
+  mailbox-corruption error guard. These are not blanket-waived or forced into
+  the legal functional database. Run evidence is under
+  `runs/thermo5_axil_covclose2_generic_20261012/` and
+  `runs/thermo5_axil_covclose2_xpm_20261012/`.
+- Remaining: raw code coverage100% is OPEN; VCS-UVM fault-injection, full frozen
+  SKU code-coverage gaps, CDC/RDC, routed timing for the optional wrapper, and
+  parent/GT/board signoff remain separate tasks.
+
+## 2026-10-12 18:08 SGT - Generic bit23 long-stream coverage closure
+
+- Checks: current-source generic VCS/UVM long-counter test seed610080 PASSed
+  8,388,611 four-plane bit-true output words, signed endpoints, and reset of
+  all16 lane counters; UVM_ERROR/UVM_FATAL=0. Same-binary URG before/after
+  reports and the exact delta helper confirm `sample_count[23]` toggles both
+  directions in all16 generic DPD lanes.
+- XPM seed610081 is still running; no cross-FIFO merge was made. The per-bit
+  audit reports bits24-31 still unhit in this run and open/reachable. Its narrow
+  raw hierarchy percentage is not a full regression result. No bins were
+  waived. Raw code coverage100% remains open.
+- Evidence: `runs/thermo5_bit23_vcs_generic_20261012/` and
+  `docs/verification/thermo5-bit23-counter-closure-20261012.md`.
+
+## 2026-10-12 13:02 SGT - AXI-Lite exception coverage and synthesis retry
+
+- Changed: added directed checks for zero-strobe CONTROL/STATUS writes, legal
+  AR backpressure while R is stalled, the coefficient-read helper default,
+  illegal `MAX_TAPS=0/5` elaborations, and a mailbox-corruption negative test.
+  Updated the coverage ledger, UVM README, execution frontier, and closure
+  record. No URG exclusions were applied.
+- Checks: licensed VCS generic and real-XPM AXI-Lite focused regressions PASS;
+  positive four-plane/56-word bit-true run, illegal-frame and mailbox-fault
+  tests pass with expected RTL error detection; separate invalid-parameter
+  test passes for both bounds. Merged functional covergroups are 100%.
+  `git diff --check` passes (only existing line-ending warnings).
+- Coverage: targeted three-test raw full-hierarchy URG is generic 74.54% and
+  XPM 74.43%. In `thermo5_dpd_axi_lite_cfg`, line/condition/toggle/branch are
+  99.38/95.95/33.50/97.50%. Reachable boundary tuple and coefficient-bank
+  toggles remain open; fixed-parameter and protocol-invariant candidates are
+  not blanket-waived. This is not 100% raw code coverage.
+- Synthesis: repeated optional-wrapper OOC synthesis. Both runs wrote a
+  synthesized checkpoint and utilization report, but the Vivado launcher
+  returned nonzero with `Failed to load feature 'vivado'`. Independent Vivado
+  reopen/report on the retry DCP exited 0. Resources: 71,537 LUTs, 52,255
+  registers, 1,936 DSPs, 334.5 BRAM tiles. No routed checkpoint, WNS/WHS, or
+  parent I/O signoff was produced; launcher exit handling remains open.
+
+## 2026-10-13 10:42 SGT - Generic bit24 URG and XPM bit24 restart
+
+- Checks: the saved generic seed610704 VDB was merged with its same-binary
+  baseline and passing regression VDBs. URG and the exact `sample_count[24]`
+  delta audit completed with exit0; all16 generic `.u_dpd` lane counters show
+  both toggle directions. The merged raw generic hierarchy score is87.01%
+  (line87.09, condition76.46, toggle85.50, FSM100, branch73, assertion100).
+- XPM license: a fresh 56-word bit-true smoke on the existing XPM binary,
+  seed610709, passed with four-plane bit-true output and zero UVM warnings,
+  errors, or fatals. A new detached XPM long run is active with seed610708 and
+  VDB `cov_thermo5_sku_long_counter_test_seed610708.vdb`; an automatic
+  finalizer will run the separate XPM URG merge and 16-lane bit24 audit after
+  the long test completes.
+- Evidence and launch/status scripts are under ignored
+  `runs/thermo5_bit24_oracle_20261012/` and the XPM run directory. Earlier
+  XPM VDBs from seeds610705-610707 remain excluded. Bits25-31 and raw100% code
+  coverage remain open. No RTL, MATLAB arithmetic, or test expectations
+  changed.
+
+## 2026-10-13 10:50 SGT - XPM bit24 local-input restart
+
+- Diagnosis: the first fresh XPM attempt, seed610708, was blocked in WSL
+  `p9_client_rpc` while streaming 2.5 GB of vectors from `/mnt/e`; after47 CPU
+  seconds it was stopped (exit255), and its partial VDB is explicitly
+  excluded. No functional failure was observed.
+- Change/check: copied the eight unchanged oracle `.mem` inputs to
+  `/tmp/thermo5_bit24_xpm_610710/vectors` on WSL ext4 and started seed610710
+  with a new VDB. The simulator entered `thermo5_sku_long_counter_test`; the
+  process was runnable with CPU time advancing, unlike the prior 9P-bound
+  attempt. The detached finalizer will run XPM-only URG and the exact 16-lane
+  bit24 toggle audit on a passing long stream.
+- Remaining: seed610710 long-stream, URG, and per-lane audit are pending. No
+  XPM bit24 PASS or overall100% raw coverage is claimed. The earlier short
+  XPM smoke seed610709 and generic bit24 URG/audit remain PASS.

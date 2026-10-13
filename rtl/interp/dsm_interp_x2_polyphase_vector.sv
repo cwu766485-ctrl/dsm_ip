@@ -33,9 +33,11 @@ module dsm_interp_x2_polyphase_vector #(
   input  wire logic                             enable,
   input  wire logic                             in_valid,
   output wire logic                             in_ready,
+  input  wire logic                             in_frame_start,
   input  wire logic signed [LANES_IN*W-1:0]     in_i_vec,
   input  wire logic signed [LANES_IN*W-1:0]     in_q_vec,
   output logic                                  out_valid,
+  output logic                                  out_frame_start,
   input  wire logic                             out_ready,
   output logic signed [2*LANES_IN*W-1:0]       out_i_vec,
   output logic signed [2*LANES_IN*W-1:0]       out_q_vec
@@ -58,6 +60,7 @@ module dsm_interp_x2_polyphase_vector #(
   logic signed [ACC_W-1:0] s1_prod_i [0:LANES_IN-1][0:INTERP_TAPS-1];
   logic signed [ACC_W-1:0] s1_prod_q [0:LANES_IN-1][0:INTERP_TAPS-1];
   logic s2_valid;
+  logic s0_frame_start, s1_frame_start, s2_frame_start;
   logic signed [LANES_IN*W-1:0] s2_phase0_i, s2_phase0_q;
   // Keep the accumulation width identical to the legacy procedural
   // accumulator.  The new register changes latency only, not arithmetic.
@@ -102,6 +105,10 @@ module dsm_interp_x2_polyphase_vector #(
       s1_valid_lane <= '0;
       s2_valid <= 1'b0;
       out_valid <= 1'b0;
+      s0_frame_start <= 1'b0;
+      s1_frame_start <= 1'b0;
+      s2_frame_start <= 1'b0;
+      out_frame_start <= 1'b0;
       out_i_vec <= '0;
       out_q_vec <= '0;
       for (int h = 0; h < HISTORY; h = h + 1) begin
@@ -113,6 +120,10 @@ module dsm_interp_x2_polyphase_vector #(
       s1_valid_lane <= '0;
       s2_valid <= 1'b0;
       out_valid <= 1'b0;
+      s0_frame_start <= 1'b0;
+      s1_frame_start <= 1'b0;
+      s2_frame_start <= 1'b0;
+      out_frame_start <= 1'b0;
       if (!HOLD_STATE_ON_DISABLE) begin
         out_i_vec <= '0;
         out_q_vec <= '0;
@@ -124,6 +135,7 @@ module dsm_interp_x2_polyphase_vector #(
     end else begin
       if (s3_ready) begin
         out_valid <= s2_valid;
+        out_frame_start <= s2_valid && s2_frame_start;
         // The output payload is deliberately written even for an invalid
         // elastic slot.  It is ignored whenever out_valid is low, while this
         // prevents word_valid from becoming a high-fanout CE on every output
@@ -138,6 +150,7 @@ module dsm_interp_x2_polyphase_vector #(
 
       if (s2_ready) begin
         s2_valid <= s1_valid;
+        s2_frame_start <= s1_valid && s1_frame_start;
         // Register the legacy ACC_W sum before rounding/saturation.  Payload
         // writes are unconditional so s1_valid cannot become a large CE net.
         for (int lane = 0; lane < LANES_IN; lane = lane + 1) begin
@@ -156,6 +169,7 @@ module dsm_interp_x2_polyphase_vector #(
 
       if (s1_ready) begin
         s1_valid_lane <= s0_valid_lane;
+        s1_frame_start <= s0_valid && s0_frame_start;
         // As above, invalid payload values are don't-care.  Updating these
         // product registers unconditionally removes the global valid signal
         // from the inferred DSP CEA pins; only the small valid pipeline
@@ -197,6 +211,7 @@ module dsm_interp_x2_polyphase_vector #(
 
       if (s0_ready) begin
         s0_valid_lane <= {LANES_IN{in_valid}};
+        s0_frame_start <= in_valid && in_frame_start;
         // Capture payload whenever the elastic slot advances.  If in_valid is
         // low it is unreachable at the output because s0_valid_lane is zero;
         // the recursive history remains protected below and is updated only

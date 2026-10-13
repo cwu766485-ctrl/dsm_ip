@@ -9,10 +9,59 @@ module thermo5_sku_uvm_tb;
   localparam bit USE_XPM_FIFO = 1'b0;
 `endif
   logic src_clk=0, core_clk=0;
-  always #4 src_clk=~src_clk;
+  logic axil_clk=0;
+  logic axil_rst_n;
+  initial begin
+    int unsigned source_phase_ps;
+    source_phase_ps=0;
+    void'($value$plusargs("SOURCE_CLOCK_PHASE_PS=%d",source_phase_ps));
+    if (source_phase_ps>=8000) $fatal(1,"SOURCE_CLOCK_PHASE_PS must be in [0,7999]");
+    #(source_phase_ps * 1ps);
+    forever #4 src_clk=~src_clk;
+  end
   always #2.286 core_clk=~core_clk;
+  initial begin
+    int unsigned axil_phase_ps;
+    axil_phase_ps=0;
+    void'($value$plusargs("AXIL_CLOCK_PHASE_PS=%d",axil_phase_ps));
+    if (axil_phase_ps>=10000) $fatal(1,"AXIL_CLOCK_PHASE_PS must be in [0,9999]");
+    #(axil_phase_ps * 1ps);
+    forever #5 axil_clk=~axil_clk;
+  end
+  // Share the common reset assertion epoch, but release AXI-Lite reset
+  // synchronously to its own clock domain.
+  always_ff @(posedge axil_clk or negedge bus.core_rst_n) begin
+    if (!bus.core_rst_n) axil_rst_n <= 1'b0;
+    else axil_rst_n <= 1'b1;
+  end
   thermo5_sku_if bus(src_clk,core_clk);
+  thermo5_axil_if axil_bus(axil_clk,axil_rst_n);
   logic [15:0] identity_c1 = 16'd16384;
+`ifdef THERMO5_AXIL_CONTROL
+  tid32_thermo5_axi_lite_axis_frontend_tx #(
+    .INTERP_TAPS(2),.DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+  ) dut (
+    .s_axil_aclk(axil_clk),.s_axil_aresetn(axil_rst_n),
+    .s_axil_awaddr(axil_bus.awaddr),.s_axil_awvalid(axil_bus.awvalid),.s_axil_awready(axil_bus.awready),
+    .s_axil_wdata(axil_bus.wdata),.s_axil_wstrb(axil_bus.wstrb),.s_axil_wvalid(axil_bus.wvalid),.s_axil_wready(axil_bus.wready),
+    .s_axil_bresp(axil_bus.bresp),.s_axil_bvalid(axil_bus.bvalid),.s_axil_bready(axil_bus.bready),
+    .s_axil_araddr(axil_bus.araddr),.s_axil_arvalid(axil_bus.arvalid),.s_axil_arready(axil_bus.arready),
+    .s_axil_rdata(axil_bus.rdata),.s_axil_rresp(axil_bus.rresp),.s_axil_rvalid(axil_bus.rvalid),.s_axil_rready(axil_bus.rready),
+    .s_axis_aclk(src_clk),.s_axis_aresetn(bus.src_rst_n),
+    .s_axis_tvalid(bus.src_valid),.s_axis_tready(bus.src_ready),
+    .s_axis_i_vec(bus.src_i),.s_axis_q_vec(bus.src_q),
+    .s_axis_tuser_frame_start(bus.frame_start),.s_axis_tuser_frame_gain(bus.frame_gain),
+    .s_axis_fifo_full(bus.fifo_full),.core_clk(core_clk),.core_aresetn(bus.core_rst_n),
+    .core_underflow(bus.underflow),.core_protocol_error(bus.protocol_error),
+    .pa_valid(bus.pa_valid),.pa_data(bus.pa_data),.pa_ready(bus.pa_ready),
+    .cfg_busy(bus.cfg_busy),.cfg_done(bus.cfg_done),.cfg_error(bus.cfg_error)
+  );
+  assign bus.dpd_active_taps=dut.dpd_active_taps;
+  assign bus.dpd_config_boundary=dut.dpd_config_boundary;
+  assign bus.cfg_mailbox_payload=dut.u_cfg.cfg_mailbox_q;
+  assign bus.cfg_pending_payload=dut.u_cfg.cfg_pending_core;
+  assign bus.cfg_active_payload=dut.u_cfg.cfg_active_core;
+`else
   tid32_thermo5_axis_frontend_tx #(
     .INTERP_TAPS(2),.DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
@@ -27,6 +76,26 @@ module thermo5_sku_uvm_tb;
     .c3_re(64'd0),.c3_im(64'd0),.c5_re(64'd0),.c5_im(64'd0),
     .pa_valid(bus.pa_valid),.pa_data(bus.pa_data),.pa_ready(bus.pa_ready)
   );
+  assign bus.cfg_busy=1'b0;
+  assign bus.cfg_done=1'b0;
+  assign bus.cfg_error=1'b0;
+  assign bus.dpd_active_taps=3'd1;
+  assign bus.dpd_config_boundary=1'b0;
+  assign bus.cfg_mailbox_payload='0;
+  assign bus.cfg_pending_payload='0;
+  assign bus.cfg_active_payload='0;
+`endif
+`ifdef THERMO5_AXIL_CONTROL
+  int unsigned axil_phase_trace_cycle = 0;
+  always @(posedge core_clk) begin
+    axil_phase_trace_cycle <= axil_phase_trace_cycle + 1;
+    if ($test$plusargs("THERMO5_AXIL_PHASE_TRACE") &&
+        (dut.u_cfg.cfg_req_sync2 || dut.u_cfg.cfg_pending_valid || bus.dpd_config_boundary))
+      $display("THERMO5_AXIL_PHASE_TRACE t=%0t cycle=%0d req_sync2=%b pending=%b boundary=%b",
+        $time,axil_phase_trace_cycle,dut.u_cfg.cfg_req_sync2,
+        dut.u_cfg.cfg_pending_valid,bus.dpd_config_boundary);
+  end
+`endif
   // Verification-only observation point for reset-state closure.
   for(genvar lane=0;lane<16;lane++) begin : g_dpd_observe
     assign bus.dpd_sample_count[lane]=dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[lane].u_dpd.sample_count;
@@ -69,7 +138,24 @@ module thermo5_sku_uvm_tb;
   initial begin
     string testname;
     uvm_config_db#(virtual thermo5_sku_if)::set(null,"uvm_test_top*","vif",bus);
-    if (!$value$plusargs("UVM_TESTNAME=%s",testname)) testname="thermo5_sku_bittrue_test";
+`ifdef THERMO5_AXIL_CONTROL
+    uvm_config_db#(virtual thermo5_axil_if)::set(null,"uvm_test_top.env.axil.*","vif",axil_bus);
+    // The helper's default arm is defensive: normal register decode must
+    // reject these addresses before calling coeff_read_word().  An opt-in
+    // unit probe records that arm without corrupting internal mailbox state.
+    if ($test$plusargs("THERMO5_AXIL_INTERNAL_COVERAGE_PROBE")) begin
+      if (dut.u_cfg.coeff_read_word(8'h40) !== 32'd0)
+        $fatal(1,"AXI-Lite coefficient read helper default arm returned nonzero");
+      $display("THERMO5_AXIL_HELPER_DEFAULT_PROBE_PASS");
+    end
+`endif
+    if (!$value$plusargs("UVM_TESTNAME=%s",testname)) begin
+`ifdef THERMO5_AXIL_CONTROL
+      testname="thermo5_sku_axil_config_test";
+`else
+      testname="thermo5_sku_bittrue_test";
+`endif
+    end
     run_test(testname);
   end
 endmodule

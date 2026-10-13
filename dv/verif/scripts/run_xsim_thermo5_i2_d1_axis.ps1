@@ -1,7 +1,9 @@
-param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='')
+param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[switch]$AxilControl,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='')
 $ErrorActionPreference='Stop'
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
-$work=Join-Path $repo $(if($XpmFifo){"runs\uvm_thermo5_i2_d1\axis_xsim_xpm_seed${Seed}_words$Words"}else{"runs\uvm_thermo5_i2_d1\axis_xsim_seed${Seed}_words$Words"})
+$impl=if($XpmFifo){'xpm'}else{'generic'}
+$mode=if($AxilControl){'axil'}else{'parallel'}
+$work=Join-Path $repo "runs\uvm_thermo5_i2_d1\axis_xsim_${mode}_${impl}_seed${Seed}_words$Words"
 $vectors=if($VectorDir -eq ''){Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'}else{[System.IO.Path]::GetFullPath($VectorDir)}
 if($Words -ne 56 -and $Words -ne 1008){throw 'Supported Words values are 56 and 1008.'}
 if (!(Test-Path -LiteralPath (Join-Path $vectors 'tid32_thermo5_frontend_pa3.mem'))) {
@@ -28,6 +30,13 @@ $relative=@(
 $vendor=@()
 $define=''
 if($Words -eq 1008){$define='-d THERMO5_LONG_1008'}
+if($AxilControl){
+  $define+=' -d THERMO5_AXIL_CONTROL'
+  $relative=@($relative | Where-Object { $_ -ne 'dv/verif/subsystem/tx_frontend/tb/tb_thermo5_i2_d1_axis_bittrue.sv' })
+  $relative+=@('rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv',
+               'rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv',
+               'dv/verif/subsystem/tx_frontend/tb/tb_thermo5_i2_d1_axis_bittrue.sv')
+}
 if($XpmFifo){
   $vendor=@(
     'D:\Xilinx\Vivado\2024.1\data\verilog\src\glbl.v',
@@ -54,10 +63,11 @@ try {
   cmd.exe /d /c "call $settings >nul && xsim sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg > console_xsim.log 2>&1"
   if ($LASTEXITCODE -ne 0) { throw "xsim failed: $work\console_xsim.log" }
 } finally { Pop-Location }
-if (!(Select-String -LiteralPath (Join-Path $work 'console_xsim.log') -Pattern 'THERMO5_I2_D1_AXIS_BITTRUE_PASS' -Quiet)) {
+if($AxilControl){$passMarker='THERMO5_AXIL_CONFIG_BITTRUE_PASS'}else{$passMarker='THERMO5_I2_D1_AXIS_BITTRUE_PASS'}
+if (!(Select-String -LiteralPath (Join-Path $work 'console_xsim.log') -Pattern $passMarker -Quiet)) {
   throw "Full-chain PASS marker missing: $work\console_xsim.log"
 }
 if (Select-String -LiteralPath (Join-Path $work 'console_xsim.log') -Pattern '(^|\s)(Error:|Fatal:|FATAL_ERROR:)' -Quiet) {
   throw "XSim reported an error despite the PASS marker: $work\console_xsim.log"
 }
-Write-Host "THERMO5_I2_D1_AXIS_BITTRUE_PASS log=$work\console_xsim.log"
+Write-Host "$passMarker log=$work\console_xsim.log"

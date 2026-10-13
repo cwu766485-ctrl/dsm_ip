@@ -136,6 +136,48 @@ to `thermo5-coverage-merge`. Generic overall/condition/toggle coverage is
 The XSim vendor test also passed seed 10 with
 14 PA stalls. This is still simulation evidence, not hardware GT/PA signoff.
 
+## Optional AXI-Lite configuration wrapper
+
+  The software-controlled wrapper uses a separate UVM build from the frozen
+  parallel-configuration top. The AXI-Lite regression runs the positive
+  register/mailbox/bit-true test, expected illegal-frame and mailbox-corruption
+  assertion tests, and a separate elaboration-time parameter-guard test. The
+  positive test also probes the coefficient-read helper default arm and covers
+  response-ready-before-valid, zero-strobe writes, and AR backpressure behind
+  an outstanding R response. Run it for each FIFO model:
+
+```bash
+make -C dv/uvm/sim thermo5-axil-vcs-regression \
+  THERMO5_FIFO_IMPL=generic \
+  THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/<unique-generic-run>
+make -C dv/uvm/sim thermo5-axil-vcs-regression \
+  THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 \
+  THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/<unique-xpm-run>
+```
+
+  On 2026-10-12 the current three-VDB AXI-Lite integration merge passed for
+  generic and XPM. Both merged functional covergroups are 100%. The AXI-Lite
+  config module measured line99.38%, condition95.95%, toggle33.50%, and
+  branch97.50%; a separate negative elaboration test hit `MAX_TAPS=0` and `5`.
+  This does not establish 100% RTL code coverage. The full-hierarchy aggregate
+  is a targeted three-test view, not the full thermo5 SKU regression, and the
+  XPM view includes vendor hierarchy. Keep functional, code, assertion/fault
+  injection, and system-signoff claims distinct. Exact evidence and remaining
+  bins are in `docs/verification/thermo5-axil-code-coverage-closure-20261012.md`.
+
+  The Vivado UVM replay also supports a legal coefficient-payload CDC case
+  (inactive taps vary while tap0 remains identity), with exact mailbox/pending/
+  active image checks and reset restoration:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\uvm\sim\run_thermo5_axil_xsim.ps1 -CoefficientTransport
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\uvm\sim\run_thermo5_axil_xsim.ps1 -XpmFifo -CoefficientTransport
+```
+
+  This is a functional UVM test in XSim; it is not VCS/URG code-toggle
+  closure. Re-run in licensed VCS and merge the resulting VDB before claiming
+  coefficient transport toggle bins closed.
+
 The original AXI-IP regression remains a different DUT top:
 
 From the repository root:

@@ -8,6 +8,7 @@ package thermo5_sku_uvm_pkg;
 
   `include "thermo5_sku_config.svh"
   `include "thermo5_source_item.svh"
+  `include "thermo5_axil_item.svh"
   class thermo5_pa_word extends uvm_sequence_item;
     bit [63:0] plane[4];
     `uvm_object_utils(thermo5_pa_word)
@@ -21,6 +22,10 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_source_monitor.svh"
   `include "thermo5_source_agent.svh"
   `include "thermo5_source_sequence.svh"
+  `include "thermo5_axil_sequencer.svh"
+  `include "thermo5_axil_driver.svh"
+  `include "thermo5_axil_monitor.svh"
+  `include "thermo5_axil_agent.svh"
   `include "thermo5_pa_monitor.svh"
   `include "thermo5_control_bfm.svh"
   `include "thermo5_pa_scoreboard.svh"
@@ -28,4 +33,6 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_env.svh"
   `include "thermo5_sku_bittrue_test.svh"
   `include "thermo5_sku_corner_tests.svh"
+  `include "thermo5_axil_access_sequence.svh"
+  `include "thermo5_sku_axil_config_test.svh"
 endpackage
