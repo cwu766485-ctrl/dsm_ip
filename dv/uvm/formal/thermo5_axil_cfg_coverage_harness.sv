@@ -44,6 +44,16 @@ module thermo5_axil_cfg_coverage_harness (
     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
   );
 
+  // The integrated wrapper contract is a common reset assertion source for
+  // AXI-Lite and core, with each domain releasing synchronously on its own
+  // clock. This formal harness checks only protocol reachability under that
+  // integration contract; the configuration block's independent-reset
+  // windows are exercised by thermo5_axil_cfg_coverage_tb at block level.
+  assume_core_reset_asserts_axil:
+    assume property (@(posedge core_clk) !core_rst_n |-> !axil_rst_n);
+  assume_axil_reset_fall_requires_core_reset:
+    assume property (@(posedge axil_clk) $fell(axil_rst_n) |-> !core_rst_n);
+
   // These properties are deliberately bound to the production RTL instance.
   // They justify only the exact condition bins named in the coverage ledger.
   a_bvalid_clears_pending:
@@ -54,13 +64,21 @@ module thermo5_axil_cfg_coverage_harness (
     assert property (@(posedge axil_clk) disable iff (!axil_rst_n)
       !(bvalid && (dut.aw_pending || dut.aw_take) && (dut.w_pending || dut.w_take)));
 
-  a_pending_requires_request:
-    assert property (@(posedge core_clk) disable iff (!core_rst_n)
-      dut.cfg_pending_valid |-> dut.cfg_req_sync2);
+  // The sequential OKAY-only write case is reached only after write_resp
+  // has decoded an explicit register address. This proves the case default
+  // cannot be selected by a legal external AXI-Lite write.
+  a_write_case_default_unreachable:
+    assert property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      (dut.write_fire && dut.write_resp == 2'b00) |->
+        (dut.write_addr == 8'h00 || dut.write_addr == 8'h04 ||
+         dut.write_addr == 8'h08 || dut.write_addr == 8'h10 ||
+         dut.write_addr == 8'h14 || dut.write_addr == 8'h18 ||
+         dut.write_addr == 8'h1c || dut.write_addr == 8'h20 ||
+         dut.write_addr == 8'h24 || dut.write_addr == 8'h28 ||
+         dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
+         dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
+         dut.write_addr == 8'h3c));
 
-  a_line315_011_unreachable:
-    assert property (@(posedge core_clk) disable iff (!core_rst_n)
-      !(!dut.cfg_req_sync2 && dut.cfg_pending_valid && dpd_config_boundary));
 endmodule
 
 `default_nettype wire

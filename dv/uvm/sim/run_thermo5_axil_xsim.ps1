@@ -1,20 +1,35 @@
 param(
   [switch]$XpmFifo,
   [switch]$CoefficientTransport,
+  [switch]$NonlinearDpd,
+  [switch]$Tap4Identity,
   [int]$Seed = 101,
   [string]$OutDir = '',
+  [string]$VectorDir = '',
   [string]$VivadoRoot = 'D:\Xilinx\Vivado\2024.1'
 )
 
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 $impl = if ($XpmFifo) { 'xpm' } else { 'generic' }
-$vectors = Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'
+$vectors = if ($VectorDir) { [System.IO.Path]::GetFullPath($VectorDir) } else {
+  Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'
+}
 $settings = Join-Path $VivadoRoot 'settings64.bat'
 $uvmPackage = Join-Path $VivadoRoot 'data\system_verilog\uvm_1.2\xlnx_uvm_package.sv'
 
 if (!(Test-Path -LiteralPath $settings)) { throw "Vivado settings not found: $settings" }
 if (!(Test-Path -LiteralPath $uvmPackage)) { throw "Vivado UVM 1.2 package not found: $uvmPackage" }
+$activeModes = @()
+if ($CoefficientTransport) { $activeModes += 'CoefficientTransport' }
+if ($NonlinearDpd) { $activeModes += 'NonlinearDpd' }
+if ($Tap4Identity) { $activeModes += 'Tap4Identity' }
+if ($activeModes.Count -gt 1) {
+  throw 'CoefficientTransport, NonlinearDpd, and Tap4Identity modes are mutually exclusive.'
+}
+if ($settings.Contains(' ')) {
+  throw "VivadoRoot must not contain spaces for the cmd.exe settings64 launcher: $VivadoRoot"
+}
 if (!(Test-Path -LiteralPath (Join-Path $vectors 'tid32_thermo5_frontend_pa3.mem'))) {
   throw 'Generate the frozen thermo5 SKU vectors first.'
 }
@@ -63,13 +78,17 @@ if ($XpmFifo) {
 Push-Location $OutDir
 try {
   $quotedArgs = ($compileArgs | ForEach-Object { Quote-CmdArg $_ }) -join ' '
-  $compile = 'call ' + (Quote-CmdArg $settings) + ' >nul && xvlog ' + $quotedArgs + ' > console_xvlog.log 2>&1'
+  # Keep settings64.bat unquoted here. In the Windows PowerShell -> cmd.exe
+  # argument path, `call "...settings64.bat"` is passed with literal quotes
+  # and cmd reports it as an invalid command; the default Vivado install path
+  # has no spaces, which is enforced above.
+  $compile = 'call ' + $settings + ' >nul && xvlog ' + $quotedArgs + ' > console_xvlog.log 2>&1'
   & cmd.exe /d /c $compile
   if ($LASTEXITCODE -ne 0) { throw "xvlog failed; see $OutDir\console_xvlog.log" }
 
   $snapshot = "sim_thermo5_axil_uvm_$impl"
   $tops = if ($XpmFifo) { 'work.thermo5_sku_uvm_tb glbl' } else { 'work.thermo5_sku_uvm_tb' }
-  $elaborate = 'call ' + (Quote-CmdArg $settings) + " >nul && xelab $tops -s $snapshot -debug typical -timescale 1ns/1ps > console_xelab.log 2>&1"
+  $elaborate = 'call ' + $settings + " >nul && xelab $tops -s $snapshot -debug typical -timescale 1ns/1ps > console_xelab.log 2>&1"
   & cmd.exe /d /c $elaborate
   if ($LASTEXITCODE -ne 0) { throw "xelab failed; see $OutDir\console_xelab.log" }
 
@@ -79,8 +98,14 @@ try {
   if ($CoefficientTransport) {
     $plusargs += @('-testplusarg', (Quote-CmdArg 'AXIL_COEFF_TRANSPORT'))
     $passMarker = 'THERMO5_AXIL_COEFF_TRANSPORT_UVM_PASS'
+  } elseif ($NonlinearDpd) {
+    $plusargs += @('-testplusarg', (Quote-CmdArg 'AXIL_NONLINEAR_DPD'))
+    $passMarker = 'THERMO5_AXIL_NONLINEAR_DPD_UVM_PASS'
+  } elseif ($Tap4Identity) {
+    $plusargs += @('-testplusarg', (Quote-CmdArg 'AXIL_TAP4_IDENTITY'))
+    $passMarker = 'THERMO5_AXIL_TAP4_IDENTITY_UVM_PASS'
   }
-  $run = 'call ' + (Quote-CmdArg $settings) + ' >nul && xsim ' + $snapshot +
+  $run = 'call ' + $settings + ' >nul && xsim ' + $snapshot +
     ' -runall -sv_seed ' + $Seed + ' ' + ($plusargs -join ' ') +
     ' > console_xsim.log 2>&1'
   & cmd.exe /d /c $run

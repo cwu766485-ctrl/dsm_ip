@@ -114,12 +114,61 @@ make -C dv/uvm/sim thermo5-axil-config-vcs-run \
   THERMO5_OUT="$PWD/runs/thermo5_axil_cfg_vcs_generic"
 ```
 
-The VCS-UVM run was attempted on 2026-10-11 but could not check out a VCS
-license; XSim UVM is the executed evidence for this change, not a claim that
-VCS passed. The AXI-Lite wrapper's XPM full OOC synthesis completed with
-71,537 LUTs, 52,255 registers, 1,936 DSPs and 334.5 BRAM tiles. The full
-implementation run is still active; no routed WNS/WHS result is available yet.
-This configuration/CDC regression is not a substitute for CDC/RDC analysis,
-bundled-data timing constraints, routed STA, independent reset-stress testing,
-or calibrated nonlinear DPD bit-true testing. Those remain separate signoff
-items.
+The current-source licensed VCS/URG AXI-Lite regression passed on 2026-10-13
+for both generic and real XPM FIFO configurations. Each merged run includes
+positive configuration and 56-word bit-true replay, coefficient-payload
+mailbox transport and 56-word replay, illegal-frame assertion/reset recovery,
+mailbox-corruption assertion/reset recovery, and `MAX_TAPS` parameter guards.
+The positive test also writes the read-only IP ID register and checks DECERR
+plus unchanged ID readback. Each UVM test reports zero warnings/errors/fatals;
+the expected RTL assertion/`$error` in the two negative tests is independently
+checked. The merged report shows 100% on the AXI-Lite monitor's defined
+`write_cg`, `read_cg`, and `reset_cg` functional covergroups for both FIFO
+builds. Evidence and replay commands are in
+`docs/verification/thermo5-axil-code-coverage-closure-20261012.md` and
+`runs/thermo5_axil_signoff2_{generic,xpm}_20261013/`.
+
+This does not mean raw RTL code coverage is 100%. In the current merged
+AXI-Lite module report, the module score is 93.74%: line 99.38%, condition
+95.95%, toggle 82.13%, branch 97.50%. One exact line-88 tuple has a reviewed
+formal waiver; the line-315 `(0,1,1)` tuple, write-case default, and low16-bit
+coefficient slices across the four bundled-data images remain OPEN. No blanket
+raw-coverage waiver is claimed.
+
+The wrapper OOC synthesis generated a readable checkpoint and utilization
+report (71,537 LUTs, 52,255 registers, 1,936 DSPs, 334.5 BRAM tiles), but both
+flow invocations exited nonzero after checkpoint creation with a Vivado
+feature-loading error. A separate Vivado process reopened the checkpoint and
+regenerated utilization successfully. This validates the artifact, not a
+clean synthesis-flow exit; no routed WNS/WHS result is available. CDC/RDC,
+bundled-data timing constraints, reset integration stress, routed STA, and
+calibrated nonlinear DPD bit-true testing remain separate signoff items.
+
+### Verification refresh (2026-10-13)
+
+Current-source VCS generic and real-XPM tap4 identity and nonlinear
+memory-polynomial tests now pass, each checking 56 four-plane outputs against
+the MATLAB bit-true oracle with zero UVM errors/fatals. Defined AXI-Lite
+functional write/read/reset coverage is 100% in both builds. The current raw
+`thermo5_dpd_axi_lite_cfg` score is 98.21% (line99.38%, condition95.95%,
+toggle100.00%, branch97.50%); exact line315 bins have focused legal test hits,
+and exact unreachable/frozen-parameter bins are listed in
+`docs/evidence/THERMO5_AXIL_COVERAGE_WAIVERS.csv`. Raw 100% is not claimed.
+Tap4 identity passes current-source XSim on generic and XPM, and the required
+P0/IP smoke suites pass. One high-coefficient nonlinear XSim run hit a
+simulator kernel exception; equivalent VCS tests pass.
+
+The first full optional-wrapper OOC run reached routed timing analysis but
+failed the 218.75-MHz core setup target: WNS=-0.630 ns, TNS=-23.465 ns over
+116 endpoints; WHS=+0.028 ns with no hold failures. The worst path is a
+memory-DPD lane3 DSP cascade to a RAMB18 input (4.888 ns data delay); TID
+recursive-state carry paths are the next major group and are route-dominated.
+AXI-Lite and AXI-Stream intra-clock slack is positive. The report flags 527
+inputs and 308 outputs without I/O delay constraints, so parent/board I/O
+signoff is not claimed. The first route process was stopped while blocked in
+`report_cdc -details`; timing reports exist, but that run has no routed
+checkpoint, final summary or completed CDC report. A fresh timing-driven OOC
+rerun is active in `runs/thermo5_axil_timing_candidate3_20261013/`; no result is
+available yet. The bundled-data 10 ns max-delay remains provisional, and
+parent/integrated reset/CDC/RDC review remains open. Treat this AXI-Lite
+extension as functionally verified but not physically signed off.

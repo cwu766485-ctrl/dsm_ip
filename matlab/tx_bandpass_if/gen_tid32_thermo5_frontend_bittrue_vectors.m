@@ -1,6 +1,6 @@
-function gen_tid32_thermo5_frontend_bittrue_vectors(output_dir, words, seed, step, interp_taps, frame_start_words, profile, frame_gains, engine)
+function gen_tid32_thermo5_frontend_bittrue_vectors(output_dir, words, seed, step, interp_taps, frame_start_words, profile, frame_gains, engine, dpd_profile)
 %GEN_TID32_THERMO5_FRONTEND_BITTRUE_VECTORS Packed reference for frame-gain,
-% two x2 interpolators, identity memory-DPD path, and five-level TID.
+% two x2 interpolators, memory-DPD, and five-level TID.
 if nargin < 1, output_dir = pwd; end
 if nargin < 2, words = 64; end
 if nargin < 3, seed = 20260918; end
@@ -10,6 +10,7 @@ if nargin < 6, frame_start_words = [1, 17, 39]; end
 if nargin < 7, profile = 'random'; end
 if nargin < 8, frame_gains = [16384,14336,12288]; end
 if nargin < 9, engine = 'fast'; end
+if nargin < 10, dpd_profile = 'identity'; end
 assert(words >= 12, 'At least 12 words are required for frame-gain coverage.');
 assert(ismember(interp_taps,[2 3 4]), 'interp_taps must be 2, 3, or 4.');
 assert(all(frame_start_words >= 1 & frame_start_words <= words), ...
@@ -17,6 +18,8 @@ assert(all(frame_start_words >= 1 & frame_start_words <= words), ...
 assert(~isempty(frame_gains) && all(frame_gains >= -32768 & frame_gains <= 32767) ...
     && all(frame_gains == fix(frame_gains)), 'Frame gains must be signed 16-bit integers.');
 assert(ismember(engine,{'fast','legacy'}), 'engine must be fast or legacy.');
+assert(ismember(dpd_profile,{'identity','nonlinear'}), ...
+    'dpd_profile must be identity or nonlinear.');
 if ~exist(output_dir, 'dir'), mkdir(output_dir); end
 rng(seed); lanes = 8; w = 16;
 ii = int64(randi([-12000, 12000], lanes, words));
@@ -51,12 +54,21 @@ for n = 1:numel(frame_start_words)
 end
 if strcmp(profile,'range_stress'), frame_gain(:)=int64(16384); end
 h1i = zeros(interp_taps-1,1,'int64'); h1q = h1i; h2i = h1i; h2q = h1i;
+hd_i = zeros(3,1,'int64'); hd_q = hd_i;
+dpd.c1_re=int64([-16385,0,0,0]); dpd.c1_im=int64([-1,0,0,0]);
+dpd.c3_re=int64([-1,0,0,0]); dpd.c3_im=int64([-1,0,0,0]);
+dpd.c5_re=int64([-1,0,0,0]); dpd.c5_im=int64([-1,0,0,0]);
 state = []; pa = false(64,words,4); active_gain = int64(16384);
 for word = 1:words
     if frame_start(word), active_gain = frame_gain(word); end
     [gi,gq] = local_apply_gain(ii(:,word),qq(:,word),active_gain);
     [x1i,x1q,h1i,h1q] = local_x2(gi,gq,h1i,h1q,interp_taps);
-    [x2i,x2q,h2i,h2q] = local_x2(x1i,x1q,h2i,h2q,interp_taps);
+    if strcmp(dpd_profile,'nonlinear')
+        [xdi,xdq,hd_i,hd_q] = local_memory_dpd(x1i,x1q,hd_i,hd_q,dpd);
+    else
+        xdi=x1i; xdq=x1q;
+    end
+    [x2i,x2q,h2i,h2q] = local_x2(xdi,xdq,h2i,h2q,interp_taps);
     if strcmp(engine,'legacy')
         [raw_word,state] = tid_thermo5_pipelined_step(x2i,x2q,state,w,step);
     else
@@ -65,6 +77,16 @@ for word = 1:words
     for branch = 1:4
         pa(:,word,branch) = raw_word(:,branch);
     end
+end
+if strcmp(dpd_profile,'nonlinear')
+    fid=fopen(fullfile(output_dir,'thermo5_dpd_coefficients.txt'),'w');
+    assert(fid>=0,'Cannot write DPD coefficient manifest.');
+    fprintf(fid,'Q2.14 active tap 0; taps 1..3 are zero\n');
+    fprintf(fid,'c1_re=%04X c1_im=%04X c3_re=%04X c3_im=%04X c5_re=%04X c5_im=%04X\n', ...
+        uint16(mod(dpd.c1_re(1),int64(65536))),uint16(mod(dpd.c1_im(1),int64(65536))), ...
+        uint16(mod(dpd.c3_re(1),int64(65536))),uint16(mod(dpd.c3_im(1),int64(65536))), ...
+        uint16(mod(dpd.c5_re(1),int64(65536))),uint16(mod(dpd.c5_im(1),int64(65536))));
+    fclose(fid);
 end
 if strcmp(engine,'legacy')
     [flush,state] = tid_thermo5_pipelined_step( ...
@@ -150,6 +172,25 @@ for lane=1:lanes
     yo_i(2*lane)=local_round_sat(ai,14); yo_q(2*lane)=local_round_sat(aq,14);
 end
 next_i=flipud(xi(end-interp_taps+2:end)); next_q=flipud(xq(end-interp_taps+2:end));
+end
+
+function [yo_i,yo_q,next_i,next_q] = local_memory_dpd(xi,xq,history_i,history_q,c)
+% Bit-true scalar reference of dpd_memory_poly's Q15 power and Q14 gain math.
+yo_i=zeros(size(xi),'int64'); yo_q=yo_i; hi=history_i; hq=history_q;
+for n=1:numel(xi)
+    win_i=[xi(n);hi]; win_q=[xq(n);hq]; ai=int64(0); aq=int64(0);
+    for tap=1:4
+        r2=bitsra(win_i(tap)*win_i(tap)+win_q(tap)*win_q(tap),15);
+        r4=bitsra(r2*r2,15);
+        gr=c.c1_re(tap)+bitsra(c.c3_re(tap)*r2,15)+bitsra(c.c5_re(tap)*r4,15);
+        gi=c.c1_im(tap)+bitsra(c.c3_im(tap)*r2,15)+bitsra(c.c5_im(tap)*r4,15);
+        ai=ai+bitsra(win_i(tap)*gr-win_q(tap)*gi,14);
+        aq=aq+bitsra(win_i(tap)*gi+win_q(tap)*gr,14);
+    end
+    yo_i(n)=local_sat16(ai); yo_q(n)=local_sat16(aq);
+    hi=[xi(n);hi(1:2)]; hq=[xq(n);hq(1:2)];
+end
+next_i=hi; next_q=hq;
 end
 
 function y=local_round_sat(x,frac), if x>=0, y=bitsra(x+bitshift(int64(1),frac-1),frac); else, y=-bitsra(-x+bitshift(int64(1),frac-1),frac); end, y=local_sat16(y); end

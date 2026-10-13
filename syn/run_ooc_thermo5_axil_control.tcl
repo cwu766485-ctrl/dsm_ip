@@ -8,7 +8,7 @@ set core_mhz [expr {double([lindex $argv 1])}]
 set axil_mhz [expr {double([lindex $argv 2])}]
 set out_dir [file normalize [lindex $argv 3]]
 set implementation [lindex $argv 4]
-if {$implementation ni {synth quick full}} { error "implementation must be synth, quick, or full" }
+if {$implementation ni {synth quick full timing}} { error "implementation must be synth, quick, full, or timing" }
 set script_dir [file dirname [file normalize [info script]]]
 set repo [file normalize [file join $script_dir ..]]
 file mkdir $out_dir
@@ -100,13 +100,23 @@ if {$implementation eq "synth"} {
   place_design
   phys_opt_design
   route_design
+} elseif {$implementation eq "timing"} {
+  # Separate timing-driven candidate for designs where the area-oriented
+  # baseline routes close to the 218.75-MHz limit.  Keep this as a distinct
+  # run mode so baseline evidence remains reproducible.
+  opt_design -directive Explore
+  place_design -directive Explore
+  phys_opt_design -directive AggressiveExplore
+  route_design -directive Explore
+  phys_opt_design -directive AggressiveExplore
+  route_design -directive Explore
 } else {
   place_design -directive Quick
   route_design -directive Quick
 }
+puts "THERMO5_AXIL_STAGE=route_complete"
 report_timing_summary -file [file join $out_dir timing_summary.rpt]
 report_timing -max_paths 30 -file [file join $out_dir timing_max_paths.rpt]
-report_cdc -details -file [file join $out_dir cdc.rpt]
 report_clock_interaction -file [file join $out_dir clock_interaction.rpt]
 check_timing -verbose -file [file join $out_dir check_timing.rpt]
 report_utilization -file [file join $out_dir utilization.rpt]
@@ -125,3 +135,9 @@ puts $f "Part,Top,Axis_MHz,Core_MHz,Axil_MHz,Interp_Taps,Dpd_Max_Taps,Fifo,Imple
 puts $f "$part,tid32_thermo5_axi_lite_axis_frontend_tx,125.00,[format %.2f $core_mhz],[format %.2f $axil_mhz],2,4,XPM,$implementation,$status,[format %.3f $wns],[format %.3f $whs]"
 close $f
 puts "THERMO5_AXIL_OOC_STATUS=$status WNS=$wns WHS=$whs"
+# CDC is a separate signoff report.  Keep it out of the timing-driven route
+# candidate so the timing result/checkpoint has a bounded completion point;
+# full/quick runs retain the detailed CDC report, after route artifacts exist.
+if {$implementation ne "timing"} {
+  report_cdc -details -file [file join $out_dir cdc.rpt]
+}

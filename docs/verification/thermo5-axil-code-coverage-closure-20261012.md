@@ -190,3 +190,117 @@ independent checkpoint reopen passed, so the netlist artifact is readable, but
 the flow-wrapper exit issue remains unresolved. This is not routed
 implementation or timing signoff: no routed checkpoint, WNS/WHS, or parent
 I/O constraints were produced.
+
+## 2026-10-13 current checkout follow-up
+
+The tracked checkout contains the AXI-Lite RTL and UVM changes described in
+this record. A fresh Windows XSim attempt with seed610130 stopped in `xvlog`
+before elaboration (empty compile log); it is excluded from DUT PASS/FAIL
+evidence. After launching the licensed Rocky environment with the required
+authorization, the current-source VCS/URG full regression completed for both
+generic and real XPM FIFO configurations.
+
+Replay commands (from the licensed Rocky shell, using a unique output path):
+
+```sh
+make -C dv/uvm/sim thermo5-axil-vcs-regression \
+  THERMO5_FIFO_IMPL=generic \
+  THERMO5_OUT="$PWD/runs/thermo5_axil_signoff2_generic_20261013"
+make -C dv/uvm/sim thermo5-axil-vcs-regression \
+  THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 \
+  THERMO5_OUT="$PWD/runs/thermo5_axil_signoff2_xpm_20261013"
+```
+
+Both runs include the positive configuration/56-word bit-true test, legal
+coefficient-payload mailbox transport/56-word test (seed420104), illegal-frame
+assertion and reset recovery, mailbox-corruption assertion and reset recovery,
+plus separate `MAX_TAPS=0/5` parameter guards. Every UVM report has zero
+warnings/errors/fatals; negative tests also check that the expected RTL
+assertion/`$error` occurred. The read-only IP-ID write check expects DECERR and
+verifies the ID is unchanged. The merged URG reports show 100% for each
+AXI-Lite monitor functional group (`write_cg`, `read_cg`, and `reset_cg`) in
+both FIFO builds. Detailed outputs are under
+`runs/thermo5_axil_signoff2_generic_20261013/` and
+`runs/thermo5_axil_signoff2_xpm_20261013/`.
+
+Raw RTL coverage remains partial in both builds. The merged
+`thermo5_dpd_axi_lite_cfg` module score is 93.74% (line99.38%, condition95.95%,
+toggle82.13%, branch97.50%). The exact line-315 `(0,1,1)` tuple, write-case
+default, and low16-bit slices in the four coefficient-image stages remain
+OPEN; only the reviewed line-88 tuple is waived. These results close the
+currently defined AXI-Lite functional covergroups for the tested configuration,
+not every RTL code bin, all system-level CDC/RDC, or physical timing.
+
+The DUT RTL was not modified in this follow-up. Changes add AXI-Lite monitor
+functional coverage and a read-only IP-ID protection check, and make the
+single-command regression include coefficient payload transport in its URG
+merge. The prior synthesis checkpoint evidence and unresolved nonzero flow
+wrapper exit are unchanged; no new synthesis, CDC/RDC or routed STA PASS is
+claimed.
+
+## 2026-10-13 final AXI-Lite verification closeout
+
+This closeout supersedes the earlier 93.74% raw module score above. The
+current-source generic and real-XPM VCS runs add a legal `MAX_TAPS=4` identity
+configuration and a genuinely non-identity memory-polynomial coefficient
+image, with atomic mailbox/pending/active payload checks and the four-plane
+MATLAB oracle:
+
+| Check | Generic | Real XPM |
+| --- | --- | --- |
+| Tap4 identity, 56 four-plane output words | PASS, seed610160 | PASS, seed610162 |
+| Nonlinear DPD coefficient image, 56 four-plane output words | PASS, seed610161 | PASS, seed610163 |
+| UVM errors/fatals | 0 / 0 | 0 / 0 |
+| AXI-Lite write/read/reset functional covergroups | 100% / 100% / 100% | 100% / 100% / 100% |
+
+Logs and VDBs are under `runs/thermo5_axil_final_vcs_generic2_20261013/` and
+`runs/thermo5_axil_final_vcs_xpm2_20261013/`. The nonlinear vector manifest
+is `runs/thermo5_axil_nonlinear_vectors3_20261013/thermo5_dpd_coefficients.txt`.
+The merged VCS/URG module report is now 98.21% score in both builds: line
+99.38%, condition 95.95%, toggle 100.00%, branch 97.50%. Toggle coverage is
+5922/5922 bits, with both transition directions covered for all 2961
+directions. Thus the earlier coefficient-image low16 toggle gap is closed.
+
+The remaining raw condition/branch bins were individually resolved rather
+than blanket-waived:
+
+- Line 315 `(cfg_req_sync2,cfg_pending_valid,dpd_config_boundary)=(1,0,1)` is
+  hit by the 20-run legal phase sweep (15 trace hits; its focused URG marks the
+  tuple Covered). `(0,1,1)` is hit by the new standalone public-reset window
+  test, which verifies the stale pending image is discarded without changing
+  the active payload. Evidence: `runs/thermo5_axil_boundary_bready_gap1_20261012/`
+  and `runs/thermo5_axil_cfg_unit_20261013/cfg_coverage_unit/run.log`.
+  The standalone test VDB has a different top-level instance path and URG
+  correctly refuses to merge it into `thermo5_sku_uvm_tb.dut.u_cfg`; therefore
+  those exact hits do not change the integrated raw percentage.
+- The line-88 `(0,1,1)` request/write condition is formally proven unreachable;
+  the successful-write `case` default at RTL line 264 is also formally proven
+  unreachable by non-vacuous property `a_write_case_default_unreachable`.
+- The `MAX_TAPS` error branch at RTL line 330 is inactive in the frozen
+  `MAX_TAPS=4` SKU. Separate generic and XPM elaboration tests at `MAX_TAPS=0`
+  and `5` observed both expected `$error` messages. These exact dispositions
+  are recorded in `docs/evidence/THERMO5_AXIL_COVERAGE_WAIVERS.csv`; raw URG
+  data is not edited and no adjusted 100% score is claimed.
+
+VC Formal on the current RTL proves 3/3 assertions, including the line-88
+tuple, mailbox BVALID/pending invariant, and successful-write default
+unreachability. The two reset-contract assumptions are reported vacuous, so
+this result is not integrated reset/CDC/RDC signoff.
+
+Current-source Vivado XSim tap4 identity tests passed for generic and XPM
+(`runs/thermo5_axil_final_xsim_{generic,xpm}_tap4_20261013/`). The required
+P0 regression passed 7/7 and IP smoke passed. A separate high-coefficient
+nonlinear XSim run compiled and elaborated but the XSim kernel terminated with
+`FATAL_ERROR` at 6.41 us before a test PASS marker; this is recorded as a
+simulator/runtime failure, not a DUT PASS or a demonstrated bit-true mismatch.
+The same nonlinear payload and oracle pass in VCS for both FIFO variants.
+
+Physical closure remains open. `runs/thermo5_axil_close_ooc_full_20261013/`
+contains a synthesized checkpoint, clocks and synthesis utilization reports;
+Vivado process 18420 was still responding/running at the latest inspection.
+There is no routed checkpoint, timing summary, CDC report, or clean final flow
+exit yet. The 10 ns bundled-data `set_max_delay -datapath_only` constraint in
+`syn/run_ooc_thermo5_axil_control.tcl` is provisional and has not been
+validated by routed timing. Parent-level reset/CDC/RDC review is likewise
+open. Do not describe the AXI-Lite block as physically signed off until those
+reports complete.

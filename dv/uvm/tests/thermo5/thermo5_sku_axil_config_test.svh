@@ -94,11 +94,24 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
     bit [31:0] rdata;
     bit boundary_seen;
     bit coeff_transport_test;
+    bit nonlinear_dpd_test;
+    bit tap4_identity_test;
     bit [386:0] expected_cfg_payload;
     int unsigned expected_active_taps;
     coeff_transport_test=$test$plusargs("AXIL_COEFF_TRANSPORT");
-    expected_active_taps=coeff_transport_test ? 1 : 2;
-    expected_cfg_payload=coeff_transport_test ?
+    nonlinear_dpd_test=$test$plusargs("AXIL_NONLINEAR_DPD");
+    tap4_identity_test=$test$plusargs("AXIL_TAP4_IDENTITY");
+    if ((int'(coeff_transport_test)+int'(nonlinear_dpd_test)+int'(tap4_identity_test))>1)
+      `uvm_fatal("AXIL_TEST_MODE","Coefficient transport, nonlinear-DPD, and tap4-identity modes are mutually exclusive")
+    expected_active_taps=tap4_identity_test ? 4 :
+                         ((coeff_transport_test || nonlinear_dpd_test) ? 1 : 2);
+    expected_cfg_payload=tap4_identity_test ?
+      {3'd4,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0} :
+      nonlinear_dpd_test ?
+      {3'd1,64'h0000_0000_0000_bfff,64'h0000_0000_0000_ffff,
+       64'h0000_0000_0000_ffff,64'h0000_0000_0000_ffff,
+       64'h0000_0000_0000_ffff,64'h0000_0000_0000_ffff} :
+      coeff_transport_test ?
       {3'd1,64'hffff_ffff_ffff_4000,64'hffff_ffff_ffff_0000,
        64'hffff_ffff_ffff_0000,64'hffff_ffff_ffff_0000,
        64'hffff_ffff_ffff_0000,64'hffff_ffff_ffff_0000} :
@@ -119,6 +132,14 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
         axil_read(8'h0c,rdata,resp,1'b1);
         if (resp!=2'b00 || rdata!=32'h5448_3501)
           `uvm_fatal("AXIL_ID",$sformatf("ID read resp=%b data=%08x",resp,rdata))
+        // The ID register is read-only: writes must be rejected without
+        // changing the register value or setting the sticky control ERROR.
+        axil_write(8'h0c,32'hdead_beef,0,0,resp);
+        if (resp!=2'b11)
+          `uvm_fatal("AXIL_ID_WRITE","Read-only IP_ID write did not return DECERR")
+        axil_read(8'h0c,rdata,resp);
+        if (resp!=2'b00 || rdata!=32'h5448_3501)
+          `uvm_fatal("AXIL_ID_WRITE_PROTECT","IP_ID changed after a rejected write")
 
         axil_write(8'h08,32'd0,0,2,resp);
         if (resp!=2'b00) `uvm_fatal("AXIL_TAPS","Shadow tap write unexpectedly failed")
@@ -152,7 +173,37 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
         axil_write(8'h08,32'd1,0,0,resp);
         if (resp!=2'b00) `uvm_fatal("AXIL_TAPS_RESTORE","Could not restore legal tap count")
 
-        if (coeff_transport_test) begin
+        if (tap4_identity_test) begin
+          // Tap count four is legal for MAX_TAPS=4. Taps 1..3 remain zero,
+          // so the datapath is still mathematically identity while the
+          // tap-count MSB is exercised through mailbox, pending, active, and
+          // DPD-facing configuration registers.
+          axil_write(8'h08,32'd4,0,0,resp);
+          if (resp!=2'b00) `uvm_fatal("AXIL_TAPS","Legal four-tap configuration was rejected")
+        end else if (nonlinear_dpd_test) begin
+          // A bounded, genuinely nonlinear Q2.14 memory-polynomial setting.
+          // Every tap-0 coefficient bit is exercised in both directions
+          // through legal AXI-Lite writes and a real frame-boundary commit.
+          axil_write(8'h08,32'd1,0,0,resp);
+          if (resp!=2'b00) `uvm_fatal("AXIL_TAPS","Could not select one active DPD tap")
+          for (int word=0; word<12; word++) begin
+            bit [7:0] addr;
+            bit [31:0] coeff_word;
+            addr=8'h10+8'(4*word);
+            case (word)
+              0: coeff_word=32'h0000_bfff;
+              2: coeff_word=32'h0000_ffff;
+              4: coeff_word=32'h0000_ffff;
+              6: coeff_word=32'h0000_ffff;
+              8: coeff_word=32'h0000_ffff;
+              10: coeff_word=32'h0000_ffff;
+              default: coeff_word=32'd0;
+            endcase
+            axil_write(addr,coeff_word,0,0,resp);
+            if (resp!=2'b00)
+              `uvm_fatal("AXIL_NONLINEAR_COEFF_WRITE",$sformatf("Coefficient write failed addr=%02x",addr))
+          end
+        end else if (coeff_transport_test) begin
           // Keep one tap active (tap0 remains unity); program taps1..3 in all
           // six banks to distinct nonzero values. The inactive taps exercise
           // legal payload CDC without changing the frozen bit-true data path.
@@ -184,7 +235,7 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
         if (resp!=2'b00) `uvm_fatal("AXIL_COMMIT","Valid commit request failed")
         if (vif.cfg_mailbox_payload!==expected_cfg_payload)
           `uvm_fatal("AXIL_MAILBOX_PAYLOAD","Committed mailbox payload did not match the legal shadow-register image")
-        if (coeff_transport_test) begin
+        if (coeff_transport_test || nonlinear_dpd_test) begin
           wait (vif.cfg_pending_payload===expected_cfg_payload);
           `uvm_info("AXIL_COEFF_PENDING","Legal coefficient image observed atomically in core pending bank",UVM_MEDIUM)
         end
@@ -271,8 +322,14 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
           addr=8'h10+8'(4*word);
           axil_write(addr,32'hffff_ffff,0,0,resp);
           if (resp!=2'b00) `uvm_fatal("AXIL_COEFF_WRITE","Coefficient all-ones write failed")
+          axil_read(addr,rdata,resp);
+          if (resp!=2'b00 || rdata!==32'hffff_ffff)
+            `uvm_fatal("AXIL_COEFF_TOGGLE_READBACK","All-one coefficient word readback failed")
           axil_write(addr,32'h0000_0000,0,0,resp);
           if (resp!=2'b00) `uvm_fatal("AXIL_COEFF_WRITE","Coefficient clear write failed")
+          axil_read(addr,rdata,resp);
+          if (resp!=2'b00 || rdata!==32'h0000_0000)
+            `uvm_fatal("AXIL_COEFF_TOGGLE_READBACK","Zero coefficient word readback failed")
           axil_write(addr,32'h1234_5678,0,0,resp,4'h1);
           if (resp!=2'b00) `uvm_fatal("AXIL_COEFF_STRB","Partial-byte coefficient write failed")
           axil_read(addr,rdata,resp);
@@ -288,8 +345,19 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
         if (resp!=2'b00) `uvm_fatal("AXIL_CONTROL_ZERO_STROBE","Zero-strobe CONTROL write response failed")
         axil_write(8'h40,32'd0,0,0,resp,4'hf,1'b1);
         if (resp!=2'b11) `uvm_fatal("AXIL_DECERR_WRITE","Unmapped write did not return DECERR")
+        // AXI-Lite does not require the slave to accept misaligned/unmapped
+        // accesses. These legal bus transactions must return DECERR and
+        // exercise the address low bits plus AW buffering independently.
+        axil_write(8'h41,32'd0,0,2,resp,4'hf,1'b1);
+        if (resp!=2'b11) `uvm_fatal("AXIL_DECERR_UNALIGNED_WRITE","Unaligned write did not return DECERR")
+        axil_write(8'h82,32'd0,0,2,resp,4'hf,1'b1);
+        if (resp!=2'b11) `uvm_fatal("AXIL_DECERR_HIGH_WRITE","High unmapped write did not return DECERR")
         axil_read(8'h40,rdata,resp,1'b1);
         if (resp!=2'b11) `uvm_fatal("AXIL_DECERR_READ","Unmapped read did not return DECERR")
+        axil_read(8'h41,rdata,resp,1'b1);
+        if (resp!=2'b11) `uvm_fatal("AXIL_DECERR_UNALIGNED_READ","Unaligned read did not return DECERR")
+        axil_read(8'h82,rdata,resp,1'b1);
+        if (resp!=2'b11) `uvm_fatal("AXIL_DECERR_HIGH_READ","High unmapped read did not return DECERR")
         if (env.axil.monitor.writes<8 || env.axil.monitor.reads<3)
           `uvm_fatal("AXIL_MONITOR","AXI-Lite monitor did not observe the expected register traffic")
         axil_read(8'h00,rdata,resp);
@@ -316,9 +384,13 @@ class thermo5_sku_axil_config_test extends thermo5_sku_bittrue_test;
         if (resp!=2'b00 || rdata[0])
           `uvm_fatal("AXIL_RESET_CONTROL","run_request did not reset to zero")
 
-            `uvm_info("SKU_PASS",coeff_transport_test ?
+            `uvm_info("SKU_PASS",tap4_identity_test ?
+              "THERMO5_AXIL_TAP4_IDENTITY_UVM_PASS: legal MAX_TAPS configuration crossed atomically; all four planes matched the identity bit-true oracle" :
+              (nonlinear_dpd_test ?
+              "THERMO5_AXIL_NONLINEAR_DPD_UVM_PASS: non-identity memory-polynomial coefficients crossed atomically; all four planes matched the bit-true MATLAB oracle" :
+              (coeff_transport_test ?
               "THERMO5_AXIL_COEFF_TRANSPORT_UVM_PASS: legal AXI coefficient payload crossed mailbox atomically with inactive taps; 56 four-plane words bit-true" :
-              "THERMO5_AXIL_CONFIG_UVM_PASS: illegal tap rejected; mailbox waited for DPD frame boundary; legal identity-equivalent two-tap config applied; all four planes bit-true",UVM_NONE)
+              "THERMO5_AXIL_CONFIG_UVM_PASS: illegal tap rejected; mailbox waited for DPD frame boundary; legal identity-equivalent two-tap config applied; all four planes bit-true")),UVM_NONE)
           end
         join
       end

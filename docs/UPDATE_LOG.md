@@ -1,5 +1,68 @@
 # Update Log
 
+## 2026-10-13 22:15 SGT - AXI-Lite routed OOC timing diagnosis and rerun
+
+- The full OOC implementation for `tid32_thermo5_axi_lite_axis_frontend_tx`
+  reached routed timing analysis at 218.75-MHz core, 100-MHz AXI-Lite and
+  125-MHz AXI-Stream. The result is FAIL_SETUP: WNS=-0.630 ns, TNS=-23.465 ns
+  across116 endpoints; WHS=+0.028 ns with no failing hold endpoints. AXI-Lite
+  and AXI-Stream intra-clock slack is positive.
+- The worst path is a memory-DPD lane3 DSP cascade to a RAMB18 input, with
+  4.888 ns data delay (2.634 ns logic, 2.254 ns routing). Other top failures
+  include route-dominated TID recursive-state carry paths. This is not a
+  CDC-path failure. Timing analysis also flags 527 inputs and308 outputs with
+  no I/O-delay budget; no parent/board I/O signoff is implied.
+- Vivado PID18420 was stopped after the routed FAIL_SETUP result was captured;
+  it remained blocked in `report_cdc -details` and had not produced `routed.dcp`,
+  `summary.csv`, or a completed CDC report. This is an incomplete OOC flow, not
+  a timing PASS. The OOC Tcl saves timing/checkpoint artifacts before CDC.
+- The first timing-driven candidate launch failed before Vivado emitted any
+  log content (Windows process status `0xC0000022`, access denied); this is a
+  tool-launch failure, not a DUT result. A fresh timing-driven OOC is now
+  running in `runs/thermo5_axil_timing_candidate3_20261013/` after launching
+  Vivado with the required Windows process environment. The previous synth
+  checkpoint is not reused because `rtl/axis/dsm_reset_sync.sv` changed after
+  it was generated.
+- Checks: `git diff --check` PASS. Baseline remains FAIL_SETUP; candidate3 has
+  no result yet. The 10-ns bundled-data max-delay is provisional and 527 input/
+  308 output delays are absent, so no parent/board I/O signoff is implied.
+
+## 2026-10-13 16:10 SGT - AXI-Lite generic/XPM VCS and URG closure update
+
+- Reran the current AXI-Lite UVM/URG target in licensed Rocky for generic and
+  real Vivado XPM FIFO builds. Both completed with
+  `THERMO5_AXIL_COVERAGE_MERGE_PASS`; each covered positive configuration and
+  coefficient-mailbox transfer with 56-word four-plane bit-true comparison,
+  illegal-frame assertion/reset recovery, mailbox-corruption assertion/reset
+  recovery, and `MAX_TAPS=0/5` guards. UVM reports had zero warnings/errors/
+  fatals; negative tests checked their expected RTL assertion/`$error`.
+- Added AXI-Lite monitor functional coverage for address/response/strobe,
+  AW/W ordering, response backpressure, and reset assertion/release; added a
+  read-only IP-ID write DECERR/readback-preservation check. Merged URG reports
+  show 100% for `write_cg`, `read_cg`, and `reset_cg` in both FIFO builds.
+- The RTL was not changed. The AXI-Lite RTL module's merged raw code score is
+  93.74% (line99.38%, condition95.95%, toggle82.13%, branch97.50%). The line315
+  `(0,1,1)` condition tuple, write-case default, and low16-bit coefficient
+  slices in bundled-data images remain OPEN; only the reviewed line88 tuple is
+  waived. No 100% raw code-coverage claim is made.
+- Evidence: `runs/thermo5_axil_signoff2_generic_20261013/` and
+  `runs/thermo5_axil_signoff2_xpm_20261013/`. Fresh Windows XSim still stopped
+  before elaboration; no new synthesis/CDC/RDC/routed-STA result is claimed.
+
+## 2026-10-13 15:43 SGT - AXI-Lite regression scope and status refreshed
+
+- Extended `thermo5-axil-vcs-regression` to run the legal coefficient-payload
+  mailbox test as a separate seed420104 VDB and include it in the URG merge.
+  This reuses the already existing test; it does not alter RTL behavior.
+- Corrected the AXI-Lite architecture/coverage records: functional covergroups
+  are 100% in the saved four-scenario merge, while raw module code coverage is
+  partial. The coefficient transport report is line98.12%, condition95.95%,
+  branch95.00%, toggle78.49%; exact remaining AXIL items are still OPEN.
+- Fresh Windows XSim seed610130 did not reach elaboration (`xvlog` exited
+  nonzero; empty compile log). WSL launch returned `E_ACCESSDENIED`, so no fresh
+  licensed VCS/URG run was possible. Prior 2026-10-12 generic/XPM evidence is
+  preserved; this update does not claim a new PASS or synthesis/timing signoff.
+
 ## 2026-10-13 10:12 SGT - Bit24 URG blocked by missing coverage license
 
 - Generic bit24 URG attempt exited1 with `URG-NLC No license key` and no report;
@@ -2826,3 +2889,36 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Remaining: seed610710 long-stream, URG, and per-lane audit are pending. No
   XPM bit24 PASS or overall100% raw coverage is claimed. The earlier short
   XPM smoke seed610709 and generic bit24 URG/audit remain PASS.
+
+## 2026-10-13 20:15 SGT - AXI-Lite coverage and verification closeout
+
+- Changed: refreshed the AXI-Lite verification closeout, frontier and control
+  architecture status. Added exact waiver-ledger rows for the formally proven
+  successful-write case default and the frozen `MAX_TAPS=4` elaboration guard;
+  the existing line-88 waiver remains the only prior waiver. No functional RTL
+  behavior or coverage database was altered. Corrected the simulation-only
+  reset assertion to avoid checking stale pre-NBA state during asynchronous
+  reset assertion on a clock edge.
+- Checks: VCS generic and real-XPM tap4 identity tests passed (seeds610160 and
+  610162); nonlinear memory-DPD coefficient tests passed (610161 and610163),
+  each with 56 four-plane MATLAB bit-true words and zero UVM errors/fatals.
+  AXI-Lite write/read/reset functional covergroups are100% for both builds.
+  Current merged raw module URG is98.21% (line99.38, condition95.95,
+  toggle100.00, branch97.50). Legal line315 tuple tests were separately
+  confirmed; low16 coefficient payload toggles are closed. VC Formal proves
+  3/3 assertions. Invalid `MAX_TAPS=0/5` tests observed their expected errors.
+  Current-source XSim tap4 generic/XPM passed; required P0 is7/7 and IP smoke
+  passed. `git diff --check` was run after the edits.
+- Limitations: the integrated raw URG remains98.21%; supplemental standalone
+  reset-window VDB cannot merge because its hierarchy differs. The high-
+  coefficient nonlinear XSim run terminated with an XSim kernel exception at
+  6.41us (not a DUT mismatch); VCS passes the same vector. Full Vivado OOC
+  reached route but failed setup and stopped before CDC/report finalization;
+  the timing-driven rerun is active. The 10ns bundled-data constraint is
+  provisional. Integrated reset/CDC/RDC and
+  routed STA are not signed off. No blanket coverage waiver or adjusted100%
+  score is claimed.
+- Evidence: `runs/thermo5_axil_final_vcs_{generic2,xpm2}_20261013/`,
+  `runs/thermo5_axil_cfg_formal_final_20261013/`,
+  `runs/thermo5_axil_cfg_unit_20261013/`, and
+  `runs/thermo5_axil_close_ooc_full_20261013/`.

@@ -1,5 +1,5 @@
 param(
-  [ValidateSet('synth','quick','full')][string]$Implementation = 'full',
+  [ValidateSet('synth','quick','full','timing')][string]$Implementation = 'full',
   [string]$Part = 'xczu15eg-ffvb1156-2-i',
   [double]$CoreMHz = 218.75,
   [double]$AxilMHz = 100.0,

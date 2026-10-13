@@ -24,7 +24,13 @@ module dsm_reset_sync (
   // synchronizer stages.  In particular, srst_n cannot rise on the first
   // local clock edge after asynchronous reset is released.
   always_ff @(posedge clk) begin
-    if (!arst_n || !sync_q[0]) begin
+    // Do not inspect the pre-NBA value of sync_q[1] on the same clock edge
+    // that asserts arst_n.  The asynchronous reset updates sync_q in the NBA
+    // region; including !arst_n here can therefore report a false failure
+    // when reset assertion happens exactly on clk.  The release check is the
+    // relevant contract: while reset is inactive but stage 0 has not yet
+    // sampled release, stage 1 must still be low.
+    if (arst_n && !sync_q[0]) begin
       assert (!srst_n)
         else $error("DSM synchronized reset released before two local clock edges");
     end

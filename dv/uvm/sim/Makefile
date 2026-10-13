@@ -76,7 +76,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         verdi questa questa-run questa-run-only run clean thermo5-vcs thermo5-vcs-run \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
         thermo5-axil-config-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
-        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression
+        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
 
 help:
 	@echo "Primary targets:"
@@ -86,7 +86,7 @@ help:
 	@echo "  make coverage-merge      Merge selected VCS coverage databases with URG"
 	@echo "  make thermo5-vcs-run     Compile/run two-clock thermo5/2-tap/DPD1 subsystem"
 	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
-	@echo "  make thermo5-axil-vcs-regression  Run AXI-Lite positive/negative tests and URG merge"
+	@echo "  make thermo5-axil-vcs-regression  Run AXI-Lite config/payload/negative tests and URG merge"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
 	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
@@ -227,16 +227,38 @@ thermo5-axil-vcs-parameter-guard:
 	grep -q 'THERMO5_AXIL_PARAMETER_GUARD_TEST_COMPLETE' $(THERMO5_OUT)/parameter_guard/run.log; \
 	echo "THERMO5_AXIL_PARAMETER_GUARD_PASS expected_errors=$$count simulator_exit=$$status"
 
+# Standalone configuration-block coverage test for cycle-accurate line-315
+# tuples during request/pending overlap and AXI-Lite-only reset. The integrated
+# thermo5 SKU still uses the common reset assertion contract.
+thermo5-axil-cfg-unit-vcs:
+	@mkdir -p $(THERMO5_OUT)/cfg_coverage_unit/csrc
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
+		-cm line+cond+fsm+tgl+branch+assert -top thermo5_axil_cfg_coverage_tb \
+		-Mdir=$(THERMO5_OUT)/cfg_coverage_unit/csrc \
+		rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv \
+		dv/uvm/tb/thermo5_axil_cfg_coverage_tb.sv \
+		-o $(THERMO5_OUT)/cfg_coverage_unit/simv \
+		-l $(THERMO5_OUT)/cfg_coverage_unit/compile.log
+	@cd $(ROOT) && $(THERMO5_OUT)/cfg_coverage_unit/simv -no_save \
+		-cm line+cond+fsm+tgl+branch+assert \
+		-cm_dir $(THERMO5_OUT)/cfg_coverage_unit/simv.vdb \
+		-l $(THERMO5_OUT)/cfg_coverage_unit/run.log
+	@grep -Fq 'THERMO5_AXIL_CFG_RESET_WINDOW_COVERAGE_PASS' $(THERMO5_OUT)/cfg_coverage_unit/run.log
+
 thermo5-axil-vcs-regression:
 	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420101 \
 		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test \
 		THERMO5_EXTRA_ARGS=+THERMO5_AXIL_INTERNAL_COVERAGE_PROBE
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420104 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test \
+		THERMO5_EXTRA_ARGS=+AXIL_COEFF_TRANSPORT
 	@$(MAKE) --no-print-directory thermo5-axil-vcs-negative THERMO5_USE_AXIL=1
 	@$(MAKE) --no-print-directory thermo5-axil-vcs-mailbox-negative THERMO5_USE_AXIL=1
 	@$(MAKE) --no-print-directory thermo5-axil-vcs-parameter-guard THERMO5_USE_AXIL=1
 	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_axil_config_test_seed420101.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_config_test_seed420104.vdb \
 		$(THERMO5_OUT)/cov_axil_illegal_frame_seed420102.vdb \
 		$(THERMO5_OUT)/cov_axil_mailbox_fault_seed420103.vdb \
 		-report $(THERMO5_OUT)/coverage -dbname thermo5_axil_merged \
