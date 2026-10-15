@@ -4,6 +4,17 @@ Updated: 2026-10-15 12:04 SGT. Status: active, thermo5 AXI-Lite OOC route PASS; 
 This is the source of truth for current execution state. Detailed next actions
 and exit gates are in [the closure plan](thermo5-gap-closure.md).
 
+This branch is the thermo5-only code view. Shared CDC/FIFO, DPD, interpolation,
+TID, reference-model, and verification infrastructure remains where the thermo5
+filelists require it; unrelated SKU source code remains on `main` and `thermo3`.
+
+Branch cleanup verification (2026-10-15): generic and real-XPM VCS/UVM frozen
+SKU runs PASSed (six positive cases plus expected illegal-frame control per
+implementation, three extra MATLAB payload seeds per implementation); both
+URG merges exited 0. The 56-word direct XSim full-chain test also PASSed. These
+checks validate the retained file closure; they do not upgrade the existing
+OOC-only timing boundary to parent/board signoff.
+
 ## Target and source of truth
 
 - Digital DUT: `tid32_thermo5_axis_frontend_tx`, W16, INTERP_TAPS2,

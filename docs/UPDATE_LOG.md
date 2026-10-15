@@ -1,5 +1,27 @@
 # Update Log
 
+## 2026-10-15 14:11 SGT - thermo5 focused branch source closure
+
+- Scope: created `thermo5` from the pushed full-project `main`; removed 666
+  tracked non-thermo5 source/build/verification files from this branch only.
+  `main` remains the full-project source. Preserved shared CDC/FIFO, DPD,
+  interpolation and TID dependencies required by the thermo5 tops, plus its
+  XSim/VCS-UVM/formal, MATLAB reference, ZU15EG and OOC flows.
+- Updated branch README, AGENTS navigation/check commands, execution frontier,
+  repo-hygiene required file, and thermo5 CI branch trigger. No RTL behavior
+  changed. The remaining `thermo5` source closure was checked against the UVM
+  filelist and package includes.
+- Verification: VCS/UVM frozen-SKU generic and real-XPM regressions PASSed;
+  each includes six positive directed cases, an expected illegal-frame control,
+  and three extra MATLAB payload seeds. Both URG merges exited 0; raw hierarchy
+  code scores were 87.79% generic and 80.66% XPM (not a 100% coverage claim).
+  Direct 56-word XSim full-chain bit-true test PASSed at seed 861015. Both staged
+  and unstaged `git diff --check` returned 0.
+- Reproducibility: local logs/VDBs are retained only under the ignored
+  `runs/thermo5_branch_verify_20261015_e/`; no generated artifacts were added.
+  Existing ZU15EG routed evidence remains applicable because RTL is unchanged;
+  parent I/O, system CDC/RDC, and physical board output remain OPEN.
+
 ## 2026-10-15 12:04 SGT - Thermo5 AXI-Lite ZU15EG routed OOC PASS
 
 - Scope: only the AXI-Lite thermo5 frontend SKU (`INTERP_TAPS=2`,

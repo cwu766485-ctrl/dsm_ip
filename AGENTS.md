@@ -2,14 +2,15 @@
 
 ## Project purpose
 
-This repository is a reusable DSM digital IP handoff package for digital IC design and verification.
+This branch is the thermo5-focused digital transmitter IP handoff package. The
+full multi-SKU repository remains on `main`.
 
 Main flows:
 
 - MATLAB fixed-point and bit-true reference modeling
 - Synthesizable Verilog/SystemVerilog RTL
 - SystemVerilog XSim verification
-- Vivado IP packaging
+- Thermo5 ZU15EG OOC synthesis and timing analysis
 - OOC synthesis, timing, and resource analysis
 - FPGA/RFSoC board-validation support
 
@@ -18,9 +19,9 @@ Main flows:
 - `rtl/`: synthesizable RTL and IP wrappers
 - `matlab/`: fixed-point models, vector generation, and analysis scripts
 - `dv/verif/`: simulation testbenches, vectors, and regression scripts
-- `ip/`: Vivado IP packaging flow
 - `syn/`: OOC synthesis scripts and reports
 - `fpga/`: board integration notes and local validation support
+- `tools/hw/`: thermo5 coverage, report, and closure utilities
 - `docs/`: specifications, status, plans, and handoff notes
 
 Read the relevant source files before making changes. Do not infer behavior from file names only.
@@ -53,26 +54,17 @@ When information conflicts, follow this order:
 After RTL changes:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_p0_all.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_ip_smoke.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_thermo5_i2_d1_axis.ps1 -VectorDir .\runs\uvm_thermo5_i2_d1\vectors
+wsl -d Rocky-8.10 -- bash -ilc 'export VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1; make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/thermo5_verify_<unique>'
 ```
 
-After MATLAB or algorithm changes:
-
-```powershell
-.\scripts\run_matlab_p0_bittrue_check.cmd
-```
-
-After IP wrapper or packaging changes:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1
-```
+After MATLAB or algorithm changes, regenerate the thermo5 oracle vectors and
+rerun the directed XSim/UVM bit-true tests above.
 
 After synthesis, timing, or resource changes:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_all_dsm.ps1 -Part xc7z020clg400-1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_thermo5_axil_control.ps1
 ```
 
 If a required tool is unavailable, report it clearly. Never claim a check passed unless it was run.
@@ -112,13 +104,17 @@ use the frontier as a chat transcript.
 
 ## Navigation and current status
 
+This branch is the thermo5-focused code view. The full multi-SKU source tree is
+preserved on `main`; this branch retains shared dependencies required by the
+thermo5 DUT and verification flows.
+
 Read `docs/ai-native/repository-map.md`, `docs/ai-native/design-verification-index.md`, `docs/ai-native/commands.md`, and `docs/exec-plans/active/execution-frontier.md` before work.
 
-- ASIC manifest: `eda.yaml`; DC top: `tid32_thermo3_axis_frontend_tx_asic_dc`.
-- FPGA thermo3/thermo5 routed OOC evidence is signed off at 218.75 MHz.
-- Frozen thermo5 ASIC DC mapping is PASS with reports/netlist/SVF; LEC is running and full timing/constraint signoff remains OPEN. This result does not sign off the default thermo3 top; see the frontier.
-- `rtl/` is canonical RTL; `dv/verif/` is directed DV; `dv/uvm/` is Linux UVM/formal. Both verification trees were physically migrated and consumers updated; see the migration map.
-- `syn/asic/` is the ASIC DC flow; `fpga/` is the vendor/device boundary; `matlab/` is the algorithm source of truth.
+- Thermo5 DUT top: `tid32_thermo5_axis_frontend_tx`; optional AXI-Lite wrapper: `tid32_thermo5_axi_lite_axis_frontend_tx`.
+- Thermo5 verification source of truth: `dv/uvm/sim/thermo5_sku_filelist.f`; directed XSim tests are under `dv/verif/`.
+- ZU15EG thermo5 AXI-Lite OOC routed evidence is positive at 218.75 MHz under the modeled OOC constraints. Parent I/O budgets, system CDC/RDC, and physical board output remain outside that signoff.
+- The `eda.yaml` and DC top for thermo3 are intentionally absent here; use the full `main` branch or the dedicated `thermo3` branch for that design.
+- `rtl/` is canonical RTL; `dv/verif/` is directed DV; `dv/uvm/` is thermo5 Linux UVM/formal; `syn/` and `fpga/` retain thermo5 integration flows; `matlab/` retains thermo5 reference models.
 
 Before changes: run `git status`, preserve generated/vendor/PDK content, and update the frontier after each non-trivial flow. Required smoke commands are listed in `docs/ai-native/commands.md`. Never treat unavailable tools or intermediate reports as PASS.
 

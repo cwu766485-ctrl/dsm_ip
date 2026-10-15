@@ -2,7 +2,7 @@ name: Thermo5 digital verification
 
 on:
   push:
-    branches: ['dv-de-portfolio-20261006']
+    branches: ['thermo5']
   workflow_dispatch:
   pull_request:
     paths:
@@ -27,7 +27,7 @@ jobs:
   licensed-dv:
     # Enable only on a trusted licensed runner. No vendor models, vectors,
     # tool logs, or licenses are installed on the public hosted runner.
-    if: (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/dv-de-portfolio-20261006') && vars.THERMO5_LICENSED_CI == 'enabled'
+    if: (github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/thermo5') && vars.THERMO5_LICENSED_CI == 'enabled'
     runs-on: [self-hosted, linux, synopsys]
     steps:
       - uses: actions/checkout@v4

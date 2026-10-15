@@ -25,7 +25,7 @@ jobs:
             "docs/CRITICAL_PATH_REPORT.md",
             "docs/README.md",
             "docs/UPDATE_LOG.md",
-            "rtl/filelist_p0.f"
+            "dv/uvm/sim/thermo5_sku_filelist.f"
           )
           foreach ($p in $required) {
             if (!(Test-Path $p)) {
