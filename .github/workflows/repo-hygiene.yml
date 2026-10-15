@@ -3,7 +3,7 @@ name: Repository hygiene
 on:
   pull_request:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, thermo3 ]
 
 jobs:
   hygiene:
@@ -22,10 +22,10 @@ jobs:
             "AGENTS.md",
             "docs/SPEC.md",
             "docs/VPLAN.md",
-            "docs/CRITICAL_PATH_REPORT.md",
             "docs/README.md",
             "docs/UPDATE_LOG.md",
-            "rtl/filelist_p0.f"
+            "rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv",
+            "dv/verif/scripts/run_xsim_tid32_thermo3_frontend_tx.ps1"
           )
           foreach ($p in $required) {
             if (!(Test-Path $p)) {

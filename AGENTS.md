@@ -1,130 +1,75 @@
-﻿# AGENTS.md
+# Thermo3 Branch Instructions
 
-## Project purpose
+## Scope and source priority
 
-This repository is a reusable DSM digital IP handoff package for digital IC design and verification.
+This branch contains the thermo3 Cartesian TID transmitter only. Do not add
+thermo5, alternate DSM families, generic portfolio experiments, or their
+verification code here. `main` remains the full repository and `thermo5` is a
+separate focused branch.
 
-Main flows:
+Read `docs/exec-plans/active/execution-frontier.md` and the relevant RTL,
+MATLAB reference, testbench, and source list before changing behavior. Resolve
+conflicts in this order: current user instruction, this file, executable
+filelists/scripts, MATLAB bit-true model, RTL, then prose/comments.
 
-- MATLAB fixed-point and bit-true reference modeling
-- Synthesizable Verilog/SystemVerilog RTL
-- SystemVerilog XSim verification
-- Vivado IP packaging
-- OOC synthesis, timing, and resource analysis
-- FPGA/RFSoC board-validation support
+## Core rules
 
-## Key Paths
+- Keep public project files in English.
+- Preserve MATLAB/RTL bit-true arithmetic, signedness, widths, scaling,
+  rounding, saturation, latency, reset, update order, and sample ordering.
+- Keep RTL synthesizable and interfaces stable unless explicitly requested.
+- Never claim a check passed unless the command completed and its PASS marker
+  was observed.
+- Do not commit credentials, licenses, PDK collateral, restricted board data,
+  tool caches, waveforms, generated logs, or run outputs.
+- Preserve existing generated/vendor collateral, reports, and untracked local
+  files. Put new disposable runs under the ignored `runs/` directory.
 
-- `rtl/`: synthesizable RTL and IP wrappers
-- `matlab/`: fixed-point models, vector generation, and analysis scripts
-- `dv/verif/`: simulation testbenches, vectors, and regression scripts
-- `ip/`: Vivado IP packaging flow
-- `syn/`: OOC synthesis scripts and reports
-- `fpga/`: board integration notes and local validation support
-- `docs/`: specifications, status, plans, and handoff notes
+## Thermo3 design boundary
 
-Read the relevant source files before making changes. Do not infer behavior from file names only.
+- Main two-clock top: `rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv`.
+- AXI ingress/CDC/gearbox: `rtl/axis/dsm_axis14_to_core8_cdc.sv` and FIFO,
+  reset, frame-gain, and frame-power dependencies listed in
+  `syn/asic/thermo_frontend_dc_sources.f`.
+- Core datapath: `rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv` and
+  `tid32_thermo3_fs4_multipa_tx.sv` plus their DPD, interpolation, GT-boundary,
+  and Cartesian-TID dependencies.
+- Bit-true source: `matlab/tx_bandpass_if/tid_thermo3_pipelined_step.m` and
+  the thermo3 vector generators in the same directory.
+- Directed tests: `dv/verif/`; this branch does not contain UVM.
+- OOC/ASIC/GT implementation entry points are under `syn/` and
+  `fpga/zu15eg/` / `fpga/thermo3_lp/`.
 
-## Core Rules
+## Required verification
 
-- Keep all public project files in English.
-- Do not commit passwords, tokens, licenses, server addresses, private account data, or restricted vendor/board collateral.
-- Preserve MATLAB/RTL bit-true behavior unless a behavior change is explicitly requested.
-- Do not change fixed-point width, signedness, scaling, rounding, truncation, saturation, reset state, update order, vector format, or latency silently.
-- Keep RTL synthesizable and interfaces stable.
-- Keep changes small, localized, and reviewable.
-- Place UVM work under `dv/uvm/`.
-- Do not add generated logs, waveform dumps, tool caches, or large temporary artifacts.
-
-## Source Priority
-
-When information conflicts, follow this order:
-
-1. Latest user instruction
-2. This file
-3. Regression scripts and filelists
-4. MATLAB bit-true reference
-5. RTL implementation
-6. Project documentation
-7. Code comments
-
-## Required Checks
-
-After RTL changes:
+After RTL changes, run all four directed thermo3 flows:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_p0_all.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_ip_smoke.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo3_frontend_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo3_fs4_multipa_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_axis14_to_core8_cdc.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_axis14_to_core8_cdc_xpm.ps1
 ```
 
-After MATLAB or algorithm changes:
+For changes to low-power control, also run baseline and LP sparse-TDD tests:
 
 ```powershell
-.\scripts\run_matlab_p0_bittrue_check.cmd
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_lp_power_activity.ps1 -Mode baseline -Workload tdd_sparse
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_lp_power_activity.ps1 -Mode lp -Workload tdd_sparse
 ```
 
-After IP wrapper or packaging changes:
+For synthesis/timing changes, use the thermo3-specific scripts and preserve
+unique run directories:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\ip\package_vivado_ip.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_tid32_thermo3_frontend_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_tid32_thermo3_fs4_multipa_tx.ps1
 ```
 
-After synthesis, timing, or resource changes:
+## Documentation and handoff
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_all_dsm.ps1 -Part xc7z020clg400-1
-```
-
-If a required tool is unavailable, report it clearly. Never claim a check passed unless it was run.
-
-## Documentation
-
-When tracked project behavior, structure, verification evidence, or limitations change, update the relevant docs and `docs/UPDATE_LOG.md`.
-
-Record:
-
-- date and time
-- changed files
-- reason for change
-- checks run
-- remaining limitations
-
-## Work Flow
-
-For every task:
-
-1. Read `docs/exec-plans/active/execution-frontier.md` and the relevant files.
-2. Identify the source of truth.
-3. Make the smallest safe change.
-4. Run the required checks.
-5. Update docs if needed.
-6. Report the result with exact checks and remaining risks.
-
-## Execution Frontier
-
-`docs/exec-plans/active/execution-frontier.md` is the concise source of truth
-for active execution state. Read it before work. Update it when a failure is
-reproduced, a root cause is confirmed, an implementation or verification
-milestone materially changes, work is paused/handed off, or the next action
-changes. Move completed module plans to `docs/exec-plans/inactive/`; do not
-use the frontier as a chat transcript.
-
-
-## Navigation and current status
-
-Read `docs/ai-native/repository-map.md`, `docs/ai-native/design-verification-index.md`, `docs/ai-native/commands.md`, and `docs/exec-plans/active/execution-frontier.md` before work.
-
-- ASIC manifest: `eda.yaml`; DC top: `tid32_thermo3_axis_frontend_tx_asic_dc`.
-- FPGA thermo3/thermo5 routed OOC evidence is signed off at 218.75 MHz.
-- Frozen thermo5 ASIC DC mapping is PASS with reports/netlist/SVF; LEC is running and full timing/constraint signoff remains OPEN. This result does not sign off the default thermo3 top; see the frontier.
-- `rtl/` is canonical RTL; `dv/verif/` is directed DV; `dv/uvm/` is Linux UVM/formal. Both verification trees were physically migrated and consumers updated; see the migration map.
-- `syn/asic/` is the ASIC DC flow; `fpga/` is the vendor/device boundary; `matlab/` is the algorithm source of truth.
-
-Before changes: run `git status`, preserve generated/vendor/PDK content, and update the frontier after each non-trivial flow. Required smoke commands are listed in `docs/ai-native/commands.md`. Never treat unavailable tools or intermediate reports as PASS.
-
-## Migration status
-
-- Physical migration map: `docs/exec-plans/active/physical-migration-map.json`.
-- `verif/` and `uvm_verif/` were physically migrated to `dv/verif/` and `dv/uvm/`; no ordinary legacy verification tree remains at the old paths.
-- Canonical target skeleton now includes `docs/spec/`, `docs/architecture/`, `docs/verification/`, `docs/exec-plans/{active,completed}/`, `tools/hw/`, `config/`, and `runs/`.
-<!-- organize-chip-project:generated-end -->
+Update `docs/UPDATE_LOG.md` and the concise execution frontier when status,
+evidence, or next steps materially change. Historical documentation is kept
+for provenance and may describe source that is intentionally absent from this
+focused branch. Treat board/GT integration evidence separately from RTL
+simulation and OOC timing.

@@ -3,7 +3,11 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 DC_SHELL=${DC_SHELL:-/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell}
 DB=${DSM_ASIC_STDCELL_DB:?set DSM_ASIC_STDCELL_DB to the TSMC28 RVT .db}
-FLAVOUR=${DSM_ASIC_FLAVOUR:?set DSM_ASIC_FLAVOUR to thermo3 or thermo5}
+FLAVOUR=${DSM_ASIC_FLAVOUR:-thermo3}
+if [[ "$FLAVOUR" != "thermo3" ]]; then
+  echo "This source branch supports only DSM_ASIC_FLAVOUR=thermo3" >&2
+  exit 2
+fi
 STAMP=$(date +%Y%m%d_%H%M%S)
 RUN=${DSM_ASIC_RUN_DIR:-$ROOT/syn/reports/asic_${FLAVOUR}_tsmc28_${STAMP}}
 COMPILE_MODE=${DSM_ASIC_COMPILE_MODE:-bounded}

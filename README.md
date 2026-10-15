@@ -1,122 +1,65 @@
-# DSM Digital Transmitter IP
+# Thermo3 Cartesian TID Transmitter
 
-Reusable digital transmitter IP with fixed-point MATLAB models, synthesizable
-RTL, AXI interfaces, DPD, interpolation, delta-sigma modulation, verification,
-Vivado packaging, FPGA implementation flows, and pre-layout ASIC evidence.
+This branch is the focused source and verification package for the thermo3
+digital transmitter. The complete multi-architecture repository remains on
+`main`; the thermo5-focused source branch is `thermo5`.
 
-## Current Validation SKU
-
-```text
-target               = xczu15eg-ffvb1156-2-i
-clock                = 100 MHz
-top                  = dsm_ip_axi_top
-ALGORITHM            = 3
-DUC_MODE             = 3
-INTERP_MODE          = 4
-INTERP_IMPL          = 0
-DPD                  = Memory-Poly5, 4 taps
-ENABLE_DPD_MEMORY    = 1
-ENABLE_DPD_POLY/LUT  = 0
-```
-
-The selected datapath is:
+## Datapath
 
 ```text
-AXI4-Stream Q1.15 complex I/Q
- -> 4-tap fifth-order memory-polynomial DPD
- -> x32 interpolation
- -> full-precision Fs/4 real-IF mixer
- -> one-bit band-pass EFDSM2
- -> rf_bit/rf_signed
+AXI-Stream: 14 complex samples/beat @ 125 MHz
+  -> asynchronous FIFO + exact 14:8 lane gearbox
+  -> 8 complex samples/word @ 218.75 MHz
+  -> frame-gain stage
+  -> x2 polyphase interpolation (8 -> 16 lanes)
+  -> 16-lane memory-polynomial DPD
+  -> x2 polyphase interpolation (16 -> 32 lanes)
+  -> two offset Cartesian TIDSM branches
+  -> two aligned 64-bit PA code planes
 ```
 
-The source defaults keep a broader development configuration. Product hardware
-is selected with compile-time parameters during synthesis; AXI-Lite cannot
-restore a branch removed by a generate condition.
+The two PA planes are intended for equal-weight external combination into
+three normalized levels. This RTL does not model the analog PA combiner or
+claim measured RF performance. Input samples are signed 16-bit I/Q; lane 0 is
+earliest. The stream rate is 1.75 Gcomplex/s at both the AXI and core
+boundaries. Each 64-bit output plane at 218.75 MHz represents a 14.0-Gb/s raw
+serial lane when connected to the configured GT boundary.
 
-## Implemented Capabilities
+The thermo3 top has an AXI-Stream data interface, two clock/reset domains,
+run/DPD coefficient controls, and two PA-plane ready/valid interfaces. There
+is no AXI-Lite register block in this branch.
 
-- Seven low-pass DSM families: LPDSM, LPDSM2, EFDSM, EFDSM2, MASH11,
-  MASH111, and MASH22.
-- Single-bit and parameterized multibit research implementations.
-- Bypass, Poly3/5/7, LUT, and memory-polynomial DPD.
-- x4/x8/x16 halfband and x32 CIC plus compensation-FIR interpolation.
-- AXI4-Lite control/status and AXI4-Stream TX input.
-- Backpressure, frame/sample/stall/error counters, and sticky errors.
-- Coefficient shadow banks, safe commit, saturation detection, and fallback.
-- Digital observer, monitor proxies, and an asynchronous feedback bridge.
-- Bare-metal PS/DMA replay and bounded calibration-search framework.
-- Directed XSim/MATLAB regressions, Linux VCS system-UVM regressions, Vivado IP
-  packaging, ZU15EG OOC scripts, and 28 nm Design Compiler flows.
+## RTL and reference model
 
-## Interfaces
-
-TX input samples are packed as:
-
-```text
-s_axis_tdata[15:0]  = signed I, Q1.15
-s_axis_tdata[31:16] = signed Q, Q1.15
-```
-
-AXI4-Stream transfers occur only on `tvalid && tready`. AXI4-Lite is the
-low-rate control plane for reset, DPD configuration, coefficient/LUT writes,
-observer controls, monitor readback, and status.
-
-The main BP SKU uses `rf_valid`, `rf_bit`, and `rf_signed`. Cartesian
-`i_bit/q_bit` outputs remain for compatible low-pass integration modes.
+- `rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv`: two-clock top.
+- `rtl/axis/dsm_axis14_to_core8_cdc.sv`: FIFO and 14:8 gearbox.
+- `rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv`: frame gain, x2/DPD/x2.
+- `rtl/tx_bandpass_if/tid32_thermo3_fs4_multipa_tx.sv`: paired TIDSM planes.
+- `matlab/tx_bandpass_if/tid_thermo3_pipelined_step.m`: bit-true TID oracle.
+- `syn/asic/thermo_frontend_dc_sources.f`: thermo3 ASIC/DC source manifest.
 
 ## Verification
 
+Windows/Vivado XSim commands from the repository root:
+
 ```powershell
-.\scripts\run_matlab_p0_bittrue_check.cmd
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo3_frontend_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo3_fs4_multipa_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_axis14_to_core8_cdc.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_axis14_to_core8_cdc_xpm.ps1
 ```
 
-The Linux VCS environment under `dv/uvm/` has a frozen-SKU system regression
-with Python integer reference scoreboarding. The 2026-08-16 run completed 20/20
-testcases with zero UVM errors/fatals and explicit anti-false-pass gates. This
-is a functional and functional-coverage closure for the frozen SKU; it is not
-100% RTL code coverage, CDC/RDC, gate-level, or all-SKU signoff. See
-`docs/VPLAN.md` for the full coverage and evidence boundary.
+The full AXI ingress low-power activity test can compare the same sparse-TDD
+payload under baseline and frame-safe enable control:
 
-## Implementation Evidence
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_lp_power_activity.ps1 -Mode baseline -Workload tdd_sparse
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_lp_power_activity.ps1 -Mode lp -Workload tdd_sparse
+```
 
-- ZU15EG DPD post-synthesis OOC evidence covers bypass, Poly3/5/7, LUT, and
-  memory-polynomial 1/2/4/6-tap configurations.
-- A historical ZU15EG full-TX routed/bitstream result exists for the older
-  Cartesian EFDSM/Fs4 `DUC_MODE=0` path.
-- The frozen BP EFDSM2 SKU has a ZU15EG routed OOC result at 100 MHz: setup
-  `WNS=+2.632 ns`, `TNS=0`, and zero setup failing endpoints. It uses 12,964
-  LUTs, 15,316 FFs, 266 DSP48s, and no BRAM/URAM. This is OOC evidence only;
-  a board XDC-constrained bitstream, I/O hold closure, and board replay remain
-  pending because the local board Vivado project is not in this repository.
-- The same BP SKU has retained 28 nm pre-layout DC evidence. A current structural
-  DC lint rerun is blocked by an unavailable Design Compiler license and must
-  not be reported as passing.
-- No physical PA/ADC feedback loop or measured RF signoff is claimed.
-
-## Repository Map
-
-| Path | Purpose |
-|---|---|
-| `rtl/` | Synthesizable datapath and wrappers |
-| `matlab/` | Fixed-point references, vectors, DPD models, and metrics |
-| `dv/verif/` | Directed SystemVerilog/XSim tests |
-| `dv/uvm/` | UVM verification scaffold |
-| `ip/` | Vivado IP packaging |
-| `syn/` | Vivado and Design Compiler flows |
-| `fpga/zu15eg/` | ZU15EG integration and bare-metal support |
-| `ads/` | Optional DPA circuit experiments |
-| `docs/` | Specification, verification plan, status, and evidence |
-
-Start with [the documentation index](docs/README.md) and
-[current status](docs/UPDATE_LOG.md).
-
-## Evidence Boundary
-
-MATLAB behavioral, ADS, FPGA OOC, FPGA routed, ASIC pre-layout, and measured RF
-results are separate evidence levels. Every performance claim must identify its
-configuration and source. Restricted board collateral, PDK files, licenses,
-credentials, generated logs, waveforms, and tool workspaces must not be
-committed.
+These are directed XSim tests, not UVM closure. The branch retains a
+thermo3-only Design Compiler flow, ZU15EG dual-SFP GT build flow, and OOC
+implementation scripts. A passing RTL simulation is not routed timing,
+board-level CDC/RDC, serial deskew, or measured RF signoff. Historical project
+evidence under `docs/` is retained for traceability; some records describe the
+full upstream repository rather than this branch's source contents.

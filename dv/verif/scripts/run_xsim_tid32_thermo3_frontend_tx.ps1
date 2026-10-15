@@ -3,7 +3,9 @@ $ErrorActionPreference='Stop'
 $repo=(Resolve-Path ((Join-Path $PSScriptRoot "..\..\.."))).Path
 $settings='D:\Xilinx\Vivado\2024.1\settings64.bat'
 if(!(Test-Path $settings)){throw 'Vivado settings are unavailable.'}
-$work=Join-Path $repo 'dv\verif\out_xsim_tid32_thermo3_frontend_tx'; New-Item -ItemType Directory -Force $work|Out-Null
+$work=Join-Path $repo ('runs\thermo3_frontend_xsim_'+(Get-Date -Format 'yyyyMMdd_HHmmss'))
+if(Test-Path -LiteralPath $work){throw "Output directory already exists: $work"}
+New-Item -ItemType Directory -Force $work|Out-Null
 & 'D:\MATLAB\R2025a\bin\matlab.exe' -batch "addpath(genpath('$($repo.Replace('\','/'))/matlab/tx_bandpass_if')); gen_tid32_thermo3_frontend_bittrue_vectors('$($work.Replace('\','/'))',$Words,$Seed,$Threshold);"
 if($LASTEXITCODE -ne 0){throw 'MATLAB frontend vector generation failed.'}
 $src=@('rtl\gt\gt_tx_user_bridge.sv','rtl\gt\gt_tx_raw64_boundary.sv','rtl\dpd\dpd_poly.v','rtl\dpd\dpd_memory_poly.v','rtl\dpd\dpd_vector16_memory_poly.sv','rtl\dpd\dpd_vector_elastic_buffer.sv','rtl\interp\dsm_interp_x2_polyphase_vector.sv','rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv','rtl\tx_bandpass_if\tid32_thermo3_fs4_multipa_tx.sv','rtl\tx_bandpass_if\tid32_thermo3_frontend_tx.sv','dv\verif\block\bp_dsm\tb\tb_tid32_thermo3_frontend_tx_bittrue.sv')|ForEach-Object{'"'+(Join-Path $repo $_)+'"'}

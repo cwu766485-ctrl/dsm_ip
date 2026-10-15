@@ -14,7 +14,4 @@ rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv
 rtl/tx_bandpass_if/tid32_thermo3_fs4_multipa_tx.sv
 rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv
 rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv
-rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv
-rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv
-rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv
 syn/rtl/tid32_thermo_asic_frontend_dc.sv

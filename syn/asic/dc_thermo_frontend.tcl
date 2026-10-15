@@ -1,5 +1,5 @@
-# Reproducible pre-layout DC synthesis for the thermo3/thermo5 ASIC wrappers.
-# Run with DSM_ASIC_FLAVOUR=thermo3 or thermo5 and a permitted TSMC28 DB.
+# Reproducible pre-layout DC synthesis for the thermo3 ASIC wrapper.
+# Run with DSM_ASIC_FLAVOUR=thermo3 and a permitted TSMC28 DB.
 set ROOT [file normalize [file join [file dirname [info script]] .. ..]]
 foreach v {DSM_ASIC_STDCELL_DB DSM_ASIC_RUN_DIR DSM_ASIC_FLAVOUR} {
   if {![info exists ::env($v)] || $::env($v) eq ""} { error "missing $v" }
@@ -27,6 +27,7 @@ close $lf
 
 set src [list \
   "$ROOT/rtl/axis/dsm_reset_sync.sv" \
+  "$ROOT/rtl/axis/dsm_frame_power_ctrl.sv" \
   "$ROOT/rtl/axis/dsm_async_fifo.sv" \
   "$ROOT/rtl/axis/dsm_axis14_to_core8_cdc.sv" \
   "$ROOT/rtl/frontend/dsm_frame_gain_vector.sv" \
@@ -41,16 +42,11 @@ set src [list \
   "$ROOT/rtl/tx_bandpass_if/tid32_thermo3_fs4_multipa_tx.sv" \
   "$ROOT/rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv" \
   "$ROOT/rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv" \
-  "$ROOT/rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv" \
-  "$ROOT/rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv" \
-  "$ROOT/rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv" \
   "$ROOT/syn/rtl/tid32_thermo_asic_frontend_dc.sv"]
 analyze -format sverilog $src
 if {$::env(DSM_ASIC_FLAVOUR) eq "thermo3"} {
   set top tid32_thermo3_axis_frontend_tx_asic_dc
-} elseif {$::env(DSM_ASIC_FLAVOUR) eq "thermo5"} {
-  set top tid32_thermo5_axis_frontend_tx_asic_dc
-} else { error "DSM_ASIC_FLAVOUR must be thermo3 or thermo5" }
+} else { error "DSM_ASIC_FLAVOUR must be thermo3" }
 elaborate $top
 current_design $top
 link

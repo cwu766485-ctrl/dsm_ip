@@ -5,7 +5,11 @@ set -euo pipefail
 # the PID and run directory; completion is determined by status.txt and the
 # normal report/netlist gates in run_thermo_frontend_dc.sh.
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
-FLAVOUR=${DSM_ASIC_FLAVOUR:?set DSM_ASIC_FLAVOUR to thermo3 or thermo5}
+FLAVOUR=${DSM_ASIC_FLAVOUR:-thermo3}
+if [[ "$FLAVOUR" != "thermo3" ]]; then
+  echo "This source branch supports only DSM_ASIC_FLAVOUR=thermo3" >&2
+  exit 2
+fi
 STAMP=$(date +%Y%m%d_%H%M%S)
 RUN=${DSM_ASIC_RUN_DIR:-$ROOT/runs/${STAMP}-dc-${FLAVOUR}-tsmc28}
 mkdir -p "$RUN"

@@ -1,12 +1,12 @@
 param(
-  [ValidateSet('thermo3','thermo5')][string]$Flavour = 'thermo3',
+  [ValidateSet('thermo3')][string]$Flavour = 'thermo3',
   [ValidateSet('baseline','lp')][string]$Mode = 'baseline',
   [ValidateSet('continuous','burst','idle','tdd_sparse')][string]$Workload = 'continuous',
   [string]$VivadoRoot = 'D:\Xilinx\Vivado\2024.1'
 )
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
-$out = Join-Path $repo "runs\lp_power_activity\${Flavour}_${Mode}_${Workload}"
+$out = Join-Path $repo "runs\lp_power_activity\${Flavour}_${Mode}_${Workload}_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 $xvlog = Join-Path $VivadoRoot 'bin\xvlog.bat'
 $xelab = Join-Path $VivadoRoot 'bin\xelab.bat'
@@ -32,9 +32,6 @@ $sources = @(
   'rtl/tx_bandpass_if/tid32_thermo3_fs4_multipa_tx.sv',
   'rtl/tx_bandpass_if/tid32_thermo3_frontend_tx.sv',
   'rtl/tx_bandpass_if/tid32_thermo3_axis_frontend_tx.sv',
-  'rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv',
-  'rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv',
-  'rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv',
   'dv/verif/subsystem/tx_frontend/tb/tb_tid32_thermo_axis_lp_power.sv'
 ) | ForEach-Object { Join-Path $repo $_ }
 $simTop = "tb_tid32_${Flavour}_${Mode}_lp_power"
@@ -70,20 +67,12 @@ try {
 $pass = Select-String -Path (Join-Path $out 'xsim.log') -Pattern 'LP_POWER_WORKLOAD_PASS' | Select-Object -Last 1
 if (!$pass) { throw "PASS marker missing; see $out\xsim.log" }
 if (!(Test-Path -LiteralPath $saif)) { throw "SAIF missing: $saif" }
-# XSim emits the generate block and DUT instance as one escaped SAIF name
-# (for example g_thermo3\.u_dut).  Normalize that source-only hierarchy to
-# the u_dut instance present in the routed OOC wrapper before Vivado mapping.
+# The thermo3-only testbench instantiates the DUT directly as u_dut, matching
+# the routed OOC wrapper hierarchy used by the SAIF comparison flow.
 $saifText = [System.IO.File]::ReadAllText($saif)
-$escapedDut = if ($Flavour -eq 'thermo5') {
-  'g_thermo5\.u_dut'
-} else {
-  'g_thermo3\.u_dut'
+if (!$saifText.Contains('(INSTANCE  u_dut')) {
+  throw 'expected direct thermo3 DUT hierarchy is missing from SAIF: u_dut'
 }
-if (!$saifText.Contains("(INSTANCE  $escapedDut")) {
-  throw "expected XSim DUT hierarchy missing from SAIF: $escapedDut"
-}
-$saifText = $saifText.Replace("(INSTANCE  $escapedDut", '(INSTANCE  u_dut')
-[System.IO.File]::WriteAllText($saif, $saifText, [System.Text.Encoding]::ASCII)
 $pass.Line | Set-Content -LiteralPath (Join-Path $out 'result.txt')
 Write-Host $pass.Line
 Write-Host "SAIF=$saif"

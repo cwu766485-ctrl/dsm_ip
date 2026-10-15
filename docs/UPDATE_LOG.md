@@ -3122,3 +3122,23 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   budgets and omits delay on 527 inputs/308 outputs in the AXIL OOC report.
   Real parent I/O constraints remain OPEN pending actual clock source,
   producer Tco, receiver setup/hold/capture budgets, and SI5341 configuration.
+
+## 2026-10-15 - Thermo3 focused branch split
+
+- Changed: created `thermo3` from the complete `main` source baseline and
+  pruned 751 tracked non-thermo3 RTL, DV, scripts, and build-flow files. Kept
+  thermo3 RTL dependencies, directed XSim, MATLAB references, ASIC/DC and
+  ZU15EG implementation flows. Vendor IP, board collateral, archived reports,
+  ignored run outputs, and pre-existing untracked local directories were
+  preserved. Replaced top-level instructions and AI-native navigation with
+  branch-specific scope; recorded current evidence in the execution frontier.
+- Verification after pruning: thermo3 frontend, dual Fs/4 planes, generic
+  14:8 CDC/gearbox, and XPM 14:8 CDC/gearbox XSim all passed. Sparse-TDD
+  baseline and low-power runs both accepted 32 beats and emitted 56 outputs
+  with matching digest `c677eb13eb65fd6a`; baseline underflow=1 and LP
+  underflow=0. SAIF files were produced for both runs.
+- Additional consistency fix: added `dsm_frame_power_ctrl.sv` to the thermo3
+  ASIC DC Tcl source list, matching the checked-in source manifest.
+- Limits: no new OOC/route, ASIC DC, UVM coverage closure, GT deskew, board
+  test, or power reduction measurement was run or claimed as part of this
+  branch split.

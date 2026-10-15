@@ -2,14 +2,15 @@
 $repo=(Resolve-Path ((Join-Path $PSScriptRoot "..\..\.."))).Path
 $settings='D:\Xilinx\Vivado\2024.1\settings64.bat'
 if(!(Test-Path $settings)){throw 'Vivado settings are unavailable.'}
-$work=Join-Path $repo 'verif\out_xsim_axis14_to_core8_cdc'
+$work=Join-Path $repo ('runs\thermo3_axis14_cdc_xsim_'+(Get-Date -Format 'yyyyMMdd_HHmmss'))
+if(Test-Path -LiteralPath $work){throw "Output directory already exists: $work"}
 New-Item -ItemType Directory -Force $work|Out-Null
 $src=@(
   'rtl\axis\dsm_reset_sync.sv',
   'rtl\axis\dsm_async_fifo.sv',
   'rtl\axis\dsm_xpm_async_fifo.sv',
   'rtl\axis\dsm_axis14_to_core8_cdc.sv',
-  'verif\block\axis\tb_dsm_axis14_to_core8_cdc.sv'
+  'dv\verif\block\axis\tb_dsm_axis14_to_core8_cdc.sv'
 )|ForEach-Object{'"'+(Join-Path $repo $_)+'"'}
 Push-Location $work
 try {

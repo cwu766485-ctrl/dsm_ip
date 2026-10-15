@@ -6,8 +6,7 @@
 // sample words; the baseline testbench performs the documented external FIFO
 // prefill, while LP_MODE delegates prefill/drain sequencing to the controller.
 module tb_tid32_thermo_axis_lp_power #(
-  parameter bit LP_MODE = 1'b0,
-  parameter bit THERMO5 = 1'b0
+  parameter bit LP_MODE = 1'b0
 );
   localparam int W = 16;
   localparam int TOTAL_WORDS = 512;
@@ -32,8 +31,6 @@ module tb_tid32_thermo_axis_lp_power #(
   wire s_ready, s_fifo_full, core_underflow, core_protocol_error;
   wire pa_p_valid, pa_m_valid;
   wire [63:0] pa_p_data, pa_m_data;
-  wire [3:0] pa_valid;
-  wire [63:0] pa_data [0:3];
 
   integer sent_words = 0;
   integer output_words = 0;
@@ -52,7 +49,6 @@ module tb_tid32_thermo_axis_lp_power #(
   // same, allowing direct activity coverage to be measured against the DCP.
   generate
 `ifdef POSTROUTE_FUNCSIM
-    if (!THERMO5) begin : g_thermo3
 `ifdef POSTROUTE_LP
       tid32_thermo3_axis_frontend_tx_lp_ooc u_dut (
 `else
@@ -68,25 +64,7 @@ module tb_tid32_thermo_axis_lp_power #(
         .pa_p_valid(pa_p_valid), .pa_p_data(pa_p_data), .pa_m_valid(pa_m_valid),
         .pa_m_data(pa_m_data)
       );
-    end else begin : g_thermo5
-`ifdef POSTROUTE_LP
-      tid32_thermo5_axis_frontend_tx_lp_ooc u_dut (
 `else
-      tid32_thermo5_axis_frontend_tx_ooc u_dut (
-`endif
-        .clk125(clk125), .rst125_n(rst125_n), .s_valid(s_valid),
-        .s_frame_start(s_frame_start), .s_i_vec(s_i_vec), .s_q_vec(s_q_vec),
-        .s_frame_gain(s_frame_gain), .clk218(clk218), .rst218_n(rst218_n),
-        .run_request(run_request), .s_ready(s_ready), .s_fifo_full(s_fifo_full),
-        .core_underflow(core_underflow), .core_protocol_error(core_protocol_error),
-        .dpd_active_taps(3'd1), .c1_re(c1_re), .c1_im(c1_im),
-        .c3_re(c3_re), .c3_im(c3_im), .c5_re(c5_re), .c5_im(c5_im),
-        .pa_valid(pa_valid), .pa0_data(pa_data[0]), .pa1_data(pa_data[1]),
-        .pa2_data(pa_data[2]), .pa3_data(pa_data[3])
-      );
-    end
-`else
-    if (!THERMO5) begin : g_thermo3
       tid32_thermo3_axis_frontend_tx #(
         .ENABLE_LOW_POWER_CTRL(LP_MODE), .FPGA_USE_XPM_FIFO(1'b0)
       ) u_dut (
@@ -103,24 +81,6 @@ module tb_tid32_thermo_axis_lp_power #(
         .pa_p_valid(pa_p_valid), .pa_p_data(pa_p_data), .pa_p_ready(1'b1),
         .pa_m_valid(pa_m_valid), .pa_m_data(pa_m_data), .pa_m_ready(1'b1)
       );
-    end else begin : g_thermo5
-      tid32_thermo5_axis_frontend_tx #(
-        .BYPASS_DPD(1'b0), .ENABLE_LOW_POWER_CTRL(LP_MODE),
-        .FPGA_USE_XPM_FIFO(1'b0)
-      ) u_dut (
-        .s_axis_aclk(clk125), .s_axis_aresetn(rst125_n),
-        .s_axis_tvalid(s_valid), .s_axis_tready(s_ready),
-        .s_axis_i_vec(s_i_vec), .s_axis_q_vec(s_q_vec),
-        .s_axis_tuser_frame_start(s_frame_start),
-        .s_axis_tuser_frame_gain(s_frame_gain), .s_axis_fifo_full(s_fifo_full),
-        .core_clk(clk218), .core_aresetn(rst218_n),
-        .core_enable(run_request), .core_underflow(core_underflow),
-        .core_protocol_error(core_protocol_error), .dpd_active_taps(3'd1),
-        .c1_re(c1_re), .c1_im(c1_im), .c3_re(c3_re), .c3_im(c3_im),
-        .c5_re(c5_re), .c5_im(c5_im),
-        .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(4'hf)
-      );
-    end
 `endif
   endgenerate
 
@@ -219,25 +179,14 @@ module tb_tid32_thermo_axis_lp_power #(
   always @(posedge clk218) begin
     core_cycles <= core_cycles + 1;
     if (rst218_n) begin
-      if (!THERMO5) begin
-        if (pa_p_valid !== pa_m_valid) begin
-          $error("thermo3 output-valid alignment failure");
-          error_count <= error_count + 1;
-        end
-        if (pa_p_valid && pa_m_valid) begin
-          output_digest <= {output_digest[62:0], output_digest[63]} ^
-                           pa_p_data ^ {pa_m_data[31:0], pa_m_data[63:32]};
-          output_words <= output_words + 1;
-        end
-      end else if (pa_valid != 4'h0) begin
-        if (pa_valid !== 4'hf) begin
-          $error("thermo5 output-valid alignment failure: %b", pa_valid);
-          error_count <= error_count + 1;
-        end else begin
-          output_digest <= {output_digest[60:0], output_digest[63:61]} ^
-                           pa_data[0] ^ pa_data[1] ^ pa_data[2] ^ pa_data[3];
-          output_words <= output_words + 1;
-        end
+      if (pa_p_valid !== pa_m_valid) begin
+        $error("thermo3 output-valid alignment failure");
+        error_count <= error_count + 1;
+      end
+      if (pa_p_valid && pa_m_valid) begin
+        output_digest <= {output_digest[62:0], output_digest[63]} ^
+                         pa_p_data ^ {pa_m_data[31:0], pa_m_data[63:32]};
+        output_words <= output_words + 1;
       end
     end
   end
@@ -311,8 +260,8 @@ module tb_tid32_thermo_axis_lp_power #(
     end
     run_request = 1'b0;
     if (error_count != 0) $fatal(1, "power workload errors=%0d", error_count);
-    $display("LP_POWER_WORKLOAD_PASS flavour=%s mode=%s workload=%s sent=%0d outputs=%0d digest=%016h cycles=%0d underflow=%0b",
-             THERMO5 ? "thermo5" : "thermo3", LP_MODE ? "lp" : "baseline",
+    $display("LP_POWER_WORKLOAD_PASS flavour=thermo3 mode=%s workload=%s sent=%0d outputs=%0d digest=%016h cycles=%0d underflow=%0b",
+             LP_MODE ? "lp" : "baseline",
              workload, sent_words, output_words, output_digest,
              measurement_cycles, core_underflow);
     $finish;
@@ -323,25 +272,13 @@ endmodule
 // parsing in the Windows Xilinx launcher (which can split NAME=VALUE).
 module tb_tid32_thermo3_baseline_lp_power;
   tb_tid32_thermo_axis_lp_power #(
-    .LP_MODE(1'b0), .THERMO5(1'b0)
+    .LP_MODE(1'b0)
   ) u_tb ();
 endmodule
 
 module tb_tid32_thermo3_lp_lp_power;
   tb_tid32_thermo_axis_lp_power #(
-    .LP_MODE(1'b1), .THERMO5(1'b0)
-  ) u_tb ();
-endmodule
-
-module tb_tid32_thermo5_baseline_lp_power;
-  tb_tid32_thermo_axis_lp_power #(
-    .LP_MODE(1'b0), .THERMO5(1'b1)
-  ) u_tb ();
-endmodule
-
-module tb_tid32_thermo5_lp_lp_power;
-  tb_tid32_thermo_axis_lp_power #(
-    .LP_MODE(1'b1), .THERMO5(1'b1)
+    .LP_MODE(1'b1)
   ) u_tb ();
 endmodule
 

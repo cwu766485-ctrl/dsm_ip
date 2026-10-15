@@ -1,6 +1,7 @@
 {
   "generator": "organize-chip-project",
   "root": ".",
+  "scope": "Historical full-main inventory snapshot from before the thermo3 branch split; not the active branch file map.",
   "file_count": 43926,
   "top_directories": [
     ".github",

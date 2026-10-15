@@ -7,7 +7,8 @@ $xpm='D:\Xilinx\Vivado\2024.1\data\ip\xpm\xpm_fifo\hdl\xpm_fifo.sv'
 $glbl='D:\Xilinx\Vivado\2024.1\data\verilog\src\glbl.v'
 if(!(Test-Path $settings)){throw 'Vivado settings are unavailable.'}
 if(!(Test-Path $xpmCdc) -or !(Test-Path $xpmMemory) -or !(Test-Path $xpm) -or !(Test-Path $glbl)){throw 'XPM FIFO sources are unavailable.'}
-$work=Join-Path $repo 'verif\out_xsim_axis14_to_core8_cdc_xpm'
+$work=Join-Path $repo ('runs\thermo3_axis14_cdc_xpm_xsim_'+(Get-Date -Format 'yyyyMMdd_HHmmss'))
+if(Test-Path -LiteralPath $work){throw "Output directory already exists: $work"}
 New-Item -ItemType Directory -Force $work|Out-Null
 $src=@(
   $glbl,
@@ -18,8 +19,8 @@ $src=@(
   'rtl\axis\dsm_async_fifo.sv',
   'rtl\axis\dsm_xpm_async_fifo.sv',
   'rtl\axis\dsm_axis14_to_core8_cdc.sv',
-  'verif\block\axis\tb_dsm_axis14_to_core8_cdc.sv',
-  'verif\block\axis\tb_dsm_axis14_to_core8_cdc_xpm.sv'
+  'dv\verif\block\axis\tb_dsm_axis14_to_core8_cdc.sv',
+  'dv\verif\block\axis\tb_dsm_axis14_to_core8_cdc_xpm.sv'
 )|ForEach-Object{if([System.IO.Path]::IsPathRooted($_)){'"'+$_+'"'}else{'"'+(Join-Path $repo $_)+'"'}}
 Push-Location $work
 try {
