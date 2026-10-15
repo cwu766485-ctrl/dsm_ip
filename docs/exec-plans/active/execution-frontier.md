@@ -1,6 +1,6 @@
 # Execution frontier
 
-Updated: 2026-10-13 21:43 SGT. Status: active, board-free graduate DV/DE closure.
+Updated: 2026-10-15 12:04 SGT. Status: active, thermo5 AXI-Lite OOC route PASS; parent I/O signoff OPEN.
 This is the source of truth for current execution state. Detailed next actions
 and exit gates are in [the closure plan](thermo5-gap-closure.md).
 
@@ -17,6 +17,50 @@ and exit gates are in [the closure plan](thermo5-gap-closure.md).
   four-plane64-bit words. Preserve widths, signedness, reset, latency and oracle.
 - Canonical paths: RTL `rtl/`, directed DV `dv/verif/`, UVM/formal `dv/uvm/`,
   ASIC flows `syn/asic/`, vendor/board boundary `fpga/`. No board is available.
+
+## Latest thermo5 AXI-Lite timing iteration (2026-10-15)
+
+- Scope: only `tid32_thermo5_axi_lite_axis_frontend_tx` on ZU15EG, with the
+  existing 125 MHz AXIS / 218.75 MHz core / 100 MHz AXI-Lite OOC clocks and
+  `INTERP_TAPS=2`, `DPD_MAX_TAPS=4`, XPM FIFO. No other SKU is in this run.
+- RTL: inserted two-entry, word-atomic registered-ready queues at the CDC to
+  frame-gain, interp1 to DPD, DPD to interp2, and interp2 to TID boundaries.
+  Frame-start and gain metadata travel with their corresponding vectors. This
+  adds two fixed cycles at the newly buffered ingress and TID boundary; the
+  existing DPD/interp boundary register latency is retained. FIFO payload is
+  don't-care while invalid and only control state is reset.
+- Functional checks on the current RTL: required P0 XSim 7/7 and IP smoke PASS;
+  thermo5 AXI-Lite generic and XPM 56-word four-plane bit-true tests with PA
+  ready stress PASS (seeds 420204 and 420205). `git diff --check` PASS.
+- Fresh synth checkpoint and separate reopen/report validation:
+  `runs/thermo5_axil_readytree_synth_20261015/`. Mapped resources: 84,771 LUT,
+  88,497 FF, 1,936 DSP48E2, 6.5 BRAM tiles. Pre-placement diagnostic WNS/WHS
+  are +1.143/+0.078 ns; the worst path is now a DPD DSP/ALU datapath, not the
+  former end-to-end ready path. This is not routed timing closure. The synthesis
+  launcher returned nonzero on `Failed to load feature 'vivado'` after writing
+  the checkpoint; the separate checkpoint validation exited 0.
+- An earlier single-cut experiment remains a failed iteration in
+  `runs/thermo5_axil_readycut_synth_20261015/` (pre-placement WNS=-0.339 ns),
+  and is not the current candidate.
+- Timing-driven ZU15EG OOC route completed from the saved `physopt.dcp` in
+  `runs/thermo5_axil_readytree_route_20261015_20261015_114457/`. Router
+  verification passed; all 218,958 routable nets are fully routed, with zero
+  route errors. Vivado reported 103 ordinary warnings, 0 critical warnings,
+  and 0 errors; warnings concern OOC clock-source/part-pin metadata. Final
+  core WNS/TNS/WHS/THS are +0.198/0.000/+0.018/0.000 ns;
+  AXI-Lite and AXIS clock domains also have positive setup/hold slack. There are
+  zero failing endpoints under the modeled constraints. Final routed resources:
+  81,576 LUTs (71,041 LUT logic and 10,535 LUTRAM), 88,407 CLB registers,
+  1,936 DSP48E2, and 6.5 BRAM tiles. The worst path is now inside the memory-DPD DSP
+  pipeline (4.067 ns data delay, 1.424 ns routed net delay), not the
+  former long ready/CE path.
+- This is an OOC internal timing PASS only. `check_timing.rpt` still reports
+  527 input ports without input delay and 308 output ports without output
+  delay; OOC ports also lack parent `HD.PARTPIN_LOCS`. It does report zero
+  unconstrained internal endpoints. Real parent/board I/O timing, clock-source
+  modeling, and system-level reset/CDC/RDC remain OPEN. Preserve these route
+  reports as evidence; do not generalize this result to a board-level or full
+  top-level timing signoff.
 
 ## Optional thermo5 AXI-Lite configuration extension (2026-10-11)
 
@@ -211,22 +255,100 @@ and 308 outputs without I/O delay, so this is only a constrained OOC internal
 timing result. Vivado PID18420 was stopped while blocked in the detailed
 CDC-report stage; that run has no routed checkpoint, final flow summary or
 completed CDC report. The result is FAIL_SETUP, not PASS. A fresh timing-driven
-OOC rerun using current RTL is active in
-`runs/thermo5_axil_timing_candidate3_20261013/`; no candidate result is yet
-available. The 10 ns bundled-data max-delay is provisional; integrated
-reset/CDC/RDC remains open. If RTL is retimed, rerun bit-true tests before
-accepting the new implementation.
+candidate3 using current RTL was interrupted after extended placement/CRP work
+because system commit headroom fell below 400 MB. It wrote no routed checkpoint
+or timing summary; its 56.9 MB current-source synthesized DCP and utilization
+report are preserved in `runs/thermo5_axil_timing_candidate3_20261013/`. A
+default-directive checkpoint continuation completed `opt_design` and saved
+`runs/thermo5_axil_route_resume_20261014_0110/optimized.dcp` (55.0 MB), then
+exited during global placement/PBP before producing `placed.dcp`. No correlated
+Windows Application Error or resource-exhaustion event was found; the cause is
+unknown. A second elevated run reopened the optimized checkpoint, validated
+the three clocks and reached Phase 2 Global Placement. At that point Vivado
+peaked at 8.73 GB and Windows reported about 591 MB available, so it was
+interrupted to protect the workstation; no placed checkpoint was written.
+System memory recovered to about 8.8 GB and the optimized checkpoint remains
+intact. The checkpoint-resume script supports `synth`, `optimized`, `placed`,
+and `physopt`. Retry placement only when more system memory is available or
+with an explicitly lower-memory implementation strategy. The 10 ns
+bundled-data max-delay is provisional; integrated reset/CDC/RDC remains open.
+If RTL is retimed, rerun bit-true tests before accepting the new implementation.
 The high-coefficient nonlinear XSim run crashed in the simulator kernel at
 6.41 us; the same bit-true test passed in VCS generic and XPM.
+
+On 2026-10-14, resumed the current-source optimized checkpoint in
+`runs/thermo5_axil_route_resume_20261014_1405/`. `place_design` completed
+successfully (59 Infos, 1 congestion warning, 0 critical warnings, 0 errors),
+then generated `placed.dcp`; `phys_opt_design` also completed (96 Infos,
+8 warnings, 0 critical warnings, 0 errors) and generated `physopt.dcp`.
+Placement WNS was -0.577 ns; phys-opt estimated WNS/TNS was -0.592/-19.509 ns.
+Routing passed pre-route DRC with zero errors, then reported intermediate
+WNS/TNS/WHS/THS = -0.588/-13.508/-0.015/-0.060 ns. The router estimated
+congestion level 6 and entered `Phase 5 Rip-up And Reroute`, Global Iteration 0.
+The run was stopped when system available memory fell to about 0.60 GB; memory
+recovered after exit. The placed and physopt checkpoints and log are preserved;
+there is no `routed.dcp`, final timing/route report, or completed OOC PASS.
+Route warnings also report missing `HD.PARTPIN_LOCS` for OOC ports, and the
+OOC has no real parent I/O delay budget. Resume from `physopt.dcp` only with a
+resource-safe routing plan; final setup/hold and route status remain OPEN.
+
+Follow-up route attempts on 2026-10-14 resumed from the same `physopt.dcp`.
+Timing-driven `RuntimeOptimized` and `RuntimeOptimized -no_psir` both reached
+Phase 8.2 with intermediate WNS/TNS/WHS/THS = -0.630/-23.610/+0.027/0.000 ns,
+then were deliberately interrupted at 0.36 GB and 0.33 GB available RAM,
+respectively. Neither produced final timing reports. A completed
+`Quick -no_psir` diagnostic is in
+`runs/thermo5_axil_route_resume_20261014_161911_quick/`: all 209,406 routable
+nets routed with zero routing errors and `routed.dcp` was written, but WNS/WHS
+are -4.240/-0.019 ns (`FAIL_SETUP`). Quick is non-timing-driven and is only a
+routability/report-generation check, not timing signoff. Its timing report also
+shows 527 input and 308 output ports without I/O delay; parent-level I/O budget
+is still absent. Thus the optional AXI-Lite wrapper has a completed quick-route
+artifact but no passing timing-driven routed OOC result. Resume the timing-
+driven route from the preserved `physopt.dcp` only when adequate RAM headroom is
+available; timing closure and parent CDC/RDC remain OPEN.
+
+## Shared RTL timing optimization (2026-10-14)
+
+- Changed `rtl/dpd/dpd_memory_poly.v`: split three-term gain reduction over
+  existing s5/s6 boundaries and reused the existing s7 complex-product stage;
+  fixed-point arithmetic and intended total latency are unchanged. Changed
+  `rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv`: added equivalent local I/Q
+  feedback copies per four-row bank, with simulation invariants.
+- Verification: required P0 XSim 7/7 and IP smoke PASS; current-source AXIL
+  generic/XPM 56-word tests and tap4-identity tests PASS. VCS AXIL nonlinear
+  memory-DPD passed with generic and real XPM FIFO; all four planes matched the
+  MATLAB oracle (56 words, zero UVM warnings/errors/fatals).
+- Synthesis: fresh 56.3 MB DCP and utilization report are in
+  `runs/thermo5_axil_timing_opt_synth_20261014/`; separate Vivado checkpoint
+  validation exited0. Mapping: 83,557 LUT, 84,847 FF, 1,936 DSP48E2, 6.5 BRAM
+  tiles. The initial synth launcher returned nonzero after saving the DCP
+  (`Failed to load feature 'vivado'`); do not label that invocation clean PASS.
+- Physical status: unplaced diagnostic WNS=-0.734 ns; its current worst path is
+  GT-valid through ready/backpressure to XPM BRAM enable, so it does not yet
+  show whether DSP→RAMB18 or TID fanout improved. A fresh placement attempt
+  wrote only `optimized.dcp`; it was stopped during PBP at 1.24 GB available
+  memory. No placed/physopt DCP or timing-driven route for modified RTL exists.
+  Previous routed baseline remains FAIL_SETUP WNS=-0.630/WHS=+0.028 ns.
+- Required XC7Z020 DSM OOC suite completed: 12/14 PASS, with
+  `p0_ooc_mb_ef2` FAIL_TIMING (WNS=-0.093 ns) and
+  `p0_ooc_mb_mash22` FAIL_TIMING (WNS=-0.688 ns). These are separate small DSM
+  tops, not the thermo5 AXIL top. Full CSV/reports:
+  `syn/reports/ooc_xc7z020clg400_1_20261014_221303/summary_all.csv`.
+- Parent timing remains OPEN: board XDC marks 125 MHz and its I/O delays as
+  assumptions. Asked for actual clock source, producer Tco and consumer
+  capture budgets, and SI5341 configuration. Resume placement from the new
+  optimized DCP only with substantial headroom above the observed 10.7 GB
+  placement peak; timing-driven routing must then start from a new physopt DCP.
 
 ## Current evidence
 
 | Workstream | Actual result | Evidence / remaining limit |
 | --- | --- | --- |
 | Licensed DV and hosted CI | Local current-source package PASS; hosted CI OPEN | Fresh Rocky package `runs/thermo5_current_source_dv_resume_20261008/dv_package.json`: coverage, formal and bug jobs PASS for digest `0e1d0d9040bb4f7aba2905295cf7f117d432a2fdf1b2ebfe38300674ca1089f8` (202 RTL/DV files). GitHub Actions37462007850 applies only to commit `a9b0bc6f67f575e9bb98085b1e064f9eddc886f2`; no hosted result covers the dirty source. |
-| UVM/scoreboard and code coverage | Generic bit24 simulation + URG + 16-lane audit PASS; fresh XPM bit24 seed610710 is running; raw coverage remains OPEN | Generic seed610704: 16,777,222 four-plane bit-true words, all16 counter resets, signed endpoints, zero UVM errors/fatals. Its same-binary URG confirms bit24 toggles both ways in all16 `.u_dpd` lanes; raw score87.01% (line87.09, condition76.46, toggle85.50, FSM100, branch73, assertion100). XPM 56-word VCS smoke seed610709 PASSed with zero UVM errors/fatals. Long stream uses fresh VDB `cov_thermo5_sku_long_counter_test_seed610710.vdb` and 2.5 GB of oracle files staged on WSL ext4 to avoid the observed `/mnt/e` 9P I/O wait. Partial seed610708 was intentionally stopped and excluded; seeds610705-610707 also remain excluded. |
+| UVM/scoreboard and code coverage | Generic and XPM bit24 long-stream simulation + separate URG + 16-lane audit PASS; raw coverage remains OPEN | Both FIFO builds passed 16,777,222 four-plane bit-true words, all16 counter resets, signed endpoints, and zero UVM errors/fatals. Same-binary URG confirms bit24 toggles both ways in all16 DPD lanes for each FIFO. Raw scores: generic87.01% (line87.09, condition76.46, toggle85.50, FSM100, branch73, assertion100); XPM80.18% (line76.99, condition67.89, toggle82.91, FSM90.91, branch62.37, assertion100). Bits25-31 remain reachable/open (224 directional misses per FIFO); raw coverage is not closed. XPM VDB used 2.5 GB oracle files staged on WSL ext4. Partial seeds610705-610708 remain excluded. |
 | Exact XPM reset bins | Previous 464-trial phase grid PASS; fresh edge-observed 400-trial search PASS; target remains OPEN | New pre/post-`posedge core_clk` observation reports 5,464 stage1 edges, zero stage1+`rd_rst_i` edges, zero `stage1_valid->invalid` hits. Search is not a formal unreachability proof; no waiver. |
-| Counter and other coverage gaps | Partial coverage remains OPEN | Bit23 is closed on both FIFO models; generic bit24 is closed by same-binary URG and 16/16 lane-direction audit; XPM bit24 is pending seed610708 and its separate URG. Bits25-31 remain reachable/open. Generic interpolation clamp/condition bins and XPM vendor line/condition/branch/toggle gaps remain open. Do not waive reachable counters. |
+| Counter and other coverage gaps | Partial coverage remains OPEN | Bit23 and bit24 are closed on both FIFO models by same-binary URG and 16/16 lane-direction audits. Bits25-31 remain reachable/open. Generic interpolation clamp/condition bins and XPM vendor line/condition/branch/toggle gaps remain open. Do not waive reachable counters. |
 | AXI-Lite configuration edge | Functional cases closed; raw coverage adjudicated, physical signoff OPEN | Current raw score98.21%; line315 tuples hit in separate legal tests; exact line88/write-default/parameter-guard dispositions are in the waiver ledger. OOC route and integrated CDC/RDC remain open. |
 | Scoped VC Formal | Scoped milestones proven; full payload OPEN | Oct7 DPD19/20 assertions proven including no-saturation/count-zero; full identity payload inconclusive. Valid interpolation16 assertions/5 covers PASS; actual XPM residual7/9 PASS; legal XPM reset2 assertions/4 covers/2 unreachable reentries PASS. Qualified FWFT cover inconclusive. Exact matching-source manifests in convergence record. |
 | Exact missing-bin audit | AUDITED_OPEN | `runs/thermo5_coverage_reasons_20261007/`: every missing code/condition/signal and reason; exact XPM FSM transitions. Not an URG exclusion/signoff report. |
@@ -271,8 +393,8 @@ words checked and all16 lane counters cleared. Full details:
 
 ## Remaining priority
 
-1. Current generic/XPM raw counter remainder:256 reachable directions across
-   bits31:24 in all16 DPD counters; later high bits remain OPEN until hit.
+1. Current generic/XPM raw counter remainder:224 reachable directions across
+   bits31:25 in all16 DPD counters; later high bits remain OPEN until hit.
    Generic retains four interpolation
    clamp lines and four branch arms; valid-payload proof does not cover invalid
    startup payload evaluation.
@@ -311,11 +433,11 @@ words checked and all16 lane counters cleared. Full details:
     fatals. Initial detached seed610708 spent most wall time blocked in WSL
     `p9_client_rpc` while reading the 2.5 GB vector set from `/mnt/e`; it was
     stopped after 47 CPU seconds with exit255 and its partial VDB is excluded.
-    All eight oracle `.mem` files were staged under
-    `/tmp/thermo5_bit24_xpm_610710/vectors`; new detached XPM seed610710 is
-    active using that ext4 copy and VDB
-    `cov_thermo5_sku_long_counter_test_seed610710.vdb`. Its finalizer will
-    perform XPM-only URG and the 16-lane audit after successful completion.
+     All eight oracle `.mem` files were staged under
+     `/tmp/thermo5_bit24_xpm_610710/vectors`. XPM seed610710 has now PASSed
+     16,777,222 four-plane words; its fresh VDB completed XPM-only URG with
+     exit0 and the 16-lane audit confirms both bit24 directions in all16
+     counters. Raw XPM score after that VDB is80.18%; bits25-31 remain open.
     The first concurrent XPM seed610705 was stopped under memory pressure,
     seed610706 received SIGHUP, and seed610707 exited255 before UVM start due
     license-server connection failure; those VDBs remain excluded. Bits25-31

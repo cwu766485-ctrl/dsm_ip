@@ -38,11 +38,10 @@ module dpd_memory_poly #(
   localparam integer MUL_W = 2 * W;
   localparam integer PWR_W = 32;
   localparam integer ACC_W = 64;
-  // The extra register after the complex products gives Vivado a dedicated
-  // DSP output stage before the subtract/add and Q2.14 rescale stage.
-  // Stage the four-tap reduction as a balanced registered tree.  This changes
-  // latency only; arithmetic, rounding, saturation and sample ordering remain
-  // identical to the scalar fixed-point model.
+  // The gain polynomial is split across the existing s5/s6 boundaries so no
+  // single cycle has to reduce all three coefficient terms.  The former s7
+  // product-copy stage is reused for the complex products; total latency and
+  // arithmetic, rounding, saturation and sample ordering are unchanged.
   localparam integer PIPE_STAGES = 11;
   // Keep a legal declaration for the compile-time one-tap configuration.
   localparam integer HISTORY_TAPS = (MAX_TAPS > 1) ? (MAX_TAPS - 1) : 1;
@@ -109,12 +108,14 @@ module dpd_memory_poly #(
   reg signed [W-1:0] q_s5 [0:MAX_TAPS-1];
   reg signed [ACC_W-1:0] gain_re_s5 [0:MAX_TAPS-1];
   reg signed [ACC_W-1:0] gain_im_s5 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] gain_c5_re_s5 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] gain_c5_im_s5 [0:MAX_TAPS-1];
   reg tap_enable_s5 [0:MAX_TAPS-1];
 
-  reg signed [ACC_W-1:0] i_gr_s6 [0:MAX_TAPS-1];
-  reg signed [ACC_W-1:0] q_gi_s6 [0:MAX_TAPS-1];
-  reg signed [ACC_W-1:0] i_gi_s6 [0:MAX_TAPS-1];
-  reg signed [ACC_W-1:0] q_gr_s6 [0:MAX_TAPS-1];
+  reg signed [W-1:0] i_s6 [0:MAX_TAPS-1];
+  reg signed [W-1:0] q_s6 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] gain_re_s6 [0:MAX_TAPS-1];
+  reg signed [ACC_W-1:0] gain_im_s6 [0:MAX_TAPS-1];
   reg tap_enable_s6 [0:MAX_TAPS-1];
 
   reg signed [ACC_W-1:0] i_gr_s7 [0:MAX_TAPS-1];
@@ -297,23 +298,23 @@ module dpd_memory_poly #(
         i_s5[tap] <= i_s4[tap];
         q_s5[tap] <= q_s4[tap];
         gain_re_s5[tap] <= c1_re_s4[tap] +
-                           shift_acc_rfrac(c3r_r2_s4[tap]) +
-                           shift_acc_rfrac(c5r_r4_s4[tap]);
+                           shift_acc_rfrac(c3r_r2_s4[tap]);
         gain_im_s5[tap] <= c1_im_s4[tap] +
-                           shift_acc_rfrac(c3i_r2_s4[tap]) +
-                           shift_acc_rfrac(c5i_r4_s4[tap]);
+                           shift_acc_rfrac(c3i_r2_s4[tap]);
+        gain_c5_re_s5[tap] <= shift_acc_rfrac(c5r_r4_s4[tap]);
+        gain_c5_im_s5[tap] <= shift_acc_rfrac(c5i_r4_s4[tap]);
         tap_enable_s5[tap] <= tap_enable_s4[tap];
 
-        i_gr_s6[tap] <= i_s5[tap] * gain_re_s5[tap];
-        q_gi_s6[tap] <= q_s5[tap] * gain_im_s5[tap];
-        i_gi_s6[tap] <= i_s5[tap] * gain_im_s5[tap];
-        q_gr_s6[tap] <= q_s5[tap] * gain_re_s5[tap];
+        i_s6[tap] <= i_s5[tap];
+        q_s6[tap] <= q_s5[tap];
+        gain_re_s6[tap] <= gain_re_s5[tap] + gain_c5_re_s5[tap];
+        gain_im_s6[tap] <= gain_im_s5[tap] + gain_c5_im_s5[tap];
         tap_enable_s6[tap] <= tap_enable_s5[tap];
 
-        i_gr_s7[tap] <= i_gr_s6[tap];
-        q_gi_s7[tap] <= q_gi_s6[tap];
-        i_gi_s7[tap] <= i_gi_s6[tap];
-        q_gr_s7[tap] <= q_gr_s6[tap];
+        i_gr_s7[tap] <= i_s6[tap] * gain_re_s6[tap];
+        q_gi_s7[tap] <= q_s6[tap] * gain_im_s6[tap];
+        i_gi_s7[tap] <= i_s6[tap] * gain_im_s6[tap];
+        q_gr_s7[tap] <= q_s6[tap] * gain_re_s6[tap];
         tap_enable_s7[tap] <= tap_enable_s6[tap];
 
         term_i_s8[tap] <= tap_enable_s7[tap] ?

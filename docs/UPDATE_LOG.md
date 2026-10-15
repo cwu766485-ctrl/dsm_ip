@@ -1,5 +1,114 @@
 # Update Log
 
+## 2026-10-15 12:04 SGT - Thermo5 AXI-Lite ZU15EG routed OOC PASS
+
+- Scope: only the AXI-Lite thermo5 frontend SKU (`INTERP_TAPS=2`,
+  `DPD_MAX_TAPS=4`, XPM FIFO) on `xczu15eg-ffvb1156-2-i`; resumed the current
+  synthesis candidate through `opt_design`, placement, physical optimization,
+  and default timing-driven `route_design`.
+- Result: Vivado exited successfully. All 218,958 routable nets are fully
+  routed and route verification passed with zero route errors. Final
+  WNS/TNS/WHS/THS = +0.198/0.000/+0.018/0.000 ns; no setup or hold endpoints
+  fail under the modeled constraints. AXI-Lite and AXIS clocks also have
+  positive setup/hold slack. Vivado reported 103 ordinary warnings,
+  0 critical warnings, and 0 errors; warnings concern OOC clock-source and
+  part-pin metadata. Routed resources: 81,576 LUTs (71,041 LUT logic,
+  10,535 LUTRAM), 88,407 CLB registers, 1,936 DSP48E2s, and 6.5 BRAM tiles.
+- Worst path is now a memory-DPD DSP pipeline path from lane 8 `r4_full_s2`
+  DSP register to a DSP A/B input register (4.067 ns data delay, including
+  1.424 ns routed net delay); the former ready/CE fanout path is no longer the
+  critical path.
+- Evidence: `runs/thermo5_axil_readytree_route_20261015_20261015_114457/`;
+  resumable implementation checkpoint: `runs/thermo5_axil_readytree_place_physopt_20261015_20261015_110018/`.
+  The final timing summary reports zero unconstrained internal endpoints, but
+  `check_timing.rpt` still lists 527 inputs without input delays and 308
+  outputs without output delays, and OOC ports lack parent `HD.PARTPIN_LOCS`.
+  This is an internal OOC timing PASS, not parent/board I/O signoff. Parent
+  timing budgets and system-level CDC/RDC/reset review remain open.
+- Functional regression evidence for this RTL iteration remains: generic and
+  real-XPM 56-word four-plane bit-true PA-ready-stress tests pass (seeds
+  420204/420205), P0 XSim 7/7, and IP smoke PASS. This entry changes status
+  documentation only; no RTL changed in this route run.
+
+## 2026-10-15 10:48 SGT - Thermo5 AXI-Lite ready-tree timing iteration
+
+- Replaced the single-point ready cut with four two-entry word-atomic
+  registered-ready queues at CDC/frame-gain, interp1/DPD, DPD/interp2, and
+  interp2/TID boundaries. Frame-start and frame-gain metadata stay attached
+  to their samples; the active AXI-Lite SKU configuration and arithmetic are
+  unchanged. The extra ingress and final queues add two fixed core cycles.
+- Current-source checks: generic and XPM thermo5 AXI-Lite 56-word bit-true
+  regressions with PA-ready stress pass; required P0 XSim passes 7/7; IP smoke
+  passes; `git diff --check` passes.
+- Fresh ZU15EG synth checkpoint was separately reopened and report generation
+  exited 0. Mapped resources are 84,771 LUT, 88,497 FF, 1,936 DSP48E2, and 6.5
+  BRAM tiles. Unplaced diagnostic WNS/WHS are +1.143/+0.078 ns; the top path
+  is now inside the memory-DPD DSP/ALU lane. This is not routed timing closure.
+- The synth launcher returned nonzero after writing the DCP with
+  `Failed to load feature 'vivado'`, matching the earlier launcher-exit issue.
+  The separate checkpoint validation completed successfully. Timing-driven
+  route remains pending: free physical memory was 11.68 GiB versus a prior
+  10.7 GiB placement peak; waiting for safe workstation headroom. OOC ports
+  still lack real parent I/O delay budgets.
+- Evidence: `runs/thermo5_axil_readytree_synth_20261015/`; an earlier single
+  ready-cut iteration with WNS=-0.339 ns is preserved in
+  `runs/thermo5_axil_readycut_synth_20261015/` and is superseded.
+
+## 2026-10-14 04:04 SGT - OOC route paused at workstation memory limit
+
+- Relaunched Vivado with the required elevated Windows environment from the
+  saved 55.0 MB `optimized.dcp`. It reopened the checkpoint, validated all
+  three expected clocks, and progressed through placer initialization into
+  `Phase 2 Global Placement` (`runs/thermo5_axil_route_resume_20261014_0405/`).
+- At the Phase 2 boundary Vivado had peaked at 8.73 GB and Windows reported
+  about 591 MB available physical memory. I interrupted the run before the
+  workstation became unstable. It did not save `placed.dcp`; the original
+  `optimized.dcp` remains intact. System memory recovered to about 8.8 GB.
+- The prior unexplained placement exit still has no correlated Windows crash
+  or resource-exhaustion event. The new run's stop was deliberate due to low
+  available memory. PowerShell parsing and `git diff --check` pass; no routed
+  STA result is available and no timing PASS is claimed.
+- GitHub `main` contains commit `93faef8`. Route helper and current status
+  updates are subsequent local changes and have not been pushed.
+
+## 2026-10-14 03:49 SGT - Resume OOC placement from optimized checkpoint
+
+- The first default-directive continuation successfully reopened the current
+  synthesis DCP, completed `opt_design`, and saved
+  `runs/thermo5_axil_route_resume_20261014_0110/optimized.dcp` (55.0 MB).
+  Vivado exited during global placement/PBP before producing `placed.dcp`; the
+  log contains no Tcl/Vivado error summary, and no correlated Windows
+  Application Error or resource-exhaustion event was found. The exit cause is
+  therefore unknown, not attributed to OOM.
+- Extended the checkpoint-resume Tcl/PowerShell flow to accept
+  `ResumeFrom=optimized`, so placement can restart directly from the saved
+  optimized checkpoint. PowerShell parser validation and `git diff --check`
+  pass. A placement retry from the saved checkpoint was attempted and stopped
+  at low available workstation memory; see the 04:04 update above.
+- The measured baseline remains FAIL_SETUP (WNS=-0.630 ns, TNS=-23.465 ns,
+  WHS=+0.028 ns). No new routed result is claimed. Parent I/O constraints,
+  CDC/RDC and bundled-data timing review remain open.
+- GitHub `main` contains commit `93faef8`; the current route helper and status
+  updates are subsequent local changes and have not been pushed.
+
+## 2026-10-14 01:10 SGT - Resource-bounded OOC route continuation
+
+- Timing-driven candidate3 was interrupted after extended placement/clock-region
+  work when system commit headroom fell below 400 MB. It had no routed
+  checkpoint, timing summary, or route status. Its current-source 56.9 MB
+  `synthesized.dcp`, clocks, and synthesis utilization report remain intact in
+  `runs/thermo5_axil_timing_candidate3_20261013/`.
+- Added checkpoint-resumable OOC scripts under `syn/`. They save optimized,
+  placed, and post-phys-opt checkpoints; use default implementation directives
+  rather than the memory-intensive Explore/AggressiveExplore sequence; and save
+  timing evidence before CDC. Scripts are added but the resume route has not yet
+  been run.
+- Baseline remains FAIL_SETUP (WNS=-0.630 ns, TNS=-23.465 ns, WHS=+0.028 ns).
+  No new timing PASS is claimed; parent I/O budgets, CDC/RDC, and the detailed
+  CDC report remain OPEN.
+- GitHub `main` contains confirmed commit `93faef8`. The checkpoint-resume flow
+  and this status update are later local changes and have not been pushed.
+
 ## 2026-10-13 22:15 SGT - AXI-Lite routed OOC timing diagnosis and rerun
 
 - The full OOC implementation for `tid32_thermo5_axi_lite_axis_frontend_tx`
@@ -2922,3 +3031,94 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   `runs/thermo5_axil_cfg_formal_final_20261013/`,
   `runs/thermo5_axil_cfg_unit_20261013/`, and
   `runs/thermo5_axil_close_ooc_full_20261013/`.
+
+## 2026-10-14 15:34 SGT - AXI-Lite checkpoint OOC route attempt
+
+- Changed: refreshed the active execution frontier and AXI-Lite architecture
+  status with current implementation evidence. No RTL or verification behavior
+  changed.
+- Checks: resumed current-source `optimized.dcp` using
+  `syn/run_route_ooc_thermo5_axil_from_checkpoint.ps1` in
+  `runs/thermo5_axil_route_resume_20261014_1405/`. `place_design` completed
+  with 0 errors/0 critical warnings and one high-congestion warning, saving
+  `placed.dcp`. `phys_opt_design` completed with 0 errors/0 critical warnings
+  and eight ordinary warnings, saving `physopt.dcp`. Pre-route DRC passed with
+  zero errors. Placement WNS was -0.577 ns; phys-opt estimated WNS/TNS was
+  -0.592/-19.509 ns; the intermediate routing summary was
+  WNS/TNS/WHS/THS=-0.588/-13.508/-0.015/-0.060 ns. The router estimated
+  congestion level 6 and entered rip-up/reroute Global Iteration 0.
+- Limitations: the route was stopped when Windows available memory fell to
+  about 0.60 GB. Memory recovered after stopping. `placed.dcp`, `physopt.dcp`,
+  and the Vivado log are preserved; no routed checkpoint, final route status,
+  or final WNS/WHS exists. OOC part-pin and parent I/O-delay constraints remain
+  incomplete. This attempt is not a routed timing PASS or physical signoff.
+
+## 2026-10-14 15:38 SGT - XPM counter bit24 coverage closure
+
+- Changed: updated the current verification frontier and bit24 closure record.
+  No RTL, oracle data, or coverage database was modified.
+- Checks: existing licensed VCS/UVM XPM seed610710 completed with exit0 and
+  PASSed 16,777,222 four-plane bit-true output words, all16 counter resets,
+  signed endpoints, and zero UVM warnings/errors/fatals. Its same-binary XPM-
+  only URG and exact 16-lane audit completed with exit0; all16 DPD lanes saw
+  both sample-count bit24 directions. Raw XPM hierarchy score after merge is
+  80.18% (line76.99, condition67.89, toggle82.91, FSM90.91, branch62.37,
+  assertion100). Generic bit24 had already closed at87.01% raw score.
+- Limitations: reachable bits25-31 remain OPEN (224 directional misses per
+  FIFO). The XPM FWFT transition and unrelated generic/XPM code-coverage gaps
+  remain open; this is not raw100% code-coverage closure.
+- Evidence: `runs/thermo5_bit23_vcs_xpm_20261012/` and
+  `runs/thermo5_bit24_oracle_20261012/finalizer_610710_launcher.log`.
+
+## 2026-10-14 16:32 SGT - AXI-Lite routed OOC continuation
+
+- Changed: extended the checkpoint route helper with an explicit `-NoPsir`
+  option and refreshed the AXI-Lite physical-status notes. No RTL or functional
+  behavior changed. PowerShell syntax parsing and `git diff --check` passed.
+- Checks: two timing-driven continuations from the saved physopt checkpoint
+  reached Phase 8.2; both were deliberately interrupted when available RAM
+  reached 0.36 GB and 0.33 GB. Intermediate WNS/TNS/WHS/THS was
+  -0.630/-23.610/+0.027/0.000 ns. A `Quick -no_psir` route then completed with
+  zero routing errors; all 209,406 routable nets are fully routed and
+  `routed.dcp`, timing, route-status, and utilization reports were generated.
+- Result/limits: Quick-route WNS/WHS=-4.240/-0.019 ns (FAIL_SETUP). Because
+  Quick is non-timing-driven, it is not timing signoff. The current wrapper
+  lacks I/O delays on 527 inputs and 308 outputs; parent-level timing is open.
+  The prior full timing-driven OOC also failed setup at WNS=-0.630 ns. Resume
+  timing-driven route only with sufficient RAM headroom; no PASS is claimed.
+- Evidence: `runs/thermo5_axil_route_resume_20261014_1405/`,
+  `runs/thermo5_axil_route_resume_20261014_1545_runtimeopt/`,
+  `runs/thermo5_axil_route_resume_20261014_160131_no_psir/`, and
+  `runs/thermo5_axil_route_resume_20261014_161911_quick/`.
+
+## 2026-10-14 22:41 SGT - DSP/TID timing optimization and OOC rerun
+
+- Changed: retimed the existing memory-DPD gain reduction across s5/s6 in
+  `rtl/dpd/dpd_memory_poly.v`, reusing s7 for complex products; replicated the
+  TID I/Q feedback state into local four-row banks in
+  `rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv`. Intended arithmetic,
+  output ordering, and total pipeline latency are unchanged. Added optional
+  timing report output to `syn/validate_thermo5_axil_checkpoint.tcl`.
+- Verification: required P0 XSim 7/7, IP smoke, current-source 56-word generic
+  and real-XPM AXIL tests, tap4 identity tests, and nonlinear DPD VCS/UVM tests
+  on generic/XPM all passed; four-plane output matched MATLAB with zero UVM
+  warnings/errors/fatals. `git diff --check` passed.
+- OOC: `run_ooc_all_dsm.ps1 -Part xc7z020clg400-1` completed (launcher exit0),
+  with 12/14 configurations PASS. `p0_ooc_mb_ef2` failed timing at WNS=-0.093 ns
+  and `p0_ooc_mb_mash22` at WNS=-0.688 ns. These are separate small DSM tops.
+  Full reports are in
+  `syn/reports/ooc_xc7z020clg400_1_20261014_221303/summary_all.csv`.
+- Thermo5 AXIL synthesis created and separately reopened a 56.3 MB DCP
+  (83,557 LUT, 84,847 FF, 1,936 DSP48E2, 6.5 BRAM tiles); the original
+  synthesis launcher returned nonzero after saving the DCP. The unplaced
+  diagnostic WNS=-0.734 ns is not route timing. Placement saved only
+  `runs/thermo5_axil_timing_opt_place_physopt_20261014/optimized.dcp` and was
+  stopped at 1.24 GB available RAM. No placed/physopt checkpoint or timing-
+  driven route exists for this RTL. After the small OOC suite, available host
+  memory was about 8.3 GiB, below the observed need for a safe large-design
+  placement/route retry.
+- Limits: previous thermo5 routed baseline remains FAIL_SETUP at WNS=-0.630 ns;
+  the modified RTL is not timing-signed off. Parent XDC still uses provisional
+  budgets and omits delay on 527 inputs/308 outputs in the AXIL OOC report.
+  Real parent I/O constraints remain OPEN pending actual clock source,
+  producer Tco, receiver setup/hold/capture budgets, and SI5341 configuration.

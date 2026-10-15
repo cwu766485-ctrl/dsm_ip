@@ -50,11 +50,22 @@ module tid32_cartesian_fs4_gt_tx #(
   // through independent local bank registers rather than one CE net spanning
   // the full state matrix.  This is a fixed one-cycle pipeline stage.
   logic signed [CHANNELS*W-1:0] in_i_pipe, in_q_pipe;
+  // Each row update consumes the low W bits of the final recursive state.
+  // Keep one equivalent local copy per state bank so that this feedback bus
+  // does not route from row CHANNELS-1 to every row across the full matrix.
+  // Each copy has the same reset and recurrence; the assertion below checks
+  // the equality invariant in simulation.  This changes only physical
+  // replication, not the TID recurrence or transaction latency.
+  (* KEEP = "TRUE", DONT_TOUCH = "TRUE", MAX_FANOUT = 4 *)
+    logic [W-1:0] v_i_feedback_local [0:VALID_BANKS-1];
+  (* KEEP = "TRUE", DONT_TOUCH = "TRUE", MAX_FANOUT = 4 *)
+    logic [W-1:0] v_q_feedback_local [0:VALID_BANKS-1];
   (* KEEP = "TRUE", DONT_TOUCH = "TRUE", MAX_FANOUT = 4 *)
     logic [VALID_BANKS-1:0] bank_enable;
   logic accept_word;
   integer p;
   integer q;
+  integer bank;
 
   initial begin
     if (CHANNELS < 2 || (CHANNELS % 2) != 0 ||
@@ -94,6 +105,10 @@ module tid32_cartesian_fs4_gt_tx #(
       in_i_pipe <= '0;
       in_q_pipe <= '0;
       bank_enable <= '0;
+      for (bank = 0; bank < VALID_BANKS; bank = bank + 1) begin
+        v_i_feedback_local[bank] <= '0;
+        v_q_feedback_local[bank] <= '0;
+      end
       for (p = 0; p < CHANNELS; p = p + 1) begin
         v_i[p] <= '0;
         v_q[p] <= '0;
@@ -130,8 +145,18 @@ module tid32_cartesian_fs4_gt_tx #(
               a_q[p][q] <= a_q[p][q-1];
             end
           end
-          v_i[p] <= a_i[p][CHANNELS-1] + {1'b0, v_i[CHANNELS-1][W-1:0]};
-          v_q[p] <= a_q[p][CHANNELS-1] + {1'b0, v_q[CHANNELS-1][W-1:0]};
+          v_i[p] <= a_i[p][CHANNELS-1] +
+                    {1'b0, v_i_feedback_local[p / BANK_LANES]};
+          v_q[p] <= a_q[p][CHANNELS-1] +
+                    {1'b0, v_q_feedback_local[p / BANK_LANES]};
+        end
+      end
+      for (bank = 0; bank < VALID_BANKS; bank = bank + 1) begin
+        if (bank_enable[bank]) begin
+          v_i_feedback_local[bank] <= a_i[CHANNELS-1][CHANNELS-1] +
+                                      {1'b0, v_i_feedback_local[bank]};
+          v_q_feedback_local[bank] <= a_q[CHANNELS-1][CHANNELS-1] +
+                                      {1'b0, v_q_feedback_local[bank]};
         end
       end
     end
@@ -142,6 +167,12 @@ module tid32_cartesian_fs4_gt_tx #(
     if (rst_n) begin
       assert (bank_enable == {VALID_BANKS{bank_enable[0]}})
         else $error("TID bank enables lost word atomicity: %b", bank_enable);
+      for (integer bank_check = 0; bank_check < VALID_BANKS; bank_check = bank_check + 1) begin
+        assert (v_i_feedback_local[bank_check] == v_i[CHANNELS-1][W-1:0])
+          else $error("TID I feedback replicas diverged in bank %0d", bank_check);
+        assert (v_q_feedback_local[bank_check] == v_q[CHANNELS-1][W-1:0])
+          else $error("TID Q feedback replicas diverged in bank %0d", bank_check);
+      end
     end
   end
 `endif
