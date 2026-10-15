@@ -1,143 +1,39 @@
-# BP EFDSM2 数字发射机 IP 验证计划
+# Single-Lane DSM Verification Plan
 
-## 1. 目标与边界
+## Verification goals
 
-本计划验证冻结主 SKU 的数字 RTL 行为、定点一致性、AXI 协议与安全控制行为。验证对象止于同步数字 `rf_bit/rf_signed/rf_valid` 输出；PA、匹配网络、天线、物理 RF 链路和实测 EVM/ACLR 不属于本计划的 RTL 签核范围。
+1. Confirm reset initializes every tested algorithm to its documented output
+   and state.
+2. Exercise a fixed, reproducible signed I/Q sample corpus and verify that each
+   testbench completes exactly 65,536 accepted samples with no unknown output
+   or configured-range error.
+3. Compare the captured output streams to the matching MATLAB model sample by
+   sample. Record mismatches and the first divergent sample.
+4. Run separate algorithm-level metric sweeps only with their model settings,
+   input scale, and pass thresholds recorded.
+5. Keep synthesis/resource/timing comparison separate from functional claims.
 
-验证责任按层级划分：MATLAB 定点模型定义算法和定点契约；Python 整数模型作为 Linux/VCS 回归 golden；SystemVerilog/UVM 验证 RTL；FPGA 实现和板级回放验证集成可实现性。软件校准策略、行为级 PA/DPA 模型和真实 RF 测量不得替代 RTL 结论。
+## Existing tests
 
-## 2. 冻结主 SKU
-
-| 项目 | 冻结配置 |
-|---|---|
-| 顶层 | `dsm_ip_axi_top` |
-| FPGA 目标 | `xczu15eg-ffvb1156-2-i` |
-| 主时钟 | `aclk = 100 MHz` |
-| 输入格式 | 有符号 Q1.15 复数 I/Q，AXI4-Stream |
-| DPD | 五阶、四 tap memory polynomial；memory 路径启用 |
-| DPD 裁剪 | Poly/LUT 执行分支关闭 |
-| 插值 | `INTERP_MODE=4`，x32；`INTERP_IMPL=0` |
-| DUC | 实数 `Fs/4` mixer，100 MHz 时中心 IF 为 25 MHz |
-| DSM | 一比特 BP EFDSM2 |
-| 控制面 | AXI4-Lite、双 coefficient bank、安全边界 commit、sticky error |
-
-其他 DSM、插值实现和 DPD 分支保留为 block 或 wrapper 级研究对象，不与冻结主 SKU 的 system-UVM 覆盖率混用。
-
-### 2.1 Cartesian x4/TI64 verification-first gate
-
-The 16-I/Q-word to 64-lane TI64/raw-GTH prototype is a separate verification
-target. Its existing directed oracle, P0 and IP-smoke results establish a
-short deterministic path only; they are insufficient for functional signoff.
-The following gates must pass before treating it as ready for FPGA board work
-or ASIC implementation:
-
-| Gate | Required evidence | Pass criterion |
-|---|---|---|
-| Bit-true stress | Independent FIR/DPD/TI64 oracle over at least 4,096 accepted input words, including zero, signed extremes, word-boundary history and both supported DPD modes | Every 64-bit GT word matches; no lost, duplicated or reordered samples |
-| Protocol/reset | Randomized input gaps, output backpressure and reset at every elastic-pipeline occupancy; assertions for stable payload during stall and exact flush semantics | No assertion failures; all accepted transactions drain exactly once |
-| System regression | Dedicated UVM or equivalent SV constrained-random test with reproducible vectors and scoreboard queue accounting | Simulator clean exit, zero errors/fatals, complete queue drain and regression CSV PASS |
-| Structural verification | Lint plus CDC/RDC review of source ingress, GTH user-clock/reset and any real-data CDC | No unwaived error; every waiver has a source-linked rationale |
-| Coverage review | Functional coverage for DPD mode, FIR boundary/history, lane 0/63 ordering, stalls and reset; code coverage reachability classification | All planned bins hit; reachable uncovered code has a directed test or reviewed waiver |
-| Implementation correlation | OOC/routed reports use the actual x4 top, part and 218.75 MHz constraints | Setup and hold pass with zero critical warnings |
-
-Only after these digital gates are met should the board be used for SFP0
-loopback/ILA word-order evidence. ASIC starts after the same gates plus a
-target-library lint/CDC/DFT plan, synthesis/STA across required corners, and a
-power/clock/reset implementation plan. FPGA and ASIC do not replace the
-verification gate; they validate different physical-realization risks.
-
-## 3. 验证分层与 DUT
-
-| 层级 | DUT/范围 | 主要输入与检查 | 当前证据定位 |
+| Suite | Algorithms | Main checks | Limit |
 |---|---|---|---|
-| 模型层 | DSM、DPD、插值、DUC 定点行为 | MATLAB fixed-point 与 Python integer 对齐；位宽、截断、饱和、状态更新、延迟 | `matlab/`、`dv/uvm/refmodel/python/` |
-| Block 层 | DPD、插值、Fs/4 mixer、BP DSM、observer、monitor | 定向、随机、边界、reset、ready/valid 与 bit-true 向量 | `dv/verif/block/` |
-| Subsystem 层 | TX frontend、IF/DSM、feedback、control | 模块间位宽、延迟、流控、commit、observer 配对 | `dv/verif/subsystem/` |
-| System 层 | AXI-Lite、TX/OBS AXI-Stream、冻结数据链 | UVM agent、Python scoreboard、SVA、随机回归与功能覆盖率 | `dv/uvm/` |
-| 集成层 | 时钟、实现、DMA/ILA 预留接口 | OOC/routed 证据、时序报告、板级回放脚本 | `syn/`、`fpga/`、`docs/evidence/` |
+| `run_xsim_p0_all.ps1` | LP1, LP2, EF1, EF2, MASH11, MASH111, MASH22 single-bit/P0 variants | Reset, deterministic I/Q playback, known-value checks, sample count and summary | P0 compatibility shell instantiates an I/Q pair of scalar cores |
+| `run_xsim_p0_multibit.ps1` | LP1, LP2, EF1, EF2, MASH11, MASH111, MASH22 with the generic multi-bit core | Deterministic I/Q playback, output dump, sample count, summary | A model comparison is needed for bit-true claims |
+| MATLAB comparison functions | P0 single-bit and multi-bit outputs | Sample-by-sample model comparison | Model-specific; exploratory metrics are not product signoff |
 
-Block 层优先使用轻量 SV testbench 和确定性向量；System UVM 负责跨接口的事务、随机协议交互和覆盖率闭环。不能因为 block test 通过而省略 system 层的跨模块握手、reset 和寄存器安全场景。
+## Commands
 
-## 4. 冻结主 SKU 的系统 UVM 矩阵
-
-历史 300-run 回归由 15 类 test、每类 20 个 seed 构成。下表列出主覆盖意图；具体 class、sequence 和 filelist 以 `dv/uvm/` 为准。
-
-| 分组 | 代表测试 | 核心检查点 |
-|---|---|---|
-| AXI 协议 | `dsm_axi_protocol_test`、`dsm_axi_lite_channel_backpressure_test` | AW/W/B、AR/R 独立握手，stall 期间 payload 稳定，响应顺序正确 |
-| 普通控制 | `dsm_control_stress_test`、`dsm_register_corner_test` | 寄存器读写、W1C、状态读回、非法地址/字段处理 |
-| DPD bank 安全 | `dsm_memory_dpd_commit_stress_test`、`dsm_memory_bank_roundtrip_coverage_test` | inactive bank 写入、原子 commit、epoch、reject/defer、active bank 保持 |
-| AXI-Stream | `dsm_axis_coverage_test`、`dsm_memory_pipe_stall_coverage_test` | TX/OBS backpressure、长 stall、`tlast/tuser`、数据不丢失与顺序保持 |
-| bit-true 数据链 | `dsm_system_closure_test`、`dsm_seed_observer_datapath_coverage_test` | Python 产生 I/Q、DPD、插值、mixer、BP EFDSM2 参考；RF transaction 逐项 drain |
-| 安全负向 | `dsm_negative_control_test`、`dsm_commit_during_stream_test`、`dsm_commit_reset_interlock_test` | reset/stream/window 中的非法请求被拒绝或延后，sticky error、fallback 与恢复行为正确 |
-| 监控与观测 | `dsm_csr_monitor_coverage_test`、`dsm_wstrb_semantics_coverage_test` | monitor 读回、窗口状态、counter clear、字节写语义、observer 语义 |
-
-### 4.1 Long-run constrained-random extension
-
-The current long-run extension is separate from the recorded 300-run result and its declared functional-coverage closure. It adds two reproducible stress scopes:
-
-| Scope | Test / stimulus | Required checks |
-|---|---|---|
-| Long-run bit-true data path | dsm_longrun_bittrue_test drives 4,096 deterministic PRBS-like Q1.15 I/Q inputs with zero and signed-extreme segments. The UVM seed randomizes legal AXI4-Stream valid gaps and AXI4-Lite enable timing. | Compare 131,072 Python-generated RF transactions per run for bit, signed encoding, Fs/4 phase, order, and count; require complete expected-queue drain. |
-| Communication-waveform bit-true data path | dsm_qam_ofdm_bittrue_test drives a MATLAB-exported 16-QAM OFDM baseband record: 128 symbols x (64-point IFFT + 16-sample CP) = 10,240 Q1.15 I/Q input transactions. The DUT, not MATLAB, performs x32 interpolation. The UVM seed randomizes legal AXI4-Stream gaps and AXI4-Lite enable timing. | Compare 327,680 Python-generated RF transactions per run for bit, signed encoding, Fs/4 phase, order, and count; require complete expected-queue drain. |
-| Long-run control/data closure | dsm_system_closure_test drives 4,096 randomized TX items after directed reset, observer, bank-commit, rejection, and recovery flows. | Check protocol/status/counter outcomes and sticky-error recovery; this test is not a static RF bit-true oracle. |
-
-The PRBS vector and QAM-OFDM vector have different purposes. The former deliberately includes zero, near-full-scale, and signed-minimum values to probe fixed-point boundaries. The latter is a representative communication waveform with 10,240 inputs; its length follows 128 complete OFDM symbols with cyclic prefix, not an architectural limit. A 10,000-point arbitrary cut would split the final OFDM symbol. A larger whole-symbol record can be selected by increasing `nsym`; it increases simulation cost linearly and should be justified by coverage or a longer channel/DPD-memory scenario.
-
-The MATLAB exporter, Python RF-golden generator, and UVM test are implemented. The test is included in the separate extended 20-seed matrix, but no VCS compile/run result is recorded until the Rocky VCS installation is repaired. Future protocol-aware randomized reset/commit schedules must update or segment the reference-model state; arbitrary register-write randomization is not a valid oracle-based test strategy.
-
-## 5. Golden、scoreboard 与通过准则
-
-Python 整数模型以明确的补码、signed 位宽、算术右移、截断/饱和、状态更新顺序和 valid 延迟生成参考向量。System scoreboard 必须比较并耗尽预期队列；仅看到仿真进程退出码为零不足以构成 bit-true PASS。
-
-每个回归 run 至少同时满足以下条件才标记为 PASS：
-
-1. 仿真器退出码为零。
-2. 日志中 `UVM_ERROR=0` 且 `UVM_FATAL=0`。
-3. 测试完成标记出现。
-4. 适用 scoreboard 的 expected queue 全部 drain，transaction 数量一致。
-5. 回归汇总 CSV 中该 run 标记为 `PASS`。
-
-对 RF bit-true 用例，额外要求输入 I/Q 事务、Python 生成的 RF 事务和 RTL monitor 实际事务三者数量一致。对 monitor/observer 用例，必须比较 counter、窗口完成、丢样/overflow 与配对顺序，而不是只检查运行完成。
-
-## 6. 覆盖率、断言与 Formal
-
-记录的 300/300 VCS 回归已达到声明的 system-UVM **functional coverage 100%**，覆盖正常数据流、backpressure、reset、配置、commit、W1C 和错误恢复的已定义 covergroup/bin。
-
-这不等同于 raw DUT code coverage 100%。未覆盖的行、条件、分支和 toggle 必须区分：
-
-- 冻结 SKU 通过 compile-time feature gate 裁剪而不可达的 Poly/LUT 分支；
-- 协议禁止、只能拒绝的非法事务；
-- 真实可达但尚未激励的分支，必须补定向 testcase；
-- 数学不可达或防御性分支，必须有 source-linked waiver 或范围证明。
-
-VC Formal/FPV 覆盖的是冻结 SKU 的选定 AXI-Lite 控制面安全属性，例如 commit 原子性、控制协议和安全边界。记录的 proof 不是完整 CDC/RDC、全算术等价、门级或全 SKU Formal 签核，不能扩大表述。
-
-## 7. CDC、reset 与时序验证边界
-
-`aclk` 是当前数据链、AXI-Lite、TX stream、DPD、插值、mixer、BP EFDSM2、monitor 的主时钟。仅当外部 observation receiver 使用不同 `feedback_clk` 时，`dpd_observer_async_bridge` 才形成 `feedback_clk -> aclk` CDC；该边界采用异步 FIFO、Gray pointer、同步器以及严格 backpressure 或可计数 drop 策略。
-
-功能仿真已覆盖 bridge 的数据顺序和溢出行为，但尚未完成独立静态 CDC/RDC 工具签核。reset 断言、释放顺序、流排空和跨时钟 reset release 仍应在后续静态流程中审查。
-
-## 8. 可复现执行入口
-
-Linux/VCS 主入口位于 `dv/uvm/sim/`，Makefile 负责 filelist、编译依赖、testcase 选择、coverage database 合并；Python 负责向量生成、回归编排、日志和 CSV 汇总；shell 脚本负责加载 EDA 环境并调用工具。Windows PowerShell 脚本仅用于 Vivado/XSim 或跨 Windows-WSL 的便利启动，不是数字 IC 验证的唯一或首选执行环境。
-
-推荐在已配置许可证的 Linux EDA shell 中执行：
-
-```bash
-cd /mnt/e/workspace/chip/dsm_ip
-make -C dv/uvm/sim check-tools
-make -C dv/uvm/sim vcs PYTHON=python3.12 COVERAGE=1
-make -C dv/uvm/sim vcs-run-only UVM_TESTNAME=dsm_system_closure_test UVM_SEED=1 COVERAGE=1
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_p0_all.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_p0_multibit.ps1
 ```
 
-实际回归应使用仓库中当前的 shell/Python 编排脚本；执行后必须审阅 CSV、日志标记和 coverage database，不能只看启动脚本是否返回。
+Runs are isolated under `runs/dsm/`. The MATLAB entry points are
+`matlab/scripts/entry_p0_bittrue_check.m` and the multibit comparison function
+`matlab/cartesian_dsm/dsm_multibit/compare_multibit_rtl_xsim.m`.
 
-## 9. 尚未完成的签核项
+## Closure limits
 
-1. 对冻结主 SKU 的 raw code coverage 做可达性分类、定向补测和正式 waiver 审查。
-2. 使用已授权静态工具执行 lint、CDC/RDC，并记录版本、规则集和 waiver。
-3. 重建冻结 SKU 的完整 ZU15EG routed implementation、bitstream、I/O timing 和 DMA/ILA 回放。
-4. 在明确的 PA、反馈接收机和测量口径下，单独评估 DPD 对 EVM/SNDR/ACLR 的改善；该结果不能由数字 monitor proxy 替代。
-5. Run and archive the long-run constrained-random extension across its selected seed matrix before using its scale or outcome in external claims.
+Passing these local tests does not establish formal proof, full code coverage,
+physical signoff, analog performance, or board operation. The retained OOC
+flow is a proxy algorithm comparison at a specified FPGA part and clock.

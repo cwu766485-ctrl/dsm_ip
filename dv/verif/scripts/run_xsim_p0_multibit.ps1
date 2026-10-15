@@ -1,76 +1,79 @@
-﻿param(
-  [switch]$SkipSummary
+param(
+  [switch]$SkipSummary,
+  [string]$OutDir,
+  [string]$VivadoSettings = "D:\Xilinx\Vivado\2024.1\settings64.bat"
 )
 
 $ErrorActionPreference = "Stop"
-
-$repo = (Resolve-Path ((Join-Path $PSScriptRoot "..\..\.."))).Path
-$vivadoSettings = "D:\Xilinx\Vivado\2024.1\settings64.bat"
-if (-not (Test-Path $vivadoSettings)) {
-  throw "Vivado settings not found at $vivadoSettings. Update run_xsim_p0_multibit.ps1."
+$repo = (Resolve-Path (Join-Path $PSScriptRoot "..\..\..")).Path
+if (-not (Test-Path -LiteralPath $VivadoSettings -PathType Leaf)) {
+  throw "Vivado settings not found at $VivadoSettings. Pass -VivadoSettings to select the installation."
 }
 
-$work = Join-Path $repo "verif\out_xsim_p0_multibit"
+if ([string]::IsNullOrWhiteSpace($OutDir)) {
+  $OutDir = Join-Path $repo ("runs\dsm\p0_multibit_xsim_{0}" -f (Get-Date -Format "yyyyMMdd_HHmmss"))
+} elseif (-not [System.IO.Path]::IsPathRooted($OutDir)) {
+  $OutDir = Join-Path $repo $OutDir
+}
+$work = [System.IO.Path]::GetFullPath($OutDir)
 New-Item -ItemType Directory -Force -Path $work | Out-Null
 
-$vecDir = Join-Path $repo "verif\vectors\p0"
-Copy-Item (Join-Path $vecDir "rom_i.mem") (Join-Path $work "rom_i.mem") -Force
-Copy-Item (Join-Path $vecDir "rom_q.mem") (Join-Path $work "rom_q.mem") -Force
-
-Set-Location $work
-
+$vecDir = Join-Path $repo "dv\verif\vectors\p0"
+Copy-Item -LiteralPath (Join-Path $vecDir "rom_i.mem") -Destination (Join-Path $work "rom_i.mem") -Force
+Copy-Item -LiteralPath (Join-Path $vecDir "rom_q.mem") -Destination (Join-Path $work "rom_q.mem") -Force
 $filelist = Join-Path $work "filelist_p0_abs.f"
-powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo "verif\scripts\filelist_p0_abs.ps1") -RepoRoot $repo -OutFile $filelist
+& (Join-Path $PSScriptRoot "filelist_p0_abs.ps1") -RepoRoot $repo -OutFile $filelist
 
-function Invoke-VivadoCmd($cmd) {
-  $log = $null
-  if ($cmd -like "xvlog *") {
-    $log = Join-Path (Get-Location) "xvlog.log"
-  } elseif ($cmd -like "xelab *") {
-    $log = Join-Path (Get-Location) "xelab.log"
-  } elseif ($cmd -like "xsim *") {
-    $log = Join-Path (Get-Location) "xsim.log"
-  }
-  if ($log) {
+Push-Location $work
+try {
+  function Invoke-VivadoCmd([string]$Command, [string]$LogName) {
+    $log = Join-Path (Get-Location) $LogName
     Remove-Item -LiteralPath $log -Force -ErrorAction SilentlyContinue
-  }
-
-  $bat = "@echo off`r`n" +
-         "call `"$vivadoSettings`" >nul`r`n" +
-         "$cmd`r`n"
-  $tmp = Join-Path $env:TEMP ("run_xsim_p0_multibit_" + [guid]::NewGuid().ToString() + ".cmd")
-  Set-Content -Path $tmp -Value $bat -Encoding ASCII
-  try {
-    cmd.exe /c $tmp
-    if ($LASTEXITCODE -ne 0) { throw "Command failed: $cmd" }
-    if ($log -and (Test-Path -LiteralPath $log)) {
-      $errors = Select-String -LiteralPath $log -Pattern "ERROR:" -SimpleMatch
-      if ($errors) {
-        throw "Vivado reported errors while running: $cmd"
+    $cmdFile = Join-Path $env:TEMP ("run_xsim_dsm_mb_" + [guid]::NewGuid().ToString() + ".cmd")
+    $batch = "@echo off`r`ncall `"$VivadoSettings`" >nul`r`n$Command`r`n"
+    Set-Content -LiteralPath $cmdFile -Value $batch -Encoding ASCII
+    try {
+      cmd.exe /c $cmdFile
+      if ($LASTEXITCODE -ne 0) { throw "Command failed: $Command" }
+      if (-not (Test-Path -LiteralPath $log)) { throw "Vivado did not create $LogName" }
+      if (Select-String -LiteralPath $log -Pattern "ERROR:" -SimpleMatch -Quiet) {
+        throw "Vivado reported an error while running: $Command"
       }
+    } finally {
+      Remove-Item -LiteralPath $cmdFile -Force -ErrorAction SilentlyContinue
     }
-  } finally {
-    Remove-Item $tmp -Force -ErrorAction SilentlyContinue
   }
+
+  $tbRoot = Join-Path $repo "dv\verif\tb"
+  $tb = Join-Path $tbRoot "tb_p0_multibit_all.sv"
+  Invoke-VivadoCmd ("xvlog -sv -i `"$tbRoot`" -f `"$filelist`" `"$tb`"") "xvlog.log"
+  Invoke-VivadoCmd "xelab -debug typical tb_p0_multibit_all -s sim_tb_p0_multibit_all" "xelab.log"
+  Invoke-VivadoCmd "xsim sim_tb_p0_multibit_all -runall" "xsim.log"
+  $summaryPath = Join-Path $work "summary_tb_p0_multibit_all.csv"
+  if (-not (Test-Path -LiteralPath $summaryPath)) {
+    throw "The multibit testbench did not write its summary."
+  }
+  $summary = @(Import-Csv -LiteralPath $summaryPath)
+  if ($summary.Count -ne 1 -or [int]$summary[0].Pass -ne 1 -or [int]$summary[0].Samples -ne 65536) {
+    throw "The multibit testbench summary is not a clean 65,536-sample pass."
+  }
+  $dumpFiles = @(
+    "sim_yout_signed_lp1_multibit.txt", "sim_yout_signed_lp2_multibit.txt",
+    "sim_yout_signed_ef1_multibit.txt", "sim_yout_signed_ef2_multibit.txt",
+    "sim_yout_signed_mash11_multibit.txt", "sim_yout_signed_mash111_multibit.txt",
+    "sim_yout_signed_mash22_multibit.txt"
+  )
+  foreach ($dump in $dumpFiles) {
+    $dumpPath = Join-Path $work $dump
+    if (-not (Test-Path -LiteralPath $dumpPath) -or (Get-Item -LiteralPath $dumpPath).Length -eq 0) {
+      throw "Missing or empty multibit result dump: $dumpPath"
+    }
+  }
+  if (-not $SkipSummary) {
+    & (Join-Path $PSScriptRoot "write_regression_summary.ps1") -RunDir $work -OutCsv (Join-Path $work "summary.csv")
+  }
+} finally {
+  Pop-Location
 }
 
-Write-Host "[xsim] xvlog compile multibit"
-$inc = Join-Path $repo "verif\tb"
-$tb = Join-Path $repo "verif\tb\tb_p0_multibit_all.sv"
-Invoke-VivadoCmd "xvlog -sv -i `"$inc`" -f `"$filelist`" `"$tb`""
-
-Write-Host "[xsim] xelab tb_p0_multibit_all"
-Invoke-VivadoCmd "xelab -debug typical tb_p0_multibit_all -s sim_tb_p0_multibit_all"
-
-Write-Host "[xsim] xsim tb_p0_multibit_all"
-Invoke-VivadoCmd "xsim sim_tb_p0_multibit_all -runall"
-
-if (-not $SkipSummary) {
-  Write-Host "[summary] write multibit regression summary"
-  powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo "verif\scripts\write_regression_summary.ps1") `
-    -RunDir $work `
-    -OutCsv (Join-Path $work "summary.csv")
-}
-
-Write-Host "[xsim] multibit done. Outputs in $work"
-
+Write-Host "DSM multibit P0 XSim regression completed. Outputs: $work"

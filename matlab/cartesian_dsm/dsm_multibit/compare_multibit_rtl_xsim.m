@@ -15,10 +15,10 @@ function T = compare_multibit_rtl_xsim(varargin)
   here = fileparts(mfilename('fullpath'));
   repo = fullfile(here, '..', '..', '..');
   if isempty(cfg.xsim_dir)
-    cfg.xsim_dir = fullfile(repo, 'verif', 'out_xsim_p0_multibit');
+    cfg.xsim_dir = latest_run_dir(fullfile(repo, 'runs', 'dsm'), 'p0_multibit_xsim_*');
   end
   if isempty(cfg.vec_dir)
-    cfg.vec_dir = fullfile(repo, 'verif', 'vectors', 'p0');
+    cfg.vec_dir = fullfile(repo, 'dv', 'verif', 'vectors', 'p0');
   end
   if isempty(cfg.out_csv)
     cfg.out_csv = fullfile(repo, 'matlab', 'out', 'dsm_multibit', 'multibit_rtl_bittrue_compare.csv');
@@ -77,6 +77,16 @@ function T = compare_multibit_rtl_xsim(varargin)
   if any(~T.Pass)
     error('Multibit RTL/MATLAB bit-true comparison failed.');
   end
+end
+
+function run_dir = latest_run_dir(root, pattern)
+  candidates = dir(fullfile(root, pattern));
+  candidates = candidates([candidates.isdir]);
+  if isempty(candidates)
+    error('No XSim run directory found under %s matching %s.', root, pattern);
+  end
+  [~, index] = max([candidates.datenum]);
+  run_dir = fullfile(root, candidates(index).name);
 end
 
 function v = read_mem_i16(path)

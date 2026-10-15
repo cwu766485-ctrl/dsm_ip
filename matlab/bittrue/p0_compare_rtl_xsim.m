@@ -11,7 +11,7 @@ function T = p0_compare_rtl_xsim(varargin)
   here = fileparts(mfilename('fullpath'));
   repo = fullfile(here, '..', '..');
   if isempty(cfg.xsim_dir)
-    cfg.xsim_dir = fullfile(repo, 'dv', 'verif', 'out_xsim_p0');
+    cfg.xsim_dir = latest_run_dir(fullfile(repo, 'runs', 'dsm'), 'p0_xsim_*');
   end
   if isempty(cfg.vec_dir)
     cfg.vec_dir = fullfile(repo, 'dv', 'verif', 'vectors', 'p0');
@@ -73,6 +73,16 @@ function T = p0_compare_rtl_xsim(varargin)
   if any(~T.Pass)
     error('P0 bit-true comparison failed.');
   end
+end
+
+function run_dir = latest_run_dir(root, pattern)
+  candidates = dir(fullfile(root, pattern));
+  candidates = candidates([candidates.isdir]);
+  if isempty(candidates)
+    error('No XSim run directory found under %s matching %s.', root, pattern);
+  end
+  [~, index] = max([candidates.datenum]);
+  run_dir = fullfile(root, candidates(index).name);
 end
 
 function v = p0_read_mem_i16(path)

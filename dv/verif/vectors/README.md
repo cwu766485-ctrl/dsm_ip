@@ -1,12 +1,6 @@
-# Verification Vectors
+# DSM Test Vectors
 
-This directory contains small, version-controlled input stimuli required for
-reproducible regressions.
-
-- `p0/`: MATLAB-generated ROM I/Q inputs for seven DSM algorithms.
-- `p1_64/` and `p1_256/`: historical OFDM/QAM profiles.
-- `dpd/`: fixed DPD vector entry points.
-
-Python/MATLAB-generated vectors, XSim/VCS output, VDBs, and waveforms are
-created in ignored work directories. Do not add scope captures, vendor ROM
-images, or board dumps here.
+`p0/rom_i.mem` and `p0/rom_q.mem` are the fixed 16-bit signed stimulus used by
+the single-bit and multi-bit P0 regressions. The XSim runner copies them into
+the run directory before simulation. The MATLAB bit-true comparisons use the
+same two vector files.
