@@ -35,4 +35,11 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_corner_tests.svh"
   `include "thermo5_axil_access_sequence.svh"
   `include "thermo5_sku_axil_config_test.svh"
+  `include "thermo5_sku_axil_register_access_test.svh"
+  `include "thermo5_sku_axil_coeff_transport_test.svh"
+  `include "thermo5_sku_axil_nonlinear_dpd_test.svh"
+  `include "thermo5_sku_axil_tap4_identity_test.svh"
+  `include "thermo5_sku_axil_boundary_phase_test.svh"
+  `include "thermo5_sku_axil_mailbox_fault_test.svh"
+  `include "thermo5_sku_axil_illegal_frame_test.svh"
 endpackage

@@ -10,6 +10,11 @@ Its tests inherit from the thermo5 base test, start the MATLAB-vector source
 sequence, and require specific monitor/checker events. The two families have
 different filelists and DUT tops; neither is a base class for the other.
 
+The optional AXI-Lite wrapper tests are grouped under `thermo5/axil/`. The
+test classes reuse the thermo5 source agent, control BFM, four-plane monitor,
+and bit-true scoreboard; AXI-Lite protocol transactions are supplied by the
+dedicated `axi_lite_thermo5` agent and access sequence.
+
 The test suite includes:
 
 - basic BP smoke and frozen-SKU readback;

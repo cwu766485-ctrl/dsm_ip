@@ -4,6 +4,7 @@
 +incdir+dv/uvm/env/thermo5
 +incdir+dv/uvm/sequences/thermo5
 +incdir+dv/uvm/tests/thermo5
++incdir+dv/uvm/tests/thermo5/axil
 dv/uvm/agent/interfaces/thermo5_sku_if.sv
 dv/uvm/agent/interfaces/thermo5_axil_if.sv
 rtl/axis/dsm_reset_sync.sv

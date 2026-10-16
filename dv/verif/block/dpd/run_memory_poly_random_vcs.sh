@@ -10,7 +10,7 @@ if [[ -z "${DSM_VCS_INTERACTIVE_ENV:-}" ]]; then
 fi
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-work="$repo/dv/verif/out_vcs_dpd_memory_poly_random"
+work="$repo/runs/dpd_memory_poly_random_vcs"
 mkdir -p "$work"
 
 # `dpd_sat_signed` is the shared saturation helper declared at the end of

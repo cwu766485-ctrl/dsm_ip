@@ -9,12 +9,12 @@ evidence inventory, not CDC/RDC closure or a metastability proof.
 | Evidence | Exact artifact | Result |
 | --- | --- | --- |
 | Latest routed static CDC | `runs/thermo5_parent_cleanroute_20261005_2117/cdc.rpt`, Vivado 2024.1, design `thermo5_qsfp_gt14_parent`, routed on `xczu15eg-ffvb1156`, report time 2026-10-05 22:08:24 | 2 XPM Gray-pointer CDC-6 warnings and 2 GT TX-active CDC-11 critical paths remain. No CDC waiver is recorded. |
-| Focused two-reset FIFO test, freshly rerun 2026-10-05 23:56 Singapore time | Command: `powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_xpm_async_fifo_reset.ps1`; log: `verif/out_xsim_xpm_async_fifo_reset/console_xsim.log` | Exit code 0; `DSM_XPM_ASYNC_FIFO_RESET_PASS`. |
+| Focused two-reset FIFO test, freshly rerun 2026-10-05 23:56 Singapore time | Command: `powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_xpm_async_fifo_reset.ps1`; archived log: `runs/local_dv_artifacts_20261016/verif/out_xsim_xpm_async_fifo_reset/console_xsim.log` | Exit code 0; `DSM_XPM_ASYNC_FIFO_RESET_PASS`. |
 | Parent GT reset/recovery diagnostic from the same routed RTL run | `runs/thermo5_parent_cleanroute_20261005_2117/project/thermo5_qsfp_gt14_parent.sim/sim_1/behav/xsim/simulate.log` and wrapper transcript `runs/thermo5_parent_cleanroute_20261005_2117/sim_parent.stdout.log` | `THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=64 output=112 recovery=powergood+tx_active+common_reset rx_compare=SKIPPED`. RX comparison was explicitly skipped. |
 
-The reset testbench is `dv/verif/block/axis/tb_dsm_xpm_async_fifo_reset.sv`;
+The reset testbench is `dv/verif/block/axis/tb/tb_dsm_xpm_async_fifo_reset.sv`;
 the wrapper is `dv/verif/scripts/run_xsim_xpm_async_fifo_reset.ps1`. The parent
-testbench is `dv/verif/subsystem/tx_frontend/tb/tb_thermo5_qsfp_gt14_parent.sv`.
+testbench is `dv/verif/integration/gt_parent/tb_thermo5_qsfp_gt14_parent.sv`.
 The static report covers the real XPM instance under
 `u_frontend/u_cdc/g_xpm_fifo/u_async_fifo/u_xpm_fifo_async`; the focused
 functional test exercises that FIFO wrapper against the Vivado 2024.1 XPM

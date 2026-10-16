@@ -1,61 +1,52 @@
-# Run Regression
+# Thermo5 Regression Entry Points
 
-Run the retained P0 DSM RTL regression:
+Run commands from the repository root. XSim output is written under ignored
+`runs/` directories. Tests are layered; use the full-chain UVM regression as
+the IP-level gate, and focused tests to isolate a changed block or boundary.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1
-```
-
-Run the directed packaged DSM IP smoke test:
+## Block tests
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_axis14_to_core8_cdc.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_axis14_to_core8_cdc_xpm.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_interp2_reachable.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_cartesian_fs4_gt_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_thermo5_raw64_continuous_tx.ps1
 ```
 
-Run the BP IF/DSM Python-to-RTL transaction comparison:
+Additional FIFO, reset-release, and frame-power block checks:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_if_dsm_bittrue.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_xpm_async_fifo_reset.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_frame_power_ctrl.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\block\axis\run_xsim_thermo5_reset_sync_release_audit.ps1
 ```
 
-Run the DPD-bypass plus x4 interpolation subsystem comparison:
+## Thermo5 subsystem tests
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_tx_frontend_bittrue.ps1 -Inputs 97
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo5_frontend_tx.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo5_fs4_multipa_tx.ps1
 ```
 
-Run isolated Fs/4 mixer and BP EFDSM2 block tests:
+The first command targets `subsystem/tx_frontend/`; the second targets
+`subsystem/tx_backend/`.
+
+For a scenario-by-scenario block/subsystem purpose and expected-result matrix,
+see `docs/verification/thermo5-test-level-matrix.md`.
+
+## Full IP-system test
+
+The maintained full-chain UVM filelist is
+`dv/uvm/sim/thermo5_sku_filelist.f`. See `dv/uvm/sim/README.md` for the
+licensed generic/XPM regression commands and required simulator setup.
+
+The optional AXI-Lite top has a separate UVM configuration (`THERMO5_USE_AXIL=1`);
+it is not enabled by the frozen base-SKU default.
+
+Behavioral serializer loopback and optional GT-parent checks are system
+integration tests, not subsystem signoff. Run the serializer model with:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_fs4_mixer_block.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_bp_dsm_block.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo5_serdes_loopback.ps1
 ```
-
-Run the observer metric-accumulator block test:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_observer_behavioral.ps1
-```
-
-Run every block-level signoff entry with one command:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_block_signoff.ps1 -BpSamples 4096
-```
-
-Run the XSim subsystem suite:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_subsystem_signoff.ps1
-```
-
-The suite covers TX frontend, IF/DSM, and feedback. The AXI control subsystem
-is also executed through the reusable IP smoke runner because it requires the
-full `dsm_ip_axi_top` context:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_ip_smoke.ps1
-```
-
-The full AXI control/data-plane UVM regression is intentionally separate under
-`dv/uvm/` and uses Linux VCS/Verdi. See `dv/uvm/README.md`.

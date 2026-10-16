@@ -3,6 +3,105 @@
   "project_root": ".",
   "entries": [
     {
+      "from": "dv/verif/block/axis/tb_dsm_axis14_to_core8_cdc.sv",
+      "to": "dv/verif/block/axis/tb/tb_dsm_axis14_to_core8_cdc.sv",
+      "role": "generic AXIS CDC and 14:8 gearbox block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_axis14_to_core8_cdc.ps1"],
+      "validation": ["generic AXIS CDC XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/axis/tb_dsm_axis14_to_core8_cdc_xpm.sv",
+      "to": "dv/verif/block/axis/tb/tb_dsm_axis14_to_core8_cdc_xpm.sv",
+      "role": "XPM AXIS CDC and 14:8 gearbox block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_axis14_to_core8_cdc_xpm.ps1"],
+      "validation": ["XPM AXIS CDC XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/axis/tb_dsm_frame_power_ctrl.sv",
+      "to": "dv/verif/block/axis/tb/tb_dsm_frame_power_ctrl.sv",
+      "role": "frame-safe low-power control block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_frame_power_ctrl.ps1"],
+      "validation": ["frame-power XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/axis/tb_dsm_xpm_async_fifo_reset.sv",
+      "to": "dv/verif/block/axis/tb/tb_dsm_xpm_async_fifo_reset.sv",
+      "role": "XPM asynchronous FIFO reset block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_xpm_async_fifo_reset.ps1"],
+      "validation": ["XPM FIFO reset XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/axis/tb_thermo5_reset_sync_release_audit.sv",
+      "to": "dv/verif/block/axis/tb/tb_thermo5_reset_sync_release_audit.sv",
+      "role": "reset synchronizer release block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/block/axis/run_xsim_thermo5_reset_sync_release_audit.ps1"],
+      "validation": ["reset-release audit XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/gt/tb_thermo5_raw64_continuous_tx.sv",
+      "to": "dv/verif/block/gt/tb/tb_thermo5_raw64_continuous_tx.sv",
+      "role": "raw 64-bit GT-user-boundary block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_thermo5_raw64_continuous_tx.ps1"],
+      "validation": ["raw64 continuous TX XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/bp_dsm/tb/tb_tid32_cartesian_fs4_gt_tx_bittrue.sv",
+      "to": "dv/verif/block/tid32/tb/tb_tid32_cartesian_fs4_gt_tx_bittrue.sv",
+      "role": "single TID32 Cartesian Fs/4 block testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_tid32_cartesian_fs4_gt_tx.ps1"],
+      "validation": ["TID32 Cartesian Fs/4 MATLAB/XSim bit-true PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/bp_dsm/tb/tb_tid32_thermo5_frontend_tx_bittrue.sv",
+      "to": "dv/verif/subsystem/tx_frontend/tb/tb_tid32_thermo5_frontend_tx_bittrue.sv",
+      "role": "thermo5 frontend subsystem bit-true testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_tid32_thermo5_frontend_tx.ps1"],
+      "validation": ["thermo5 frontend XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/bp_dsm/tb/tb_tid32_thermo5_fs4_multipa_tx_bittrue.sv",
+      "to": "dv/verif/subsystem/tx_backend/tb/tb_tid32_thermo5_fs4_multipa_tx_bittrue.sv",
+      "role": "thermo5 four-plane TID subsystem bit-true testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_tid32_thermo5_fs4_multipa_tx.ps1"],
+      "validation": ["four-plane multi-PA XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/bp_dsm/tb/tb_tid32_thermo5_frontend_serdes_loopback.sv",
+      "to": "dv/verif/integration/serializer_loopback/tb_tid32_thermo5_frontend_serdes_loopback.sv",
+      "role": "thermo5 four-plane serializer loopback subsystem testbench",
+      "action": "move",
+      "consumers": ["dv/verif/scripts/run_xsim_tid32_thermo5_serdes_loopback.ps1"],
+      "validation": ["four-lane raw64 loopback XSim PASS"],
+      "status": "completed"
+    },
+    {
+      "from": "dv/verif/block/bp_dsm/tb/tb_thermo5_qsfp_gt14_parent.sv",
+      "to": "dv/verif/integration/gt_parent/tb_thermo5_qsfp_gt14_parent.sv",
+      "role": "optional thermo5 GT-parent/system integration testbench",
+      "action": "move",
+      "consumers": ["docs/verification/thermo5-reset-cdc-evidence.md"],
+      "validation": ["source path audit"],
+      "status": "completed"
+    },
+    {
       "from": "dv/uvm/env/*_virtual_sequences.svh",
       "to": "dv/uvm/sequences/*_virtual_sequences.svh",
       "role": "AXI-IP cross-interface virtual sequences",

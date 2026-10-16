@@ -1,8 +1,45 @@
 # Execution frontier
 
-Updated: 2026-10-15 12:04 SGT. Status: active, thermo5 AXI-Lite OOC route PASS; parent I/O signoff OPEN.
+## Verification source organization (2026-10-16)
+
+Optional thermo5 AXI-Lite UVM tests are split by responsibility under
+`dv/uvm/tests/thermo5/axil/`. The register-access test covers the map, AW/W
+skew, byte strobes, error responses, coefficient readback and response stall
+without stream traffic. The configuration integration test covers commit,
+mailbox/frame-boundary application, PA stall, reset and bit-true output;
+coefficient image, tap-4, nonlinear-image, boundary-phase, mailbox-fault and
+illegal-frame cases have named tests. The full generic AXI-Lite VCS regression,
+expected-negative checks, parameter guard and URG merge passed after extraction
+in `runs/thermo5_axil_refactor_suite_retry_20261016/`. XPM has not been rerun
+after this extraction. The nonlinear-image test only checks atomic configuration
+transfer and 56 output handshakes; nonlinear arithmetic remains OPEN. The
+standalone `thermo5_axil_cfg_coverage_tb.sv` checks internal reset/request/
+pending overlap.
+
+The block/subsystem scenario, intent, expected-result and limitation matrix is
+maintained at `docs/verification/thermo5-test-level-matrix.md`.
+
+Updated: 2026-10-16 SGT. Status: active; frozen thermo5 OOC routes PASS, DV tree cleanup and directed smoke validation complete, parent I/O signoff OPEN.
 This is the source of truth for current execution state. Detailed next actions
 and exit gates are in [the closure plan](thermo5-gap-closure.md).
+
+## DV tree cleanup (2026-10-16)
+
+The thermo5 directed testbench tree is now split by verification level:
+`dv/verif/block/` holds focused AXIS/FIFO, DPD, interpolation, TID32, and raw64
+boundary tests; `dv/verif/subsystem/tx_frontend/` holds full thermo5 frontend,
+four-plane, and serializer-loopback tests. Obsolete non-thermo5 collateral and
+generated vectors were removed from this focused branch (they remain on
+`main`). Ignored local DV build outputs were preserved under
+`runs/local_dv_artifacts_20261016/` rather than committed or discarded.
+
+After path updates, generic/XPM AXIS CDC, frame-power, XPM FIFO reset,
+reset-release audit, TID32 Cartesian bit-true, thermo5 frontend, four-plane
+multi-PA, raw64 continuous TX, serializer-loopback, and frozen 56-word full-chain
+XSim tests all PASS. This is a directory/runner validation milestone, not a new
+UVM coverage closeout, parent-level CDC/RDC audit, or board signoff. The
+AXI-Lite wrapper remains a separate integrated thermo5 variant; the default
+frozen SKU flow uses the parallel DPD configuration interface.
 
 This branch is the thermo5-only code view. Shared CDC/FIFO, DPD, interpolation,
 TID, reference-model, and verification infrastructure remains where the thermo5
@@ -28,6 +65,36 @@ OOC-only timing boundary to parent/board signoff.
   four-plane64-bit words. Preserve widths, signedness, reset, latency and oracle.
 - Canonical paths: RTL `rtl/`, directed DV `dv/verif/`, UVM/formal `dv/uvm/`,
   ASIC flows `syn/asic/`, vendor/board boundary `fpga/`. No board is available.
+
+## Frozen thermo5 full AXI-Stream routed OOC (2026-10-15)
+
+- Scope: no-AXI-Lite `tid32_thermo5_axis_frontend_tx`, current branch RTL,
+  ZU15EG `xczu15eg-ffvb1156-2-i`, source 125 MHz/core 218.75 MHz, XPM FIFO,
+  `INTERP_TAPS=2`, `DPD_MAX_TAPS=1`, low-power control disabled. The OOC
+  includes AXI ingress, async FIFO/14:8 gearbox, interpolation, identity DPD,
+  Fs/4/thermo5 front end and four PA-code planes.
+- Routed checkpoint/report: `runs/thermo5_full_axis_ooc_20261015_retry2/`.
+  Vivado 2024.1 routed all 98,546 routable nets (zero routing errors), with
+  108 ordinary warnings, 0 critical warnings, and 0 errors. Routed timing is
+  WNS/TNS/WHS/THS = +0.504/0.000/+0.027/0.000 ns; all 149,172 checked
+  endpoints pass the modeled setup/hold constraints. Worst setup path is
+  inside the one-tap memory-DPD DSP pipeline, 3.765 ns data delay (2.686 ns
+  logic, 1.079 ns route). Resources: 43,837 CLB LUTs, 53,375 registers,
+  496 DSP48E2, 6.5 BRAM tiles. Router estimate and separately reopened
+  routed-checkpoint timing report agree within 1 ps.
+- This closes internal routed OOC timing for the frozen no-AXI-Lite thermo5
+  top; it is not parent/system/board signoff. `check_timing.rpt` reports 570
+  top-level input ports without input delays and 264 outputs without output
+  delays. The two clock periods are constrained, but real parent I/O budgets,
+  clock-source/placement metadata, system reset/CDC/RDC, and GT/board behavior
+  remain outside this OOC. Inter-clock paths are intentionally cut by the
+  asynchronous clock-group constraint and are not CDC signoff.
+- The first combined report attempt was stopped when workstation memory became
+  low after routing. The same saved `physopt.dcp` was routed into retry2; the
+  flow wrote `routed.dcp` before running STA reports in a separate Vivado
+  process, which exited 0. No RTL changed. Replay helpers are currently local
+  untracked files under `syn/`; generated reports/checkpoints remain ignored in
+  `runs/`.
 
 ## Latest thermo5 AXI-Lite timing iteration (2026-10-15)
 

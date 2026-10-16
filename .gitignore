@@ -158,6 +158,8 @@ vcst_rtdb/
 .vc_env_*.txt
 dv/uvm/formal/out/
 dsm_ip_formal_harness_learn_dir/
+thermo5_axil_cfg_coverage_harness_learn_dir/
+xsim.covdb/
 simv
 simv.daidir/
 *.daidir/

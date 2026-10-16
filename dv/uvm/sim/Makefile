@@ -75,7 +75,10 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
 .PHONY: help check-tools formal-check-tools vcs vcs-run vcs-run-only regression coverage-merge \
         verdi questa questa-run questa-run-only run clean thermo5-vcs thermo5-vcs-run \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
-        thermo5-axil-config-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
+        thermo5-axil-config-vcs-run thermo5-axil-register-access-vcs-run \
+        thermo5-axil-coeff-transport-vcs-run \
+        thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
+        thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
 
 help:
@@ -86,7 +89,12 @@ help:
 	@echo "  make coverage-merge      Merge selected VCS coverage databases with URG"
 	@echo "  make thermo5-vcs-run     Compile/run two-clock thermo5/2-tap/DPD1 subsystem"
 	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
-	@echo "  make thermo5-axil-vcs-regression  Run AXI-Lite config/payload/negative tests and URG merge"
+	@echo "  make thermo5-axil-register-access-vcs-run  Run AXI-Lite register/protocol-only test"
+	@echo "  make thermo5-axil-coeff-transport-vcs-run  Run coefficient mailbox transport case"
+	@echo "  make thermo5-axil-nonlinear-dpd-vcs-run  Run nonlinear DPD coefficient case"
+	@echo "  make thermo5-axil-tap4-identity-vcs-run  Run legal four-tap identity case"
+	@echo "  make thermo5-axil-boundary-phase-vcs-run  Run commit/frame-boundary phase case"
+	@echo "  make thermo5-axil-vcs-regression  Run focused AXI-Lite tests, integration tests and URG merge"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
 	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
@@ -143,6 +151,26 @@ thermo5-vcs-run: thermo5-vcs thermo5-vcs-run-only
 thermo5-axil-config-vcs-run:
 	@$(MAKE) --no-print-directory thermo5-vcs-run \
 	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test
+
+thermo5-axil-register-access-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_register_access_test
+
+thermo5-axil-coeff-transport-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_coeff_transport_test
+
+thermo5-axil-nonlinear-dpd-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_dpd_test
+
+thermo5-axil-tap4-identity-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_tap4_identity_test
+
+thermo5-axil-boundary-phase-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_boundary_phase_test
 
 thermo5-vcs-run-only:
 	@test -x $(THERMO5_OUT)/simv || { echo "ERROR: run thermo5-vcs first"; exit 2; }
@@ -247,18 +275,29 @@ thermo5-axil-cfg-unit-vcs:
 
 thermo5-axil-vcs-regression:
 	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420100 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_register_access_test
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420101 \
 		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test \
 		THERMO5_EXTRA_ARGS=+THERMO5_AXIL_INTERNAL_COVERAGE_PROBE
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420104 \
-		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test \
-		THERMO5_EXTRA_ARGS=+AXIL_COEFF_TRANSPORT
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_coeff_transport_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420105 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_dpd_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420106 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_tap4_identity_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420107 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_boundary_phase_test
 	@$(MAKE) --no-print-directory thermo5-axil-vcs-negative THERMO5_USE_AXIL=1
 	@$(MAKE) --no-print-directory thermo5-axil-vcs-mailbox-negative THERMO5_USE_AXIL=1
 	@$(MAKE) --no-print-directory thermo5-axil-vcs-parameter-guard THERMO5_USE_AXIL=1
 	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_register_access_test_seed420100.vdb \
 		$(THERMO5_OUT)/cov_thermo5_sku_axil_config_test_seed420101.vdb \
-		$(THERMO5_OUT)/cov_thermo5_sku_axil_config_test_seed420104.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_coeff_transport_test_seed420104.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_nonlinear_dpd_test_seed420105.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_tap4_identity_test_seed420106.vdb \
+		$(THERMO5_OUT)/cov_thermo5_sku_axil_boundary_phase_test_seed420107.vdb \
 		$(THERMO5_OUT)/cov_axil_illegal_frame_seed420102.vdb \
 		$(THERMO5_OUT)/cov_axil_mailbox_fault_seed420103.vdb \
 		-report $(THERMO5_OUT)/coverage -dbname thermo5_axil_merged \

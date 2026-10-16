@@ -73,7 +73,7 @@ achieved.
 ## Legal external boundary-bin search (2026-10-12)
 
 Added `thermo5_sku_axil_boundary_phase_test` in
-`dv/uvm/tests/thermo5/thermo5_sku_axil_config_test.svh`. It issues a legal
+`dv/uvm/tests/thermo5/axil/thermo5_sku_axil_config_test.svh`. It issues a legal
 RUN+COMMIT through the AXI-Lite agent after observing a public DPD frame-start
 handshake; it varies AXI AW delay, transaction offset, and (for exploratory
 runs) source-valid bubbles and asynchronous clock phases. It does not force or

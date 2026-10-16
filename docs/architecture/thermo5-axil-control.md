@@ -87,13 +87,18 @@ code-plane words.
 
 ## Verification
 
-`thermo5_sku_axil_config_test` adds an independent AXI-Lite UVM agent while
-reusing the existing AXI-Stream source agent, four-plane monitor and MATLAB
-bit-true scoreboard. It checks ID/readback, illegal-tap `SLVERR`, sticky error
-and W1C clearing, AW/W skew, BUSY while waiting for a frame boundary, no early
-application, and a legal two-tap configuration that remains mathematically
-identity (unity tap 0; all other coefficients zero). It then checks the full
-four-plane output against the unchanged oracle.
+The AXI-Lite configuration-register block has a standalone testbench at
+`dv/uvm/tb/thermo5_axil_cfg_coverage_tb.sv` for request/pending/reset overlap.
+The wrapper-integrated UVM scenarios are split into named tests under
+`dv/uvm/tests/thermo5/axil/`: default register/commit/bit-true replay,
+coefficient mailbox transport, nonlinear coefficient image, tap-4 identity,
+commit-boundary phase sweep, mailbox corruption recovery, and illegal-frame
+recovery. They share AXI-Lite transaction helpers, the AXI-Stream source
+agent, four-plane monitor and MATLAB bit-true scoreboard. The base config case
+checks ID/readback, illegal-tap `SLVERR`, sticky error/W1C, AW/W skew, BUSY
+while waiting for a frame boundary, no early application, and the legal
+two-tap identity-equivalent configuration; its output is compared to the
+unchanged four-plane oracle.
 
 The Vivado XSim runner exercises the actual UVM 1.2 class-based test with
 `UVM_NO_DPI` (the simulator's bundled UVM package is used):

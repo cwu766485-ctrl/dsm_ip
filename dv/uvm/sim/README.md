@@ -162,8 +162,10 @@ make -C dv/uvm/sim thermo5-axil-vcs-regression \
   This does not establish 100% RTL code coverage. The full-hierarchy aggregate
   is a targeted three-test view, not the full thermo5 SKU regression, and the
   XPM view includes vendor hierarchy. Keep functional, code, assertion/fault
-  injection, and system-signoff claims distinct. Exact evidence and remaining
-  bins are in `docs/verification/thermo5-axil-code-coverage-closure-20261012.md`.
+  injection, and system-signoff claims distinct. Test classes are in
+  `dv/uvm/tests/thermo5/axil/thermo5_sku_axil_config_test.svh`; exact evidence
+  and remaining bins are in
+  `docs/verification/thermo5-axil-code-coverage-closure-20261012.md`.
 
   The Vivado UVM replay also supports a legal coefficient-payload CDC case
   (inactive taps vary while tap0 remains identity), with exact mailbox/pending/

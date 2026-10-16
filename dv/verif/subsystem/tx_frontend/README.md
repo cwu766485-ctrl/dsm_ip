@@ -1,42 +1,30 @@
-# TX Frontend Subsystem
+# Thermo5 TX Frontend Subsystem
 
-## Scope
-
-This subsystem verifies the connected streaming boundary:
+This subsystem covers the thermo5 core-word frontend processing chain: frame
+gain, two x2 interpolation stages, the frozen identity-configured memory-DPD
+path, and its handoff to the four-plane output logic. The separate four-plane
+TID/Fs4 backend has its own subsystem test directory.
 
 ```text
-AXI-Stream-like I/Q -> DPD bypass pipeline -> x4 halfband interpolation
+AXI 14-lane I/Q
+    -> async FIFO + 14:8 gearbox
+    -> 8 complex samples/core word
+    -> gain -> x2 (8->16) -> 1-tap identity DPD
+    -> x2 (16->32) -> four offset TID branches
+    -> four aligned 64-bit output words
 ```
 
-The bypass selection intentionally isolates the ten-cycle DPD transport latency,
-ready/valid propagation, and interpolation sample expansion. Poly/LUT/memory
-DPD arithmetic and coefficient-bank safety are separately signed off at block
-level and in the IP-system UVM tests.
+The local SystemVerilog tests are:
 
-## DUT Boundary
+- `tb/tb_thermo5_i2_d1_axis_bittrue.sv`: full 14:8-to-four-plane bit-true
+  test with the MATLAB vector contract.
+- `tb/tb_tid32_thermo5_frontend_tx_bittrue.sv`: frontend arithmetic and
+  handshake boundary.
+- The dedicated four-plane backend comparison is in
+  `../tx_backend/tb/tb_tid32_thermo5_fs4_multipa_tx_bittrue.sv`.
+- Behavioral serializer loopback and optional GT-parent tests are under
+  `../../integration/`; neither is a physical GT/board signoff.
 
-- `rtl/dpd/dpd_poly.v`
-- `rtl/dpd/dpd_lut.v`
-- `rtl/dpd/dpd_memory_poly.v`
-- `rtl/dpd/dpd_frontend.v`
-- `rtl/interp/dsm_interp2_halfband.sv`
-- `rtl/interp/dsm_interp_frontend.sv`
-
-## Reference and Evidence
-
-The subsystem testbench is `tb/tb_tx_frontend_python_bittrue.sv`.
-
-`dv/uvm/refmodel/python/generate_tx_frontend_vectors.py` generates signed
-corner values and deterministic random I/Q traffic. The expected x4 samples
-come from the Python integer interpolation model. The testbench randomizes both
-input bubbles and output backpressure and compares every accepted output.
-
-On 2026-08-12, the following XSim regression passed with zero mismatch:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_tx_frontend_bittrue.ps1 -Inputs 97
-```
-
-Evidence: 97 input I/Q samples, 388 output I/Q samples, and 140 output stall
-cycles. This is not a claim that all runtime DPD modes are subsystem-signed off;
-those modes remain covered by the DPD block and system UVM matrices.
+`dv/uvm/` remains the full IP-system verification source of truth, including
+AXI-Stream and optional AXI-Lite control variants. Focused simulator commands
+are in `dv/verif/RUN_REGRESSION.md`.

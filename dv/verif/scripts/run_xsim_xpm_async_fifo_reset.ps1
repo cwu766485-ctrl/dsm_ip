@@ -8,12 +8,12 @@ $glbl='D:\Xilinx\Vivado\2024.1\data\verilog\src\glbl.v'
 foreach($path in @($settings,$xpmCdc,$xpmMemory,$xpm,$glbl)){
   if(!(Test-Path -LiteralPath $path)){throw "Required Vivado/XPM file is unavailable: $path"}
 }
-$work=Join-Path $repo 'verif\out_xsim_xpm_async_fifo_reset'
+$work=Join-Path $repo 'runs\xpm_async_fifo_reset_xsim'
 New-Item -ItemType Directory -Force $work|Out-Null
 $src=@(
   $glbl,$xpmCdc,$xpmMemory,$xpm,
   'rtl\axis\dsm_xpm_async_fifo.sv',
-  'dv\verif\block\axis\tb_dsm_xpm_async_fifo_reset.sv'
+  'dv\verif\block\axis\tb\tb_dsm_xpm_async_fifo_reset.sv'
 )|ForEach-Object{if([System.IO.Path]::IsPathRooted($_)){ '"'+$_+'"' }else{ '"'+(Join-Path $repo $_)+'"' }}
 Push-Location $work
 try {

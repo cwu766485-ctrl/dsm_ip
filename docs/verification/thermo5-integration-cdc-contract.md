@@ -39,7 +39,8 @@ Fresh focused XPM reset, P0 7/7 and IP smoke XSim pass.
 
 `rtl/axis/dsm_xpm_async_fifo.sv` now synchronizes both local reset requests
 into the XPM-required `wr_clk` domain before asserting the common XPM reset.
-The focused XSim at `verif/out_xsim_xpm_async_fifo_reset/console_xsim.log`
+The focused XSim at
+`runs/local_dv_artifacts_20261016/verif/out_xsim_xpm_async_fifo_reset/console_xsim.log`
 passes for initial dual reset, read-only and write-only reset requests, stale
 data flush, and clean post-reset writes/reads. The first attempted test used
 depth 4 and correctly failed XPM configuration DRC (minimum supported depth

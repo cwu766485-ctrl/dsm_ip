@@ -5,12 +5,12 @@ $xelab = Join-Path $vivadoBin 'xelab.bat'
 $xsim = Join-Path $vivadoBin 'xsim.bat'
 foreach ($tool in @($xvlog, $xelab, $xsim)) { if (!(Test-Path -LiteralPath $tool)) { throw "Vivado simulator tool not found: $tool" } }
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
-$out = Join-Path $repo 'dv\verif\out_xsim_frame_power_ctrl'
+$out = Join-Path $repo 'runs\frame_power_ctrl_xsim'
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 Push-Location $out
 try {
   Remove-Item -LiteralPath 'xvlog.log','xelab.log','xsim_run.log','xsim.log' -Force -ErrorAction SilentlyContinue
-  & $xvlog -sv (Join-Path $repo 'rtl\axis\dsm_frame_power_ctrl.sv') (Join-Path $repo 'dv\verif\block\axis\tb_dsm_frame_power_ctrl.sv')
+  & $xvlog -sv (Join-Path $repo 'rtl\axis\dsm_frame_power_ctrl.sv') (Join-Path $repo 'dv\verif\block\axis\tb\tb_dsm_frame_power_ctrl.sv')
   if ($LASTEXITCODE -ne 0) { throw "xvlog failed with exit $LASTEXITCODE" }
   & $xelab tb_dsm_frame_power_ctrl -s frame_power_ctrl_sim
   if ($LASTEXITCODE -ne 0) { throw "xelab failed with exit $LASTEXITCODE" }

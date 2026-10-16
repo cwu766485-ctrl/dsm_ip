@@ -93,18 +93,21 @@ try {
   if ($LASTEXITCODE -ne 0) { throw "xelab failed; see $OutDir\console_xelab.log" }
 
   $vectorArg = 'VEC_DIR=' + $vectors.Replace('\', '/')
-  $plusargs = @('-testplusarg', (Quote-CmdArg $vectorArg))
+  $testName = 'thermo5_sku_axil_config_test'
   $passMarker = 'THERMO5_AXIL_CONFIG_UVM_PASS'
   if ($CoefficientTransport) {
-    $plusargs += @('-testplusarg', (Quote-CmdArg 'AXIL_COEFF_TRANSPORT'))
+    $testName = 'thermo5_sku_axil_coeff_transport_test'
     $passMarker = 'THERMO5_AXIL_COEFF_TRANSPORT_UVM_PASS'
   } elseif ($NonlinearDpd) {
-    $plusargs += @('-testplusarg', (Quote-CmdArg 'AXIL_NONLINEAR_DPD'))
-    $passMarker = 'THERMO5_AXIL_NONLINEAR_DPD_UVM_PASS'
+    $testName = 'thermo5_sku_axil_nonlinear_dpd_test'
+    $passMarker = 'THERMO5_AXIL_NONLINEAR_DPD_CONFIG_UVM_PASS'
   } elseif ($Tap4Identity) {
-    $plusargs += @('-testplusarg', (Quote-CmdArg 'AXIL_TAP4_IDENTITY'))
+    $testName = 'thermo5_sku_axil_tap4_identity_test'
     $passMarker = 'THERMO5_AXIL_TAP4_IDENTITY_UVM_PASS'
   }
+  $testNameArg = 'UVM_TESTNAME=' + $testName
+  $plusargs = @('-testplusarg', (Quote-CmdArg $vectorArg),
+    '-testplusarg', (Quote-CmdArg $testNameArg))
   $run = 'call ' + $settings + ' >nul && xsim ' + $snapshot +
     ' -runall -sv_seed ' + $Seed + ' ' + ($plusargs -join ' ') +
     ' > console_xsim.log 2>&1'

@@ -24,7 +24,8 @@ Neither testbench duplicates DUT RTL.
 - `sim/`: Makefile, regression scripts, coverage configuration, and generated
   output locations.
 - `tb/`: UVM top-level testbench.
-- `tests/axi_ip/` and `tests/thermo5/`: target-specific test classes.
+- `tests/axi_ip/` and `tests/thermo5/`: target-specific test classes;
+  thermo5 AXI-Lite wrapper tests are isolated under `tests/thermo5/axil/`.
 
 The active agents are AXI4-Lite, TX AXI4-Stream, and observation AXI4-Stream.
 The RF agent is passive. TX and observation use separate instances of the same
@@ -48,7 +49,9 @@ The `thermo5 / INTERP_TAPS=2 / DPD_MAX_TAPS=1` testbench is
 `sim/thermo5_sku_filelist.f`. Its interface and source/PA agents live under
 `agent/`, its scenario under `sequences/thermo5/`, package, scoreboard,
 configuration, coverage, and control BFM under `env/thermo5/`, and tests under
-`tests/thermo5/`. It drives
+`tests/thermo5/`. The optional AXI-Lite wrapper test is under
+`tests/thermo5/axil/`; it reuses the same thermo5 environment and bit-true
+scoreboard. It drives
 14 complex samples per 125 MHz AXI
 beat through the asynchronous FIFO/14:8 gearbox, two interpolation stages,
 identity-configured memory-DPD, temporal DSM, and four 64-bit output planes

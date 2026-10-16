@@ -9,7 +9,7 @@ $dpdDefine = switch($DpdMaxTaps){ 1 {'TB_DPD_1'} 2 {'TB_DPD_2'} default {'TB_DPD
 $repo=(Resolve-Path ((Join-Path $PSScriptRoot "..\..\.."))).Path
 $settings='D:\Xilinx\Vivado\2024.1\settings64.bat'
 if(!(Test-Path $settings)){throw 'Vivado settings are unavailable.'}
-$work=Join-Path $repo 'dv\verif\out_xsim_tid32_thermo5_frontend_tx'; New-Item -ItemType Directory -Force $work|Out-Null
+$work=Join-Path $repo 'runs\thermo5_frontend_tx_xsim'; New-Item -ItemType Directory -Force $work|Out-Null
 & 'D:\MATLAB\R2025a\bin\matlab.exe' -batch "addpath(genpath('$($repo.Replace('\','/'))/matlab/tx_bandpass_if')); gen_tid32_thermo5_frontend_bittrue_vectors('$($work.Replace('\','/'))',$Words,$Seed,$Step,$InterpTaps);"
 if($LASTEXITCODE -ne 0){throw 'Thermo5 frontend MATLAB vector generation failed.'}
 $src=@(
@@ -20,7 +20,7 @@ $src=@(
   'rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_fs4_multipa_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_frontend_tx.sv',
-  'dv\verif\block\bp_dsm\tb\tb_tid32_thermo5_frontend_tx_bittrue.sv'
+  'dv\verif\subsystem\tx_frontend\tb\tb_tid32_thermo5_frontend_tx_bittrue.sv'
 )|ForEach-Object{'"'+(Join-Path $repo $_)+'"'}
 Push-Location $work
 try { cmd.exe /d /c "call $settings >nul && xvlog -sv -d $interpDefine -d $dpdDefine $($src -join ' ') > console_xvlog.log 2>&1 && xelab tb_tid32_thermo5_frontend_tx_bittrue -s sim_thermo5_frontend > console_xelab.log 2>&1 && xsim sim_thermo5_frontend -runall > console_xsim.log 2>&1"; if($LASTEXITCODE -ne 0){throw "Thermo5 frontend XSim failed: $LASTEXITCODE"} } finally {Pop-Location}

@@ -60,7 +60,7 @@ stable reset-held state. It is deliberately not used as closure stimulus.
 
 ## Directed artifact and result
 
-`dv/verif/block/axis/tb_thermo5_reset_sync_release_audit.sv` instantiates the
+`dv/verif/block/axis/tb/tb_thermo5_reset_sync_release_audit.sv` instantiates the
 unchanged reset synchronizer at the same hierarchy path names, runs separate
 source/core clocks, checks asynchronous assertion and two-edge release for
 both domains, and counts samples of the `1/0` operand pair. The run script is

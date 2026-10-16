@@ -3,16 +3,16 @@ $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path ((Join-Path $PSScriptRoot "..\..\.."))).Path
 $settings = 'D:\Xilinx\Vivado\2024.1\settings64.bat'
 if (!(Test-Path $settings)) { throw 'Vivado settings are unavailable.' }
-$work = Join-Path $repo 'verif\out_xsim_tid32_cartesian_fs4_gt_tx'
+$work = Join-Path $repo 'runs\tid32_cartesian_fs4_gt_tx_xsim'
 New-Item -Force -ItemType Directory $work | Out-Null
 $quoted = $work.Replace("'", "''")
-& 'D:\MATLAB\R2025a\bin\matlab.exe' -batch "addpath(genpath('$($repo.Replace('\','/'))/matlab/tx_bandpass_if')); gen_tid32_bittrue_vectors('$($quoted.Replace('\','/'))',$Vectors,$Seed);"
+& 'D:\MATLAB\R2025a\bin\matlab.exe' -batch "addpath(genpath('$($repo.Replace('\','/'))/matlab/tx_bandpass_if')); gen_tid32_cartesian_bittrue_vectors('$($quoted.Replace('\','/'))',$Vectors,$Seed);"
 if ($LASTEXITCODE -ne 0) { throw 'TID32 MATLAB vector generation failed.' }
 $sources = @(
   (Join-Path $repo 'rtl\gt\gt_tx_user_bridge.sv'),
   (Join-Path $repo 'rtl\gt\gt_tx_raw64_boundary.sv'),
   (Join-Path $repo 'rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv'),
-  (Join-Path $repo 'verif\block\bp_dsm\tb\tb_tid32_cartesian_fs4_gt_tx_bittrue.sv')
+  (Join-Path $repo 'dv\verif\block\tid32\tb\tb_tid32_cartesian_fs4_gt_tx_bittrue.sv')
 )
 Push-Location $work
 try {

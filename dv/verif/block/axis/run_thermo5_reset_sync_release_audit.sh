@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 OUT="${1:-$ROOT/runs/thermo5_reset_bin_audit_20261006_05}"
-TB="$ROOT/dv/verif/block/axis/tb_thermo5_reset_sync_release_audit.sv"
+TB="$ROOT/dv/verif/block/axis/tb/tb_thermo5_reset_sync_release_audit.sv"
 RTL="$ROOT/rtl/axis/dsm_reset_sync.sv"
 
 test ! -e "$OUT" || { echo "ERROR: output path already exists: $OUT" >&2; exit 2; }

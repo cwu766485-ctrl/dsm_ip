@@ -25,12 +25,14 @@ The external feedback path remains outside `dpd_frontend`: use
 whenever observation and TX clocks differ. The bridge is lossless by default
 and reports explicit drops only when built with `DROP_ON_FULL=1`.
 
-Run the DPD regression with:
+Run the retained thermo5-focused DPD unit checks with:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1
+bash dv/verif/block/dpd/run_identity_exhaustive_vcs.sh
+bash dv/verif/block/dpd/run_memory_poly_random_vcs.sh
 ```
 
-The regression includes MATLAB/RTL bit-true checks for the retained 5th-order,
-7th-order, and four-tap memory vectors, plus a compile-time identity/configuration
-matrix for orders 3/5/7 and tap counts 1/2/4/6.
+The broad Poly/LUT/observer test suite is maintained on `main`. The
+thermo5-focused block tests cover the retained identity and Memory-Poly
+boundaries; full-chain frozen-SKU bit-true behavior is checked by the MATLAB
+oracle tests under `dv/uvm/` and `dv/verif/subsystem/tx_frontend/`.

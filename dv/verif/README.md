@@ -1,57 +1,40 @@
-# Verification
+# Directed Verification
 
-Verification is split into block, subsystem, and IP-system levels:
+`dv/verif/` contains lightweight SystemVerilog block and subsystem tests for the
+thermo5 transmitter. The full reusable IP-system environment is under
+`dv/uvm/`; it owns the AXI-Stream/AXI-Lite agents, four-plane monitor,
+scoreboard, functional coverage, and full-chain regressions.
 
-- `block/`: lightweight arithmetic and protocol tests for individual RTL blocks.
-- `subsystem/`: boundary tests for TX frontend, IF/DSM, feedback, and control.
-- `tb/`: retained IP-top and route-level directed XSim testbenches.
-- `scripts/`: Linux VCS bridge runners, local XSim smoke runners, and regression helpers.
-- `vectors/`: checked-in input vectors and vector-format rules.
-- `../dv/uvm/`: complete IP-system UVM environment for Linux VCS/Verdi.
+## Layout
 
-The retained `dv/verif/` tree deliberately contains only reusable directed and
-layered verification collateral. Empty legacy UVM directories and generated
-XSim/SpyGlass outputs are not kept here.
+- `block/<block>/tb/`: isolated unit tests for FIFO/CDC, interpolation, DPD,
+  the TID32 modulator, and the GT-user raw-word boundary.
+- `subsystem/tx_frontend/` and `subsystem/tx_backend/`: the two thermo5
+  signal-processing subsystem groups (frontend chain and four-plane TID/Fs4
+  output backend).
+- `integration/`: behavioral serializer loopback and optional GT-parent tests;
+  these are integration-boundary checks, not additional subsystem categories.
+- `scripts/`: XSim smoke runners. VCS focused block runners may live beside the
+  block they test.
+- `models/`: behavioral verification-only models, not synthesizable RTL.
+- MATLAB golden vectors and simulator outputs are stored under MATLAB's output
+  area or ignored `runs/`, not duplicated in the test source tree.
 
-MATLAB is the fixed-point signoff reference. The dependency-light Python
-integer model under `dv/uvm/refmodel/python/` is the Linux/VCS regression
-reference and must remain sample-by-sample equal to MATLAB.
+There is no separate top-level `tb/` directory: each testbench lives with its
+block or subsystem. Simulator output is directed to ignored `runs/` directories
+and is not source collateral.
 
-## P0 DSM Regression
+## Thermo5 smoke entry points
 
-Included testbenches:
-
-- `tb_p0_lp1`
-- `tb_p0_lp2`
-- `tb_p0_ef1`
-- `tb_p0_ef2`
-- `tb_p0_mash11_mb`
-- `tb_p0_mash111_mb`
-- `tb_p0_mash22_mb`
-
-Run from the repository root:
+Generate the MATLAB oracle vectors first, then run the full AXI/CDC/frontend
+test:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_p0_all.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\uvm\sim\generate_thermo5_sku_vectors.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_thermo5_i2_d1_axis.ps1 -VectorDir .\runs\uvm_thermo5_i2_d1\vectors
 ```
 
-Input vectors:
-
-```text
-dv/verif/vectors/p0/rom_i.mem
-dv/verif/vectors/p0/rom_q.mem
-```
-
-Generated outputs are written under `dv/verif/out_xsim_p0/` and ignored by Git.
-
-LPDSM/LPDSM2/EFDSM/EFDSM2 emit 1-bit sign-domain traces. The MASH testbenches
-emit native multibit `yout` traces.
-
-## Initial IF/DSM Bit-True Regression
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_if_dsm_bittrue.ps1
-```
-
-This flow generates Python bit-exact vectors and compares the full-precision
-Fs/4 mixer plus BP EFDSM2 RTL transaction by transaction.
+Focused block and subsystem runners are indexed in
+[`RUN_REGRESSION.md`](RUN_REGRESSION.md). None of these behavioral tests alone
+proves metastability, parent-level CDC/RDC closure, physical GT serialization,
+or board/RF output.

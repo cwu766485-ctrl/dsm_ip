@@ -104,12 +104,11 @@ change output power or spectral trends at the circuit endpoint. The correct
 next action is to identify a PA/observation model from the ADS output, retrain
 the coefficients, and repeat the same pair comparison.
 
-Run the RTL bit-true flow from PowerShell:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_dpd_bittrue.ps1
-matlab -batch "cd('E:/workspace/chip/dsm_ip/matlab'); path_setup; T=compare_dpd_rtl_xsim; disp(T); assert(all(T.mismatch==0));"
-```
+The legacy broad Poly/LUT/observer XSim suite is maintained on the full
+multi-SKU `main` branch, not in this thermo5-focused branch. Here, the retained
+Memory-Poly unit tests are under `dv/verif/block/dpd/`; the frozen identity-DPD
+configuration is also checked end to end by the thermo5 MATLAB-oracle
+regressions documented in `dv/uvm/sim/README.md`.
 
 Run the complete no-board AI-assisted DPD signoff from PowerShell:
 
@@ -170,21 +169,10 @@ multi-condition quality gate returns `ACCEPT`. Use only that release file as
 the optional `coefficients_file` input to
 `prepare_dpd_memory_poly_bittrue_vectors` before an RTL comparison.
 
-The accepted LPDSM2 DPA+BPF release package uses a separate signoff flow and
-does not overwrite generic DPD vectors:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_lpdsmdpa_bpf_dpd_bittrue.ps1
-```
-
-This command checks that the release gate reports `ACCEPT`, requires all three
-validation and independent-test EVM/SNDR/OOB checks to pass with zero limits,
-then runs Memory-Poly XSim in `dv/verif/out_xsim_lpdsmdpa_bpf_dpd`. If MATLAB must
-run from its GUI, first run `entry_lpdsmdpa_bpf_dpd_bittrue_prepare`, invoke
-the PowerShell command with `-SkipMatlabPrep -SkipMatlabCompare`, then run
-`entry_lpdsmdpa_bpf_dpd_bittrue_compare`. A zero mismatch signs off only the
-  deterministic four-tap C1/C3/C5 RTL arithmetic for this behavioral package; it
-does not validate a physical PA.
+The separate LPDSM2 DPA+BPF release flow belongs to the multi-SKU `main`
+branch; it is not part of the thermo5 verification package. The thermo5 branch
+keeps generated DPD vectors under `matlab/out/` or `runs/`, never under the
+source-only `dv/verif/` tree.
 
 ## DPA Feedback AI-Seeded Calibration
 
@@ -241,9 +229,9 @@ keeping the same AXI-Lite programming interface.
 
 The memoryless `dpd_poly` primitive supports compile-time polynomial orders 3,
 5, and 7. The seventh-order path adds `C7*abs(x)^6`; its direct RTL test is
-included in `run_xsim_dpd_bittrue.ps1`. Full per-sample MATLAB/RTL signoff also
-requires the local MATLAB launcher to generate `dpd7_*` vectors. The banked
-memory-polynomial hardware path remains limited to C1/C3/C5.
+maintained on the legacy multi-SKU branch. The thermo5 branch's retained
+memory-polynomial hardware path is limited to C1/C3/C5 and its frozen SKU uses
+identity coefficients.
 
 The first learned package selector is now frozen as a depth-4 signed-Q12.20
 decision tree. Generate and verify it with

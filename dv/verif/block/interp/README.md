@@ -1,25 +1,14 @@
 # Interpolation Block
 
-## DUT
-
-- `rtl/interp/dsm_interp_frontend.sv` and its instantiated halfband FIR, CIC,
-  compensation FIR, and pipeline support RTL.
-
-## Testbenches
-
-`tb/` verifies bypass, x4, x8, x16, x32, phase, latency, reset, valid gaps,
-backpressure, signed extrema, and randomized stalls. The 2026-08-12 regression
-passed modes 0 to 4 and x32 I0/I1/I2/I3 with 4096 samples per output and zero
-mismatches; the random protocol test observed 97 inputs and 1084 stalls. Run:
+The retained thermo5 block test targets
+`rtl/interp/dsm_interp_x2_polyphase_vector.sv` and checks reachable x2
+interpolation behavior, valid bubbles, and output backpressure against its
+integer expected sequence.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\verif\scripts\run_xsim_interp_frontend.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_interp2_reachable.ps1
 ```
 
-## Reference and Vectors
-
-- MATLAB fixed model: `matlab/models/interp_frontend_fixed.m`.
-- Python integer reference: `dv/uvm/refmodel/python/dsm_refmodel/interp.py`.
-- MATLAB vector generator: `matlab/models/prepare_interp_frontend_bittrue_vectors.m`.
-- Generated vectors: `matlab/out/interp_frontend/bittrue/`.
-- Per-run copies and RTL dumps: `dv/verif/out_xsim_interp_frontend/`.
+This block test covers the selected x2 configuration only. The two-stage
+8-to-16-to-32 sample expansion is also exercised as part of the thermo5
+subsystem and full-chain tests.

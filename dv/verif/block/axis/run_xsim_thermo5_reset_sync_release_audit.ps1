@@ -1,9 +1,9 @@
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $settings = 'D:\Xilinx\Vivado\2024.1\settings64.bat'
-$out = Join-Path $repo 'runs\thermo5_reset_bin_audit_xsim_20261006_01'
+$out = Join-Path $repo 'runs\thermo5_reset_sync_release_audit_xsim'
 $rtl = Join-Path $repo 'rtl\axis\dsm_reset_sync.sv'
-$tb = Join-Path $repo 'dv\verif\block\axis\tb_thermo5_reset_sync_release_audit.sv'
+$tb = Join-Path $repo 'dv\verif\block\axis\tb\tb_thermo5_reset_sync_release_audit.sv'
 
 if (!(Test-Path -LiteralPath $settings)) { throw "Vivado settings are unavailable: $settings" }
 if (Test-Path -LiteralPath $out) { throw "Output path already exists: $out" }
