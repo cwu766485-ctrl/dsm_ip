@@ -5,7 +5,7 @@ set repo [file normalize [file join [file dirname [info script]] ..]]
 set project_file [file join $out_dir project thermo5_qsfp_gt14_parent.xpr]
 if {![file exists $project_file]} { error "Missing parent project: $project_file" }
 open_project $project_file
-set tb [file join $repo dv verif subsystem tx_frontend tb tb_thermo5_qsfp_gt14_parent.sv]
+set tb [file join $repo dv verif integration gt_parent tb_thermo5_qsfp_gt14_parent.sv]
 add_files -fileset sim_1 -norecurse $tb
 set_property top tb_thermo5_qsfp_gt14_parent [get_filesets sim_1]
 set_property -name xsim.simulate.runtime -value all -objects [get_filesets sim_1]

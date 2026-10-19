@@ -7,9 +7,20 @@ fv_setup_config -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -e
 set sources [list $repo/rtl/axis/dsm_reset_sync.sv $repo/rtl/axis/dsm_async_fifo.sv \
   $repo/rtl/axis/dsm_xpm_async_fifo.sv $repo/rtl/axis/dsm_axis14_to_core8_cdc.sv \
   $repo/rtl/dpd/dpd_poly.v $repo/rtl/dpd/dpd_memory_poly.v \
-  $repo/rtl/interp/dsm_interp_x2_polyphase_vector.sv \
-  $repo/dv/uvm/formal/thermo5_gap_harness.sv \
-  $repo/dv/uvm/formal/thermo5_convergence_harness.sv]
+  $repo/rtl/interp/dsm_interp_x2_polyphase_vector.sv]
+switch -- $top {
+  thermo5_identity_lemmas_harness {
+    lappend sources $repo/dv/uvm/formal/thermo5_dpd_identity_harness.sv \
+      $repo/dv/uvm/formal/thermo5_dpd_identity_lemmas_harness.sv
+  }
+  thermo5_interp_bounds_harness {
+    lappend sources $repo/dv/uvm/formal/thermo5_interp_bounds_harness.sv
+  }
+  thermo5_xpm_fwft_harness - thermo5_xpm_reset_contract_harness - thermo5_xpm_cdc_residual_harness {
+    lappend sources $repo/dv/uvm/formal/thermo5_xpm_fifo_harness.sv
+  }
+  default { error "Unknown thermo5 convergence formal top: $top" }
+}
 if {[string match *xpm* $top]} {
   set vendor $::env(THERMO5_XPM_ROOT)
   lappend sources $vendor/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv \

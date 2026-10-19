@@ -6,7 +6,7 @@ interpolation behavior, valid bubbles, and output backpressure against its
 integer expected sequence.
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_interp2_reachable.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\block\interp\run_xsim_interp2_reachable.ps1
 ```
 
 This block test covers the selected x2 configuration only. The two-stage

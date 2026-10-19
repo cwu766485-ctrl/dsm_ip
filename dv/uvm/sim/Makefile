@@ -241,7 +241,7 @@ thermo5-axil-vcs-parameter-guard:
 		$(THERMO5_COV_ARGS) -top thermo5_axil_parameter_guard_tb \
 		-Mdir=$(THERMO5_OUT)/parameter_guard/csrc \
 		rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv \
-		dv/uvm/tb/thermo5_axil_parameter_guard_tb.sv \
+		dv/verif/block/axil/tb/thermo5_axil_parameter_guard_tb.sv \
 		-o $(THERMO5_OUT)/parameter_guard/simv \
 		-l $(THERMO5_OUT)/parameter_guard/compile.log
 	@set +e; cd $(ROOT) && $(THERMO5_OUT)/parameter_guard/simv \
@@ -264,7 +264,7 @@ thermo5-axil-cfg-unit-vcs:
 		-cm line+cond+fsm+tgl+branch+assert -top thermo5_axil_cfg_coverage_tb \
 		-Mdir=$(THERMO5_OUT)/cfg_coverage_unit/csrc \
 		rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv \
-		dv/uvm/tb/thermo5_axil_cfg_coverage_tb.sv \
+		dv/verif/block/axil/tb/thermo5_axil_cfg_coverage_tb.sv \
 		-o $(THERMO5_OUT)/cfg_coverage_unit/simv \
 		-l $(THERMO5_OUT)/cfg_coverage_unit/compile.log
 	@cd $(ROOT) && $(THERMO5_OUT)/cfg_coverage_unit/simv -no_save \

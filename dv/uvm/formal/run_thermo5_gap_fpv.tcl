@@ -8,12 +8,30 @@ set out $::env(THERMO5_FORMAL_OUT)
 file mkdir $out
 fv_setup_config -check reset -disable
 fv_setup_config -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -enable -severity error -verbosity verbose
-set sources [list [file join $repo rtl axis dsm_reset_sync.sv] \
-  [file join $repo rtl dpd dpd_poly.v] \
-  [file join $repo rtl dpd dpd_memory_poly.v] \
-  [file join $repo rtl axis dsm_async_fifo.sv] \
-  [file join $repo rtl axis dsm_axis14_to_core8_cdc.sv] \
-  [file join $repo dv uvm formal thermo5_gap_harness.sv] -assert svaext]
+switch -- $top {
+  thermo5_reset_gap_harness {
+    set sources [list [file join $repo rtl axis dsm_reset_sync.sv] \
+      [file join $repo dv uvm formal thermo5_reset_harness.sv]]
+  }
+  thermo5_counter_gap_harness - thermo5_counter_unbounded_harness {
+    set sources [list [file join $repo rtl dpd dpd_poly.v] \
+      [file join $repo rtl dpd dpd_memory_poly.v] \
+      [file join $repo dv uvm formal thermo5_dpd_counter_harness.sv]]
+  }
+  thermo5_identity_harness {
+    set sources [list [file join $repo rtl dpd dpd_poly.v] \
+      [file join $repo rtl dpd dpd_memory_poly.v] \
+      [file join $repo dv uvm formal thermo5_dpd_identity_harness.sv]]
+  }
+  thermo5_cdc_residual_harness {
+    set sources [list [file join $repo rtl axis dsm_reset_sync.sv] \
+      [file join $repo rtl axis dsm_async_fifo.sv] \
+      [file join $repo rtl axis dsm_axis14_to_core8_cdc.sv] \
+      [file join $repo dv uvm formal thermo5_generic_cdc_harness.sv]]
+  }
+  default { error "Unknown thermo5 scoped formal top: $top" }
+}
+lappend sources -assert svaext
 read_file -top $top -format sverilog -sva -vcs $sources
 if {$top eq "thermo5_cdc_residual_harness"} {
   # Exact 7:4 period ratio (125:218.75 MHz), scaled to integral periods.

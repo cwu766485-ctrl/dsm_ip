@@ -11,7 +11,7 @@ timing, or physical GT/board validation.
 | Interpolation | Directed x2 reachable-state test with bubbles and output stalls | Scope is the selected x2 polyphase RTL, not all interpolation SKUs |
 | TID32 | Single-branch Cartesian TID/Fs4 bit-true test | Four-branch synchronization is checked at subsystem/IP level |
 | Raw GT-user word | 64-bit continuous-valid behavior test and behavioral loopback | No physical GT primitive, serial lane, RX deskew, or board output is present |
-| AXI-Lite DPD config/mailbox | Standalone config-block reset/request/pending overlap tuples in `dv/uvm/tb/thermo5_axil_cfg_coverage_tb.sv`; AXI bus/register behavior is exercised in wrapper-integrated UVM | The standalone harness intentionally probes internal state for two reset-overlap tuples; it is not a full AXI protocol test or system CDC/RDC signoff |
+| AXI-Lite DPD config/mailbox | Standalone reset/request/pending overlap and illegal-parameter harnesses in `dv/verif/block/axil/tb/`; external AXI bus/register behavior is exercised by the register-access UVM test under `dv/uvm/tests/thermo5/axil/` | The standalone overlap harness intentionally probes internal state for two reset-overlap tuples; it is not system CDC/RDC signoff. AXI-Lite is optional wrapper control, not part of the frozen parallel-config SKU. |
 
 Run focused tests from the repository root using `../RUN_REGRESSION.md`. The
 full thermo5 UVM source, MATLAB golden-vector comparison, and coverage records

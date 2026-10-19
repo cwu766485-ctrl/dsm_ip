@@ -11,7 +11,11 @@ import time
 ROOT=Path(__file__).resolve().parents[3]
 SOURCES=('rtl/axis/dsm_reset_sync.sv','rtl/dpd/dpd_poly.v','rtl/dpd/dpd_memory_poly.v',
          'rtl/axis/dsm_async_fifo.sv','rtl/axis/dsm_axis14_to_core8_cdc.sv',
-         'dv/uvm/formal/thermo5_gap_harness.sv','dv/uvm/formal/run_thermo5_gap_fpv.tcl')
+         'dv/uvm/formal/thermo5_reset_harness.sv',
+         'dv/uvm/formal/thermo5_dpd_counter_harness.sv',
+         'dv/uvm/formal/thermo5_dpd_identity_harness.sv',
+         'dv/uvm/formal/thermo5_generic_cdc_harness.sv',
+         'dv/uvm/formal/run_thermo5_gap_fpv.tcl')
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)

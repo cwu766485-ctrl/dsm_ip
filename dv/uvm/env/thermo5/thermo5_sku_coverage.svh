@@ -22,6 +22,7 @@ class thermo5_sku_coverage extends uvm_component;
     cp_signed_min: coverpoint signed_min { bins absent={0}; bins present={1}; }
     cp_signed_max: coverpoint signed_max { bins absent={0}; bins present={1}; }
   endgroup
+
   covergroup core_cg with function sample(bit underflow, bit illegal, bit pa_stall, bit pa_word);
     option.per_instance = 1;
     cp_underflow: coverpoint underflow { bins normal={0}; bins empty={1}; }
@@ -29,10 +30,12 @@ class thermo5_sku_coverage extends uvm_component;
     cp_pa_stall: coverpoint pa_stall { bins ready={0}; bins stalled={1}; }
     cp_pa_word: coverpoint pa_word { bins no_word={0}; bins four_plane_word={1}; }
   endgroup
+
   function new(string name, uvm_component parent);
     super.new(name,parent);
     source_cg=new(); core_cg=new();
   endfunction
+
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if (!uvm_config_db#(virtual thermo5_sku_if)::get(this,"","vif",vif))
@@ -40,6 +43,7 @@ class thermo5_sku_coverage extends uvm_component;
     if (!uvm_config_db#(thermo5_sku_config)::get(this,"","cfg",cfg))
       `uvm_fatal("NOCFG","thermo5 coverage configuration is missing")
   endfunction
+
   task run_phase(uvm_phase phase);
     bit accepted_min, accepted_max;
     fork
@@ -86,6 +90,7 @@ class thermo5_sku_coverage extends uvm_component;
       end
     join
   endtask
+
   function void report_phase(uvm_phase phase);
     `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d source_cg=%.1f core_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,reset_reassertions,

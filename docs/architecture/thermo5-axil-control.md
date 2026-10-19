@@ -58,11 +58,27 @@ while data is in flight: the existing frontend flushes its valid pipeline when
 disabled. Stop only after the producer is quiescent and all expected PA words
 have been accepted, or assert the common reset epoch.
 
-The AXI-Lite and core reset inputs must assert in the same reset epoch;
-deassertion must be synchronized separately to the AXI-Lite and core clocks.
-The UVM top models this with common asynchronous assertion and an AXI-Lite
-reset-release synchronizer. The AXI-Stream source reset remains the separate
-FIFO write-side reset and must follow the existing CDC reset contract.
+In the four-GTH parent, the active-low global `reset_n` resets the GT Wizard
+and reset controller. The controller also waits for `fabric_clocks_stable`
+(from the parent clock manager) and synchronized TX-GT health (`tx_active`,
+`tx_done`, all-lane `powergood` and `tx_pmaresetdone`) to stay good for its
+qualification interval. It then releases three separate local resets:
+`rst125_n` for AXI-Stream/FIFO write logic, `axil_rst_n` for the 100-MHz
+AXI-Lite register bank, and `rst218_n` for the 218.75-MHz core/FIFO read side.
+Each uses `dsm_reset_sync`: asynchronous assertion, then deassertion only after
+two rising edges of that domain's own clock. A clock-stability or qualified
+GT-health loss asynchronously reasserts all three local resets; the AXI-Lite
+shadow registers, RUN state, and outstanding mailbox request are discarded in
+that reset epoch. The parent exposes `link_ready` as TX/fabric readiness; it is
+not a QSFP partner link-training or RX-deskew indication.
+
+The `fabric_clocks_stable` input is an integration contract, not an internally
+measured clock monitor. It must represent stability of both AXI-Stream and
+AXI-Lite clocks; the physical source and its real parent timing budget are
+still board/system integration inputs. The AXI-Lite and core reset inputs must
+assert in one common epoch, with their releases synchronized independently.
+The AXI-Stream write-side reset follows the existing asynchronous-FIFO reset
+contract.
 
 ## Worked datapath example
 
@@ -88,7 +104,8 @@ code-plane words.
 ## Verification
 
 The AXI-Lite configuration-register block has a standalone testbench at
-`dv/uvm/tb/thermo5_axil_cfg_coverage_tb.sv` for request/pending/reset overlap.
+`dv/verif/block/axil/tb/thermo5_axil_cfg_coverage_tb.sv` for
+request/pending/reset overlap.
 The wrapper-integrated UVM scenarios are split into named tests under
 `dv/uvm/tests/thermo5/axil/`: default register/commit/bit-true replay,
 coefficient mailbox transport, nonlinear coefficient image, tap-4 identity,

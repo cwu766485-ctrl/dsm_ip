@@ -7,6 +7,19 @@ physical GT operation, analog/RF quality, or board output.
 
 ## Verification hierarchy
 
+In plain terms: a **block test** plugs stimulus into one RTL module and checks
+that module's contract; a **subsystem test** checks several connected modules
+working together; an **IP/system test** starts at the IP's external interfaces
+and checks the complete path. A physical GT/board test is beyond those RTL
+simulation scopes.
+
+Therefore “GT digital-boundary block test” is not a subsystem level. It means
+a small test of the one module that prepares four parallel 64-bit words for the
+GT: it checks continuous consumption, idle output, and fault reporting. The
+four-branch TID subsystem is tested separately. A behavioral serializer
+loopback is a separate integration test, and it still does not instantiate the
+physical GT.
+
 ```text
 Block tests
   one cohesive RTL interface/function
@@ -36,7 +49,7 @@ gearbox.
 | One x2 polyphase interpolator (`dsm_interp_x2_polyphase_vector.sv`) | `tb_interp_x2_vector_reachable.sv`; reachable values, valid bubbles and output backpressure | Verify FIR phase/order, fixed-point result, history and elastic protocol | Integer/MATLAB reference sequence matches, phase-0/phase-1 order is correct, and output is stable under stall. The RTL is a causal polyphase FIR: 2-tap `[1,1]/2`, 3-tap `[3,6,-1]/8`, or 4-tap `[5,15,-5,1]/16`; frozen SKU selects 2 taps. |
 | One Cartesian TID32/Fs4 branch (`tid32_cartesian_fs4_gt_tx.sv`) | `tb_tid32_cartesian_fs4_gt_tx_bittrue.sv`; sequential 32-lane I/Q vectors | Verify a branch's recursive state, bit ordering and 64-bit packing | Ordered 64-bit words match the MATLAB bit-true model; transaction handshake preserves order. |
 | Raw GT user-word boundary (`gt_tx_raw64_boundary.sv`, `gt_tx_user_bridge.sv`, and `thermo5_raw64_continuous_tx.sv`) | `tb_thermo5_raw64_continuous_tx.sv`; valid quartet, idle, link/run state, missing word, stop and plane disagreement | Verify digital user-word/continuous-transmit policy before the vendor GT primitive | Expected 256-bit bundle/idle word and sticky diagnostic behavior. It does not instantiate a GT primitive or test serial pins. |
-| DPD AXI-Lite control/mailbox (`thermo5_dpd_axi_lite_cfg.sv`) | `thermo5_axil_cfg_coverage_tb.sv` for selected internal reset/request/pending overlaps; `thermo5_sku_axil_register_access_test` for external AXI-Lite pins without stream traffic | Verify the register/control-plane contract independently from DPD arithmetic | ID/read-only, STATUS/TAPS/coefficient registers, AW/W skew, WSTRB, error responses and response backpressure; internal mailbox corner tuples match the specified behavior. This is a control block, not the DPD arithmetic block. |
+| DPD AXI-Lite control/mailbox (`thermo5_dpd_axi_lite_cfg.sv`) | `dv/verif/block/axil/tb/thermo5_axil_cfg_coverage_tb.sv` for selected internal reset/request/pending overlaps; `thermo5_sku_axil_register_access_test` for external AXI-Lite pins without stream traffic | Verify the register/control-plane contract independently from DPD arithmetic | ID/read-only, STATUS/TAPS/coefficient registers, AW/W skew, WSTRB, error responses and response backpressure; internal mailbox corner tuples match the specified behavior. This is a control block, not the DPD arithmetic block. |
 
 The AXI-Lite configuration block and the DPD datapath are distinct RTL blocks,
 but they form one configured datapath when composed in the optional wrapper.
@@ -52,8 +65,8 @@ tests for source locality.
 
 | Subsystem | DUT scope | Test and stimulus | Purpose / expected result |
 |---|---|---|---|
-| Thermo5 frontend | Frame gain, first x2 interpolation, DPD, second x2 interpolation and handoff into the four-plane output logic; the standalone core-word frontend test starts at 8 complex samples/word | `tb_tid32_thermo5_frontend_tx_bittrue.sv`; MATLAB oracle vectors, frame gain, selected interpolation-tap and DPD parameterizations | Check fixed-point sequence and end-to-end word ordering for the elaborated configuration; frozen SKU is 2-tap interpolation plus identity 1-tap DPD. |
-| Four-plane TID/Fs4 output backend | Four offset Cartesian TID branches and synchronized thermometric PA-code planes (`tid32_thermo5_fs4_multipa_tx.sv`) | `tb_tid32_thermo5_fs4_multipa_tx_bittrue.sv`; 128 vectors × 32 complex lanes with four MATLAB expected planes | All four 64-bit output words match in the same cycle, remain ordered and stall together; confirms the five-level code-plane relation at the digital code boundary. |
+| Thermo5 frontend | Frame gain, first x2 interpolation, DPD, second x2 interpolation and handoff into the four-plane output logic; the standalone core-word frontend test starts at 8 complex samples/word | `tb_tid32_thermo5_frontend_tx_bittrue.sv` is the 64-word oracle baseline; `tb_tid32_thermo5_frontend_tx_flow_control.sv` adds source bubbles, partial PA-ready windows, stall-stability checks and the same four-plane oracle | The dedicated flow-control test passed 64 words with 16 inserted bubble cycles and 28 observed stall cycles on 2026-10-18. Frozen configuration is 2-tap interpolation plus identity 1-tap DPD. Reset/replay remains an IP-level test. |
+| Four-plane TID/Fs4 backend subsystem | Four offset Cartesian TID branches produce synchronized thermometric PA-code planes | `tb_tid32_thermo5_fs4_multipa_tx_bittrue.sv` is the 128-vector always-ready oracle baseline; `tb_tid32_thermo5_fs4_multipa_tx_backpressure.sv` adds source bubbles and per-plane ready stalls while retaining the oracle comparison | The dedicated backpressure test passed 128 vectors with 32 inserted bubble cycles and 86 observed stall cycles on 2026-10-18; all accepted quartets matched MATLAB and held stable while blocked. The adjacent raw64 bench is a separate block test. Neither test simulates physical GT. |
 
 ## IP and system integration tests
 

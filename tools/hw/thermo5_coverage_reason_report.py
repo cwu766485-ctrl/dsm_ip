@@ -66,7 +66,7 @@ def reason(row):
                 f'DPD vector words since reset. First natural fall needs {2**(bit+1)}; '
                 'public reset can supply a fall after a rise. Existing stream checks16387 '
                 'words. Full-width carry/hold proof is not a URG toggle hit.',
-                ['rtl/dpd/dpd_memory_poly.v', 'dv/uvm/formal/thermo5_gap_harness.sv'])
+                ['rtl/dpd/dpd_memory_poly.v', 'dv/uvm/formal/thermo5_dpd_counter_harness.sv'])
     # Fixed coefficient ports are configuration evidence, not saturation evidence.
     if row['metric'] == 'toggle' and re.search(r':(?:dpd_active_taps|active_taps|c[135]_(?:re|im))\[', key):
         return ('CONFIGURATION', 'TB fixes active_taps=1, c1_re=16384, and all other '
@@ -121,13 +121,13 @@ def reason(row):
             return ('SCOPED_RESET', '!arst_n && sync_q[0] is uncoverable after falling-edge '
                     'runtime reset settles. Three nonvacuous assertions/four normal covers. '
                     'Same-active-edge scheduling and analog metastability are outside scope.',
-                    ['rtl/axis/dsm_reset_sync.sv', 'dv/uvm/formal/thermo5_gap_harness.sv'])
+                    ['rtl/axis/dsm_reset_sync.sv', 'dv/uvm/formal/thermo5_reset_harness.sv'])
         return ('SCOPED_GENERIC_CDC', 'Production generic CDC proves residual in '
                 '{0,2,4,6,8,10,12}, unused residual bits223:192 zero and frame_marker '
                 'implies out_valid; nine operating covers. Integrated core_enable=0 '
                 'also makes frontend in_ready=0. Exact7:4 clock/reset model; '
                 'no XPM or analog-reset transfer inferred.',
-                ['rtl/axis/dsm_axis14_to_core8_cdc.sv', 'dv/uvm/formal/thermo5_gap_harness.sv'])
+                ['rtl/axis/dsm_axis14_to_core8_cdc.sv', 'dv/uvm/formal/thermo5_generic_cdc_harness.sv'])
     raise RuntimeError('Unreviewed record '+row['bin_id'])
 
 

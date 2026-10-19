@@ -3,7 +3,7 @@
 ## Scoped formal disposition (2026-10-06)
 
 The production `dsm_reset_sync` is instantiated in
-`dv/uvm/formal/thermo5_gap_harness.sv`. A runtime reset request remains
+`dv/uvm/formal/thermo5_reset_harness.sv`. A runtime reset request remains
 unconstrained, but a verification-only driver changes `arst_n` on the
 falling local clock edge. VC Formal proves three assertions, all
 non-vacuous: held reset clears stage0, held reset clears output, and released

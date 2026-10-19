@@ -14,9 +14,11 @@ image/programming hooks. Negative, mailbox-fault, and boundary-phase scenarios
 each have their own test class.
 
 AXI-Lite protocol items, driver, monitor, agent, and access sequence remain in
-their canonical `agent/` and `sequences/` directories. The standalone
-configuration-register block test is `dv/uvm/tb/thermo5_axil_cfg_coverage_tb.sv`;
-the UVM tests here verify the wrapper-integrated control and data path.
+their canonical `agent/` and `sequences/` directories. Standalone block
+harnesses live at `dv/verif/block/axil/tb/`: one targets
+request/pending/reset overlap tuples and one checks the illegal `MAX_TAPS`
+parameter guard. The UVM tests here verify external bus protocol and, for the
+integrated scenarios, control-to-datapath behavior.
 
 Run a focused VCS scenario after compiling with `THERMO5_USE_AXIL=1` by setting
 `THERMO5_TESTNAME` to one of the classes below (the convenience targets are in

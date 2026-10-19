@@ -1,5 +1,91 @@
 # Execution frontier
 
+## GT-parent global-reset integration with AXI-Lite (2026-10-19)
+
+Added the 100-MHz AXI-Lite clock/slave interface to the four-GTH thermo5
+parent. One reset-controller release request now fans out to independent
+asynchronous-assert/two-local-edge-release synchronizers for AXI-Stream
+125 MHz, AXI-Lite 100 MHz, and the 218.75-MHz GT-derived core. Release waits
+for `fabric_clocks_stable` and qualified GT TX health; RUN is now written over
+AXI-Lite and synchronized into core, with the frozen parent retained at
+`DPD_MAX_TAPS=1`.
+
+Parent XSim reset-only run PASS in
+`runs/thermo5_gt_parent_axil_reset_20261019_121300/`: reset defaults/ID,
+local release sequencing, fabric-clock-stability loss, pending COMMIT
+cancellation on GT-health loss, power-good/TX-active recovery, common reset,
+and 112 TX words across two epochs. RX comparison was explicitly skipped.
+The full RX-comparison attempt remains OPEN/failed: the behavioral GT model
+reported `rx_user_clk=0`, `rxdata=0x55...`, and no RX frame before timeout.
+This is not evidence of serial/board behavior.
+
+Thermo5 generic VCS regression PASS (7 scenarios) at
+`runs/thermo5_verify_20261019_axil_parent_1245/`; AXI-Lite VCS regression PASS
+(register access, commit/config, coefficient transport, nonlinear-image
+transport, tap-4 identity, boundary phase, negative/fault/parameter checks and
+URG merge) at `runs/thermo5_axil_vcs_20261019_parent_1245/`. Directed frozen
+I2/D1 XSim PASS at `runs/uvm_thermo5_i2_d1/axis_xsim_parallel_generic_seed1_words56/`.
+The UVM split exposed and fixed a missing `(name,parent)` constructor in the
+bit-true test base.
+
+ZU15EG parent synthesis emitted `synthesized.dcp`, `synth_utilization.rpt`, and
+`synth_clocks.rpt` under the parent run directory, including the AXI-Lite
+100-MHz clock. The Vivado launcher exited nonzero with `Failed to load feature
+'vivado'`; treat this as generated synthesis artifacts, not a clean synth
+PASS. No placed/routed parent run was attempted (only 8.9 GiB free, below the
+known 12–14 GiB requirement). Routed CDC/RDC and real SoC I/O budgets remain
+OPEN; no physical signoff claim.
+
+## Formal harness topic split (2026-10-19)
+
+Split the formerly combined thermo5 proof sources into reset, DPD counter,
+generic CDC/gearbox, DPD identity, identity intermediate lemmas, interpolation
+bounds, and XPM FIFO harness files. Tcl runners now select the topic file(s)
+for the chosen top, Python manifests hash the split sources, and
+coverage-reason references point to the corresponding topic. The first new
+identity run found two stale hierarchical references: the DPD product moved
+from s6 to s7 in the Oct15 timing optimization, but its old lemma still read
+s6. The lemma now checks current s7 product signals; obsolete product-delay
+checks were removed because that pipeline stage no longer exists. RTL is
+unchanged. Fresh reset/counter/generic-CDC/interpolation/XPM-reset/XPM-residual
+jobs PASS. Identity has 5 proven and 13 inconclusive assertions (no remaining
+falsified property); full identity payload remains OPEN. XPM FWFT proves the
+state-encoding assertion and covers stage1/read, but reset-transition coverage
+is inconclusive. See fresh manifests under `runs/`.
+
+## Full-IP UVM scenario file split (2026-10-18)
+
+Split the common test setup into `thermo5_sku_base_test.svh`, kept the nominal
+bit-true scenario in `thermo5_sku_bittrue_test.svh`, and moved the ten corner
+scenario classes into one source file each under
+`dv/uvm/tests/thermo5/full_ip/`. `thermo5_sku_corner_tests.svh` remains the
+include hub; public UVM test names and Makefile targets are unchanged. Added a
+scenario map README. Structural checks (10 scenario files/10 matching includes,
+one class per file, base included before derived classes) and `git diff
+--check` PASS. No RTL, vectors, or scenario behavior changed. VCS compile was
+attempted in Rocky WSL, but this run could not obtain the Synopsys license
+server; it is not a PASS or a DUT failure. Re-run generic/XPM UVM regressions
+in a licensed environment before treating this package change as
+simulator-validated.
+
+## Subsystem test scenario split (2026-10-18)
+
+The frontend and four-plane backend subsystem benches now have separate
+bit-true baseline and flow-control scenarios. The new frontend test injects
+source bubbles and partial `pa_ready` windows while retaining MATLAB
+four-plane comparison; the backend test independently stalls each plane and
+checks quartet alignment/stability plus MATLAB output equality. XSim PASS:
+64 frontend words, 16 bubble cycles, 28 observed stalls; 128 backend vectors,
+32 bubble cycles, 86 observed stalls. Latest logs are under
+`runs/thermo5_frontend_flow_control_xsim_20261018_021853/` and
+`runs/thermo5_fs4_multipa_backpressure_xsim_20261018_021939/`.
+
+The original baseline benches also passed: frontend parameterized runner used
+the inherited 4-tap/DPD_MAX_TAPS=4 environment; backend checked 128 vectors.
+The new frontend flow-control runner is the frozen 2-tap/DPD1 configuration.
+No RTL/UVM logic changed, and this does not replace full-IP reset/replay, CDC,
+generic/XPM regression, or physical GT signoff.
+
 ## Verification source organization (2026-10-16)
 
 Optional thermo5 AXI-Lite UVM tests are split by responsibility under
@@ -13,13 +99,43 @@ expected-negative checks, parameter guard and URG merge passed after extraction
 in `runs/thermo5_axil_refactor_suite_retry_20261016/`. XPM has not been rerun
 after this extraction. The nonlinear-image test only checks atomic configuration
 transfer and 56 output handshakes; nonlinear arithmetic remains OPEN. The
-standalone `thermo5_axil_cfg_coverage_tb.sv` checks internal reset/request/
-pending overlap.
+standalone `dv/verif/block/axil/tb/thermo5_axil_cfg_coverage_tb.sv` checks
+internal reset/request/pending overlap; the parameter-guard harness is colocated
+there as well. The two signal-processing subsystem folders remain the frontend
+(AXIS/AFIFO/gearbox + gain/interpolation/DPD) and backend (four-plane TID/Fs4).
+The raw GT-user policy is an adjacent block test; behavioral serializer
+loopback is a separate integration test.
+
+The AXI-Lite block harness and parameter-guard files were moved from the UVM
+top-level `tb/` into `dv/verif/block/axil/tb/`. Both canonical VCS targets now
+pass from the new paths: `thermo5-axil-cfg-unit-vcs` and
+`thermo5-axil-vcs-parameter-guard`; evidence is under
+`runs/thermo5_axil_block_reorg_20261016/`. This was a verification-source
+organization change; no RTL or test behavior changed.
+
+The 14:8 ingress gearbox is core-clocked after the FIFO; default FIFO depth is
+16 source beats (`FIFO_ADDR_W=4`). At equal nominal rates, this depth absorbs
+bounded startup/stall skew; it does not permit accepting a full 32-beat frame
+while the consumer is stopped. See `docs/architecture/thermo5-datapath.md` for
+the width, capacity and sizing assumptions.
 
 The block/subsystem scenario, intent, expected-result and limitation matrix is
 maintained at `docs/verification/thermo5-test-level-matrix.md`.
 
-Updated: 2026-10-16 SGT. Status: active; frozen thermo5 OOC routes PASS, DV tree cleanup and directed smoke validation complete, parent I/O signoff OPEN.
+## Directed runner locality (2026-10-16)
+
+Moved 11 focused XSim runners beside their matching block, subsystem, or
+integration testbenches. Existing dv/verif/scripts command paths remain as
+thin compatibility shims. PowerShell parsing plus repository-root and literal
+RTL/DV/MATLAB source-path resolution passed for 12 canonical runners and 11
+shims. Isolated XSim checks passed for the raw64 GT-user block, frontend
+subsystem (64 vectors, INTERP_TAPS=2, DPD_MAX_TAPS=1), and four-plane backend
+(128 MATLAB vectors). Logs are preserved under
+runs/dv_layout_verify_20261016/. The full-chain run was not repeated because
+its default output directory already contains prior artifacts; its runner path
+and source references passed static resolution checks.
+
+Updated: 2026-10-18 SGT. Status: active; frozen thermo5 OOC routes PASS, subsystem flow-control scenarios added and XSim-checked, parent I/O signoff OPEN.
 This is the source of truth for current execution state. Detailed next actions
 and exit gates are in [the closure plan](thermo5-gap-closure.md).
 
@@ -280,7 +396,7 @@ OOC-only timing boundary to parent/board signoff.
   calibrated nonlinear DPD oracle also remain OPEN.
 - Replay UVM/XSim: `dv/uvm/sim/run_thermo5_axil_xsim.ps1` (generic and `-XpmFifo`).
   Replay direct MATLAB-oracle bit-true tests:
-  `dv/verif/scripts/run_xsim_thermo5_i2_d1_axis.ps1 -AxilControl` and add
+  `dv/verif/subsystem/tx_frontend/run_xsim_thermo5_i2_d1_axis.ps1 -AxilControl` and add
   `-XpmFifo` for the vendor FIFO build. Logs live in ignored `runs/`.
 
 ### AXI-Lite current verification result (2026-10-13)
@@ -428,7 +544,7 @@ available; timing closure and parent CDC/RDC remain OPEN.
 | Exact XPM reset bins | Previous 464-trial phase grid PASS; fresh edge-observed 400-trial search PASS; target remains OPEN | New pre/post-`posedge core_clk` observation reports 5,464 stage1 edges, zero stage1+`rd_rst_i` edges, zero `stage1_valid->invalid` hits. Search is not a formal unreachability proof; no waiver. |
 | Counter and other coverage gaps | Partial coverage remains OPEN | Bit23 and bit24 are closed on both FIFO models by same-binary URG and 16/16 lane-direction audits. Bits25-31 remain reachable/open. Generic interpolation clamp/condition bins and XPM vendor line/condition/branch/toggle gaps remain open. Do not waive reachable counters. |
 | AXI-Lite configuration edge | Functional cases closed; raw coverage adjudicated, physical signoff OPEN | Current raw score98.21%; line315 tuples hit in separate legal tests; exact line88/write-default/parameter-guard dispositions are in the waiver ledger. OOC route and integrated CDC/RDC remain open. |
-| Scoped VC Formal | Scoped milestones proven; full payload OPEN | Oct7 DPD19/20 assertions proven including no-saturation/count-zero; full identity payload inconclusive. Valid interpolation16 assertions/5 covers PASS; actual XPM residual7/9 PASS; legal XPM reset2 assertions/4 covers/2 unreachable reentries PASS. Qualified FWFT cover inconclusive. Exact matching-source manifests in convergence record. |
+| Scoped VC Formal | Per-topic proofs PASS; full identity payload and FWFT OPEN | Fresh split-source results dated Oct19: reset3/3, bounded counter3/3, unbounded counter35/35, generic CDC7/7 with9/9 covers, interpolation16/16 with5/5 covers, XPM reset2/2, and XPM residual7/7 with9/9 covers PASS. The identity job has5 proven/13 inconclusive assertions after fixing stale s6 references. XPM FWFT proves state encoding and covers stage1/read; its reset-transition cover remains inconclusive. Fresh run manifests are under `runs/thermo5_formal_harness_split*20261019/`. |
 | Exact missing-bin audit | AUDITED_OPEN | `runs/thermo5_coverage_reasons_20261007/`: every missing code/condition/signal and reason; exact XPM FSM transitions. Not an URG exclusion/signoff report. |
 | SpyGlass | Zero errors/blackboxes; review OPEN |39 warnings +4 synthesis warnings; two physical reset-use/RDC items remain. See lint review. |
 | Two real bug reconstructions | Fixed/faulty controls PASS | Both XSim and VCS reproduce historical AXI-Lite commit mechanisms on isolated copies. See bug walkthrough. |

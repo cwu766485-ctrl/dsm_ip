@@ -4,16 +4,27 @@
 // Four-channel GT Wizard loopback at ideal clocks. This checks the parallel
 // user-data boundary; it is not a measurement of board serial phase/skew.
 module tb_thermo5_qsfp_gt14_parent;
-  logic axi_clk125 = 1'b0, freerun_clk200 = 1'b0;
+  logic axi_clk125 = 1'b0, axil_clk100 = 1'b0, freerun_clk200 = 1'b0;
   logic mgtrefclk125_p = 1'b0;
   wire logic mgtrefclk125_n = ~mgtrefclk125_p;
   always #4000 axi_clk125 = ~axi_clk125;
+  always #5000 axil_clk100 = ~axil_clk100;
   always #2500 freerun_clk200 = ~freerun_clk200;
   always #4000 mgtrefclk125_p = ~mgtrefclk125_p;
-  logic reset_n = 1'b0, run_request_axi = 1'b0;
+  logic reset_n = 1'b0, fabric_clocks_stable = 1'b0;
   logic s_axis_tvalid = 1'b0, s_axis_frame_start = 1'b0;
   logic signed [223:0] s_axis_i_vec = '0, s_axis_q_vec = '0;
   logic signed [15:0] s_axis_frame_gain = 16'sd16384;
+  logic [7:0] s_axil_awaddr = '0, s_axil_araddr = '0;
+  logic s_axil_awvalid = 1'b0, s_axil_wvalid = 1'b0, s_axil_bready = 1'b0;
+  logic [31:0] s_axil_wdata = '0;
+  logic [3:0] s_axil_wstrb = '0;
+  logic s_axil_arvalid = 1'b0, s_axil_rready = 1'b0;
+  wire logic s_axil_awready, s_axil_wready, s_axil_bvalid;
+  wire logic [1:0] s_axil_bresp;
+  wire logic s_axil_arready, s_axil_rvalid;
+  wire logic [31:0] s_axil_rdata;
+  wire logic [1:0] s_axil_rresp;
   wire logic s_axis_tready, s_axis_fifo_full, core_underflow;
   wire logic core_protocol_error, core_clk218, link_ready;
   wire logic pa_enable, stream_fault;
@@ -54,9 +65,9 @@ module tb_thermo5_qsfp_gt14_parent;
       end
     end
     if (stream_fault && !expected_stream_fault)
-      $fatal(1, "GT parent stream fault stage=%0d expected=%b pa_valid=%b pa_enable=%b run_req_axi=%b run_core=%b word_index=%0d streaming=%b output_words=%0d underflow=%b protocol=%b",
+      $fatal(1, "GT parent stream fault stage=%0d expected=%b pa_valid=%b pa_enable=%b core_run_request=%b word_index=%0d streaming=%b output_words=%0d underflow=%b protocol=%b",
              sim_stage, expected_stream_fault, dut.pa_valid, pa_enable,
-             run_request_axi, dut.run_core, dut.u_continuous.word_index,
+             dut.core_run_request, dut.u_continuous.word_index,
              dut.u_continuous.streaming, output_words, core_underflow,
              core_protocol_error);
   end
@@ -98,8 +109,110 @@ module tb_thermo5_qsfp_gt14_parent;
     end
   end
 
+  task automatic axil_write(input logic [7:0] addr,
+                            input logic [31:0] data,
+                            input logic [3:0] strb,
+                            input integer aw_gap,
+                            input integer w_gap,
+                            output logic [1:0] resp);
+    begin
+      // Drive AW and W independently to model legal AXI-Lite channel skew.
+      fork
+        begin
+          repeat (aw_gap) @(negedge axil_clk100);
+          s_axil_awaddr = addr;
+          s_axil_awvalid = 1'b1;
+          do @(posedge axil_clk100); while (!s_axil_awready);
+          @(negedge axil_clk100);
+          s_axil_awvalid = 1'b0;
+        end
+        begin
+          repeat (w_gap) @(negedge axil_clk100);
+          s_axil_wdata = data;
+          s_axil_wstrb = strb;
+          s_axil_wvalid = 1'b1;
+          do @(posedge axil_clk100); while (!s_axil_wready);
+          @(negedge axil_clk100);
+          s_axil_wvalid = 1'b0;
+        end
+      join
+      @(negedge axil_clk100);
+      s_axil_bready = 1'b1;
+      do @(posedge axil_clk100); while (!s_axil_bvalid);
+      resp = s_axil_bresp;
+      @(negedge axil_clk100);
+      s_axil_bready = 1'b0;
+    end
+  endtask
+
+  task automatic axil_read(input logic [7:0] addr,
+                           output logic [31:0] data,
+                           output logic [1:0] resp);
+    begin
+      @(negedge axil_clk100);
+      s_axil_araddr = addr;
+      s_axil_arvalid = 1'b1;
+      do @(posedge axil_clk100); while (!s_axil_arready);
+      @(negedge axil_clk100);
+      s_axil_arvalid = 1'b0;
+      s_axil_rready = 1'b1;
+      do @(posedge axil_clk100); while (!s_axil_rvalid);
+      data = s_axil_rdata;
+      resp = s_axil_rresp;
+      @(negedge axil_clk100);
+      s_axil_rready = 1'b0;
+    end
+  endtask
+
+  task automatic check_axil_reset_defaults(input string reason);
+    logic [31:0] rdata;
+    logic [1:0] resp;
+    begin
+      axil_read(8'h00, rdata, resp);
+      if (resp != 2'b00 || rdata[0] != 1'b0)
+        $fatal(1, "%s: AXI-Lite CONTROL did not reset, data=%08x resp=%b", reason, rdata, resp);
+      axil_read(8'h04, rdata, resp);
+      if (resp != 2'b00 || rdata[2:0] != 3'b000)
+        $fatal(1, "%s: AXI-Lite STATUS did not reset, data=%08x resp=%b", reason, rdata, resp);
+      axil_read(8'h08, rdata, resp);
+      if (resp != 2'b00 || rdata[2:0] != 3'd1)
+        $fatal(1, "%s: AXI-Lite TAPS default mismatch, data=%08x resp=%b", reason, rdata, resp);
+      axil_read(8'h10, rdata, resp);
+      if (resp != 2'b00 || rdata != 32'h0000_4000)
+        $fatal(1, "%s: AXI-Lite c1_re default mismatch, data=%08x resp=%b", reason, rdata, resp);
+    end
+  endtask
+
+  task automatic check_reset_release_edges;
+    begin
+      // Called immediately when link_ready rises. The first edge in each
+      // domain must still see reset asserted; the second edge releases it.
+      fork
+        begin
+          @(posedge axi_clk125); #1;
+          if (dut.rst125_n) $fatal(1, "AXIS reset released before two AXI clock edges");
+          @(posedge axi_clk125); #1;
+          if (!dut.rst125_n) $fatal(1, "AXIS reset did not release on its second local edge");
+        end
+        begin
+          @(posedge axil_clk100); #1;
+          if (dut.axil_rst_n) $fatal(1, "AXI-Lite reset released before two AXI-Lite clock edges");
+          @(posedge axil_clk100); #1;
+          if (!dut.axil_rst_n) $fatal(1, "AXI-Lite reset did not release on its second local edge");
+        end
+        begin
+          @(posedge core_clk218); #1;
+          if (dut.rst218_n) $fatal(1, "Core reset released before two core clock edges");
+          @(posedge core_clk218); #1;
+          if (!dut.rst218_n) $fatal(1, "Core reset did not release on its second local edge");
+        end
+      join
+    end
+  endtask
+
   task automatic send_frame(input integer frame_id);
     integer value;
+    logic [1:0] resp;
     begin
       beat = 0;
       while (beat < 32) begin
@@ -111,11 +224,19 @@ module tb_thermo5_qsfp_gt14_parent;
           s_axis_i_vec[tx_lane*16 +: 16] = 16'(value);
           s_axis_q_vec[tx_lane*16 +: 16] = -16'(value);
         end
-        if (beat >= 8) run_request_axi = 1'b1;
         @(posedge axi_clk125);
         if (s_axis_tready) begin
           accepted = accepted + 1;
           beat = beat + 1;
+        end
+        if (beat == 8) begin
+          // Pause AXIS after FIFO prefill while software sets RUN in the
+          // independent 100-MHz AXI-Lite domain.
+          @(negedge axi_clk125);
+          s_axis_tvalid = 1'b0;
+          s_axis_frame_start = 1'b0;
+          axil_write(8'h00, 32'h0000_0001, 4'hf, 0, 2, resp);
+          if (resp != 2'b00) $fatal(1, "AXI-Lite RUN write failed: %b", resp);
         end
       end
       @(negedge axi_clk125);
@@ -149,24 +270,62 @@ module tb_thermo5_qsfp_gt14_parent;
     end
   endtask
 
-  task automatic wait_link_recovery;
+  task automatic wait_link_recovery(input bit check_two_stage_release = 1'b0);
     begin
       wait (link_ready);
-      wait (dut.rst125_n && dut.rst218_n);
+      if (check_two_stage_release) check_reset_release_edges();
+      wait (dut.rst125_n && dut.axil_rst_n && dut.rst218_n);
       repeat (4) @(posedge core_clk218);
-      if (!link_ready || !dut.rst125_n || !dut.rst218_n || pa_enable)
+      if (!link_ready || !dut.rst125_n || !dut.axil_rst_n || !dut.rst218_n || pa_enable)
         $fatal(1, "GT link recovery/reset release contract failed");
     end
   endtask
 
   initial begin
+    logic [31:0] axil_rdata;
+    logic [1:0] axil_resp;
     skip_rx_compare = $test$plusargs("SKIP_RX_COMPARE");
     if (skip_rx_compare)
       $display("GT_PARENT_DIAGNOSTIC RX word comparison disabled; reset/recovery only");
     sim_stage = 1;
     repeat (50) @(negedge freerun_clk200);
     reset_n = 1'b1;
+    // The controller must keep all three local resets asserted until both
+    // fabric clocks are declared stable and the GT health interval qualifies.
+    repeat (30) @(posedge freerun_clk200);
+    if (link_ready || dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+      $fatal(1, "Application resets released before fabric clock-stable qualification");
+    fabric_clocks_stable = 1'b1;
+    wait_link_recovery(1'b1);
+    check_axil_reset_defaults("power-on");
+    axil_read(8'h0c, axil_rdata, axil_resp);
+    if (axil_resp != 2'b00 || axil_rdata != 32'h5448_3501)
+      $fatal(1, "AXI-Lite IP_ID read failed after reset: data=%08x resp=%b", axil_rdata, axil_resp);
+
+    // Clock-manager loss must reassert every local reset; recovery requires
+    // the stable indication to return and the same GT-health qualification.
+    fabric_clocks_stable = 1'b0;
+    wait (!link_ready);
+    #1;
+    if (dut.rst125_n || dut.axil_rst_n || dut.rst218_n || pa_enable)
+      $fatal(1, "Fabric clock-stability loss did not reset all domains and blank PA");
+    fabric_clocks_stable = 1'b1;
     wait_link_recovery();
+    check_axil_reset_defaults("fabric clock-stability loss");
+
+    // Prepare the legal frozen one-tap identity image, commit while no stream
+    // frame boundary exists, then verify the parent can start it through RUN.
+    axil_write(8'h08, 32'd1, 4'hf, 0, 1, axil_resp);
+    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite TAPS write failed");
+    axil_write(8'h10, 32'h0000_4000, 4'hf, 2, 0, axil_resp);
+    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite c1_re write failed");
+    axil_write(8'h14, 32'h0000_0000, 4'hf, 0, 2, axil_resp);
+    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite c1_re upper word write failed");
+    axil_write(8'h00, 32'h0000_0002, 4'hf, 0, 1, axil_resp);
+    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite COMMIT write failed");
+    axil_read(8'h04, axil_rdata, axil_resp);
+    if (axil_resp != 2'b00 || !axil_rdata[0] || axil_rdata[2])
+      $fatal(1, "AXI-Lite commit did not remain busy until a frame boundary: %08x", axil_rdata);
     $display("GT_PARENT_STAGE 1 link recovered at %0t", $time);
     repeat (10) @(negedge axi_clk125);
 
@@ -177,27 +336,47 @@ module tb_thermo5_qsfp_gt14_parent;
     if (!skip_rx_compare) wait (rx_checked_frames >= 1);
     repeat (20) @(posedge core_clk218);
     if (stream_fault) $fatal(1, "GT parent faulted on legal post-frame idle");
+    wait (dut.u_frontend.cfg_done);
+    axil_read(8'h04, axil_rdata, axil_resp);
+    if (axil_resp != 2'b00 || axil_rdata[2:0] != 3'b010)
+      $fatal(1, "AXI-Lite commit did not complete at the DPD frame boundary: %08x", axil_rdata);
+    axil_read(8'h08, axil_rdata, axil_resp);
+    if (axil_resp != 2'b00 || axil_rdata[2:0] != 3'd1)
+      $fatal(1, "AXI-Lite TAPS readback mismatch after configuration");
     if (!skip_rx_compare && rx_idle_run < 8)
       $fatal(1, "GT RX did not observe repeated four-lane idle words: run=%0d", rx_idle_run);
     $display("GT_PARENT_STAGE 2 TX frame emitted%s at %0t",
              skip_rx_compare ? " (RX check intentionally skipped)" : "; RX loopback/idle checked", $time);
-    @(negedge axi_clk125); run_request_axi = 1'b0;
+    axil_write(8'h00, 32'h0000_0000, 4'hf, 1, 0, axil_resp);
+    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite STOP write failed after normal frame");
     repeat (4) @(posedge core_clk218);
     if (stream_fault || pa_enable) $fatal(1, "GT parent failed clean stop/blanking");
 
-    // Simulated loss of GT power-good must reset both FIFO domains and blank
-    // the PA; restoring lock must create a clean new FIFO epoch.
+    // Create a second commit with no upcoming frame boundary. A GT-health loss
+    // must asynchronously reset the AXI-Lite, AXIS and core domains and cancel
+    // that in-flight mailbox request rather than applying it after recovery.
+    axil_write(8'h04, 32'h0000_0002, 4'hf, 0, 0, axil_resp);
+    axil_write(8'h10, 32'h0000_2000, 4'hf, 0, 2, axil_resp);
+    axil_write(8'h00, 32'h0000_0002, 4'hf, 0, 0, axil_resp);
+    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite pending-commit setup failed");
+    axil_read(8'h04, axil_rdata, axil_resp);
+    if (!axil_rdata[0]) $fatal(1, "AXI-Lite reset-cancel setup did not become BUSY");
+    repeat (4) @(posedge core_clk218);
+
+    // Simulated loss of GT power-good must reset AXI-Lite plus both FIFO/core
+    // domains, blank the PA, and discard the pending configuration epoch.
     force dut.powergood = 4'b0000;
     wait (!link_ready);
     #1;
-    if (pa_enable || dut.rst125_n || dut.rst218_n)
-      $fatal(1, "GT power-good loss did not reset and blank both domains");
+    if (pa_enable || dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+      $fatal(1, "GT power-good loss did not reset and blank all three application domains");
     repeat (8) @(negedge freerun_clk200);
     release dut.powergood;
     wait_link_recovery();
+    check_axil_reset_defaults("GT power-good loss");
     $display("GT_PARENT_STAGE 3 power-good recovery at %0t", $time);
 
-    // Also exercise TX-user-clock-active asynchronous loss/blanking and
+    // Also exercise TX-user-clock-active loss/blanking and
     // synchronized reset response/recovery (clock itself remains running in
     // this forced status test). PA blanking is immediate; reset is qualified
     // only after the status crosses into freerun_clk200.
@@ -207,11 +386,12 @@ module tb_thermo5_qsfp_gt14_parent;
       $fatal(1, "TX-active must blank PA immediately but qualify reset synchronously");
     wait (!link_ready);
     #1;
-    if (dut.rst125_n || dut.rst218_n)
-      $fatal(1, "synchronized TX-active loss did not reset both data domains");
+    if (dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+      $fatal(1, "synchronized TX-active loss did not reset all three application domains");
     repeat (8) @(negedge freerun_clk200);
     release dut.tx_active;
     wait_link_recovery();
+    check_axil_reset_defaults("GT TX-active loss");
     $display("GT_PARENT_STAGE 4 TX-active recovery at %0t", $time);
 
     // Restart from a fresh epoch and check another complete 56-word RX frame.
@@ -222,23 +402,26 @@ module tb_thermo5_qsfp_gt14_parent;
     if (!skip_rx_compare) wait (rx_checked_frames >= 2);
     repeat (20) @(posedge core_clk218);
     // A finite single-frame source intentionally drains after its last word;
-    // sticky FIFO underflow is therefore expected while run_request remains
+    // sticky FIFO underflow is therefore expected while software RUN remains
     // asserted. This reset-only diagnostic checks framing/serializer faults,
     // not an indefinitely sustained source contract.
     if (stream_fault || core_protocol_error)
       $fatal(1, "GT recovery replay raised a framing/serializer error fault=%b protocol=%b underflow=%b",
              stream_fault, core_protocol_error, core_underflow);
-    @(negedge axi_clk125); run_request_axi = 1'b0;
+    axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 1, axil_resp);
 
     @(negedge freerun_clk200); reset_n = 1'b0;
+    #1;
+    if (link_ready || pa_enable || dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+      $fatal(1, "GT parent common reset did not asynchronously assert all local resets and blank output");
     repeat (4) @(posedge freerun_clk200);
-    if (link_ready || pa_enable) $fatal(1, "GT parent common reset did not blank output");
     repeat (30) @(negedge freerun_clk200);
     reset_n = 1'b1;
     wait_link_recovery();
+    check_axil_reset_defaults("common reset");
     $display("GT_PARENT_STAGE 5 common-reset recovery at %0t", $time);
     if (skip_rx_compare) begin
-      $display("THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=%0d output=%0d recovery=powergood+tx_active+common_reset rx_compare=SKIPPED",
+      $display("THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=%0d output=%0d reset_domains=AXIS+AXIL+CORE recovery=clock_stable+powergood+tx_active+common_reset rx_compare=SKIPPED",
                accepted, output_words);
       $finish;
     end
@@ -246,11 +429,11 @@ module tb_thermo5_qsfp_gt14_parent;
     // A real mid-frame source interruption is a sticky stream fault because
     // the continuous GT serializer cannot backpressure or pause. Require an
     // explicit common reset epoch before accepting a clean replay.
-    @(negedge axi_clk125); run_request_axi = 1'b0;
+    axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 1, axil_resp);
     repeat (4) @(posedge core_clk218);
     rx_check_enable = 1'b0;
     expected_stream_fault = 1'b1;
-    @(negedge axi_clk125); run_request_axi = 1'b1;
+    axil_write(8'h00, 32'h0000_0001, 4'hf, 0, 2, axil_resp);
     send_partial_frame(2, 16);
     wait (stream_fault);
     repeat (4) @(posedge core_clk218);
@@ -258,13 +441,16 @@ module tb_thermo5_qsfp_gt14_parent;
       $fatal(1, "mid-frame stream interruption did not blank all GT planes");
     // Stop the source-side request before the reset epoch ends. The producer
     // must prefill the FIFO again before re-enabling the consumer.
-    @(negedge axi_clk125); run_request_axi = 1'b0;
+    axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 0, axil_resp);
     @(negedge freerun_clk200); reset_n = 1'b0;
+    #1;
+    if (pa_enable || link_ready || dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+      $fatal(1, "common reset failed after stream fault");
     repeat (8) @(posedge freerun_clk200);
-    if (pa_enable || link_ready) $fatal(1, "common reset failed after stream fault");
     repeat (30) @(negedge freerun_clk200);
     reset_n = 1'b1;
     wait_link_recovery();
+    check_axil_reset_defaults("stream-fault common reset");
     expected_stream_fault = 1'b0;
     rx_seek_base = expected_count;
     rx_check_enable = 1'b1;
@@ -274,13 +460,13 @@ module tb_thermo5_qsfp_gt14_parent;
     if (!skip_rx_compare) wait (rx_checked_frames >= 3);
     if (stream_fault || core_protocol_error || core_underflow)
       $fatal(1, "GT restart after interrupted stream raised an error");
-    @(negedge axi_clk125); run_request_axi = 1'b0;
+    axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 1, axil_resp);
 
     if (skip_rx_compare)
       $display("THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=%0d output=%0d rx_frames=%0d recovery=powergood+tx_active+common_reset+midframe_restart rx_compare=SKIPPED",
                accepted, output_words, rx_checked_frames);
     else
-      $display("THERMO5_QSFP_GT14_PARENT_SIM_PASS accepted=%0d output=%0d rx_frames=%0d lanes=4 words_per_frame=56 idle_run=%0d recovery=powergood+tx_active+common_reset+midframe_restart",
+      $display("THERMO5_QSFP_GT14_PARENT_SIM_PASS accepted=%0d output=%0d rx_frames=%0d lanes=4 words_per_frame=56 reset_domains=AXIS+AXIL+CORE idle_run=%0d recovery=clock_stable+powergood+tx_active+common_reset+midframe_restart",
                accepted, output_words, rx_checked_frames, rx_idle_run);
     $finish;
   end

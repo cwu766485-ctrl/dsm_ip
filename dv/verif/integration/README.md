@@ -10,8 +10,11 @@ not counted as additional thermo5 subsystems.
   recovery, four-lane RX word comparison, CDC-11 closure, serial deskew, real
   I/O timing budgets, and board output remain separate open signoff items.
 
-Run the behavioral serializer model from the repository root with:
+The raw64 test is a block test. The serializer loopback below is a separate
+integration test because it models data crossing the user/serial boundary and
+being reassembled; neither test instantiates physical GT hardware. Run the
+behavioral serializer model from the repository root with:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_tid32_thermo5_serdes_loopback.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\integration\serializer_loopback\run_xsim_tid32_thermo5_serdes_loopback.ps1
 ```

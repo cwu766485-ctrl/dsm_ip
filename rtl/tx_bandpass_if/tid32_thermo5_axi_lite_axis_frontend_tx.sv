@@ -47,6 +47,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   input  wire logic                            core_aresetn,
   output wire logic                            core_underflow,
   output wire logic                            core_protocol_error,
+  // Core-clocked view of software RUN for adjacent always-running output
+  // logic such as the GT serializer boundary.
+  output wire logic                            core_run_request,
   output wire logic [3:0]                      pa_valid,
   output wire logic [63:0]                     pa_data [0:3],
   input  wire logic [3:0]                      pa_ready,
@@ -75,6 +78,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .c3_re(c3_re), .c3_im(c3_im), .c5_re(c5_re), .c5_im(c5_im),
     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
   );
+
+  assign core_run_request = core_enable;
 
   dsm_axis14_to_core8_cdc #(
     .W(W), .GAIN_W(GAIN_W), .USE_XPM_FIFO(FPGA_USE_XPM_FIFO)

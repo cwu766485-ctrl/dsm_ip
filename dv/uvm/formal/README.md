@@ -6,15 +6,31 @@
 python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --out-dir runs/thermo5_formal_review
 ```
 
-`thermo5_gap_harness.sv` instantiates production reset and DPD RTL. The reset
-model allows runtime reassertion but changes reset only on the falling edge;
-the exact active-edge collision cover is uncoverable within that model. The
-counter model independently counts acceptances and bounds them to 2072 per
-reset epoch. It proves counter equality/bounds and zero bits31:12, with
-accept/stall/recovery covers. The runner gates setup, assertions, expected
-cover outcomes, vacuity and **zero black boxes**, recording commands, source
-hashes and tool banners. These proofs do not replace full-chain URG hits or
-prove unrestricted asynchronous timing and unlimited counter operation.
+Each `*_harness.sv` is a formal verification wrapper: it instantiates the
+production RTL, provides clocks/reset and legal-environment assumptions, then
+states assertions and covers for one proof topic. The thermo5 harnesses are
+split by topic so the runner reads only the proof top and dependencies needed
+for that job:
+
+| Proof topic | Harness source | Main top(s) |
+| --- | --- | --- |
+| Reset release | `thermo5_reset_harness.sv` | `thermo5_reset_gap_harness` |
+| DPD sample counter | `thermo5_dpd_counter_harness.sv` | bounded and unbounded counter tops |
+| Generic FIFO CDC / 14:8 residual | `thermo5_generic_cdc_harness.sv` | `thermo5_cdc_residual_harness` |
+| Identity DPD payload/latency | `thermo5_dpd_identity_harness.sv` | `thermo5_identity_harness` |
+| Identity DPD intermediate lemmas | `thermo5_dpd_identity_lemmas_harness.sv` | `thermo5_identity_lemmas_harness` |
+| Interpolator bounds | `thermo5_interp_bounds_harness.sv` | `thermo5_interp_bounds_harness` |
+| XPM reset/FWFT/CDC | `thermo5_xpm_fifo_harness.sv` | three XPM proof tops |
+| AXI-Lite config | `thermo5_axil_cfg_coverage_harness.sv` | AXI-Lite configuration top |
+
+The reset model allows runtime reassertion but changes reset only on the falling
+edge; the exact active-edge collision cover is uncoverable within that model.
+The bounded counter model independently counts acceptances and limits them to
+2072 per reset epoch; the unbounded variant proves all 32-bit transition
+relations without that traffic budget. Runners gate setup, assertions,
+expected cover outcomes, vacuity and **zero black boxes**, recording commands,
+source hashes and tool banners. These scoped proofs do not replace full-chain
+URG hits or prove analog metastability, system CDC timing, or every SKU.
 
 This directory contains the VC Formal FPV flow for the frozen DSM IP
 Performance SKU control and protocol boundary.
@@ -99,7 +115,7 @@ the Synopsys PATH is loaded by the interactive shell.
 
 ## Boundary
 
-Thermo5 gap runner also supports `--unbounded-counter`: production 32-bit
+Thermo5 scoped runner also supports `--unbounded-counter`: production 32-bit
 counter, external-tap identity configuration, no acceptance budget, 35
 assertions (including each bit/carry relationship), four covers, zero-black-box
 and vacuity gates. Run in a new `runs/` directory. Latest passing evidence

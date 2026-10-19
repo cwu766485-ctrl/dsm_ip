@@ -1,59 +1,5 @@
 `timescale 1ns/1ps
-// No assumptions on DUT arithmetic state: intermediate lemmas are assertions.
-module thermo5_identity_lemmas_harness(
-  input logic clk, rst_n, in_valid, out_ready,
-  input logic signed [15:0] i_in, q_in
-);
-  thermo5_identity_harness model(.*);
-  default clocking cb @(posedge clk); endclocking
-  // Coefficient-zero lemmas retain the actual nonlinear production RTL.
-  a_c3_zero: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s3[0] |-> model.dut.c3r_r2_s3[0]==0 && model.dut.c3i_r2_s3[0]==0);
-  a_c5_zero: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s4[0] |-> model.dut.c5r_r4_s4[0]==0 && model.dut.c5i_r4_s4[0]==0);
-  a_linear_coeff: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s4[0] |-> model.dut.c1_re_s4[0]==64'sd16384 && model.dut.c1_im_s4[0]==0);
-  a_c3_delay: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s4[0] |-> model.dut.c3r_r2_s4[0]==0 && model.dut.c3i_r2_s4[0]==0);
-  a_gain_identity: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s5[0] |-> model.dut.gain_re_s5[0]==64'sd16384 && model.dut.gain_im_s5[0]==0);
-  a_product_i: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s6[0] |-> model.dut.i_gr_s6[0] inside {[-64'sd536870912:64'sd536854528]} && model.dut.q_gi_s6[0]==0);
-  a_product_q: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s6[0] |-> model.dut.q_gr_s6[0] inside {[-64'sd536870912:64'sd536854528]} && model.dut.i_gi_s6[0]==0);
-  a_product_delay_i: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s7[0] |-> model.dut.i_gr_s7[0] inside {[-64'sd536870912:64'sd536854528]} && model.dut.q_gi_s7[0]==0);
-  a_product_delay_q: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s7[0] |-> model.dut.q_gr_s7[0] inside {[-64'sd536870912:64'sd536854528]} && model.dut.i_gi_s7[0]==0);
-  a_term_i: assert property (disable iff(!rst_n) model.dut.term_i_s8[0] inside {[-64'sd32768:64'sd32767]});
-  a_term_q: assert property (disable iff(!rst_n) model.dut.term_q_s8[0] inside {[-64'sd32768:64'sd32767]});
-  a_pair_i: assert property (disable iff(!rst_n) model.dut.sum_i_pair0_s8 inside {[-64'sd32768:64'sd32767]} && model.dut.sum_i_pair1_s8==0);
-  a_pair_q: assert property (disable iff(!rst_n) model.dut.sum_q_pair0_s8 inside {[-64'sd32768:64'sd32767]} && model.dut.sum_q_pair1_s8==0);
-  a_sum_i: assert property (disable iff(!rst_n) model.dut.sum_i_s9 inside {[-64'sd32768:64'sd32767]});
-  a_sum_q: assert property (disable iff(!rst_n) model.dut.sum_q_s9 inside {[-64'sd32768:64'sd32767]});
-endmodule
-
-module thermo5_interp_bounds_harness(input logic clk,rst_n,enable,in_valid,out_ready,
-  input logic signed [127:0] in_i_vec,in_q_vec);
-  logic in_frame_start = 1'b0;
-  wire out_frame_start;
-  wire in_ready,out_valid;
-  wire signed [255:0] out_i_vec,out_q_vec;
-  dsm_interp_x2_polyphase_vector #(.LANES_IN(8),.INTERP_TAPS(2)) dut(.*);
-  default clocking cb @(posedge clk); endclocking
-  for(genvar lane=0;lane<8;lane++) begin:g_lane
-    a_acc_i: assert property (disable iff(!rst_n) dut.s2_valid |-> dut.s2_acc_i[lane] inside {[-33'sd536870912:33'sd536854528]});
-    a_acc_q: assert property (disable iff(!rst_n) dut.s2_valid |-> dut.s2_acc_q[lane] inside {[-33'sd536870912:33'sd536854528]});
-  end
-  c_accept: cover property (in_valid && in_ready);
-  c_output: cover property (out_valid && out_ready);
-  c_stall: cover property (out_valid && !out_ready);
-  c_min: cover property (out_valid && out_i_vec[31:16]==16'h8000);
-  c_max: cover property (out_valid && out_i_vec[31:16]==16'h7fff);
-endmodule
-
-// Real full-width wrapper. Reset requests are generated on the inactive
-// write edge, held for >=8 write periods, and started only when busy is low.
+// Vendor-XPM FIFO FWFT, reset-contract, and 14:8 residual proofs.
 module thermo5_xpm_fwft_harness(input logic wr_clk,rd_clk,boot_n,request,
   input logic valid_request,rd_ready,input logic [464:0] payload);
   logic rst_n;
@@ -86,8 +32,6 @@ module thermo5_xpm_fwft_harness(input logic wr_clk,rd_clk,boot_n,request,
   c_read: cover property (rd_valid && rd_ready);
 endmodule
 
-// Actual vendor reset RTL, exact independent-clock parameters. The legal
-// environment permits a new request only after the previous sequence ends.
 module thermo5_xpm_reset_contract_harness(input logic wr_clk,rd_clk,boot_n,request);
   logic rst;
   wire wr_rst,rd_rst,wr_rst_busy,rd_rst_busy;
@@ -107,7 +51,6 @@ module thermo5_xpm_reset_contract_harness(input logic wr_clk,rd_clk,boot_n,reque
   c_exit_reentry: cover property (dut.gen_rst_ic.curr_wrst_state==3'b110 ##1 dut.gen_rst_ic.curr_wrst_state==3'b010);
 endmodule
 
-// Same residual properties with the actual XPM implementation.
 module thermo5_xpm_cdc_residual_harness(
   input logic s_axis_aclk, core_clk, rst_n,
   input logic in_valid, core_enable, core_ready,
@@ -122,8 +65,6 @@ module thermo5_xpm_cdc_residual_harness(
   logic axis_valid,axis_frame_start;
   logic signed [223:0] axis_i,axis_q;
   logic signed [15:0] axis_frame_gain;
-  // Construct a legal source instead of solving a 465-bit stability
-  // assumption. Free payload/valid requests enter only when this slot is free.
   always @(posedge s_axis_aclk or negedge rst_n) begin
     if(!rst_n) begin
       axis_valid<=0; axis_i<=0; axis_q<=0;

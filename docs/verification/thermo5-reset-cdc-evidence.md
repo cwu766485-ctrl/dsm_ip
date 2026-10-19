@@ -44,6 +44,30 @@ The `Exception` column in Vivado's CDC table classifies the asynchronous clock
 groups used for timing analysis. This evidence work added no exception or CDC
 waiver. The two CDC-11 paths remain critical and open.
 
+## AXI-Lite reset-domain extension (2026-10-19)
+
+The thermo5 GT parent now has an AXI-Lite clock and local reset in the same
+reset-controller epoch as the AXI-Stream and DSM core domains. The parent uses
+`dsm_reset_sync` independently for `axi_clk125`, `axil_clk100`, and
+`core_clk218`. The controller withholds release until the `fabric_clocks_stable`
+input and synchronized GT TX health are continuously qualified. A loss of
+qualified health reasserts all three domain resets; the AXI-Lite register bank
+and outstanding configuration mailbox transaction return to reset defaults.
+
+Fresh evidence is under
+`runs/thermo5_gt_parent_axil_reset_20261019_121300/`:
+
+| Run | Result | Scope and limit |
+| --- | --- | --- |
+| XSim parent run with `-SkipRxCompare` | PASS: `THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=64 output=112 reset_domains=AXIS+AXIL+CORE recovery=clock_stable+powergood+tx_active+common_reset rx_compare=SKIPPED` | Checks reset defaults/ID, two-local-edge release, AXIL RUN/COMMIT, commit waiting for frame boundary, cancellation on GT-health loss, power-good/TX-active recovery and common reset. Behavioral TX path only. |
+| Full RX-comparison attempt | Failed at stage 2: 56 TX output words were emitted, but `rx_user_clk=0`, RX data was `0x55...`, and no RX frame arrived before timeout. | Confirms the known RX clock/receive-model issue remains OPEN. Do not claim four-lane RX loopback, serial recovery or board output. |
+| ZU15EG synthesis stage | `synthesized.dcp`, `synth_utilization.rpt` and `synth_clocks.rpt` were emitted; launcher exit code was nonzero with `Failed to load feature 'vivado'`. | Treat as artifacts generated during a failed command, not a clean synthesis PASS. No placement/routing or routed CDC/RDC report was produced. |
+
+AXI-Lite reset simulation does not close the existing XPM CDC-6 or GT CDC-11
+findings. It is functional simulation evidence only; the parent still needs a
+clean routed report and real clock/I/O constraints. The current parent XDC's
+AXI-Lite timing values are provisional modeling budgets.
+
 ## Limits and remaining holes
 
 - The block test exercises both reset requests independently and a common

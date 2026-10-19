@@ -15,7 +15,10 @@ def main():
     args=ap.parse_args();out=args.out_dir.resolve()
     if ROOT/'runs' not in out.parents or out.exists(): ap.error('Use a new runs/ directory')
     sources=list((ROOT/'rtl').rglob('*.sv'))+list((ROOT/'rtl').rglob('*.v'))
-    sources += [ROOT/'dv/uvm/formal'/p for p in ['thermo5_gap_harness.sv','thermo5_convergence_harness.sv','run_thermo5_convergence.tcl']]
+    sources += [ROOT/'dv/uvm/formal'/p for p in [
+        'thermo5_dpd_identity_harness.sv','thermo5_dpd_identity_lemmas_harness.sv',
+        'thermo5_interp_bounds_harness.sv','thermo5_xpm_fifo_harness.sv',
+        'run_thermo5_convergence.tcl']]
     if args.job.startswith('xpm'):
         if not args.xpm_root: ap.error('Actual installed XPM sources required')
         sources += [args.xpm_root/f'data/ip/xpm/{x}/hdl/{x}.sv' for x in ['xpm_cdc','xpm_memory','xpm_fifo']]

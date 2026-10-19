@@ -48,7 +48,8 @@ module thermo5_axil_cfg_coverage_harness (
   // AXI-Lite and core, with each domain releasing synchronously on its own
   // clock. This formal harness checks only protocol reachability under that
   // integration contract; the configuration block's independent-reset
-  // windows are exercised by thermo5_axil_cfg_coverage_tb at block level.
+  // windows are exercised by the block-level AXI-Lite testbench under
+  // dv/verif/block/axil/tb/.
   assume_core_reset_asserts_axil:
     assume property (@(posedge core_clk) !core_rst_n |-> !axil_rst_n);
   assume_axil_reset_fall_requires_core_reset:

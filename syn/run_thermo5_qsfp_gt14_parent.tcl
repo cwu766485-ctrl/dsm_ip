@@ -54,7 +54,8 @@ foreach file [list \
   [file join $repo rtl tx_bandpass_if tid32_cartesian_fs4_gt_tx.sv] \
   [file join $repo rtl tx_bandpass_if tid32_thermo5_fs4_multipa_tx.sv] \
   [file join $repo rtl tx_bandpass_if tid32_thermo5_frontend_tx.sv] \
-  [file join $repo rtl tx_bandpass_if tid32_thermo5_axis_frontend_tx.sv] \
+  [file join $repo rtl tx_bandpass_if thermo5_dpd_axi_lite_cfg.sv] \
+  [file join $repo rtl tx_bandpass_if tid32_thermo5_axi_lite_axis_frontend_tx.sv] \
   [file join $repo fpga zu15eg rtl thermo5_qsfp_gt14_parent.sv]] {
   if {![file exists $file]} { error "Missing RTL: $file" }
   add_files -norecurse $file
@@ -80,7 +81,7 @@ if {[llength $rx_user_clk] != 1} {
 }
 set_output_delay -clock $rx_user_clk -max 1.500 [get_ports {gt_rxdata[*]}]
 set_output_delay -clock $rx_user_clk -min 0.000 [get_ports {gt_rxdata[*]}]
-# AXI, GT-reset free-run, and the GT-reference family have no guaranteed
+# AXIS, AXI-Lite, GT-reset free-run, and the GT-reference family have no guaranteed
 # phase relationship. Keep every clock *within* the GT family related; CDC
 # and reset paths are audited separately rather than timed as synchronous.
 set gt_clocks [get_clocks -include_generated_clocks mgtrefclk125]
@@ -89,7 +90,8 @@ if {[llength $gt_clocks] < 2 ||
   error "Expected GT clock family or core_clk218 is missing"
 }
 set_clock_groups -asynchronous -group [get_clocks axi_clk125] \
-  -group [get_clocks freerun_clk200] -group $gt_clocks
+  -group [get_clocks axil_clk100] -group [get_clocks freerun_clk200] \
+  -group $gt_clocks
 report_utilization -file [file join $out_dir synth_utilization.rpt]
 report_clocks -file [file join $out_dir synth_clocks.rpt]
 write_checkpoint -force [file join $out_dir synthesized.dcp]

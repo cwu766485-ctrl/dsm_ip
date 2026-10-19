@@ -49,7 +49,9 @@ The `thermo5 / INTERP_TAPS=2 / DPD_MAX_TAPS=1` testbench is
 `sim/thermo5_sku_filelist.f`. Its interface and source/PA agents live under
 `agent/`, its scenario under `sequences/thermo5/`, package, scoreboard,
 configuration, coverage, and control BFM under `env/thermo5/`, and tests under
-`tests/thermo5/`. The optional AXI-Lite wrapper test is under
+`tests/thermo5/`. Common setup/checks are in
+`tests/thermo5/thermo5_sku_base_test.svh`; the nominal bit-true test and each
+corner scenario are separate classes/files. The optional AXI-Lite wrapper test is under
 `tests/thermo5/axil/`; it reuses the same thermo5 environment and bit-true
 scoreboard. It drives
 14 complex samples per 125 MHz AXI
@@ -66,6 +68,13 @@ samples those events and each test gates its required event counters. VCS
 code coverage is compiled separately and can be merged with URG. See
 `docs/verification/thermo5-uvm-coverage.md` for the test/check/bin map and
 open coverage holes.
+The full-IP test classes are now split one scenario per file under
+`tests/thermo5/full_ip/`; `thermo5_sku_corner_tests.svh` remains as a
+compatibility include hub, so existing `+UVM_TESTNAME` values and Makefile
+targets do not change. `tests/thermo5/full_ip/README.md` maps each class to its
+stimulus/check purpose. AXI-Lite wrapper, serializer-loopback, and GT-parent
+tests remain separate configurations/verification levels rather than being
+implicitly included in this frozen-SKU corner suite.
 The interface/RTL/reference-model ownership map is in
 `docs/verification/thermo5-uvm-architecture.md`.
 
@@ -91,7 +100,7 @@ numbers are evidence for the tested generic-FIFO SKU, not all RTL/configuration
 coverage. The illegal-frame test is intentionally negative: it
 must produce the RTL 56-sample alignment assertion and the UVM observation
 marker; it is not treated as an ordinary clean simulation. The runnable directed full-chain
-XSim test is `dv/verif/scripts/run_xsim_thermo5_i2_d1_axis.ps1`. Its
+XSim test is `dv/verif/subsystem/tx_frontend/run_xsim_thermo5_i2_d1_axis.ps1`. Its
 `-XpmFifo` switch selects the vendor XPM FIFO model; the 2026-10-01 XPM
 full-chain simulation passed seeds 7/8/9 with PA-ready stalls. On
 2026-10-03 the same UVM top gained a separately compiled XPM target using
