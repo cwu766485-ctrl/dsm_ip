@@ -8,12 +8,14 @@ class thermo5_sku_coverage extends uvm_component;
   int reset_reassertions, underflow_cycles, protocol_error_cycles;
   int underflow_before_last_source;
   int pa_stall_cycles, pa_words;
+  int accepted_tlast_markers, packet_beats_since_boundary;
   int signed_min_beats, signed_max_beats;
   bit seen_src_release, last_src_rst_n;
 
   covergroup source_cg with function sample(bit full, bit stalled, bit start,
                                               bit reset_low, bit signed_min,
-                                              bit signed_max);
+                                              bit signed_max, bit packet_end,
+                                              int unsigned packet_quanta);
     option.per_instance = 1;
     cp_full: coverpoint full { bins not_full={0}; bins full={1}; }
     cp_stalled: coverpoint stalled { bins flowing={0}; bins backpressured={1}; }
@@ -21,6 +23,11 @@ class thermo5_sku_coverage extends uvm_component;
     cp_reset: coverpoint reset_low { bins active={0}; bins reset={1}; }
     cp_signed_min: coverpoint signed_min { bins absent={0}; bins present={1}; }
     cp_signed_max: coverpoint signed_max { bins absent={0}; bins present={1}; }
+    cp_packet_end: coverpoint packet_end { bins no_end={0}; bins accepted_end={1}; }
+    cp_packet_quanta: coverpoint packet_quanta iff (packet_end) {
+      bins malformed_early={0}; bins one_quantum={1};
+      bins extended={[2:$]};
+    }
   endgroup
 
   covergroup core_cg with function sample(bit underflow, bit illegal, bit pa_stall, bit pa_word);
@@ -46,11 +53,17 @@ class thermo5_sku_coverage extends uvm_component;
 
   task run_phase(uvm_phase phase);
     bit accepted_min, accepted_max;
+    bit accepted_last;
+    int unsigned sampled_packet_quanta;
     fork
       forever begin
         @(posedge vif.src_clk);
         accepted_min=0;
         accepted_max=0;
+        accepted_last=vif.src_valid && vif.src_ready && vif.src_last;
+        sampled_packet_quanta=0;
+        if (accepted_last && ((packet_beats_since_boundary+1)%32)==0)
+          sampled_packet_quanta=(packet_beats_since_boundary+1)/32;
         if (vif.src_valid && vif.src_ready) begin
           for (int lane=0;lane<14;lane++) begin
             if (vif.src_i[lane*16+:16]===16'h8000 ||
@@ -61,8 +74,15 @@ class thermo5_sku_coverage extends uvm_component;
         end
         source_cg.sample(vif.fifo_full, vif.src_valid && !vif.src_ready,
                          vif.src_valid && vif.src_ready && vif.frame_start,
-                         !vif.src_rst_n, accepted_min, accepted_max);
+                         !vif.src_rst_n, accepted_min, accepted_max,
+                         accepted_last, sampled_packet_quanta);
         if (seen_src_release && last_src_rst_n && !vif.src_rst_n) reset_reassertions++;
+        if (!vif.src_rst_n) packet_beats_since_boundary=0;
+        else if (vif.src_valid && vif.src_ready) begin
+          packet_beats_since_boundary++;
+          if (vif.src_last && packet_beats_since_boundary%32==0)
+            packet_beats_since_boundary=0;
+        end
         if (vif.src_rst_n) seen_src_release=1;
         last_src_rst_n=vif.src_rst_n;
         if (vif.src_rst_n) begin
@@ -71,6 +91,7 @@ class thermo5_sku_coverage extends uvm_component;
           if (vif.src_valid && vif.src_ready && vif.frame_start) frame_starts++;
           if (accepted_min) signed_min_beats++;
           if (accepted_max) signed_max_beats++;
+          if (accepted_last) accepted_tlast_markers++;
         end
       end
       forever begin
@@ -92,8 +113,8 @@ class thermo5_sku_coverage extends uvm_component;
   endtask
 
   function void report_phase(uvm_phase phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d source_cg=%.1f core_cg=%.1f",
-      fifo_full_cycles,source_stall_cycles,frame_starts,reset_reassertions,
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d source_cg=%.1f core_cg=%.1f",
+      fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,reset_reassertions,
       underflow_cycles,underflow_before_last_source,protocol_error_cycles,pa_stall_cycles,pa_words,
       signed_min_beats,signed_max_beats,
       source_cg.get_coverage(),core_cg.get_coverage()),UVM_NONE)

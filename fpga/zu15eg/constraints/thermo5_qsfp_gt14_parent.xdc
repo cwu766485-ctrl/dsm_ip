@@ -14,7 +14,7 @@ create_clock -name freerun_clk200 -period 5.000 [get_ports freerun_clk200]
 # 0.00..1.50 ns after their sampling edge. Replace with the real SoC/board
 # timing contract before system or board signoff. reset_n is asynchronous and
 # is intentionally excluded from ordinary data I/O delays.
-set axi_inputs [get_ports {s_axis_tvalid s_axis_frame_start s_axis_frame_gain[*] s_axis_i_vec[*] s_axis_q_vec[*]}]
+set axi_inputs [get_ports {s_axis_tvalid s_axis_tlast s_axis_frame_start s_axis_frame_gain[*] s_axis_i_vec[*] s_axis_q_vec[*]}]
 set_input_delay -clock [get_clocks axi_clk125] -max 2.000 $axi_inputs
 set_input_delay -clock [get_clocks axi_clk125] -min 0.200 $axi_inputs
 

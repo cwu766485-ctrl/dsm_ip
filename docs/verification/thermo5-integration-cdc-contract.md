@@ -126,23 +126,34 @@ blanket CDC/RDC waiver. No dedicated RDC or board-clock signoff is claimed.
 Wizard under the *assumed* 125-MHz MGT reference. All four planes share the
 Wizard TX user clock. The generated Wizard maps consecutive 64-bit slices of
 `gtwiz_userdata_tx_in[255:0]` to channels 0..3; the parent maps PA planes
-0..3 into those slices in that order. `run_request_axi` is synchronized into
-the TX user-clock domain. Loss of TX initialization asserts both source and
-core resets; each releases through its own local reset synchronizer.
+0..3 into those slices in that order. The AXI-Lite wrapper's
+`core_tx_active` controls the TX user-clock consumer; it remains asserted for
+the RUN interval and the subsequent graceful drain. Loss of TX initialization
+asserts source, AXI-Lite, and core resets; each releases through its own local
+reset synchronizer.
 
 The GT has no `ready` input and never pauses serialization. The new
 `thermo5_raw64_continuous_tx` accepts all four PA words in lockstep, sends
 `64'hAAAA_AAAA_AAAA_AAAA` on **every** idle cycle, and requests PA blanking
 through `pa_enable=0`. A payload word is allowed only with all four valids,
-`run_request`, and TX link-ready. A partial-valid word, a gap inside a
-56-word superframe, or payload while stopped sets sticky `stream_fault`.
+`core_tx_active`, and TX link-ready. A partial-valid word, a gap inside a
+56-word superframe, or payload while inactive sets sticky `stream_fault`.
 Gaps between completed superframes are legal. The external PA must remain
 disabled until a board-specific blanking path and GT pipeline latency are
 measured and compensated; `pa_enable` is a synchronous **request**, not a
 proven analog switch or an assertion that 0xAAAA idle is RF-silent.
-The AXI producer must prefill the XPM FIFO and raise `run_request_axi` at a
-frame-safe boundary; a 56-word frame must then be supplied continuously.
-Stopping midway is detected, not losslessly backpressured by the GT. XPM
+For the AXI-Lite wrapper, the producer pre-fills the XPM FIFO before RUN. The
+wrapper accepts `TLAST` only on a 32-beat quantum boundary. A packet may span
+one or more quanta (32, 64, 96, ... beats), which preserves the 56-word
+gearbox/GT-user boundary for each quantum. On RUN clear, ingress remains open
+through the active packet's legal `TLAST`; the core/GT consumer stays active
+until the corresponding 56-word-per-quantum output drains, then the serializer
+switches to idle. Early `TLAST` is diagnosed as a protocol error and does not
+change the source beat phase. Arbitrary lengths not divisible by 32 need a
+different tail/serializer contract and are not supported. The frozen
+parallel-config SKU remains unchanged and has no `TLAST` port. The GT itself
+still has no backpressure: an unexpected FIFO starvation while RUN is asserted
+is an underflow, not a graceful stop. XPM
 `wr_rst_busy`/`rd_rst_busy` inhibit FIFO traffic during reset recovery.
 Reset/GT startup may also serialize undefined symbols while PA blanking is
 required. A common TX user clock establishes word alignment at the GT input,

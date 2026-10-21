@@ -5,6 +5,7 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic core_rst_n = 0;
   logic src_valid = 0;
   logic src_ready;
+  logic src_last = 0;
   logic signed [223:0] src_i = '0, src_q = '0;
   logic frame_start = 0;
   logic signed [15:0] frame_gain = 16'sd16384;

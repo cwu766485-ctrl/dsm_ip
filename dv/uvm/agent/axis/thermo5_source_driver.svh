@@ -16,15 +16,18 @@ class thermo5_source_driver extends uvm_driver#(thermo5_source_item);
       seq_item_port.try_next_item(tr);
       if (tr==null) begin
         vif.src_valid=1'b0;
+        vif.src_last=1'b0;
         vif.frame_start=1'b0;
         continue;
       end
       if (tr.valid_gap_cycles != 0) begin
         vif.src_valid=1'b0;
+        vif.src_last=1'b0;
         vif.frame_start=1'b0;
         repeat (tr.valid_gap_cycles) @(negedge vif.src_clk);
       end
       vif.src_valid=1'b1;
+      vif.src_last=tr.tlast;
       vif.src_i=tr.i_vec;
       vif.src_q=tr.q_vec;
       vif.frame_start=tr.frame_start;

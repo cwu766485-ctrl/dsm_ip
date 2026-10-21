@@ -145,12 +145,12 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
     axil_write(8'h00,32'h2,0,0,resp,4'h0);
     if (resp!=2'b00) `uvm_fatal("AXIL_CONTROL_ZERO_STROBE","Zero-strobe commit was not ignored")
     axil_read(8'h04,rdata,resp);
-    if (resp!=2'b00 || rdata[2:0]!=3'b000)
+    if (resp!=2'b00 || rdata[4:0]!=5'b0)
       `uvm_fatal("AXIL_CONTROL_ZERO_STROBE_STATUS","Zero-strobe commit changed status")
     axil_write(8'h00,32'h2,3,0,resp);
     if (resp!=2'b10) `uvm_fatal("AXIL_BAD_TAP","Illegal tap-count commit was not rejected")
     axil_read(8'h04,rdata,resp);
-    if (resp!=2'b00 || !rdata[2] || rdata[0] || rdata[1])
+    if (resp!=2'b00 || !rdata[2] || rdata[1:0]!=2'b00 || rdata[4:3]!=2'b00)
       `uvm_fatal("AXIL_ERROR_STATUS",$sformatf("Expected sticky error only, status=%08x",rdata))
     axil_write(8'h04,32'h2,0,0,resp,4'h0);
     if (resp!=2'b00) `uvm_fatal("AXIL_DONE_ZERO_STROBE","Zero-strobe DONE W1C failed")

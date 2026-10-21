@@ -14,6 +14,11 @@ class thermo5_sku_base_test extends uvm_test;
     if (cfg.core_words<56 || cfg.core_words%7!=0)
       `uvm_fatal("WORDS","CORE_WORDS must be >=56 and a multiple of seven")
     cfg.source_beats=cfg.core_words*4/7;
+`ifdef THERMO5_AXIL_CONTROL
+    if (cfg.source_beats%32!=0)
+      `uvm_fatal("AXIS_PACKET_LENGTH",
+        "AXI-Lite wrapper packet length must be a positive multiple of 32 beats (56 output words per quantum)")
+`endif
     cfg.random_pa_ready=$test$plusargs("STRESS_PA_READY");
     require_signed_extremes=$test$plusargs("EXPECT_SIGNED_EXTREMES");
   endfunction
@@ -36,12 +41,17 @@ class thermo5_sku_base_test extends uvm_test;
   endfunction
 
   task send_source(int beats, bit illegal=0, int gap_before_beat=-1,
-                   int unsigned gap_cycles=0);
+                   int unsigned gap_cycles=0, int force_early_tlast_beat=-1);
     thermo5_source_sequence seq;
     seq=thermo5_source_sequence::type_id::create("source_sequence");
     seq.cfg=cfg;
     seq.beat_count=beats;
     seq.illegal_frame=illegal;
+    // Only complete configured source frames terminate with TLAST. Partial
+    // reset/starvation prefixes remain open so they do not create a second,
+    // unintended framing fault in AXI-Lite wrapper tests.
+    seq.mark_last=(cfg.axil_control && beats==cfg.source_beats);
+    seq.force_early_tlast_beat=force_early_tlast_beat;
     seq.gap_before_beat=gap_before_beat;
     seq.gap_cycles=gap_cycles;
     seq.start(env.source.sequencer);
@@ -60,6 +70,10 @@ class thermo5_sku_base_test extends uvm_test;
         (env.coverage.frame_starts!=cfg.frame_starts ||
          env.coverage.pa_words!=cfg.core_words))
       `uvm_fatal("COVERAGE","Frame/PA event counts did not reach the SKU contract")
+    if (cfg.axil_control && env.source.monitor.accepted_last_count!=1)
+      `uvm_fatal("AXIS_TLAST",
+        $sformatf("Expected exactly one accepted AXIS TLAST, observed %0d",
+                  env.source.monitor.accepted_last_count))
     for(int lane=0;lane<16;lane++)
       if(vif.dpd_sample_count[lane] !== cfg.core_words ||
          vif.dpd_saturation_count[lane] !== 0)

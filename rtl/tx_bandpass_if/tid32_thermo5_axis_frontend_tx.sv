@@ -105,7 +105,8 @@ module tid32_thermo5_axis_frontend_tx #(
     .s_axis_tuser_frame_gain(s_axis_tuser_frame_gain), .s_axis_fifo_full(s_axis_fifo_full),
     .core_clk(core_clk), .core_aresetn(core_aresetn), .core_enable(datapath_enable),
     .core_drain(ENABLE_LOW_POWER_CTRL && (lp_state == 3'd4)),
-    .core_valid(core_valid), .core_ready(core_ready), .core_i_vec(core_i_vec), .core_q_vec(core_q_vec),
+    .core_valid(core_valid), .core_data_empty(), .core_ready(core_ready),
+    .core_i_vec(core_i_vec), .core_q_vec(core_q_vec),
     .core_frame_start(core_frame_start), .core_frame_gain(core_frame_gain),
     .core_underflow(core_underflow), .core_protocol_error(core_protocol_error)
   );

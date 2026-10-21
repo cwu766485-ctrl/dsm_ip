@@ -18,7 +18,7 @@ addresses return `DECERR`; coefficient registers are writable as shadow state.
 | Offset | Register | Fields / behavior |
 | --- | --- | --- |
 | `0x00` | CONTROL | bit 0: stored `run_request`; write bit 1 as one to request atomic DPD configuration commit. Readback returns bit 0 only. |
-| `0x04` | STATUS | bit 0 BUSY; bit 1 DONE; bit 2 ERROR. DONE and ERROR are sticky and write-one-to-clear. |
+| `0x04` | STATUS | bit 0 BUSY; bit 1 DONE; bit 2 ERROR; bit 3 RUN_ACTIVE; bit 4 DRAINING. DONE and ERROR are sticky and write-one-to-clear; RUN_ACTIVE/DRAINING are synchronized read-only status. |
 | `0x08` | DPD_TAPS | Shadow active tap count. Legal commit range is 1 through elaborated `MAX_TAPS` (1–4). An illegal count is rejected with `SLVERR`. |
 | `0x0c` | IP_ID | `0x54483501`. |
 | `0x10/0x14` | C1_RE | Low/high 32-bit halves of four packed signed 16-bit Q2.14 tap coefficients. Tap 0 occupies bits `[15:0]`. |
@@ -52,11 +52,38 @@ old coefficients.
 
 If no marked DPD word arrives, BUSY intentionally remains asserted and the
 active configuration does not change. Software should poll STATUS before
-issuing another commit. `run_request` is synchronized as a level; it is not a
-reset or a pause/drain protocol. Do not clear it during an active frame or
-while data is in flight: the existing frontend flushes its valid pipeline when
-disabled. Stop only after the producer is quiescent and all expected PA words
-have been accepted, or assert the common reset epoch.
+issuing another commit.
+
+### Graceful RUN stop
+
+Writing CONTROL bit 0 low is a graceful stop request, not an immediate
+datapath disable. The optional AXI-Lite wrapper adds AXI-Stream `TLAST` as the
+packet-end indication. A stop-safe packet contains a positive integer number
+of 32-beat quanta: 32, 64, 96, ... accepted 14-lane beats. Each quantum is
+448 complex samples, 56 core words, and 56 output words per plane. This
+preserves both the 14:8 gearbox/superframe alignment and the raw GT-user
+serializer's 56-word boundary. `TLAST` is legal only on the last accepted beat
+of a quantum; an early `TLAST` sets sticky `core_protocol_error` and does not
+reset beat alignment or close the packet. The frozen parallel-config SKU is
+unchanged and has no `TLAST` port.
+
+If STOP arrives mid-packet, the source side continues accepting that packet
+through its legal `TLAST`, then closes ingress. The core remains enabled and
+`core_drain` is asserted while the asynchronous FIFO, 14:8 gearbox, frontend
+pipeline, and four-plane output drain. The GT parent uses `core_tx_active`, not
+the raw RUN request, so it keeps consuming the final output words and switches
+to idle only after the drain completes. Supporting arbitrary packet lengths
+that are not multiples of 32 beats would require a different gearbox/GT
+boundary contract (for example, explicit tail buffering/padding); it is not
+claimed here.
+
+Software can poll STATUS bit 3 (`RUN_ACTIVE`) and bit 4 (`DRAINING`): after
+writing RUN=0, wait until both bits are zero before resetting or repurposing
+the stream. A STOP cannot complete if the producer fails to finish the
+in-progress fixed-size frame; `RUN_ACTIVE` remains set to show that the
+datapath is still waiting/draining. An unexpected FIFO starvation while RUN
+is still asserted continues to set sticky `core_underflow`; only the explicit
+RUN-stop drain window suppresses that expected empty-FIFO condition.
 
 In the four-GTH parent, the active-low global `reset_n` resets the GT Wizard
 and reset controller. The controller also waits for `fabric_clocks_stable`

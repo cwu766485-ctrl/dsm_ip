@@ -12,7 +12,7 @@ module tb_thermo5_qsfp_gt14_parent;
   always #2500 freerun_clk200 = ~freerun_clk200;
   always #4000 mgtrefclk125_p = ~mgtrefclk125_p;
   logic reset_n = 1'b0, fabric_clocks_stable = 1'b0;
-  logic s_axis_tvalid = 1'b0, s_axis_frame_start = 1'b0;
+  logic s_axis_tvalid = 1'b0, s_axis_tlast = 1'b0, s_axis_frame_start = 1'b0;
   logic signed [223:0] s_axis_i_vec = '0, s_axis_q_vec = '0;
   logic signed [15:0] s_axis_frame_gain = 16'sd16384;
   logic [7:0] s_axil_awaddr = '0, s_axil_araddr = '0;
@@ -65,9 +65,12 @@ module tb_thermo5_qsfp_gt14_parent;
       end
     end
     if (stream_fault && !expected_stream_fault)
-      $fatal(1, "GT parent stream fault stage=%0d expected=%b pa_valid=%b pa_enable=%b core_run_request=%b word_index=%0d streaming=%b output_words=%0d underflow=%b protocol=%b",
+      $fatal(1, "GT parent stream fault stage=%0d expected=%b pa_valid=%b pa_enable=%b core_run_request=%b core_tx_active=%b drain=%b source_phase=%0d source_closed=%b/%b cdc_empty=%b inflight=%0d word_index=%0d streaming=%b output_words=%0d underflow=%b protocol=%b",
              sim_stage, expected_stream_fault, dut.pa_valid, pa_enable,
-             dut.core_run_request, dut.u_continuous.word_index,
+             dut.core_run_request, dut.core_tx_active, dut.u_frontend.core_draining,
+             dut.u_frontend.source_phase_q, dut.u_frontend.ingress_closed_s,
+             dut.u_frontend.ingress_closed_c3, dut.u_frontend.core_data_empty,
+             dut.u_frontend.outstanding_words_q, dut.u_continuous.word_index,
              dut.u_continuous.streaming, output_words, core_underflow,
              core_protocol_error);
   end
@@ -210,14 +213,18 @@ module tb_thermo5_qsfp_gt14_parent;
     end
   endtask
 
-  task automatic send_frame(input integer frame_id);
+  task automatic send_frame(input integer frame_id, input bit graceful_stop = 1'b0);
     integer value;
     logic [1:0] resp;
+    bit stop_write_started, stop_write_done;
     begin
+      stop_write_started = 1'b0;
+      stop_write_done = 1'b0;
       beat = 0;
       while (beat < 32) begin
         @(negedge axi_clk125);
         s_axis_tvalid = 1'b1;
+        s_axis_tlast = (beat == 31);
         s_axis_frame_start = (beat == 0);
         for (tx_lane = 0; tx_lane < 14; tx_lane = tx_lane + 1) begin
           value = frame_id*1000 + beat*14 + tx_lane + 1;
@@ -238,9 +245,24 @@ module tb_thermo5_qsfp_gt14_parent;
           axil_write(8'h00, 32'h0000_0001, 4'hf, 0, 2, resp);
           if (resp != 2'b00) $fatal(1, "AXI-Lite RUN write failed: %b", resp);
         end
+        if (graceful_stop && beat == 16 && !stop_write_started) begin
+          // Request STOP in parallel with uninterrupted source traffic. The
+          // wrapper must finish the in-progress frame and keep the serializer
+          // fed continuously through its 56-word boundary.
+          stop_write_started = 1'b1;
+          fork
+            begin
+              axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 1, resp);
+              if (resp != 2'b00) $fatal(1, "AXI-Lite graceful STOP write failed: %b", resp);
+              stop_write_done = 1'b1;
+            end
+          join_none
+        end
       end
+      if (graceful_stop) wait (stop_write_done);
       @(negedge axi_clk125);
       s_axis_tvalid = 1'b0;
+      s_axis_tlast = 1'b0;
       s_axis_frame_start = 1'b0;
     end
   endtask
@@ -252,6 +274,7 @@ module tb_thermo5_qsfp_gt14_parent;
       while (beat < beats) begin
         @(negedge axi_clk125);
         s_axis_tvalid = 1'b1;
+        s_axis_tlast = 1'b0;
         s_axis_frame_start = (beat == 0);
         for (tx_lane = 0; tx_lane < 14; tx_lane = tx_lane + 1) begin
           value = frame_id*1000 + beat*14 + tx_lane + 1;
@@ -266,6 +289,7 @@ module tb_thermo5_qsfp_gt14_parent;
       end
       @(negedge axi_clk125);
       s_axis_tvalid = 1'b0;
+      s_axis_tlast = 1'b0;
       s_axis_frame_start = 1'b0;
     end
   endtask
@@ -331,11 +355,18 @@ module tb_thermo5_qsfp_gt14_parent;
 
     // Normal four-plane, 32 AXI beat -> 56 raw-word loopback.
     sim_stage = 2;
-    send_frame(0);
+    send_frame(0, 1'b1);
+    axil_read(8'h04, axil_rdata, axil_resp);
+    if (axil_resp != 2'b00 || !axil_rdata[3] || !axil_rdata[4])
+      $fatal(1, "STOP did not expose RUN_ACTIVE+DRAINING while the final frame was in flight: %08x", axil_rdata);
     wait (output_words >= 56);
     if (!skip_rx_compare) wait (rx_checked_frames >= 1);
-    repeat (20) @(posedge core_clk218);
-    if (stream_fault) $fatal(1, "GT parent faulted on legal post-frame idle");
+    wait (!dut.core_tx_active);
+    repeat (4) @(posedge core_clk218);
+    axil_read(8'h04, axil_rdata, axil_resp);
+    if (axil_resp != 2'b00 || axil_rdata[4:3] != 2'b00 || core_underflow)
+      $fatal(1, "Graceful STOP failed to drain cleanly: status=%08x underflow=%b", axil_rdata, core_underflow);
+    if (stream_fault || pa_enable) $fatal(1, "GT parent faulted or kept PA enabled after graceful drain");
     wait (dut.u_frontend.cfg_done);
     axil_read(8'h04, axil_rdata, axil_resp);
     if (axil_resp != 2'b00 || axil_rdata[2:0] != 3'b010)
@@ -347,10 +378,8 @@ module tb_thermo5_qsfp_gt14_parent;
       $fatal(1, "GT RX did not observe repeated four-lane idle words: run=%0d", rx_idle_run);
     $display("GT_PARENT_STAGE 2 TX frame emitted%s at %0t",
              skip_rx_compare ? " (RX check intentionally skipped)" : "; RX loopback/idle checked", $time);
-    axil_write(8'h00, 32'h0000_0000, 4'hf, 1, 0, axil_resp);
-    if (axil_resp != 2'b00) $fatal(1, "AXI-Lite STOP write failed after normal frame");
-    repeat (4) @(posedge core_clk218);
-    if (stream_fault || pa_enable) $fatal(1, "GT parent failed clean stop/blanking");
+    // RUN was already cleared two source beats before the final boundary;
+    // the controller kept the GT active until all 56 PA words were consumed.
 
     // Create a second commit with no upcoming frame boundary. A GT-health loss
     // must asynchronously reset the AXI-Lite, AXIS and core domains and cancel
@@ -405,7 +434,7 @@ module tb_thermo5_qsfp_gt14_parent;
     // sticky FIFO underflow is therefore expected while software RUN remains
     // asserted. This reset-only diagnostic checks framing/serializer faults,
     // not an indefinitely sustained source contract.
-    if (stream_fault || core_protocol_error)
+    if (stream_fault || core_protocol_error || !core_underflow)
       $fatal(1, "GT recovery replay raised a framing/serializer error fault=%b protocol=%b underflow=%b",
              stream_fault, core_protocol_error, core_underflow);
     axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 1, axil_resp);
@@ -455,12 +484,12 @@ module tb_thermo5_qsfp_gt14_parent;
     rx_seek_base = expected_count;
     rx_check_enable = 1'b1;
     sim_stage = 6;
-    send_frame(3);
+    send_frame(3, 1'b1);
     wait (output_words >= 168);
     if (!skip_rx_compare) wait (rx_checked_frames >= 3);
+    wait (!dut.core_tx_active);
     if (stream_fault || core_protocol_error || core_underflow)
       $fatal(1, "GT restart after interrupted stream raised an error");
-    axil_write(8'h00, 32'h0000_0000, 4'hf, 0, 1, axil_resp);
 
     if (skip_rx_compare)
       $display("THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=%0d output=%0d rx_frames=%0d recovery=powergood+tx_active+common_reset+midframe_restart rx_compare=SKIPPED",

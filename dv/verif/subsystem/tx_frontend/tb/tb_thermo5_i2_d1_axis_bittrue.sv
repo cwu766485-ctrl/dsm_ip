@@ -17,7 +17,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
   logic src_clk=0, core_clk=0, src_rst_n=0, core_rst_n=0;
   logic axil_clk=0;
   logic axil_rst_n=0;
-  logic src_valid=0, frame_start=0, core_enable=0;
+  logic src_valid=0, src_last=0, frame_start=0, core_enable=0;
   logic signed [223:0] src_i='0, src_q='0;
   logic signed [15:0] frame_gain=16'sd16384;
   logic [3:0] pa_ready=4'hf;
@@ -68,7 +68,8 @@ module tb_thermo5_i2_d1_axis_bittrue #(
     .s_axil_araddr(axil_araddr),.s_axil_arvalid(axil_arvalid),.s_axil_arready(axil_arready),
     .s_axil_rdata(axil_rdata),.s_axil_rresp(axil_rresp),.s_axil_rvalid(axil_rvalid),.s_axil_rready(axil_rready),
     .s_axis_aclk(src_clk),.s_axis_aresetn(src_rst_n),
-    .s_axis_tvalid(src_valid),.s_axis_tready(src_ready),.s_axis_i_vec(src_i),.s_axis_q_vec(src_q),
+    .s_axis_tvalid(src_valid),.s_axis_tready(src_ready),.s_axis_tlast(src_last),
+    .s_axis_i_vec(src_i),.s_axis_q_vec(src_q),
     .s_axis_tuser_frame_start(frame_start),.s_axis_tuser_frame_gain(frame_gain),
     .s_axis_fifo_full(fifo_full),.core_clk(core_clk),.core_aresetn(core_rst_n),
     .core_underflow(underflow),.core_protocol_error(protocol_error),
@@ -160,6 +161,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
         for (int beat=0; beat<SRC_BEATS; beat++) begin
           @(negedge src_clk);
           src_valid=1;
+          src_last=(beat==SRC_BEATS-1);
           frame_start=frame_mem[(14*beat)/8][0];
           frame_gain=gain_mem[(14*beat)/8];
           for (int lane=0;lane<14;lane++) begin
@@ -174,7 +176,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
             repeat(probe_gap) @(negedge src_clk);
           end
         end
-        @(negedge src_clk); src_valid=0;
+        @(negedge src_clk); src_valid=0; src_last=0;
       end
       begin
         wait(sent>=4);

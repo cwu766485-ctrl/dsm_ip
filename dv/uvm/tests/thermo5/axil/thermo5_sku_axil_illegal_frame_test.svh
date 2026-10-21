@@ -20,7 +20,10 @@ class thermo5_sku_axil_illegal_frame_test extends thermo5_sku_axil_config_test;
     fork
       begin
         fork
-          send_source(cfg.source_beats,1'b1);
+          // TLAST at beat 15 is illegal (the legal quantum ends at beat 31).
+          // Keep the normal final TLAST too: the DUT must diagnose the early
+          // marker without truncating or losing the remaining accepted data.
+          send_source(cfg.source_beats,1'b1,-1,0,15);
           begin
             wait(env.source.monitor.accepted_beats>=4);
             axil_write(8'h00,32'h1,0,0,resp);
@@ -30,7 +33,7 @@ class thermo5_sku_axil_illegal_frame_test extends thermo5_sku_axil_config_test;
             repeat(2) @(posedge vif.core_clk);
             if (env.coverage.protocol_error_cycles==0)
               `uvm_fatal("AXIL_NEG_COVERAGE","Illegal-frame functional bin was not sampled")
-            `uvm_info("NEGATIVE","THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED; expected RTL assertion must also appear",UVM_NONE)
+            `uvm_info("NEGATIVE","THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED early_tlast=1; expected RTL frame assertion must also appear",UVM_NONE)
             wait(env.source.monitor.accepted_beats==cfg.source_beats);
             axil_write(8'h00,32'd0,0,0,resp);
             if (resp!=2'b00)

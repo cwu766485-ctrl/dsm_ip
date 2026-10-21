@@ -1,5 +1,62 @@
 # Update Log
 
+## 2026-10-21 - explicit AXI-Lite packet end and parent validation refresh
+
+- Added `s_axis_tlast` to the optional AXI-Lite wrapper and ZU15EG four-GTH
+  parent. The stop-safe packet contract is now explicit: packet lengths are
+  positive multiples of 32 accepted 14-lane source beats; an early `TLAST`
+  raises sticky protocol diagnostic without resetting gearbox alignment. The
+  frozen parallel-config SKU is unchanged.
+- Added a dedicated `thermo5-axil-long-frame-vcs-run` target and reproduction
+  instructions. Generic VCS passed a 64-beat/two-quantum packet with 112
+  four-plane output words; a real-XPM run of the same case passed. The parent
+  reset-only XSim passed with the new signal connected; RX compare was skipped.
+- Refreshed the parent XDC input group for `s_axis_tlast` and added synthesis
+  timing, I/O, clock-interaction, exception and check-timing reports plus a
+  routed WNS/WHS gate to the parent flow. AXIS/AXI-Lite/board min/max delays
+  remain explicitly provisional because actual SoC and board timing contracts
+  are not available.
+- The current-source ZU15EG parent synthesis attempt under
+  `runs/thermo5_parent_current_synth_20261021/` was interrupted when available
+  system memory fell to about 0.7 GiB. Partial post-synth reports were written,
+  but there is no checkpoint or clean exit, and the first report order placed
+  clock-interaction analysis before asynchronous groups/RX output delay. The
+  Tcl order was corrected; rerun before using timing reports. Route was not
+  launched; the known requirement is 12-14 GiB free. No OOC timing PASS is
+  claimed. CDC/RDC and physical GT/board signoff remain open.
+- Checks already run: generic thermo5 and AXI-Lite regressions, generic and
+  XPM 112-word graceful-stop tests, required frozen I2/D1 XSim, and parent
+  reset-only XSim all PASS. `make -n` for the new long-frame target and
+  `git diff --check` PASS.
+
+## 2026-10-19 - AXI-Lite graceful RUN stop and drain
+
+- Replaced the AXI-Lite wrapper's hardwired `core_drain=0` with a stop/drain
+  controller. RUN low now closes AXI ingress at the configured 32-beat source
+  frame boundary, keeps core and GT-user consumption active, and clears
+  RUN_ACTIVE only after FIFO/gearbox/frontend/four-plane output drain. STATUS
+  bits 3/4 expose RUN_ACTIVE and DRAINING. A true starvation while RUN remains
+  asserted still sets the existing underflow diagnostic.
+- Added a separate UVM scenario and ran generic and real-XPM AXI-Lite/URG
+  regressions. Both pass the full 56-word four-plane MATLAB comparison with no
+  underflow/protocol error and verify status clears after drain. The generic
+  baseline and required directed I2/D1 XSim pass. Parent XSim passes graceful
+  TX stop/drain, idle and common-reset recovery for 112 TX words; RX comparison
+  was intentionally skipped.
+- Updated the AXI-Lite architecture, GT-parent integration contract, test
+  matrix, frozen-SKU STOP evidence, and execution frontier. The source AXI
+  interface has no `TLAST`; the feature therefore assumes the documented fixed
+  32-beat frame contract. Arbitrary-length frame stopping is not claimed.
+- ZU15EG AXI-Lite OOC synthesis produced `synthesized.dcp`, clock and
+  utilization reports (84,804 LUTs, 88,520 registers, 1,936 DSPs, 6 RAMB36,
+  1 RAMB18). The repository checkpoint validator reopened the DCP and
+  regenerated utilization successfully. The original PowerShell launcher
+  returned nonzero with Vivado `[Common 17-217] Failed to load feature
+  'vivado'`; report this as independently validated synthesis artifacts, not
+  a clean launcher PASS. No routed timing run was performed. Parent routed
+  CDC/RDC/STA, real I/O budgets, RX recovery and board output remain open. No
+  commit or push made.
+
 ## 2026-10-19 - AXI-Lite in GT-parent global reset and regression repair
 
 - Added the 100-MHz AXI-Lite bus/clock to the thermo5 four-GTH parent. Its

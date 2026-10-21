@@ -33,6 +33,7 @@ module dsm_axis14_to_core8_cdc #(
   // gearbox word is quiescence rather than a streaming underflow.
   input  wire logic                                  core_drain,
   output wire logic                                  core_valid,
+  output wire logic                                  core_data_empty,
   input  wire logic                                  core_ready,
   output wire logic signed [CORE_LANES*W-1:0]        core_i_vec,
   output wire logic signed [CORE_LANES*W-1:0]        core_q_vec,
@@ -95,6 +96,12 @@ module dsm_axis14_to_core8_cdc #(
   wire advance = core_enable && (!out_valid_q || core_ready);
   assign fifo_rd_ready = advance && (rem_count_q < CORE_LANES);
   assign core_valid = out_valid_q && core_enable;
+  // Conservative indication that every accepted source beat has left the
+  // FIFO/gearbox boundary.  The FIFO empty flag is core-clock synchronized;
+  // include the FWFT/read-valid view, residual lanes, and output register so
+  // a graceful-stop controller cannot stop on a transient empty observation.
+  assign core_data_empty = fifo_rd_empty && !fifo_rd_valid &&
+                           (rem_count_q == 0) && !out_valid_q;
   assign core_i_vec = out_i_q;
   assign core_q_vec = out_q_q;
   assign core_frame_start = out_frame_start_q;

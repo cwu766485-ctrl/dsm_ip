@@ -92,6 +92,15 @@ if {[llength $gt_clocks] < 2 ||
 set_clock_groups -asynchronous -group [get_clocks axi_clk125] \
   -group [get_clocks axil_clk100] -group [get_clocks freerun_clk200] \
   -group $gt_clocks
+# Generate reports only after all post-synthesis clocks, interface budgets,
+# and asynchronous clock groups have been applied. Otherwise the reports can
+# show intentionally asynchronous CDC paths as unsafe timed paths and omit the
+# diagnostic RX output budget.
+report_timing_summary -delay_type min_max -file [file join $out_dir post_synth_timing_summary.rpt]
+report_io -file [file join $out_dir parent_io.rpt]
+check_timing -verbose -file [file join $out_dir post_synth_check_timing.rpt]
+report_clock_interaction -file [file join $out_dir post_synth_clock_interaction.rpt]
+report_exceptions -file [file join $out_dir timing_exceptions.rpt]
 report_utilization -file [file join $out_dir synth_utilization.rpt]
 report_clocks -file [file join $out_dir synth_clocks.rpt]
 write_checkpoint -force [file join $out_dir synthesized.dcp]
@@ -106,6 +115,22 @@ if {$stage eq "route"} {
   report_cdc -details -file [file join $out_dir cdc.rpt]
   report_clock_interaction -file [file join $out_dir clock_interaction.rpt]
   check_timing -verbose -file [file join $out_dir check_timing.rpt]
+  set setup_path [get_timing_paths -quiet -delay_type max -max_paths 1]
+  set hold_path [get_timing_paths -quiet -delay_type min -max_paths 1]
+  if {[llength $setup_path] == 0 || [llength $hold_path] == 0} {
+    error "No routed setup/hold path was returned; timing closure is not established"
+  }
+  set routed_wns [get_property SLACK $setup_path]
+  set routed_whs [get_property SLACK $hold_path]
+  set f [open [file join $out_dir routed_timing_metrics.csv] w]
+  puts $f "design,part,clock_period_ns,wns_ns,whs_ns,provisional_io_budgets"
+  puts $f "thermo5_qsfp_gt14_parent,xczu15eg-ffvb1156-2-i,4.571,[format %.3f $routed_wns],[format %.3f $routed_whs],true"
+  close $f
+  puts "THERMO5_QSFP_PARENT_ROUTED_WNS_NS=[format %.3f $routed_wns]"
+  puts "THERMO5_QSFP_PARENT_ROUTED_WHS_NS=[format %.3f $routed_whs]"
+  if {$routed_wns < 0.0 || $routed_whs < 0.0} {
+    error "Routed timing FAILED: WNS=$routed_wns ns, WHS=$routed_whs ns"
+  }
   write_checkpoint -force [file join $out_dir routed.dcp]
   puts "THERMO5_QSFP_PARENT_ROUTE_COMPLETE=$out_dir"
 }

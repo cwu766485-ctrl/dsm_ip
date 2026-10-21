@@ -23,6 +23,7 @@ module thermo5_qsfp_gt14_parent #(
   output wire logic [3:0]  qsfp_tx_n,
   input  wire logic        s_axis_tvalid,
   output wire logic        s_axis_tready,
+  input  wire logic        s_axis_tlast,
   input  wire logic signed [223:0] s_axis_i_vec,
   input  wire logic signed [223:0] s_axis_q_vec,
   input  wire logic        s_axis_frame_start,
@@ -79,6 +80,7 @@ module thermo5_qsfp_gt14_parent #(
   wire logic [9:0] health_raw = {fabric_clocks_stable, tx_done, powergood, tx_pma_done};
   wire logic pa_enable_request;
   wire logic core_run_request;
+  wire logic core_tx_active;
   wire logic gt_reset = !reset_n;
 
   IBUFDS_GTE4 u_refclk (.I(mgtrefclk125_p), .IB(mgtrefclk125_n),
@@ -172,6 +174,7 @@ module thermo5_qsfp_gt14_parent #(
     .s_axil_rdata(s_axil_rdata), .s_axil_rresp(s_axil_rresp), .s_axil_rvalid(s_axil_rvalid), .s_axil_rready(s_axil_rready),
     .s_axis_aclk(axi_clk125), .s_axis_aresetn(rst125_n),
     .s_axis_tvalid(s_axis_tvalid), .s_axis_tready(s_axis_tready),
+    .s_axis_tlast(s_axis_tlast),
     .s_axis_i_vec(s_axis_i_vec), .s_axis_q_vec(s_axis_q_vec),
     .s_axis_tuser_frame_start(s_axis_frame_start),
     .s_axis_tuser_frame_gain(s_axis_frame_gain),
@@ -180,13 +183,14 @@ module thermo5_qsfp_gt14_parent #(
     .core_underflow(core_underflow),
     .core_protocol_error(core_protocol_error),
     .core_run_request(core_run_request),
+    .core_tx_active(core_tx_active),
     .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
   );
 
   thermo5_raw64_continuous_tx u_continuous (
     .clk(core_clk218), .rst_n(rst218_n),
     // The local reset-ready is the core-domain view of link readiness.
-    .link_ready(rst218_n), .run_request(core_run_request),
+    .link_ready(rst218_n), .run_request(core_tx_active),
     .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready),
     .gt_txdata(tx_word), .pa_enable(pa_enable_request),
     .stream_fault(stream_fault)

@@ -39,6 +39,7 @@ THERMO5_XPM_SOURCES := $(THERMO5_XPM_ROOT)/data/verilog/src/glbl.v \
   $(THERMO5_XPM_ROOT)/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv
 THERMO5_XPM_ARGS := $(if $(filter xpm,$(THERMO5_FIFO_IMPL)),+define+THERMO5_XPM_FIFO $(THERMO5_XPM_SOURCES) -top glbl,)
 THERMO5_VECTORS := $(ROOT)/runs/uvm_thermo5_i2_d1/vectors
+THERMO5_LONG_VECTORS ?= $(ROOT)/runs/thermo5_axil_tlast_112_vectors
 THERMO5_FILELIST := $(UVM_ROOT)/sim/thermo5_sku_filelist.f
 THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
@@ -75,7 +76,8 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
 .PHONY: help check-tools formal-check-tools vcs vcs-run vcs-run-only regression coverage-merge \
         verdi questa questa-run questa-run-only run clean thermo5-vcs thermo5-vcs-run \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
-        thermo5-axil-config-vcs-run thermo5-axil-register-access-vcs-run \
+        thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
+        thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
@@ -89,6 +91,8 @@ help:
 	@echo "  make coverage-merge      Merge selected VCS coverage databases with URG"
 	@echo "  make thermo5-vcs-run     Compile/run two-clock thermo5/2-tap/DPD1 subsystem"
 	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
+	@echo "  make thermo5-axil-graceful-stop-vcs-run  Run AXI-Lite mid-frame graceful-stop test"
+	@echo "  make thermo5-axil-long-frame-vcs-run  Run 64-beat/two-quantum TLAST and drain test"
 	@echo "  make thermo5-axil-register-access-vcs-run  Run AXI-Lite register/protocol-only test"
 	@echo "  make thermo5-axil-coeff-transport-vcs-run  Run coefficient mailbox transport case"
 	@echo "  make thermo5-axil-nonlinear-dpd-vcs-run  Run nonlinear DPD coefficient case"
@@ -151,6 +155,21 @@ thermo5-vcs-run: thermo5-vcs thermo5-vcs-run-only
 thermo5-axil-config-vcs-run:
 	@$(MAKE) --no-print-directory thermo5-vcs-run \
 	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test
+
+thermo5-axil-graceful-stop-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs-run \
+	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_graceful_stop_test
+
+# A reproducible multi-quantum packet case. Generate 112-word MATLAB vectors
+# first; this represents 64 accepted 14-lane AXIS beats and two 32-beat
+# stop-safe quanta (112 words on each of four output planes).
+thermo5-axil-long-frame-vcs-run:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_VECTORS=$(THERMO5_LONG_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_graceful_stop_test \
+	  THERMO5_VECTORS=$(THERMO5_LONG_VECTORS) UVM_SEED=420112 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=112
 
 thermo5-axil-register-access-vcs-run:
 	@$(MAKE) --no-print-directory thermo5-vcs-run \
@@ -280,6 +299,8 @@ thermo5-axil-vcs-regression:
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420101 \
 		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_config_test \
 		THERMO5_EXTRA_ARGS=+THERMO5_AXIL_INTERNAL_COVERAGE_PROBE
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420108 \
+		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_graceful_stop_test
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420104 \
 		THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_coeff_transport_test
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420105 \

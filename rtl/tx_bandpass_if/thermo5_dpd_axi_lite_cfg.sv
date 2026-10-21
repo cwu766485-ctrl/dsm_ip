@@ -31,7 +31,10 @@ module thermo5_dpd_axi_lite_cfg #(
   input  wire logic         core_clk,
   input  wire logic         core_aresetn,
   input  wire logic         dpd_config_boundary,
+  input  wire logic         core_tx_active,
+  input  wire logic         core_draining,
   output logic              core_enable,
+  output logic              run_request,
   output logic [2:0]        dpd_active_taps,
   output logic signed [63:0] c1_re,
   output logic signed [63:0] c1_im,
@@ -74,6 +77,8 @@ module thermo5_dpd_axi_lite_cfg #(
   (* ASYNC_REG = "TRUE" *) logic cfg_req_sync1, cfg_req_sync2;
   (* ASYNC_REG = "TRUE" *) logic cfg_ack_sync1, cfg_ack_sync2;
   (* ASYNC_REG = "TRUE" *) logic run_sync1, run_sync2;
+  (* ASYNC_REG = "TRUE" *) logic tx_active_sync1, tx_active_sync2;
+  (* ASYNC_REG = "TRUE" *) logic draining_sync1, draining_sync2;
   logic cfg_pending_valid;
   logic [CFG_W-1:0] cfg_pending_core;
   logic [CFG_W-1:0] cfg_active_core;
@@ -95,6 +100,7 @@ module thermo5_dpd_axi_lite_cfg #(
   assign s_axil_wready  = !w_pending && !s_axil_bvalid;
   assign s_axil_arready = !s_axil_rvalid;
   assign core_enable = run_sync2;
+  assign run_request = run_request_q;
   assign cfg_busy = cfg_busy_q;
   assign cfg_done = cfg_done_q;
   assign cfg_error = cfg_error_q;
@@ -162,6 +168,10 @@ module thermo5_dpd_axi_lite_cfg #(
         read_data_mux[0] = cfg_busy_q;
         read_data_mux[1] = cfg_done_q;
         read_data_mux[2] = cfg_error_q;
+        // RUN_ACTIVE and DRAINING are synchronized status views of the
+        // core-domain graceful-stop controller.
+        read_data_mux[3] = tx_active_sync2;
+        read_data_mux[4] = draining_sync2;
       end
       REG_TAPS: read_data_mux = {29'd0,shadow_taps};
       REG_ID: read_data_mux = IP_ID;
@@ -201,12 +211,20 @@ module thermo5_dpd_axi_lite_cfg #(
       cfg_seen_ack_q <= 1'b0;
       cfg_ack_sync1 <= 1'b0;
       cfg_ack_sync2 <= 1'b0;
+      tx_active_sync1 <= 1'b0;
+      tx_active_sync2 <= 1'b0;
+      draining_sync1 <= 1'b0;
+      draining_sync2 <= 1'b0;
       cfg_busy_q <= 1'b0;
       cfg_done_q <= 1'b0;
       cfg_error_q <= 1'b0;
     end else begin
       cfg_ack_sync1 <= cfg_ack_core;
       cfg_ack_sync2 <= cfg_ack_sync1;
+      tx_active_sync1 <= core_tx_active;
+      tx_active_sync2 <= tx_active_sync1;
+      draining_sync1 <= core_draining;
+      draining_sync2 <= draining_sync1;
 
       if (s_axil_bvalid && s_axil_bready) s_axil_bvalid <= 1'b0;
       if (s_axil_rvalid && s_axil_rready) s_axil_rvalid <= 1'b0;

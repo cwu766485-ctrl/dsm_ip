@@ -1,5 +1,74 @@
 # Execution frontier
 
+## Current packet framing, GT-parent simulation, and ZU15EG OOC status (2026-10-21)
+
+The optional AXI-Lite wrapper now exposes AXI-Stream `s_axis_tlast`; the
+four-GTH ZU15EG parent carries the signal through to the wrapper and its XDC
+input-delay group. A legal packet is one or more 32-beat quanta (32/64/96...)
+so each quantum maps to 56 core/output words and preserves gearbox and
+GT-user-frame alignment. Early `TLAST` is sticky-diagnosed and does not change
+alignment. The frozen parallel-config SKU remains unchanged and has no
+`TLAST` port.
+
+The reproducible two-quantum test passed using the new
+`thermo5-axil-long-frame-vcs-run` target: 64 accepted source beats, one legal
+`TLAST`, 112 bit-true output words per plane, zero UVM errors/fatals and no
+underflow. Generic and real-XPM 112-word runs are preserved under
+`runs/thermo5_longframe_make_20261021/` and
+`runs/thermo5_tlast_axil_xpm_20261021/`. The dedicated parent reset-only XSim
+also passes with `TLAST` connected, using an isolated copy of the prior parent
+project at `runs/thermo5_gt_parent_tlast_sim_20261021/`; RX data comparison is
+skipped by design in this run.
+
+The current-source ZU15EG parent synthesis attempt at
+`runs/thermo5_parent_current_synth_20261021/` was interrupted after system
+available memory fell to about 0.7 GiB. Vivado had parsed the 125-MHz
+AXI-Stream, 100-MHz AXI-Lite, 200-MHz free-run and assumed 125-MHz GT-reference
+clocks and emitted partial post-synth reports, but it did not produce a
+checkpoint or clean exit. Those clock-interaction/timing reports are not used
+for signoff because their first run preceded the asynchronous clock-group and
+RX diagnostic output-delay commands. The parent Tcl report ordering has now
+been fixed so a retry reports only after all clocks, provisional I/O budgets
+and asynchronous groups are applied. Rerun synthesis/route only after memory
+is available; the known route requirement is 12..14 GiB. The XDC values remain
+provisional 0.20..2.00 ns input and 0..1.50 ns output assumptions, not real
+SoC/board budgets. Actual producer/consumer min/max delays, board clock-source
+validation, CDC/RDC review, RX alignment, and physical GT output remain open.
+
+The 2026-10-19 graceful-stop entry below records the pre-`TLAST` fixed-frame
+implementation and is historical; use this section for current framing scope.
+
+## AXI-Lite graceful RUN stop (2026-10-19)
+
+Replaced the AXI-Lite wrapper's hardwired `core_drain=0` with a graceful-stop
+sequence. RUN low closes AXI ingress at the configured fixed 32-beat source
+frame boundary (the AXI-Stream interface has no `TLAST`), keeps core and GT-user
+consumption active, and waits for the FIFO/14:8 gearbox/frontend/four-plane
+output to empty before clearing RUN_ACTIVE. STATUS bits 3/4 report RUN_ACTIVE
+and DRAINING. Real starvation while RUN remains high still reports underflow.
+
+Generic and real-XPM AXI-Lite UVM/URG regressions pass, including the new
+mid-frame stop case: each checks all 56 four-plane words, no underflow or
+protocol error, and status clearing after the final output. The generic frozen
+SKU regression and directed I2/D1 XSim also pass. Parent XSim passes stop/drain,
+idle and common-reset recovery with 112 TX words; RX comparison is explicitly
+skipped. Evidence is under `runs/thermo5_axil_graceful_stop_regression_20261019/`,
+`runs/thermo5_axil_graceful_stop_xpm_20261019/`,
+`runs/thermo5_graceful_stop_base_final_20261019/`,
+`runs/thermo5_graceful_stop_sim2_20261019/`, and
+`runs/thermo5_graceful_stop_ooc_synth_20261019/`.
+
+ZU15EG AXI-Lite OOC synthesis produced `synthesized.dcp` and resource/clock
+reports: 84,804 LUTs, 88,520 registers, 1,936 DSPs, 6 RAMB36 and 1 RAMB18.
+The repository checkpoint validator reopened the DCP and regenerated resource
+report successfully (`THERMO5_AXIL_CHECKPOINT_VALIDATED=checkpoint_synthesized`).
+The original PowerShell launcher nevertheless returned nonzero with Vivado
+`[Common 17-217] Failed to load feature 'vivado'`; record the checkpoint as
+independently validated, not as a clean launcher PASS. No routed timing run was
+performed. This does not close parent routed STA/CDC/RDC, real I/O budgets, RX
+recovery, serializer/board output, or arbitrary-length frame termination. The
+behavior assumes software/source honors the fixed 32-beat frame contract.
+
 ## GT-parent global-reset integration with AXI-Lite (2026-10-19)
 
 Added the 100-MHz AXI-Lite clock/slave interface to the four-GTH thermo5

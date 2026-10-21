@@ -2,10 +2,10 @@ class thermo5_source_monitor extends uvm_component;
   `uvm_component_utils(thermo5_source_monitor)
   virtual thermo5_sku_if vif;
   uvm_analysis_port#(thermo5_source_item) ap;
-  int accepted_beats, stall_cycles;
+  int accepted_beats, accepted_last_count, stall_cycles;
   bit stalled;
   logic [223:0] held_i, held_q;
-  logic held_start;
+  logic held_start, held_last;
   logic signed [15:0] held_gain;
   function new(string name, uvm_component parent);
     super.new(name,parent); ap=new("ap",this);
@@ -21,25 +21,29 @@ class thermo5_source_monitor extends uvm_component;
       @(posedge vif.src_clk);
       if (!vif.src_rst_n) begin
         accepted_beats=0;
+        accepted_last_count=0;
         vif.accepted_beats=0;
         stalled=0;
       end else begin
         if (stalled && (vif.src_valid !== 1'b1 || vif.src_i !== held_i ||
                         vif.src_q !== held_q || vif.frame_start !== held_start ||
-                        vif.frame_gain !== held_gain))
+                        vif.frame_gain !== held_gain || vif.src_last !== held_last))
           `uvm_error("AXIS_STABLE","Source changed a backpressured beat")
         stalled=(vif.src_valid && !vif.src_ready);
         if (stalled) begin
           stall_cycles++;
           held_i=vif.src_i; held_q=vif.src_q;
-          held_start=vif.frame_start; held_gain=vif.frame_gain;
+          held_start=vif.frame_start; held_last=vif.src_last;
+          held_gain=vif.frame_gain;
         end
         if (vif.src_valid && vif.src_ready) begin
           tr=thermo5_source_item::type_id::create("observed_beat");
           tr.i_vec=vif.src_i; tr.q_vec=vif.src_q;
           tr.frame_start=vif.frame_start; tr.frame_gain=vif.frame_gain;
+          tr.tlast=vif.src_last;
           tr.beat_index=accepted_beats;
           accepted_beats++;
+          if (vif.src_last) accepted_last_count++;
           vif.accepted_beats=accepted_beats;
           ap.write(tr);
         end

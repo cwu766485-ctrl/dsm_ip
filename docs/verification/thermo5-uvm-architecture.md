@@ -13,7 +13,7 @@ or RF output. The 14-GS/s figure is the serial sample cadence of each plane
 | --- | --- | --- |
 | AXI source, 125 MHz | `s_axis_aclk`, active-low `s_axis_aresetn`; `s_axis_tvalid/tready` | One accepted beat has 14 consecutive complex samples. The source holds data and metadata stable under backpressure. |
 | AXI source | `s_axis_i_vec`, `s_axis_q_vec` | Two signed 224-bit vectors: 14 lanes * 16 bits, lane 0 earliest. |
-| AXI source | `s_axis_tuser_frame_start`, signed 16-bit `s_axis_tuser_frame_gain` | Frame-start/gain metadata travels with the beat. Legal starts align to a 56-sample superframe. No `TLAST` port exists. |
+| AXI source | `s_axis_tuser_frame_start`, signed 16-bit `s_axis_tuser_frame_gain` | Frame-start/gain metadata travels with the beat. Legal starts align to a 56-sample superframe. The frozen parallel-config SKU has no `TLAST`; the optional AXI-Lite wrapper adds it for graceful packet stop. |
 | AXI source status | `s_axis_fifo_full` | FIFO-full observation; not a substitute for `tready`. |
 | Core, 218.75 MHz | `core_clk`, active-low `core_aresetn`, `core_enable`; `core_underflow`, `core_protocol_error` | Core run/reset and sticky CDC/protocol diagnostics. The FIFO must prefill before continuous-frame operation. |
 | Core DPD configuration | `dpd_active_taps`, six signed 64-bit packed coefficient buses `c1_re/im`, `c3_re/im`, `c5_re/im` | Top-level programmable interface, but this SKU ties active taps to 1 and unity Q2.14 `c1_re=16384`; all other coefficient fields are zero. The memory-DPD RTL is instantiated, not bypassed. Only the least significant 16-bit tap slice is used with `DPD_MAX_TAPS=1`. |
@@ -23,7 +23,11 @@ The exact full-frame UVM gate is 32 accepted AXI beats = 448 complex ingress
 samples = 56 core words of eight complex samples. Two x2 interpolators make
 32 complex samples per core word; `Fs/4` mapping produces 64 ordered real
 raw bits per plane. The four planes represent five possible summed levels,
-not four independent QAM channels.
+not four independent QAM channels. In the AXI-Lite wrapper only, `TLAST`
+marks a packet end and must occur after a positive multiple of 32 accepted
+beats; the UVM source monitor checks that marker and covers one-quantum and
+multi-quantum packets. A 64-beat packet corresponds to 112 ordered output
+words per plane and is checked against a 112-word MATLAB oracle.
 
 ## RTL instance chain
 

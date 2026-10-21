@@ -38,7 +38,8 @@ module thermo5_axil_cfg_coverage_harness (
     .s_axil_araddr(araddr), .s_axil_arvalid(arvalid), .s_axil_arready(arready),
     .s_axil_rdata(rdata), .s_axil_rresp(rresp), .s_axil_rvalid(rvalid), .s_axil_rready(rready),
     .core_clk(core_clk), .core_aresetn(core_rst_n),
-    .dpd_config_boundary(dpd_config_boundary), .core_enable(core_enable),
+    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(1'b0),
+    .core_draining(1'b0), .core_enable(core_enable), .run_request(),
     .dpd_active_taps(active_taps), .c1_re(c1_re), .c1_im(c1_im),
     .c3_re(c3_re), .c3_im(c3_im), .c5_re(c5_re), .c5_im(c5_im),
     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)

@@ -49,10 +49,12 @@ module thermo5_sku_uvm_tb;
     .s_axil_rdata(axil_bus.rdata),.s_axil_rresp(axil_bus.rresp),.s_axil_rvalid(axil_bus.rvalid),.s_axil_rready(axil_bus.rready),
     .s_axis_aclk(src_clk),.s_axis_aresetn(bus.src_rst_n),
     .s_axis_tvalid(bus.src_valid),.s_axis_tready(bus.src_ready),
+    .s_axis_tlast(bus.src_last),
     .s_axis_i_vec(bus.src_i),.s_axis_q_vec(bus.src_q),
     .s_axis_tuser_frame_start(bus.frame_start),.s_axis_tuser_frame_gain(bus.frame_gain),
     .s_axis_fifo_full(bus.fifo_full),.core_clk(core_clk),.core_aresetn(bus.core_rst_n),
     .core_underflow(bus.underflow),.core_protocol_error(bus.protocol_error),
+    .core_run_request(),.core_tx_active(),
     .pa_valid(bus.pa_valid),.pa_data(bus.pa_data),.pa_ready(bus.pa_ready),
     .cfg_busy(bus.cfg_busy),.cfg_done(bus.cfg_done),.cfg_error(bus.cfg_error)
   );
