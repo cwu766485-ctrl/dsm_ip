@@ -23,7 +23,8 @@ module tb_tid32_thermo5_frontend_serdes_loopback;
   // Frozen communication SKU: 2-tap x2 stages and instantiated DPD1 identity.
   tid32_thermo5_frontend_tx #(.STEP(7168), .INTERP_TAPS(2), .MAX_TAPS(1)) dut (
     .clk(usr_clk),.rst_n(rst_n),.enable(enable),.in_valid(in_valid),.in_ready(in_ready),
-    .in_frame_start(in_frame_start),.in_frame_gain(in_frame_gain),.in_i_vec(in_i_vec),.in_q_vec(in_q_vec),
+    .in_frame_start(in_frame_start),.in_frame_end(1'b0),
+    .in_frame_gain(in_frame_gain),.in_i_vec(in_i_vec),.in_q_vec(in_q_vec),
     .dpd_active_taps(3'd1),.c1_re(c1_re),.c1_im(c1_im),.c3_re(c3_re),.c3_im(c3_im),.c5_re(c5_re),.c5_im(c5_im),
     .pa_valid(pa_valid),.pa_data(pa_data),.pa_ready(pa_ready)
   );

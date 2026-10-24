@@ -1,32 +1,58 @@
-# PPA Study Matrix
+# Thermo5 Digital PPA and Interpolation Study
 
-The fixed Performance SKU is the primary implementation result. It should be
-measured across a clock sweep before comparing optional microarchitectures.
+The FPGA frozen SKU is the baseline for all ASIC and algorithm comparisons.
+Keep the source profile, clock assumptions, gain, DPD identity image, output
+word count, and measurement definitions fixed across rows.
 
-## Primary Result
+## Frozen Baseline
 
-| Identifier | DPD | Interpolation | Modulator | Intended evidence |
-|---|---|---|---|---|
-| `performance_sku` | Memory-Poly5, 4 tap | x32 CIC plus compensation FIR | BP EFDSM2 | Full AXI top, DC pre-layout and FPGA routed flow |
+| Identifier | DPD behavior | Mapping interface | Interpolation | FIFO | Timing boundary |
+|---|---|---|---|---|---|
+| `thermo5_fpga_frozen` | identity, one active tap in UVM | DPD coefficient pins remain runtime inputs in OOC | two x2 stages, 2 taps each | FPGA XPM | FPGA ZU15EG OOC, 125 / 218.75 MHz |
+| `thermo5_asic_frozen` | same identity image | DPD coefficients tied as constants | same two x2 stages, 2 taps each | generic async FIFO | Design Compiler pre-layout, 125 / 218.75 MHz |
 
-Sweep the target clock at 100, 200, 300, 400, and 500 MHz, retaining only
-legal mapped implementations with non-negative setup slack. The supplied
-`run_frontend_pareto_dc.sh` implements x4/x8/x16/x32 bypass rows and the x32
-Memory-Poly5 four-tap row at one selected target clock.
+The ASIC wrapper, FPGA OOC parameters, and FPGA UVM identity-DPD image are
+checked by `check_thermo5_frozen_config.py`. The wrappers implement the same
+frozen behavior, but the direct FPGA OOC top preserves programmable coefficient
+inputs while the ASIC top specializes the image. FPGA and ASIC resource
+numbers therefore differ for reasons beyond the FIFO implementation; do not
+call their area or timing a controlled comparison without a fixed-image FPGA
+OOC wrapper rerun.
 
-## Architecture Studies
+## Interpolation Benchmark Rows
 
-| Study | Variable | Keep constant | Required paired evidence |
-|---|---|---|---|
-| Interpolation tradeoff | mode x4, x8, x16, x32 | input amplitude and bandwidth | MATLAB spectral metrics plus independent PPA runs |
-| DPD tradeoff | bypass versus Memory-Poly5 4 tap | PA profile and input backoff | behavioral EVM/ACLR plus PPA runs |
-| Legacy DSM core tradeoff | LP/EF/MASH core | core I/O width and target clock | core-level bit-true and OOC PPA |
+`dv/uvm/refmodel/python/benchmark_thermo5_interp.py` compares these two-stage
+cascades:
 
-Do not merge the legacy LP/EF/MASH core study with the `DUC_MODE=3` BP EFDSM2
-full-chain result. The two paths have different sampling and RF conventions.
+| Row | Phase-1 interpolation | Implementation status |
+|---|---|---|
+| `rtl2` | current Q14 `[1, 1]/2` causal preset | frozen FPGA baseline |
+| `rtl3` | current Q14 `[3, 6, -1]/8` causal preset | RTL-supported experiment |
+| `rtl4` | current Q14 `[5, 15, -5, 1]/16` causal preset | RTL-supported experiment |
+| `forward_linear` | midpoint of current and next sample | lookahead candidate; requires one-sample buffering |
+| `centered_cubic` | Lagrange `[-1, 9, 9, -1]/16` midpoint | lookahead candidate; requires two-sample buffering |
 
-## Report Discipline
+The benchmark uses deterministic 64-QAM OFDM and reports raw EVM and
+per-symbol common gain/phase-corrected EVM against ideal 4x bandlimited
+interpolation, adjacent-band leakage proxy, and first interpolation-image
+rejection. The two lookahead modes are algorithmic
+comparators, not existing RTL. The spectral metrics are not standard ACLR and
+exclude DPD, TID, PA, RF filtering, and receiver effects. They screen designs;
+they do not authorize changing the frozen tap count.
 
-Record raw report paths, RTL revision, PVT label, target clock, constraints,
-area units, and power activity source beside every reported table. Do not use
-a vectorless or zero-delay power estimate as measured power.
+## Evidence Required Before Promoting a Candidate
+
+1. Repeat the Python benchmark over more seeds and relevant occupied bandwidths.
+2. Compare the Python bit-true model against the MATLAB oracle or the RTL on
+   identical source `.mem` vectors.
+3. Run the full thermo5 regression for the candidate, including both FIFO
+   implementations where supported.
+4. Re-run FPGA routed OOC and ASIC mapped PPA with identical algorithm
+   parameters; record the FIFO and library differences.
+5. For communications claims, include the intended digital upconversion,
+   modulation, defined channel mask, receiver EVM, and PA/DPD endpoint.
+
+Record tool versions, library identity and PVT, clock constraints, source
+revision, parameters, raw report paths, and activity provenance. Vectorless
+power remains an estimate. FPGA OOC and ASIC pre-layout reports are not
+system or silicon signoff.

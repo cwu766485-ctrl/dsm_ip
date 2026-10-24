@@ -25,18 +25,22 @@ module dpd_vector16_memory_poly #(
   input  wire logic signed [MAX_TAPS*COEFF_W-1:0]        c5_re, c5_im,
   input  wire logic                                      in_valid,
   output wire logic                                      in_ready,
+  input  wire logic [1:0]                                in_meta,
   input  wire logic signed [LANES*W-1:0]                 in_i_vec,
   input  wire logic signed [LANES*W-1:0]                 in_q_vec,
   output wire logic                                      out_valid,
   input  wire logic                                      out_ready,
+  output wire logic [1:0]                                out_meta,
   output wire logic signed [LANES*W-1:0]                 out_i_vec,
   output wire logic signed [LANES*W-1:0]                 out_q_vec
 );
   localparam int HISTORY = (MAX_TAPS > 1) ? MAX_TAPS-1 : 1;
+  localparam int PIPE_STAGES = 11;
   logic signed [W-1:0] history_i [0:HISTORY-1];
   logic signed [W-1:0] history_q [0:HISTORY-1];
   logic [LANES-1:0] lane_in_ready, lane_out_valid;
   logic signed [LANES*MAX_TAPS*W-1:0] lane_i_taps, lane_q_taps;
+  logic [1:0] meta_pipe [0:PIPE_STAGES-1];
 
   // The lanes are one atomic temporal word, not independently backpressured
   // streams.  Every dpd_memory_poly instance has the same control pipeline;
@@ -45,6 +49,7 @@ module dpd_vector16_memory_poly #(
   // Simulation assertions below make the lockstep contract executable.
   assign in_ready = lane_in_ready[0];
   assign out_valid = lane_out_valid[0];
+  assign out_meta = meta_pipe[PIPE_STAGES-1];
 
   always_comb begin
     for (int lane = 0; lane < LANES; lane = lane + 1) begin
@@ -76,6 +81,19 @@ module dpd_vector16_memory_poly #(
           history_q[h] <= history_q[h-LANES];
         end
       end
+    end
+  end
+
+  // Carry frame-start and lookahead-tail tags through the same enabled
+  // eleven-stage transaction pipeline as the DPD sample vectors.
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      for (int stage = 0; stage < PIPE_STAGES; stage = stage + 1)
+        meta_pipe[stage] <= '0;
+    end else if (in_ready || !out_valid) begin
+      meta_pipe[0] <= in_valid ? in_meta : '0;
+      for (int stage = 1; stage < PIPE_STAGES; stage = stage + 1)
+        meta_pipe[stage] <= meta_pipe[stage-1];
     end
   end
 

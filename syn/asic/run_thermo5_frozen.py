@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import time
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -17,6 +18,8 @@ def main():
     ap.add_argument('--mapped-run',type=Path,
                     help='Existing mapped DC run; equivalence outputs use a new --out-dir')
     args=ap.parse_args();out=args.out_dir.resolve()
+    subprocess.run([sys.executable,str(ROOT/'syn/asic/check_thermo5_frozen_config.py')],
+                   cwd=ROOT,check=True)
     if not args.db or not args.db.is_file():ap.error('Provide permitted standard-cell --db')
     if ROOT/'runs' not in out.parents:ap.error('Output must be below runs/')
     if args.mapped_run and not args.equivalence_only:ap.error('--mapped-run requires --equivalence-only')
@@ -28,7 +31,7 @@ def main():
             ap.error('Mapped netlist and synthesis SVF must exist')
     out.mkdir(parents=True,exist_ok=True)
     files=[ROOT/p for p in (ROOT/'syn/asic/thermo_frontend_dc_sources.f').read_text().splitlines() if p.strip()]
-    files += [ROOT/'syn/rtl/thermo5_frozen_asic.sv',ROOT/'syn/asic/thermo5_frozen.sdc',ROOT/'syn/asic/dc_thermo5_frozen.tcl',ROOT/'syn/asic/fm_thermo5_frozen.tcl']
+    files += [ROOT/'syn/asic/thermo_frontend_dc_sources.f',ROOT/'syn/rtl/thermo5_frozen_asic.sv',ROOT/'rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv',ROOT/'dv/uvm/tb/thermo5_sku_uvm_tb.sv',ROOT/'syn/run_ooc_tid32_thermo5_axis_frontend_tx.tcl',ROOT/'syn/asic/check_thermo5_frozen_config.py',ROOT/'syn/asic/thermo5_frozen.sdc',ROOT/'syn/asic/dc_thermo5_frozen.tcl',ROOT/'syn/asic/fm_thermo5_frozen.tcl']
     digest=lambda: {str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
     before=digest();env=os.environ.copy();env.update(DSM_ASIC_STDCELL_DB=str(args.db.resolve()),DSM_ASIC_RUN_DIR=str(out))
     env['DSM_ASIC_MAPPED_RUN_DIR']=str(mapped)
@@ -41,8 +44,7 @@ def main():
         if not any(j['status']=='PASS' and j['argv'][0]=='dc_shell' for j in provenance['jobs']):
             ap.error('Mapped input requires an actual DC PASS manifest')
         for p,h in before.items():
-            if p.startswith('rtl/') or p.startswith('syn/rtl/') or p.endswith('.sdc'):
-                if provenance['source_sha256'].get(p)!=h:ap.error('Source differs from mapping: '+p)
+            if provenance['source_sha256'].get(p)!=h:ap.error('Source differs from mapping: '+p)
         if provenance['library_sha256']!=library_hash:ap.error('Library differs from mapping')
         for rel in ('netlist/thermo5_frozen_asic_syn.v','synthesis.svf'):
             artifacts[rel]=hashlib.sha256((mapped/rel).read_bytes()).hexdigest()

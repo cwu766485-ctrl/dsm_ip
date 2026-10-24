@@ -7,6 +7,7 @@ fv_setup_config -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -e
 set sources [list $repo/rtl/axis/dsm_reset_sync.sv $repo/rtl/axis/dsm_async_fifo.sv \
   $repo/rtl/axis/dsm_xpm_async_fifo.sv $repo/rtl/axis/dsm_axis14_to_core8_cdc.sv \
   $repo/rtl/dpd/dpd_poly.v $repo/rtl/dpd/dpd_memory_poly.v \
+  $repo/rtl/interp/dsm_interp_x2_centered_cubic_vector.sv]
   $repo/rtl/interp/dsm_interp_x2_polyphase_vector.sv]
 switch -- $top {
   thermo5_identity_lemmas_harness {

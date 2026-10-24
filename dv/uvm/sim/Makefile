@@ -40,12 +40,19 @@ THERMO5_XPM_SOURCES := $(THERMO5_XPM_ROOT)/data/verilog/src/glbl.v \
 THERMO5_XPM_ARGS := $(if $(filter xpm,$(THERMO5_FIFO_IMPL)),+define+THERMO5_XPM_FIFO $(THERMO5_XPM_SOURCES) -top glbl,)
 THERMO5_VECTORS := $(ROOT)/runs/uvm_thermo5_i2_d1/vectors
 THERMO5_LONG_VECTORS ?= $(ROOT)/runs/thermo5_axil_tlast_112_vectors
+THERMO5_CENTERED_LP_VECTORS ?= $(ROOT)/runs/thermo5_centered_low_power_vectors
+THERMO5_NONLINEAR_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_short_vectors
+THERMO5_NONLINEAR_LONG_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_long_vectors
 THERMO5_FILELIST := $(UVM_ROOT)/sim/thermo5_sku_filelist.f
 THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
 THERMO5_USE_AXIL ?= 0
 THERMO5_TOP ?= thermo5_sku_uvm_tb
-THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,)
+THERMO5_CENTERED_CUBIC ?= 0
+THERMO5_LOW_POWER ?= 0
+THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,) \
+	$(if $(filter 1,$(THERMO5_CENTERED_CUBIC)),+define+THERMO5_CENTERED_CUBIC,) \
+	$(if $(filter 1,$(THERMO5_LOW_POWER)),+define+THERMO5_LOW_POWER,)
 THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
@@ -80,6 +87,8 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
+        thermo5-centered-cubic-vcs thermo5-centered-cubic-low-power-vcs \
+        thermo5-axil-centered-nonlinear-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
 
@@ -142,7 +151,7 @@ thermo5-vcs:
 	  test -n '$(THERMO5_XPM_ROOT)' || { echo "ERROR: set THERMO5_XPM_ROOT to the Vivado installation root"; exit 2; }; \
 	  for src in $(THERMO5_XPM_SOURCES); do test -f "$$src" || { echo "ERROR: missing XPM source $$src"; exit 2; }; done; \
 	fi
-	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 MATLAB vectors first"; exit 2; }
+	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 vectors with MATLAB or generate_thermo5_frontend_vectors.py first"; exit 2; }
 	@mkdir -p $(THERMO5_OUT)
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L \
 		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) \
@@ -335,6 +344,44 @@ thermo5-vcs-regression: thermo5-vcs
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=3 THERMO5_TESTNAME=thermo5_sku_reset_test
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=6 THERMO5_TESTNAME=thermo5_sku_reset_sweep_test
 	@$(MAKE) thermo5-vcs-negative UVM_SEED=4
+
+# Directed full-chain bit-true check for the optional centered-cubic FIR. The
+# matching Python oracle vectors must be supplied through THERMO5_VECTORS.
+thermo5-centered-cubic-vcs:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_CENTERED_CUBIC=1
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_CENTERED_CUBIC=1 \
+	  UVM_SEED=610201 THERMO5_TESTNAME=thermo5_sku_bittrue_test \
+	  THERMO5_EXTRA_ARGS=+STRESS_PA_READY
+
+thermo5-centered-cubic-low-power-vcs:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_CENTERED_LP_VECTORS) --words 56 --seed 610212 \
+	  --interp-mode centered_cubic --frame-start-words 1 --frame-gains 16384
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_CENTERED_CUBIC=1 THERMO5_LOW_POWER=1 \
+	  THERMO5_VECTORS=$(THERMO5_CENTERED_LP_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_CENTERED_CUBIC=1 THERMO5_LOW_POWER=1 \
+	  THERMO5_VECTORS=$(THERMO5_CENTERED_LP_VECTORS) \
+	  UVM_SEED=610212 THERMO5_TESTNAME=thermo5_sku_low_power_drain_test
+
+thermo5-axil-centered-nonlinear-bittrue-vcs:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_NONLINEAR_SHORT_VECTORS) --words 56 --seed 610213 \
+	  --interp-mode centered_cubic --dpd-profile nonlinear_test \
+	  --frame-start-words 1 --frame-gains 16384
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_NONLINEAR_LONG_VECTORS) --words 112 --seed 610214 \
+	  --interp-mode centered_cubic --dpd-profile nonlinear_test \
+	  --frame-start-words 1,57 --frame-gains 16384,16384
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_SHORT_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_bittrue_test UVM_SEED=610213 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_SHORT_VECTORS) \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_bittrue_test UVM_SEED=610214 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_LONG_VECTORS) \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32'
 
 thermo5-vcs-multiseed: thermo5-vcs
 	@set -e; for seed in $(THERMO5_STRESS_SEEDS); do \

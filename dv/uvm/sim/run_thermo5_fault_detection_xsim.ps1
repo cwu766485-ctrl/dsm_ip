@@ -30,6 +30,7 @@ $relativeRtl = @(
   'rtl\dpd\dpd_memory_poly.v',
   'rtl\dpd\dpd_vector16_memory_poly.sv',
   'rtl\dpd\dpd_vector_elastic_buffer.sv',
+  'rtl\interp\dsm_interp_x2_centered_cubic_vector.sv'
   'rtl\interp\dsm_interp_x2_polyphase_vector.sv'
 )
 $directedTb = Join-Path $repo 'dv\verif\subsystem\tx_frontend\tb\tb_thermo5_i2_d1_axis_bittrue.sv'

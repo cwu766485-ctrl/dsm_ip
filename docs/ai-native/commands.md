@@ -3,6 +3,81 @@
 
 Only commands evidenced by repository text are listed. Validate environment and source revision before execution.
 
+## Thermo5 Linux reference and interpolation benchmark
+
+From `dv/uvm/refmodel/python/`, Python 3 can generate the frozen thermo5
+four-plane vectors without MATLAB and run the interpolation and link screens:
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 generate_thermo5_frontend_vectors.py --output-dir ../../../../runs/thermo5_python_vectors --interp-taps 2
+python3 benchmark_thermo5_interp.py --symbols 64 --seed 20261022
+python3 benchmark_thermo5_gt.py --words 56 --seed 20261023 --ber 1e-3
+python3 benchmark_thermo5_link.py --symbols 64 --seed 20261023 --json ../../../../runs/thermo5_link_benchmark/summary.json
+python3 benchmark_thermo5_architecture.py --symbols-per-seed 8 --development-seed-count 2 --seeds 20261024,20261025,20261026,20261027,20261028 --json ../../../../runs/thermo5_architecture_ab_20261024/summary.json --psd-csv ../../../../runs/thermo5_architecture_ab_20261024/psd.csv
+python3 ../../../../syn/asic/check_thermo5_frozen_config.py
+```
+
+From the repository root, run the raw four-plane TID to OFDM receiver
+benchmark (this is Python waveform analysis, not FPGA PPA or timing):
+
+```bash
+for seed in 101 307 503; do
+  PYTHONPATH=dv/uvm/refmodel/python python3 dv/uvm/refmodel/python/benchmark_thermo5_tid_receiver.py \
+    --seed "$seed" --symbols 8 --rms-drive 0.10 \
+    --candidates rtl2,centered_cubic \
+    --json "runs/thermo5_tid_receiver_20261024/seed${seed}.json"
+done
+```
+
+The 0.10 common RMS keeps all three Python-native waveforms below the 0.35
+peak-drive limit. The benchmark refuses a waveform that exceeds that limit.
+It verifies the scalar EFM timing before accepting EVM/SNDR, then evaluates
+digital-only, nominal DPA/output/noise, and stress DPA/output/noise cases.
+
+From the repository root, run the generic-FIFO regression with those vectors:
+
+```bash
+make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3 \
+  THERMO5_VECTORS="$PWD/runs/thermo5_python_vectors" \
+  THERMO5_OUT="$PWD/runs/thermo5_python_vcs"
+```
+
+To run the optional centered-cubic streaming RTL against matching Python
+oracle vectors, use `make -C dv/uvm/sim thermo5-centered-cubic-vcs` and set
+`THERMO5_VECTORS` plus `THERMO5_OUT` as above. That target selects
+`INTERP_CENTERED_CUBIC=1` in the verification build; the normal preset remains
+causal.
+
+The focused centered-cubic checks generate their own nonlinear Python vectors
+and run the short packet, two consecutive packets, and low-power STOP case:
+
+```bash
+make -C dv/uvm/sim thermo5-axil-centered-nonlinear-bittrue-vcs PYTHON=python3 \
+  THERMO5_OUT="$PWD/runs/thermo5_centered_nonlinear_vcs"
+make -C dv/uvm/sim thermo5-centered-cubic-low-power-vcs PYTHON=python3 \
+  THERMO5_OUT="$PWD/runs/thermo5_centered_low_power_vcs"
+```
+
+The benchmarks' adjacent-band metric is not standard ACLR. Python-native
+random vectors do not reproduce MATLAB's random sequence; reuse MATLAB source
+`.mem` files with `--input-dir` for direct oracle comparisons. The GT bit-error
+screen applies errors to the four 64-bit TID planes but does not model GT
+electrical timing/CDR. The link screen uses behavioral DPA/output-network
+models and kTB thermal noise scaled by declared observation-plane power; those
+parameters are illustrative until replaced by measured values. Digital
+quantization/interpolation error is reported separately from random analog
+noise. Centered cubic is the current lowest-EVM candidate, with an optional
+streaming RTL configuration available for bit-true verification. Its FPGA
+resource and timing evaluation remains open.
+The architecture A/B sweep evaluates FIR and input drive/PAPR only. It uses a
+complex-baseband DPA/output-network/noise surrogate with two development and
+three held-out seeds; the actual TID-plane waveform is not decoded for those
+EVM/SNDR numbers, and no FPGA PPA/timing is implied. STEP and DSM-order changes
+remain later experiments. The centered-cubic FIR is the selected algorithm;
+the optional RTL implementation remains disabled by default pending FPGA
+resource/timing evaluation and system integration checks.
+
 ## Build/flow targets
 
 - `fpga/hardware/xczu15eg/15eg_demo/1.mem_test/prj/mem_test/mem_test.vitis/design_1_wrapper/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/Makefile`: `all`, `include`, `seq_libs`, `par_libs`, `archive`, `clean`, `%/make.include`, `%/make.libs`, `%/make.clean`

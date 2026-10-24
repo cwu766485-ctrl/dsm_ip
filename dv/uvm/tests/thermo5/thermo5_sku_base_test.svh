@@ -43,6 +43,7 @@ class thermo5_sku_base_test extends uvm_test;
   task send_source(int beats, bit illegal=0, int gap_before_beat=-1,
                    int unsigned gap_cycles=0, int force_early_tlast_beat=-1);
     thermo5_source_sequence seq;
+    int packet_beats;
     seq=thermo5_source_sequence::type_id::create("source_sequence");
     seq.cfg=cfg;
     seq.beat_count=beats;
@@ -50,14 +51,27 @@ class thermo5_sku_base_test extends uvm_test;
     // Only complete configured source frames terminate with TLAST. Partial
     // reset/starvation prefixes remain open so they do not create a second,
     // unintended framing fault in AXI-Lite wrapper tests.
+`ifdef THERMO5_CENTERED_CUBIC
+    seq.mark_last=(beats==cfg.source_beats);
+`else
     seq.mark_last=(cfg.axil_control && beats==cfg.source_beats);
+`endif
     seq.force_early_tlast_beat=force_early_tlast_beat;
+    packet_beats=0;
+    void'($value$plusargs("PACKET_BEATS=%d",packet_beats));
+    seq.packet_beats=packet_beats;
     seq.gap_before_beat=gap_before_beat;
     seq.gap_cycles=gap_cycles;
     seq.start(env.source.sequencer);
   endtask
 
   task check_full(bit check_event_totals=1);
+    int expected_dpd_words;
+`ifdef THERMO5_CENTERED_CUBIC
+    expected_dpd_words=cfg.core_words+cfg.frame_starts;
+`else
+    expected_dpd_words=cfg.core_words;
+`endif
     if (env.source.monitor.accepted_beats!=cfg.source_beats ||
         env.scoreboard.source_checked!=cfg.source_beats ||
         env.scoreboard.checked!=cfg.core_words)
@@ -70,14 +84,18 @@ class thermo5_sku_base_test extends uvm_test;
         (env.coverage.frame_starts!=cfg.frame_starts ||
          env.coverage.pa_words!=cfg.core_words))
       `uvm_fatal("COVERAGE","Frame/PA event counts did not reach the SKU contract")
+`ifdef THERMO5_CENTERED_CUBIC
+    if (env.source.monitor.accepted_last_count!=1)
+`else
     if (cfg.axil_control && env.source.monitor.accepted_last_count!=1)
+`endif
       `uvm_fatal("AXIS_TLAST",
         $sformatf("Expected exactly one accepted AXIS TLAST, observed %0d",
                   env.source.monitor.accepted_last_count))
     for(int lane=0;lane<16;lane++)
-      if(vif.dpd_sample_count[lane] !== cfg.core_words ||
+      if(vif.dpd_sample_count[lane] !== expected_dpd_words ||
          vif.dpd_saturation_count[lane] !== 0)
         `uvm_fatal("DPD_COUNT",$sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
-          lane,vif.dpd_sample_count[lane],cfg.core_words,vif.dpd_saturation_count[lane]))
+          lane,vif.dpd_sample_count[lane],expected_dpd_words,vif.dpd_saturation_count[lane]))
   endtask
 endclass

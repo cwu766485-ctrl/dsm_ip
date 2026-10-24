@@ -5,6 +5,7 @@ class thermo5_source_sequence extends uvm_sequence#(thermo5_source_item);
   bit illegal_frame;
   bit mark_last;
   int force_early_tlast_beat = -1;
+  int packet_beats = 0;
   int gap_before_beat = -1;
   int unsigned gap_cycles = 0;
   logic [15:0] i_mem[], q_mem[], frame_mem[], gain_mem[];
@@ -12,6 +13,8 @@ class thermo5_source_sequence extends uvm_sequence#(thermo5_source_item);
   task body();
     thermo5_source_item tr;
     int sample, core_word;
+    if (packet_beats != 0 && (packet_beats < 1 || beat_count % packet_beats != 0))
+      `uvm_fatal("PACKET_BEATS","packet_beats must divide the complete source beat count")
     if (cfg == null) `uvm_fatal("NOCFG","Source sequence configuration missing")
     if (beat_count < 1 || beat_count > cfg.source_beats)
       `uvm_fatal("BEATS","Source beat count is outside the SKU vector")
@@ -26,7 +29,8 @@ class thermo5_source_sequence extends uvm_sequence#(thermo5_source_item);
       sample=14*beat;
       core_word=sample/8;
       tr.beat_index=beat;
-      tr.tlast=(mark_last && (beat==beat_count-1)) ||
+      tr.tlast=(packet_beats > 0 && ((beat+1)%packet_beats)==0) ||
+               (mark_last && (beat==beat_count-1)) ||
                (beat==force_early_tlast_beat);
       tr.valid_gap_cycles=(beat==gap_before_beat) ? gap_cycles : 0;
       tr.frame_start=frame_mem[core_word][0] || (illegal_frame && beat==1);

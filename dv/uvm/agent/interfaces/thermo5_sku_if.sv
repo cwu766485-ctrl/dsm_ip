@@ -24,6 +24,9 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic restart_source = 0;
   int restart_epoch = 0;
   logic [3:0] cdc_residual;
+  logic [2:0] low_power_state;
+  logic low_power_active;
+  logic [7:0] low_power_outstanding;
   // Read-only vendor FIFO observation for the qualified FWFT reset test.
   logic [1:0] xpm_fwft_state;
   logic xpm_rd_rst_i;

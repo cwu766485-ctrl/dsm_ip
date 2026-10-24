@@ -10,6 +10,7 @@ module tid32_thermo5_axis_frontend_tx #(
   parameter int STEP = 7168,
   parameter int DPD_MAX_TAPS = 4,
   parameter int INTERP_TAPS = 4,
+  parameter bit INTERP_CENTERED_CUBIC = 1'b0,
   // Identity-configured memory-DPD remains structurally present by default.
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
@@ -23,6 +24,7 @@ module tid32_thermo5_axis_frontend_tx #(
   input  wire logic signed [14*W-1:0]          s_axis_i_vec,
   input  wire logic signed [14*W-1:0]          s_axis_q_vec,
   input  wire logic                            s_axis_tuser_frame_start,
+  input  wire logic                            s_axis_tlast,
   input  wire logic signed [GAIN_W-1:0]        s_axis_tuser_frame_gain,
   output wire logic                            s_axis_fifo_full,
 
@@ -37,7 +39,7 @@ module tid32_thermo5_axis_frontend_tx #(
   output wire logic [63:0]                     pa_data [0:3],
   input  wire logic [3:0]                      pa_ready
 );
-  logic core_valid, core_ready, core_frame_start;
+  logic core_valid, core_ready, core_frame_start, core_frame_end;
   logic signed [8*W-1:0] core_i_vec, core_q_vec;
   logic signed [GAIN_W-1:0] core_frame_gain;
   logic datapath_enable;
@@ -48,15 +50,29 @@ module tid32_thermo5_axis_frontend_tx #(
   // Registered local CE for the thermo datapath.  It never drives AXI
   // ready/valid and changes only on a core-clock boundary.
   logic frontend_enable_q;
+  logic lp_source_frame_open_q;
+  wire logic lp_source_accept = s_axis_tvalid && s_axis_tready;
+  wire logic lp_packet_ingress_enable = lp_ingress_enable ||
+      (INTERP_CENTERED_CUBIC && lp_source_frame_open_q);
 
   // Admit AXI traffic only while a low-power run has been requested.  The
   // baseline path retains its original handshake behavior.
   assign s_axis_tready = cdc_s_ready &&
-                         (!ENABLE_LOW_POWER_CTRL || lp_ingress_enable);
+                         (!ENABLE_LOW_POWER_CTRL || lp_packet_ingress_enable);
   // Prevent a source-held valid beat from bypassing the low-power ingress
   // policy while external ready is deasserted.
   assign cdc_s_valid = s_axis_tvalid &&
-                       (!ENABLE_LOW_POWER_CTRL || lp_ingress_enable);
+                       (!ENABLE_LOW_POWER_CTRL || lp_packet_ingress_enable);
+
+  // Centered interpolation requires an accepted TLAST to synthesize and drain
+  // the frame lookahead. If RUN falls mid-packet, finish that packet before
+  // closing ingress; do not admit the next packet until RUN is requested again.
+  always_ff @(posedge s_axis_aclk or negedge s_axis_aresetn) begin
+    if (!s_axis_aresetn)
+      lp_source_frame_open_q <= 1'b0;
+    else if (ENABLE_LOW_POWER_CTRL && INTERP_CENTERED_CUBIC && lp_source_accept)
+      lp_source_frame_open_q <= !s_axis_tlast;
+  end
 
   generate
     if (ENABLE_LOW_POWER_CTRL) begin : g_low_power
@@ -102,20 +118,24 @@ module tid32_thermo5_axis_frontend_tx #(
     .s_axis_tvalid(cdc_s_valid), .s_axis_tready(cdc_s_ready),
     .s_axis_i_vec(s_axis_i_vec), .s_axis_q_vec(s_axis_q_vec),
     .s_axis_tuser_frame_start(s_axis_tuser_frame_start),
+    .s_axis_tlast(INTERP_CENTERED_CUBIC ? s_axis_tlast : 1'b0),
     .s_axis_tuser_frame_gain(s_axis_tuser_frame_gain), .s_axis_fifo_full(s_axis_fifo_full),
     .core_clk(core_clk), .core_aresetn(core_aresetn), .core_enable(datapath_enable),
     .core_drain(ENABLE_LOW_POWER_CTRL && (lp_state == 3'd4)),
     .core_valid(core_valid), .core_data_empty(), .core_ready(core_ready),
     .core_i_vec(core_i_vec), .core_q_vec(core_q_vec),
     .core_frame_start(core_frame_start), .core_frame_gain(core_frame_gain),
+    .core_frame_end(core_frame_end),
     .core_underflow(core_underflow), .core_protocol_error(core_protocol_error)
   );
 
   tid32_thermo5_frontend_tx #(.W(W), .IN_LANES(8), .DPD_LANES(16), .GAIN_W(GAIN_W),
-    .STEP(STEP), .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS), .BYPASS_DPD(BYPASS_DPD),
+    .STEP(STEP), .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
+    .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD),
     .HOLD_STATE_ON_DISABLE(ENABLE_LOW_POWER_CTRL)) u_frontend (
     .clk(core_clk), .rst_n(core_aresetn), .enable(frontend_enable_q),
     .in_valid(core_valid), .in_ready(core_ready), .in_frame_start(core_frame_start),
+    .in_frame_end(core_frame_end),
     .in_frame_gain(core_frame_gain), .in_i_vec(core_i_vec), .in_q_vec(core_q_vec),
     .dpd_active_taps(dpd_active_taps), .c1_re(c1_re[DPD_MAX_TAPS*16-1:0]), .c1_im(c1_im[DPD_MAX_TAPS*16-1:0]),
     .c3_re(c3_re[DPD_MAX_TAPS*16-1:0]), .c3_im(c3_im[DPD_MAX_TAPS*16-1:0]),

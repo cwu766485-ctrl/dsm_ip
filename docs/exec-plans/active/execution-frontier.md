@@ -1,5 +1,220 @@
 # Execution frontier
 
+## P0 nonlinear DPD, packet-tail, and low-power verification (2026-10-24)
+
+Closed the three previously open centered-cubic verification gaps. The Python
+oracle now models the RTL's signed-Q2.14 memory-polynomial DPD, including
+temporal taps, arithmetic shifts, and signed-16 saturation. A directed AXI-Lite
+test commits a two-tap image with nonzero cubic terms before the first frame
+boundary and checks all four PA planes bit-true. Both a one-quantum packet
+(32 AXI beats, 56 words) and two consecutive one-quantum packets (64 beats,
+112 words) pass; each packet closes its own centered-FIR frame tail.
+
+The centered-cubic low-power test requests STOP after 20 accepted beats. The
+AXIS wrapper continues admitting that open packet through its accepted TLAST,
+then closes ingress. VCS verifies all 56 four-plane words, no underflow or
+protocol error, zero outstanding work, and return to IDLE. This test found and
+closed the prior premature-ingress-close condition.
+
+Evidence: `runs/thermo5_gap_closure_axil_vcs/` (56- and 112-word nonlinear
+bit-true cases), `runs/thermo5_gap_closure_lowpower_vcs/`, and
+`runs/thermo5_gap_closure_baseline_vcs/` (seven-test causal generic-FIFO VCS
+regression). Twenty-four Python unit tests also pass. XSim is unavailable on
+the Linux host; FPGA resource/timing remains deferred per user direction.
+
+Current Python benchmark status remains: centered cubic ranked first across
+all 18 held-out FIR/normalization/PAPR/backoff combinations in the 450-case
+sweep. The three-seed raw-TID receiver screen gives 3.273% digital EVM /
+29.702 dB SNDR, 3.370% / 29.447 dB for the illustrative nominal chain, and
+3.685% / 28.671 dB for its stress profile. The analog-chain settings are
+sensitivity assumptions. Thermometric STEP and DSM NTF/order sweeps remain
+open, and the frozen default SKU has not changed.
+
+## P0 centered-cubic streaming RTL (2026-10-24)
+
+Implemented the optional Q14 centered-cubic path using
+`dsm_interp_x2_centered_cubic_vector.sv`. `INTERP_CENTERED_CUBIC=0` keeps the
+existing causal path as the default; selecting `1` enables both centered x2
+stages. The module uses `[-1,9,9,-1]/16`, the Python oracle's round-away-from-
+zero and W-bit saturation, and elastic valid/ready handshakes. Frame starts
+provide zero history. At frame end, stage 1 processes a synthetic zero-source
+vector and tags its interpolated output as lookahead; stage 2 uses it for the
+final real output and drops the tagged tail, preserving the output word count.
+The ZU15EG GT parent exposes the same parameter and keeps it disabled by
+default.
+
+The AXI `TLAST` marker crosses the 14:8 CDC/gearbox and is carried with data
+through ingress metadata, frame gain, DPD metadata, and both interpolation
+stages. Carrying it with the frame-gain pipeline fixed the first VCS timeout,
+where a direct, un-delayed frame-end wire never reached the matching sample.
+Valid frame ends must align to a complete 56-sample gearbox group (four
+14-lane beats); the existing 32-beat UVM packet satisfies this rule.
+
+The centered-cubic VCS bit-true test passes with stressed PA backpressure:
+32 accepted AXI beats produce 56 four-plane output words matching the Python
+oracle; three internal frame starts and one accepted `TLAST` are observed, with
+zero UVM errors/fatals. The default causal generic-FIFO regression also passes
+all seven tests, including reset/backpressure and the expected illegal-frame
+assertion. Evidence is under
+`runs/thermo5_centered_cubic_final2_20261024/`,
+`runs/thermo5_centered_cubic_baseline_regression_fix1_20261024/`, and
+`runs/thermo5_centered_cubic_axil_final_20261024/`. The AXI-Lite centered
+configuration test also passes with the tagged frame tail and DPD frame-boundary
+commit active.
+
+XSim was not run on this Linux host. Per user direction, FPGA resource and
+timing analysis remain for the FPGA environment. The short/long/consecutive
+packet and low-power checks were added in the newer P0 closure entry above.
+Still open: XSim regressions and FPGA mapping/timing of the optional centered
+path. Do not change the default SKU until those implementation checks and the
+system integration decision are complete.
+
+## P0 raw TID receiver and centered-FIR contract (2026-10-24)
+
+Audited the frozen RTL2 time labels: each x2 stage emits exact `x[n]`, then
+`(x[n]+x[n-1])/2` on the odd phase. Under the declared `n+0.5` timestamp,
+that odd value estimates the previous midpoint. The front-end drops the first
+32-sample TID result; the independently checked effective alignment is 1,024
+7-GHz complex samples (2,048 raw bits/samples) from the actual four planes.
+
+Added `benchmark_thermo5_tid_receiver.py` and receiver helpers. The model
+checks all four branches against scalar EFM, combines the serialized planes,
+performs 3.5-GHz Fs/4 DDC, applies 14-GHz and 7-GHz receive FIRs, and reports
+256-QAM EVM/SNDR. Three 8-symbol seeds at 0.10 RMS / <=0.35 peak each had zero
+EFM mismatches over 1,335,296 samples per candidate. Centered cubic averaged
+3.273% / 29.702 dB digital, 3.370% / 29.447 dB under the illustrative nominal
+output model, and 3.685% / 28.671 dB under stress. Frozen RTL2 averaged
+20.827% / 13.628 dB digital. Full results:
+`runs/thermo5_tid_receiver_20261024/summary.json`.
+
+The two centered stages have a 2.25-source-sample future dependency, rounded
+to three source samples for a causal stream. The parallel-config wrapper now
+exposes `s_axis_tlast` for the optional centered path. Existing causal behavior
+remains the default. Python unit tests pass and matching oracle vectors are in
+`runs/thermo5_centered_cubic_vectors_20261024/`. The initial centered VCS run
+timed out because `TLAST` was not delayed with frame-gain data; the sideband
+pipeline fix and successful reruns are recorded above. The earlier generic
+regression retry is in `runs/thermo5_tid_receiver_vcs_retry_20261024/`.
+
+## P0 Python FIR and input-drive A/B sweep (2026-10-24)
+
+The corrected-EVM FIR candidate is now explicitly selected for Python
+architecture experiments: centered cubic `[-1,9,9,-1]/16` in both x2 stages.
+The FPGA RTL remains on its causal two-tap preset. Added
+`benchmark_thermo5_architecture.py`, comparing five FIR candidates with a
+256-QAM / 250-MHz occupied-bandwidth, 1-GHz complex-baseband workload. Each
+candidate sees identical input symbols, behavioral DPA, output FIR, and
+kTB/NF noise. The sweep uses fixed-average-power and peak-normalized modes,
+no/7/9-dB radial PAPR limits, 0/6/12-dB input backoff, two development seeds,
+and three held-out seeds. JSON and representative PSD are under
+`runs/thermo5_architecture_ab_20261024/`.
+
+Across 450 candidate/configuration/seed cases, centered cubic ranked first in
+corrected EVM for all 18 held-out normalization/PAPR/backoff combinations and
+for each held-out seed scored separately. For fixed-average power with no PAPR
+limit, its three-seed corrected EVM means were 4.853% / 0.802% / 0.871% at
+0/6/12-dB backoff; assumed output power was -30.00/-35.66/-41.63 dBm, and
+in-band SNDR proxy was 27.75/44.31/47.35 dB. Six dB improved EVM with about a
+5.66-dB assumed output-power cost; 12 dB gave little extra EVM improvement and
+lost another 5.97 dB. At 6 dB, the 7-dB radial PAPR limit raised held-out mean
+corrected EVM from 0.802% to 2.233% and worsened the adjacent-band proxy from
+-49.00 to -37.41 dBc. This makes 6-dB backoff/no clipping a promising point in
+this model, not a universal optimum.
+
+The aligned causal RTL 2-tap baseline measured about 36.8% corrected EVM at
+6-dB backoff in this exact waveform comparison. That unusually large gap makes
+the RTL preset's even/odd sample-time convention an audit item before using
+the difference as a hardware performance prediction. Centered cubic is adopted
+as the preferred Python FIR candidate, not yet as a frozen RTL setting. This is
+the prioritized P0 FIR/Drive/PAPR screen, not a complete thermo5/TIDSM EVM
+result: it uses illustrative DPA/output/noise settings, periodic symbol edges,
+and does not decode the actual four TID planes or report FPGA LUT/FF/DSP/WNS/
+power. Only eight OFDM symbols per seed were used. STEP and DSM-order sweeps
+remain open until plane reconstruction and stability metrics are validated.
+
+## Digital GT errors and analog output-chain sensitivity (2026-10-23)
+
+Reworked `dsm_refmodel/link_models.py` and split the screens. The GT injector
+now flips independent data bits in the four 64-bit TID output planes produced
+by the Python bit-true thermo5 model; it reports bit and affected-word counts.
+It models discrete digital corruption, not additive noise, timing jitter,
+line coding, CDR, or the electrical GT eye. The 56-word BER=1e-3 sanity run
+observed 14 flips/14,336 bits and 13 affected words; this short run is not a
+low-BER estimate (`runs/thermo5_gt_bit_errors_20261023/summary.json`).
+
+The link screen reports interpolation error, deterministic DPA
+AM/AM/AM/PM/envelope-memory and complex output-network response, then thermal
+noise added at the declared observation plane. Thermal noise is computed with
+kTB+NF and scaled from normalized waveforms using declared output power. The
+64-symbol seed-20261023 report is
+`runs/thermo5_link_benchmark_20261023/summary.json`. Centered cubic corrected
+EVM was 0.966% ideal, 1.699% under the illustrative nominal chain, and 3.404%
+under stress; forward-linear was 4.939%, 5.039%, and 5.692%. Stress raw EVM was
+6.337% cubic versus 6.216% forward-linear, so gain/phase-corrected EVM and raw
+EVM rank the candidates differently. The stress thermal-noise contribution
+was about 1.3% EVM at 37.95 dB calculated SNR.
+
+Centered cubic remains the preferred FPGA algorithm candidate, not a direct
+coefficient setting for the frozen causal interpolator. Its future-sample
+lookahead adds latency and its final samples cannot be drained with the
+current frontend's frame-start-only contract. A frame-end/flush contract,
+throughput/resource/timing mapping, and receiver metric decision remain open;
+the FPGA frozen 2-tap SKU was not changed. DPA/output assumptions are not
+calibrated to a circuit or board; the noise-plane signal power, bandwidth and
+NF are illustrative. EVM remains sample-domain with a per-symbol scalar fit,
+and the adjacent-band figure is not standard ACLR.
+
+## Python thermo5 reference and interpolation benchmark (2026-10-22)
+
+Added a pure-standard-library Python reference for the frozen identity-DPD
+thermo5 chain and a vector generator that emits the existing four-plane UVM
+`.mem` contract. The Python-generated 56-word, two-tap vectors passed the full
+generic-FIFO `thermo5-vcs-regression`: bit-true, bubble/backpressure, FIFO
+boundary/empty, reset/reset-sweep, and expected illegal-frame checks all
+completed with zero UVM errors/fatals. Evidence:
+`runs/thermo5_python_vectors_20261022/` and
+`runs/thermo5_python_vcs_retry_20261022/`.
+
+An initial 64-word vector attempt did not match the UVM contract (which is 56
+core words/32 source beats); it also used non-boundary frame markers. The
+generator defaults now match the Linux/UVM contract: 56 words and frame starts
+1, 15, and 36. The corrected run passes. Python seed generation is deterministic
+but intentionally does not reproduce MATLAB's PRNG sequence; `--input-dir`
+accepts MATLAB source vectors for direct comparison.
+
+The first interpolation screen used 64 deterministic 64-QAM OFDM symbols,
+256-point FFT, 100 active subcarriers, and two cascaded x2 stages. Results at
+seed 20261022: RTL 2/3/4-tap presets measured 72.01/86.25/97.02% raw EVM
+(70.11/79.58/84.32% after per-symbol common gain/phase correction); forward
+midpoint linear measured 6.23% (4.96% corrected); centered cubic Lagrange
+measured 1.12% (0.97% corrected). First-image rejection was 5.73/3.22/1.38
+dBc for RTL 2/3/4 taps, 29.76 dBc for forward linear, and 43.72 dBc for
+centered cubic. Adjacent-band leakage proxies were -46.03/-39.94/-35.62/
+-91.76/-91.31 dBc, respectively.
+Raw JSON is at `runs/thermo5_interp_benchmark_20261022/summary.json`.
+
+This result is an interpolation-only digital screen; its adjacent-band value
+is not standard ACLR and it omits DPD, TID, PA, RF filtering, and receiver
+recovery. The current RTL emits each exact sample before a causal phase-1
+estimate built from current/past samples, while the centered candidates use
+future samples. The large EVM delta makes phase/time ordering a design review
+item; no RTL behavior has changed. The corrected complex least-squares EVM
+values above supersede the initial screening values; raw EVM, image rejection,
+and adjacent-band proxies are unchanged. Confirm the intended interpolation time
+convention before selecting a new candidate. MATLAB, XSim/Vivado, and the
+Windows PowerShell bridge are unavailable in this Linux environment, so no
+independent MATLAB or XSim run was made.
+
+ASIC notes now follow the FPGA frozen behavior (`INTERP_TAPS=2`,
+`DPD_MAX_TAPS=1`, DPD enabled with the identity image in UVM, low-power
+control off), with a guard that checks these settings. The FPGA OOC top retains
+runtime coefficient inputs, while the ASIC wrapper ties identity constants;
+their PPA results are not controlled for both coefficient-interface and FIFO
+differences. A fixed-image FPGA OOC wrapper and Vivado rerun would be needed
+for a like-for-like comparison. No 28 nm standard-cell DB, analog/RF PDK views,
+`dc_shell`, or `fm_shell` is configured or present in the visible workspace,
+so AMS support cannot yet be verified.
+
 ## Current packet framing, GT-parent simulation, and ZU15EG OOC status (2026-10-21)
 
 The optional AXI-Lite wrapper now exposes AXI-Stream `s_axis_tlast`; the
@@ -256,8 +471,10 @@ OOC-only timing boundary to parent/board signoff.
 - Scope: no-AXI-Lite `tid32_thermo5_axis_frontend_tx`, current branch RTL,
   ZU15EG `xczu15eg-ffvb1156-2-i`, source 125 MHz/core 218.75 MHz, XPM FIFO,
   `INTERP_TAPS=2`, `DPD_MAX_TAPS=1`, low-power control disabled. The OOC
-  includes AXI ingress, async FIFO/14:8 gearbox, interpolation, identity DPD,
-  Fs/4/thermo5 front end and four PA-code planes.
+  includes AXI ingress, async FIFO/14:8 gearbox, interpolation, a one-tap
+  programmable memory-DPD path, Fs/4/thermo5 front end and four PA-code planes.
+  The UVM frozen test ties the DPD identity image; the direct OOC top leaves
+  those coefficient inputs programmable.
 - Routed checkpoint/report: `runs/thermo5_full_axis_ooc_20261015_retry2/`.
   Vivado 2024.1 routed all 98,546 routable nets (zero routing errors), with
   108 ordinary warnings, 0 critical warnings, and 0 errors. Routed timing is

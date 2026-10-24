@@ -78,11 +78,12 @@ module thermo5_xpm_cdc_residual_harness(
     .s_axis_aclk(s_axis_aclk),.s_axis_aresetn(rst_n),
     .s_axis_tvalid(axis_valid),.s_axis_tready(in_ready),
     .s_axis_i_vec(axis_i),.s_axis_q_vec(axis_q),
-    .s_axis_tuser_frame_start(axis_frame_start),.s_axis_tuser_frame_gain(axis_frame_gain),
+    .s_axis_tuser_frame_start(axis_frame_start),.s_axis_tlast(1'b0),
+    .s_axis_tuser_frame_gain(axis_frame_gain),
     .s_axis_fifo_full(fifo_full),.core_clk(core_clk),.core_aresetn(rst_n),
     .core_enable(core_enable),.core_drain(1'b0),.core_data_empty(),.core_ready(core_ready),
     .core_valid(core_valid),.core_i_vec(core_i),.core_q_vec(core_q),
-    .core_frame_start(core_frame_start),.core_frame_gain(core_frame_gain),
+    .core_frame_start(core_frame_start),.core_frame_end(),.core_frame_gain(core_frame_gain),
     .core_underflow(underflow),.core_protocol_error(protocol_error));
   a_axis_stable: assert property (@(posedge s_axis_aclk) disable iff(!rst_n)
     axis_valid && !in_ready |=> axis_valid && $stable({axis_i,axis_q,axis_frame_start,axis_frame_gain}));

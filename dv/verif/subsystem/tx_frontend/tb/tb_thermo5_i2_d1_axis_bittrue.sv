@@ -84,6 +84,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
   ) dut (
     .s_axis_aclk(src_clk),.s_axis_aresetn(src_rst_n),
     .s_axis_tvalid(src_valid),.s_axis_tready(src_ready),
+    .s_axis_tlast(1'b0),
     .s_axis_i_vec(src_i),.s_axis_q_vec(src_q),
     .s_axis_tuser_frame_start(frame_start),.s_axis_tuser_frame_gain(frame_gain),
     .s_axis_fifo_full(fifo_full),

@@ -38,6 +38,7 @@ set sources [list \
   [file join $repo rtl dpd dpd_memory_poly.v] \
   [file join $repo rtl dpd dpd_vector16_memory_poly.sv] \
   [file join $repo rtl dpd dpd_vector_elastic_buffer.sv] \
+  [file join $repo rtl interp dsm_interp_x2_centered_cubic_vector.sv] \
   [file join $repo rtl interp dsm_interp_x2_polyphase_vector.sv] \
   [file join $repo rtl tx_bandpass_if tid32_cartesian_fs4_gt_tx.sv] \
   [file join $repo rtl tx_bandpass_if tid32_thermo5_fs4_multipa_tx.sv] \

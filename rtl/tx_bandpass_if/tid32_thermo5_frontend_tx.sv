@@ -20,6 +20,7 @@ module tid32_thermo5_frontend_tx #(
   parameter int DPD_LANES = 16,
   parameter int MAX_TAPS = 4,
   parameter int INTERP_TAPS = 4,
+  parameter bit INTERP_CENTERED_CUBIC = 1'b0,
   parameter int COEFF_W = 16,
   parameter int COEFF_FRAC = 14,
   parameter int GAIN_W = 16,
@@ -34,6 +35,7 @@ module tid32_thermo5_frontend_tx #(
   input  wire logic                                      in_valid,
   output wire logic                                      in_ready,
   input  wire logic                                      in_frame_start,
+  input  wire logic                                      in_frame_end,
   input  wire logic signed [GAIN_W-1:0]                  in_frame_gain,
   input  wire logic signed [IN_LANES*W-1:0]              in_i_vec,
   input  wire logic signed [IN_LANES*W-1:0]              in_q_vec,
@@ -46,15 +48,18 @@ module tid32_thermo5_frontend_tx #(
   output wire logic                                      dpd_config_boundary,
   input  wire logic [3:0]                                pa_ready
 );
-  logic gain_valid, gain_ready, gain_input_ready, gain_frame_start;
+  logic gain_valid, gain_ready, gain_input_ready, gain_frame_start, gain_frame_end;
   logic ingress_valid, ingress_ready;
-  logic ingress_frame_start;
+  logic ingress_frame_start, ingress_frame_end;
   logic signed [GAIN_W-1:0] ingress_frame_gain;
-  logic i1_valid, i1_ready, i1_frame_start, i1_buf_valid, i1_buf_ready, i1_buf_frame_start;
+  logic i1_valid, i1_ready, i1_frame_start, i1_frame_end, i1_tail;
+  logic i1_buf_valid, i1_buf_ready, i1_buf_frame_start;
   logic dpd_valid, dpd_ready, dpd_buf_valid, dpd_buf_ready, i2_valid, i2_ready;
+  logic [1:0] dpd_meta, dpd_buf_meta;
+  logic i2_frame_start, i2_frame_end, i2_tail;
   logic i2_fifo_valid, tid_ready;
-  logic [GAIN_W:0] ingress_meta;
-  logic [0:0] i1_buf_meta;
+  logic [GAIN_W+1:0] ingress_meta;
+  logic [1:0] i1_buf_meta;
   logic signed [IN_LANES*W-1:0] gain_i, gain_q;
   logic signed [IN_LANES*W-1:0] ingress_i, ingress_q;
   logic signed [DPD_LANES*W-1:0] i1_i, i1_q, i1_buf_i, i1_buf_q, dpd_i, dpd_q, dpd_buf_i, dpd_buf_q;
@@ -63,15 +68,16 @@ module tid32_thermo5_frontend_tx #(
 
   // Decouple the asynchronous FIFO read-enable from downstream PA ready.
   // The low-power enable still gates admission exactly as before.
-  assign ingress_meta = {in_frame_gain, in_frame_start};
+  assign ingress_meta = {in_frame_gain, in_frame_end, in_frame_start};
   assign in_ready = enable && ingress_ready;
   thermo5_vector_registered_ready_fifo #(
-    .W(W), .LANES(IN_LANES), .META_W(GAIN_W+1)
+    .W(W), .LANES(IN_LANES), .META_W(GAIN_W+2)
   ) u_cdc_to_frame_gain_fifo (
     .clk(clk), .rst_n(rst_n),
     .in_valid(in_valid && enable), .in_ready(ingress_ready), .in_meta(ingress_meta),
     .in_i_vec(in_i_vec), .in_q_vec(in_q_vec),
-    .out_valid(ingress_valid), .out_ready(gain_input_ready), .out_meta({ingress_frame_gain, ingress_frame_start}),
+    .out_valid(ingress_valid), .out_ready(gain_input_ready),
+    .out_meta({ingress_frame_gain, ingress_frame_end, ingress_frame_start}),
     .out_i_vec(ingress_i), .out_q_vec(ingress_q)
   );
 
@@ -81,28 +87,49 @@ module tid32_thermo5_frontend_tx #(
   ) u_frame_gain (
     .clk(clk), .rst_n(rst_n), .enable(enable),
     .in_valid(ingress_valid), .in_ready(gain_input_ready),
-    .in_frame_start(ingress_frame_start), .in_frame_gain(ingress_frame_gain),
+    .in_frame_start(ingress_frame_start), .in_frame_end(ingress_frame_end),
+    .in_frame_gain(ingress_frame_gain),
     .in_i_vec(ingress_i), .in_q_vec(ingress_q),
     .out_valid(gain_valid), .out_frame_start(gain_frame_start),
+    .out_frame_end(gain_frame_end),
     .out_ready(gain_ready), .out_i_vec(gain_i), .out_q_vec(gain_q)
   );
 
-  dsm_interp_x2_polyphase_vector #(
-    .W(W), .LANES_IN(IN_LANES), .INTERP_TAPS(INTERP_TAPS),
-    .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
-  ) u_interp_1 (
-    .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(gain_valid), .in_ready(gain_ready), .in_frame_start(gain_frame_start),
-    .in_i_vec(gain_i), .in_q_vec(gain_q),
-    .out_valid(i1_valid), .out_frame_start(i1_frame_start), .out_ready(i1_ready),
-    .out_i_vec(i1_i), .out_q_vec(i1_q)
-  );
+  generate
+    if (INTERP_CENTERED_CUBIC) begin : g_interp1_centered
+      dsm_interp_x2_centered_cubic_vector #(
+        .W(W), .LANES(IN_LANES), .APPEND_TAIL_VECTOR(1'b1),
+        .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
+      ) u_interp_1 (
+        .clk(clk), .rst_n(rst_n), .enable(enable),
+        .in_valid(gain_valid), .in_ready(gain_ready),
+        .in_frame_start(gain_frame_start), .in_frame_end(gain_frame_end), .in_tail(1'b0),
+        .in_i_vec(gain_i), .in_q_vec(gain_q),
+        .out_valid(i1_valid), .out_frame_start(i1_frame_start),
+        .out_frame_end(i1_frame_end), .out_tail(i1_tail), .out_ready(i1_ready),
+        .out_i_vec(i1_i), .out_q_vec(i1_q)
+      );
+    end else begin : g_interp1_causal
+      dsm_interp_x2_polyphase_vector #(
+        .W(W), .LANES_IN(IN_LANES), .INTERP_TAPS(INTERP_TAPS),
+        .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
+      ) u_interp_1 (
+        .clk(clk), .rst_n(rst_n), .enable(enable),
+        .in_valid(gain_valid), .in_ready(gain_ready), .in_frame_start(gain_frame_start),
+        .in_i_vec(gain_i), .in_q_vec(gain_q),
+        .out_valid(i1_valid), .out_frame_start(i1_frame_start), .out_ready(i1_ready),
+        .out_i_vec(i1_i), .out_q_vec(i1_q)
+      );
+      assign i1_frame_end = 1'b0;
+      assign i1_tail = 1'b0;
+    end
+  endgenerate
 
   // This word-atomic register boundary is also retained in the bypass option
   // so both configurations share the same temporal and timing contract.
-  thermo5_vector_registered_ready_fifo #(.W(W), .LANES(DPD_LANES), .META_W(1)) u_interp_to_dpd_elastic (
+  thermo5_vector_registered_ready_fifo #(.W(W), .LANES(DPD_LANES), .META_W(2)) u_interp_to_dpd_elastic (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(i1_valid), .in_ready(i1_ready), .in_meta(i1_frame_start),
+    .in_valid(i1_valid), .in_ready(i1_ready), .in_meta({i1_tail, i1_frame_start}),
     .in_i_vec(i1_i), .in_q_vec(i1_q),
     .out_valid(i1_buf_valid), .out_meta(i1_buf_meta), .out_ready(i1_buf_ready),
     .out_i_vec(i1_buf_i), .out_q_vec(i1_buf_q)
@@ -119,6 +146,7 @@ module tid32_thermo5_frontend_tx #(
       assign i1_buf_ready = dpd_ready;
       assign dpd_i = i1_buf_i;
       assign dpd_q = i1_buf_q;
+      assign dpd_meta = i1_buf_meta;
     end else begin : g_memory_dpd
       dpd_vector16_memory_poly #(
         .W(W), .LANES(DPD_LANES), .COEFF_W(COEFF_W), .COEFF_FRAC(COEFF_FRAC),
@@ -127,29 +155,52 @@ module tid32_thermo5_frontend_tx #(
         .clk(clk), .rst_n(rst_n), .active_taps(dpd_active_taps),
         .c1_re(c1_re), .c1_im(c1_im), .c3_re(c3_re), .c3_im(c3_im),
         .c5_re(c5_re), .c5_im(c5_im),
-        .in_valid(i1_buf_valid), .in_ready(i1_buf_ready), .in_i_vec(i1_buf_i), .in_q_vec(i1_buf_q),
-        .out_valid(dpd_valid), .out_ready(dpd_ready), .out_i_vec(dpd_i), .out_q_vec(dpd_q)
+        .in_valid(i1_buf_valid), .in_ready(i1_buf_ready), .in_meta(i1_buf_meta),
+        .in_i_vec(i1_buf_i), .in_q_vec(i1_buf_q),
+        .out_valid(dpd_valid), .out_ready(dpd_ready), .out_meta(dpd_meta),
+        .out_i_vec(dpd_i), .out_q_vec(dpd_q)
       );
     end
   endgenerate
 
-  thermo5_vector_registered_ready_fifo #(.W(W), .LANES(DPD_LANES), .META_W(1)) u_dpd_to_interp_elastic (
+  thermo5_vector_registered_ready_fifo #(.W(W), .LANES(DPD_LANES), .META_W(2)) u_dpd_to_interp_elastic (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_meta(1'b0),
+    .in_valid(dpd_valid), .in_ready(dpd_ready), .in_meta(dpd_meta),
     .in_i_vec(dpd_i), .in_q_vec(dpd_q),
-    .out_valid(dpd_buf_valid), .out_meta(), .out_ready(dpd_buf_ready),
+    .out_valid(dpd_buf_valid), .out_meta(dpd_buf_meta), .out_ready(dpd_buf_ready),
     .out_i_vec(dpd_buf_i), .out_q_vec(dpd_buf_q)
   );
 
-  dsm_interp_x2_polyphase_vector #(
-    .W(W), .LANES_IN(DPD_LANES), .INTERP_TAPS(INTERP_TAPS),
-    .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
-  ) u_interp_2 (
-    .clk(clk), .rst_n(rst_n), .enable(enable),
-    .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready), .in_frame_start(1'b0),
-    .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
-    .out_valid(i2_valid), .out_frame_start(), .out_ready(i2_ready), .out_i_vec(i2_i), .out_q_vec(i2_q)
-  );
+  generate
+    if (INTERP_CENTERED_CUBIC) begin : g_interp2_centered
+      dsm_interp_x2_centered_cubic_vector #(
+        .W(W), .LANES(DPD_LANES), .APPEND_TAIL_VECTOR(1'b0),
+        .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
+      ) u_interp_2 (
+        .clk(clk), .rst_n(rst_n), .enable(enable),
+        .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready),
+        .in_frame_start(dpd_buf_meta[0]), .in_frame_end(dpd_buf_meta[1]),
+        .in_tail(dpd_buf_meta[1]), .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
+        .out_valid(i2_valid), .out_frame_start(i2_frame_start),
+        .out_frame_end(i2_frame_end), .out_tail(i2_tail), .out_ready(i2_ready),
+        .out_i_vec(i2_i), .out_q_vec(i2_q)
+      );
+    end else begin : g_interp2_causal
+      dsm_interp_x2_polyphase_vector #(
+        .W(W), .LANES_IN(DPD_LANES), .INTERP_TAPS(INTERP_TAPS),
+        .HOLD_STATE_ON_DISABLE(HOLD_STATE_ON_DISABLE)
+      ) u_interp_2 (
+        .clk(clk), .rst_n(rst_n), .enable(enable),
+        .in_valid(dpd_buf_valid), .in_ready(dpd_buf_ready),
+        .in_frame_start(dpd_buf_meta[0]),
+        .in_i_vec(dpd_buf_i), .in_q_vec(dpd_buf_q),
+        .out_valid(i2_valid), .out_frame_start(i2_frame_start), .out_ready(i2_ready),
+        .out_i_vec(i2_i), .out_q_vec(i2_q)
+      );
+      assign i2_frame_end = 1'b0;
+      assign i2_tail = 1'b0;
+    end
+  endgenerate
 
   // Break the full-chain combinational ready path at a word-atomic boundary.
   // in_ready depends only on registered occupancy; PA backpressure can change

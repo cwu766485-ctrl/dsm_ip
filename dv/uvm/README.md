@@ -17,8 +17,8 @@ Neither testbench duplicates DUT RTL.
 - `env/axi_ip/` and `env/thermo5/`: target-specific configuration,
   scoreboards, coverage, control, package, and environment wiring.
 - `sequences/axi_ip/`: AXI-IP cross-interface virtual scenarios.
-- `sequences/thermo5/`: MATLAB-vector source scenario for the frozen SKU.
-  Protocol-local sequences stay with their respective agents.
+- `sequences/thermo5/`: MATLAB- or Python-vector source scenario for the frozen
+  SKU. Protocol-local sequences stay with their respective agents.
 - `formal/`: SystemVerilog assertions and optional formal-tool checks.
 - `refmodel/python/`: integer reference-vector generation for Linux/VCS runs.
 - `sim/`: Makefile, regression scripts, coverage configuration, and generated
@@ -34,10 +34,11 @@ AXI4-Stream agent type.
 These are agents of the original AXI-IP environment, not of the thermo5
 subsystem. Thermo5 has its own active AXI source agent (item, sequencer,
 driver, and accepted-beat monitor), passive four-plane output monitor, and
-control BFM. The source sequence owns the MATLAB-vector stimulus; the
-scoreboard consumes both monitor analysis ports and resets its comparison
-index on each reset epoch. The four-plane output is still a passive monitor,
-not a physical PA or GT agent.
+control BFM. The source sequence owns the `.mem` stimulus; MATLAB and the pure
+Python frozen-SKU reference can generate those vectors. The scoreboard
+consumes both monitor analysis ports and resets its comparison index on each
+reset epoch. The four-plane output is still a passive monitor, not a physical
+PA or GT agent.
 An agent normally owns one protocol endpoint/role; multiple endpoints may
 instantiate the same agent class, and a single physical interface may expose
 several monitored channels.
@@ -54,11 +55,11 @@ configuration, coverage, and control BFM under `env/thermo5/`, and tests under
 corner scenario are separate classes/files. The optional AXI-Lite wrapper test is under
 `tests/thermo5/axil/`; it reuses the same thermo5 environment and bit-true
 scoreboard. It drives
-14 complex samples per 125 MHz AXI
-beat through the asynchronous FIFO/14:8 gearbox, two interpolation stages,
-identity-configured memory-DPD, temporal DSM, and four 64-bit output planes
-at 218.75 MHz. The scoreboard compares 32 accepted source beats and 56
-ordered four-plane output words with MATLAB-generated bit-true vectors.
+14 complex samples per 125 MHz AXI beat through the asynchronous FIFO/14:8
+gearbox, two x2 interpolation stages, identity-configured memory-DPD, temporal
+DSM, and four 64-bit output planes at 218.75 MHz. The scoreboard compares 32
+accepted source beats and 56 ordered four-plane output words with MATLAB- or
+Python-generated bit-true vectors.
 Random common-plane ready stalls also check output stability and ordering.
 The corner regression adds FIFO-full source backpressure, deliberate FIFO
 starvation and sticky underflow, midstream reset followed by a fresh bit-true
@@ -92,6 +93,22 @@ make -C dv/uvm/sim thermo5-vcs-multiseed
 make -C dv/uvm/sim thermo5-coverage-merge
 ```
 
+The optional centered-cubic x2 interpolation path has a separate bit-true
+target. Generate matching vectors, then run:
+
+```bash
+python3 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+  --output-dir runs/thermo5_centered_cubic_vectors \
+  --interp-mode centered_cubic
+
+make -C dv/uvm/sim thermo5-centered-cubic-vcs PYTHON=python3 \
+  THERMO5_VECTORS="$PWD/runs/thermo5_centered_cubic_vectors" \
+  THERMO5_OUT="$PWD/runs/thermo5_centered_cubic_vcs"
+```
+
+This option requires `TLAST` at a complete 56-sample gearbox boundary. The
+normal regression keeps the causal interpolation preset.
+
 The six-case VCS regression passed on 2026-10-01 using the running local
 Synopsys license service. After the agent/control refactor, URG merged six
 tests: functional groups 100%, overall score 86.59%, DUT hierarchy 85.94%,
@@ -112,11 +129,12 @@ coverage database remain separate. See `sim/README.md` for commands and
 `docs/verification/thermo5-uvm-coverage.md` for the remaining CDC/coverage
 boundary. The old IP-system regression is preserved below.
 
-## Frozen Performance SKU
+## Historical Performance SKU (separate legacy AXI-IP design)
 
-The main system configuration is Memory-Poly5 with four taps, x32
-interpolation, Fs/4 mixing, and BP EFDSM2 at 100 MHz. Poly and LUT DPD paths
-are compiled out for this SKU.
+Older AXI-IP documents use Memory-Poly5 with four taps, x32 interpolation,
+Fs/4 mixing, and BP EFDSM2 at 100 MHz as a performance configuration. It is
+not the frozen thermo5 transmitter described above. The active thermo5 frozen
+configuration uses two x2 stages with two taps each and one-tap identity DPD.
 
 Key system tests cover deterministic Python-to-RTL RF comparison, memory-DPD
 bank programming and rejection, AXI ordering and backpressure, observer

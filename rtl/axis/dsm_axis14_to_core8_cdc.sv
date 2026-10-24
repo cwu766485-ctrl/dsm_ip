@@ -23,6 +23,7 @@ module dsm_axis14_to_core8_cdc #(
   input  wire logic signed [SRC_LANES*W-1:0]         s_axis_i_vec,
   input  wire logic signed [SRC_LANES*W-1:0]         s_axis_q_vec,
   input  wire logic                                  s_axis_tuser_frame_start,
+  input  wire logic                                  s_axis_tlast,
   input  wire logic signed [GAIN_W-1:0]              s_axis_tuser_frame_gain,
   output wire logic                                  s_axis_fifo_full,
 
@@ -38,32 +39,36 @@ module dsm_axis14_to_core8_cdc #(
   output wire logic signed [CORE_LANES*W-1:0]        core_i_vec,
   output wire logic signed [CORE_LANES*W-1:0]        core_q_vec,
   output wire logic                                  core_frame_start,
+  output wire logic                                  core_frame_end,
   output wire logic signed [GAIN_W-1:0]              core_frame_gain,
   output logic                                       core_underflow,
   output logic                                       core_protocol_error
 );
-  localparam int FIFO_W = 2*SRC_LANES*W + 1 + GAIN_W;
+  localparam int FIFO_W = 2*SRC_LANES*W + 2 + GAIN_W;
   localparam int COUNT_W = $clog2(SRC_LANES + 1);
+  localparam int END_COUNT_W = $clog2(SRC_LANES + CORE_LANES + 1);
 
   logic s_rst_n, c_rst_n;
   logic [FIFO_W-1:0] fifo_wr_data, fifo_rd_data;
   logic fifo_rd_valid, fifo_rd_ready, fifo_rd_empty;
   logic signed [SRC_LANES*W-1:0] fifo_i, fifo_q;
-  logic fifo_frame_start;
+  logic fifo_frame_start, fifo_frame_end;
   logic signed [GAIN_W-1:0] fifo_frame_gain;
   logic signed [SRC_LANES*W-1:0] rem_i_q, rem_q_q;
   logic [COUNT_W-1:0] rem_count_q;
-  logic out_valid_q, out_frame_start_q;
+  logic out_valid_q, out_frame_start_q, out_frame_end_q;
   logic signed [CORE_LANES*W-1:0] out_i_q, out_q_q;
   logic signed [GAIN_W-1:0] out_frame_gain_q;
   logic stream_started_q;
+  logic end_pending_q;
+  logic [END_COUNT_W-1:0] end_remaining_q;
 
   dsm_reset_sync u_s_reset (.clk(s_axis_aclk), .arst_n(s_axis_aresetn), .srst_n(s_rst_n));
   dsm_reset_sync u_c_reset (.clk(core_clk), .arst_n(core_aresetn), .srst_n(c_rst_n));
 
-  assign fifo_wr_data = {s_axis_tuser_frame_gain, s_axis_tuser_frame_start,
+  assign fifo_wr_data = {s_axis_tuser_frame_gain, s_axis_tuser_frame_start, s_axis_tlast,
                          s_axis_q_vec, s_axis_i_vec};
-  assign {fifo_frame_gain, fifo_frame_start, fifo_q, fifo_i} = fifo_rd_data;
+  assign {fifo_frame_gain, fifo_frame_start, fifo_frame_end, fifo_q, fifo_i} = fifo_rd_data;
 
   generate
     if (USE_XPM_FIFO) begin : g_xpm_fifo
@@ -101,10 +106,11 @@ module dsm_axis14_to_core8_cdc #(
   // include the FWFT/read-valid view, residual lanes, and output register so
   // a graceful-stop controller cannot stop on a transient empty observation.
   assign core_data_empty = fifo_rd_empty && !fifo_rd_valid &&
-                           (rem_count_q == 0) && !out_valid_q;
+                           (rem_count_q == 0) && !out_valid_q && !end_pending_q;
   assign core_i_vec = out_i_q;
   assign core_q_vec = out_q_q;
   assign core_frame_start = out_frame_start_q;
+  assign core_frame_end = out_frame_end_q;
   assign core_frame_gain = out_frame_gain_q;
 
   always_ff @(posedge core_clk or negedge c_rst_n) begin
@@ -116,8 +122,11 @@ module dsm_axis14_to_core8_cdc #(
       out_i_q <= '0;
       out_q_q <= '0;
       out_frame_start_q <= 1'b0;
+      out_frame_end_q <= 1'b0;
       out_frame_gain_q <= '0;
       stream_started_q <= 1'b0;
+      end_pending_q <= 1'b0;
+      end_remaining_q <= '0;
       core_underflow <= 1'b0;
       core_protocol_error <= 1'b0;
     end else begin
@@ -126,7 +135,17 @@ module dsm_axis14_to_core8_cdc #(
 
       if (advance) begin
         out_frame_start_q <= 1'b0;
+        out_frame_end_q <= 1'b0;
         out_frame_gain_q <= '0;
+        if ((rem_count_q >= CORE_LANES) && end_pending_q) begin
+          if (end_remaining_q <= CORE_LANES) begin
+            out_frame_end_q <= 1'b1;
+            end_pending_q <= 1'b0;
+            end_remaining_q <= '0;
+          end else begin
+            end_remaining_q <= end_remaining_q - CORE_LANES;
+          end
+        end
         case (rem_count_q)
           8: begin
             out_i_q <= rem_i_q[CORE_LANES*W-1:0];
@@ -187,6 +206,16 @@ module dsm_axis14_to_core8_cdc #(
               out_frame_start_q <= fifo_frame_start && (rem_count_q == 0);
               out_frame_gain_q <= fifo_frame_gain;
               out_valid_q <= 1'b1;
+              if (fifo_frame_end) begin
+                if (rem_count_q + SRC_LANES <= CORE_LANES) begin
+                  out_frame_end_q <= 1'b1;
+                  end_pending_q <= 1'b0;
+                  end_remaining_q <= '0;
+                end else begin
+                  end_pending_q <= 1'b1;
+                  end_remaining_q <= rem_count_q + SRC_LANES - CORE_LANES;
+                end
+              end
               if (fifo_frame_start && (rem_count_q != 0))
                 core_protocol_error <= 1'b1;
             end else begin

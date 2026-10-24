@@ -1,5 +1,282 @@
 # Update Log
 
+## 2026-10-24 22:16 SGT - close centered-cubic DPD, packet, and low-power checks
+
+- Extended the Python fixed-point oracle with the RTL memory-polynomial
+  arithmetic, including Q2.14 coefficients, temporal tap history, arithmetic
+  shifts, and signed-16 saturation. Added a two-tap image with nonzero cubic
+  terms strictly for directed verification; it is not a fitted DPD solution.
+- Added an AXI-Lite centered-cubic UVM case that compares all four planes for
+  one 32-beat/56-word packet and for two back-to-back 32-beat packets
+  (64 beats/112 words) with one centered-FIR tail per frame. The same two-tap
+  nonlinear DPD image is committed before the first DPD frame boundary.
+- Added the repeated-TLAST source-sequence option and a centered-cubic
+  low-power STOP case. The test revealed that RUN deassertion could close
+  source ingress before the current packet's TLAST. The AXIS wrapper now keeps
+  ingress open for that already-started centered packet, then blocks the next
+  packet until RUN is requested again.
+- Checks: 24 Python model tests PASS; the two nonlinear DPD UVM cases PASS
+  with 0 UVM errors/fatals; centered-cubic low-power STOP/drain PASS with all
+  56 words bit-true, no underflow/protocol error, zero outstanding work, and
+  return to IDLE; generic-FIFO thermo5 VCS regression PASS across all seven
+  tests with zero UVM errors/fatals and the expected negative frame assertion.
+  Evidence is under `runs/thermo5_gap_closure_axil_vcs/`,
+  `runs/thermo5_gap_closure_lowpower_vcs/`, and
+  `runs/thermo5_gap_closure_baseline_vcs/`. XSim is not installed on this Linux
+  host. FPGA resource/timing was not run per user direction.
+- Benchmark status: the existing 450-case FIR/drive/PAPR sweep still ranks
+  centered cubic first in corrected EVM for all 18 held-out configurations;
+  the actual TID-plane receiver screen averages 3.273% digital EVM / 29.702 dB
+  SNDR, 3.370% / 29.447 dB with the illustrative nominal output chain, and
+  3.685% / 28.671 dB under its illustrative stress profile. Those output-chain
+  parameters are sensitivity assumptions. Thermometric STEP and DSM NTF/order
+  sweeps remain pending; no architecture setting was promoted to the default.
+- `git diff --check` PASS. Remaining limits: nonlinear RTL arithmetic is
+  bit-true checked for the directed two-tap coefficient image, not broadly
+  swept across arbitrary coefficient banks; XSim and FPGA mapping/timing are
+  pending on the FPGA host.
+
+## 2026-10-24 21:37 SGT - implement optional centered-cubic streaming RTL
+
+- Added `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv`, a ready/valid x2
+  interpolator using Q14 `[-1, 9, 9, -1]/16`, round-away-from-zero, and
+  W-bit saturation. The frontend selects two instances with
+  `INTERP_CENTERED_CUBIC=1`; the existing causal path remains the default.
+- Added frame-end handling to the parallel AXI path. `TLAST` crosses the 14:8
+  gearbox and stays aligned through the ingress metadata FIFO, frame-gain
+  pipeline, and DPD sideband. Stage 1 adds a tagged lookahead vector at the
+  frame tail; stage 2 uses and drops it so no extra PA words are emitted.
+- The first centered run timed out because frame end was connected directly
+  across a multi-cycle frame-gain path. Carrying end metadata with the data
+  fixed the stall. A default-build compile also caught a duplicate tie-off on
+  the causal second-stage frame-start output; removing that tie-off preserved
+  the interpolator's actual marker.
+- The first AXI-Lite centered run exposed an over-eager hold assertion that
+  compared the first cycle of a stall to the preceding invalid cycle. The
+  assertion now checks stability only after a prior stalled cycle; the
+  correctly configured AXI-Lite integration run then completed bit-true.
+- Added Python oracle/vector mode, centered-cubic UVM selection and count
+  checks, the `thermo5-centered-cubic-vcs` target, and the new RTL in simulation,
+  formal, synthesis, and FPGA source manifests. Exposed the selector through
+  the ZU15EG GT parent while keeping its default disabled. Updated the execution
+  frontier, UVM architecture, Python model, and command documentation.
+- Checks: centered-cubic VCS bit-true run PASS with stress PA backpressure
+  (32 AXI beats, 56 four-plane output words, 3 frame starts, 1 accepted
+  `TLAST`, 28 PA stall cycles, zero UVM errors/fatals); default causal
+  `thermo5-vcs-regression` PASS across all seven tests, including the expected
+  negative frame assertion; centered AXI-Lite config integration PASS (56
+  bit-true words, one accepted `TLAST`, no assertion/UVM errors); AXI-Lite
+  centered top compile PASS; Python unit suite PASS (22 tests) before the final
+  RTL-only edits. Logs are under
+  `runs/thermo5_centered_cubic_final2_20261024/`,
+  `runs/thermo5_centered_cubic_baseline_regression_fix1_20261024/`, and
+  `runs/thermo5_centered_cubic_axil_final_20261024/`. `git diff --check`
+  passes; no XSim or FPGA resource/timing run was made on Linux.
+- At this point in the earlier implementation record, valid `TLAST` had to
+  align to a complete 56-sample group and only a 32-beat packet had been checked.
+  The 22:12 entry above adds the short, consecutive-packet, nonlinear DPD, and
+  low-power drain closure. XSim and FPGA resource/timing remain open; the
+  centered path remains optional and is not the default FPGA preset.
+
+## 2026-10-24 20:43 SGT - rerun thermo5 generic-FIFO UVM regression with VCS
+
+- Retried `thermo5-vcs-regression` after the user started the Synopsys license
+  service, using Python-generated four-plane vectors and a fresh output
+  directory: `runs/thermo5_tid_receiver_vcs_retry_20261024/`.
+- VCS V-2023.12-SP1 compiled successfully. The bit-true, bubble/backpressure,
+  FIFO-boundary, FIFO-empty, reset, reset-sweep, and negative-frame tests all
+  completed. All seven UVM reports had zero UVM errors/fatals; the negative
+  test observed the expected RTL assertion and verified reset recovery.
+- Updated the execution frontier to replace the prior license-blocked status
+  with the successful retry result. No RTL, MATLAB, or FPGA resource/timing
+  implementation changed.
+- Check: `make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3
+  THERMO5_VECTORS="$PWD/runs/thermo5_tid_receiver_vcs_vectors"
+  THERMO5_OUT="$PWD/runs/thermo5_tid_receiver_vcs_retry_20261024"
+  VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1` PASS (exit 0).
+- Remaining limits: this verifies the frozen thermo5 RTL against the generic
+  FIFO UVM configuration; it does not implement or verify centered-cubic
+  interpolation RTL. XSim and FPGA resource/timing remain for the FPGA host.
+
+## 2026-10-24 18:02 SGT - validate raw TID timing and receiver metrics
+
+- Added `dsm_refmodel/thermo5_receiver.py` to decode the four serialized planes,
+  audit TID branch timing against independent scalar EFM recurrences, separate
+  interpolation from the TID boundary, and measure centered-FIR support,
+  lookahead, and frame-tail flush.
+- Added `benchmark_thermo5_tid_receiver.py`: actual plane sum, 3.5-GHz Fs/4
+  DDC, 14-GHz reconstruction filtering, 7-GHz receive filtering, decimation,
+  256-QAM OFDM EVM/SNDR, and illustrative nominal/stress DPA, output-network,
+  and kTB/NF profiles. Fixed RMS drive to 0.10 so Python seeds 101/307/503 all
+  remain below the 0.35 peak limit; seed 307 at RMS 0.11 exceeded the limit and
+  was excluded from scoring.
+- Audited RTL2 timing as exact `x[n]` on the even phase and the current/past
+  average on the following odd phase. Three seeds each had zero scalar EFM
+  mismatches across 1,335,296 branch/component samples per candidate. Mean
+  centered-cubic digital EVM/SNDR was 3.273%/29.702 dB; nominal analog-model
+  EVM/SNDR was 3.370%/29.447 dB; stress was 3.685%/28.671 dB. Frozen RTL2
+  digital EVM/SNDR was 20.827%/13.628 dB. Reports are in
+  `runs/thermo5_tid_receiver_20261024/`.
+- Added centered-cascade support analysis: 2.25 source samples of maximum
+  future dependency, three integer samples of stream lookahead, one additional
+  8-lane transaction, and three zero samples to flush a known frame tail.
+  No RTL, MATLAB reference, FPGA resource, or timing behavior was changed.
+- Updated the Python model README, thermo5 verification architecture,
+  execution frontier, command index, and this log.
+- Checks: 19 Python unit tests PASS; Python bytecode compilation PASS; three
+  8-symbol/three-seed end-to-end receiver runs PASS with zero EFM mismatches;
+  Python oracle vector generation PASS; `git diff --check` PASS. The required
+  Linux VCS regression was attempted but stopped at compile because the
+  Synopsys license server was unreachable. XSim is unavailable on this Linux
+  host. Neither unavailable result is marked PASS.
+- Remaining limits: the DPA, output-network, thermal-noise power, and NF values
+  are illustrative; three seeds and eight symbols are a screening set. The
+  centered FIR is block-mode only; its RTL transaction timing and explicit
+  frame-end handshake/flush remain unimplemented. FPGA PPA/timing were not run
+  per user instruction.
+
+## 2026-10-24 15:07 SGT - select Python FIR candidate and expand architecture A/B
+
+- Selected the Q14 centered-cubic x2 interpolation candidate
+  `[-1024, 9216, 9216, -1024]` (`[-1, 9, 9, -1]/16`) for the next Python
+  architecture iteration. The frozen FPGA RTL configuration was not changed.
+- Expanded `benchmark_thermo5_architecture.py` to use two development seeds and
+  three held-out seeds. The completed 450-case sweep ranked centered cubic
+  first in corrected EVM across all 18 held-out input-normalization/PAPR/
+  backoff combinations and separately within each of the three held-out seeds.
+- At fixed-average input power and no PAPR clipping, held-out mean corrected
+  EVM at 0/6/12-dB backoff was 4.853/0.802/0.871%; assumed output power was
+  -30.00/-35.66/-41.63 dBm. A 7-dB PAPR limit at 6-dB backoff increased mean
+  corrected EVM to 2.233% and worsened the adjacent-band proxy from -49.00 to
+  -37.41 dBc. The report and representative PSD are under
+  `runs/thermo5_architecture_ab_20261024/`.
+- The 36.8% corrected EVM measured for the delay-aligned RTL 2-tap baseline at
+  6-dB backoff is unusually large. The even/odd sample-time convention must be
+  checked against the intended waveform reference and an independent RTL /
+  bit-true vector before treating the candidate gap as a hardware prediction.
+- Updated the Python-model README, AI-native commands, execution frontier, and
+  this log. Checks: 12 Python unit tests PASS; benchmark bytecode compilation
+  PASS; complete 450-case architecture sweep PASS; `git diff --check` PASS.
+  No RTL or fixed-point reference arithmetic changed, so RTL XSim/VCS and
+  MATLAB oracle checks were not applicable.
+- Remaining limits: the sweep uses a behavioral DPA/output FIR and assumed
+  kTB/NF parameters, periodic symbol edges, one integer delay per candidate,
+  and eight OFDM symbols per seed. It does not decode actual TID planes for
+  EVM/SNDR, establish standard ACLR, or report FPGA PPA/timing. The selected
+  FIR still needs streaming lookahead/frame-drain design and implementation
+  checks before any RTL configuration change.
+
+## 2026-10-23 22:21 SGT - separate GT bit errors from analog output noise
+
+- Replaced the prior Q15-payload BER/jitter proxy with an independent BER
+  injector for the Python thermo5 model's four 64-bit TID output planes.
+  Digital bit flips are now reported as discrete errors, separate from noise.
+- Refined the output-chain model into deterministic DPA AM/AM, AM/PM, and
+  envelope memory, a separate complex FIR output network, and analog thermal
+  noise calculated from `kTB + NF` at a declared observation-plane signal
+  power. The example powers, bandwidths, noise figures, and DPA parameters
+  remain sensitivity assumptions, not calibrated hardware data.
+- Added `benchmark_thermo5_gt.py`; 56 output words at BER=1e-3 produced 14
+  flips over 14,336 plane bits and 13 affected words. The 64-symbol link
+  benchmark at seed 20261023 measured centered-cubic corrected EVM of 0.966%
+  ideal, 1.699% nominal, and 3.404% stress, versus forward-linear 4.939%,
+  5.039%, and 5.692%. Stress raw EVM was 6.337% cubic and 6.216% forward;
+  the selected metric therefore affects the ranking. Stress noise-only EVM was
+  about 1.3% at the assumed 37.95 dB SNR.
+- Recorded centered cubic as the preferred FPGA algorithm candidate, while
+  keeping the frozen 2-tap RTL unchanged. The centered kernel needs future
+  samples and a frame-end/flush contract absent from the frontend interface;
+  it cannot be enabled by changing a coefficient setting alone.
+- Updated `dv/uvm/refmodel/python/README.md`,
+  `docs/ai-native/commands.md`,
+  `docs/verification/thermo5-uvm-architecture.md`, and the execution frontier.
+- Checks: 12 Python unit tests PASS; 64-symbol analog-chain benchmark PASS;
+  four-plane GT BER benchmark PASS; Python bytecode compilation and
+  `git diff --check` PASS. No RTL or bit-true reference arithmetic changed,
+  so the required RTL XSim/VCS and MATLAB-oracle checks were not applicable.
+- Remaining limitations: no GT timing/CDR/electrical eye, phase-noise or
+  measured analog noise model; DPA/output filter and physical observation
+  values are uncalibrated. EVM remains sample-domain with a scalar per-symbol
+  fit, and the adjacent-band result is not standard ACLR. Centered-cubic RTL
+  framing, latency, throughput, PPA, and timing are open.
+
+## 2026-10-23 19:44 SGT - add Python GT/DPA impairment benchmark
+
+- Added `dv/uvm/refmodel/python/dsm_refmodel/link_models.py` and
+  `benchmark_thermo5_link.py` to compare the five interpolation candidates
+  through deterministic ideal, GT-only, DPA-only, nominal, and stress
+  conditions. GT-like impairments are sample-payload BER, timing jitter and
+  I/Q skew; DPA uses a complex-envelope compression/AM-PM model with memory;
+  AWGN is selectable by scenario. The assumptions are intentionally explicit
+  and replaceable.
+- Reran the 64-symbol interpolation baseline after fixing the complex scalar
+  least-squares equalizer coefficient conjugation in
+  `benchmark_thermo5_interp.py`. The centered cubic result is 1.115% raw and
+  0.970% corrected EVM, with 43.72 dB first-image rejection; its raw EVM and
+  image/adjacent spectra were unchanged by the equalizer fix.
+- Added three link-model tests. The 64-symbol link benchmark ranks centered
+  cubic first in corrected EVM for the ideal, GT-only, DPA-only, and nominal
+  combined scenarios. Under the arbitrary stress profile, cubic gives 8.75%
+  corrected EVM and 28.7 dB image rejection versus forward-linear 9.94% and
+  26.5 dB, although raw EVM is slightly worse (10.80% versus 10.57%). This
+  promotes cubic as the leading research candidate, not as a frozen RTL change.
+- Documented usage, assumptions, metric limits, results, and remaining work in
+  `dv/uvm/refmodel/python/README.md`, `docs/ai-native/commands.md`, and the
+  execution frontier. Reports are under ignored `runs/`.
+- Checks: ten Python unit tests PASS; Python bytecode compilation PASS; 64-
+  symbol interpolation and five-profile link benchmarks completed at seeds
+  20261022/20261023; `git diff --check` PASS. No RTL, MATLAB fixed-point
+  model, oracle vectors, or UVM contract changed, so no RTL/XSim/VCS regression
+  was required for this behavior-only screening addition.
+- Limitations: GT is Q15 I/Q payload error/jitter/skew, not the DUT's serialized
+  four TID planes or electrical GT/CDR; the DPA parameters are not calibrated
+  to ADS, transistor simulation, or measurements. The EVM and FFT-bin metrics
+  use an oversampled waveform reference and scalar-per-symbol fit, without a
+  receiver demodulator or subcarrier equalizer; they do not establish standard
+  ACLR or physical RF performance. Cubic adds lookahead and estimated
+  arithmetic cost, which have not been mapped or timed.
+
+## 2026-10-22 00:54 SGT - align ASIC handoff, add Python thermo5 model and interpolation screen
+
+- Rewrote the stale ASIC/PPA documentation to use the FPGA frozen thermo5
+  settings as the primary configuration. Added a pre-run guard comparing the
+  ASIC wrapper and FPGA OOC parameters plus the UVM identity-DPD tie-off. ASIC
+  retains a generic async FIFO while FPGA uses XPM. The FPGA OOC still exposes
+  runtime DPD pins, so its mapped PPA is not a controlled comparison with the
+  constant-specialized ASIC map.
+- Added the pure-standard-library Python model and generator for the frozen
+  identity-DPD thermo5 chain. It writes the existing source, metadata, and four
+  PA-plane `.mem` vectors. Fixed the Python package initializer so its absent
+  legacy `bp_ef2.py` no longer blocks imports of available models.
+- Added a deterministic 64-QAM OFDM interpolation benchmark comparing the RTL
+  2/3/4-tap presets with forward-linear and centered-cubic candidates. Across
+  64 symbols at seed 20261022, raw EVM was 72.01%, 86.25%, 97.02%, 6.23%,
+  and 1.12%, respectively; after one common complex gain/phase fit per symbol,
+  EVM was 70.29%, 79.75%, 84.47%, 4.96%, and 0.97%. The benchmark JSON is in
+  the ignored `runs/` directory. Its adjacent-band value is a digital proxy,
+  not standard ACLR.
+- Corrected vector defaults to the 56-word UVM contract and aligned frame
+  starts at words 1/15/36 after an initial 64-word attempt triggered the
+  expected alignment assertion and UVM array truncation.
+- Updated `syn/README.md`, `syn/asic/README.md`, `syn/asic/PPA_MATRIX.md`,
+  `dv/uvm/README.md`, `dv/uvm/refmodel/python/README.md`, the thermo5 UVM architecture note,
+  `docs/ai-native/commands.md`, and this frontier/log to match the current
+  source of truth.
+- Checks run: four Python unit tests PASS; Python bytecode compilation PASS;
+  ASIC/FPGA parameter guard PASS; generic VCS thermo5 regression PASS using
+  Python vectors (56-word bit-true, backpressure, FIFO boundary/empty, reset,
+  reset sweep, expected illegal-frame assertion; zero UVM errors/fatals);
+  `git diff --check` PASS.
+- Not run: MATLAB comparison and required XSim smoke because MATLAB, Vivado/
+  XSim, and PowerShell are unavailable. ASIC mapping was not run: no local
+  standard-cell `.db` or Synopsys DC/Formality shell is visible. No RTL
+  algorithm change was made. The interpolation screen suggests the current
+  phase ordering should be reviewed before any candidate is promoted; the
+  trial EVM excludes DPD/TID/PA/RF and does not establish system ACLR.
+- The exact foundry/process flavor is not identified in this repository, and
+  no AMS/RF model or IP views are visible. DAC/PLL/RF-front-end/PA support
+  therefore remains unverified.
+
 ## 2026-10-21 - explicit AXI-Lite packet end and parent validation refresh
 
 - Added `s_axis_tlast` to the optional AXI-Lite wrapper and ZU15EG four-GTH

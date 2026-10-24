@@ -8,6 +8,16 @@ module thermo5_sku_uvm_tb;
 `else
   localparam bit USE_XPM_FIFO = 1'b0;
 `endif
+`ifdef THERMO5_CENTERED_CUBIC
+  localparam bit USE_CENTERED_CUBIC = 1'b1;
+`else
+  localparam bit USE_CENTERED_CUBIC = 1'b0;
+`endif
+`ifdef THERMO5_LOW_POWER
+  localparam bit USE_LOW_POWER_CTRL = 1'b1;
+`else
+  localparam bit USE_LOW_POWER_CTRL = 1'b0;
+`endif
   logic src_clk=0, core_clk=0;
   logic axil_clk=0;
   logic axil_rst_n;
@@ -39,7 +49,8 @@ module thermo5_sku_uvm_tb;
   logic [15:0] identity_c1 = 16'd16384;
 `ifdef THERMO5_AXIL_CONTROL
   tid32_thermo5_axi_lite_axis_frontend_tx #(
-    .INTERP_TAPS(2),.DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+    .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
+    .DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
     .s_axil_aclk(axil_clk),.s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(axil_bus.awaddr),.s_axil_awvalid(axil_bus.awvalid),.s_axil_awready(axil_bus.awready),
@@ -65,10 +76,13 @@ module thermo5_sku_uvm_tb;
   assign bus.cfg_active_payload=dut.u_cfg.cfg_active_core;
 `else
   tid32_thermo5_axis_frontend_tx #(
-    .INTERP_TAPS(2),.DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+    .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
+    .DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO),
+    .ENABLE_LOW_POWER_CTRL(USE_LOW_POWER_CTRL)
   ) dut (
     .s_axis_aclk(src_clk),.s_axis_aresetn(bus.src_rst_n),
     .s_axis_tvalid(bus.src_valid),.s_axis_tready(bus.src_ready),
+    .s_axis_tlast(bus.src_last),
     .s_axis_i_vec(bus.src_i),.s_axis_q_vec(bus.src_q),
     .s_axis_tuser_frame_start(bus.frame_start),.s_axis_tuser_frame_gain(bus.frame_gain),
     .s_axis_fifo_full(bus.fifo_full),
@@ -86,6 +100,15 @@ module thermo5_sku_uvm_tb;
   assign bus.cfg_mailbox_payload='0;
   assign bus.cfg_pending_payload='0;
   assign bus.cfg_active_payload='0;
+`endif
+`ifdef THERMO5_LOW_POWER
+  assign bus.low_power_state=dut.lp_state;
+  assign bus.low_power_active=dut.lp_datapath_enable;
+  assign bus.low_power_outstanding=dut.lp_outstanding;
+`else
+  assign bus.low_power_state='0;
+  assign bus.low_power_active=1'b0;
+  assign bus.low_power_outstanding='0;
 `endif
 `ifdef THERMO5_AXIL_CONTROL
   int unsigned axil_phase_trace_cycle = 0;
@@ -112,31 +135,45 @@ module thermo5_sku_uvm_tb;
   assign bus.xpm_fwft_state = '0;
   assign bus.xpm_rd_rst_i = 1'b0;
 `endif
-  assign bus.interp1_empty_blocked = !dut.u_frontend.u_interp_1.s2_valid &&
-                                     !dut.u_frontend.u_interp_1.s3_ready;
-  assign bus.interp1_stage1_held = dut.u_frontend.u_interp_1.s1_valid &&
-                                   !dut.u_frontend.u_interp_1.s2_ready;
-  assign bus.interp1_stage1_empty_blocked = !dut.u_frontend.u_interp_1.s1_valid &&
-                                            !dut.u_frontend.u_interp_1.s2_ready;
-  assign bus.interp1_stall_window = !dut.u_frontend.u_interp_1.s1_valid &&
-                                    dut.u_frontend.u_interp_1.s2_valid &&
-                                    dut.u_frontend.u_interp_1.out_valid;
-  assign bus.interp1_stage0_held = dut.u_frontend.u_interp_1.s0_valid &&
-                                   !dut.u_frontend.u_interp_1.s1_ready;
-  assign bus.interp2_stage1_held = dut.u_frontend.u_interp_2.s1_valid &&
-                                   !dut.u_frontend.u_interp_2.s2_ready;
-  assign bus.interp1_output_held = dut.u_frontend.u_interp_1.out_valid &&
-                                   !dut.u_frontend.u_interp_1.out_ready;
-  assign bus.interp2_output_held = dut.u_frontend.u_interp_2.out_valid &&
-                                   !dut.u_frontend.u_interp_2.out_ready;
-  assign bus.interp1_output_empty_blocked = !dut.u_frontend.u_interp_1.out_valid &&
-                                            !dut.u_frontend.u_interp_1.out_ready;
-  assign bus.interp2_stage1_empty_blocked = !dut.u_frontend.u_interp_2.s1_valid &&
-                                            !dut.u_frontend.u_interp_2.s2_ready;
-  assign bus.interp2_empty_blocked = !dut.u_frontend.u_interp_2.s2_valid &&
-                                     !dut.u_frontend.u_interp_2.s3_ready;
+`ifdef THERMO5_CENTERED_CUBIC
+  assign bus.interp1_empty_blocked = !dut.u_frontend.i1_valid && !dut.u_frontend.i1_ready;
+  assign bus.interp1_stage1_held = 1'b0;
+  assign bus.interp1_stage1_empty_blocked = 1'b0;
+  assign bus.interp1_stall_window = 1'b0;
+  assign bus.interp1_stage0_held = 1'b0;
+  assign bus.interp2_stage1_held = 1'b0;
+  assign bus.interp1_output_held = dut.u_frontend.i1_valid && !dut.u_frontend.i1_ready;
+  assign bus.interp2_output_held = dut.u_frontend.i2_valid && !dut.u_frontend.i2_ready;
+  assign bus.interp1_output_empty_blocked = !dut.u_frontend.i1_valid && !dut.u_frontend.i1_ready;
+  assign bus.interp2_stage1_empty_blocked = 1'b0;
+  assign bus.interp2_empty_blocked = !dut.u_frontend.i2_valid && !dut.u_frontend.i2_ready;
+`else
+  assign bus.interp1_empty_blocked = !dut.u_frontend.g_interp1_causal.u_interp_1.s2_valid &&
+                                     !dut.u_frontend.g_interp1_causal.u_interp_1.s3_ready;
+  assign bus.interp1_stage1_held = dut.u_frontend.g_interp1_causal.u_interp_1.s1_valid &&
+                                   !dut.u_frontend.g_interp1_causal.u_interp_1.s2_ready;
+  assign bus.interp1_stage1_empty_blocked = !dut.u_frontend.g_interp1_causal.u_interp_1.s1_valid &&
+                                            !dut.u_frontend.g_interp1_causal.u_interp_1.s2_ready;
+  assign bus.interp1_stall_window = !dut.u_frontend.g_interp1_causal.u_interp_1.s1_valid &&
+                                    dut.u_frontend.g_interp1_causal.u_interp_1.s2_valid &&
+                                    dut.u_frontend.g_interp1_causal.u_interp_1.out_valid;
+  assign bus.interp1_stage0_held = dut.u_frontend.g_interp1_causal.u_interp_1.s0_valid &&
+                                   !dut.u_frontend.g_interp1_causal.u_interp_1.s1_ready;
+  assign bus.interp2_stage1_held = dut.u_frontend.g_interp2_causal.u_interp_2.s1_valid &&
+                                   !dut.u_frontend.g_interp2_causal.u_interp_2.s2_ready;
+  assign bus.interp1_output_held = dut.u_frontend.g_interp1_causal.u_interp_1.out_valid &&
+                                   !dut.u_frontend.g_interp1_causal.u_interp_1.out_ready;
+  assign bus.interp2_output_held = dut.u_frontend.g_interp2_causal.u_interp_2.out_valid &&
+                                   !dut.u_frontend.g_interp2_causal.u_interp_2.out_ready;
+  assign bus.interp1_output_empty_blocked = !dut.u_frontend.g_interp1_causal.u_interp_1.out_valid &&
+                                            !dut.u_frontend.g_interp1_causal.u_interp_1.out_ready;
+  assign bus.interp2_stage1_empty_blocked = !dut.u_frontend.g_interp2_causal.u_interp_2.s1_valid &&
+                                            !dut.u_frontend.g_interp2_causal.u_interp_2.s2_ready;
+  assign bus.interp2_empty_blocked = !dut.u_frontend.g_interp2_causal.u_interp_2.s2_valid &&
+                                     !dut.u_frontend.g_interp2_causal.u_interp_2.s3_ready;
   assign bus.dpd_empty_blocked = !dut.u_frontend.dpd_valid &&
                                  !dut.u_frontend.dpd_ready;
+`endif
   initial begin
     string testname;
     uvm_config_db#(virtual thermo5_sku_if)::set(null,"uvm_test_top*","vif",bus);

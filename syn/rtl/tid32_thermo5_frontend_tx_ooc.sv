@@ -13,7 +13,8 @@ module tid32_thermo5_frontend_tx_ooc (
   wire logic [63:0] pa_data [0:3];
   tid32_thermo5_frontend_tx #(.STEP(7168)) u_dut (
     .clk(clk),.rst_n(rst_n),.enable(1'b1),.in_valid(in_valid),.in_ready(in_ready),
-    .in_frame_start(in_frame_start),.in_frame_gain(in_frame_gain),.in_i_vec(in_i_vec),.in_q_vec(in_q_vec),
+    .in_frame_start(in_frame_start),.in_frame_end(1'b0),.in_frame_gain(in_frame_gain),
+    .in_i_vec(in_i_vec),.in_q_vec(in_q_vec),
     .dpd_active_taps(dpd_active_taps),.c1_re(c1_re),.c1_im(c1_im),.c3_re(c3_re),.c3_im(c3_im),.c5_re(c5_re),.c5_im(c5_im),
     .pa_valid(pa_valid),.pa_data(pa_data),.pa_ready(4'hf)
   );

@@ -1,137 +1,63 @@
-# Synthesis
+# Thermo5 Synthesis and Implementation
 
-This folder contains the 100 MHz proxy OOC synthesis flow.
+`rtl/` is the canonical implementation. The frozen FPGA configuration is the
+source of truth for the matching ASIC mapping wrapper and verification model.
 
-Retained OOC tops:
+## Frozen Configuration
 
-- `p0_ooc_lp1`
-- `p0_ooc_lp2`
-- `p0_ooc_ef1`
-- `p0_ooc_ef2`
-- `p0_ooc_mash11`
-- `p0_ooc_mash111`
-- `p0_ooc_mash22`
+The FPGA routed OOC flow uses `tid32_thermo5_axis_frontend_tx` with
+`INTERP_TAPS=2`, `DPD_MAX_TAPS=1`, `FPGA_USE_XPM_FIFO=1`, and
+`ENABLE_LOW_POWER_CTRL=0`. The frozen UVM configuration uses one active tap
+with unity `c1_re=0x4000` and other coefficients zero. The ASIC wrapper fixes
+that identity image as constants. The FPGA routed OOC top retains runtime DPD
+coefficient pins, so its resource report is not a like-for-like PPA comparison
+with the constant-specialized ASIC wrapper. It runs at 125 MHz on AXI ingress
+and 218.75 MHz on the core. See
+[`docs/verification/thermo5-uvm-architecture.md`](../docs/verification/thermo5-uvm-architecture.md)
+for the signal flow and interfaces.
 
-Run:
+The matching ASIC wrapper uses the same frozen interpolation and DPD behavior.
+Its generic async FIFO replaces the FPGA XPM FIFO. Run
+`python3 syn/asic/check_thermo5_frozen_config.py` to detect configuration
+drift, then use [`asic/README.md`](asic/README.md) for the authorized 28 nm
+standard-cell mapping flow. This flow does not establish analog or RF PDK
+support.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_all_dsm.ps1
-```
+## FPGA Routed OOC
 
-Baseline:
-
-- FPGA part: `xc7z020clg400-1`
-- Clock target: 100 MHz
-- Pass criterion: routed `WNS >= 0`
-
-Checked summary:
-
-```text
-syn/reports/p0_ooc_summary_xc7z020_20260512.csv
-```
-
-The current seven-structure OOC report shows LPDSM2 and MASH are restored but
-not timing-clean at 100 MHz.
-
-## BP EFDSM2 AXI SKU
-
-`run_ooc_bp_ef2_axi.ps1` targets the complete experimental transmitter SKU:
-
-```text
-AXI-Stream -> DPD frontend -> x32 interpolation -> full-precision Fs/4 IF
-mixer -> one-bit BP EFDSM2
-```
-
-It uses `DUC_MODE=3`; this is distinct from the legacy `DUC_MODE=0` one-bit
-low-pass I/Q merge. The 28 nm pre-layout DC launcher for the same complete AXI
-SKU is `run_bp_ef2_28nm_dc.sh`. Both need fresh tool output before any PPA
-claim is made.
-
-## Frozen Performance SKU Routed OOC
-
-The delivery configuration is fixed as follows:
-
-```text
-Memory-Poly5, 4 tap -> x32 CIC plus compensation FIR -> Fs/4 BP EFDSM2
-ALGORITHM=3, DUC_MODE=3, INTERP_MODE=4, 100 MHz
-```
-
-Run the complete routed OOC implementation on ZU15EG with:
+Run the no-AXI-Lite frozen top on ZU15EG with:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_performance_sku_routed.ps1 `
-  -Part xczu15eg-ffvb1156-2-i -TargetMHz 100
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_ooc_tid32_thermo5_axis_frontend_tx.ps1 `
+  -Part xczu15eg-ffvb1156-2-i -SourceMHz 125 -CoreMHz 218.75
 ```
 
-The script runs synthesis, placement, routing, physical optimization, and
-reports timing, utilization, power estimate, and routed DRC. It does not use
-board XDC constraints, generate a bitstream, or sign off I/O hold timing.
+The 2026-10-15 routed OOC evidence reports WNS +0.504 ns and WHS +0.027 ns
+under modeled internal constraints. The run omits real parent I/O budgets,
+system CDC/RDC, board timing, and physical RF output; it is not system or
+board signoff. The AXI-Lite variant is a separate integration flow and must
+not be mixed with the frozen no-AXI-Lite SKU results.
 
-The 2026-08-16 routed artifact reports `WNS=+2.632 ns`, `TNS=0`, and no setup
-failing endpoints at 100 MHz. Its resource result is 12,964 LUTs, 15,316 FFs,
-266 DSP48s, and no BRAM/URAM. The corresponding power report is an estimate
-without activity annotation, not a measured board value. DSP pipeline DRC
-recommendations remain an RTL PPA improvement item.
+## Linux Reference and Interpolation Benchmark
 
-## RTL lint-only check
-
-`run_lint_bp_ef2_axi.sh` runs the same BP EFDSM2 AXI source list and compile
-parameters through DC `analyze`, `elaborate`, `link`, `check_design`, and
-`check_timing`. It intentionally stops before `compile_ultra`, so its output
-is structural RTL evidence, not area, timing, or power signoff.
-
-From WSL/Linux:
+MATLAB remains useful as an independent reference, but is no longer required
+to generate frozen thermo5 vectors. On Linux, use the pure-Python reference:
 
 ```bash
-export DC_SHELL=/opt/Synopsys/syn/V-2023.12-SP1/bin/dc_shell
-bash syn/run_lint_bp_ef2_axi.sh
+cd dv/uvm/refmodel/python
+python3 generate_thermo5_frontend_vectors.py \
+  --output-dir ../../../../runs/thermo5_python_vectors \
+  --interp-taps 2 --profile random
+python3 benchmark_thermo5_interp.py --symbols 64 --seed 20261022
 ```
 
-The tool path alone is insufficient: the 2026-08-16 rerun reached `dc_shell`
-but stopped with `DCSH-1: Design Compiler is not enabled`. Do not report lint
-as passing until the Design Compiler license is available and the script writes
-`LINT_PASS` plus all required reports.
+The vector generator produces the same `.mem` interface consumed by the
+thermo5 UVM scoreboard. The benchmark is a deterministic digital OFDM screen;
+its image and adjacent-band metrics are not standard ACLR and do not include
+TID, DPD, PA, RF filtering, or a receiver model. See
+[`asic/PPA_MATRIX.md`](asic/PPA_MATRIX.md) for comparison rows and promotion
+criteria.
 
-## Reproducible ASIC PPA Flow
-
-`syn/asic/` contains the public pre-layout Design Compiler launcher for the
-frozen Performance SKU. Unlike the retained historical script, it has no
-default private PDK path. Supply a permitted standard-cell database at runtime:
-
-```bash
-export DSM_ASIC_STDCELL_DB=/path/to/standard_cell_tt.db
-export DSM_ASIC_NODE=28nm
-bash syn/asic/run_performance_sku_dc_sweep.sh 100 200 300 400 500
-```
-
-The values above are placeholders. Run the command from a Linux shell, not
-from a `dc_shell>` Tcl prompt. If `dc_shell` is available on `PATH`, the
-launcher finds it automatically; otherwise use
-`export DC_SHELL="$(command -v dc_shell)"` with the actual executable path.
-
-The flow emits one report bundle per target and a normalized `summary.csv`.
-It reports cell area, combinational/sequential area, timing, critical path,
-and power provenance. Without an annotated SAIF file, power is marked as a
-vectorless estimate and must not be presented as measured power.
-
-The flow validates the selected mapping library by its own library name and
-cell inventory before elaboration. `library.rpt` records that deterministic
-evidence directly; this avoids a tool-version-dependent generic `report_lib`
-redirect error without weakening synthesis, timing, or unmapped-logic checks.
-
-## FPGA Low-Power SAIF A/B
-
-The canonical activity-based comparison is:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_lp_power_ab.ps1 -Flavour thermo3
-powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_lp_power_ab.ps1 -Flavour thermo5
-```
-
-For each flavour the flow runs baseline and LP simulations for `continuous`,
-`burst`, and `idle`, rejects any output-count or digest mismatch, produces a
-mode-specific SAIF, builds each managed OOC design once, and reopens a clean
-routed checkpoint for every power report. The final CSV includes dynamic and
-total power, reduction percentage, and Vivado's SAIF matched-net coverage.
-Do not quote a reduction when simulation, routed timing, or SAIF coverage is
-missing.
+Historical `p0_ooc_*` low-pass/EF/MASH reports and optional AXI-Lite
+experiments are separate architecture records. They do not define the frozen
+thermo5 configuration.

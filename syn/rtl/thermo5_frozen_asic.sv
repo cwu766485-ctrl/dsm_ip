@@ -18,6 +18,7 @@ module thermo5_frozen_asic (
   ) u_dut (
     .s_axis_aclk(clk125), .s_axis_aresetn(rst125_n),
     .s_axis_tvalid(s_valid), .s_axis_tready(s_ready),
+    .s_axis_tlast(1'b0),
     .s_axis_i_vec(s_i_vec), .s_axis_q_vec(s_q_vec),
     .s_axis_tuser_frame_start(s_frame_start), .s_axis_tuser_frame_gain(s_frame_gain),
     .s_axis_fifo_full(s_fifo_full), .core_clk(clk218), .core_aresetn(rst218_n),

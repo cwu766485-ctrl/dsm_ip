@@ -52,22 +52,82 @@ are in `dv/uvm/sim/thermo5_sku_filelist.f`.
 
 ## Reference model and UVM checking
 
-Thermo5 **does have a bit-true reference**, but it is not a live SystemVerilog
-algorithm model inside `dv/uvm/refmodel/python/`. MATLAB's
-`matlab/tx_bandpass_if/gen_tid32_thermo5_frontend_bittrue_vectors.m`
-generates source I/Q/metadata and four expected PA-plane `.mem` files. The
-source sequence reads the source vectors; the scoreboard independently reads
-the expected source and PA files and compares monitor-observed accepted
-transactions. Thus, the sequence is stimulus and the `.mem` outputs are the
-oracle; the scoreboard is a comparator. The Python reference models under
-`dv/uvm/refmodel/python/` primarily serve the separate AXI-IP regression.
-The thermo5 generator treats the frozen identity DPD as an exact pass-through;
-it is **not** a reference for non-unity coefficients, 2/4-tap memory DPD, or
-PA nonlinear behavior. Those configurations need a separate checked oracle.
+Thermo5 has two bit-true vector generators for the frozen identity-DPD SKU:
+MATLAB's `matlab/tx_bandpass_if/gen_tid32_thermo5_frontend_bittrue_vectors.m`
+and the pure-Python port at
+`dv/uvm/refmodel/python/dsm_refmodel/thermo5.py`. Both emit the source I/Q,
+frame metadata, and four expected PA-plane `.mem` files. The Python generator
+is the Linux route when MATLAB is unavailable. Python-native random vectors
+use Python's seeded PRNG, so they are deterministic but do not reproduce
+MATLAB's random stream; pass the same source `.mem` files to the Python
+generator when doing a sample-by-sample cross-check.
+
+The source sequence reads source vectors; the scoreboard independently reads
+the expected source and PA files and compares accepted transactions. The
+`.mem` outputs are the oracle and the scoreboard is a comparator. The Python
+thermo5 model covers frame gain, both x2 interpolation stages, identity DPD,
+and four-plane TID. Its optional memory-polynomial path models signed Q2.14
+coefficients, temporal taps, RTL arithmetic shifts, and output saturation. The
+directed AXI-Lite nonlinear test checks a two-tap image with nonzero cubic terms
+against all four output planes. This is a verification image, not a calibrated
+DPD solution. Nonlinear PA behavior and RF effects require separate models.
+
+Centered-cubic UVM checks now cover a 32-beat short packet and two back-to-back
+32-beat packets (64 beats total), with frame-tail reconstruction and exact
+four-plane output comparison. The low-power test requests STOP in the middle
+of a packet, verifies ingress continues through accepted TLAST, and checks
+that all output drains before the power state returns to IDLE.
 
 The VCS thermo5 UVM target uses the portable generic FIFO. Vendor-XPM FIFO
 full-chain XSim evidence is separate; neither target verifies physical GT,
 board-level four-way serialization, analog PA, or RF EVM.
+
+For fixed stimulus, the RTL produces deterministic output words; fixed-point
+quantization and interpolation differences are deterministic distortion, not
+random noise injected by the digital design. Separate Python link screens
+model bit errors on the four TID planes as digital faults, then model DPA and
+output-network distortion followed by kTB/NF analog noise. These screens are
+sensitivity tools outside the DUT and require measured link parameters before
+their absolute EVM can be treated as a hardware prediction.
+
+### Raw-plane receiver audit
+
+`dv/uvm/refmodel/python/benchmark_thermo5_tid_receiver.py` separately audits
+the temporal meaning of the frozen RTL2 output and reconstructs its serialized
+planes through Fs/4 DDC, filtering, and 256-QAM OFDM demodulation. The RTL2
+interpolator emits exact `x[n]` at the even phase and `(x[n]+x[n-1])/2` at the
+following odd phase. The latter is a previous-midpoint estimate if assigned
+the timestamp `n+0.5`; a centered cubic needs future samples to estimate the
+half-sample at that timestamp.
+
+For each of seeds 101/307/503, the Python plane stream had zero mismatches
+against four independent scalar EFM recurrences across 1,335,296 branch and
+component samples. At a shared 0.10 RMS drive and peak limit 0.35, the
+eight-symbol, 250-MHz receiver screen measured centered-cubic digital EVM
+3.273% / SNDR 29.702 dB on average; the frozen RTL2 measured 20.827% /
+13.628 dB. The nominal illustrative DPA/output/noise chain gave cubic
+3.370% / 29.447 dB; the stress chain gave 3.685% / 28.671 dB. Detailed runs
+are in `runs/thermo5_tid_receiver_20261024/summary.json`.
+
+Support analysis of both centered stages gives a 2.25-source-sample maximum
+future dependency, rounded to three input samples for a causal stream. With
+eight input lanes this crosses one input transaction. The optional RTL path
+now implements that lookahead with two elastic centered-cubic x2 stages. At
+frame end, stage 1 processes a synthetic zero-source vector and tags the
+interpolated result; stage 2 uses that vector to reconstruct the final real
+output and then drops it. This keeps the PA output count equal to the input
+frame count at 4x interpolation.
+
+Select the optional path with `INTERP_CENTERED_CUBIC=1`; the existing causal
+RTL remains the default. The parallel-config AXI wrapper now carries
+`s_axis_tlast` through the CDC/gearbox, frame-gain pipeline, and DPD metadata.
+Frame ends must align to a complete 56-sample gearbox group (four 14-lane AXI
+beats). The centered-cubic UVM target passes 32 accepted beats to 56 bit-true
+output words with PA backpressure. The default causal generic-FIFO regression
+also passes all seven scenarios. The centered AXI-Lite configuration test
+passes with 56 bit-true output words and one accepted `TLAST`. XSim and FPGA
+resource/timing were not run on Linux; independent short/long packet boundaries
+and FPGA mapping remain open.
 
 ## Verification architecture
 

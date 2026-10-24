@@ -1,119 +1,66 @@
-# ASIC PPA Flow
+# Thermo5 ASIC Mapping Flow
 
-This directory contains a reproducible pre-layout Design Compiler flow for the
-frozen Performance SKU. It is deliberately separate from FPGA OOC reports and
-does not contain a PDK, license path, or generated report.
+This directory maps the frozen thermo5 digital transmitter to a permitted
+standard-cell library with Synopsys Design Compiler, then compares the mapped
+netlist with the RTL using Formality. The FPGA frozen configuration is the
+SKU source of truth. The ASIC wrapper is checked against the FPGA OOC Tcl
+before every mapping or equivalence run.
 
-## Frozen Configuration
+## Frozen FPGA Configuration
 
 ```text
-AXI4-Stream I/Q
-  -> Memory-Polynomial DPD, order 5, four taps
-  -> interpolation mode 4, x32 CIC plus compensation FIR
-  -> Fs/4 band-pass mixer
-  -> one-bit BP EFDSM2
+14-lane AXI-Stream input, 125 MHz
+  -> async FIFO / 14:8 gearbox
+  -> frame Q2.14 gain
+  -> x2 interpolation, 2 taps
+  -> identity DPD, one active tap
+  -> x2 interpolation, 2 taps
+  -> four-plane thermo5 TID output, 218.75 MHz
 ```
 
-The implementation parameters are fixed to `ALGORITHM=3`, `DUC_MODE=3`,
-`INTERP_MODE=4`, `INTERP_IMPL=0`, `DPD_POLY_ORDER=5`,
-`DPD_MP_MAX_TAPS=4`, `ENABLE_DPD_MEMORY=1`, `ENABLE_DPD_POLY=0`, and
-`ENABLE_DPD_LUT=0`.
+The public RTL parameters are `INTERP_TAPS=2`, `DPD_MAX_TAPS=1`,
+`BYPASS_DPD=0`, and `ENABLE_LOW_POWER_CTRL=0`. The frozen UVM configuration
+ties one active DPD tap with `c1_re=0x4000` and every other coefficient zero.
+That is Q2.14 identity gain. The ASIC wrapper ties these values as constants.
+The FPGA routed OOC top still exposes the DPD coefficient pins as runtime
+inputs, so its mapped resource result is not a like-for-like comparison with
+the constant-specialized ASIC wrapper. FPGA uses XPM for its async FIFO; ASIC
+uses the generic FIFO.
 
-`DUC_MODE=3` selects the BP EFDSM2 datapath. It is therefore not a valid
-like-for-like full-chain comparison point for the legacy LP/EF/MASH DSM modes.
-Those structures remain separate core-level architecture studies.
+`syn/run_ooc_tid32_thermo5_axis_frontend_tx.tcl` is the canonical FPGA OOC
+parameter set. `check_thermo5_frozen_config.py` checks the FPGA OOC parameters,
+frozen UVM identity-DPD configuration, and ASIC wrapper. It checks functional
+configuration alignment; it does not make their mapped netlists identical.
 
-## Prerequisites
+## Requirements and Run
 
-Use a permitted standard-cell `.db` and a licensed `dc_shell`. Do not copy
-either asset into this repository.
+Use an authorized standard-cell timing `.db` and licensed `dc_shell` and
+`fm_shell`. Do not copy PDK, library, or license files into the repository.
+The flow consumes the standard-cell `.db`; it does not inspect or qualify
+analog, RF, memory, I/O, or device-model collateral.
 
 ```bash
-export DSM_ASIC_STDCELL_DB=/path/to/standard_cell_tt.db
-export DSM_ASIC_NODE=28nm
+python3 syn/asic/check_thermo5_frozen_config.py
+python3 syn/asic/run_thermo5_frozen.py \
+  --db /approved/local/path/standard_cell_tt.db \
+  --out-dir runs/thermo5_asic_<unique>
 ```
 
-The launcher uses `dc_shell` from `PATH` by default. Set `DC_SHELL` only when
-the required executable is not already on `PATH`.
+Both Synopsys shells must be on `PATH`. The command writes a local report
+bundle and provenance manifest below `runs/`. The SDC clocks are 125 MHz and
+218.75 MHz and use assumed IP-boundary budgets; they are not parent-chip I/O
+constraints.
 
-Do not copy the literal `/path/to/...` example into the environment. Run the
-launcher from the Linux shell prompt (`user@host$`), never from the
-`dc_shell>` Tcl prompt:
+## Scope and Limitations
 
-```bash
-unset DC_SHELL
-export DC_SHELL="$(command -v dc_shell)" # Optional when dc_shell is on PATH.
-```
+This is pre-layout digital mapping and RTL/netlist equivalence. It does not
+perform placement, routing, extracted-RC STA, MCMM signoff, IR/EM analysis,
+activity-based power signoff, or analog/RF implementation. The standard-cell
+`.db` alone cannot establish whether the process supports an integrated DAC,
+PLL, RF front end, PA, or the required passive devices. Those require separate
+foundry PDK options, device models, RF/analog design kits, and IP evidence.
 
-### Standard-Cell Mapping Probe
-
-A readable `.db` is not necessarily a usable standard-cell mapping library.
-Before a new PPA sweep, run the read-only probe:
-
-```bash
-bash syn/asic/run_stdcell_probe.sh
-```
-
-The command must print at least one `STDCELL_PROBE_LIB` record with a nonzero
-cell count and a nonzero inverter match count. Keep the generated local
-`library_*.rpt` next to the PPA reports.
-If DC reports that the target library has no inverter, choose the nominal
-standard-cell timing DB that contains logic cells, rather than a timing-only,
-interface, or voltage-specific auxiliary view.
-
-Optional environment variables:
-
-```bash
-export DSM_ASIC_LABEL=performance_sku
-export DSM_ASIC_TARGET_MHZ=100
-export DSM_ASIC_ACTIVITY_FILE=/path/to/annotated.saif
-```
-
-When `DSM_ASIC_ACTIVITY_FILE` is absent, the power report is a vectorless
-estimate and is explicitly labelled as such in `summary.csv`.
-
-## One Configuration
-
-```bash
-bash syn/asic/run_performance_sku_dc.sh
-```
-
-The command writes an ignored directory below `syn/reports/` containing the
-DC log, mapped netlist, timing, area, hold, power, and constraint reports.
-It also writes `summary.csv` with the report provenance and critical path.
-
-## Frequency Sweep
-
-```bash
-bash syn/asic/run_performance_sku_dc_sweep.sh 100 200 300 400 500
-```
-
-Each frequency is an independent constrained synthesis run. A target is a
-timing pass only when its report has non-negative setup slack and no unmapped
-logic. `fmax_est_mhz` is derived from the reported critical path delay; it is
-not post-layout or multi-corner signoff.
-
-## Frontend Pareto Matrix
-
-```bash
-bash syn/asic/run_frontend_pareto_dc.sh
-```
-
-The matrix compares x4/x8/x16/x32 interpolation with DPD bypass, plus the
-frozen x32 Memory-Poly5 four-tap implementation. It is a PPA experiment only;
-use the matching MATLAB fixed-point analysis to attach EVM/SNDR/ACLR results.
-
-## Required Evidence
-
-For each reported row retain the generated, local report bundle and record:
-
-- technology label and PVT library identity;
-- target clock, critical path delay, setup slack, and hold slack;
-- total, combinational, and sequential cell area;
-- dynamic, leakage, and total power with its activity provenance;
-- critical startpoint and endpoint;
-- the exact RTL revision and parameter set.
-
-This flow is pre-layout synthesis only. It does not replace physical design,
-extracted-RC STA, MCMM signoff, IR/EM analysis, or activity-based power
-signoff.
+For interpolation studies, keep the frozen FPGA row fixed as the baseline.
+Any alternate taps or coefficient set is an experiment until its digital
+communication benchmark, bit-true tests, and FPGA/ASIC implementation evidence
+are reviewed together.
