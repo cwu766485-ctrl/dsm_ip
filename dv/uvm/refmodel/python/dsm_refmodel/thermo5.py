@@ -284,14 +284,87 @@ def tid_word(i_values, q_values, states, width=16, step=7168):
     return words, states
 
 
+def _ef2_component(samples, state, width, offset):
+    """Run one fixed-point EF2 component and return bipolar quantizer bits."""
+    input_low = -(1 << (width - 1))
+    input_high = (1 << (width - 1)) - 1
+    state_width = width + 4
+    state_low = -(1 << (state_width - 1))
+    state_high = (1 << (state_width - 1)) - 1
+    one = 1 << (width - 1)
+    e1, e2 = state
+    output = []
+    input_saturations = 0
+    state_saturations = 0
+    max_abs_u = 0
+    max_abs_state = max(abs(e1), abs(e2))
+    for sample in samples:
+        raw = int(sample) + int(offset)
+        x = min(max(raw, input_low), input_high)
+        input_saturations += int(x != raw)
+        u = x + (2 * e1) - e2
+        positive = u > 0
+        y = one if positive else -one
+        error_raw = u - y
+        error = min(max(error_raw, state_low), state_high)
+        state_saturations += int(error != error_raw)
+        output.append(1 if positive else -1)
+        e2, e1 = e1, error
+        max_abs_u = max(max_abs_u, abs(u))
+        max_abs_state = max(max_abs_state, abs(e1), abs(e2))
+    state[0], state[1] = e1, e2
+    return output, {
+        "input_saturation_samples": input_saturations,
+        "state_saturation_samples": state_saturations,
+        "max_abs_quantizer_input_lsb": max_abs_u,
+        "max_abs_error_state_lsb": max_abs_state,
+    }
+
+
+def tid_word_ef2(i_values, q_values, states=None, width=16, step=5120):
+    """Return a four-plane word using saturated fixed-point second-order EF.
+
+    State values are Q(width-1) signed integers clamped to width+4 bits.
+    Each branch uses ``u=x+2e1-e2`` and ``e=u-sign(u)``; the initial states
+    are zero. The branch offsets and Fs/4 packing match ``tid_word``.
+    """
+    if len(i_values) != len(q_values) or len(i_values) < 2 or len(i_values) % 2:
+        raise ValueError("TID requires equal I/Q vectors with even length >= 2")
+    if states is None:
+        states = [{"i": [0, 0], "q": [0, 0]} for _ in range(4)]
+    if len(states) != 4:
+        raise ValueError("TID state must contain four branches")
+    offsets = (3 * int(step), int(step), -int(step), -3 * int(step))
+    plane_words = []
+    branch_stats = []
+    for branch, offset in enumerate(offsets):
+        i_bits, i_stats = _ef2_component(i_values, states[branch]["i"], width, offset)
+        q_bits, q_stats = _ef2_component(q_values, states[branch]["q"], width, offset)
+        word = 0
+        for lane, (i_bit, q_bit) in enumerate(zip(i_bits, q_bits)):
+            if lane % 2 == 0:
+                bit_i, bit_q = i_bit > 0, q_bit < 0
+            else:
+                bit_i, bit_q = i_bit < 0, q_bit > 0
+            if bit_i:
+                word |= 1 << (2 * lane)
+            if bit_q:
+                word |= 1 << (2 * lane + 1)
+        plane_words.append(word)
+        branch_stats.append({"branch": branch, "i": i_stats, "q": q_stats})
+    return plane_words, states, branch_stats
+
+
 def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
-                        interp_taps=2, step=7168):
+                        interp_taps=2, step=7168, tidsm_order=1):
     """Model gain, two x2 stages, identity DPD, and the four TID code planes."""
     count = len(i_words)
     if count != len(q_words) or count != len(frame_starts) or count != len(frame_gains):
         raise ValueError("I/Q and frame metadata word counts must match")
     if interp_taps not in INTERP_COEFFS_Q14:
         raise ValueError("interp_taps must be 2, 3, or 4")
+    if tidsm_order not in (1, 2):
+        raise ValueError("tidsm_order must be 1 or 2")
     for i_word, q_word in zip(i_words, q_words):
         if len(i_word) != LANES_IN or len(q_word) != LANES_IN:
             raise ValueError("each source word must contain eight I and Q samples")
@@ -312,22 +385,29 @@ def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
         # The frozen SKU's programmable DPD is configured to exact Q2.14 unity.
         x2_i, x2_q, h2_i, h2_q = interp_x2_vector(
             x1_i, x1_q, h2_i, h2_q, interp_taps)
-        raw, states = tid_word(x2_i, x2_q, states, width=16, step=step)
+        if tidsm_order == 1:
+            raw, states = tid_word(x2_i, x2_q, states, width=16, step=step)
+        else:
+            raw, states, _ = tid_word_ef2(x2_i, x2_q, states, width=16, step=step)
         raw_words.append(raw)
 
-    if count:
-        flush, states = tid_word([0] * 32, [0] * 32, states, width=16, step=step)
+    if tidsm_order == 2:
+        # The EF2 RTL emits one result per accepted vector; its output boundary
+        # adds latency but does not discard the first transaction.
+        output_words = raw_words
     else:
-        flush = [0, 0, 0, 0]
-
-    # MATLAB drops the first pipelined TID result, then appends one drain word.
-    output_words = raw_words[1:] + [flush] if raw_words else []
+        if count:
+            flush, states = tid_word([0] * 32, [0] * 32, states, width=16, step=step)
+        else:
+            flush = [0, 0, 0, 0]
+        # MATLAB drops the first pipelined TID result, then appends one drain word.
+        output_words = raw_words[1:] + [flush] if raw_words else []
     return output_words
 
 
 def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
                                 step=7168, dpd_coefficients=None,
-                                dpd_active_taps=None):
+                                dpd_active_taps=None, tidsm_order=1):
     """Generate four-plane oracle words for the streaming centered-cubic SKU.
 
     Each frame is zero-extended independently for the two centered FIR stages.
@@ -337,6 +417,8 @@ def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
     count = len(i_words)
     if count != len(q_words) or count != len(frame_starts) or count != len(frame_gains):
         raise ValueError("I/Q and frame metadata word counts must match")
+    if tidsm_order not in (1, 2):
+        raise ValueError("tidsm_order must be 1 or 2")
     if not count:
         return []
     for i_word, q_word in zip(i_words, q_words):
@@ -384,11 +466,17 @@ def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
             raise ValueError("interpolated centered frame must contain full 32-lane TID words")
         for first in range(0, len(interpolated), 32):
             block = interpolated[first:first + 32]
-            word, states = tid_word(
-                [sample[0] for sample in block], [sample[1] for sample in block],
-                states, width=16, step=step)
+            block_i = [sample[0] for sample in block]
+            block_q = [sample[1] for sample in block]
+            if tidsm_order == 1:
+                word, states = tid_word(block_i, block_q, states, width=16, step=step)
+            else:
+                word, states, _ = tid_word_ef2(
+                    block_i, block_q, states, width=16, step=step)
             raw_words.append(word)
 
+    if tidsm_order == 2:
+        return raw_words
     flush, states = tid_word([0] * 32, [0] * 32, states, width=16, step=step)
     return raw_words[1:] + [flush]
 

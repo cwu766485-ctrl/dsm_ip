@@ -18,6 +18,16 @@ module thermo5_sku_uvm_tb;
 `else
   localparam bit USE_LOW_POWER_CTRL = 1'b0;
 `endif
+`ifdef THERMO5_TIDSM_ORDER
+  localparam int USE_TIDSM_ORDER = `THERMO5_TIDSM_ORDER;
+`else
+  localparam int USE_TIDSM_ORDER = 1;
+`endif
+`ifdef THERMO5_STEP
+  localparam int USE_STEP = `THERMO5_STEP;
+`else
+  localparam int USE_STEP = 7168;
+`endif
   logic src_clk=0, core_clk=0;
   logic axil_clk=0;
   logic axil_rst_n;
@@ -49,6 +59,7 @@ module thermo5_sku_uvm_tb;
   logic [15:0] identity_c1 = 16'd16384;
 `ifdef THERMO5_AXIL_CONTROL
   tid32_thermo5_axi_lite_axis_frontend_tx #(
+    .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),
     .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
     .DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
@@ -76,6 +87,7 @@ module thermo5_sku_uvm_tb;
   assign bus.cfg_active_payload=dut.u_cfg.cfg_active_core;
 `else
   tid32_thermo5_axis_frontend_tx #(
+    .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),
     .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
     .DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO),
     .ENABLE_LOW_POWER_CTRL(USE_LOW_POWER_CTRL)

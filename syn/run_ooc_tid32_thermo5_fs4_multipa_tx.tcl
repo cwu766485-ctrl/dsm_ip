@@ -12,6 +12,7 @@ create_project -in_memory -part $part
 read_verilog -sv [file join $root rtl gt gt_tx_user_bridge.sv]
 read_verilog -sv [file join $root rtl gt gt_tx_raw64_boundary.sv]
 read_verilog -sv [file join $root rtl tx_bandpass_if tid32_cartesian_fs4_gt_tx.sv]
+read_verilog -sv [file join $root rtl tx_bandpass_if tid32_cartesian_ef2_fs4_gt_tx.sv]
 read_verilog -sv [file join $root rtl tx_bandpass_if tid32_thermo5_fs4_multipa_tx.sv]
 read_verilog -sv [file join $root syn rtl tid32_thermo5_fs4_multipa_tx_ooc.sv]
 set_param general.maxThreads 1

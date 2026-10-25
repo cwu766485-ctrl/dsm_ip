@@ -50,9 +50,13 @@ THERMO5_USE_AXIL ?= 0
 THERMO5_TOP ?= thermo5_sku_uvm_tb
 THERMO5_CENTERED_CUBIC ?= 0
 THERMO5_LOW_POWER ?= 0
+THERMO5_TIDSM_ORDER ?= 1
+THERMO5_STEP ?= 7168
 THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,) \
 	$(if $(filter 1,$(THERMO5_CENTERED_CUBIC)),+define+THERMO5_CENTERED_CUBIC,) \
-	$(if $(filter 1,$(THERMO5_LOW_POWER)),+define+THERMO5_LOW_POWER,)
+	$(if $(filter 1,$(THERMO5_LOW_POWER)),+define+THERMO5_LOW_POWER,) \
+	+define+THERMO5_TIDSM_ORDER=$(THERMO5_TIDSM_ORDER) \
+	+define+THERMO5_STEP=$(THERMO5_STEP)
 THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
@@ -109,6 +113,7 @@ help:
 	@echo "  make thermo5-axil-boundary-phase-vcs-run  Run commit/frame-boundary phase case"
 	@echo "  make thermo5-axil-vcs-regression  Run focused AXI-Lite tests, integration tests and URG merge"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
+	@echo "  make thermo5-vcs-run THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120  Run EF2 candidate bittrue test"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
 	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
 	@echo "  make thermo5-coverage-merge  Merge passing thermo5 VCS VDBs with URG"
@@ -118,7 +123,7 @@ help:
 	@echo "  make verdi RUN_TAG=...   Open an FSDB generated with FSDB=1"
 	@echo "Optional targets: questa-run, check-tools, clean"
 	@echo "Variables: UVM_TESTNAME, UVM_SEED, RUN_TAGS, UVM_VERBOSITY, COVERAGE, FSDB, VERDI_HOME"
-	@echo "Thermo5: UVM_SEED, THERMO5_EXTRA_ARGS=+STRESS_PA_READY"
+	@echo "Thermo5: UVM_SEED, THERMO5_EXTRA_ARGS=+STRESS_PA_READY, THERMO5_TIDSM_ORDER (1/2), THERMO5_STEP"
 
 check-tools:
 	@command -v $(VCS) >/dev/null 2>&1 || { echo "ERROR: VCS not found"; exit 127; }

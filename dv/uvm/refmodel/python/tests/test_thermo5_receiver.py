@@ -12,6 +12,7 @@ from dsm_refmodel.thermo5_receiver import (
     run_tid_plane_stream,
     serialize_thermo5_plane_words,
 )
+from benchmark_thermo5_tid_receiver import demodulate_metrics, make_256qam_ofdm
 
 
 class Thermo5ReceiverTests(unittest.TestCase):
@@ -89,6 +90,15 @@ class Thermo5ReceiverTests(unittest.TestCase):
             expected_i, expected_q, step=7168, drop_first_word=True,
             append_flush=True)
         self.assertEqual(words, separated_words)
+
+    def test_256qam_demodulator_hard_decisions_on_ideal_frame(self):
+        stimulus = make_256qam_ofdm(seed=4, symbols=1, rms_drive=0.05)
+        baseband = [complex(sample_i, sample_q) / 32768.0
+                    for sample_i, sample_q in stimulus["source_iq"]]
+        metrics = demodulate_metrics(baseband, stimulus)
+        self.assertEqual(metrics["qam_symbols"], 584)
+        self.assertEqual(metrics["symbol_errors"], 0)
+        self.assertEqual(metrics["uncoded_bit_errors_natural_binary"], 0)
 
 
 if __name__ == "__main__":

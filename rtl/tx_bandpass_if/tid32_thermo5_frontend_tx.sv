@@ -27,7 +27,8 @@ module tid32_thermo5_frontend_tx #(
   parameter int GAIN_FRAC = 14,
   parameter int STEP = 7168,
   parameter bit HOLD_STATE_ON_DISABLE = 1'b0,
-  parameter bit BYPASS_DPD = 1'b0
+  parameter bit BYPASS_DPD = 1'b0,
+  parameter int TIDSM_ORDER = 1
 ) (
   input  wire logic                                      clk,
   input  wire logic                                      rst_n,
@@ -217,7 +218,8 @@ module tid32_thermo5_frontend_tx #(
     .out_i_vec(i2_fifo_i), .out_q_vec(i2_fifo_q)
   );
 
-  tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES), .STEP(STEP)) u_tid (
+  tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES),
+    .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER)) u_tid (
     .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid), .in_ready(tid_ready),
     .in_i_poly_vec(i2_fifo_i), .in_q_poly_vec(i2_fifo_q),
     .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)

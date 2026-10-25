@@ -35,6 +35,8 @@ def main():
     parser.add_argument("--dpd-profile", choices=("identity", "nonlinear_test"),
                         default="identity")
     parser.add_argument("--step", type=int, default=7168)
+    parser.add_argument("--tidsm-order", type=int, choices=(1, 2), default=1,
+                        help="use the frozen first-order or experimental EF2 TIDSM")
     parser.add_argument("--frame-start-words", default="1,15,36")
     parser.add_argument("--frame-gains", default="16384,14336,12288")
     args = parser.parse_args()
@@ -55,7 +57,8 @@ def main():
         pa_words = run_centered_cubic_frontend(
             i_words, q_words, starts, gains, step=args.step,
             dpd_coefficients=coefficients,
-            dpd_active_taps=2 if coefficients is not None else None)
+            dpd_active_taps=2 if coefficients is not None else None,
+            tidsm_order=args.tidsm_order)
     else:
         if args.dpd_profile != "identity":
             parser.error("--dpd-profile nonlinear_test currently requires --interp-mode centered_cubic")
@@ -63,12 +66,13 @@ def main():
             i_words, q_words, starts, gains,
             interp_taps=args.interp_taps,
             step=args.step,
+            tidsm_order=args.tidsm_order,
         )
     write_vectors(args.output_dir, i_words, q_words, starts, gains, pa_words)
     print("THERMO5_PYTHON_VECTORS=PASS")
     print("source_words=%d output_words_per_plane=%d" % (len(i_words), len(pa_words)))
-    print("interp_mode=%s interp_taps=%d dpd_profile=%s step=%d profile=%s" % (
-        args.interp_mode, args.interp_taps, args.dpd_profile, args.step,
+    print("interp_mode=%s interp_taps=%d dpd_profile=%s tidsm_order=%d step=%d profile=%s" % (
+        args.interp_mode, args.interp_taps, args.dpd_profile, args.tidsm_order, args.step,
         "input_mem" if args.input_dir else args.profile))
     print("output_dir=%s" % args.output_dir.resolve())
 

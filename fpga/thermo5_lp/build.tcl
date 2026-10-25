@@ -25,6 +25,7 @@ foreach file [list \
   [file join $root rtl interp dsm_interp_x2_centered_cubic_vector.sv] \
   [file join $root rtl interp dsm_interp_x2_polyphase_vector.sv] \
   [file join $root rtl tx_bandpass_if tid32_cartesian_fs4_gt_tx.sv] \
+  [file join $root rtl tx_bandpass_if tid32_cartesian_ef2_fs4_gt_tx.sv] \
   [file join $root rtl tx_bandpass_if tid32_thermo5_fs4_multipa_tx.sv] \
   [file join $root rtl tx_bandpass_if tid32_thermo5_frontend_tx.sv] \
   [file join $root rtl tx_bandpass_if tid32_thermo5_axis_frontend_tx.sv] \

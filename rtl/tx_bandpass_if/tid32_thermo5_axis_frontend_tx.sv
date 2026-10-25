@@ -15,7 +15,8 @@ module tid32_thermo5_axis_frontend_tx #(
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
   parameter bit ENABLE_LOW_POWER_CTRL = 1'b0,
-  parameter int LP_PREFILL_WORDS = 4
+  parameter int LP_PREFILL_WORDS = 4,
+  parameter int TIDSM_ORDER = 1
 ) (
   input  wire logic                            s_axis_aclk,
   input  wire logic                            s_axis_aresetn,
@@ -130,7 +131,7 @@ module tid32_thermo5_axis_frontend_tx #(
   );
 
   tid32_thermo5_frontend_tx #(.W(W), .IN_LANES(8), .DPD_LANES(16), .GAIN_W(GAIN_W),
-    .STEP(STEP), .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
+    .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER), .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
     .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD),
     .HOLD_STATE_ON_DISABLE(ENABLE_LOW_POWER_CTRL)) u_frontend (
     .clk(core_clk), .rst_n(core_aresetn), .enable(frontend_enable_q),

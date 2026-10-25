@@ -9,6 +9,7 @@ from dsm_refmodel.thermo5 import (
     round_shift_symmetric,
     run_frozen_frontend,
     run_centered_cubic_frontend,
+    tid_word_ef2,
     apply_memory_polynomial,
     nonlinear_test_dpd_coefficients,
     write_vectors,
@@ -82,6 +83,40 @@ class Thermo5ReferenceTests(unittest.TestCase):
         output = run_centered_cubic_frontend(i_words, q_words, starts, gains)
         self.assertEqual(len(output), 56)
         self.assertTrue(all(len(word) == 4 for word in output))
+
+    def test_ef2_frontend_produces_one_fixed_point_word_per_input(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=14, seed=227, frame_start_words=(1,), frame_gains=(16384,))
+        output = run_frozen_frontend(
+            i_words, q_words, starts, gains, interp_taps=2,
+            step=5120, tidsm_order=2)
+        self.assertEqual(len(output), len(i_words))
+        self.assertTrue(all(len(word) == 4 for word in output))
+        self.assertTrue(all(0 <= plane < (1 << 64)
+                            for word in output for plane in word))
+
+    def test_ef2_saturated_state_contains_rail_initial_conditions(self):
+        state_min, state_max = -(1 << 19), (1 << 19) - 1
+        states = [{"i": [state_max, state_min], "q": [state_min, state_max]}
+                  for _ in range(4)]
+        samples_i = [32767 if lane % 2 else -32768 for lane in range(32)]
+        samples_q = [-32768 if lane % 2 else 32767 for lane in range(32)]
+        _, states, diagnostics = tid_word_ef2(
+            samples_i, samples_q, states=states, step=0)
+        self.assertGreater(sum(
+            row[component]["state_saturation_samples"]
+            for row in diagnostics for component in ("i", "q")), 0)
+        for branch in states:
+            for component in ("i", "q"):
+                self.assertTrue(all(state_min <= value <= state_max
+                                    for value in branch[component]))
+
+    def test_fixed_ef2_centered_frontend_has_no_frame_tail_word(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=14, seed=228, frame_start_words=(1,), frame_gains=(16384,))
+        output = run_centered_cubic_frontend(
+            i_words, q_words, starts, gains, step=5120, tidsm_order=2)
+        self.assertEqual(len(output), len(i_words))
 
     def test_memory_polynomial_unity_and_nonlinear_q_formats(self):
         samples = [(16384, 0), (0, -8192), (12000, 7000)]

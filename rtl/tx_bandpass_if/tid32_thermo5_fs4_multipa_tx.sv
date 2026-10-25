@@ -14,7 +14,8 @@
 module tid32_thermo5_fs4_multipa_tx #(
   parameter int W = 16,
   parameter int CHANNELS = 32,
-  parameter int STEP = 6144
+  parameter int STEP = 6144,
+  parameter int TIDSM_ORDER = 1
 ) (
   input  wire logic                         clk,
   input  wire logic                         rst_n,
@@ -69,12 +70,26 @@ module tid32_thermo5_fs4_multipa_tx #(
   genvar b;
   generate
     for (b = 0; b < 4; b = b + 1) begin : g_branch
-      tid32_cartesian_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS)) u_tid (
-        .clk(clk), .rst_n(rst_n), .in_valid(in_valid && in_ready),
-        .in_ready(branch_in_ready[b]), .in_i_poly_vec(i_vec[b]),
-        .in_q_poly_vec(q_vec[b]), .gt_valid(pa_valid[b]),
-        .gt_ready(common_ready), .gt_data(pa_data[b])
-      );
+      if (TIDSM_ORDER == 1) begin : g_order1
+        tid32_cartesian_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS)) u_tid (
+          .clk(clk), .rst_n(rst_n), .in_valid(in_valid && in_ready),
+          .in_ready(branch_in_ready[b]), .in_i_poly_vec(i_vec[b]),
+          .in_q_poly_vec(q_vec[b]), .gt_valid(pa_valid[b]),
+          .gt_ready(common_ready), .gt_data(pa_data[b])
+        );
+      end else if (TIDSM_ORDER == 2) begin : g_order2
+        tid32_cartesian_ef2_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS)) u_tid (
+          .clk(clk), .rst_n(rst_n), .in_valid(in_valid && in_ready),
+          .in_ready(branch_in_ready[b]), .in_i_poly_vec(i_vec[b]),
+          .in_q_poly_vec(q_vec[b]), .gt_valid(pa_valid[b]),
+          .gt_ready(common_ready), .gt_data(pa_data[b])
+        );
+      end else begin : g_bad_order
+        initial $error("TIDSM_ORDER must be 1 or 2");
+        assign branch_in_ready[b] = 1'b0;
+        assign pa_valid[b] = 1'b0;
+        assign pa_data[b] = '0;
+      end
     end
   endgenerate
 endmodule

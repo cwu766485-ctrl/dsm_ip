@@ -1,5 +1,117 @@
 # Update Log
 
+## 2026-10-25 15:09 SGT - run EF2 long-frame QAM256 robustness sweep
+
+- Added `benchmark_thermo5_ef2_robust.py` for a 12-symbol, multi-seed 256-QAM
+  BER study covering EF2 STEP/input RMS, 18/19/20-bit model state rails, and
+  joint 0/3/6-dB backoff with no/7/9-dB source-rate radial PAPR clipping. The
+  development and held-out seed sets are disjoint. Output-chain thermal-noise
+  power is adjusted from each seed's measured DPA/output RMS relative to its
+  no-clipping, 0-dB reference.
+- Generalized only the Python fixed-point model's EF2 state width knob; the
+  Q1.15 input, bipolar quantizer, 2/-1 feedback, and chronological state order
+  remain unchanged. Updated benchmark sorting to prioritize natural-binary
+  uncoded QAM256 BER, added state-width/PAPR checks, and documented the run.
+- Development winner: STEP=5120, RMS=0.10, 4/168,192 bit errors (BER
+  2.378e-5), 2.459% mean EVM. Independent held-out confirmation: 23/168,192
+  errors (BER 1.367e-4), 2.461% mean EVM, no saturation. A 19-bit state
+  matched 20-bit results without clipping across six tested 12-symbol QAM
+  waveforms; 18-bit clipped 54 times. Constant high-level input still clips
+  at 19 bits, so RTL remains at 20 bits pending a formally defined operating
+  envelope. No first-order default or RTL parameter was changed.
+- No-PAPR-limit/0-dB-backoff was the best tested joint point in the current
+  illustrative output-chain model. Its development nominal/stress BERs were
+  1.249e-4/6.778e-4; the held-out baseline produced 33/129 analog-chain bit
+  errors over 168,192 bits. These DPA/output-power/noise values are model
+  sensitivities, not calibrated hardware results.
+- Files: robust EF2 benchmark, fixed-point experiment model, DSM experiment
+  tests, Python reference README, command index, EF2 boundedness/verification
+  note, execution frontier, this log. Full JSON is under ignored
+  `runs/thermo5_ef2_robust_20261025/summary.json`.
+- Checks: `py_compile` PASS; 36 Python unit tests PASS; shortened 2-symbol
+  end-to-end smoke PASS; full default 12-symbol sweep completed in 10m55s.
+  Regenerated the 56-word centered-cubic EF2 oracle; VCS V-2023.12-SP1 focused
+  UVM bit-true compile/runtime PASS (32 source / 56 output words, four planes
+  matching, zero UVM_ERROR/FATAL). The held-out report deduplicates an
+  identical no-CFR baseline rerun from the first script version. The full VCS
+  regression, XSim, and FPGA resource/timing were not run. BER is uncoded
+  natural-binary labeling; the output chain is not calibrated, and the
+  selected candidate still has nonzero errors.
+
+## 2026-10-24 23:40 SGT - add bounded fixed-point EF2 RTL candidate
+
+- Added optional `TIDSM_ORDER=2` to the thermo5 four-branch transmitter and
+  propagated it through parallel, AXIS, AXI-Lite, UVM, and source manifests.
+  First-order behavior remains the default. The EF2 implementation uses the
+  samplewise recurrence `u=x+2e1-e2`, signed Q1.15 input, signed Q4.15
+  saturated state, and signed Q6.15 temporary arithmetic.
+- Added the inductive no-wrap/state-bound proof at
+  `docs/verification/thermo5-ef2-stability.md`, a fixed-point vector oracle,
+  an independent integer-stream benchmark mode, EF2 vector generation, and
+  qualitative FIR/drive/backoff/PAPR/STEP notes.
+- Fixed-point 256-QAM A/B confirmation at STEP=5120 matches the prior floating
+  EF2 result: 2.4724% mean / 2.4890% worst-seed digital EVM, 32.138-dB mean
+  SNDR, 4 symbol errors / 5 natural-binary bit errors over 14,016 decisions.
+  All three seeds had zero input/state saturation; nominal/stress sensitivity
+  EVM is 2.6023%/3.0036% with 11/46 errors. These are Python model results,
+  not a measured link or RTL simulation.
+- Files: `rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv`, thermo5 RTL
+  wrappers, UVM filelist/testbench/Makefile, Python reference/benchmark/tests,
+  XSim/OOC/FPGA source manifests, `dv/uvm/refmodel/python/README.md`,
+  `docs/ai-native/commands.md`, the EF2 proof, execution frontier, and this log.
+- Checks: Python unit tests; fixed-point word-vs-stream bit-true comparison;
+  three-seed 8-symbol 256-QAM benchmark; 56-word centered-cubic EF2 vector
+  generation; `py_compile`; and `git diff --check` all PASS. VCS candidate
+  execution was attempted, but V-2023.12-SP1 refuses the WSL2 6.6.87.2 kernel.
+  `make formal-check-tools` could not run because its referenced probe script
+  is missing, and direct lookup found no formal engine. The required XSim
+  command cannot start because `powershell`/XSim are unavailable here. No
+  VCS/formal/XSim PASS is claimed. FPGA resource/timing remains intentionally
+  unrun.
+- Remaining: run the EF2 VCS UVM bit-true test and regression on a supported
+  EDA host; then qualify FPGA timing/resources before considering a default
+  change. Keep default order 1 and STEP 7168.
+
+## 2026-10-24 23:04 SGT - complete STEP and DSM order benchmark for 256-QAM
+
+- Added `benchmark_thermo5_step_ntf.py` and the Python-only TIDSM experiment
+  model. The tested first-order RTL recurrence remains bit-checked against its
+  scalar reference; second-order error-feedback modes are explicitly labeled
+  floating-point prototypes. Added hard-decision SER and natural-binary
+  uncoded BER metrics to the receiver screen, along with state/headroom
+  diagnostics and summary flags that report RTL audit as not applicable for
+  the non-RTL candidates.
+- Swept current RTL STEP values 0..8192 and NTF/order candidates 1..3. In the
+  three-seed, eight-symbol confirmation, current first-order STEP=7168 gave
+  3.273% mean / 3.310% worst EVM, 29.702-dB mean SNDR, and 198 symbol errors
+  among 14,016 decisions. EF2 STEP=5120 gave 2.472% / 2.489% EVM,
+  32.138-dB mean SNDR, 4 symbol errors and 5 natural-binary bit errors; its
+  largest observed state/input magnitudes were 4.976/5.976. EF2 STEP=6144 was
+  slightly worse; EF2 STEP=7168 exceeded the finite-frame headroom check; EF3
+  diverged on this workload. The first-order grid's best setting remains the
+  existing STEP=7168.
+- Matched nominal/stress output-chain runs (behavioral DPA, output FIR, and
+  kTB/NF; illustrative, uncalibrated) gave EF2 STEP=5120 EVM 2.602%/3.004%
+  and symbol errors 11/46. The current first-order STEP=7168 gave
+  3.370%/3.685% and 234/359 errors. Thus EF2 clears the 3.5% stress EVM screen
+  in this model but is not error-free. Reports are under
+  `runs/thermo5_step_ntf_sweep_20261024/`.
+- Changed files: `dv/uvm/refmodel/python/benchmark_thermo5_tid_receiver.py`,
+  `benchmark_thermo5_step_ntf.py`,
+  `dsm_refmodel/thermo5_experiments.py`, two Python test files,
+  `dv/uvm/refmodel/python/README.md`, `docs/ai-native/commands.md`,
+  `docs/exec-plans/active/execution-frontier.md`, and this log.
+- Checks: three-seed STEP/order and finalist benchmarks; matched nominal/stress
+  output-chain benchmarks; Python unit tests and `py_compile`; 56-word oracle
+  vector generation; generic-FIFO VCS thermo5 regression with six positive
+  tests and the expected illegal-frame assertion (zero UVM_ERROR/FATAL);
+  `git diff --check`.
+- Limits: EF2 is not fixed-point or RTL equivalent and has no global loop
+  stability proof. Finite-frame error counts do not establish production BER.
+  XSim is unavailable on this Linux host. No FPGA resource/timing analysis or
+  RTL change was made; retain the current frozen first-order RTL until EF2 is
+  fixed-point bounded, bit-true validated, and implementation-qualified.
+
 ## 2026-10-24 22:16 SGT - close centered-cubic DPD, packet, and low-power checks
 
 - Extended the Python fixed-point oracle with the RTL memory-polynomial

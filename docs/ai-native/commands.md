@@ -59,6 +59,81 @@ make -C dv/uvm/sim thermo5-centered-cubic-low-power-vcs PYTHON=python3 \
   THERMO5_OUT="$PWD/runs/thermo5_centered_low_power_vcs"
 ```
 
+From `dv/uvm/refmodel/python/`, run the STEP and NTF/order communications
+screens. The first two commands are short architecture sweeps; the third is
+the 8-symbol, three-seed finalist confirmation. Add
+`--analog-profiles nominal,stress` to include the illustrative output chain.
+
+```bash
+python3 benchmark_thermo5_step_ntf.py --symbols 2 \
+  --steps 0,1024,2048,3072,4096,5120,6144,7168,8192 \
+  --modes rtl_first_order \
+  --json ../../../../runs/thermo5_step_ntf_sweep_20261024/step_sweep_2sym.json
+python3 benchmark_thermo5_step_ntf.py --symbols 2 \
+  --steps 5120,6144,7168,8192 \
+  --modes rtl_first_order,ef_order1,ef_order2,ef_order3 \
+  --json ../../../../runs/thermo5_step_ntf_sweep_20261024/ntf_order_sweep_2sym.json
+python3 benchmark_thermo5_step_ntf.py --symbols 8 --seeds 101,307,503 \
+  --steps 5120,6144,7168 --modes rtl_first_order,ef_order2 \
+  --json ../../../../runs/thermo5_step_ntf_sweep_20261024/ntf_finalists_8sym.json
+python3 benchmark_thermo5_step_ntf.py --symbols 8 --seeds 101,307,503 \
+  --steps 5120 --modes ef_order2_fixed --analog-profiles nominal,stress \
+  --json ../../../../runs/thermo5_step_ntf_sweep_20261024/ef2_step5120_fixed_analog_8sym.json
+```
+
+The first-order mode is checked against the scalar RTL recurrence. The
+floating EF modes are architecture studies; `ef_order2_fixed` uses the
+integer Q1.15/Q4.15 recurrence used by the optional `TIDSM_ORDER=2` RTL.
+EVM/SNDR and hard decisions are measured after four-plane reconstruction and
+the declared OFDM receiver; natural-binary BER is a screen, not a Gray-coded
+BER or production-link guarantee. Nominal/stress DPA, output FIR and kTB/NF
+settings are illustrative, not calibrated board data.
+
+To run the longer EF2 STEP/input-level, state-width, and joint PAPR/backoff
+study with disjoint development and held-out seeds:
+
+```bash
+python3 benchmark_thermo5_ef2_robust.py --symbols 12 --jobs 3 \
+  --json ../../../../runs/thermo5_ef2_robust/summary.json
+```
+
+The default development grid is STEP 4864..5376 in 128-unit increments and
+RMS input drive 0.06/0.08/0.10. State widths 18/19/20 are screened with the
+same signed Q1.15 input, sign quantizer, and EF2 feedback coefficients. The
+joint sweep tests 0/3/6 dB power backoff with no/7/9 dB radial PAPR clipping;
+clipping is applied to source-rate samples before interpolation and EF2.
+Backoff scales amplitude by `10^(-dB/20)`. Development winners are confirmed
+on separate seeds. Natural-binary uncoded QAM256 BER is the primary ranking
+metric; the report also includes per-seed BER, EVM, SNDR, input/state
+saturation, and nominal/stress output-chain BER. Zero-error BER bounds use
+the approximate `3/N` 95% rule and assume independent bit errors.
+
+The state-width result is workload evidence, not a universal proof that a
+narrow state never saturates. Width sweeps do not alter RTL. EF2 state still
+advances in chronological sample order; parallel low-rate loops would be a
+different NTF and are outside this equivalence study. DPA/output-power/noise
+profiles remain sensitivity assumptions until calibrated to the target chain.
+
+Generate EF2 candidate vectors and run the VCS bit-true test on a supported
+EDA host:
+
+```bash
+python3 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+  --output-dir runs/thermo5_ef2_centered_vectors --words 56 --seed 1101 \
+  --interp-mode centered_cubic --tidsm-order 2 --step 5120
+make -C dv/uvm/sim thermo5-vcs-run PYTHON=python3 \
+  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_CENTERED_CUBIC=1 \
+  THERMO5_VECTORS="$PWD/runs/thermo5_ef2_centered_vectors" \
+  THERMO5_OUT="$PWD/runs/thermo5_ef2_vcs"
+```
+
+The bounded-state argument and verification status are in
+`docs/verification/thermo5-ef2-stability.md`. On 2026-10-25, VCS
+V-2023.12-SP1 compiled and passed this focused 56-word EF2 UVM bit-true test:
+32 input words produced 56 output words with all four planes matching and
+zero UVM errors/fatals. This is not the full EF2 regression. The run artifacts
+are under `runs/thermo5_ef2_robust_20261025/vcs/`.
+
 The benchmarks' adjacent-band metric is not standard ACLR. Python-native
 random vectors do not reproduce MATLAB's random sequence; reuse MATLAB source
 `.mem` files with `--input-dir` for direct oracle comparisons. The GT bit-error
@@ -73,10 +148,12 @@ resource and timing evaluation remains open.
 The architecture A/B sweep evaluates FIR and input drive/PAPR only. It uses a
 complex-baseband DPA/output-network/noise surrogate with two development and
 three held-out seeds; the actual TID-plane waveform is not decoded for those
-EVM/SNDR numbers, and no FPGA PPA/timing is implied. STEP and DSM-order changes
-remain later experiments. The centered-cubic FIR is the selected algorithm;
-the optional RTL implementation remains disabled by default pending FPGA
-resource/timing evaluation and system integration checks.
+EVM/SNDR numbers, and no FPGA PPA/timing is implied. The Python STEP and
+DSM-order screens are now available for algorithm selection. A bounded
+fixed-point EF2 model and optional RTL candidate now exist; its focused VCS
+bit-true test passes, while the full regression and FPGA resource/timing
+evaluation remain open. The centered-cubic FIR remains an optional
+implementation pending the full integration checks.
 
 ## Build/flow targets
 

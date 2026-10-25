@@ -1,5 +1,121 @@
 # Execution frontier
 
+## P0 EF2 long-frame QAM256 BER, state-width, and PAPR/backoff screen (2026-10-25)
+
+Added `benchmark_thermo5_ef2_robust.py`. It retains the existing fixed-point
+EF2 recurrence (`u=x+2e1-e2`, bipolar sign quantizer, Q1.15 input) and the
+chronological sample-state update; only STEP, input waveform level, optional
+state saturation rails, source-rate PAPR clipping, and whole-waveform backoff
+vary. The scan uses 12 OFDM symbols per seed, 4096 FFT, 512 CP, 584 carriers,
+three development seeds (701/709/719), and disjoint held-out seeds
+(809/811/821). BER is the primary rank key; current mapper labels are
+natural-binary and uncoded.
+
+The 45-point development STEP/RMS sweep selected STEP=5120 at RMS=0.10 with
+4/168,192 bit errors (BER 2.378e-5) and 2.459% mean EVM. On the independent
+held-out set it measured 23/168,192 digital errors (BER 1.367e-4), worst-seed
+BER 1.962e-4, 2.461% mean EVM, and no DSM input/state saturation. The 19-bit
+state matched 20-bit output and BER with zero clipping across all six tested
+12-symbol QAM waveforms; maximum state was 5.132 against its approximately
+8-unit rail. The 18-bit candidate clipped 54 times across its six frames.
+This is evidence for the tested OFDM envelope only: a constant high signed
+input also saturates the 19-bit model, so no universal no-clipping claim is
+made and the 20-bit RTL is unchanged.
+
+The nine-point 0/3/6-dB-backoff × no/7/9-dB-PAPR-limit development sweep
+selected no clipping and 0-dB backoff by worst nominal/stress output-chain
+BER. The development baseline's nominal/stress BER was 1.249e-4/6.778e-4.
+At 6-dB backoff with no clipping, stress BER rose to 2.699e-3 and modeled
+nominal output power fell from -30 to about -36 dBm. The held-out baseline
+measured 33 nominal and 129 stress bit errors (168,192 bits per profile).
+The output-chain result is sensitivity modeling, with output power scaled by
+measured DPA RMS relative to the per-seed baseline; it is not calibrated PA or
+board data. Because baseline won development, it is the only CFR/backoff point
+retested on held-out seeds.
+
+Evidence: `runs/thermo5_ef2_robust_20261025/summary.json`. Thirty-six Python
+unit tests and `py_compile` pass. A 2-symbol smoke run completed. No RTL,
+feedback coefficient, quantizer, or sample-time behavior changed. The
+existing optional EF2 RTL remains a 20-bit state, and the frozen first-order
+default remains unchanged. Regenerated the 56-word centered-cubic EF2 oracle
+and ran `thermo5-vcs-run` with `TIDSM_ORDER=2`, STEP=5120: VCS compile and
+focused UVM bit-true test PASS, 32 source words / 56 output words, four planes
+bit-matched, zero UVM_ERROR/FATAL. Logs and vectors are under
+`runs/thermo5_ef2_robust_20261025/`. The full VCS regression, XSim, and FPGA
+resource/timing were not run. Next: select the required system BER target and
+operating input envelope; then run the full EF2 VCS regression before any RTL
+width/default change.
+
+## P0 EF2 fixed-point boundedness and RTL candidate (2026-10-24)
+
+Added optional `TIDSM_ORDER=2` through the thermo5 wrappers, with first-order
+remaining the default. `tid32_cartesian_ef2_fs4_gt_tx.sv` implements
+`u=x+2e1-e2`, a sign quantizer, and signed-20-bit saturated error feedback.
+Inputs are signed Q1.15; state is signed Q4.15; temporary arithmetic is signed
+Q6.15. `docs/verification/thermo5-ef2-stability.md` proves inductively that
+state is bounded and arithmetic cannot wrap for any signed-16 input. This is
+not a proof that the unclamped loop never saturates.
+
+The Python word oracle and independent integer sample-stream model agree on
+the four output planes. All 33 Python tests pass. A fixed-point 256-QAM
+confirmation at STEP=5120, centered cubic, 4096 FFT, 512 CP, 584 active
+carriers, eight symbols, and seeds 101/307/503 measures 2.4724% mean /
+2.4890% worst-seed digital EVM, 32.138-dB mean SNDR, 4 symbol errors, and 5
+natural-binary bit errors in 14,016 decisions. Input/state saturation counts
+are zero; largest observed state/input are 4.9763/5.9763. The illustrative
+nominal/stress output-chain EVM is 2.6023%/3.0036%, with 11/46 symbol errors.
+
+Evidence: `runs/thermo5_step_ntf_sweep_20261024/ef2_step5120_fixed_analog_8sym.json`
+and `runs/thermo5_ef2_centered_vectors_20261024/`. The candidate is included
+in UVM, XSim, OOC, and FPGA source manifests. The focused VCS UVM bit-true test
+passed on 2026-10-25 at STEP=5120 and `TIDSM_ORDER=2`; the full regression and
+formal proof remain open. No formal engine is available here. FPGA
+resource/timing is deferred per user direction; XSim was not run on this Linux
+host. Retain the frozen first-order STEP=7168 SKU until the full candidate
+regression and system link acceptance complete.
+
+## P0 Thermometric STEP and DSM NTF/order screen (2026-10-24)
+
+Implemented `benchmark_thermo5_step_ntf.py` and software-only TIDSM alternatives
+in `dsm_refmodel/thermo5_experiments.py`. The experiment measures 256-QAM after
+the actual four-plane reconstruction and OFDM receiver, recording EVM, SNDR,
+symbol errors, natural-binary uncoded BER, branch clipping, and finite-frame
+error-feedback state/input headroom. The frozen first-order path is checked
+against the scalar RTL recurrence. EF order 1/2/3 are floating-point prototypes,
+not RTL or fixed-point-equivalent implementations.
+
+The 2-symbol, three-seed STEP sweep selected the existing STEP=7168 for the
+current RTL first-order structure; the confirming eight-symbol run measured
+3.273/3.310% mean/worst-seed EVM and 198 symbol errors among 14,016 decisions.
+At STEP=8192 branch-offset clipping appeared and EVM exceeded the 3.5% screen.
+The full EF2 comparison selected STEP=5120: 2.472/2.489% mean/worst-seed EVM,
+32.138-dB mean SNDR, 4 symbol errors and 5 natural-binary bit errors among
+14,016 decisions. Its largest observed error-state / quantizer-input values
+were 4.976 / 5.976, below the finite-frame Q4.15 headroom check of 8. EF2
+STEP=6144 was slightly worse at 2.513% mean EVM with 13 symbol errors; EF2
+STEP=7168 exceeded the observed headroom bound, and EF3 diverged on this
+workload. Under the same nominal/stress output-chain assumptions, EF2 STEP=5120
+measured 2.602% / 3.004% mean EVM after DPA, output FIR, and kTB/NF; worst
+seed was 2.620% / 3.028%. It had 11 / 46 hard-decision symbol errors (18 / 72
+natural-binary bit errors) across 14,016 decisions. The matched current RTL
+first-order STEP=7168 measured 3.370% / 3.685% EVM and 234 / 359 symbol errors;
+the stress EVM exceeded the 3.5% screen. EF2 is the strongest tested software
+candidate for the 256-QAM objective, but it still has finite-frame errors and
+is not RTL or fixed-point qualified. Do not promote it before fixed-point
+stability, bit-true, and implementation qualification.
+
+Evidence: `runs/thermo5_step_ntf_sweep_20261024/step_sweep_2sym.json`,
+`ntf_order_sweep_2sym.json`, `ntf_finalists_8sym.json`,
+`ef2_step5120_analog_8sym.json`, and
+`rtl_first_order_step7168_analog_8sym.json`, with CSV companions. The screen
+uses 4096-point FFT, 512-sample CP, 584 active carriers, 0.10 RMS/0.35 maximum
+drive, and the centered-cubic interpolation candidate. Natural-binary BER and
+finite-frame zero-error counts are exploratory metrics, not a production BER
+guarantee.
+This initial screen preceded the fixed-point model and RTL candidate; see the
+current EF2 section above for its boundedness proof and outstanding VCS check.
+No FPGA PPA/timing work is in scope on Linux.
+
 ## P0 nonlinear DPD, packet-tail, and low-power verification (2026-10-24)
 
 Closed the three previously open centered-cubic verification gaps. The Python
@@ -27,8 +143,10 @@ all 18 held-out FIR/normalization/PAPR/backoff combinations in the 450-case
 sweep. The three-seed raw-TID receiver screen gives 3.273% digital EVM /
 29.702 dB SNDR, 3.370% / 29.447 dB for the illustrative nominal chain, and
 3.685% / 28.671 dB for its stress profile. The analog-chain settings are
-sensitivity assumptions. Thermometric STEP and DSM NTF/order sweeps remain
-open, and the frozen default SKU has not changed.
+sensitivity assumptions. The STEP and DSM NTF/order screens, including the
+full-length analog sensitivity comparison, are captured in the active section
+above; implementation qualification remains open. The frozen default SKU has
+not changed.
 
 ## P0 centered-cubic streaming RTL (2026-10-24)
 
@@ -129,8 +247,10 @@ as the preferred Python FIR candidate, not yet as a frozen RTL setting. This is
 the prioritized P0 FIR/Drive/PAPR screen, not a complete thermo5/TIDSM EVM
 result: it uses illustrative DPA/output/noise settings, periodic symbol edges,
 and does not decode the actual four TID planes or report FPGA LUT/FF/DSP/WNS/
-power. Only eight OFDM symbols per seed were used. STEP and DSM-order sweeps
-remain open until plane reconstruction and stability metrics are validated.
+power. Only eight OFDM symbols per seed were used. The later raw-TID receiver
+and STEP/NTF screens now measure decoded four-plane performance; fixed-point
+DSM stability, measured analog calibration, and FPGA implementation signoff
+remain open.
 
 ## Digital GT errors and analog output-chain sensitivity (2026-10-23)
 

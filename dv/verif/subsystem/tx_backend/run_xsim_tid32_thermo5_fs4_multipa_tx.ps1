@@ -11,6 +11,7 @@ $sources = @(
   (Join-Path $repo 'rtl\gt\gt_tx_user_bridge.sv'),
   (Join-Path $repo 'rtl\gt\gt_tx_raw64_boundary.sv'),
   (Join-Path $repo 'rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv'),
+  (Join-Path $repo 'rtl\tx_bandpass_if\tid32_cartesian_ef2_fs4_gt_tx.sv'),
   (Join-Path $repo 'rtl\tx_bandpass_if\tid32_thermo5_fs4_multipa_tx.sv'),
   (Join-Path $repo 'dv\verif\subsystem\tx_backend\tb\tb_tid32_thermo5_fs4_multipa_tx_bittrue.sv')
 )

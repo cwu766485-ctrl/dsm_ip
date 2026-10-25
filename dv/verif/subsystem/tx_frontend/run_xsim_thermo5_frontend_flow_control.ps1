@@ -22,6 +22,7 @@ $sources = @(
   'rtl\interp\dsm_interp_x2_centered_cubic_vector.sv',
   'rtl\interp\dsm_interp_x2_polyphase_vector.sv',
   'rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv',
+  'rtl\tx_bandpass_if\tid32_cartesian_ef2_fs4_gt_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_fs4_multipa_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_frontend_tx.sv',
   'dv\verif\subsystem\tx_frontend\tb\tb_tid32_thermo5_frontend_tx_flow_control.sv'

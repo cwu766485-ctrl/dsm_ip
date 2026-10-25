@@ -23,6 +23,7 @@ $relativeRtl = @(
   'rtl\gt\gt_tx_user_bridge.sv',
   'rtl\gt\gt_tx_raw64_boundary.sv',
   'rtl\tx_bandpass_if\tid32_cartesian_fs4_gt_tx.sv',
+  'rtl\tx_bandpass_if\tid32_cartesian_ef2_fs4_gt_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_fs4_multipa_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_frontend_tx.sv',
   'rtl\tx_bandpass_if\tid32_thermo5_axis_frontend_tx.sv',

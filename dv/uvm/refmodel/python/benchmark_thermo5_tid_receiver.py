@@ -351,12 +351,37 @@ def demodulate_metrics(baseband, stimulus):
     reference_energy = sum(abs(value) ** 2 for value in expected_qam)
     evm = math.sqrt(error_energy / max(reference_energy, 1e-30))
     raw_evm = math.sqrt(raw_error_energy / max(reference_energy, 1e-30))
+    constellation_scale = math.sqrt(170.0)
+    symbol_errors = 0
+    bit_errors = 0
+    for actual, expected in zip(received_qam, expected_qam):
+        corrected = gain * actual
+        actual_i = min(15, max(0, int(math.floor(
+            (corrected.real * constellation_scale + 15.0) / 2.0 + 0.5))))
+        actual_q = min(15, max(0, int(math.floor(
+            (corrected.imag * constellation_scale + 15.0) / 2.0 + 0.5))))
+        expected_i = min(15, max(0, int(math.floor(
+            (expected.real * constellation_scale + 15.0) / 2.0 + 0.5))))
+        expected_q = min(15, max(0, int(math.floor(
+            (expected.imag * constellation_scale + 15.0) / 2.0 + 0.5))))
+        actual_index = actual_i | (actual_q << 4)
+        expected_index = expected_i | (expected_q << 4)
+        difference = actual_index ^ expected_index
+        symbol_errors += int(difference != 0)
+        while difference:
+            bit_errors += difference & 1
+            difference >>= 1
+    symbol_count = len(expected_qam)
     return {
-        "qam_symbols": len(expected_qam),
+        "qam_symbols": symbol_count,
         "global_complex_equalizer": [gain.real, gain.imag],
         "raw_evm_percent": 100.0 * raw_evm,
         "evm_percent": 100.0 * evm,
         "sndr_db": -20.0 * math.log10(max(evm, 1e-30)),
+        "symbol_errors": symbol_errors,
+        "symbol_error_rate": symbol_errors / max(1, symbol_count),
+        "uncoded_bit_errors_natural_binary": bit_errors,
+        "uncoded_ber_natural_binary": bit_errors / max(1, 8 * symbol_count),
         "gain_corrected_error_energy": error_energy,
         "reference_energy": reference_energy,
     }
