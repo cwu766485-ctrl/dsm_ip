@@ -1,5 +1,56 @@
 # Update Log
 
+## 2026-10-25 23:16 SGT - add GT-parent pressure and error-frame scenarios
+
+- Added selectable XSim scenarios for four AXIS payload patterns (signed ramp,
+  zero I/Q, alternating signed extrema, and impulse) with a reproducible
+  `0x5eed0000` source-gap seed. Each test exercises 32 accepted AXIS beats,
+  56 output words per lane, and compares all 3,584 serial bits per lane against
+  the GT user words at a modeled 14.0-Gb/s TX rate.
+- Added negative-frame checks for early beat-15 `TLAST` (sticky
+  `core_protocol_error`) and a 16-beat no-TLAST interruption (sticky
+  serializer `stream_fault`, PA blanking, and GT idle word). A common reset
+  clears each condition and legal replay frames pass the serial-bit checker.
+- Added the runner/Tcl `-Scenario` and `-Pattern` options, bounded TX drain
+  before pin comparison, and scenario-level logs. Full scope, commands, and
+  limitations are documented in `docs/GT_PARENT_STRESS_AND_ERROR_TESTS.md`.
+- Files: GT-parent testbench and runner/Tcl; integration README, GT verification
+  note, execution frontier, and this log. No RTL datapath or algorithm changed.
+- Checks: Vivado 2026.1 GT Wizard baseline XSim PASS; all four stress-pattern
+  XSim runs PASS; bad-frame/reset/replay XSim PASS; generic-FIFO VCS
+  `thermo5-vcs-regression` PASS (including expected alignment assertion);
+  `git diff --check` and PowerShell syntax checks PASS. RX comparison remained
+  skipped;
+  physical GT and board signoff remain open.
+
+## 2026-10-25 22:28 SGT - add four-lane GT serial TX full-chain simulation
+
+- Added a self-contained XSim GT-parent flow that creates the ZU15EG four-GTH
+  GT Wizard behavioral model at 14.0 Gb/s, 125-MHz refclk, RAW 64-bit TX width,
+  then simulates AXI-Lite configuration and AXI-Stream frames through thermo5
+  to the serial TX pins. The simulation no longer depends on a prior synthesis
+  project; the runner defaults to the installed Vivado 2026.1 path.
+- Extended the parent testbench to capture sampled TXP data at one configured
+  line-rate UI, check 128 alternating idle bits and P/N polarity per lane, and
+  bit-compare two 56-word frames per lane against words observed at the GT user
+  interface. A frame candidate is accepted only after all 56 words match.
+- Evidence: `runs/thermo5_gt14_e2e_clean_20261025_222945/`. PASS: 64 accepted
+  AXI beats, 112 GT user words, two frames × 56 words × 64 bits on each of four
+  lanes, modeled line rate 14.0 Gb/s / UI 71.428571 ps, zero serial payload
+  mismatches. The test intentionally skips RX comparison; GT RX recovery,
+  physical serial phase/deskew, eye/jitter/BER, GT-PMA routing, and board/RF
+  output remain open.
+- A full parent `synth_design` attempt did not finish after several minutes in
+  Vivado constraint/timing initialization; it was stopped and is not counted
+  as a synthesis pass. Standalone GT behavioral simulation does not require
+  that synthesis step.
+- Files: GT parent simulation runner/Tcl, GT parent testbench, integration and
+  serializer-contract documentation, synthesis README, GT verification note,
+  execution frontier, and this update log.
+- Checks: clean-directory Vivado 2026.1 XSim GT Wizard regression PASS;
+  runner PASS-marker check PASS; `git diff --check` PASS. No RTL datapath or
+  fixed-point behavior changed.
+
 ## 2026-10-25 15:09 SGT - run EF2 long-frame QAM256 robustness sweep
 
 - Added `benchmark_thermo5_ef2_robust.py` for a 12-symbol, multi-seed 256-QAM
@@ -3836,3 +3887,19 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   `runs/thermo5_formal_harness_split*20261019/`.
 - Limitations: proof scope remains limited to the harness assumptions and
   parameters documented in each run; this does not sign off whole-chip CDC/RDC.
+
+## 2026-10-25 - Add and run thermo5 VCU118 synthesis-only flow
+
+- Added `syn/run_synth_thermo5_vcu118.ps1` and its Tcl flow for the frozen
+  no-AXI-Lite AXI-Stream top on `xcvu9p-flga2104-2L-e`; documented its scope in
+  `syn/README.md`.
+- Checks: PowerShell parser and `git diff --check` PASS. Vivado 2026.1 synthesis
+  PASS; 44,444 LUTs, 53,517 FFs, 496 DSP48E2, 6 RAMB36E2 + 1 RAMB18E2, 0 URAM.
+  Synthesized timing estimate at 125/218.75 MHz: WNS +1.140 ns, WHS +0.039 ns.
+  Vivado reported 201 warnings, 0 critical warnings, 0 errors. Full log,
+  checkpoint, utilization, timing, and check-timing reports are in
+  `runs/thermo5_vcu118_synth_retry2_20261025_2132/`.
+- Limitations: this is synthesis-only OOC evidence; 570 inputs and 264 outputs
+  have no I/O delays. It does not include placement/routing, VCU118 board I/O,
+  or the ZU15EG-specific GT parent. The memory-inference and DPD set/reset
+  warnings need review before promoting the mapping.

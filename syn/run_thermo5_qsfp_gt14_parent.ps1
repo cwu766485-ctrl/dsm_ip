@@ -1,11 +1,12 @@
 param(
   [ValidateSet('synth','route')][string]$Stage='synth',
-  [string]$OutDir=''
+  [string]$OutDir='',
+  [string]$VivadoBat='D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat'
 )
 $ErrorActionPreference='Stop'
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$vivado='D:\Xilinx\Vivado\2024.1\bin\vivado.bat'
-if (!(Test-Path -LiteralPath $vivado)) { throw 'Vivado 2024.1 is unavailable.' }
+$vivado=[System.IO.Path]::GetFullPath($VivadoBat)
+if (!(Test-Path -LiteralPath $vivado)) { throw "Vivado executable is unavailable: $vivado" }
 $out=if ($OutDir) { [System.IO.Path]::GetFullPath($OutDir) } else {
   Join-Path $repo ('runs\thermo5_qsfp_parent_'+(Get-Date -Format 'yyyyMMdd_HHmmss'))
 }

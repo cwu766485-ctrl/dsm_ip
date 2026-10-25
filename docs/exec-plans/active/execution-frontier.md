@@ -1,5 +1,79 @@
 # Execution frontier
 
+## P0 GT-parent stress, special-pattern, and negative-frame closure (2026-10-25)
+
+The Vivado 2026.1 four-GTH GT Wizard XSim flow now has separately selectable
+baseline, stress-pattern, and bad-frame scenarios. Four seeded full-chain tests
+(ramp, zero I/Q, alternating signed extrema, and impulse) each accepted 32 AXIS
+beats and passed 56 words per lane against sampled TXP pins at a modeled
+14.0-Gb/s line rate. The seed `0x5eed0000` produces eight source-valid gaps
+during the first eight prefill beats; the source has no injected bubbles after
+the AXI-Lite RUN write completes.
+
+The negative-frame scenario passed early-TLAST protocol detection, 16-beat
+partial-frame serializer fault/PA blanking, common-reset clearing, and two
+legal serial replays. Full evidence and exact commands are recorded in
+`docs/GT_PARENT_STRESS_AND_ERROR_TESTS.md`, with logs under
+`runs/thermo5_gt14_stress_20261025_224631/`.
+
+The generic-FIFO VCS full-IP regression passed nominal bit-true,
+valid-gap/backpressure, FIFO-full/empty, active reset/replay, five residual
+reset points, and expected misaligned-frame assertion/recovery. Evidence is
+under `runs/thermo5_stress_dv_regression_20261025/`.
+
+These are digital simulation results only; RX recovery/compare, analog
+link/BER/eye, board I/O constraints, and physical GT timing remain open.
+Next: close RX-clock/data recovery and gather the concrete parent board clock
+and I/O constraints before any RX, routed GT, or hardware signoff claim.
+
+## P0 Four-lane GT serial TX full-chain XSim (2026-10-25)
+
+Added a standalone, one-command XSim setup for the ZU15EG four-channel
+GTHE4/GT Wizard parent. It generates the 14.0-Gb/s RAW, 64-bit GT Wizard
+behavioral model without requiring a prior synthesized project. The test
+drives two AXIS frames through the AXI-Lite-configured thermo5 frontend and
+captures the actual modeled serial TXP pins at the configured 71.428571-ps UI.
+
+PASS evidence: `runs/thermo5_gt14_e2e_clean_20261025_222945/`. XSim accepted 64
+AXI beats and observed 112 transmitted 256-bit user words. Both frames matched
+all 56 serialized words per lane bit-true (3,584 bits/lane/frame, four lanes);
+the alternating idle pattern matched 128 sampled bits/lane at 14.0 Gb/s with
+P/N differential polarity. GT RX comparison was deliberately skipped because
+RX user-clock/data recovery remains open. This is a vendor behavioral-model
+digital TX result, not analog eye/jitter/BER, physical deskew, board output, or
+GT-PMA timing signoff.
+
+The previous parent `synth_design` invocation remained in constraint/timing
+initialization for several minutes and was stopped to avoid blocking the
+simulation task; it produced no synth completion marker and is not a PASS.
+The new simulation runner creates the GT simulation project without invoking
+that synthesis step. Next: separately debug GT RX recovery and provide actual
+parent/board clock and I/O constraints before routed GT or hardware claims.
+
+## P0 VCU118 frozen thermo5 synthesis mapping (2026-10-25)
+
+Added a synthesis-only Vivado runner for the frozen no-AXI-Lite thermo5
+AXI-Stream top and mapped it to the VCU118 device `xcvu9p-flga2104-2L-e`.
+Vivado 2026.1 completed `synth_design`, wrote a checkpoint and reports, and
+returned the runner PASS marker. Evidence is in
+`runs/thermo5_vcu118_synth_retry2_20261025_2132/`.
+
+Post-synthesis estimate: 44,444 LUTs (3.76%), 53,517 FFs (2.26%), 496 DSP48E2
+(7.25%), 6 RAMB36E2 + 1 RAMB18E2 (6.5 BRAM tiles, 0.30%), and 0 URAM. The
+synthesized timing estimate at 125/218.75 MHz is WNS +1.140 ns and WHS +0.039
+ns, with no failing setup/hold endpoints in that report; it is not placed or
+routed timing closure. `check_timing` reports 570 top-level inputs without
+input delays and 264 outputs without output delays, as expected for this OOC
+mapping.
+
+The run reported 201 synthesis warnings, 0 critical warnings, and 0 errors.
+Review the repeated `dpd_memory_poly` set/reset-priority warning (Synth 8-7137)
+and the two-entry metadata/data arrays mapped to registers because of
+asynchronous-reset coding (Synth 8-4767). The ZU15EG-specific GT parent and
+VCU118 package I/O/GT constraints are not part of this top or run. Next: audit
+those warnings, then create a VCU118-specific GT parent/constraints before any
+board-level place-and-route claim.
+
 ## P0 EF2 long-frame QAM256 BER, state-width, and PAPR/backoff screen (2026-10-25)
 
 Added `benchmark_thermo5_ef2_robust.py`. It retains the existing fixed-point

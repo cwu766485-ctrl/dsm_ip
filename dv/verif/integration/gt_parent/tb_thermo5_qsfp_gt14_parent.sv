@@ -1,8 +1,9 @@
-`timescale 1ps/1ps
+`timescale 1ps/1fs
 `default_nettype none
 
-// Four-channel GT Wizard loopback at ideal clocks. This checks the parallel
-// user-data boundary; it is not a measurement of board serial phase/skew.
+// End-to-end AXIS-to-GTHE4 behavioral-model TX simulation. The test compares
+// sampled serial TXP payloads with GT user words; it does not measure physical
+// board serial phase, skew, eye, jitter, or BER.
 module tb_thermo5_qsfp_gt14_parent;
   logic axi_clk125 = 1'b0, axil_clk100 = 1'b0, freerun_clk200 = 1'b0;
   logic mgtrefclk125_p = 1'b0;
@@ -42,6 +43,11 @@ module tb_thermo5_qsfp_gt14_parent;
   integer cycles = 0, beat, tx_lane, rx_lane;
   integer sim_stage = 0;
   bit skip_rx_compare = 1'b0;
+  bit run_stress_mode = 1'b0, run_bad_frames_mode = 1'b0;
+  integer stress_pattern = 2;
+  int stress_bubble_cycles = 0;
+  logic [3:0] gt_serial_samples [0:131071];
+  integer gt_serial_sample_count = 0;
 
   thermo5_qsfp_gt14_parent #(.ENABLE_INTERNAL_PMA_LOOPBACK(1'b1)) dut (.*);
 
@@ -213,23 +219,72 @@ module tb_thermo5_qsfp_gt14_parent;
     end
   endtask
 
-  task automatic send_frame(input integer frame_id, input bit graceful_stop = 1'b0);
+  task automatic send_frame(input integer frame_id,
+                            input bit graceful_stop = 1'b0,
+                            input integer pattern = 0,
+                            input bit bubble_prefill = 1'b0,
+                            input integer early_tlast_beat = -1);
     integer value;
+    integer sample_index;
+    integer random_word;
+    integer gap_len;
+    integer unsigned bubble_rng;
     logic [1:0] resp;
     bit stop_write_started, stop_write_done;
     begin
       stop_write_started = 1'b0;
       stop_write_done = 1'b0;
+      bubble_rng = 32'h5eed_0000 + frame_id;
+      case (pattern)
+        1: s_axis_frame_gain = 16'sd8192;  // 0.5 in Q2.14
+        3: s_axis_frame_gain = 16'sd4096;  // 0.25 in Q2.14
+        default: s_axis_frame_gain = 16'sd16384;
+      endcase
       beat = 0;
       while (beat < 32) begin
+        if (bubble_prefill && beat < 8) begin
+          random_word = $urandom(bubble_rng);
+          if ((random_word & 32'h3) == 0) begin
+            gap_len = 1 + ((random_word >> 2) & 32'h3);
+            repeat (gap_len) begin
+              @(negedge axi_clk125);
+              s_axis_tvalid = 1'b0;
+              s_axis_tlast = 1'b0;
+              s_axis_frame_start = 1'b0;
+              stress_bubble_cycles = stress_bubble_cycles + 1;
+            end
+          end
+        end
         @(negedge axi_clk125);
         s_axis_tvalid = 1'b1;
-        s_axis_tlast = (beat == 31);
+        s_axis_tlast = (beat == 31) || (beat == early_tlast_beat);
         s_axis_frame_start = (beat == 0);
         for (tx_lane = 0; tx_lane < 14; tx_lane = tx_lane + 1) begin
-          value = frame_id*1000 + beat*14 + tx_lane + 1;
-          s_axis_i_vec[tx_lane*16 +: 16] = 16'(value);
-          s_axis_q_vec[tx_lane*16 +: 16] = -16'(value);
+          sample_index = beat*14 + tx_lane;
+          case (pattern)
+            1: begin // zero-amplitude frame
+              s_axis_i_vec[tx_lane*16 +: 16] = 16'h0000;
+              s_axis_q_vec[tx_lane*16 +: 16] = 16'h0000;
+            end
+            2: begin // alternating signed full-scale endpoints
+              if (((beat + tx_lane) & 1) == 0) begin
+                s_axis_i_vec[tx_lane*16 +: 16] = 16'h7fff;
+                s_axis_q_vec[tx_lane*16 +: 16] = 16'h8000;
+              end else begin
+                s_axis_i_vec[tx_lane*16 +: 16] = 16'h8000;
+                s_axis_q_vec[tx_lane*16 +: 16] = 16'h7fff;
+              end
+            end
+            3: begin // one complex impulse at the start of the frame
+              s_axis_i_vec[tx_lane*16 +: 16] = (sample_index == 0) ? 16'h4000 : 16'h0000;
+              s_axis_q_vec[tx_lane*16 +: 16] = (sample_index == 1) ? 16'h4000 : 16'h0000;
+            end
+            default: begin // deterministic signed ramp
+              value = frame_id*1000 + beat*14 + tx_lane + 1;
+              s_axis_i_vec[tx_lane*16 +: 16] = 16'(value);
+              s_axis_q_vec[tx_lane*16 +: 16] = -16'(value);
+            end
+          endcase
         end
         @(posedge axi_clk125);
         if (s_axis_tready) begin
@@ -305,12 +360,174 @@ module tb_thermo5_qsfp_gt14_parent;
     end
   endtask
 
+  // Observe the actual GT Wizard serial pins while the raw-64 idle word is
+  // present. 0xAAAA... is alternating when serialized LSB-first, so sampling
+  // one configured unit interval at a time must see every lane toggle. This
+  // checks the generated GT model's 14-Gb/s digital TX cadence, not its
+  // electrical eye or board-level link quality.
+  task automatic check_gt_serial_idle_rate;
+    realtime ui_ps;
+    logic [3:0] previous_txp;
+    integer lane;
+    integer sample_index;
+    integer lane_toggles [0:3];
+    begin
+      ui_ps = 1000.0 / 14.0;
+      for (lane = 0; lane < 4; lane = lane + 1) lane_toggles[lane] = 0;
+      wait (link_ready && (&dut.tx_pma_done) && dut.tx_done[0]);
+      wait (dut.tx_word === GT_IDLE);
+      repeat (4) @(posedge core_clk218);
+      @(qsfp_tx_p[0]);
+      #(ui_ps / 2.0 + 3.0);
+      previous_txp = qsfp_tx_p;
+      for (sample_index = 0; sample_index < 128; sample_index = sample_index + 1) begin
+        #(ui_ps);
+        for (lane = 0; lane < 4; lane = lane + 1) begin
+          if ((qsfp_tx_p[lane] !== 1'b0 && qsfp_tx_p[lane] !== 1'b1) ||
+              (qsfp_tx_n[lane] !== 1'b0 && qsfp_tx_n[lane] !== 1'b1))
+            $fatal(1, "GT TX serial lane %0d is unknown at UI sample %0d", lane, sample_index);
+          if (qsfp_tx_n[lane] !== ~qsfp_tx_p[lane])
+            $fatal(1, "GT TX differential pins disagree on lane %0d", lane);
+          if (qsfp_tx_p[lane] === previous_txp[lane])
+            $fatal(1, "GT TX lane %0d did not serialize alternating idle data at 14 Gb/s, sample=%0d",
+                   lane, sample_index);
+          lane_toggles[lane] = lane_toggles[lane] + 1;
+        end
+        previous_txp = qsfp_tx_p;
+      end
+      for (lane = 0; lane < 4; lane = lane + 1)
+        if (lane_toggles[lane] != 128)
+          $fatal(1, "GT TX lane %0d serial sample count mismatch: %0d", lane, lane_toggles[lane]);
+      $display("THERMO5_GT_SERIAL_IDLE_RATE_PASS line_rate_gbps=14.0 ui_ps=%0.6f lanes=4 sampled_bits_per_lane=128",
+               ui_ps);
+    end
+  endtask
+
+  // The serial sampler is phase-aligned to a real TXP transition, then
+  // samples one 14-Gb/s UI later on each iteration. Captured pin bits are
+  // matched against the four parallel GT user-data words recorded by the
+  // existing scoreboard. Per-lane search allows the simulation to expose
+  // channel phase offsets instead of assuming a common serial phase.
+  initial begin : capture_gt_serial_pins
+    realtime ui_ps;
+    ui_ps = 1000.0 / 14.0;
+    wait (link_ready && (&dut.tx_pma_done) && dut.tx_done[0]);
+    wait (dut.tx_word === GT_IDLE);
+    repeat (4) @(posedge core_clk218);
+    @(qsfp_tx_p[0]);
+    #(ui_ps / 2.0 + 3.0);
+    forever begin
+      if (gt_serial_sample_count >= 131072)
+        $fatal(1, "GT serial sampler exceeded its bounded capture buffer");
+      gt_serial_samples[gt_serial_sample_count] = qsfp_tx_p;
+      gt_serial_sample_count = gt_serial_sample_count + 1;
+      #(ui_ps);
+    end
+  end
+
+  task automatic check_serial_payload_frame(input integer expected_start,
+                                            input integer frame_number);
+    realtime ui_ps;
+    integer lane;
+    integer sample_start;
+    integer word_index;
+    integer bit_index;
+    logic [63:0] serial_word;
+    logic found;
+    logic match_ok;
+    integer best_prefix;
+    integer best_sample;
+    integer prefix_words;
+    bit prefix_active;
+    integer diag_sample;
+    bit diag_found;
+    integer lane_frame_start [0:3];
+    begin
+      ui_ps = 1000.0 / 14.0;
+      // `pa_enable` counts user words at the GT input; the generated GT model
+      // has internal TX pipeline/buffer latency before those bits reach TXP.
+      // Let the serializer flush one bounded 128-user-clock window before
+      // inspecting the pin capture, especially in short directed scenarios.
+      repeat (128) @(posedge core_clk218);
+      if (gt_serial_sample_count < 56 * 64)
+        $fatal(1, "GT serial capture too short before frame %0d compare", frame_number);
+      for (lane = 0; lane < 4; lane = lane + 1) begin
+        found = 1'b0;
+        best_prefix = 0;
+        best_sample = -1;
+        for (sample_start = 0;
+             sample_start <= gt_serial_sample_count - 56 * 64 && !found;
+             sample_start = sample_start + 1) begin
+          serial_word = '0;
+          for (bit_index = 0; bit_index < 64; bit_index = bit_index + 1)
+            serial_word[bit_index] = gt_serial_samples[sample_start + bit_index][lane];
+          if (serial_word === expected_words[expected_start][lane*64 +: 64]) begin
+            match_ok = 1'b1;
+            prefix_words = 0;
+            prefix_active = 1'b1;
+            for (word_index = 0; word_index < 56; word_index = word_index + 1) begin
+              serial_word = '0;
+              for (bit_index = 0; bit_index < 64; bit_index = bit_index + 1)
+                serial_word[bit_index] = gt_serial_samples[
+                  sample_start + word_index * 64 + bit_index][lane];
+              if (prefix_active &&
+                  serial_word === expected_words[expected_start + word_index][lane*64 +: 64])
+                prefix_words = prefix_words + 1;
+              else begin
+                prefix_active = 1'b0;
+                match_ok = 1'b0;
+              end
+            end
+            if (prefix_words > best_prefix) begin
+              best_prefix = prefix_words;
+              best_sample = sample_start;
+            end
+            if (match_ok) begin
+              found = 1'b1;
+              lane_frame_start[lane] = sample_start;
+            end
+          end
+        end
+        if (!found) begin
+          if (lane == 0) begin
+            diag_found = 1'b0;
+            for (diag_sample = 0;
+                 diag_sample <= gt_serial_sample_count - 64 && !diag_found;
+                 diag_sample = diag_sample + 1) begin
+              serial_word = '0;
+              for (bit_index = 0; bit_index < 64; bit_index = bit_index + 1)
+                serial_word[bit_index] = gt_serial_samples[diag_sample + bit_index][lane];
+              if (serial_word !== 64'hAAAA_AAAA_AAAA_AAAA) begin
+                $display("GT_SERIAL_FIRST_NONIDLE lane=%0d sample=%0d word=%016x",
+                         lane, diag_sample, serial_word);
+                diag_found = 1'b1;
+              end
+            end
+          end
+          $fatal(1, "GT serial frame %0d was not found on TX lane %0d expected_first_word=%016x best_prefix_words=%0d best_sample=%0d captured=%0d expected_count=%0d output_words=%0d",
+                 frame_number, lane, expected_words[expected_start][lane*64 +: 64],
+                 best_prefix, best_sample, gt_serial_sample_count, expected_count, output_words);
+        end
+      end
+      $display("GT_SERIAL_FRAME_BITTRUE_PASS frame=%0d words_per_lane=56 bits_per_lane=3584 line_rate_gbps=14.0 ui_ps=%0.6f lane_start_samples=%0d,%0d,%0d,%0d",
+               frame_number, ui_ps, lane_frame_start[0], lane_frame_start[1],
+               lane_frame_start[2], lane_frame_start[3]);
+    end
+  endtask
+
   initial begin
     logic [31:0] axil_rdata;
     logic [1:0] axil_resp;
     skip_rx_compare = $test$plusargs("SKIP_RX_COMPARE");
+    run_stress_mode = $test$plusargs("RUN_GT_STRESS");
+    run_bad_frames_mode = $test$plusargs("RUN_GT_BAD_FRAMES");
+    void'($value$plusargs("GT_PATTERN=%d", stress_pattern));
+    if (run_stress_mode && run_bad_frames_mode)
+      $fatal(1, "Select only one GT-parent scenario per simulation");
+    if (run_stress_mode && (stress_pattern < 0 || stress_pattern > 3))
+      $fatal(1, "GT_PATTERN must be 0=ramp, 1=zero, 2=signed-extremes, or 3=impulse");
     if (skip_rx_compare)
-      $display("GT_PARENT_DIAGNOSTIC RX word comparison disabled; reset/recovery only");
+      $display("GT_PARENT_DIAGNOSTIC RX word comparison disabled; TX serial-pin sampling enabled");
     sim_stage = 1;
     repeat (50) @(negedge freerun_clk200);
     reset_n = 1'b1;
@@ -352,6 +569,111 @@ module tb_thermo5_qsfp_gt14_parent;
       $fatal(1, "AXI-Lite commit did not remain busy until a frame boundary: %08x", axil_rdata);
     $display("GT_PARENT_STAGE 1 link recovered at %0t", $time);
     repeat (10) @(negedge axi_clk125);
+    check_gt_serial_idle_rate();
+
+    if (run_stress_mode) begin : run_gt_stress
+      sim_stage = 20;
+      // A full-scale alternating signed-endpoint packet stresses the sample
+      // datapath while a fixed-seed valid-gap pattern perturbs source timing.
+      // Random gaps are confined to the first eight prefill beats; after the
+      // AXI-Lite RUN write completes, the rest of the packet has no injected
+      // bubbles so the line-rate consumer is not intentionally underfed.
+      send_frame(0, 1'b1, stress_pattern, 1'b1);
+      wait (output_words >= 56);
+      wait (!dut.core_tx_active);
+      repeat (4) @(posedge core_clk218);
+      if (stream_fault || core_protocol_error || core_underflow || pa_enable)
+        $fatal(1, "GT stress frame did not drain cleanly fault=%b protocol=%b underflow=%b pa=%b",
+               stream_fault, core_protocol_error, core_underflow, pa_enable);
+      check_serial_payload_frame(0, 0);
+      if (accepted != 32 || expected_count != 56 || output_words != 56)
+        $fatal(1, "GT stress count mismatch accepted=%0d expected_words=%0d output_words=%0d",
+               accepted, expected_count, output_words);
+      $display("THERMO5_QSFP_GT14_STRESS_PASS frames=1 accepted_beats=%0d output_words=%0d pattern_id=%0d pattern_map=0:ramp,1:zero,2:signed_extremes,3:impulse bubble_seed=0x5eed0000 seeded_prefill_bubble_cycles=%0d line_rate_gbps=14.0 lanes=4 words_per_frame=56 rx_compare=SKIPPED",
+               accepted, output_words, stress_pattern, stress_bubble_cycles);
+      $finish;
+    end
+
+    if (run_bad_frames_mode) begin : run_gt_bad_frames
+      integer replay_start;
+      integer target_words;
+      sim_stage = 30;
+      rx_check_enable = 1'b0;
+
+      // The wrapper requires TLAST on a 32-beat (56-word) quantum. Inject an
+      // early marker at beat 15 but continue through the legal beat-31 TLAST.
+      send_frame(10, 1'b1, 0, 1'b0, 15);
+      wait (core_protocol_error);
+      wait (output_words >= 56);
+      wait (!dut.core_tx_active);
+      repeat (4) @(posedge core_clk218);
+      if (!core_protocol_error || stream_fault || core_underflow)
+        $fatal(1, "Early-TLAST frame diagnostics unexpected protocol=%b stream_fault=%b underflow=%b",
+               core_protocol_error, stream_fault, core_underflow);
+      $display("THERMO5_GT_EARLY_TLAST_OBSERVED beat=15 legal_packet_end_beat=31 protocol_error=1");
+
+      // A common reset is the documented epoch boundary that clears sticky
+      // protocol and serializer diagnostics before replay.
+      @(negedge freerun_clk200); reset_n = 1'b0;
+      #1;
+      if (pa_enable || dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+        $fatal(1, "Reset did not assert during early-TLAST recovery");
+      repeat (8) @(posedge freerun_clk200);
+      repeat (30) @(negedge freerun_clk200);
+      reset_n = 1'b1;
+      wait_link_recovery();
+      check_axil_reset_defaults("early-TLAST recovery");
+      if (core_protocol_error || stream_fault || core_underflow)
+        $fatal(1, "Early-TLAST diagnostics did not clear after common reset");
+
+      replay_start = expected_count;
+      target_words = output_words + 56;
+      sim_stage = 31;
+      send_frame(11, 1'b1);
+      wait (output_words >= target_words);
+      wait (!dut.core_tx_active);
+      if (stream_fault || core_protocol_error || core_underflow)
+        $fatal(1, "Legal replay after early-TLAST error failed");
+      check_serial_payload_frame(replay_start, 0);
+
+      // Start a second run, then stop the AXIS source after half a quantum.
+      // The GT user interface cannot backpressure: it must flag the missing
+      // remainder, blank PA, and present idle words until reset.
+      expected_stream_fault = 1'b1;
+      axil_write(8'h00, 32'h0000_0001, 4'hf, 0, 2, axil_resp);
+      if (axil_resp != 2'b00) $fatal(1, "RUN write failed before partial-frame test");
+      send_partial_frame(12, 16);
+      wait (stream_fault);
+      repeat (4) @(posedge core_clk218);
+      if (!stream_fault || pa_enable || dut.tx_word !== GT_IDLE)
+        $fatal(1, "Partial-frame interruption did not latch fault and blank GT payload");
+      $display("THERMO5_GT_PARTIAL_FRAME_FAULT_OBSERVED accepted_beats=16 pa_enable=0 tx_word=IDLE sticky=1");
+
+      @(negedge freerun_clk200); reset_n = 1'b0;
+      #1;
+      if (pa_enable || dut.rst125_n || dut.axil_rst_n || dut.rst218_n)
+        $fatal(1, "Reset did not assert during partial-frame recovery");
+      repeat (8) @(posedge freerun_clk200);
+      repeat (30) @(negedge freerun_clk200);
+      reset_n = 1'b1;
+      wait_link_recovery();
+      check_axil_reset_defaults("partial-frame recovery");
+      expected_stream_fault = 1'b0;
+      if (core_protocol_error || stream_fault || core_underflow)
+        $fatal(1, "Partial-frame diagnostics did not clear after common reset");
+
+      replay_start = expected_count;
+      target_words = output_words + 56;
+      sim_stage = 32;
+      send_frame(13, 1'b1);
+      wait (output_words >= target_words);
+      wait (!dut.core_tx_active);
+      if (stream_fault || core_protocol_error || core_underflow)
+        $fatal(1, "Legal replay after partial-frame reset failed");
+      check_serial_payload_frame(replay_start, 1);
+      $display("THERMO5_QSFP_GT14_BAD_FRAMES_PASS early_tlast_protocol_error=1 partial_frame_fault=1 reset_recovery=2 legal_replay_frames=2 rx_compare=SKIPPED");
+      $finish;
+    end
 
     // Normal four-plane, 32 AXI beat -> 56 raw-word loopback.
     sim_stage = 2;
@@ -450,7 +772,9 @@ module tb_thermo5_qsfp_gt14_parent;
     check_axil_reset_defaults("common reset");
     $display("GT_PARENT_STAGE 5 common-reset recovery at %0t", $time);
     if (skip_rx_compare) begin
-      $display("THERMO5_QSFP_GT14_PARENT_RESET_SIM_PASS accepted=%0d output=%0d reset_domains=AXIS+AXIL+CORE recovery=clock_stable+powergood+tx_active+common_reset rx_compare=SKIPPED",
+      check_serial_payload_frame(0, 0);
+      check_serial_payload_frame(56, 1);
+      $display("THERMO5_QSFP_GT14_PARENT_TX_SERIAL_SIM_PASS accepted=%0d output=%0d serial_frames=2 words_per_lane=56 bits_per_lane=3584 lanes=4 line_rate_gbps=14.0 reset_domains=AXIS+AXIL+CORE rx_compare=SKIPPED",
                accepted, output_words);
       $finish;
     end

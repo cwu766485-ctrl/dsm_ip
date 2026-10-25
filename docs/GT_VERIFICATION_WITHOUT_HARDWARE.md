@@ -32,15 +32,47 @@ The following cannot be signed off by RTL or vendor simulation alone:
 
 ## Current project evidence
 
-The thermo5 simulation uses four ideal behavioral raw64 serializers.  At a
-218.75 MHz user clock and an ideal 64x serial clock, it passed 64 words per
-path, or 4,096 bits per path.  All four recovered word streams matched the
-MATLAB golden code planes.  This proves the modeled bit order and word
-alignment only; the model is not a GTHE4 primitive or a physical channel.
+Thermo5 now has two complementary serialization simulations. The fast,
+vendor-neutral behavioral raw64 loopback passed 64 words (4,096 bits) per
+plane against the MATLAB golden code planes. Separately, the ZU15EG GT-parent
+XSim regression instantiates the generated four-channel GT Wizard model,
+drives AXIS frames through the thermo5 frontend, samples the GT TXP pins at
+the configured 14.0-Gb/s unit interval, and bit-compares two complete 56-word
+frames on all four lanes against the GT parallel user words. It also checks
+alternating idle serialization and differential TX polarity. The reproducible
+command is documented in `dv/verif/integration/README.md`; results are under
+`runs/thermo5_gt14_e2e_clean_20261025_222945/` for the current run.
 
-The thermo3 and thermo5 complete FPGA fabric frontends both pass full routed
-OOC timing at 218.75 MHz.  No current result proves GT line-rate timing or a
-board link.
+Additional four-lane GT-parent stress and negative-frame scenarios also pass.
+Four separate full-chain XSim runs cover signed ramp, zero I/Q, alternating
+`0x7fff`/`0x8000` I/Q endpoints, and a two-sample impulse; each applies eight
+fixed-seed AXIS valid-gap cycles during the initial prefill beats, then sends
+the packet without injected bubbles after the AXI-Lite RUN write. All four
+runs compare the 56 64-bit words on each lane against
+the words sampled at the GT user interface. The bad-frame run observes sticky
+`core_protocol_error` for an early beat-15 `TLAST`, then sticky GT-user
+`stream_fault` and PA blanking after a 16-beat incomplete transfer. A common
+reset clears each fault and two subsequent legal replays pass the same TXP
+serial comparison. Logs are under
+`runs/thermo5_gt14_stress_20261025_224631/`; the test contract and commands
+are in `docs/GT_PARENT_STRESS_AND_ERROR_TESTS.md`.
+
+The generic-FIFO VCS full-IP regression also passes its nominal bit-true,
+valid-gap/backpressure, FIFO boundary/starvation, active reset/replay, five
+residual-state reset sweep, and intentional misaligned-frame negative tests.
+The latter expects the RTL alignment assertion and verifies reset clears the
+sticky protocol diagnostic. Its run is under
+`runs/thermo5_stress_dv_regression_20261025/`.
+
+This proves digital serialization behavior in AMD's GT Wizard simulation
+model. It does not model or sign off electrical eye/jitter, analog channel
+loss, physical lane skew across relock, measured BER, PA/RF output, or board
+performance. The GT RX comparison remains open because the current behavioral
+loopback does not recover active RX user data.
+
+The thermo3 and thermo5 complete FPGA fabric frontends both pass routed OOC
+timing at 218.75 MHz. GT-PMA placement/routing and board I/O timing remain
+separate from that fabric result and from the behavioral serial simulation.
 
 ## Concrete ZU15EG GT Wizard status
 

@@ -61,3 +61,40 @@ criteria.
 Historical `p0_ooc_*` low-pass/EF/MASH reports and optional AXI-Lite
 experiments are separate architecture records. They do not define the frozen
 thermo5 configuration.
+
+## VCU118 Synthesis-Only Mapping
+
+To estimate the frozen no-AXI-Lite thermo5 SKU on the VCU118 XCVU9P, run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_synth_thermo5_vcu118.ps1
+```
+
+The default target is `xcvu9p-flga2104-2L-e` and the default Vivado executable
+is `D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat`. Override `-Part`,
+`-VivadoBat`, or `-OutDir` as needed. Reports and the synthesis checkpoint are
+written under a unique `runs\thermo5_vcu118_synth_*` directory. This maps the
+thermo5 AXI-Stream OOC top with the frozen generic settings; it does not include
+the ZU15EG-specific GT parent, VCU118 board I/O placement, route, or board-level
+timing signoff. Synthesis timing is an estimate, not routed timing evidence.
+
+## ZU15EG GT Wizard Full-Chain TX Simulation
+
+Run the AXIS-to-GTH serial TX model test from a fresh output directory:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_thermo5_qsfp_gt14_parent_sim.ps1 `
+  -OutDir .\runs\thermo5_gt14_e2e_<unique> -SkipRxCompare
+```
+
+The simulation Tcl creates the four-channel ZU15EG GTH Wizard model at
+14.0 Gb/s, with a 125-MHz reference clock and 64-bit RAW TX user data, then
+compiles and simulates the complete AXIS + AXI-Lite + thermo5 frontend + GT
+parent. It does not run `synth_design` or place/route. The test checks two
+AXIS-driven 56-word frames bit-true at the four serial TX pins and measures
+the configured unit interval in the known alternating idle pattern. The RX
+word comparison is intentionally skipped because GT RX recovery is still
+open; `-SkipRxCompare` does not skip TX serial capture or payload comparison.
+This is a GT behavioral-model benchmark, not a physical eye/BER or board
+signoff. Vivado defaults to `D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat`;
+override it with `-VivadoBat` when needed.

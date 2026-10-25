@@ -98,12 +98,17 @@ trace skew and PA-switch latency must be measured/derived from the selected
 board and RF path. The RTL `pa_enable` is only a digital request; it is not
 the physical PA enable or proof of RF silence.
 
-The current parent reset-only behavioral regression passes 64 accepted AXI
-beats and 112 transmitted words, including power-good, TX-active and common-
-reset recovery. Exact four-lane RX comparison remains open. External serial
-pin self-loopback times out without recovered words. A generated-GT near-end
-PMA-loopback experiment reaches `rx_done`/`cdr_lock` but has no active RX user
-clock or recovered frame, so it is not a functional RX pass. The four-lane
-parallel TX mapping is verified only through existing TX/raw-word checks;
-serial phase, deskew and analog PA timing remain open until RX comparison and
-board measurements close the contract.
+The generated-GT XSim TX regression passes 64 accepted AXI beats and 112
+transmitted user words across two complete 56-word frames. It samples each
+GTH TXP pin at the configured 14.0-Gb/s unit interval (71.428571 ps) and
+compares all 3,584 serial payload bits per lane per frame against the captured
+parallel GT user words. Four lanes match bit-true; the test also checks 128
+alternating idle bits per lane and P/N differential polarity. The run uses the
+GT Wizard behavioral model and skips RX word comparison; it proves modeled
+digital TX serialization, not a measured physical link.
+
+Exact four-lane RX comparison remains open. External serial pin self-loopback
+has not recovered words, and the near-end PMA-loopback experiment did not
+produce an active RX user clock or recovered frame. Serial phase/deskew across
+relock, routed GT timing, analog eye/jitter/BER, PA timing, and board output
+remain open pending implementation constraints and hardware measurements.
