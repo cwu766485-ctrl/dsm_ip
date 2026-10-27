@@ -91,34 +91,45 @@ def main():
 
     coverage_log = run_dir / "ef2_qualification_coverage.log"
     dashboard = coverage_dir / "dashboard.html"
-    group_report = coverage_dir / "grp0.html"
+    group_reports = sorted(coverage_dir.glob("grp*.html"))
     compile_log = run_dir / "compile.log"
-    for path in (coverage_log, dashboard, group_report, compile_log):
+    for path in (coverage_log, dashboard, compile_log):
         if not path.is_file():
             raise SystemExit("missing qualification artifact: " + str(path))
-    coverage_html = group_report.read_text(encoding="utf-8", errors="replace")
+    if not group_reports:
+        raise SystemExit("missing URG group report: " + str(coverage_dir))
     required_crosses = (
         "positive_candidate_x_stall", "negative_candidate_x_stall",
         "positive_x_rail", "negative_x_rail",
     )
     cross_status = {}
-    for name in required_crosses:
-        match = re.search(
-            r"<td><a href=\"#[^\"]*" + re.escape(name) + r"\"[^>]*>" +
-            re.escape(name) + r"</a></td>\s*<td class=\"rt\">(\d+)</td>" +
-            r"\s*<td class=\"rt\">(\d+)</td>\s*<td class=\"rt\">(\d+)</td>",
-            coverage_html,
-        )
-        if not match:
-            cross_status[name] = {"status": "NOT_FOUND"}
-        else:
-            expected, uncovered, covered = [int(value) for value in match.groups()]
-            cross_status[name] = {
-                "expected": expected,
-                "uncovered": uncovered,
-                "covered": covered,
-                "status": "PASS" if expected == covered and uncovered == 0 else "FAIL",
-            }
+    group_report = None
+    for candidate_report in group_reports:
+        coverage_html = candidate_report.read_text(encoding="utf-8", errors="replace")
+        candidate_status = {}
+        for name in required_crosses:
+            match = re.search(
+                r"<td><a href=\"#[^\"]*" + re.escape(name) + r"\"[^>]*>" +
+                re.escape(name) + r"</a></td>\s*<td class=\"rt\">(\d+)</td>" +
+                r"\s*<td class=\"rt\">(\d+)</td>\s*<td class=\"rt\">(\d+)</td>",
+                coverage_html,
+            )
+            if not match:
+                candidate_status[name] = {"status": "NOT_FOUND"}
+            else:
+                expected, uncovered, covered = [int(value) for value in match.groups()]
+                candidate_status[name] = {
+                    "expected": expected,
+                    "uncovered": uncovered,
+                    "covered": covered,
+                    "status": "PASS" if expected == covered and uncovered == 0 else "FAIL",
+                }
+        if all(item.get("status") == "PASS" for item in candidate_status.values()):
+            cross_status = candidate_status
+            group_report = candidate_report
+            break
+        if not cross_status:
+            cross_status = candidate_status
     if any(item.get("status") != "PASS" for item in cross_status.values()):
         raise SystemExit("required EF2 URG cross bins are not fully covered")
 

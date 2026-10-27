@@ -1,5 +1,40 @@
 # Update Log
 
+## 2026-10-28 01:01 SGT - EF2 main-chain stop/restart closure and report sync
+
+- Completed the current-source centered-cubic + EF2 verification follow-up.
+  The AXI-Lite wrapper now preserves source prefill before the first RUN and,
+  after a completed STOP/drain, waits for two fresh FIFO beats before enabling
+  the gearbox. The two-packet STOP/restart test now issues STOP while packet 2
+  is open and checks all 112 ordered outputs across four planes.
+- Updated current execution state and qualification/coverage reports to mark
+  EF2 as the thermo5 main-chain default, record the new STOP/restart PASS,
+  correct the generic raw URG score to 79.86%, and identify XSim/formal/XPM/GT
+  vendor-model/physical limits. The EF2 report links to the current manifest
+  at `runs/thermo5_ef2_qualification/vcs_current_final/`.
+- Updated the EF2 qualification packager to locate the required coverage group
+  in any `grp*.html` report instead of assuming that URG always names it
+  `grp0.html`.
+- Checks: current-source generic VCS/UVM regression and coverage merge PASS;
+  AXI-Lite VCS/UVM regression PASS; focused two-packet STOP/drain/restart PASS
+  (112 outputs, six event bins, zero underflow/protocol errors); EF2 long-frame,
+  clamp/recovery qualification PASS; four-path behavioral serializer loopback
+  PASS; Python reference-model unittest suite 36/36 PASS; packager
+  `py_compile` PASS; `git diff --check` PASS.
+- Not run: XSim/PowerShell is unavailable on this Linux host. EF2 formal proof,
+  real-XPM coverage, EF2 GT Wizard/TXP rerun, and physical FPGA timing/resource
+  work remain open or deferred. FPGA resource/timing/power were explicitly
+  deferred by the user; no PPA or physical QAM256 claim is made.
+- Files: `rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv`,
+  `dv/uvm/tests/thermo5/axil/thermo5_sku_axil_stop_restart_test.svh`,
+  `dv/uvm/sim/package_thermo5_ef2_qualification.py`,
+  `docs/exec-plans/active/execution-frontier.md`,
+  `docs/verification/thermo5-centered-cubic-ef2-status.md`,
+  `docs/verification/thermo5-dv-portfolio.md`,
+  `docs/verification/thermo5-ef2-stability.md`,
+  `docs/verification/thermo5-uvm-coverage.md`,
+  `docs/ai-native/commands.md`, and `docs/UPDATE_LOG.md`.
+
 ## 2026-10-27 - centered-cubic / EF2 roadmap checkpoint
 
 - Re-ran the centered-cubic sustained-throughput XSim test: 1,024 ordered

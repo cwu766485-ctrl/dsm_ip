@@ -76,6 +76,18 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
             axil_write(8'h00,32'h1,2,0,resp);
             if (resp!=2'b00) `uvm_fatal("AXIL_RUN2","Second RUN request failed")
             env.coverage.sample_stop_restart(3'd4);
+
+            // Ask for STOP while packet 2 is still open. The wrapper accepts
+            // the rest of the current packet through TLAST, then drains it;
+            // leaving RUN high after a finite packet has ended is deliberately
+            // diagnosed by the DUT as source underflow.
+            wait(env.source.monitor.accepted_beats>=36);
+            axil_write(8'h00,32'd0,0,1,resp);
+            if (resp!=2'b00) `uvm_fatal("AXIL_STOP2","Final STOP request failed")
+            axil_read(8'h04,rdata,resp);
+            if (resp!=2'b00 || rdata[4:3]!=2'b11)
+              `uvm_fatal("AXIL_DRAIN2_STATUS",
+                $sformatf("Expected RUN_ACTIVE+DRAINING for packet 2, status=%08x",rdata))
             for (int cycles=0; cycles<12000 && env.scoreboard.checked<cfg.core_words; cycles++)
               @(posedge vif.core_clk);
             if (env.scoreboard.checked!=cfg.core_words)
@@ -91,11 +103,12 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
                 vif.protocol_error || vif.underflow ||
                 env.coverage.underflow_before_last_source!=0)
               `uvm_fatal("AXIL_RESTART_STREAM_CHECK",
-                $sformatf("source=%0d TLAST=%0d frames=%0d output=%0d protocol=%b underflow=%b",
+                $sformatf("source=%0d TLAST=%0d frames=%0d output=%0d protocol=%b underflow=%b early_underflow=%0d",
                   env.source.monitor.accepted_beats,
                   env.source.monitor.accepted_last_count,
                   env.coverage.frame_starts,env.scoreboard.checked,
-                  vif.protocol_error,vif.underflow))
+                  vif.protocol_error,vif.underflow,
+                  env.coverage.underflow_before_last_source))
             for (int lane=0;lane<16;lane++)
               if (vif.dpd_sample_count[lane]!==expected_dpd_words ||
                   vif.dpd_saturation_count[lane]!==0)
@@ -104,8 +117,6 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
                     lane,vif.dpd_sample_count[lane],expected_dpd_words,
                     vif.dpd_saturation_count[lane]))
 
-            axil_write(8'h00,32'd0,0,0,resp);
-            if (resp!=2'b00) `uvm_fatal("AXIL_STOP2","Final STOP request failed")
             idle_seen=0;
             for (int polls=0; polls<1000 && !idle_seen; polls++) begin
               axil_read(8'h04,rdata,resp);

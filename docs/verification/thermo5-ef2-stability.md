@@ -114,19 +114,24 @@ physical link.
 The EF2 qualification URG group covered all four positive-candidate/stall,
 negative-candidate/stall, positive-rail, and negative-rail cross bins. This is
 targeted functional coverage, not complete code-coverage closure. The
-centered-cubic generic regression raw URG reports 81.39% aggregate score
-(88.04% line, 70.04% condition, 81.16% toggle, 100% FSM, 73.45% branch, and
-76.47% assertion); this includes UVM and RTL and is not a signoff threshold.
-Runs and reports are under ignored `runs/thermo5_ef2_qualification/`.
-`vcs_current_centered/qualification_manifest.json`
+centered-cubic generic regression raw URG reports 79.86% aggregate score
+(88.04% line, 70.63% condition, 81.17% toggle, 100% FSM, 73.45% branch,
+76.47% assertion, and 69.26% group); this includes UVM and RTL and is not a
+signoff threshold. Runs and reports are under ignored
+`runs/thermo5_ef2_qualification/`. The 2026-10-28 AXI-Lite STOP/drain/restart
+test passed two packets and 112 four-plane outputs with zero underflow or
+protocol errors; after a drained STOP, the wrapper waits for two newly accepted
+source beats before enabling the gearbox. The current qualification manifest
+is `vcs_current_final/qualification_manifest.json`.
 records the Git revision and changed-file hashes, VCS version, fixed
 configuration/seeds, oracle SHA256 values, test-log hashes, URG hashes, and
 required functional-bin disposition.
 
 No formal engine, XSim, Vivado XPM source package, or GT Wizard simulation
 model is available on this Linux host. Therefore XPM-specific coverage,
-formal proof, GT serializer/TXP behavior, FPGA synthesis/timing, and PPA remain
-open. The four PA planes are checked at the digital user-word boundary; this
+formal proof, GT Wizard/TXP behavior, FPGA synthesis/timing, and PPA remain
+open. The behavioral serializer loopback checks all four PA planes at the
+digital user-word boundary; this
 does not establish stable physical QAM256 transmission. The held-out Python
 QAM256 screen had nonzero uncoded bit errors and the analog-chain assumptions
 are not calibrated. Keep the 20-bit EF2 state and require board/receiver

@@ -84,6 +84,12 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   logic [4:0] source_phase_q;
   logic ingress_closed_s;
   (* ASYNC_REG = "TRUE" *) logic source_error_c1, source_error_c2;
+  (* ASYNC_REG = "TRUE" *) logic [1:0] prefill_gray_c1, prefill_gray_c2;
+  (* ASYNC_REG = "TRUE" *) logic run_s2_c1, run_s2_c2;
+  (* ASYNC_REG = "TRUE" *) logic core_active_s1, core_active_s2;
+  logic [1:0] prefill_count_s;
+  wire logic [1:0] prefill_gray_s = prefill_count_s ^ (prefill_count_s >> 1);
+  wire logic startup_prefill_done = run_s2_c2 && (prefill_gray_c2 == 2'b11);
   wire logic source_accept = s_axis_tvalid && s_axis_tready;
   wire logic core_accept = core_valid && core_ready;
   wire logic output_accept = (&pa_valid) && (&pa_ready);
@@ -101,6 +107,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     if (!s_axis_aresetn) begin
       run_s1 <= 1'b0;
       run_s2 <= 1'b0;
+      prefill_count_s <= '0;
+      core_active_s1 <= 1'b0;
+      core_active_s2 <= 1'b0;
       run_seen_s <= 1'b0;
       source_frame_open_q <= 1'b0;
       source_frame_error_q <= 1'b0;
@@ -108,6 +117,18 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     end else begin
       run_s1 <= run_request_async;
       run_s2 <= run_s1;
+      core_active_s1 <= core_tx_active;
+      core_active_s2 <= core_active_s1;
+
+      // Accumulate startup prefill before the first RUN. After a completed
+      // STOP/drain, clear the count only when ingress is closed and the core
+      // activity status has crossed back into the source domain. The next RUN
+      // therefore waits for two newly accepted beats before starting the
+      // 14:8 gearbox from an empty FIFO.
+      if (run_seen_s && ingress_closed_s && !core_active_s2)
+        prefill_count_s <= '0;
+      else if (source_accept && prefill_count_s < 2)
+        prefill_count_s <= prefill_count_s + 1'b1;
 
       if (run_s2) run_seen_s <= 1'b1;
 
@@ -134,9 +155,17 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     if (!core_aresetn) begin
       source_error_c1 <= 1'b0;
       source_error_c2 <= 1'b0;
+      prefill_gray_c1 <= '0;
+      prefill_gray_c2 <= '0;
+      run_s2_c1 <= 1'b0;
+      run_s2_c2 <= 1'b0;
     end else begin
       source_error_c1 <= source_frame_error_q;
       source_error_c2 <= source_error_c1;
+      prefill_gray_c1 <= prefill_gray_s;
+      prefill_gray_c2 <= prefill_gray_c1;
+      run_s2_c1 <= run_s2;
+      run_s2_c2 <= run_s2_c1;
     end
   end
   assign core_protocol_error = cdc_protocol_error | source_error_c2;
@@ -163,7 +192,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   end
 
   // RUN is a request. Retain the core enable and GT user activity through
-  // drain; only this explicit drain window suppresses FIFO underflow.
+  // drain; a fresh RUN activation waits for two source beats to cross into the
+  // core domain before the gearbox starts consuming data.
   always_ff @(posedge core_clk or negedge core_aresetn) begin
     if (!core_aresetn) begin
       core_tx_active_q <= 1'b0;
@@ -182,8 +212,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     end
   end
 
-  assign core_datapath_enable = core_enable || core_tx_active_q;
   assign core_draining = core_tx_active_q && !core_enable;
+  assign core_datapath_enable = core_tx_active_q &&
+                                (startup_prefill_done || core_draining);
   assign core_tx_active = core_enable || core_tx_active_q;
 
   thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(DPD_MAX_TAPS)) u_cfg (
@@ -243,6 +274,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     if (DPD_MAX_TAPS < 1 || DPD_MAX_TAPS > 4)
       $error("DPD_MAX_TAPS must be in [1,4]; got %0d", DPD_MAX_TAPS);
   end
+
 endmodule
 
 `default_nettype wire

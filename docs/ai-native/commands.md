@@ -141,7 +141,10 @@ The targets cover the primary centered-cubic EF2 configuration, the AXI-Lite
 STOP/configuration cases, and an additional centered-cubic EF2 qualification
 with long streaming, saturation, backpressure, reset, and replay. The
 serializer target checks all four PA planes across the behavioral user/serial
-boundary (56 words / 3,584 bits per path). The qualification target also writes a SHA256-backed manifest. The
+boundary (56 words / 3,584 bits per path). The AXI-Lite STOP/restart test
+checks two packets and waits for two fresh FIFO beats before restarting the
+gearbox after a completed drain. The qualification target also writes a
+SHA256-backed manifest. The
 boundedness argument and run limitations are in
 `docs/verification/thermo5-ef2-stability.md`. The first-order fallback can be
 regressed by passing `THERMO5_TIDSM_ORDER=1 THERMO5_STEP=7168` and vectors

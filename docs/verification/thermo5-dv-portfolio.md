@@ -12,11 +12,15 @@ board signoff.
 
 The ZU15EG GT parent and thermo5 wrappers now select centered-cubic
 interpolation and EF2 at STEP=5120 by default. VCS V-2023.12-SP1 passed the
-full generic-FIFO UVM regression and AXI-Lite regression on this
-configuration. The Python vector oracle and four-plane scoreboard check
-digital sample ordering and output values. The centered-cubic AXI-Lite
-nonlinear-control check expects `core_words + frame_starts` DPD inputs because
-each legal frame start also processes its tagged lookahead sample.
+full generic-FIFO UVM regression, AXI-Lite integration regression, and the
+two-packet STOP/drain/restart test on this configuration. The STOP/restart test
+checks 112 ordered four-plane outputs against the Python oracle, observes both
+packets held through TLAST and drain, and ends with zero underflow/protocol
+errors. The AXI-Lite wrapper now waits for two source beats in the FIFO after a
+fully drained restart before enabling the gearbox; the first RUN can use its
+existing prefill. The centered-cubic AXI-Lite nonlinear-control check expects
+`core_words + frame_starts` DPD inputs because each legal frame start also
+processes its tagged lookahead sample.
 
 The centered-cubic EF2 qualification adds three longer scenarios: (1) 2,072
 continuous words with zero output gaps and zero source stalls; (2) two stress
@@ -34,20 +38,21 @@ not instantiate or qualify GT Wizard TXP pins.
 Targeted EF2 functional coverage hits all four bins in each of
 `positive_candidate_x_stall`, `negative_candidate_x_stall`,
 `positive_x_rail`, and `negative_x_rail`. The merged centered-cubic generic
-regression raw URG score is 81.39% (line 88.04%, condition 70.04%, toggle
-81.16%, FSM 100%, branch 73.45%, assertion 76.47%). This is aggregate code
+regression raw URG score is 79.86% (line 88.04%, condition 70.63%, toggle
+81.17%, FSM 100%, branch 73.45%, assertion 76.47%, group 69.26%). This is aggregate code
 coverage over the current VCS hierarchy, not coverage closure or a signoff
 threshold.
 
 Still open: real-XPM URG/feature coverage (Vivado source package is not
-available here), formal proof of EF2 RTL equivalence, VCS simulation through
-GT Wizard serialization to TXP (vendor model unavailable), XSim, and FPGA
-timing/resource/power analysis. The PA-plane checks stop at the digital user
+available here), formal proof of EF2 RTL equivalence, rerunning GT Wizard/TXP
+scenarios with the new EF2 defaults, XSim on this Linux host, and FPGA
+timing/resource/power analysis. Earlier Windows GT Wizard runs were on the
+prior configuration and do not qualify EF2. The PA-plane checks stop at the digital user
 word boundary. The finite Python QAM256 study still reports nonzero uncoded
 BER, so this verification does not establish stable physical QAM256 service.
 The underlying logs, vectors, and URG reports are under the ignored
 `runs/thermo5_ef2_qualification/` directory. The repeatable EF2 target emits
-`vcs_current_centered/qualification_manifest.json`, including revision and dirty-file
+`vcs_current_final/qualification_manifest.json`, including revision and dirty-file
 hashes, seeds/configuration, vector hashes, test and URG hashes, and the
 targeted coverage disposition.
 
@@ -57,8 +62,8 @@ targeted coverage disposition.
 | --- | --- |
 | Long continuous traffic | PASS: centered-cubic EF2 sustains 2,072 words with zero output gaps and zero source stalls. |
 | EF2 saturation and recovery | PASS: positive/negative clamps, clamp during PA stall, state hold, reset, and bit-true replay are checked. |
-| Feature interaction crosses | PARTIAL: monitor-observed TLAST × PA stall, STOP × partial PA-ready stall, pending commit × stopped RUN, EF2 nonzero-state reset, and frame-tail stall × reset/replay pass. GT link loss during an active packet is not modeled. |
-| Code-coverage closure | OPEN: centered generic raw URG is 81.39%; targeted functional bins pass, but raw URG is not closed. Vivado XPM source is unavailable on this host. |
+| Feature interaction crosses | PARTIAL: TLAST × PA stall, STOP × partial PA-ready stall, pending commit × stopped RUN, EF2 nonzero-state reset, frame-tail stall × reset/replay, and STOP/restart pass. GT link loss during an active packet is not modeled. |
+| Code-coverage closure | OPEN: centered generic raw URG is 79.86%; targeted functional bins pass, but raw URG is not closed. Vivado XPM source is unavailable on this host. |
 | GT digital output model | PARTIAL: behavioral four-path loopback passes 56 words / 3,584 bits per path. GT Wizard/TXP, CDR, deskew, and board behavior remain untested. |
 | Reproducible package | PASS locally: the qualification target records source and oracle hashes, VCS version, seeds/configuration, logs, URG artifacts, and required functional-bin results. Hosted GitHub CI was not run. |
 | FPGA PPA / timing / power | DEFERRED per user direction; no Linux FPGA resource or timing result is claimed. |

@@ -4,24 +4,28 @@
 
 The current thermo5 wrapper and ZU15EG parent defaults are centered-cubic
 interpolation with fixed-point EF2 TIDSM at STEP=5120. The current VCS
-V-2023.12-SP1 generic-FIFO regression passes with merged raw URG of 81.39%
-(88.04% line, 70.04% condition, 81.16% toggle, 100% FSM, 73.45% branch,
-76.47% assertion). EF2 positive/negative rail and candidate-under-stall bins
+V-2023.12-SP1 generic-FIFO regression passes with merged raw URG of 79.86%
+(88.04% line, 70.63% condition, 81.17% toggle, 100% FSM, 73.45% branch,
+76.47% assertion, 69.26% group). EF2 positive/negative rail and candidate-under-stall bins
 are covered in the dedicated qualification run. This is not code-coverage
 closure.
 
 The AXI-Lite regression also passes targeted TLAST × PA stall, STOP ×
-partial-ready stall, and pending-commit × stopped-RUN checks. The reset test
+partial-ready stall, pending-commit × stopped-RUN, and two-packet
+STOP/drain/restart checks. The restart case bit-true checks 112 outputs and
+ends with zero underflow/protocol errors after the wrapper waits for two FIFO
+beats on each fresh RUN. The reset test
 starts from nonzero EF2 state, stalls the centered frame-tail output, resets
 while it is pending, and checks four-plane bit-true replay. The behavioral
 four-path serializer loopback passes 56 words / 3,584 bits per path; it does
 not model GT Wizard/TXP, CDR, deskew, or a board link. Run logs and the
-qualification manifest are under `runs/thermo5_ef2_qualification/`.
+qualification manifest are under `runs/thermo5_ef2_qualification/`; the current
+manifest is `vcs_current_final/qualification_manifest.json`.
 
-All coverage results below are historical evidence for the dated
-first-order/causal or XPM configurations. They do not qualify the current EF2
-main-chain defaults. Real-XPM coverage, formal EF2 proof, XSim, GT Wizard/TXP
-simulation, and FPGA PPA/timing remain open or deferred; see
+Detailed coverage results in the dated sections below belong to historical
+first-order/causal or XPM configurations unless marked current. They do not
+qualify EF2. Real-XPM coverage, formal EF2 proof, XSim on Linux, rerunning GT
+Wizard/TXP with EF2, and FPGA PPA/timing remain open or deferred; see
 [`thermo5-dv-portfolio.md`](thermo5-dv-portfolio.md) for the current status.
 
 ## Latest bit21 reachability closure (2026-10-08)

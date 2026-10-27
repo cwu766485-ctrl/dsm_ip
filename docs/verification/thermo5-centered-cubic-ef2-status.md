@@ -1,15 +1,32 @@
-# Thermo5 centered-cubic + EF2 candidate status
+# Thermo5 centered-cubic + EF2 main-chain status
 
-## Integration status
+## Current main-chain status (2026-10-28)
 
-Centered-cubic x2 interpolation and second-order Cartesian error-feedback TIDSM
-are integrated as optional compile-time parameter selections in the thermo5
-AXI-Stream and AXI-Lite wrappers. The default/frozen configuration remains
-causal interpolation with first-order TIDSM (`INTERP_CENTERED_CUBIC=0`,
-`TIDSM_ORDER=1`). The candidate exercised here is centered cubic, EF2,
-`STEP=5120`; results below do not promote it to the frozen SKU.
+Centered-cubic x2 interpolation and second-order Cartesian error-feedback
+TIDSM (`STEP=5120`, 20-bit state) are the active thermo5 main-chain defaults.
+First-order TIDSM and causal interpolation remain selectable fallbacks.
+VCS V-2023.12-SP1 has passed the full generic-FIFO regression, AXI-Lite
+integration regression, and the focused two-packet STOP/drain/restart case.
+The latter checked 112 ordered four-plane outputs against the Python oracle,
+hit all six STOP/restart functional bins, and ended with zero underflow or
+protocol errors.
 
-## 2026-10-27 roadmap checkpoint
+The AXI-Lite wrapper now preserves pre-RUN FIFO prefill and, after a completed
+STOP/drain, waits until two new source beats have entered the FIFO before
+starting the 14:8 gearbox on a fresh RUN. This prevents the restart path from
+starting against an empty FIFO. A RUN held high after a finite stream is
+exhausted still reports underflow as designed; software should issue STOP to
+close a finite transmission cleanly.
+
+The centered-cubic EF2 qualification covers sustained traffic, positive and
+negative state clamps, clamp-candidate stalls, reset/replay, PA backpressure,
+and a behavioral four-path serializer loopback. The current merged generic
+URG score is 79.86%; raw code coverage is not closed. No EF2 GT Wizard/TXP
+rerun, XSim run on this Linux host, formal EF2 proof, real-XPM coverage, or
+physical QAM256 signoff is claimed. FPGA timing/resource work remains deferred
+per user direction.
+
+## Historical checkpoint (2026-10-27; superseded)
 
 The centered-cubic sustained-throughput test was rerun with Vivado 2026.1
 XSim and passed again: 1,024 contiguous ordered outputs, zero bubbles,
@@ -139,19 +156,20 @@ behavioral model's EVM/BER calculation.
    ideal-loop NTF claim applies only while the clamp is inactive.
 3. **Remaining verification/physical boundary:** EF2-specific formal proof,
    routed OOC timing, physical GT/board measurements, and a production BER/BLER
-   target remain open. The stop-drain-restart UVM scenario has been added, but
-   its runtime remains unverified: a 2026-10-27 attempt generated the proper
-   EF2 vectors and VCS exited before compilation with `Cannot find license
-   file`. Do not count that test as PASS yet. Existing GT behavioral
-   simulation does not establish analog BER, eye/jitter margin, or board-level
-   signal integrity.
+   target remain open. The focused VCS STOP/drain/restart scenario now passes
+   on the current source: two packets, 112 ordered four-plane outputs,
+   six-of-six event bins, and zero underflow/protocol errors. This closes the
+   earlier runtime blocker, but does not establish analog BER, eye/jitter
+   margin, or board-level signal integrity. Historical license-blocked
+   attempts below are superseded by the 2026-10-28 run.
 
 ## Next closure gates
 
 1. Obtain a supported input-amplitude envelope and a system BER/BLER/EVM
    acceptance plan tied to the intended waveform, coding, receiver, and channel.
-2. Run the new stop-drain-restart regression with VCS when the license server
-   is reachable, then complete EF2-specific formal properties.
+2. Complete EF2-specific formal properties and rerun the GT Wizard/TXP
+   scenarios on the EF2 defaults when the vendor simulation environment is
+   available.
 3. Restructure EF2 into a timing-qualified architecture while preserving its
    required sample ordering, or keep it as a correctness/quality prototype and
    use the frozen first-order path for timing signoff. Only after that decision,

@@ -17,6 +17,16 @@ model-only: the RMS 0.10 held-out run measured 23 errors in 168,192 bits
 672,768 bits (BER 1.739e-4). The different RMS points are not a controlled
 comparison and neither establishes stable physical transmission.
 
+Current VCS V-2023.12-SP1 checks pass on the promoted EF2 defaults: generic
+full regression, AXI-Lite integration regression, two-packet STOP/drain/restart,
+EF2 long-frame/saturation qualification, and four-path behavioral serializer
+loopback. STOP/restart checked 112 ordered four-plane words, all six event
+bins, and zero underflow/protocol errors. The AXI-Lite wrapper's fresh-run
+prefill gate waits for two accepted source beats after a completed STOP/drain.
+Python reference tests pass 36/36. The merged generic raw URG score is
+79.86% (line 88.04%, condition 70.63%, toggle 81.17%, FSM 100%, branch
+73.45%, assertion 76.47%, group 69.26%); code coverage is not closed.
+
 The earlier GT Wizard TXP scenarios passed on Windows/Vivado 2026.1 for the
 configuration at those run dates. Re-run them with EF2/STEP=5120 before using
 them as current main-chain vendor-model evidence. Linux VCS does pass the
@@ -24,8 +34,12 @@ vendor-neutral serializer loopback; actual RX recovery, physical link, and
 board QAM256 remain open. The current 32-level EF2 recurrence has no routed
 timing result. FPGA resources/timing/power remain deferred per user direction.
 
+XSim/PowerShell and Vivado XPM/GT Wizard sources are unavailable in this Linux
+environment. Formal EF2 proof and rerunning GT Wizard/TXP under EF2 remain
+open. FPGA resource/timing/power analysis is deferred per user direction.
 The dated candidate-only entries below are historical checkpoints and are
-superseded where they describe first-order/causal as the current default.
+superseded where they describe first-order/causal as the current default or
+STOP/restart VCS as unrun.
 
 ## Centered-cubic + EF2 roadmap update (2026-10-27)
 
