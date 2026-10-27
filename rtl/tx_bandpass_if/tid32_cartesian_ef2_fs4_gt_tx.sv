@@ -45,6 +45,10 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
   logic signed [ACC_W-1:0] err1_i_wide, err2_i_wide;
   logic signed [ACC_W-1:0] err1_q_wide, err2_q_wide;
   logic signed [ACC_W-1:0] u_i, u_q, e_i_raw, e_q_raw;
+  // Verification-visible combinational indicators. They do not feed the
+  // datapath and are pruned when unused; coverage samples them only when the
+  // input vector is accepted.
+  logic clamp_positive_comb, clamp_negative_comb;
   logic y_i_positive, y_q_positive;
   logic [2*CHANNELS-1:0] raw_word_comb;
   logic [2*CHANNELS-1:0] raw_word_q;
@@ -86,6 +90,8 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
     u_q = '0;
     e_i_raw = '0;
     e_q_raw = '0;
+    clamp_positive_comb = 1'b0;
+    clamp_negative_comb = 1'b0;
     y_i_positive = 1'b0;
     y_q_positive = 1'b0;
 
@@ -105,6 +111,10 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
       y_q_positive = (u_q > 0);
       e_i_raw = y_i_positive ? (u_i - Q_ONE) : (u_i + Q_ONE);
       e_q_raw = y_q_positive ? (u_q - Q_ONE) : (u_q + Q_ONE);
+      if ((e_i_raw > STATE_MAX) || (e_q_raw > STATE_MAX))
+        clamp_positive_comb = 1'b1;
+      if ((e_i_raw < STATE_MIN) || (e_q_raw < STATE_MIN))
+        clamp_negative_comb = 1'b1;
 
       // Fs/4 lane polarity matches the frozen raw-plane interface.
       if ((lane % 2) == 0) begin

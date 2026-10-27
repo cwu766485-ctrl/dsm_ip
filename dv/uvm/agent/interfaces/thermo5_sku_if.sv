@@ -13,6 +13,8 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic core_enable = 0;
   logic underflow, protocol_error;
   logic cfg_busy, cfg_done, cfg_error;
+  logic cfg_pending_valid;
+  logic core_run_request, core_tx_active;
   logic [2:0] dpd_active_taps;
   logic dpd_config_boundary;
   // Read-only AXI-Lite CDC payload observation for atomic-commit checking.
@@ -38,4 +40,13 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic interp1_output_held, interp2_output_held;
   logic interp1_output_empty_blocked, interp2_stage1_empty_blocked;
   wire [31:0] dpd_sample_count[0:15], dpd_saturation_count[0:15];
+  // Read-only observation of real EF2 saturation, held input, and state.
+  logic centered_cubic_enabled;
+  logic ef2_order2_enabled;
+  logic [3:0] ef2_pos_clamp_event, ef2_neg_clamp_event;
+  logic [3:0] ef2_pos_clamp_candidate, ef2_neg_clamp_candidate;
+  logic [3:0] ef2_state_at_rail, ef2_state_zero;
+  logic ef2_clamp_stalled, ef2_tidsm_stalled;
+  logic signed [19:0] ef2_err1_i[0:3], ef2_err2_i[0:3];
+  logic signed [19:0] ef2_err1_q[0:3], ef2_err2_q[0:3];
 endinterface

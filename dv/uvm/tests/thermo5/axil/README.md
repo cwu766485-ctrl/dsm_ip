@@ -73,6 +73,16 @@ sticky protocol diagnostic without resetting alignment or truncating the
 stream. Poll STATUS.RUN_ACTIVE (bit 3) and STATUS.DRAINING (bit 4) until both
 clear. Unexpected starvation before STOP remains a sticky underflow condition.
 
+The current centered-cubic EF2 regression also checks control and frame-tail
+interactions with monitor-observed events. In the 2026-10-28 AXI-Lite VCS run,
+the STOP test observed six partial-PA-ready stall cycles during drain and four
+cycles with accepted TLAST held by PA backpressure; the configuration test
+observed 54 cycles with a commit pending while RUN was stopped. The full-IP
+reset scenario asserts reset from nonzero EF2 state while the centered frame-
+tail output is stalled, then replays and checks every PA plane against the
+bit-true oracle. These checks cover the modeled digital wrapper; GT link loss
+during an active packet is not part of this simulation model.
+
 Run a focused VCS scenario after compiling with `THERMO5_USE_AXIL=1` by setting
 `THERMO5_TESTNAME` to one of the classes below (the convenience targets are in
 `dv/uvm/sim/Makefile`):

@@ -93,8 +93,8 @@ make -C dv/uvm/sim thermo5-vcs-multiseed
 make -C dv/uvm/sim thermo5-coverage-merge
 ```
 
-The optional centered-cubic x2 interpolation path has a separate bit-true
-target. Generate matching vectors, then run:
+The default centered-cubic x2 interpolation path has a focused bit-true target.
+Generate matching vectors, then run:
 
 ```bash
 python3 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \

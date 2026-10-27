@@ -20,15 +20,15 @@ module tid32_thermo5_frontend_tx #(
   parameter int DPD_LANES = 16,
   parameter int MAX_TAPS = 4,
   parameter int INTERP_TAPS = 4,
-  parameter bit INTERP_CENTERED_CUBIC = 1'b0,
+  parameter bit INTERP_CENTERED_CUBIC = 1'b1,
   parameter int COEFF_W = 16,
   parameter int COEFF_FRAC = 14,
   parameter int GAIN_W = 16,
   parameter int GAIN_FRAC = 14,
-  parameter int STEP = 7168,
+  parameter int STEP = 5120,
   parameter bit HOLD_STATE_ON_DISABLE = 1'b0,
   parameter bit BYPASS_DPD = 1'b0,
-  parameter int TIDSM_ORDER = 1
+  parameter int TIDSM_ORDER = 2
 ) (
   input  wire logic                                      clk,
   input  wire logic                                      rst_n,

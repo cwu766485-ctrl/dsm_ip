@@ -18,6 +18,7 @@ class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
     bit [1:0] resp;
     bit [31:0] rdata;
     bit drain_complete;
+    bit partial_stall_seen;
     phase.raise_objection(this);
     fork
       begin
@@ -46,6 +47,37 @@ class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
             if (resp!=2'b00 || rdata[4:3]!=2'b11)
               `uvm_fatal("AXIL_DRAIN_STATUS",
                 $sformatf("Expected RUN_ACTIVE+DRAINING after STOP, status=%08x",rdata))
+
+            // Stall one PA plane while STOP is draining. The four planes
+            // share one handshake, so partial ready must hold every plane.
+            @(negedge vif.core_clk);
+            vif.pa_ready=4'hd;
+            partial_stall_seen=0;
+            for (int cycles=0; cycles<2000 && !partial_stall_seen; cycles++) begin
+              @(posedge vif.core_clk);
+              partial_stall_seen=(vif.pa_valid==4'hf && vif.pa_ready!=4'hf);
+            end
+            if (!partial_stall_seen)
+              `uvm_fatal("AXIL_STOP_PA_STALL_TIMEOUT","No PA word appeared under partial-ready STOP drain")
+            for (int cycles=0; cycles<1000 &&
+                 env.source.monitor.accepted_last_count==0; cycles++)
+              @(posedge vif.src_clk);
+            if (env.source.monitor.accepted_last_count!=1)
+              `uvm_fatal("AXIL_STOP_TLAST_TIMEOUT","Source did not reach TLAST during PA backpressure")
+            repeat (4) begin
+              @(posedge vif.core_clk);
+              if (vif.pa_valid!=4'hf || vif.pa_ready!=4'hd)
+                `uvm_fatal("AXIL_STOP_PA_STALL","PA planes did not remain valid under partial ready")
+            end
+            @(negedge vif.core_clk);
+            vif.pa_ready=4'hf;
+            repeat (2) @(posedge vif.core_clk);
+            if (env.coverage.stop_partial_pa_stall_cycles==0 ||
+                env.coverage.tlast_pa_stall_cycles==0)
+              `uvm_fatal("AXIL_STOP_CROSS_COVERAGE",
+                $sformatf("STOP/TLAST partial-PA crosses missed: stop=%0d tlast=%0d",
+                  env.coverage.stop_partial_pa_stall_cycles,
+                  env.coverage.tlast_pa_stall_cycles))
 
             for (int cycles=0; cycles<10000 && !scenario_stream_complete(); cycles++)
               @(posedge vif.core_clk);

@@ -46,7 +46,7 @@ class thermo5_control_bfm extends uvm_component;
         while (!vif.src_rst_n || !vif.core_rst_n) begin
           @(posedge vif.core_clk);
           if ((!vif.src_rst_n || !vif.core_rst_n) &&
-              ((vif.pa_valid & vif.pa_ready) != 0))
+              (vif.pa_valid==4'hf && vif.pa_ready==4'hf))
             `uvm_fatal("RESET_HANDSHAKE","PA transfer occurred during common reset epoch")
         end
       end

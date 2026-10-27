@@ -1,9 +1,15 @@
 # Thermo5 fixed-point EF2 boundedness and verification status
 
+Current integrated thermo5 defaults are centered-cubic x2 interpolation and
+EF2 TIDSM (`TIDSM_ORDER=2`, `STEP=5120`). The first-order TIDSM remains
+available with `TIDSM_ORDER=1`, `STEP=7168`; causal interpolation remains
+selectable with `INTERP_CENTERED_CUBIC=0`.
+
 ## Candidate recurrence
 
-The optional `TIDSM_ORDER=2` branch processes each 32-sample vector in
-lane order. I and Q are independent. In signed Q1.15 integer units, each
+The main thermo5 configuration uses `TIDSM_ORDER=2` and `STEP=5120`. It
+processes each 32-sample vector in lane order. I and Q are independent. In
+signed Q1.15 integer units, each
 branch first applies its configured offset and signed-16 saturation, then
 computes
 
@@ -50,18 +56,19 @@ zero for an intended operating profile.
 
 ## RTL implementation and limits
 
-`tid32_cartesian_ef2_fs4_gt_tx.sv` is an optional one-word-per-cycle prototype.
-It unrolls the 32 scalar recurrences in a combinational chain and updates its
-four error histories per I/Q branch only when the raw output boundary accepts
-the input word. `TIDSM_ORDER=1` remains the default throughout the frontend
-wrappers. The candidate's STEP is selectable through the wrapper; the current
-communications finalist is STEP=5120.
+`tid32_cartesian_ef2_fs4_gt_tx.sv` implements the main thermo5 TIDSM. The
+frontend wrappers and ZU15EG GT parent default to centered-cubic
+interpolation and `TIDSM_ORDER=2`, `STEP=5120`.
+The first-order fallback remains available as `TIDSM_ORDER=1`; its benchmarked
+setting is `STEP=7168`. EF2 unrolls the 32 scalar recurrences in a combinational
+chain and updates its four error histories per I/Q branch only when the raw
+output boundary accepts the input word.
 
 This implementation deliberately favors scalar bit-true semantics over
 timing. The 32 serial recurrence levels are a substantial combinational path.
-No FPGA synthesis, resource, or timing result is claimed. A throughput-preserving
-registered or look-ahead architecture would be a separate microarchitecture
-change requiring a new proof and bit-true comparison.
+No FPGA synthesis, resource, or timing result is claimed for the EF2 default.
+A throughput-preserving registered or look-ahead architecture would be a
+separate microarchitecture change requiring a new proof and bit-true comparison.
 
 ## Python evidence
 
@@ -88,13 +95,39 @@ quantizer-input magnitudes are 4.9764 and 5.9764. The DPA, output network,
 power, kTB, and noise-figure settings are illustrative, not measured device
 data. These finite runs do not establish a production BER guarantee.
 
-Python unit tests pass. On 2026-10-25, VCS V-2023.12-SP1 compiled and ran the
-focused 56-word UVM bit-true test with `TIDSM_ORDER=2`, STEP=5120, and centered
-cubic interpolation. It reported 32 source words, 56 four-plane output words,
-zero plane mismatches, and zero UVM_ERROR/FATAL. The run is under
-`runs/thermo5_ef2_robust_20261025/vcs/`; matching vectors are in the same
-run directory. This closes the focused simulator check for the current 20-bit
-candidate, not the full EF2 regression or a reduced-state RTL. No formal
-engine is available on this host. XSim and FPGA mapping/timing were not run.
-Do not label the candidate fully simulator- or formally-qualified until the
-full regression and the remaining implementation checks run.
+By 2026-10-28, VCS V-2023.12-SP1 passed the full generic-FIFO regression and
+the AXI-Lite regression with the main EF2 defaults (`TIDSM_ORDER=2`,
+`STEP=5120`). The centered-cubic EF2 qualification also passed: a 2,072-word
+continuous frame had zero output gaps and zero source stalls; a two-stream
+stress run produced 4,144 bit-true four-plane words, hit 194 positive and 12
+negative state clamps, held a clamp candidate under PA backpressure for eight
+cycles without state movement, then passed reset and replay checks. The random
+2,072-word run included PA backpressure and cleared all 16 DPD counters on
+reset. The Python oracle matched each checked PA plane.
+
+The separate four-PA behavioral serializer loopback also passed in VCS for
+the centered-cubic EF2/STEP=5120 configuration: 56 words and 3,584 serialized
+bits per path were reassembled in order and matched the Python four-plane oracle. This
+checks the modeled digital user/serial boundary, not the GT Wizard or a
+physical link.
+
+The EF2 qualification URG group covered all four positive-candidate/stall,
+negative-candidate/stall, positive-rail, and negative-rail cross bins. This is
+targeted functional coverage, not complete code-coverage closure. The
+centered-cubic generic regression raw URG reports 81.39% aggregate score
+(88.04% line, 70.04% condition, 81.16% toggle, 100% FSM, 73.45% branch, and
+76.47% assertion); this includes UVM and RTL and is not a signoff threshold.
+Runs and reports are under ignored `runs/thermo5_ef2_qualification/`.
+`vcs_current_centered/qualification_manifest.json`
+records the Git revision and changed-file hashes, VCS version, fixed
+configuration/seeds, oracle SHA256 values, test-log hashes, URG hashes, and
+required functional-bin disposition.
+
+No formal engine, XSim, Vivado XPM source package, or GT Wizard simulation
+model is available on this Linux host. Therefore XPM-specific coverage,
+formal proof, GT serializer/TXP behavior, FPGA synthesis/timing, and PPA remain
+open. The four PA planes are checked at the digital user-word boundary; this
+does not establish stable physical QAM256 transmission. The held-out Python
+QAM256 screen had nonzero uncoded bit errors and the analog-chain assumptions
+are not calibrated. Keep the 20-bit EF2 state and require board/receiver
+measurements before making a link-level BER claim.

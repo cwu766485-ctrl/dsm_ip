@@ -10,7 +10,7 @@ four-plane vectors without MATLAB and run the interpolation and link screens:
 
 ```bash
 python3 -m unittest discover -s tests -v
-python3 generate_thermo5_frontend_vectors.py --output-dir ../../../../runs/thermo5_python_vectors --interp-taps 2
+python3 generate_thermo5_frontend_vectors.py --output-dir ../../../../runs/thermo5_python_vectors --interp-mode centered_cubic --interp-taps 2 --tidsm-order 2 --step 5120
 python3 benchmark_thermo5_interp.py --symbols 64 --seed 20261022
 python3 benchmark_thermo5_gt.py --words 56 --seed 20261023 --ber 1e-3
 python3 benchmark_thermo5_link.py --symbols 64 --seed 20261023 --json ../../../../runs/thermo5_link_benchmark/summary.json
@@ -43,11 +43,11 @@ make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3 \
   THERMO5_OUT="$PWD/runs/thermo5_python_vcs"
 ```
 
-To run the optional centered-cubic streaming RTL against matching Python
-oracle vectors, use `make -C dv/uvm/sim thermo5-centered-cubic-vcs` and set
-`THERMO5_VECTORS` plus `THERMO5_OUT` as above. That target selects
-`INTERP_CENTERED_CUBIC=1` in the verification build; the normal preset remains
-causal.
+The default Linux/UVM configuration is centered-cubic interpolation with EF2
+at STEP=5120. The causal interpolation fallback is selected with
+`THERMO5_CENTERED_CUBIC=0`; use
+`make -C dv/uvm/sim thermo5-centered-cubic-vcs` for the focused centered-FIR
+test and set `THERMO5_VECTORS` plus `THERMO5_OUT` as above.
 
 The focused centered-cubic checks generate their own nonlinear Python vectors
 and run the short packet, two consecutive packets, and low-power STOP case:
@@ -83,7 +83,9 @@ python3 benchmark_thermo5_step_ntf.py --symbols 8 --seeds 101,307,503 \
 
 The first-order mode is checked against the scalar RTL recurrence. The
 floating EF modes are architecture studies; `ef_order2_fixed` uses the
-integer Q1.15/Q4.15 recurrence used by the optional `TIDSM_ORDER=2` RTL.
+integer Q1.15/Q4.15 recurrence used by the main-chain `TIDSM_ORDER=2` RTL
+default. The selected main STEP is 5120; first-order comparison uses explicit
+`TIDSM_ORDER=1` and STEP=7168.
 EVM/SNDR and hard decisions are measured after four-plane reconstruction and
 the declared OFDM receiver; natural-binary BER is a screen, not a Gray-coded
 BER or production-link guarantee. Nominal/stress DPA, output FIR and kTB/NF
@@ -114,25 +116,36 @@ advances in chronological sample order; parallel low-rate loops would be a
 different NTF and are outside this equivalence study. DPA/output-power/noise
 profiles remain sensitivity assumptions until calibrated to the target chain.
 
-Generate EF2 candidate vectors and run the VCS bit-true test on a supported
-EDA host:
+The default thermo5 RTL and Python vector generator now select EF2 at
+STEP=5120. To reproduce the main generic-FIFO and AXI-Lite regressions, first
+generate matching Python vectors, then run on a licensed VCS host:
 
 ```bash
 python3 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
-  --output-dir runs/thermo5_ef2_centered_vectors --words 56 --seed 1101 \
-  --interp-mode centered_cubic --tidsm-order 2 --step 5120
-make -C dv/uvm/sim thermo5-vcs-run PYTHON=python3 \
-  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_CENTERED_CUBIC=1 \
+  --output-dir runs/thermo5_ef2_centered_vectors --words 56 --seed 271031 \
+  --interp-mode centered_cubic --interp-taps 2 --tidsm-order 2 --step 5120 \
+  --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
+make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3 \
   THERMO5_VECTORS="$PWD/runs/thermo5_ef2_centered_vectors" \
-  THERMO5_OUT="$PWD/runs/thermo5_ef2_vcs"
+  THERMO5_OUT="$PWD/runs/thermo5_main_vcs"
+make -C dv/uvm/sim thermo5-axil-vcs-regression PYTHON=python3 \
+  THERMO5_VECTORS="$PWD/runs/thermo5_ef2_centered_vectors" \
+  THERMO5_OUT="$PWD/runs/thermo5_axil_main_vcs"
+make -C dv/uvm/sim thermo5-ef2-qualification PYTHON=python3 \
+  THERMO5_OUT="$PWD/runs/thermo5_ef2_qualification/vcs"
+make -C dv/uvm/sim thermo5-ef2-serdes-vcs PYTHON=python3.12 \
+  THERMO5_EF2_SERDES_DIR="$PWD/runs/thermo5_ef2_serdes"
 ```
 
-The bounded-state argument and verification status are in
-`docs/verification/thermo5-ef2-stability.md`. On 2026-10-25, VCS
-V-2023.12-SP1 compiled and passed this focused 56-word EF2 UVM bit-true test:
-32 input words produced 56 output words with all four planes matching and
-zero UVM errors/fatals. This is not the full EF2 regression. The run artifacts
-are under `runs/thermo5_ef2_robust_20261025/vcs/`.
+The targets cover the primary centered-cubic EF2 configuration, the AXI-Lite
+STOP/configuration cases, and an additional centered-cubic EF2 qualification
+with long streaming, saturation, backpressure, reset, and replay. The
+serializer target checks all four PA planes across the behavioral user/serial
+boundary (56 words / 3,584 bits per path). The qualification target also writes a SHA256-backed manifest. The
+boundedness argument and run limitations are in
+`docs/verification/thermo5-ef2-stability.md`. The first-order fallback can be
+regressed by passing `THERMO5_TIDSM_ORDER=1 THERMO5_STEP=7168` and vectors
+generated with `--tidsm-order 1 --step 7168`.
 
 The benchmarks' adjacent-band metric is not standard ACLR. Python-native
 random vectors do not reproduce MATLAB's random sequence; reuse MATLAB source
@@ -142,18 +155,20 @@ electrical timing/CDR. The link screen uses behavioral DPA/output-network
 models and kTB thermal noise scaled by declared observation-plane power; those
 parameters are illustrative until replaced by measured values. Digital
 quantization/interpolation error is reported separately from random analog
-noise. Centered cubic is the current lowest-EVM candidate, with an optional
-streaming RTL configuration available for bit-true verification. Its FPGA
-resource and timing evaluation remains open.
+noise. Centered cubic is the current lowest-EVM candidate and the integrated
+streaming RTL default. Its FPGA resource and timing evaluation remains open.
+The centered-cubic EF2 main-chain default has passed generic and AXI-Lite VCS
+functional regressions, but XPM coverage, GT Wizard/TXP, XSim, formal
+equivalence, and FPGA timing/PPA remain open.
 The architecture A/B sweep evaluates FIR and input drive/PAPR only. It uses a
 complex-baseband DPA/output-network/noise surrogate with two development and
 three held-out seeds; the actual TID-plane waveform is not decoded for those
 EVM/SNDR numbers, and no FPGA PPA/timing is implied. The Python STEP and
 DSM-order screens are now available for algorithm selection. A bounded
-fixed-point EF2 model and optional RTL candidate now exist; its focused VCS
-bit-true test passes, while the full regression and FPGA resource/timing
-evaluation remain open. The centered-cubic FIR remains an optional
-implementation pending the full integration checks.
+fixed-point EF2 model is integrated as the thermo5 main-chain default and has
+passed full generic and AXI-Lite VCS functional regressions. Centered cubic is
+also the main interpolation default; causal FIR remains selectable. FPGA
+resource/timing, formal equivalence, XPM, and GT/board integration remain open.
 
 ## Build/flow targets
 

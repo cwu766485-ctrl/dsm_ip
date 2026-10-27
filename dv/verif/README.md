@@ -18,8 +18,10 @@ scoreboard, functional coverage, and full-chain regressions.
 - Each block/subsystem directory contains its focused XSim runner beside the
   testbench. `scripts/` contains thin backward-compatible shims only.
 - `models/`: behavioral verification-only models, not synthesizable RTL.
-- MATLAB golden vectors and simulator outputs are stored under MATLAB's output
-  area or ignored `runs/`, not duplicated in the test source tree.
+- Python-generated main-chain EF2 vectors are the Linux oracle path; MATLAB
+  vector generation remains available where MATLAB is installed. Generated
+  vectors and simulator outputs stay under ignored `runs/`, not duplicated in
+  the test source tree.
 
 There is no separate top-level `tb/` directory: each testbench lives with its
 block or subsystem. Simulator output is directed to ignored `runs/` directories
@@ -27,7 +29,7 @@ and is not source collateral.
 
 ## Thermo5 smoke entry points
 
-Generate the MATLAB oracle vectors first, then run the full AXI/CDC/frontend
+Generate the matching Python or MATLAB oracle vectors first, then run the full AXI/CDC/frontend
 test:
 
 ```powershell

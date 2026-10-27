@@ -356,7 +356,7 @@ def tid_word_ef2(i_values, q_values, states=None, width=16, step=5120):
 
 
 def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
-                        interp_taps=2, step=7168, tidsm_order=1):
+                        interp_taps=2, step=5120, tidsm_order=2):
     """Model gain, two x2 stages, identity DPD, and the four TID code planes."""
     count = len(i_words)
     if count != len(q_words) or count != len(frame_starts) or count != len(frame_gains):
@@ -406,8 +406,8 @@ def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
 
 
 def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
-                                step=7168, dpd_coefficients=None,
-                                dpd_active_taps=None, tidsm_order=1):
+                                step=5120, dpd_coefficients=None,
+                                dpd_active_taps=None, tidsm_order=2):
     """Generate four-plane oracle words for the streaming centered-cubic SKU.
 
     Each frame is zero-extended independently for the two centered FIR stages.
@@ -536,8 +536,8 @@ def generate_source_vectors(words=56, seed=20260930, profile="random",
     """Generate deterministic Python-native stimulus with the MATLAB profiles."""
     if words < 12:
         raise ValueError("at least 12 words are required")
-    if profile not in ("random", "extreme", "range_stress"):
-        raise ValueError("profile must be random, extreme, or range_stress")
+    if profile not in ("random", "extreme", "range_stress", "ef2_saturation"):
+        raise ValueError("profile must be random, extreme, range_stress, or ef2_saturation")
     rng = random.Random(seed)
     i_words = [[rng.randint(-12000, 12000) for _ in range(LANES_IN)]
                for _ in range(words)]
@@ -555,6 +555,12 @@ def generate_source_vectors(words=56, seed=20260930, profile="random",
         for word in range(words):
             i_value, q_value = ((-32768, 32767) if (word // 4) % 2 == 0
                                 else (32767, -32768))
+            i_words[word] = [i_value] * LANES_IN
+            q_words[word] = [q_value] * LANES_IN
+    elif profile == "ef2_saturation":
+        for word in range(words):
+            i_value, q_value = ((32767, -32768) if word < words // 2
+                                else (-32768, 32767))
             i_words[word] = [i_value] * LANES_IN
             q_words[word] = [q_value] * LANES_IN
     i_words[0] = extreme_i[:]

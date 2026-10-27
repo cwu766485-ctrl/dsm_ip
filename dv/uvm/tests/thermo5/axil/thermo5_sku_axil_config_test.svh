@@ -246,6 +246,12 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
           wait (vif.cfg_pending_payload===expected_cfg_payload);
           `uvm_info("AXIL_COEFF_PENDING","Legal coefficient image observed atomically in core pending bank",UVM_MEDIUM)
         end
+        for (int cycles=0; cycles<100 &&
+             env.coverage.commit_pending_while_stopped_cycles==0; cycles++)
+          @(posedge vif.core_clk);
+        if (env.coverage.commit_pending_while_stopped_cycles==0)
+          `uvm_fatal("AXIL_PENDING_STOP_COVERAGE",
+            "Independent monitor did not observe a pending commit while RUN was stopped")
         axil_read(8'h04,rdata,resp);
         if (resp!=2'b00 || !rdata[0] || rdata[1] || rdata[2])
           `uvm_fatal("AXIL_BUSY",$sformatf("Commit should wait for DPD frame boundary, status=%08x",rdata))

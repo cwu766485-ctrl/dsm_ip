@@ -19,8 +19,11 @@ not counted as additional thermo5 subsystems.
 The raw64 test is a block test. The behavioral serializer loopback and the
 generated GT Wizard parent simulation are separate integration tests. The
 former is fast and vendor-neutral; the latter exercises the generated GT
-Wizard model. Run the GT parent end-to-end TX simulation from a clean output
-directory with:
+Wizard model. The recorded Windows/Vivado 2026.1 GT-parent TXP scenarios use
+the configuration current at their run date; rerun the parent at centered
+cubic + EF2 (`TIDSM_ORDER=2`, `STEP=5120`) before treating them as end-to-end
+evidence for the current main-chain default. Run the GT parent simulation from
+a clean output directory with:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\syn\run_thermo5_qsfp_gt14_parent_sim.ps1 `
@@ -35,6 +38,17 @@ overridden with `-VivadoBat`. For source-gap and signed-endpoint pressure, use
 mid-frame source interruption, then reset-and-replay behavior. See
 `docs/GT_PARENT_STRESS_AND_ERROR_TESTS.md` for the exact scenario matrix and
 PASS evidence.
+
+Run the centered-cubic EF2 behavioral serializer check on Linux with VCS:
+
+```bash
+make -C dv/uvm/sim thermo5-ef2-serdes-vcs PYTHON=python3.12 \
+  THERMO5_EF2_SERDES_DIR="$PWD/runs/thermo5_ef2_serdes"
+```
+
+It checks 56 words and 3,584 serialized bits per PA path against the Python
+four-plane oracle. It models the digital user/serial boundary and does not
+replace the GT Wizard/TXP test.
 
 Run the fast behavioral serializer model from the repository root with:
 

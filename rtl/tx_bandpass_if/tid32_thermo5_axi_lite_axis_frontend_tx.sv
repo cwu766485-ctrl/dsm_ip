@@ -7,13 +7,13 @@
 module tid32_thermo5_axi_lite_axis_frontend_tx #(
   parameter int W = 16,
   parameter int GAIN_W = 16,
-  parameter int STEP = 7168,
+  parameter int STEP = 5120,
   parameter int DPD_MAX_TAPS = 4,
   parameter int INTERP_TAPS = 2,
-  parameter bit INTERP_CENTERED_CUBIC = 1'b0,
+  parameter bit INTERP_CENTERED_CUBIC = 1'b1,
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
-  parameter int TIDSM_ORDER = 1
+  parameter int TIDSM_ORDER = 2
 ) (
   input  wire logic         s_axil_aclk,
   input  wire logic         s_axil_aresetn,

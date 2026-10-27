@@ -27,16 +27,16 @@ def main():
                         help="reuse I/Q and metadata .mem files from a MATLAB/Python run")
     parser.add_argument("--words", type=int, default=56)
     parser.add_argument("--seed", type=int, default=20260930)
-    parser.add_argument("--profile", choices=("random", "extreme", "range_stress"),
+    parser.add_argument("--profile", choices=("random", "extreme", "range_stress", "ef2_saturation"),
                         default="random")
     parser.add_argument("--interp-taps", type=int, choices=(2, 3, 4), default=2)
     parser.add_argument("--interp-mode", choices=("causal", "centered_cubic"),
-                        default="causal")
+                        default="centered_cubic")
     parser.add_argument("--dpd-profile", choices=("identity", "nonlinear_test"),
                         default="identity")
-    parser.add_argument("--step", type=int, default=7168)
-    parser.add_argument("--tidsm-order", type=int, choices=(1, 2), default=1,
-                        help="use the frozen first-order or experimental EF2 TIDSM")
+    parser.add_argument("--step", type=int, default=5120)
+    parser.add_argument("--tidsm-order", type=int, choices=(1, 2), default=2,
+                        help="use the main-chain EF2 TIDSM (default) or first-order fallback")
     parser.add_argument("--frame-start-words", default="1,15,36")
     parser.add_argument("--frame-gains", default="16384,14336,12288")
     args = parser.parse_args()

@@ -61,7 +61,15 @@ Old runner paths under dv/verif/scripts/ remain available as forwarding shims;
 new invocations should use the colocated paths in the block/subsystem examples.
 
 Behavioral serializer loopback and optional GT-parent checks are system
-integration tests, not subsystem signoff. Run the serializer model with:
+integration tests, not subsystem signoff. The EF2 main-chain serializer model
+can be run with licensed VCS on Linux:
+
+```bash
+make -C dv/uvm/sim thermo5-ef2-serdes-vcs PYTHON=python3.12 \
+  THERMO5_EF2_SERDES_DIR="$PWD/runs/thermo5_ef2_serdes"
+```
+
+The Windows XSim wrapper uses the same Python-generated EF2 vectors:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\integration\serializer_loopback\run_xsim_tid32_thermo5_serdes_loopback.ps1

@@ -1,5 +1,32 @@
 # Execution frontier
 
+## Current execution state: centered-cubic EF2 main-chain integration (2026-10-28)
+
+The latest user instruction promotes EF2 after verification. Thermo5 wrappers,
+the Python oracle, the VCS Make defaults, and the ZU15EG parent now select
+centered-cubic x2 interpolation and fixed-point EF2 TIDSM at STEP=5120. The
+first-order (`TIDSM_ORDER=1`, STEP=7168) and causal interpolation
+(`INTERP_CENTERED_CUBIC=0`) settings remain available for comparison. EF2 keeps
+its 20-bit error state and chronological 32-sample update order.
+
+The current-source long-frame qualification and monitor-observed interaction
+checks are recorded in `docs/verification/thermo5-dv-portfolio.md` and
+`docs/verification/thermo5-ef2-stability.md`. The local QAM256 screen remains
+model-only: the RMS 0.10 held-out run measured 23 errors in 168,192 bits
+(BER 1.367e-4); a newer six-seed, 24-symbol run at RMS 0.08 measured 117 in
+672,768 bits (BER 1.739e-4). The different RMS points are not a controlled
+comparison and neither establishes stable physical transmission.
+
+The earlier GT Wizard TXP scenarios passed on Windows/Vivado 2026.1 for the
+configuration at those run dates. Re-run them with EF2/STEP=5120 before using
+them as current main-chain vendor-model evidence. Linux VCS does pass the
+vendor-neutral serializer loopback; actual RX recovery, physical link, and
+board QAM256 remain open. The current 32-level EF2 recurrence has no routed
+timing result. FPGA resources/timing/power remain deferred per user direction.
+
+The dated candidate-only entries below are historical checkpoints and are
+superseded where they describe first-order/causal as the current default.
+
 ## Centered-cubic + EF2 roadmap update (2026-10-27)
 
 The sustained centered-cubic throughput fix remains confirmed by the XSim test:

@@ -11,7 +11,13 @@ class thermo5_sku_coverage extends uvm_component;
   int pa_partial_ready_stall_cycles;
   int accepted_tlast_markers, packet_beats_since_boundary;
   int signed_min_beats, signed_max_beats;
-  bit seen_src_release, last_src_rst_n;
+  int ef2_positive_clamp_events, ef2_negative_clamp_events;
+  int ef2_clamp_stall_cycles, ef2_tidsm_stall_cycles, ef2_state_rail_cycles;
+  int ef2_state_rail_stall_cycles;
+  int tlast_pa_stall_cycles, stop_partial_pa_stall_cycles;
+  int commit_pending_while_stopped_cycles, reset_nonzero_ef2_state_events;
+  int ef2_positive_clamp_branch[0:3], ef2_negative_clamp_branch[0:3];
+  bit seen_src_release, last_src_rst_n, ef2_state_nonzero_seen;
 
   covergroup source_cg with function sample(bit full, bit stalled, bit start,
                                               bit reset_low, bit signed_min,
@@ -44,6 +50,25 @@ class thermo5_sku_coverage extends uvm_component;
     cp_illegal: coverpoint illegal { bins legal={0}; bins bad_frame={1}; }
     cp_pa_stall: coverpoint pa_stall { bins ready={0}; bins stalled={1}; }
     cp_pa_word: coverpoint pa_word { bins no_word={0}; bins four_plane_word={1}; }
+  endgroup
+
+  covergroup ef2_cg with function sample(bit positive_clamp, bit negative_clamp,
+                                         bit positive_candidate, bit negative_candidate,
+                                         bit clamp_stalled, bit tidsm_stalled,
+                                         bit at_state_rail);
+    option.per_instance = 1;
+    cp_positive: coverpoint positive_clamp { bins absent={0}; bins observed={1}; }
+    cp_negative: coverpoint negative_clamp { bins absent={0}; bins observed={1}; }
+    cp_positive_candidate: coverpoint positive_candidate { bins absent={0}; bins observed={1}; }
+    cp_negative_candidate: coverpoint negative_candidate { bins absent={0}; bins observed={1}; }
+    cp_clamp_stall: coverpoint clamp_stalled { bins no={0}; bins held={1}; }
+    cp_tidsm_stall: coverpoint tidsm_stalled { bins ready={0}; bins stalled={1}; }
+    cp_state_rail: coverpoint at_state_rail { bins below_rail={0}; bins at_rail={1}; }
+    positive_candidate_x_stall: cross cp_positive_candidate, cp_tidsm_stall;
+    negative_candidate_x_stall: cross cp_negative_candidate, cp_tidsm_stall;
+    positive_x_rail: cross cp_positive, cp_state_rail;
+    negative_x_rail: cross cp_negative, cp_state_rail;
+    state_rail_x_stall: cross cp_state_rail, cp_tidsm_stall;
   endgroup
 
   // All four planes represent one thermometric symbol. Partial READY is legal,
@@ -82,7 +107,7 @@ class thermo5_sku_coverage extends uvm_component;
 
   function new(string name, uvm_component parent);
     super.new(name,parent);
-    source_cg=new(); core_cg=new(); plane_atomic_cg=new();
+    source_cg=new(); core_cg=new(); plane_atomic_cg=new(); ef2_cg=new();
     stop_restart_cg=new();
   endfunction
 
@@ -144,10 +169,32 @@ class thermo5_sku_coverage extends uvm_component;
       forever begin
         @(posedge vif.core_clk);
         plane_atomic_cg.sample(vif.pa_valid, vif.pa_ready);
+        ef2_cg.sample(|vif.ef2_pos_clamp_event, |vif.ef2_neg_clamp_event,
+                      |vif.ef2_pos_clamp_candidate, |vif.ef2_neg_clamp_candidate,
+                      vif.ef2_clamp_stalled, vif.ef2_tidsm_stalled,
+                      |vif.ef2_state_at_rail);
         core_cg.sample(vif.underflow, vif.protocol_error,
                        vif.pa_valid==4'hf && vif.pa_ready!=4'hf,
                        vif.pa_valid==4'hf && vif.pa_ready==4'hf);
         if (vif.core_rst_n) begin
+          if (cfg.axil_control && vif.cfg_pending_valid && !vif.core_run_request)
+            commit_pending_while_stopped_cycles++;
+          if (cfg.axil_control && !vif.core_run_request && vif.core_tx_active &&
+              vif.pa_valid==4'hf && vif.pa_ready!=4'hf)
+            stop_partial_pa_stall_cycles++;
+          if (accepted_tlast_markers!=0 && vif.pa_valid==4'hf && vif.pa_ready!=4'hf)
+            tlast_pa_stall_cycles++;
+          if (|vif.ef2_pos_clamp_event) ef2_positive_clamp_events++;
+          if (|vif.ef2_neg_clamp_event) ef2_negative_clamp_events++;
+          for (int branch=0;branch<4;branch++) begin
+            if (vif.ef2_pos_clamp_event[branch]) ef2_positive_clamp_branch[branch]++;
+            if (vif.ef2_neg_clamp_event[branch]) ef2_negative_clamp_branch[branch]++;
+          end
+          if (vif.ef2_clamp_stalled) ef2_clamp_stall_cycles++;
+          if (vif.ef2_tidsm_stalled) ef2_tidsm_stall_cycles++;
+          if ((|vif.ef2_state_at_rail) && vif.ef2_tidsm_stalled)
+            ef2_state_rail_stall_cycles++;
+          if (|vif.ef2_state_at_rail) ef2_state_rail_cycles++;
           if (vif.underflow) begin
             underflow_cycles++;
             if (vif.accepted_beats<cfg.source_beats) underflow_before_last_source++;
@@ -157,18 +204,30 @@ class thermo5_sku_coverage extends uvm_component;
           if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf && vif.pa_ready!=4'h0)
             pa_partial_ready_stall_cycles++;
           if (vif.pa_valid==4'hf && vif.pa_ready==4'hf) pa_words++;
+          if (vif.ef2_state_zero !== 4'hf) ef2_state_nonzero_seen=1'b1;
         end
+      end
+      forever begin
+        @(negedge vif.core_rst_n);
+        if (ef2_state_nonzero_seen && vif.ef2_order2_enabled)
+          reset_nonzero_ef2_state_events++;
+        ef2_state_nonzero_seen=1'b0;
       end
     join
   endtask
 
   function void report_phase(uvm_phase phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f",
-      fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,reset_reassertions,
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
+      fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
+      tlast_pa_stall_cycles,stop_partial_pa_stall_cycles,
+      commit_pending_while_stopped_cycles,reset_nonzero_ef2_state_events,reset_reassertions,
       underflow_cycles,underflow_before_last_source,protocol_error_cycles,pa_stall_cycles,
       pa_partial_ready_stall_cycles,pa_words,
       signed_min_beats,signed_max_beats,
-      source_cg.get_coverage(),core_cg.get_coverage(),plane_atomic_cg.get_coverage(),
-      stop_restart_cg.get_coverage()),UVM_NONE)
+      ef2_positive_clamp_events,ef2_negative_clamp_events,
+      ef2_clamp_stall_cycles,ef2_tidsm_stall_cycles,ef2_state_rail_cycles,
+      ef2_state_rail_stall_cycles,source_cg.get_coverage(),core_cg.get_coverage(),
+      plane_atomic_cg.get_coverage(),stop_restart_cg.get_coverage(),
+      ef2_cg.get_coverage()),UVM_NONE)
   endfunction
 endclass

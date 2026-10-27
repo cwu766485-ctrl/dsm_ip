@@ -11,7 +11,7 @@ module thermo5_sku_uvm_tb;
 `ifdef THERMO5_CENTERED_CUBIC
   localparam bit USE_CENTERED_CUBIC = 1'b1;
 `else
-  localparam bit USE_CENTERED_CUBIC = 1'b0;
+  localparam bit USE_CENTERED_CUBIC = 1'b1;
 `endif
 `ifdef THERMO5_LOW_POWER
   localparam bit USE_LOW_POWER_CTRL = 1'b1;
@@ -21,12 +21,12 @@ module thermo5_sku_uvm_tb;
 `ifdef THERMO5_TIDSM_ORDER
   localparam int USE_TIDSM_ORDER = `THERMO5_TIDSM_ORDER;
 `else
-  localparam int USE_TIDSM_ORDER = 1;
+  localparam int USE_TIDSM_ORDER = 2;
 `endif
 `ifdef THERMO5_STEP
   localparam int USE_STEP = `THERMO5_STEP;
 `else
-  localparam int USE_STEP = 7168;
+  localparam int USE_STEP = 5120;
 `endif
   logic src_clk=0, core_clk=0;
   logic axil_clk=0;
@@ -76,7 +76,7 @@ module thermo5_sku_uvm_tb;
     .s_axis_tuser_frame_start(bus.frame_start),.s_axis_tuser_frame_gain(bus.frame_gain),
     .s_axis_fifo_full(bus.fifo_full),.core_clk(core_clk),.core_aresetn(bus.core_rst_n),
     .core_underflow(bus.underflow),.core_protocol_error(bus.protocol_error),
-    .core_run_request(),.core_tx_active(),
+    .core_run_request(bus.core_run_request),.core_tx_active(bus.core_tx_active),
     .pa_valid(bus.pa_valid),.pa_data(bus.pa_data),.pa_ready(bus.pa_ready),
     .cfg_busy(bus.cfg_busy),.cfg_done(bus.cfg_done),.cfg_error(bus.cfg_error)
   );
@@ -84,6 +84,7 @@ module thermo5_sku_uvm_tb;
   assign bus.dpd_config_boundary=dut.dpd_config_boundary;
   assign bus.cfg_mailbox_payload=dut.u_cfg.cfg_mailbox_q;
   assign bus.cfg_pending_payload=dut.u_cfg.cfg_pending_core;
+  assign bus.cfg_pending_valid=dut.u_cfg.cfg_pending_valid;
   assign bus.cfg_active_payload=dut.u_cfg.cfg_active_core;
 `else
   tid32_thermo5_axis_frontend_tx #(
@@ -112,7 +113,64 @@ module thermo5_sku_uvm_tb;
   assign bus.cfg_mailbox_payload='0;
   assign bus.cfg_pending_payload='0;
   assign bus.cfg_active_payload='0;
+  assign bus.cfg_pending_valid=1'b0;
+  assign bus.core_run_request=1'b0;
+  assign bus.core_tx_active=1'b0;
 `endif
+  assign bus.centered_cubic_enabled = USE_CENTERED_CUBIC;
+  assign bus.ef2_order2_enabled = (USE_TIDSM_ORDER == 2);
+  generate
+    if (USE_TIDSM_ORDER == 2) begin : g_ef2_observe
+      for (genvar b = 0; b < 4; b = b + 1) begin : g_branch_observe
+        wire ef2_valid = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.in_valid;
+        wire ef2_ready = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.in_ready;
+        wire ef2_pos = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.clamp_positive_comb;
+        wire ef2_neg = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.clamp_negative_comb;
+        wire [19:0] e1i = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err1_i_q;
+        wire [19:0] e2i = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err2_i_q;
+        wire [19:0] e1q = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err1_q_q;
+        wire [19:0] e2q = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err2_q_q;
+        assign bus.ef2_pos_clamp_event[b] = ef2_valid && ef2_ready && ef2_pos;
+        assign bus.ef2_neg_clamp_event[b] = ef2_valid && ef2_ready && ef2_neg;
+        assign bus.ef2_pos_clamp_candidate[b] =
+          dut.u_frontend.u_tid.in_valid && ef2_pos;
+        assign bus.ef2_neg_clamp_candidate[b] =
+          dut.u_frontend.u_tid.in_valid && ef2_neg;
+        assign bus.ef2_state_at_rail[b] =
+          (e1i == 20'sh7ffff) || (e1i == -20'sh80000) ||
+          (e2i == 20'sh7ffff) || (e2i == -20'sh80000) ||
+          (e1q == 20'sh7ffff) || (e1q == -20'sh80000) ||
+          (e2q == 20'sh7ffff) || (e2q == -20'sh80000);
+        assign bus.ef2_state_zero[b] = (e1i == 0) && (e2i == 0) &&
+                                       (e1q == 0) && (e2q == 0);
+        assign bus.ef2_err1_i[b] = e1i;
+        assign bus.ef2_err2_i[b] = e2i;
+        assign bus.ef2_err1_q[b] = e1q;
+        assign bus.ef2_err2_q[b] = e2q;
+      end
+      assign bus.ef2_tidsm_stalled =
+        dut.u_frontend.u_tid.in_valid && !dut.u_frontend.u_tid.in_ready &&
+        (bus.pa_valid == 4'hf) && (bus.pa_ready != 4'hf);
+      assign bus.ef2_clamp_stalled =
+        (|bus.ef2_pos_clamp_candidate || |bus.ef2_neg_clamp_candidate) &&
+        bus.ef2_tidsm_stalled;
+    end else begin : g_no_ef2_observe
+      assign bus.ef2_pos_clamp_event = '0;
+      assign bus.ef2_neg_clamp_event = '0;
+      assign bus.ef2_pos_clamp_candidate = '0;
+      assign bus.ef2_neg_clamp_candidate = '0;
+      assign bus.ef2_state_at_rail = '0;
+      assign bus.ef2_state_zero = '1;
+      assign bus.ef2_clamp_stalled = 1'b0;
+      assign bus.ef2_tidsm_stalled = 1'b0;
+      for (genvar b = 0; b < 4; b = b + 1) begin : g_zero_state
+        assign bus.ef2_err1_i[b] = '0;
+        assign bus.ef2_err2_i[b] = '0;
+        assign bus.ef2_err1_q[b] = '0;
+        assign bus.ef2_err2_q[b] = '0;
+      end
+    end
+  endgenerate
 `ifdef THERMO5_LOW_POWER
   assign bus.low_power_state=dut.lp_state;
   assign bus.low_power_active=dut.lp_datapath_enable;

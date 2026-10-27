@@ -203,7 +203,8 @@ def _make_plane_words(stimulus, method):
     if method == "rtl2":
         i_words, q_words, starts, gains = _frontend_words(stimulus["source_iq"])
         plane_words = run_frozen_frontend(
-            i_words, q_words, starts, gains, interp_taps=2, step=TID_STEP)
+            i_words, q_words, starts, gains, interp_taps=2, step=TID_STEP,
+            tidsm_order=1)
         # Independently expand the front-end sample stream for the scalar TID
         # state recurrence check. This also checks Python block/sample ordering.
         expected_i, expected_q = _expand_iq_x4(stimulus["source_iq"], "rtl2")

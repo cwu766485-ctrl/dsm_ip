@@ -6,6 +6,14 @@ standard library.
 
 ## Frozen Thermo5
 
+Current main-chain TIDSM defaults are EF2 (`TIDSM_ORDER=2`, `STEP=5120`) in
+the RTL wrappers, ZU15EG GT parent, Python front-end model, and vector
+generator. The first-order comparison path remains available with
+`TIDSM_ORDER=1`, `STEP=7168`. The interpolation default is centered-cubic x2
+(`[-1,9,9,-1]/16` at each half-sample stage), matching the RTL wrappers and
+ZU15EG GT parent. The causal two-tap path remains selectable with
+`INTERP_CENTERED_CUBIC=0`.
+
 `dsm_refmodel/thermo5.py` implements the thermo5 fixed-point chain: frame
 Q2.14 gain, causal or centered-cubic interpolation, optional memory-polynomial
 DPD, four Cartesian TID branches, and the four 64-bit output planes. Its
@@ -80,8 +88,8 @@ python3 benchmark_thermo5_interp.py --symbols 64 --seed 20261022
 ```
 
 The centered cubic candidate produced the lowest corrected EVM in the current
-screen. An optional streaming implementation now exists behind
-`INTERP_CENTERED_CUBIC=1`; the current causal path remains the default. The
+screen and is now the integrated default. Set `INTERP_CENTERED_CUBIC=0` to
+select the causal fallback. The
 centered path uses future samples, elastic ready/valid stages, and a tagged
 synthetic zero-source lookahead vector to flush each frame through stage 2. Its
 bit-true UVM target is `make -C dv/uvm/sim thermo5-centered-cubic-vcs` with
@@ -89,10 +97,10 @@ Python oracle vectors supplied through `THERMO5_VECTORS`. The reported
 adjacent-band quantity is not standard ACLR; this screen excludes TID, PA, RF
 filters, and receiver recovery.
 
-The selected FIR candidate is the centered half-sample cubic
-`[-1, 9, 9, -1]/16` in each of the two x2 stages. The FPGA preset remains on
-the causal two-tap path; enable the optional implementation explicitly for
-verification and later FPGA resource/timing evaluation.
+The selected FIR is the centered half-sample cubic `[-1, 9, 9, -1]/16` in
+each of the two x2 stages. Python and UVM use this main configuration by
+default. FPGA resource/timing evaluation remains open and was deferred on the
+Linux host.
 
 ### P0 FIR and input-drive A/B sweep
 
@@ -261,20 +269,21 @@ not an error-free transmission claim. The stress/nominal PA, output-network,
 and kTB/NF parameters remain illustrative. Full records are in
 `runs/thermo5_step_ntf_sweep_20261024/`.
 
-The integer EF2 model has now been added as `ef_order2_fixed`, and an optional
-`TIDSM_ORDER=2` RTL implementation is available. The fixed model matches the
+The integer EF2 model is available as `ef_order2_fixed`, and the main-chain
+RTL default is `TIDSM_ORDER=2`. The fixed model matches the
 floating EF2 decisions on this Q1.15 workload. For STEP=5120, all three seeds
 had zero input/state saturation; max observed state and quantizer input were
 4.9764/5.9764. The 2.4724% / 2.4890% mean/worst EVM, 2.6023% nominal EVM,
 and 3.0036% stress EVM reproduce the floating model's three-seed results.
 There were still 4 digital, 11 nominal, and 46 stress symbol errors among
 14,016 decisions. The state saturation proof and exact limits are in
-`docs/verification/thermo5-ef2-stability.md`. Python equivalence tests pass.
-The focused 56-word EF2 UVM bit-true test passed in VCS V-2023.12-SP1 on
-2026-10-25: 32 source words produced 56 four-plane words with no mismatches
-or UVM errors. The full EF2 regression, formal proof, and FPGA implementation
-qualification remain open. The frozen default remains first order at
-STEP=7168.
+`docs/verification/thermo5-ef2-stability.md`. On 2026-10-27, the full generic
+and AXI-Lite VCS regressions passed with EF2/STEP=5120, along with dedicated
+2,072-word sustained, Clamp/stall/reset/replay, and random PA-backpressure
+checks. Formal proof, XPM-specific coverage, GT serialization simulation,
+XSim, and FPGA implementation qualification remain open. The finite QAM256
+screens still contain uncoded errors and do not constitute a physical-link
+BER guarantee.
 
 Generate a matching centered-cubic EF2 test vector and, on a supported VCS
 host, run the bit-true UVM case with the candidate settings:
@@ -368,9 +377,9 @@ The tested midpoint/FIR equations and approximate implementation tradeoffs are:
 
 These are qualitative counts, not synthesis reports. Constant coefficients may
 map to shifts/adders or DSP blocks depending on the FPGA tool and coding style.
-The centered cubic currently leads the measured receiver EVM, while the
-causal two-tap remains the frozen default. The UVM target verifies behavior;
-resource and timing must be measured on the FPGA host.
+The centered cubic currently leads the measured receiver EVM and is the main
+default; causal two-tap remains a selectable fallback. The UVM target verifies
+behavior; resource and timing must be measured on the FPGA host.
 
 `Drive` is the input signal amplitude presented to the chain. Backoff is the
 reduction from a chosen reference drive: 6 dB means amplitude multiplied by

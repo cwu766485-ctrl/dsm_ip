@@ -1,10 +1,67 @@
 # Thermo5 graduate design-verification evidence
 
-Scope: frozen thermo5, two-tap interpolation, one-tap identity memory-DPD,
-125 MHz AXI ingress, and four 64-bit output planes. Generic and real Vivado
-XPM FIFO builds are compiled and measured separately. The project is a
-graduate DV portfolio, with explicit integration limits rather than a claim
-of production or board signoff.
+Scope: thermo5, centered-cubic x2 interpolation, identity memory-DPD,
+125-MHz AXI ingress, and four 64-bit output planes. The current main-chain
+defaults are EF2 (`TIDSM_ORDER=2`, `STEP=5120`) and centered cubic;
+first-order TIDSM and causal interpolation remain selectable fallbacks.
+Generic and real Vivado XPM FIFO builds are tracked separately.
+This portfolio records explicit integration limits rather than production or
+board signoff.
+
+## Current EF2 main-chain qualification (2026-10-28)
+
+The ZU15EG GT parent and thermo5 wrappers now select centered-cubic
+interpolation and EF2 at STEP=5120 by default. VCS V-2023.12-SP1 passed the
+full generic-FIFO UVM regression and AXI-Lite regression on this
+configuration. The Python vector oracle and four-plane scoreboard check
+digital sample ordering and output values. The centered-cubic AXI-Lite
+nonlinear-control check expects `core_words + frame_starts` DPD inputs because
+each legal frame start also processes its tagged lookahead sample.
+
+The centered-cubic EF2 qualification adds three longer scenarios: (1) 2,072
+continuous words with zero output gaps and zero source stalls; (2) two stress
+streams totaling 4,144 checked words, with 194 positive and 12 negative state
+clamps, eight cycles of clamp-candidate PA stall with state hold, then reset
+and exact replay; and (3) a 2,072-word random stream with 670 PA-stall cycles
+and all sixteen DPD counters cleared by reset. All three have zero UVM errors
+or fatals and pass the Python four-plane oracle.
+
+The VCS behavioral serializer loopback also passed 56 words and 3,584 bits
+per PA path against the same Python-generated centered-cubic EF2 oracle. It
+verifies digital word-to-serial-bit ordering in the behavioral model; it does
+not instantiate or qualify GT Wizard TXP pins.
+
+Targeted EF2 functional coverage hits all four bins in each of
+`positive_candidate_x_stall`, `negative_candidate_x_stall`,
+`positive_x_rail`, and `negative_x_rail`. The merged centered-cubic generic
+regression raw URG score is 81.39% (line 88.04%, condition 70.04%, toggle
+81.16%, FSM 100%, branch 73.45%, assertion 76.47%). This is aggregate code
+coverage over the current VCS hierarchy, not coverage closure or a signoff
+threshold.
+
+Still open: real-XPM URG/feature coverage (Vivado source package is not
+available here), formal proof of EF2 RTL equivalence, VCS simulation through
+GT Wizard serialization to TXP (vendor model unavailable), XSim, and FPGA
+timing/resource/power analysis. The PA-plane checks stop at the digital user
+word boundary. The finite Python QAM256 study still reports nonzero uncoded
+BER, so this verification does not establish stable physical QAM256 service.
+The underlying logs, vectors, and URG reports are under the ignored
+`runs/thermo5_ef2_qualification/` directory. The repeatable EF2 target emits
+`vcs_current_centered/qualification_manifest.json`, including revision and dirty-file
+hashes, seeds/configuration, vector hashes, test and URG hashes, and the
+targeted coverage disposition.
+
+## Screenshot workplan status (2026-10-28)
+
+| Work item | Current disposition |
+| --- | --- |
+| Long continuous traffic | PASS: centered-cubic EF2 sustains 2,072 words with zero output gaps and zero source stalls. |
+| EF2 saturation and recovery | PASS: positive/negative clamps, clamp during PA stall, state hold, reset, and bit-true replay are checked. |
+| Feature interaction crosses | PARTIAL: monitor-observed TLAST × PA stall, STOP × partial PA-ready stall, pending commit × stopped RUN, EF2 nonzero-state reset, and frame-tail stall × reset/replay pass. GT link loss during an active packet is not modeled. |
+| Code-coverage closure | OPEN: centered generic raw URG is 81.39%; targeted functional bins pass, but raw URG is not closed. Vivado XPM source is unavailable on this host. |
+| GT digital output model | PARTIAL: behavioral four-path loopback passes 56 words / 3,584 bits per path. GT Wizard/TXP, CDR, deskew, and board behavior remain untested. |
+| Reproducible package | PASS locally: the qualification target records source and oracle hashes, VCS version, seeds/configuration, logs, URG artifacts, and required functional-bin results. Hosted GitHub CI was not run. |
+| FPGA PPA / timing / power | DEFERRED per user direction; no Linux FPGA resource or timing result is claimed. |
 
 ## Current-source status (2026-10-08)
 

@@ -8,7 +8,9 @@
 // this module does not claim a tested physical RF output.
 module thermo5_qsfp_gt14_parent #(
   parameter bit ENABLE_INTERNAL_PMA_LOOPBACK = 1'b0,
-  parameter bit INTERP_CENTERED_CUBIC = 1'b0
+  parameter bit INTERP_CENTERED_CUBIC = 1'b1,
+  parameter int TIDSM_ORDER = 2,
+  parameter int STEP = 5120
 ) (
   input  wire logic        axi_clk125,
   input  wire logic        axil_clk100,
@@ -162,10 +164,13 @@ module thermo5_qsfp_gt14_parent #(
       .arst_n(link_ready_q), .srst_n(rst218_n));
 
   tid32_thermo5_axi_lite_axis_frontend_tx #(
-    // Keep the parent on the frozen one-tap thermo5 SKU by default. The
-    // optional centered-cubic interpolator remains explicitly selectable;
-    // AXI-Lite owns the active DPD image.
+    // Main-chain default is the VCS-qualified EF2 TIDSM at STEP=5120. The
+    // first-order fallback remains selectable with TIDSM_ORDER=1 and its
+    // separately qualified STEP=7168 setting. The corrected centered-cubic
+    // interpolator is the main FIR; INTERP_CENTERED_CUBIC=0 selects causal
+    // interpolation. AXI-Lite owns the active DPD image.
     .DPD_MAX_TAPS(1), .INTERP_TAPS(2), .BYPASS_DPD(1'b0),
+    .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER),
     .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .FPGA_USE_XPM_FIFO(1'b1)
   ) u_frontend (
     .s_axil_aclk(axil_clk100), .s_axil_aresetn(axil_rst_n),

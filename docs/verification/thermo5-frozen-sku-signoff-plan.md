@@ -1,11 +1,22 @@
 # Thermo5 frozen-SKU verification plan
 
-Updated: 2026-10-08. Scope: the digital thermo5 transmitter SKU with
+Updated: 2026-10-28. Scope: the digital thermo5 transmitter SKU with
 `INTERP_TAPS=2`, `DPD_MAX_TAPS=1`, `BYPASS_DPD=0`, identity DPD coefficients,
 125-MHz AXI ingress, 218.75-MHz core, and either the generic or Vivado XPM
 asynchronous FIFO. The UVM top is
 `dv/uvm/tb/thermo5_sku_uvm_tb.sv`; the filelist is
 `dv/uvm/sim/thermo5_sku_filelist.f`.
+
+**Current-source note (2026-10-28):** The original matrix below records the
+first-order/causal SKU signoff and coverage baseline from 2026-10-08. The main
+ZU15EG and thermo5 wrapper defaults are now centered-cubic interpolation and
+fixed-point EF2 TIDSM at STEP=5120; first-order and causal interpolation remain
+parameterized fallbacks. Current generic-FIFO, AXI-Lite, long-frame, clamp,
+recovery, and behavioral serializer VCS results are in
+`thermo5-ef2-stability.md` and `thermo5-dv-portfolio.md`. The historical XPM
+percentages and closure rows below are not evidence for the current defaults.
+Current XPM coverage, formal proof, GT Wizard/TXP, XSim, and FPGA timing/PPA
+remain open or deferred.
 
 One legal frame accepts 32 beats of 14 complex samples (448 samples) and
 produces 56 ordered words on four 64-bit PA planes. MATLAB-generated `.mem`

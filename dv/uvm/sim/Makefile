@@ -51,10 +51,10 @@ THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
 THERMO5_USE_AXIL ?= 0
 THERMO5_TOP ?= thermo5_sku_uvm_tb
-THERMO5_CENTERED_CUBIC ?= 0
+THERMO5_CENTERED_CUBIC ?= 1
 THERMO5_LOW_POWER ?= 0
-THERMO5_TIDSM_ORDER ?= 1
-THERMO5_STEP ?= 7168
+THERMO5_TIDSM_ORDER ?= 2
+THERMO5_STEP ?= 5120
 THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,) \
 	$(if $(filter 1,$(THERMO5_CENTERED_CUBIC)),+define+THERMO5_CENTERED_CUBIC,) \
 	$(if $(filter 1,$(THERMO5_LOW_POWER)),+define+THERMO5_LOW_POWER,) \
@@ -96,7 +96,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
         thermo5-centered-cubic-vcs thermo5-centered-cubic-low-power-vcs \
-        thermo5-centered-cubic-ef2-vcs-regression \
+        thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-ef2-serdes-vcs \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
@@ -120,6 +120,8 @@ help:
 	@echo "  make thermo5-axil-vcs-regression  Run focused AXI-Lite tests, integration tests and URG merge"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-run THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120  Run EF2 candidate bittrue test"
+	@echo "  make thermo5-ef2-qualification  Run fixed-seed long-frame EF2 qualification and hash manifest"
+	@echo "  make thermo5-ef2-serdes-vcs  Compare EF2 four-plane words through serializer loopback"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
 	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
 	@echo "  make thermo5-coverage-merge  Merge passing thermo5 VCS VDBs with URG"
@@ -373,7 +375,7 @@ thermo5-vcs-regression: thermo5-vcs
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=6 THERMO5_TESTNAME=thermo5_sku_reset_sweep_test
 	@$(MAKE) thermo5-vcs-negative UVM_SEED=4
 
-# Directed full-chain bit-true check for the optional centered-cubic FIR. The
+# Directed full-chain bit-true check for the centered-cubic FIR. The
 # matching Python oracle vectors must be supplied through THERMO5_VECTORS.
 thermo5-centered-cubic-vcs:
 	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_CENTERED_CUBIC=1
@@ -381,13 +383,90 @@ thermo5-centered-cubic-vcs:
 	  UVM_SEED=610201 THERMO5_TESTNAME=thermo5_sku_bittrue_test \
 	  THERMO5_EXTRA_ARGS=+STRESS_PA_READY
 
-# Full directed-IP suite for the optional centered-cubic + fixed-point EF2
-# candidate. Matching candidate oracle vectors are supplied by the caller.
+# Full directed-IP suite for centered-cubic + fixed-point EF2. Matching oracle
+# vectors are supplied by the caller.
 thermo5-centered-cubic-ef2-vcs-regression:
 	@$(MAKE) --no-print-directory thermo5-vcs-regression \
 	  THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
 	@$(MAKE) --no-print-directory thermo5-axil-stop-restart-vcs-run \
 	  THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120
+
+# Repeatable long-frame EF2 qualification with independently hashed vectors,
+# VCS logs, targeted URG bins, and a source/revision manifest.
+THERMO5_EF2_RANDOM_VECTORS ?= $(ROOT)/runs/thermo5_ef2_qualification/random_vectors
+THERMO5_EF2_SUSTAINED_VECTORS ?= $(ROOT)/runs/thermo5_ef2_qualification/sustained_vectors
+THERMO5_EF2_EXTREME_VECTORS ?= $(ROOT)/runs/thermo5_ef2_qualification/extreme_vectors
+thermo5-ef2-qualification:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_EF2_SUSTAINED_VECTORS) --words 2072 --seed 271026 \
+	  --profile random --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+	  --frame-start-words 1 --frame-gains 16384
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_EF2_RANDOM_VECTORS) --words 2072 --seed 271027 \
+	  --profile random --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+	  --frame-start-words 1,687,1380 --frame-gains 16384,14336,12288
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_EF2_EXTREME_VECTORS) --words 2072 --seed 271028 \
+	  --profile ef2_saturation --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+	  --frame-start-words 1,687,1380 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_EF2_SUSTAINED_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_EF2_SUSTAINED_VECTORS) \
+	  THERMO5_TESTNAME=thermo5_sku_sustained_test UVM_SEED=271027 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=2072
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_EF2_EXTREME_VECTORS) \
+	  THERMO5_TESTNAME=thermo5_sku_ef2_corner_test UVM_SEED=271028 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=2072
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_EF2_RANDOM_VECTORS) \
+	  THERMO5_TESTNAME=thermo5_sku_long_counter_test UVM_SEED=271029 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=2072
+	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_sustained_test_seed271027.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_ef2_corner_test_seed271028.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_long_counter_test_seed271029.vdb \
+	  -report $(THERMO5_OUT)/ef2_qualification_coverage -dbname thermo5_ef2_qualification \
+	  > $(THERMO5_OUT)/ef2_qualification_coverage.log 2>&1
+	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/ef2_qualification_coverage.log || \
+	  { echo "ERROR: EF2 URG merge failed; inspect ef2_qualification_coverage.log"; exit 1; }
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/package_thermo5_ef2_qualification.py \
+	  --repo-root $(ROOT) --run-dir $(THERMO5_OUT) \
+	  --vectors $(THERMO5_EF2_SUSTAINED_VECTORS) \
+	  $(THERMO5_EF2_RANDOM_VECTORS) $(THERMO5_EF2_EXTREME_VECTORS)
+	@echo "THERMO5_EF2_QUALIFICATION_PASS report=$(THERMO5_OUT)/ef2_qualification_coverage"
+
+# Main-chain EF2 -> four independent raw64 serializer/deserializer models.
+THERMO5_EF2_SERDES_DIR ?= $(ROOT)/runs/thermo5_ef2_serdes
+thermo5-ef2-serdes-vcs:
+	@mkdir -p $(THERMO5_EF2_SERDES_DIR)
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_EF2_SERDES_DIR) --words 56 --seed 20260918 \
+	  --profile random --interp-mode centered_cubic --interp-taps 2 \
+	  --tidsm-order 2 --step 5120 --frame-start-words 1,15,36 \
+	  --frame-gains 16384,14336,12288
+	@cd $(THERMO5_EF2_SERDES_DIR) && $(VCS) -full64 -sverilog \
+	  -top tb_tid32_thermo5_frontend_serdes_loopback -o simv \
+	  $(ROOT)/rtl/frontend/dsm_frame_gain_vector.sv \
+	  $(ROOT)/rtl/gt/gt_tx_user_bridge.sv $(ROOT)/rtl/gt/gt_tx_raw64_boundary.sv \
+	  $(ROOT)/rtl/dpd/dpd_poly.v $(ROOT)/rtl/dpd/dpd_memory_poly.v \
+	  $(ROOT)/rtl/dpd/dpd_vector16_memory_poly.sv \
+	  $(ROOT)/rtl/dpd/dpd_vector_elastic_buffer.sv \
+	  $(ROOT)/rtl/interp/dsm_interp_x2_centered_cubic_vector.sv \
+	  $(ROOT)/rtl/interp/dsm_interp_x2_polyphase_vector.sv \
+	  $(ROOT)/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv \
+	  $(ROOT)/rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv \
+	  $(ROOT)/rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv \
+	  $(ROOT)/rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv \
+	  $(ROOT)/dv/verif/models/raw64_serializer_loopback_model.sv \
+	  $(ROOT)/dv/verif/integration/serializer_loopback/tb_tid32_thermo5_frontend_serdes_loopback.sv \
+	  > compile.log 2>&1 || { cat $(THERMO5_EF2_SERDES_DIR)/compile.log; exit 1; }
+	@cd $(THERMO5_EF2_SERDES_DIR) && ./simv -no_save > sim.log 2>&1 || \
+	  { cat $(THERMO5_EF2_SERDES_DIR)/sim.log; exit 1; }
+	@grep -Fq 'THERMO5_FOUR_PA_SERDES_LOOPBACK_PASS words=56 bits_per_path=3584' \
+	  $(THERMO5_EF2_SERDES_DIR)/sim.log
+	@echo "THERMO5_EF2_SERDES_PASS report=$(THERMO5_EF2_SERDES_DIR)/sim.log"
 
 thermo5-centered-cubic-low-power-vcs:
 	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \

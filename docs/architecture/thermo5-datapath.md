@@ -1,5 +1,19 @@
 # Thermo5 Datapath and Ingress Buffering
 
+## Current modulation default
+
+The main thermo5 path now defaults to centered-cubic x2 interpolation and the
+fixed-point second-order EF2 TIDSM with `STEP=5120`. Each interpolation stage
+uses `[-1, 9, 9, -1]/16` at the half-sample phase; stage 1 provides a tagged
+synthetic lookahead vector to flush frame tails while preserving one output
+word per input word. The causal polyphase interpolator remains selectable
+with `INTERP_CENTERED_CUBIC=0`. EF2 preserves sample chronology but is
+implemented as a 32-sample combinational chain. Its generic-FIFO, AXI-Lite,
+long-frame, clamp/recovery, and behavioral serializer VCS checks pass; FPGA
+timing and resource use have not been measured. See
+`docs/verification/thermo5-ef2-stability.md` for the proof scope and
+qualification limits.
+
 ## Ingress, asynchronous FIFO, and gearbox
 
 The source AXI-Stream interface carries 14 complex I/Q samples per accepted
@@ -58,9 +72,9 @@ depth calculation and full/near-full/empty stress tests.
 AXI-Stream 14-lane / 125 MHz
   -> AFIFO + core-clock 14:8 gearbox
   -> frame gain
-  -> x2 polyphase interpolation (8 -> 16)
+  -> centered-cubic x2 interpolation (8 -> 16)
   -> Memory-Polynomial DPD (frozen SKU: identity 1-tap)
-  -> x2 polyphase interpolation (16 -> 32)
+  -> centered-cubic x2 interpolation (16 -> 32)
   -> four offset TID32/Fs4 branches
   -> four aligned 64-bit digital PA-code planes
   -> raw GT-user continuous-transmit/idle boundary

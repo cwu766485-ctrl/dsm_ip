@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // Four-branch thermometer-coded five-level Cartesian TID transmitter.
 //
-// Four symmetric, independently stateful L=32 first-order Cartesian TIDSM
+// Four symmetric, independently stateful L=32 Cartesian TIDSM
 // branches receive offsets {+3,+1,-1,-3}*STEP.  Their phase-aligned raw
 // 64-bit words are equal-weight code planes for four switching PA branches:
 // normalized summation represents {-1,-0.5,0,+0.5,+1}.  Each word remains a
@@ -14,8 +14,8 @@
 module tid32_thermo5_fs4_multipa_tx #(
   parameter int W = 16,
   parameter int CHANNELS = 32,
-  parameter int STEP = 6144,
-  parameter int TIDSM_ORDER = 1
+  parameter int STEP = 5120,
+  parameter int TIDSM_ORDER = 2
 ) (
   input  wire logic                         clk,
   input  wire logic                         rst_n,

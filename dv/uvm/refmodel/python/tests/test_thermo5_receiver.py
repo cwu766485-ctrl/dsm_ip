@@ -76,7 +76,7 @@ class Thermo5ReceiverTests(unittest.TestCase):
         starts = [0] * len(source_i)
         gains = [Q14_ONE] * len(source_i)
         words = run_frozen_frontend(source_i, source_q, starts, gains,
-                                    interp_taps=2, step=7168)
+                                    interp_taps=2, step=7168, tidsm_order=1)
         flat_i = [sample for word in source_i for sample in word]
         flat_q = [sample for word in source_q for sample in word]
         expanded = interpolate_x4(list(zip(flat_i, flat_q)), method="rtl2")
