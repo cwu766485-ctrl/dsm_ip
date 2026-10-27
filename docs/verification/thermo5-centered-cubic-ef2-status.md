@@ -20,7 +20,10 @@ close a finite transmission cleanly.
 
 The centered-cubic EF2 qualification covers sustained traffic, positive and
 negative state clamps, clamp-candidate stalls, reset/replay, PA backpressure,
-and a behavioral four-path serializer loopback. The current merged generic
+and a behavioral four-path serializer loopback. A VCS GT-parent fault test
+also drops modeled GT health during an open packet and checks immediate PA
+blanking, sticky fault reporting, and reset-controlled recovery. It uses a GT
+Wizard substitute and generic FIFO. The current merged generic
 URG score is 79.86%; raw code coverage is not closed. No EF2 GT Wizard/TXP
 rerun, XSim run on this Linux host, formal EF2 proof, real-XPM coverage, or
 physical QAM256 signoff is claimed. FPGA timing/resource work remains deferred

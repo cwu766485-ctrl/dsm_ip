@@ -8,6 +8,7 @@
 // this module does not claim a tested physical RF output.
 module thermo5_qsfp_gt14_parent #(
   parameter bit ENABLE_INTERNAL_PMA_LOOPBACK = 1'b0,
+  parameter bit FPGA_USE_XPM_FIFO = 1'b1,
   parameter bit INTERP_CENTERED_CUBIC = 1'b1,
   parameter int TIDSM_ORDER = 2,
   parameter int STEP = 5120
@@ -74,8 +75,10 @@ module thermo5_qsfp_gt14_parent #(
   wire logic reset_freerun_n, rst125_n, axil_rst_n, rst218_n;
   (* ASYNC_REG = "TRUE" *) logic tx_active_meta, tx_active_sync;
   (* ASYNC_REG = "TRUE" *) logic [9:0] health_meta, health_sync;
+  (* ASYNC_REG = "TRUE" *) logic run_request_meta, run_request_sync;
   logic [3:0] health_stable_count;
   logic link_ready_q;
+  logic link_fault_sticky_q;
   // The GT Wizard's TX-active level is asynchronous to the free-running
   // control clock and may change when the TX user clock is stopped. Sample it
   // as data through a two-flop synchronizer here; do not use a status crossing
@@ -84,6 +87,7 @@ module thermo5_qsfp_gt14_parent #(
   wire logic pa_enable_request;
   wire logic core_run_request;
   wire logic core_tx_active;
+  wire logic stream_fault_raw;
   wire logic gt_reset = !reset_n;
 
   IBUFDS_GTE4 u_refclk (.I(mgtrefclk125_p), .IB(mgtrefclk125_n),
@@ -134,13 +138,23 @@ module thermo5_qsfp_gt14_parent #(
       tx_active_sync <= 1'b0;
       health_meta <= '0;
       health_sync <= '0;
+      run_request_meta <= 1'b0;
+      run_request_sync <= 1'b0;
       health_stable_count <= '0;
       link_ready_q <= 1'b0;
+      link_fault_sticky_q <= 1'b0;
     end else begin
       tx_active_meta <= tx_active[0];
       tx_active_sync <= tx_active_meta;
       health_meta <= health_raw;
       health_sync <= health_meta;
+      run_request_meta <= core_run_request;
+      run_request_sync <= run_request_meta;
+      // Preserve an active-packet GT-loss indication across the application
+      // reset that link qualification asserts. Only the external common reset
+      // clears this diagnostic; PA output stays blanked until that reset.
+      if (run_request_sync && !(&health_sync))
+        link_fault_sticky_q <= 1'b1;
       if (!tx_active_sync || !(&health_sync)) begin
         health_stable_count <= '0;
         link_ready_q <= 1'b0;
@@ -151,7 +165,9 @@ module thermo5_qsfp_gt14_parent #(
     end
   end
   assign link_ready = link_ready_q;
-  assign pa_enable = pa_enable_request && tx_active[0] && (&health_raw) && reset_n;
+  assign pa_enable = pa_enable_request && tx_active[0] && (&health_raw) &&
+                     reset_n && !link_fault_sticky_q;
+  assign stream_fault = stream_fault_raw || link_fault_sticky_q;
 
   // link_ready_q is the reset-controller release request. Each independent
   // clock domain asynchronously asserts and locally synchronizes reset
@@ -171,7 +187,8 @@ module thermo5_qsfp_gt14_parent #(
     // interpolation. AXI-Lite owns the active DPD image.
     .DPD_MAX_TAPS(1), .INTERP_TAPS(2), .BYPASS_DPD(1'b0),
     .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER),
-    .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .FPGA_USE_XPM_FIFO(1'b1)
+    .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC),
+    .FPGA_USE_XPM_FIFO(FPGA_USE_XPM_FIFO)
   ) u_frontend (
     .s_axil_aclk(axil_clk100), .s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(s_axil_awaddr), .s_axil_awvalid(s_axil_awvalid), .s_axil_awready(s_axil_awready),
@@ -191,7 +208,8 @@ module thermo5_qsfp_gt14_parent #(
     .core_protocol_error(core_protocol_error),
     .core_run_request(core_run_request),
     .core_tx_active(core_tx_active),
-    .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
+    .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready),
+    .cfg_busy(), .cfg_done(), .cfg_error()
   );
 
   thermo5_raw64_continuous_tx u_continuous (
@@ -200,7 +218,7 @@ module thermo5_qsfp_gt14_parent #(
     .link_ready(rst218_n), .run_request(core_tx_active),
     .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready),
     .gt_txdata(tx_word), .pa_enable(pa_enable_request),
-    .stream_fault(stream_fault)
+    .stream_fault(stream_fault_raw)
   );
 endmodule
 

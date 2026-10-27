@@ -35,6 +35,13 @@ per PA path against the same Python-generated centered-cubic EF2 oracle. It
 verifies digital word-to-serial-bit ordering in the behavioral model; it does
 not instantiate or qualify GT Wizard TXP pins.
 
+The VCS GT-parent fault test also passed with an active source packet when the
+controllable GT-health model dropped link. It checked immediate PA blanking,
+sticky `stream_fault` across the parent health-triggered reset, PA remaining
+blank through GT-health recovery, and clean restart after external reset. This
+uses a GT Wizard substitute and generic FIFO; it does not qualify the generated
+GT Wizard, real XPM FIFO, RX alignment, or board output.
+
 Targeted EF2 functional coverage hits all four bins in each of
 `positive_candidate_x_stall`, `negative_candidate_x_stall`,
 `positive_x_rail`, and `negative_x_rail`. The merged centered-cubic generic
@@ -62,9 +69,9 @@ targeted coverage disposition.
 | --- | --- |
 | Long continuous traffic | PASS: centered-cubic EF2 sustains 2,072 words with zero output gaps and zero source stalls. |
 | EF2 saturation and recovery | PASS: positive/negative clamps, clamp during PA stall, state hold, reset, and bit-true replay are checked. |
-| Feature interaction crosses | PARTIAL: TLAST × PA stall, STOP × partial PA-ready stall, pending commit × stopped RUN, EF2 nonzero-state reset, frame-tail stall × reset/replay, and STOP/restart pass. GT link loss during an active packet is not modeled. |
+| Feature interaction crosses | PASS for selected digital crosses: TLAST × PA stall, STOP × partial PA-ready stall, pending commit × stopped RUN, EF2 nonzero-state reset, frame-tail stall × reset/replay, STOP/restart, and active-packet GT-health loss. The GT-health case uses a controllable substitute model, not GT Wizard. |
 | Code-coverage closure | OPEN: centered generic raw URG is 79.86%; targeted functional bins pass, but raw URG is not closed. Vivado XPM source is unavailable on this host. |
-| GT digital output model | PARTIAL: behavioral four-path loopback passes 56 words / 3,584 bits per path. GT Wizard/TXP, CDR, deskew, and board behavior remain untested. |
+| GT digital output model | PARTIAL: behavioral four-path loopback passes 56 words / 3,584 bits per path; parent health fault/blank/recovery also passes in VCS. GT Wizard/TXP, CDR, deskew, and board behavior remain untested. |
 | Reproducible package | PASS locally: the qualification target records source and oracle hashes, VCS version, seeds/configuration, logs, URG artifacts, and required functional-bin results. Hosted GitHub CI was not run. |
 | FPGA PPA / timing / power | DEFERRED per user direction; no Linux FPGA resource or timing result is claimed. |
 

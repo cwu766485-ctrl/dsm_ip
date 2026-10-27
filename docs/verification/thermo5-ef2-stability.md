@@ -122,8 +122,8 @@ signoff threshold. Runs and reports are under ignored
 test passed two packets and 112 four-plane outputs with zero underflow or
 protocol errors; after a drained STOP, the wrapper waits for two newly accepted
 source beats before enabling the gearbox. The current qualification manifest
-is `vcs_current_final/qualification_manifest.json`.
-records the Git revision and changed-file hashes, VCS version, fixed
+at `vcs_current_final/qualification_manifest.json` records the Git revision
+and changed-file hashes, VCS version, fixed
 configuration/seeds, oracle SHA256 values, test-log hashes, URG hashes, and
 required functional-bin disposition.
 

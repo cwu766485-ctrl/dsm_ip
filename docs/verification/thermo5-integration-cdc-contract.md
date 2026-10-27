@@ -1,5 +1,23 @@
 # Frozen thermo5 integration clock/reset and CDC contract
 
+## Current EF2 GT-health fault response (2026-10-28)
+
+The ZU15EG parent latches a `stream_fault` when synchronized software RUN was
+active and synchronized GT health drops. The raw GT-health terms still gate
+`pa_enable` combinationally for immediate blanking. Once latched, the fault
+keeps PA disabled through GT-health recovery; only the external common reset
+clears it, after which the normal reset synchronizers and link qualification
+must release before a new RUN can transmit.
+
+`make -C dv/uvm/sim thermo5-gt-parent-link-fault-vcs` passes in VCS with a
+controllable GT Wizard substitute and the generic asynchronous FIFO. It checks
+link loss during an open AXI packet, immediate PA blanking, retained fault
+status across the parent health reset, PA blanking after link recovery, and
+restart after external reset. It does not exercise AMD GT Wizard reset logic,
+real XPM behavior, RX CDR/alignment, or the board. The dated Vivado/XSim and
+CDC evidence below remains historical evidence for its recorded source and
+tool configuration.
+
 ## Current CDC-fix and real-XPM evidence (2026-10-05)
 
 The fresh current-source synthesis/route attempt at
