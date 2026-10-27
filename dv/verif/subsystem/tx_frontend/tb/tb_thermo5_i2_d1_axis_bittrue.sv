@@ -13,6 +13,21 @@ module tb_thermo5_i2_d1_axis_bittrue #(
 `else
   localparam bit USE_XPM_FIFO=1'b0;
 `endif
+`ifdef THERMO5_CENTERED_CUBIC
+  localparam bit USE_CENTERED_CUBIC=1'b1;
+`else
+  localparam bit USE_CENTERED_CUBIC=1'b0;
+`endif
+`ifdef THERMO5_TIDSM_ORDER_2
+  localparam int TIDSM_ORDER=2;
+`else
+  localparam int TIDSM_ORDER=1;
+`endif
+`ifdef THERMO5_STEP_5120
+  localparam int TIDSM_STEP=5120;
+`else
+  localparam int TIDSM_STEP=7168;
+`endif
   localparam int SRC_BEATS=(CORE_WORDS*4)/7, SAMPLES=CORE_WORDS*8;
   logic src_clk=0, core_clk=0, src_rst_n=0, core_rst_n=0;
   logic axil_clk=0;
@@ -39,6 +54,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
   logic [15:0] frame_mem[0:CORE_WORDS-1], gain_mem[0:CORE_WORDS-1];
   logic [63:0] pa_mem[0:3][0:CORE_WORDS-1];
   integer sent=0, got=0, stalls=0, cycles=0;
+  integer expected_dpd_samples=0;
   integer interp1_empty_blocked_hits=0;
   integer probe_gap=80, probe_beat=16, probe_stall_start=45, probe_stall_length=40;
   logic [1:0] axil_response;
@@ -59,7 +75,9 @@ module tb_thermo5_i2_d1_axis_bittrue #(
 
 `ifdef THERMO5_AXIL_CONTROL
   tid32_thermo5_axi_lite_axis_frontend_tx #(
-    .INTERP_TAPS(2),.DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+    .STEP(TIDSM_STEP),.TIDSM_ORDER(TIDSM_ORDER),
+    .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
+    .DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
     .s_axil_aclk(axil_clk),.s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(axil_awaddr),.s_axil_awvalid(axil_awvalid),.s_axil_awready(axil_awready),
@@ -80,11 +98,13 @@ module tb_thermo5_i2_d1_axis_bittrue #(
   assign dpd_config_boundary_probe=dut.dpd_config_boundary;
 `else
   tid32_thermo5_axis_frontend_tx #(
-    .INTERP_TAPS(2),.DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+    .STEP(TIDSM_STEP),.TIDSM_ORDER(TIDSM_ORDER),
+    .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
+    .DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
     .s_axis_aclk(src_clk),.s_axis_aresetn(src_rst_n),
     .s_axis_tvalid(src_valid),.s_axis_tready(src_ready),
-    .s_axis_tlast(1'b0),
+    .s_axis_tlast(USE_CENTERED_CUBIC ? src_last : 1'b0),
     .s_axis_i_vec(src_i),.s_axis_q_vec(src_q),
     .s_axis_tuser_frame_start(frame_start),.s_axis_tuser_frame_gain(frame_gain),
     .s_axis_fifo_full(fifo_full),
@@ -155,6 +175,13 @@ module tb_thermo5_i2_d1_axis_bittrue #(
     $readmemh("tid32_thermo5_frontend_pa1.mem",pa_mem[1]);
     $readmemh("tid32_thermo5_frontend_pa2.mem",pa_mem[2]);
     $readmemh("tid32_thermo5_frontend_pa3.mem",pa_mem[3]);
+    expected_dpd_samples=CORE_WORDS;
+`ifdef THERMO5_CENTERED_CUBIC
+    // The first centered stage injects one look-ahead-only tail vector per
+    // source frame. It is consumed by DPD but must not become an extra PA word.
+    for (integer frame_index=0;frame_index<CORE_WORDS;frame_index++)
+      if (frame_mem[frame_index][0]) expected_dpd_samples++;
+`endif
     repeat(8) @(negedge src_clk); src_rst_n=1;
     repeat(8) @(negedge core_clk); core_rst_n=1;
     fork
@@ -230,9 +257,9 @@ module tb_thermo5_i2_d1_axis_bittrue #(
         if(sent!=SRC_BEATS || protocol_error || (stalls==0 && $test$plusargs("STRESS_PA_READY")))
           $fatal(1,"closure sent=%0d/%0d protocol=%b stalls=%0d",sent,SRC_BEATS,protocol_error,stalls);
         for (int lane=0;lane<16;lane++)
-          if (dpd_sample_count[lane] !== CORE_WORDS || dpd_saturation_count[lane] !== 0)
+          if (dpd_sample_count[lane] !== expected_dpd_samples || dpd_saturation_count[lane] !== 0)
             $fatal(1,"DPD lane%0d count=%0d/%0d saturation=%0d",
-                   lane,dpd_sample_count[lane],CORE_WORDS,dpd_saturation_count[lane]);
+                   lane,dpd_sample_count[lane],expected_dpd_samples,dpd_saturation_count[lane]);
         if ($test$plusargs("INTERP1_GAP_STALL") && interp1_empty_blocked_hits==0)
           $fatal(1,"interp1 empty/blocked condition was not reached");
         if ($test$plusargs("INTERP1_GAP_STALL"))
@@ -260,6 +287,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
   always @(posedge core_clk) begin
     if(core_rst_n) begin
       cycles++;
+`ifndef THERMO5_CENTERED_CUBIC
       if ($test$plusargs("TRACE_INTERP") && core_enable && cycles<180)
         $display("I1_TRACE cycle=%0d sent=%0d ready=%h i1=%b%b%b%b i1outready=%b i1s2ready=%b i2=%b%b%b%b got=%0d",cycles,sent,pa_ready,
           dut.u_frontend.u_interp_1.s0_valid,dut.u_frontend.u_interp_1.s1_valid,
@@ -275,6 +303,7 @@ module tb_thermo5_i2_d1_axis_bittrue #(
           $display("THERMO5_INTERP1_EMPTY_BLOCKED_HIT cycle=%0d u_interp_1.s1_valid=%b s2_ready=%b",cycles,
                    dut.u_frontend.u_interp_1.s1_valid,dut.u_frontend.u_interp_1.s2_ready);
       end
+`endif
       if(stalled) begin
         if(pa_valid!==4'hf) $fatal(1,"valid dropped on output stall");
         for(int p=0;p<4;p++)

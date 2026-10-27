@@ -22,6 +22,24 @@ stop-safe quanta and compares all 112 words per plane against the MATLAB
 oracle. The UVM source monitor checks that accepted `TLAST` remains stable
 under backpressure and is observed exactly once for each valid packet.
 
+`thermo5_sku_axil_stop_restart_test` adds the two-packet sequence required to
+check a true restart without reset: STOP during packet 1, wait for all 56
+four-plane words and drained-idle STATUS, confirm packet 2 stays blocked, then
+reassert RUN and compare the complete 112-word stream. Run it with
+`make -C dv/uvm/sim thermo5-axil-stop-restart-vcs-run` (the target generates
+centered-cubic EF2 oracle vectors at order 2 / STEP 5120 by default; override
+`THERMO5_STOP_RESTART_TIDSM_ORDER` and `THERMO5_STOP_RESTART_STEP` only for a
+different candidate). The top-level
+`thermo5-centered-cubic-ef2-vcs-regression` target includes this STOP/restart
+case after the main candidate suite. The test was added on 2026-10-26; its first
+runtime attempt did not start because the VCS vendor daemon was unavailable;
+a three-minute license queue expired without a token, so it is not yet PASS
+evidence. A 2026-10-27 retry generated the correct centered-cubic/order-2/
+STEP=5120 vectors, but VCS again stopped before compilation with `Cannot find
+license file`; runtime remains OPEN. The test samples a six-bin STOP/restart covergroup only after each
+corresponding status, packet-boundary, blocked-source, and resumed-output
+check has passed; it requires 100% event-bin coverage before reporting PASS.
+
 Reproduce the two-quantum packet case with MATLAB vectors and the dedicated
 Make target:
 
@@ -64,6 +82,7 @@ Run a focused VCS scenario after compiling with `THERMO5_USE_AXIL=1` by setting
 | Register map, AW/W skew, WSTRB, DECERR and response backpressure (no stream) | `thermo5_sku_axil_register_access_test` |
 | Default commit/reset/full bit-true stream integration | `thermo5_sku_axil_config_test` |
 | Mid-frame RUN clear, frame completion and graceful drain | `thermo5_sku_axil_graceful_stop_test` |
+| STOP/drain, packet-boundary backpressure, no-reset RUN restart | `thermo5_sku_axil_stop_restart_test` |
 | Coefficient mailbox transport with inactive taps | `thermo5_sku_axil_coeff_transport_test` |
 | Non-identity image transport and application (not nonlinear arithmetic bit-true) | `thermo5_sku_axil_nonlinear_dpd_test` |
 | Legal maximum tap-count identity | `thermo5_sku_axil_tap4_identity_test` |

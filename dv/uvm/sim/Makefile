@@ -43,6 +43,9 @@ THERMO5_LONG_VECTORS ?= $(ROOT)/runs/thermo5_axil_tlast_112_vectors
 THERMO5_CENTERED_LP_VECTORS ?= $(ROOT)/runs/thermo5_centered_low_power_vectors
 THERMO5_NONLINEAR_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_short_vectors
 THERMO5_NONLINEAR_LONG_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_long_vectors
+THERMO5_STOP_RESTART_VECTORS ?= $(ROOT)/runs/thermo5_centered_stop_restart_vectors
+THERMO5_STOP_RESTART_TIDSM_ORDER ?= 2
+THERMO5_STOP_RESTART_STEP ?= 5120
 THERMO5_FILELIST := $(UVM_ROOT)/sim/thermo5_sku_filelist.f
 THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
@@ -88,10 +91,12 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         verdi questa questa-run questa-run-only run clean thermo5-vcs thermo5-vcs-run \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
         thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
+        thermo5-axil-stop-restart-vcs-run \
         thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
         thermo5-centered-cubic-vcs thermo5-centered-cubic-low-power-vcs \
+        thermo5-centered-cubic-ef2-vcs-regression \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
@@ -105,6 +110,7 @@ help:
 	@echo "  make thermo5-vcs-run     Compile/run two-clock thermo5/2-tap/DPD1 subsystem"
 	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
 	@echo "  make thermo5-axil-graceful-stop-vcs-run  Run AXI-Lite mid-frame graceful-stop test"
+	@echo "  make thermo5-axil-stop-restart-vcs-run   Run centered-cubic two-packet STOP/drain/restart test"
 	@echo "  make thermo5-axil-long-frame-vcs-run  Run 64-beat/two-quantum TLAST and drain test"
 	@echo "  make thermo5-axil-register-access-vcs-run  Run AXI-Lite register/protocol-only test"
 	@echo "  make thermo5-axil-coeff-transport-vcs-run  Run coefficient mailbox transport case"
@@ -124,6 +130,7 @@ help:
 	@echo "Optional targets: questa-run, check-tools, clean"
 	@echo "Variables: UVM_TESTNAME, UVM_SEED, RUN_TAGS, UVM_VERBOSITY, COVERAGE, FSDB, VERDI_HOME"
 	@echo "Thermo5: UVM_SEED, THERMO5_EXTRA_ARGS=+STRESS_PA_READY, THERMO5_TIDSM_ORDER (1/2), THERMO5_STEP"
+	@echo "Stop/restart default: centered-cubic EF2, THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120"
 
 check-tools:
 	@command -v $(VCS) >/dev/null 2>&1 || { echo "ERROR: VCS not found"; exit 127; }
@@ -341,6 +348,22 @@ thermo5-axil-vcs-regression:
 		{ echo "ERROR: AXI-Lite URG merge failed; inspect coverage_merge.log"; exit 1; }
 	@echo "THERMO5_AXIL_COVERAGE_MERGE_PASS report=$(THERMO5_OUT)/coverage"
 
+thermo5-axil-stop-restart-vcs-run:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_STOP_RESTART_VECTORS) --words 112 --seed 610215 \
+	  --interp-mode centered_cubic --frame-start-words 1,57 \
+	  --frame-gains 16384,16384 --tidsm-order $(THERMO5_STOP_RESTART_TIDSM_ORDER) \
+	  --step $(THERMO5_STOP_RESTART_STEP)
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=$(THERMO5_STOP_RESTART_TIDSM_ORDER) \
+	  THERMO5_STEP=$(THERMO5_STOP_RESTART_STEP) THERMO5_VECTORS=$(THERMO5_STOP_RESTART_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_CENTERED_CUBIC=1 THERMO5_TESTNAME=thermo5_sku_axil_stop_restart_test \
+	  THERMO5_TIDSM_ORDER=$(THERMO5_STOP_RESTART_TIDSM_ORDER) \
+	  THERMO5_STEP=$(THERMO5_STOP_RESTART_STEP) \
+	  THERMO5_VECTORS=$(THERMO5_STOP_RESTART_VECTORS) UVM_SEED=610215 \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32'
+
 thermo5-vcs-regression: thermo5-vcs
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=1 THERMO5_TESTNAME=thermo5_sku_bittrue_test THERMO5_EXTRA_ARGS=+STRESS_PA_READY
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=2 THERMO5_TESTNAME=thermo5_sku_bubble_backpressure_test
@@ -358,6 +381,14 @@ thermo5-centered-cubic-vcs:
 	  UVM_SEED=610201 THERMO5_TESTNAME=thermo5_sku_bittrue_test \
 	  THERMO5_EXTRA_ARGS=+STRESS_PA_READY
 
+# Full directed-IP suite for the optional centered-cubic + fixed-point EF2
+# candidate. Matching candidate oracle vectors are supplied by the caller.
+thermo5-centered-cubic-ef2-vcs-regression:
+	@$(MAKE) --no-print-directory thermo5-vcs-regression \
+	  THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-axil-stop-restart-vcs-run \
+	  THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120
+
 thermo5-centered-cubic-low-power-vcs:
 	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
 	  --output-dir $(THERMO5_CENTERED_LP_VECTORS) --words 56 --seed 610212 \
@@ -372,11 +403,13 @@ thermo5-axil-centered-nonlinear-bittrue-vcs:
 	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
 	  --output-dir $(THERMO5_NONLINEAR_SHORT_VECTORS) --words 56 --seed 610213 \
 	  --interp-mode centered_cubic --dpd-profile nonlinear_test \
-	  --frame-start-words 1 --frame-gains 16384
+	  --frame-start-words 1 --frame-gains 16384 \
+	  --tidsm-order $(THERMO5_TIDSM_ORDER) --step $(THERMO5_STEP)
 	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
 	  --output-dir $(THERMO5_NONLINEAR_LONG_VECTORS) --words 112 --seed 610214 \
 	  --interp-mode centered_cubic --dpd-profile nonlinear_test \
-	  --frame-start-words 1,57 --frame-gains 16384,16384
+	  --frame-start-words 1,57 --frame-gains 16384,16384 \
+	  --tidsm-order $(THERMO5_TIDSM_ORDER) --step $(THERMO5_STEP)
 	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
 	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_SHORT_VECTORS)
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \

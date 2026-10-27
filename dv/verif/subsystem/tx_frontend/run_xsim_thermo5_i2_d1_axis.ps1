@@ -1,16 +1,17 @@
-param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[switch]$AxilControl,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='')
+param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[switch]$AxilControl,[switch]$CenteredCubic,[ValidateSet(1,2)][int]$TidOrder=1,[ValidateSet(5120,7168)][int]$Step=7168,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='',[string]$VivadoRoot='D:\AMDDesignTools\2026.1\Vivado')
 $ErrorActionPreference='Stop'
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $impl=if($XpmFifo){'xpm'}else{'generic'}
 $mode=if($AxilControl){'axil'}else{'parallel'}
-$work=Join-Path $repo "runs\uvm_thermo5_i2_d1\axis_xsim_${mode}_${impl}_seed${Seed}_words$Words"
+$interp=if($CenteredCubic){'centered'}else{'causal'}
+$work=Join-Path $repo "runs\uvm_thermo5_i2_d1\axis_xsim_${mode}_${impl}_${interp}_ef${TidOrder}_seed${Seed}_words$Words"
 $vectors=if($VectorDir -eq ''){Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'}else{[System.IO.Path]::GetFullPath($VectorDir)}
 if($Words -ne 56 -and $Words -ne 1008){throw 'Supported Words values are 56 and 1008.'}
 if (!(Test-Path -LiteralPath (Join-Path $vectors 'tid32_thermo5_frontend_pa3.mem'))) {
   throw 'Run dv/uvm/sim/generate_thermo5_sku_vectors.ps1 first.'
 }
 New-Item -ItemType Directory -Force -Path $work | Out-Null
-$settings='D:\Xilinx\Vivado\2024.1\settings64.bat'
+$settings=Join-Path $VivadoRoot 'settings64.bat'
 if (!(Test-Path -LiteralPath $settings)) { throw 'Vivado settings unavailable.' }
 $relative=@(
   'rtl/axis/dsm_reset_sync.sv','rtl/axis/dsm_frame_power_ctrl.sv',
@@ -31,6 +32,9 @@ $relative=@(
 )
 $vendor=@()
 $define=''
+if($CenteredCubic){$define+=' --define=THERMO5_CENTERED_CUBIC'}
+if($TidOrder -eq 2){$define+=' --define=THERMO5_TIDSM_ORDER_2'}
+if($Step -eq 5120){$define+=' --define=THERMO5_STEP_5120'}
 if($Words -eq 1008){$define='-d THERMO5_LONG_1008'}
 if($AxilControl){
   $define+=' -d THERMO5_AXIL_CONTROL'
@@ -41,13 +45,13 @@ if($AxilControl){
 }
 if($XpmFifo){
   $vendor=@(
-    'D:\Xilinx\Vivado\2024.1\data\verilog\src\glbl.v',
-    'D:\Xilinx\Vivado\2024.1\data\ip\xpm\xpm_cdc\hdl\xpm_cdc.sv',
-    'D:\Xilinx\Vivado\2024.1\data\ip\xpm\xpm_memory\hdl\xpm_memory.sv',
-    'D:\Xilinx\Vivado\2024.1\data\ip\xpm\xpm_fifo\hdl\xpm_fifo.sv'
+    (Join-Path $VivadoRoot 'data\verilog\src\glbl.v'),
+    (Join-Path $VivadoRoot 'data\ip\xpm\xpm_cdc\hdl\xpm_cdc.sv'),
+    (Join-Path $VivadoRoot 'data\ip\xpm\xpm_memory\hdl\xpm_memory.sv'),
+    (Join-Path $VivadoRoot 'data\ip\xpm\xpm_fifo\hdl\xpm_fifo.sv')
   )
   foreach($path in $vendor){if(!(Test-Path -LiteralPath $path)){throw "Missing vendor XPM model: $path"}}
-  $define+=' -d THERMO5_XPM_FIFO'
+  $define+=' --define=THERMO5_XPM_FIFO'
 }
 $source=(($vendor + ($relative | ForEach-Object { Join-Path $repo $_ })) | ForEach-Object { '"'+$_+'"' }) -join ' '
 Push-Location $work

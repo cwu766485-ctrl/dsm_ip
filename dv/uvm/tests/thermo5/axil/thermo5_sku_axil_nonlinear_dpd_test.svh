@@ -32,6 +32,15 @@ class thermo5_sku_axil_nonlinear_dpd_test extends thermo5_sku_axil_config_test;
   endfunction
 
   virtual task check_scenario_stream();
+    int expected_dpd_words;
+`ifdef THERMO5_CENTERED_CUBIC
+    // The centered FIR emits one look-ahead DPD vector for each start marker;
+    // those vectors are consumed by DPD even though only core_words PA words
+    // belong to the checked output frame.
+    expected_dpd_words=cfg.core_words+cfg.frame_starts;
+`else
+    expected_dpd_words=cfg.core_words;
+`endif
     if (env.source.monitor.accepted_beats!=cfg.source_beats ||
         env.scoreboard.source_checked!=cfg.source_beats ||
         env.coverage.pa_words!=cfg.core_words || vif.protocol_error ||
@@ -41,14 +50,14 @@ class thermo5_sku_axil_nonlinear_dpd_test extends thermo5_sku_axil_config_test;
           env.source.monitor.accepted_beats,env.scoreboard.source_checked,
           env.coverage.pa_words,vif.protocol_error))
     for (int lane=0;lane<16;lane++)
-      if (vif.dpd_sample_count[lane]!==cfg.core_words)
+      if (vif.dpd_sample_count[lane]!==expected_dpd_words)
         `uvm_fatal("AXIL_NONLINEAR_DPD_COUNT",
           $sformatf("lane=%0d samples=%0d expected=%0d",lane,
-            vif.dpd_sample_count[lane],cfg.core_words))
+            vif.dpd_sample_count[lane],expected_dpd_words))
   endtask
 
   virtual function string scenario_pass_message();
-    return "THERMO5_AXIL_NONLINEAR_DPD_CONFIG_UVM_PASS: non-identity coefficient image crossed mailbox atomically; 56 output words observed; arithmetic bit-true oracle not enabled for this scenario";
+    return $sformatf("THERMO5_AXIL_NONLINEAR_DPD_CONFIG_UVM_PASS: non-identity coefficient image crossed mailbox atomically; %0d output words observed; arithmetic bit-true oracle not enabled for this scenario",cfg.core_words);
   endfunction
 
   virtual task program_dpd_image(output bit [1:0] resp);

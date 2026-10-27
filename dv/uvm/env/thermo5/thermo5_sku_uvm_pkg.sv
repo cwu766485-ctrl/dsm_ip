@@ -37,6 +37,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_axil_access_sequence.svh"
   `include "thermo5_sku_axil_config_test.svh"
   `include "thermo5_sku_axil_graceful_stop_test.svh"
+  `include "thermo5_sku_axil_stop_restart_test.svh"
   `include "thermo5_sku_axil_register_access_test.svh"
   `include "thermo5_sku_axil_coeff_transport_test.svh"
   `include "thermo5_sku_axil_nonlinear_dpd_test.svh"

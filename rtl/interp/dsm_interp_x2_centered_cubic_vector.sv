@@ -75,7 +75,11 @@ module dsm_interp_x2_centered_cubic_vector #(
   wire logic head_final = q0_end || next_is_boundary;
   wire logic same_frame_next = (q_count == 2) && !q1_start;
 
-  assign in_ready = enable && (q_count < 2);
+  // Permit a full queue to accept its replacement word on the same edge that
+  // the current head is consumed. Without this look-ahead credit the two-entry
+  // queue alternates pop and push, limiting a no-stall stream to one vector
+  // every two clocks after it fills.
+  assign in_ready = enable && ((q_count < 2) || pop_head);
   assign out_valid = enable && (tail_output || can_emit_head);
   assign out_tail = out_valid && tail_output;
   assign out_frame_start = out_valid && !tail_output && q0_start;

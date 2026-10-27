@@ -8,7 +8,13 @@ class thermo5_sku_fifo_empty_test extends thermo5_sku_base_test;
     fork
       begin
         fork
+`ifdef THERMO5_CENTERED_CUBIC
+          // Centered interpolation needs an explicit frame tail to flush the
+          // final look-ahead-dependent vector before starvation is meaningful.
+          send_source(4,0,-1,0,-1,1);
+`else
           send_source(4);
+`endif
           begin
             wait(env.source.monitor.accepted_beats==4);
             env.control.core_on();

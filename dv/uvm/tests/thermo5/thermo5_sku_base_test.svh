@@ -41,7 +41,8 @@ class thermo5_sku_base_test extends uvm_test;
   endfunction
 
   task send_source(int beats, bit illegal=0, int gap_before_beat=-1,
-                   int unsigned gap_cycles=0, int force_early_tlast_beat=-1);
+                   int unsigned gap_cycles=0, int force_early_tlast_beat=-1,
+                   bit force_frame_end=0);
     thermo5_source_sequence seq;
     int packet_beats;
     seq=thermo5_source_sequence::type_id::create("source_sequence");
@@ -52,7 +53,7 @@ class thermo5_sku_base_test extends uvm_test;
     // reset/starvation prefixes remain open so they do not create a second,
     // unintended framing fault in AXI-Lite wrapper tests.
 `ifdef THERMO5_CENTERED_CUBIC
-    seq.mark_last=(beats==cfg.source_beats);
+    seq.mark_last=(beats==cfg.source_beats) || force_frame_end;
 `else
     seq.mark_last=(cfg.axil_control && beats==cfg.source_beats);
 `endif

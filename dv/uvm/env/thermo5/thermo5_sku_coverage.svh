@@ -8,6 +8,7 @@ class thermo5_sku_coverage extends uvm_component;
   int reset_reassertions, underflow_cycles, protocol_error_cycles;
   int underflow_before_last_source;
   int pa_stall_cycles, pa_words;
+  int pa_partial_ready_stall_cycles;
   int accepted_tlast_markers, packet_beats_since_boundary;
   int signed_min_beats, signed_max_beats;
   bit seen_src_release, last_src_rst_n;
@@ -28,6 +29,13 @@ class thermo5_sku_coverage extends uvm_component;
       bins malformed_early={0}; bins one_quantum={1};
       bins extended={[2:$]};
     }
+    x_frame_packet_end: cross cp_start, cp_packet_end {
+      bins ordinary_word = binsof(cp_start.ordinary) && binsof(cp_packet_end.no_end);
+      bins frame_start_word = binsof(cp_start.frame) && binsof(cp_packet_end.no_end);
+      bins frame_end_word = binsof(cp_start.ordinary) && binsof(cp_packet_end.accepted_end);
+      ignore_bins start_and_end_same_beat =
+        binsof(cp_start.frame) && binsof(cp_packet_end.accepted_end);
+    }
   endgroup
 
   covergroup core_cg with function sample(bit underflow, bit illegal, bit pa_stall, bit pa_word);
@@ -38,9 +46,48 @@ class thermo5_sku_coverage extends uvm_component;
     cp_pa_word: coverpoint pa_word { bins no_word={0}; bins four_plane_word={1}; }
   endgroup
 
+  // All four planes represent one thermometric symbol. Partial READY is legal,
+  // but must hold all four data planes together until every sink is ready.
+  covergroup plane_atomic_cg with function sample(logic [3:0] valid_mask,
+                                                   logic [3:0] ready_mask);
+    option.per_instance = 1;
+    cp_valid_mask: coverpoint valid_mask {
+      bins none = {4'h0};
+      bins all = {4'hf};
+      illegal_bins partial = default;
+    }
+    cp_ready_mask: coverpoint ready_mask {
+      bins blocked = {4'h0};
+      bins all = {4'hf};
+      bins partial = default;
+    }
+    x_valid_ready_atomicity: cross cp_valid_mask, cp_ready_mask;
+  endgroup
+
+  // The AXI-Lite STOP/restart test calls this only after it has checked the
+  // corresponding externally visible condition (draining STATUS, first
+  // packet completion, blocked second packet, RUN restart, and final drain).
+  covergroup stop_restart_cg with function sample(bit [2:0] event_code);
+    option.per_instance = 1;
+    cp_stop_restart_event: coverpoint event_code {
+      bins stop_while_packet_open = {0};
+      bins first_packet_drained = {1};
+      bins drained_idle_observed = {2};
+      bins second_packet_blocked = {3};
+      bins run_reasserted = {4};
+      bins second_packet_drained = {5};
+      illegal_bins invalid_event = default;
+    }
+  endgroup
+
   function new(string name, uvm_component parent);
     super.new(name,parent);
-    source_cg=new(); core_cg=new();
+    source_cg=new(); core_cg=new(); plane_atomic_cg=new();
+    stop_restart_cg=new();
+  endfunction
+
+  function void sample_stop_restart(bit [2:0] event_code);
+    stop_restart_cg.sample(event_code);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -96,6 +143,7 @@ class thermo5_sku_coverage extends uvm_component;
       end
       forever begin
         @(posedge vif.core_clk);
+        plane_atomic_cg.sample(vif.pa_valid, vif.pa_ready);
         core_cg.sample(vif.underflow, vif.protocol_error,
                        vif.pa_valid==4'hf && vif.pa_ready!=4'hf,
                        vif.pa_valid==4'hf && vif.pa_ready==4'hf);
@@ -106,6 +154,8 @@ class thermo5_sku_coverage extends uvm_component;
           end
           if (vif.protocol_error) protocol_error_cycles++;
           if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf) pa_stall_cycles++;
+          if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf && vif.pa_ready!=4'h0)
+            pa_partial_ready_stall_cycles++;
           if (vif.pa_valid==4'hf && vif.pa_ready==4'hf) pa_words++;
         end
       end
@@ -113,10 +163,12 @@ class thermo5_sku_coverage extends uvm_component;
   endtask
 
   function void report_phase(uvm_phase phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d source_cg=%.1f core_cg=%.1f",
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,reset_reassertions,
-      underflow_cycles,underflow_before_last_source,protocol_error_cycles,pa_stall_cycles,pa_words,
+      underflow_cycles,underflow_before_last_source,protocol_error_cycles,pa_stall_cycles,
+      pa_partial_ready_stall_cycles,pa_words,
       signed_min_beats,signed_max_beats,
-      source_cg.get_coverage(),core_cg.get_coverage()),UVM_NONE)
+      source_cg.get_coverage(),core_cg.get_coverage(),plane_atomic_cg.get_coverage(),
+      stop_restart_cg.get_coverage()),UVM_NONE)
   endfunction
 endclass

@@ -1,5 +1,66 @@
 # Update Log
 
+## 2026-10-27 - centered-cubic / EF2 roadmap checkpoint
+
+- Re-ran the centered-cubic sustained-throughput XSim test: 1,024 ordered
+  outputs with zero bubbles. Added a focused held-out EF2 benchmark runner and
+  evaluated six new 24-symbol 256-QAM seeds at STEP=5120, 20-bit state, and
+  RMS drive 0.08. Result: 117/672,768 uncoded errors, BER 1.739e-4 with 95%
+  Wilson interval [1.451e-4, 2.084e-4], mean EVM 2.517%, and no input/state
+  saturation. JSON is under the ignored `runs/` directory.
+- Added six explicit event bins for AXI-Lite STOP/drain/restart and integrated
+  the scenario into the optional centered-cubic + EF2 VCS candidate target.
+  Correct 112-word EF2 vectors were generated, but VCS stopped before compile
+  with `Cannot find license file`; do not count this scenario as PASS. The
+  target dry-run confirms ORDER=2 / STEP=5120 is passed consistently.
+- Checks: XSim sustained test PASS; Python reference-model tests 36/36 PASS;
+  benchmark `py_compile` PASS and held-out run completed; candidate regression
+  dry-run PASS; `git diff --check` PASS. The prior full generic/XPM candidate
+  regression remains 2026-10-26 evidence, not a rerun in this checkpoint.
+- Limits: EF2 is still a scalar 32-step nonlinear recurrence with no
+  timing-qualified pipeline; candidate UVM STOP/restart remains blocked on
+  VCS license; Windows host free memory was about 6.8 GiB, below the 12-14
+  GiB route estimate, so no ZU15EG timing-driven route was launched. Keep
+  causal/first-order as the frozen default and Centered-Cubic + EF2 as a
+  research candidate. No commit or push was made.
+
+## 2026-10-26 - centered-cubic + EF2 candidate throughput and DV
+
+- Fixed centered-cubic FIR full-queue ready look-ahead so an accepted output
+  pop can be paired with a replacement input push on the same clock edge.
+- Added a sustained-throughput XSim test (1,024 contiguous output words,
+  zero bubbles), full-chain XSim candidate options for centered cubic / EF2 /
+  STEP, and a dedicated candidate VCS/UVM regression target. Added explicit
+  partial four-plane-ready stress and atomicity cross coverage to the
+  candidate bubble/backpressure test.
+- Checks: standalone centered-cubic XSim PASS (`1024` outputs, `0` bubbles);
+  centered-cubic + EF2 (`STEP=5120`) full-chain XSim PASS for generic and XPM
+  FIFO; VCS/UVM candidate regression PASS for generic and XPM FIFO with zero
+  UVM_ERROR/FATAL. Partial-ready stress hit 109 stalled cycles and reported
+  100% plane-atomic cross coverage. `git diff --check` PASS (Git emitted only
+  existing CRLF normalization warnings for two edited UVM files).
+- OOC/timing: the ZU15EG candidate run generated `synthesized.dcp` (62,597,295
+  bytes), utilization, and clock reports: 88,880 LUTs (26.04%), 58,909 FFs
+  (8.63%), 2,108 DSP48E2 (59.75%), 6.5 BRAM tiles (0.87%), and modeled clocks
+  of 4.571/10/8 ns for core/AXI-Lite/AXI-Stream. The Vivado launcher did not
+  return a clean PASS marker; it reported failure to load `fpga_compiler`.
+  No routed timing report exists. At recheck Windows host had 1.9 GiB free
+  and WSL reported 11 GiB available, below the previous 12-14 GiB
+  placement/routing requirement. Do not claim
+  candidate timing closure.
+- Additional checks: the AXI-Lite candidate regression passed for generic and
+  XPM FIFO, including URG merge. Nonlinear DPD bit-true UVM passed for 56 and
+  112 words on both FIFO builds. A new two-packet stop/drain/restart test and
+  make target were added. VCS parsed/elaborated all 20 design modules for that
+  test, then failed to obtain a license at final link. A later three-minute
+  license-queue retry also expired without a token; runtime remains OPEN.
+  The Python reference-model suite also passed all 36 tests.
+- Limits: EF2 still has a 32-step serial combinational recurrence and is not
+  timing-qualified. The 20-bit state clamp prevents arithmetic wrap but does
+  not prove no clamp for arbitrary inputs. The held-out uncoded BER is a model
+  metric; the project has no system BER/BLER target, and GT/board physical
+  performance remains open. Details: `docs/verification/thermo5-centered-cubic-ef2-status.md`.
+
 ## 2026-10-25 23:16 SGT - add GT-parent pressure and error-frame scenarios
 
 - Added selectable XSim scenarios for four AXIS payload patterns (signed ramp,

@@ -4,7 +4,10 @@ param(
   [double]$CoreMHz = 218.75,
   [double]$AxilMHz = 100.0,
   [string]$OutDir = '',
-  [string]$VivadoBat = 'D:\Xilinx\Vivado\2024.1\bin\vivado.bat'
+  [string]$VivadoBat = 'D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat',
+  [ValidateSet('causal','centered-cubic')][string]$Interpolation = 'causal',
+  [ValidateSet(1,2)][int]$TidOrder = 1,
+  [ValidateSet(5120,7168)][int]$Step = 7168
 )
 
 $ErrorActionPreference = 'Stop'
@@ -12,7 +15,7 @@ $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 if (!(Test-Path -LiteralPath $VivadoBat)) { throw "Vivado is unavailable: $VivadoBat" }
 $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 if ([string]::IsNullOrWhiteSpace($OutDir)) {
-  $OutDir = Join-Path $repo "runs\thermo5_axil_ooc_${Implementation}_${stamp}"
+  $OutDir = Join-Path $repo "runs\thermo5_axil_ooc_${Implementation}_${Interpolation}_ef${TidOrder}_step${Step}_${stamp}"
 } else {
   $OutDir = [System.IO.Path]::GetFullPath($OutDir)
   if (Test-Path -LiteralPath $OutDir) { throw "Refusing to overwrite existing OOC directory: $OutDir" }
@@ -21,7 +24,8 @@ New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
 $OutDir = (Resolve-Path -LiteralPath $OutDir).Path
 $tcl = Join-Path $repo 'syn\run_ooc_thermo5_axil_control.tcl'
 $log = Join-Path $OutDir 'vivado.log'
-& $VivadoBat -mode batch -source $tcl -tclargs $Part $CoreMHz $AxilMHz $OutDir $Implementation *> $log
+$centered = if ($Interpolation -eq 'centered-cubic') { 1 } else { 0 }
+& $VivadoBat -mode batch -source $tcl -tclargs $Part $CoreMHz $AxilMHz $OutDir $Implementation $centered $TidOrder $Step *> $log
 if ($LASTEXITCODE -ne 0) { throw "AXI-Lite wrapper OOC failed; see $log" }
 if ($Implementation -eq 'synth') {
   $checkpoint = Join-Path $OutDir 'synthesized.dcp'

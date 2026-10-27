@@ -1,5 +1,106 @@
 # Execution frontier
 
+## Centered-cubic + EF2 roadmap update (2026-10-27)
+
+The sustained centered-cubic throughput fix remains confirmed by the XSim test:
+1,024 contiguous outputs, zero bubbles. The STOP/restart UVM case now has six
+explicit event bins, and the `thermo5-centered-cubic-ef2-vcs-regression`
+target includes the two-packet case with centered-cubic/order-2/STEP=5120
+vectors and RTL parameters. `make -n` confirms the configuration is passed
+consistently. A real VCS run was attempted, but VCS exited before compile with
+“Cannot find license file”; the runtime and coverage bins remain OPEN.
+
+The EF2 pipeline study is documented in
+`docs/architecture/thermo5-ef2-throughput-study.md`. A direct register split
+does not preserve both the loop-carried error state and one-vector-per-cycle
+throughput; a reviewed exact look-ahead/parallel transformation is still
+required. No EF2 datapath RTL was changed in this update. Keep the frozen
+causal/first-order default and the centered-cubic/EF2 option classified as an
+architecture candidate.
+
+### Roadmap checkpoint after 2026-10-27 reruns
+
+1. **Centered-cubic sustained throughput: PASS.** Re-ran
+   `run_xsim_centered_cubic_sustained.ps1`: 1,024 contiguous ordered outputs,
+   zero bubbles, 1,023 cycles first-to-last. Evidence:
+   `runs/centered_cubic_sustained_xsim/xsim.log`.
+2. **EF2 candidate full regression: PARTIAL / OPEN.** Existing 2026-10-26
+   generic/XPM candidate regression evidence remains recorded below. Added a
+   two-packet STOP/drain/restart test with six checked event bins and included
+   it in `thermo5-centered-cubic-ef2-vcs-regression`. The correct candidate
+   target generated 112-word centered-cubic/order-2/STEP=5120 vectors, but the
+   2026-10-27 VCS attempt stopped before compilation with `Cannot find license
+   file`; this test's runtime and bins remain OPEN. The make dry-run confirms
+   the complete candidate suite passes ORDER=2/STEP=5120 consistently.
+3. **Timing-qualified EF2 pipeline: OPEN.** No pipeline RTL has been
+   implemented: a naive register split breaks either bit-true state ordering
+   or II=1. A reviewed exact look-ahead transformation is still required.
+4. **Longer held-out benchmark: PASS as a model experiment.** Six new seeds,
+   24 QAM256 OFDM symbols/seed, 672,768 uncoded bits, STEP=5120, 20-bit state,
+   and RMS drive 0.08 measured 117 bit errors (BER 1.739e-4; 95% Wilson
+   interval 1.451e-4 to 2.084e-4), 2.517% mean digital EVM, and no input/state
+   saturation. Result:
+   `runs/thermo5_ef2_heldout_extension_20261027/ef2_heldout.json`. This is not
+   physical GT BER or a production BER signoff; it uses a different RMS level
+   and longer frame than the earlier held-out run.
+5. **Interview/frozen configuration: keep baseline frozen.** Causal
+   interpolation + first-order TIDSM remains default. Centered-cubic + EF2
+   remains an optional architecture candidate until pipeline timing, the
+   blocked STOP/restart run, a defined system BER/BLER target, and physical
+   constraints are closed.
+
+The VCS candidate regression dry-run and Python reference-model unit suite
+(36/36) passed. The current Windows host has about 6.8 GiB free, still below
+the prior 12-14 GiB timing-driven route estimate; no route was launched.
+
+Current implementation resource headroom is insufficient for the requested
+route: Windows reports about 6.8 GiB free, below the prior 12-14 GiB estimate.
+Candidate ZU15EG routed timing/PPA is therefore still OPEN. The extended
+24-symbol, six-held-out-seed EF2 benchmark has completed; its model-only
+results are recorded above and in the candidate status document.
+
+## Centered-cubic + EF2 candidate closure (2026-10-26)
+
+The optional centered-cubic x2 FIR + second-order TIDSM path is integrated
+through the thermo5 AXI-Stream and AXI-Lite wrapper parameters. The frozen
+default remains causal + first-order (`INTERP_CENTERED_CUBIC=0`,
+`TIDSM_ORDER=1`). The centered FIR's two-entry queue previously could not
+accept a replacement vector on the same edge as a full-queue pop. Its ready
+look-ahead now permits simultaneous pop/push. A new XSim sustained test passes
+1,024 contiguous output words with zero bubbles (`runs/centered_cubic_sustained_xsim/`).
+
+The centered-cubic + EF2 (`STEP=5120`) candidate passed full-chain XSim with
+generic and XPM FIFOs (32 source words / 56 words per output plane) and passed
+the full VCS/UVM candidate regression with each FIFO implementation. The
+regression includes bit-true, source bubble/PA backpressure, FIFO boundary and
+empty/underflow, reset/replay, five residual-reset points, and expected
+illegal-frame assertion/recovery. The partial-four-plane-ready test reports
+plane-atomic cross coverage 100% and 109 partial-ready stall cycles. Evidence
+is under `runs/thermo5_centered_ef2_signoff_20261026/` and
+`runs/uvm_thermo5_i2_d1/` (ignored local run output).
+
+The optional EF2 is **not timing-qualified**: 32 serial nonlinear recurrence
+steps remain in one combinational path. Candidate ZU15EG synthesis generated a
+62,597,295-byte `synthesized.dcp`, clock report, and utilization report (88,880
+LUTs, 58,909 FFs, 2,108 DSP48E2, 6.5 BRAM tiles), but Vivado did not return its
+clean PASS marker and reported failure to load feature `fpga_compiler`. Core,
+AXI-Lite, and AXI-Stream modeled periods are 4.571, 10, and 8 ns. No routed
+timing result exists; placement/routing needs the license issue resolved and
+12-14 GiB implementation memory headroom (last recheck: Windows host 1.9 GiB
+free; WSL 11 GiB available). The 20-bit saturating state proves
+bounded arithmetic/no wrap, not no-clamp behavior for arbitrary signed-16
+inputs; tested OFDM frames did not clamp, but high/constant input can. The new
+stop-drain-restart scenario is present, but runtime was blocked by VCS vendor
+daemon unavailability; its three-minute license queue expired before test
+execution. The
+project-level BER/BLER acceptance target is unspecified. See
+`docs/verification/thermo5-centered-cubic-ef2-status.md`.
+
+Next: restore VCS/Vivado license-server access; run the stop-drain-restart UVM
+case; obtain enough memory for timing-driven ZU15EG implementation; and either
+produce a timing-qualified EF2 microarchitecture or keep this path exploratory.
+Do not promote the candidate to the frozen SKU or claim physical GT/BER signoff.
+
 ## P0 GT-parent stress, special-pattern, and negative-frame closure (2026-10-25)
 
 The Vivado 2026.1 four-GTH GT Wizard XSim flow now has separately selectable
