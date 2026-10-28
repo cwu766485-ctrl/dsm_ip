@@ -1,5 +1,27 @@
 # Update Log
 
+## 2026-10-28 23:40 SGT - Publish and verify EF2 Linux signoff
+
+- Published the EF2 look-ahead experiment, current-source signoff packager,
+  workflow updates, and report changes to GitHub branch `thermo5` as three
+  commits. The resulting source tree is identical to the locally reviewed
+  signoff tree; the current authoritative revision is always recorded in the
+  run manifest.
+- Re-ran the clean Linux digital package on the uploaded source revision:
+  Python reference tests 36/36; Generic EF2 UVM/URG; 112-word STOP/restart;
+  three 2,072-word qualification scenarios with all four target crosses;
+  4,096-cycle pair-look-ahead VCS miter; four-PA serializer loopback;
+  GT-parent link-loss/reset recovery; EF2 safety and pair-equivalence VC
+  Formal. The signoff packager passed with 79 SHA-256-indexed evidence files.
+- The workflow's hosted syntax/whitespace and Python unit-test job passed for
+  the uploaded revision. Its licensed EDA job is queued for the configured
+  self-hosted Synopsys runner; the GitHub Actions artifact is not available
+  until that job starts and uploads its evidence.
+- Limits remain: raw code coverage is open (76.12% aggregate URG); no Linux
+  Vivado/XSim, real XPM, or current GT Wizard model is installed. Routed FPGA
+  timing/resources, calibrated RF behavior, and physical QAM256 BER remain
+  open. The GT-parent test uses a controllable simulation replacement.
+
 ## 2026-10-28 23:05 SGT - Add exact EF2 pair look-ahead and Linux signoff packaging
 
 - Added an opt-in two-sample EF2 look-ahead implementation behind
