@@ -5,30 +5,33 @@
 The main thermo5 baseline remains centered-cubic x2 + EF2 TIDSM, ORDER=2,
 STEP=5120, 20-bit state, chronological 32-sample order. A separate exact
 two-sample look-ahead factoring is now implemented behind
-`PAIR_LOOKAHEAD=0`; no wrapper selects it. The 32-sample VCS miter passed
-4,096 cycles with bubbles, output backpressure, signed extrema, positive and
-negative state saturation, and back-to-back vectors. VC Formal passed the
-production EF2 safety harness (6 assertions/3 covers) and pair-transfer
-equivalence harness (7 assertions/4 covers), both with zero black boxes.
-These first checks were run with a dirty worktree and are not yet the
-current-SHA package. The first clean-SHA Generic run exposed a vector contract
-error: its generated stimulus had one frame start while the default UVM case
-expects three. The cause is confirmed in `thermo5_sku_config.frame_starts`;
-the workflow and command example now use the matching `1,15,36` boundaries
-and `16384,14336,12288` gains. On that corrected run, the complete Generic
-regression/URG, STOP/restart, long-frame qualification, pair VCS, serializer
-loopback, GT-parent behavioral fault recovery, and EF2/pair formal all pass.
-The first signoff packager attempt found its own marker parser was looking for
-pass markers at column zero rather than inside `UVM_INFO` lines; this is
-corrected and the full clean-SHA package will be rerun from a fresh output
-directory.
+`PAIR_LOOKAHEAD=0`; no wrapper selects it. The clean Linux signoff run passed
+at `b48512241e3df26f1d58123d67e1f90da4bcbf83`; its manifest is under
+`runs/thermo5_linux_ef2_signoff_b485122/` and contains 79 SHA-256-indexed
+evidence files. The 32-sample VCS miter passed 4,096 cycles with bubbles,
+output backpressure, signed extrema, positive and negative state saturation,
+and back-to-back vectors. VC Formal passed the production EF2 safety harness
+(6 assertions/3 covers) and pair-transfer equivalence harness (7 assertions/4
+covers), both with zero black boxes. Generic regression/URG, STOP/restart,
+long-frame qualification, serializer loopback, and GT-parent behavioral fault
+recovery passed in the same source/configuration package.
+
+The first Generic vector setup exposed a mismatch with the UVM frame contract;
+it is fixed to the three starts `1,15,36` and gains `16384,14336,12288`. The
+first evidence-packager check exposed a UVM marker parser bug; it now checks
+the exact expected marker inside the `UVM_INFO` line and gates negative-test
+error counts and URG errors. Raw Generic URG is 76.12% aggregate (82.63% line,
+62.59% condition, 79.66% toggle, 100% FSM, 62.22% branch, 76.47% assertion,
+69.26% group), so complete code coverage remains OPEN.
 
 The current Linux signoff packager now verifies the same commit/configuration
 across Generic VCS, long-frame EF2 qualification, STOP/restart, formal, pair
 look-ahead, four-PA serializer loopback, and GT-parent fault/recovery evidence;
 it records SHA-256 hashes for vectors and reports. The licensed GitHub Actions
 workflow is configured to run this package and archive a commit-named artifact.
-The full clean-tree run, package manifest, and push are pending.
+For each tracked revision, generate a fresh
+`runs/thermo5_linux_ef2_signoff_<short-sha>/` package; its manifest records the
+exact source SHA, and the licensed Actions artifact uses the same commit SHA.
 
 XPM FIFO sources, XSim/Vivado, and the current GT Wizard/TXP simulation model
 are not installed on this Linux host. The GT-parent fault test uses a
@@ -37,7 +40,7 @@ Actual XPM/GT Wizard qualification, routed FPGA timing/resources, and physical
 QAM256 BER remain OPEN. Pair look-ahead has no measured LUT/FF/DSP/Fmax result;
 keep the product default unchanged until a routed comparison is available.
 
-## Current execution state: centered-cubic EF2 main-chain integration (2026-10-28)
+## Historical checkpoint: centered-cubic EF2 main-chain integration (2026-10-28)
 
 The latest user instruction promotes EF2 after verification. Thermo5 wrappers,
 the Python oracle, the VCS Make defaults, and the ZU15EG parent now select

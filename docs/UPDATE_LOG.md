@@ -11,30 +11,33 @@
 - Added a Linux signoff manifest that checks source/configuration consistency,
   required functional coverage crosses, test markers, vector hashes, logs,
   and formal properties. Added a job-ready baseline ledger and run commands.
-- Preliminary checks: Python reference tests 36/36 PASS; workflow YAML parse,
-  Python compile, and whitespace checks PASS. The pre-commit pair VCS miter
-  passed 4,096 cycles (2,662 accepts, 1,638 back-to-back accepts, 307 positive
-  clamps, 408 negative clamps, 818 output stalls, and 616 input bubbles).
-  Pre-commit VC Formal passed EF2 safety (6 assertions/3 covers) and pairwise
-  transfer equivalence (7 assertions/4 covers), with zero black boxes. These
-  runs used a dirty worktree and are development checks, not the final
-  source-SHA signoff package; the full clean-SHA regression is the next step.
+- Python reference tests passed 36/36; workflow YAML parse, Python compile,
+  and whitespace checks passed. The clean-tree run at source revision
+  `b48512241e3df26f1d58123d67e1f90da4bcbf83` produced
+  `runs/thermo5_linux_ef2_signoff_b485122/signoff_manifest.json` with
+  `PASS_LINUX_DIGITAL_SCOPE` and 79 SHA256-indexed evidence files.
+- Current-source VCS passed the six-case Generic suite and expected illegal
+  frame control with zero UVM errors/fatals, plus URG merge. Raw aggregate URG
+  is 76.12% (line 82.63%, condition 62.59%, toggle 79.66%, FSM 100%, branch
+  62.22%, assertion 76.47%, group 69.26%); code coverage remains OPEN. The
+  2,072-word EF2 qualification passed all three seeded scenarios and all four
+  required saturation/stall/rail crosses. AXI-Lite STOP/restart passed with
+  112 ordered four-plane outputs.
+- VC Formal passed EF2 safety (6 assertions/3 covers) and pairwise transfer
+  equivalence (7 assertions/4 covers), with zero black boxes. The 4,096-cycle
+  32-sample VCS miter passed (2,662 accepts, 1,638 back-to-back accepts, 307
+  positive clamps, 408 negative clamps, 818 output stalls, 616 input bubbles).
+  Four-PA serializer loopback passed for 56 words / 3,584 bits per path; the
+  GT-parent fault test passed immediate PA blanking, sticky fault, and reset
+  recovery using its controllable simulation replacement.
 - Limitations: Linux has no Vivado/XSim, real XPM sources, or current GT Wizard
   simulation model. Routed FPGA timing/resources and physical QAM256 BER remain
   open. The GT-parent VCS test uses a controllable simulation replacement.
-- First clean-SHA generic run found that its generated vectors provided one
-  frame start while the default UVM contract expects three. RTL compilation
-  succeeded; the failure was a test-vector setup mismatch. Corrected the
-  workflow/command seed vectors to the known three-boundary set
-  (`1,15,36`, gains `16384,14336,12288`); clean-SHA rerun is pending.
-- On the corrected clean-SHA run, Generic regression/URG, STOP/restart,
-  long-frame EF2 qualification, pair VCS, serializer loopback, GT-parent
-  behavioral fault recovery, and both formal jobs passed. The first manifest
-  packaging attempt then exposed a parser bug: it expected UVM pass markers at
-  the start of a log line, while VCS prefixes them with `UVM_INFO`. The
-  packager now checks each exact marker as a substring and also gates the
-  negative-control UVM error count and URG merge errors. A clean-SHA rerun is
-  pending because this packaging fix changes the source revision.
+- During closure, the first generic vectors had one frame start while UVM
+  expected three. Correcting them to `1,15,36` with gains `16384,14336,12288`
+  passed. The first packager attempt also found its parser expected markers at
+  column zero while VCS prefixes them with `UVM_INFO`; exact substring marker
+  checks and negative-control/URG gates were corrected before the clean pass.
 
 ## 2026-10-28 10:32 SGT - Linux EF2 formal safety closure
 

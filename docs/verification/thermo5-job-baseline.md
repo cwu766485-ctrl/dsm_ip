@@ -11,8 +11,9 @@ experimental `PAIR_LOOKAHEAD` option is disabled in all product wrappers.
 Do not merge results across different source SHAs, STEP values, interpolation
 modes, state widths, FIFO implementations, or test inputs into one system
 claim. The current Linux run package writes
-`runs/thermo5_linux_ef2_signoff_20261028/signoff_manifest.json`; it cross-checks
-the SHA and configuration in each VCS/formal report and hashes its evidence.
+`runs/thermo5_linux_ef2_signoff_<short-sha>/signoff_manifest.json`; it
+cross-checks the SHA and configuration in each VCS/formal report and hashes
+its evidence.
 
 ## Signoff layers
 
@@ -24,7 +25,7 @@ the SHA and configuration in each VCS/formal report and hashes its evidence.
 | Pairwise look-ahead numerical equivalence | PASS for the two-sample transfer; see formal and VCS miter reports | The proof covers arbitrary signed-16 samples and state for one pair; the 32-sample VCS miter checks the production core over 4,096 cycles. The optimization remains experimental. |
 | Four-PA serializer loopback | PASS when current-SHA VCS evidence is present | Reassembles all four serialized lanes against EF2 output vectors using the vendor-neutral raw64 model. It does not instantiate the GT Wizard. |
 | GT-parent link-loss recovery | PASS when current-SHA VCS evidence is present | Exercises immediate PA blanking, sticky fault, and reset recovery with a controllable GT stub. It is a digital parent-policy test. |
-| Raw code coverage closure | OPEN | Preserve the actual URG score and uncovered bins; targeted functional crosses do not imply complete code coverage. |
+| Raw code coverage closure | OPEN | The clean Generic URG report scored 76.12% overall (82.63% line, 62.59% condition, 79.66% toggle, 100% FSM, 62.22% branch, 76.47% assertion, 69.26% group). Preserve uncovered bins; targeted functional crosses do not imply complete code coverage. |
 | Real XPM FIFO / current GT Wizard TXP | OPEN | This Linux host has no Vivado/XPM or current GT Wizard simulation sources. Generic FIFO, behavioral serializer, and GT-stub tests do not replace vendor-model qualification. |
 | FPGA timing and resource signoff | OPEN | No Vivado/XSim environment or routed timing result is available in this Linux flow. No Fmax/LUT/FF/DSP claim is made. |
 | Behavioral RF chain | MODEL ONLY | Python DPA/output/noise simulations are sensitivity studies, not calibrated board measurements. |
@@ -42,6 +43,7 @@ SHA-256 values for the manifests, logs, selected URG reports, formal
 properties, and oracle vectors.
 
 The licensed `thermo5-dv.yml` workflow runs the same current-source EF2 checks
-on a trusted self-hosted Synopsys runner and uploads this review package as a
-commit-named GitHub Actions artifact. Hosted runners only execute Python
-syntax/unit checks; they do not receive vendor models, licenses, or EDA tools.
+on a trusted self-hosted Synopsys runner when `THERMO5_LICENSED_CI=enabled`,
+then uploads this review package as a commit-named GitHub Actions artifact.
+Hosted runners only execute Python syntax/unit checks; they do not receive
+vendor models, licenses, or EDA tools.
