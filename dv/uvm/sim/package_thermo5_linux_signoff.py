@@ -112,33 +112,35 @@ def main():
         raise SystemExit("EF2 safety and pair-look-ahead equivalence proofs are required")
 
     positive_tests = (
-        ("thermo5_sku_bittrue_test_seed1.log", "THERMO5_"),
-        ("thermo5_sku_bubble_backpressure_test_seed2.log", "THERMO5_"),
-        ("thermo5_sku_fifo_boundary_test_seed2.log", "THERMO5_"),
-        ("thermo5_sku_fifo_empty_test_seed5.log", "THERMO5_"),
-        ("thermo5_sku_reset_test_seed3.log", "THERMO5_"),
-        ("thermo5_sku_reset_sweep_test_seed6.log", "THERMO5_"),
+        ("thermo5_sku_bittrue_test_seed1.log", "THERMO5_SKU_UVM_PASS"),
+        ("thermo5_sku_bubble_backpressure_test_seed2.log", "THERMO5_BUBBLE_BACKPRESSURE_UVM_PASS"),
+        ("thermo5_sku_fifo_boundary_test_seed2.log", "THERMO5_FIFO_BOUNDARY_UVM_PASS"),
+        ("thermo5_sku_fifo_empty_test_seed5.log", "THERMO5_FIFO_EMPTY_UVM_PASS"),
+        ("thermo5_sku_reset_test_seed3.log", "THERMO5_RESET_UVM_PASS"),
+        ("thermo5_sku_reset_sweep_test_seed6.log", "THERMO5_RESET_SWEEP_UVM_PASS"),
     )
     generic_logs = []
-    for filename, marker_prefix in positive_tests:
+    for filename, expected_marker in positive_tests:
         path = generic / filename
-        text = path.read_text(encoding="utf-8", errors="replace") if path.is_file() else ""
-        markers = [line for line in text.splitlines()
-                   if line.startswith(marker_prefix) and "_UVM_PASS" in line]
-        check_clean_log(path, markers[-1] if markers else "THERMO5_MISSING_UVM_PASS_MARKER")
+        check_clean_log(path, expected_marker)
         generic_logs.append(path)
     negative_path = generic / "illegal_frame_seed4.log"
     if not negative_path.is_file():
         raise SystemExit("missing expected-illegal-frame regression log: " + str(negative_path))
     negative_text = negative_path.read_text(encoding="utf-8", errors="replace")
     if ("THERMO5_ILLEGAL_FRAME_OBSERVED" not in negative_text or
-            ("UVM_FATAL : 0" not in negative_text and "UVM_FATAL: 0" not in negative_text)):
+            not re.search(r"UVM_ERROR\s*:\s*0\b", negative_text) or
+            not re.search(r"UVM_FATAL\s*:\s*0\b", negative_text)):
         raise SystemExit("generic negative control did not observe the expected frame assertion")
     generic_logs.append(negative_path)
     for support in (generic / "compile.log", generic / "coverage_merge.log",
                     generic / "coverage" / "dashboard.html"):
         if not support.is_file():
             raise SystemExit("missing generic regression/URG evidence: " + str(support))
+    coverage_log = (generic / "coverage_merge.log").read_text(
+        encoding="utf-8", errors="replace")
+    if re.search(r"Error-|Design Not Loaded", coverage_log):
+        raise SystemExit("Generic URG merge log contains an error")
 
     stop_log = stop_restart / "thermo5_sku_axil_stop_restart_test_seed610215.log"
     check_clean_log(stop_log, "THERMO5_AXIL_STOP_RESTART_UVM_PASS")

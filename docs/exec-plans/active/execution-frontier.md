@@ -11,7 +11,17 @@ negative state saturation, and back-to-back vectors. VC Formal passed the
 production EF2 safety harness (6 assertions/3 covers) and pair-transfer
 equivalence harness (7 assertions/4 covers), both with zero black boxes.
 These first checks were run with a dirty worktree and are not yet the
-current-SHA package.
+current-SHA package. The first clean-SHA Generic run exposed a vector contract
+error: its generated stimulus had one frame start while the default UVM case
+expects three. The cause is confirmed in `thermo5_sku_config.frame_starts`;
+the workflow and command example now use the matching `1,15,36` boundaries
+and `16384,14336,12288` gains. On that corrected run, the complete Generic
+regression/URG, STOP/restart, long-frame qualification, pair VCS, serializer
+loopback, GT-parent behavioral fault recovery, and EF2/pair formal all pass.
+The first signoff packager attempt found its own marker parser was looking for
+pass markers at column zero rather than inside `UVM_INFO` lines; this is
+corrected and the full clean-SHA package will be rerun from a fresh output
+directory.
 
 The current Linux signoff packager now verifies the same commit/configuration
 across Generic VCS, long-frame EF2 qualification, STOP/restart, formal, pair

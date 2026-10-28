@@ -74,7 +74,7 @@ jobs:
           python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
             --output-dir "$generic_vectors" --words 56 --seed 610216 \
             --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
-            --frame-start-words 1 --frame-gains 16384
+            --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
           make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3.12 \
             THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
             THERMO5_FIFO_IMPL=generic THERMO5_VECTORS="$generic_vectors" \

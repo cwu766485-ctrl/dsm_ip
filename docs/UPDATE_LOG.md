@@ -22,6 +22,19 @@
 - Limitations: Linux has no Vivado/XSim, real XPM sources, or current GT Wizard
   simulation model. Routed FPGA timing/resources and physical QAM256 BER remain
   open. The GT-parent VCS test uses a controllable simulation replacement.
+- First clean-SHA generic run found that its generated vectors provided one
+  frame start while the default UVM contract expects three. RTL compilation
+  succeeded; the failure was a test-vector setup mismatch. Corrected the
+  workflow/command seed vectors to the known three-boundary set
+  (`1,15,36`, gains `16384,14336,12288`); clean-SHA rerun is pending.
+- On the corrected clean-SHA run, Generic regression/URG, STOP/restart,
+  long-frame EF2 qualification, pair VCS, serializer loopback, GT-parent
+  behavioral fault recovery, and both formal jobs passed. The first manifest
+  packaging attempt then exposed a parser bug: it expected UVM pass markers at
+  the start of a log line, while VCS prefixes them with `UVM_INFO`. The
+  packager now checks each exact marker as a substring and also gates the
+  negative-control UVM error count and URG merge errors. A clean-SHA rerun is
+  pending because this packaging fix changes the source revision.
 
 ## 2026-10-28 10:32 SGT - Linux EF2 formal safety closure
 
