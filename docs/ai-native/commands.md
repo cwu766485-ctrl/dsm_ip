@@ -3,6 +3,57 @@
 
 Only commands evidenced by repository text are listed. Validate environment and source revision before execution.
 
+## Thermo5 EF2 current-source Linux signoff
+
+On a licensed Synopsys Linux host, use a fresh ignored `runs/` directory for
+each source revision. The current signoff covers the centered-cubic, EF2
+configuration (`ORDER=2`, `STEP=5120`) and keeps Generic FIFO, AXI-Lite
+STOP/restart, long-frame qualification, pair-look-ahead experiment, and
+formal outputs in separate subdirectories. The licensed GitHub Actions job
+uses the same flows and uploads their manifests, logs, selected URG reports,
+and vectors as a commit-named artifact.
+
+```bash
+python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+  --output-dir runs/thermo5_ef2_signoff_REVISION/vectors/generic \
+  --words 56 --seed 610216 --interp-mode centered_cubic \
+  --tidsm-order 2 --step 5120 --frame-start-words 1 --frame-gains 16384
+make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3.12 \
+  THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+  THERMO5_FIFO_IMPL=generic \
+  THERMO5_VECTORS="$PWD/runs/thermo5_ef2_signoff_REVISION/vectors/generic" \
+  THERMO5_OUT="$PWD/runs/thermo5_ef2_signoff_REVISION/generic_vcs"
+make -C dv/uvm/sim thermo5-coverage-merge \
+  THERMO5_OUT="$PWD/runs/thermo5_ef2_signoff_REVISION/generic_vcs"
+make -C dv/uvm/sim thermo5-axil-stop-restart-vcs-run PYTHON=python3.12 \
+  THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120 \
+  THERMO5_STOP_RESTART_VECTORS="$PWD/runs/thermo5_ef2_signoff_REVISION/vectors/stop_restart" \
+  THERMO5_OUT="$PWD/runs/thermo5_ef2_signoff_REVISION/stop_restart_vcs"
+make -C dv/uvm/sim thermo5-ef2-qualification PYTHON=python3.12 \
+  THERMO5_OUT="$PWD/runs/thermo5_ef2_signoff_REVISION/qualification_vcs" \
+  THERMO5_EF2_SUSTAINED_VECTORS="$PWD/runs/thermo5_ef2_signoff_REVISION/vectors/qualification/sustained" \
+  THERMO5_EF2_RANDOM_VECTORS="$PWD/runs/thermo5_ef2_signoff_REVISION/vectors/qualification/random" \
+  THERMO5_EF2_EXTREME_VECTORS="$PWD/runs/thermo5_ef2_signoff_REVISION/vectors/qualification/extreme"
+make -C dv/uvm/sim thermo5-ef2-pair-vcs \
+  THERMO5_EF2_PAIR_OUT="$PWD/runs/thermo5_ef2_signoff_REVISION/pair_lookahead_vcs"
+make -C dv/uvm/sim thermo5-ef2-serdes-vcs PYTHON=python3.12 \
+  THERMO5_EF2_SERDES_DIR="$PWD/runs/thermo5_ef2_signoff_REVISION/serdes_vcs"
+make -C dv/uvm/sim thermo5-gt-parent-link-fault-vcs \
+  GT_PARENT_FAULT_OUT="$PWD/runs/thermo5_ef2_signoff_REVISION/gt_parent_fault_vcs"
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
+  --jobs ef2 ef2_pair --out-dir runs/thermo5_ef2_signoff_REVISION/formal
+```
+
+`package_thermo5_linux_signoff.py` cross-checks that the current Git SHA,
+Generic and qualification manifests, and formal report all agree, verifies
+required log markers and functional crosses, and hashes the reviewable
+evidence, including all generated regression vector sets. It also requires the EF2 four-PA serializer loopback and the
+vendor-neutral GT-parent link-loss/recovery test. The parent test uses a
+controllable GT simulation replacement; it is not a GT Wizard model run. This
+signoff does not close XPM/GT Wizard, FPGA routed timing/PPA, complete code
+coverage, behavioral-model calibration, or physical QAM256 BER.
+
 ## Thermo5 Linux reference and interpolation benchmark
 
 From `dv/uvm/refmodel/python/`, Python 3 can generate the frozen thermo5

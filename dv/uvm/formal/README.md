@@ -21,6 +21,7 @@ for that job:
 | Identity DPD intermediate lemmas | `thermo5_dpd_identity_lemmas_harness.sv` | `thermo5_identity_lemmas_harness` |
 | Interpolator bounds | `thermo5_interp_bounds_harness.sv` | `thermo5_interp_bounds_harness` |
 | EF2 arithmetic bounds/no-wrap and streaming safety | `thermo5_ef2_stability_harness.sv` | `thermo5_ef2_stability_harness` |
+| EF2 pairwise look-ahead equivalence | `thermo5_ef2_pair_equiv_harness.sv` | `thermo5_ef2_pair_equiv_harness` |
 | XPM reset/FWFT/CDC | `thermo5_xpm_fifo_harness.sv` | three XPM proof tops |
 | AXI-Lite config | `thermo5_axil_cfg_coverage_harness.sv` | AXI-Lite configuration top |
 
@@ -39,7 +40,7 @@ to `PATH`:
 
 ```bash
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
-  python3 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 \
+  python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 ef2_pair \
   --out-dir runs/thermo5_ef2_formal_review
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3 dv/uvm/formal/run_thermo5_scoped_formal.py \
@@ -53,6 +54,14 @@ the derived bounds hold, accepted state transitions are captured, unaccepted
 state holds, and the output boundary holds data under stall. This is a scoped
 arithmetic-safety and handshake proof; formal equivalence to the Python
 four-plane oracle and clamp-free operation for every input remain unproven.
+
+The `ef2_pair` proof compares the production two-sample look-ahead transfer to
+the scalar two-sample recurrence for all signed-16 sample values. It proves
+both encoded output samples, final error state, bounds, and handshake behavior
+with 7 assertions and 4 covers. This is a local transfer proof; full-vector
+composition is also checked by a 32-sample VCS miter. The optional
+`PAIR_LOOKAHEAD` parameter remains disabled in the product wrappers until
+FPGA mapping and routed timing are measured.
 
 This directory contains the VC Formal FPV flow for the frozen DSM IP
 Performance SKU control and protocol boundary.

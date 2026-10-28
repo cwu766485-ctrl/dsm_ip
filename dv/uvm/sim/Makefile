@@ -121,7 +121,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
         thermo5-centered-cubic-vcs thermo5-centered-cubic-low-power-vcs \
-        thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-ef2-serdes-vcs \
+thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-ef2-pair-vcs thermo5-ef2-serdes-vcs \
         thermo5-gt-parent-link-fault-vcs \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
@@ -147,6 +147,7 @@ help:
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-run THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120  Run EF2 candidate bittrue test"
 	@echo "  make thermo5-ef2-qualification  Run fixed-seed long-frame EF2 qualification and hash manifest"
+	@echo "  make thermo5-ef2-pair-vcs  Compare exact pair-look-ahead core with scalar EF2 baseline"
 	@echo "  make thermo5-ef2-serdes-vcs  Compare EF2 four-plane words through serializer loopback"
 	@echo "  make thermo5-gt-parent-link-fault-vcs  Verify active-packet GT loss, PA blanking and reset recovery"
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
@@ -463,6 +464,24 @@ thermo5-ef2-qualification:
 	  --vectors $(THERMO5_EF2_SUSTAINED_VECTORS) \
 	  $(THERMO5_EF2_RANDOM_VECTORS) $(THERMO5_EF2_EXTREME_VECTORS)
 	@echo "THERMO5_EF2_QUALIFICATION_PASS report=$(THERMO5_OUT)/ef2_qualification_coverage"
+
+# Exact look-ahead microarchitecture experiment. It is not selected by the
+# product wrappers and must not replace the baseline before routed timing.
+THERMO5_EF2_PAIR_OUT ?= $(ROOT)/runs/thermo5_ef2_pair_lookahead/vcs
+thermo5-ef2-pair-vcs:
+	@mkdir -p $(THERMO5_EF2_PAIR_OUT)/csrc
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
+	  -top tb_thermo5_ef2_pair_lookahead \
+	  -Mdir=$(THERMO5_EF2_PAIR_OUT)/csrc \
+	  rtl/gt/gt_tx_user_bridge.sv \
+	  rtl/gt/gt_tx_raw64_boundary.sv \
+	  rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv \
+	  dv/verif/integration/thermo5_ef2_pair_lookahead/tb_thermo5_ef2_pair_lookahead.sv \
+	  -o $(THERMO5_EF2_PAIR_OUT)/simv -l $(THERMO5_EF2_PAIR_OUT)/compile.log
+	@cd $(THERMO5_EF2_PAIR_OUT) && ./simv -l sim.log
+	@grep -Fq 'THERMO5_EF2_PAIR_LOOKAHEAD_PASS cycles=4096 seed=20261028' \
+	  $(THERMO5_EF2_PAIR_OUT)/sim.log
+	@echo "THERMO5_EF2_PAIR_LOOKAHEAD_PASS report=$(THERMO5_EF2_PAIR_OUT)/sim.log"
 
 # Main-chain EF2 -> four independent raw64 serializer/deserializer models.
 THERMO5_EF2_SERDES_DIR ?= $(ROOT)/runs/thermo5_ef2_serdes

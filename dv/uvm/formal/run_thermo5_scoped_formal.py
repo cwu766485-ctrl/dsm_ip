@@ -16,6 +16,7 @@ SOURCES=('rtl/axis/dsm_reset_sync.sv','rtl/dpd/dpd_poly.v','rtl/dpd/dpd_memory_p
          'dv/uvm/formal/thermo5_dpd_identity_harness.sv',
          'dv/uvm/formal/thermo5_generic_cdc_harness.sv',
          'dv/uvm/formal/thermo5_ef2_stability_harness.sv',
+         'dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv',
          'rtl/gt/gt_tx_user_bridge.sv','rtl/gt/gt_tx_raw64_boundary.sv',
          'rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv',
          'dv/uvm/formal/run_thermo5_gap_fpv.tcl')
@@ -29,13 +30,20 @@ def main():
                     help='Also prove identity arithmetic/latency and generic CDC residual legality')
     ap.add_argument('--residual-only',action='store_true',
                     help='Add the residual proof without the optional expensive arithmetic proof')
-    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','ef2'),
+    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','ef2','ef2_pair'),
                     help='Run selected existing jobs for focused diagnosis')
     args=ap.parse_args(); out=Path(args.out_dir).resolve()
     if ROOT/'runs' not in out.parents or out.exists(): ap.error('Use a new runs/ directory')
     out.mkdir(parents=True)
     hashes={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in SOURCES}
-    result={'status':'FAIL','source_sha256':hashes,'jobs':[],'errors':[],
+    revision=subprocess.run(['git','-C',str(ROOT),'rev-parse','HEAD'],check=True,
+                            stdout=subprocess.PIPE,universal_newlines=True).stdout.strip()
+    git_status=subprocess.run(['git','-C',str(ROOT),'status','--porcelain'],check=True,
+                              stdout=subprocess.PIPE,universal_newlines=True).stdout.splitlines()
+    result={'status':'FAIL','source_sha256':hashes,
+            'source':{'git_revision':revision,'worktree_dirty':bool(git_status),
+                      'git_status':git_status},
+            'jobs':[],'errors':[],
             'scope':{'reset':'runtime reset changes only on falling edge; active-edge collisions excluded',
                      'counter':'MAX_TAPS=1 identity; at most 2072 accepted inputs per reset epoch'}}
     kinds=('reset','counter','counter_unbounded') if args.unbounded_counter else ('reset','counter')
@@ -54,8 +62,20 @@ def main():
         result['scope']['counter_unbounded']='MAX_TAPS=1 identity; no acceptance budget; transition proofs do not imply URG hits'
     if args.jobs and 'ef2' in args.jobs:
         result['scope']['ef2']='Production 32-lane signed-16 EF2, arbitrary input/ready sequences; prove widened no-wrap/bounds, state handshake, and output hold/capture'
+    if args.jobs and 'ef2_pair' in args.jobs:
+        result['scope']['ef2_pair']='Relational proof of exact pairwise look-ahead against scalar EF2 for arbitrary signed-16 input, stalls, and state saturation; product parameter remains disabled'
+    if any(kind in kinds for kind in ('ef2','ef2_pair')):
+        result['configuration']={'proof_core':'thermo5_ef2',
+            'input_width_bits':16,'state_width_bits':20,
+            'sample_order':'chronological','input_domain':'all signed-16 values',
+            'product_pair_lookahead_default':False,
+            'formal_harness_channels':{
+                kind:(2 if kind=='ef2_pair' else 32)
+                for kind in kinds if kind in ('ef2','ef2_pair')},
+            'pair_transfer_composition':'The two-sample formal transfer repeats 16 times in the 32-sample VCS miter.'}
     for kind in kinds:
         top=('thermo5_ef2_stability_harness' if kind=='ef2' else
+             'thermo5_ef2_pair_equiv_harness' if kind=='ef2_pair' else
              f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual') else
              f'thermo5_{kind}_gap_harness')
         work=out/kind; work.mkdir()
@@ -71,8 +91,8 @@ def main():
             properties=(work/'properties.txt').read_text()
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
-            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 3 if kind=='ef2' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind=='cdc_residual' else 6 if kind=='ef2' else 3
+            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 4
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
             ok=ok and len(covers)==expected_covers and all(
                 s==('uncoverable' if n.endswith('.c_collision_bin') else 'covered') for s,n in covers)
@@ -92,6 +112,8 @@ def main():
                     ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_axis_stable',properties))
                 elif kind=='ef2':
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*4\b',properties))
+                elif kind=='ef2_pair':
+                    ok=ok and bool(re.search(r'# non_vacuous\s*:\s*[1-9]\d*\b',properties))
                 else:
                     ok=ok and bool(re.search(r'constrained\s+\(non_vacuous\).*\.asm_payload_stable',properties))
             result['jobs'].append({'kind':kind,'top':top,'status':'PASS' if ok else 'FAIL',

@@ -14,7 +14,10 @@
 
 module tid32_cartesian_ef2_fs4_gt_tx #(
   parameter int W = 16,
-  parameter int CHANNELS = 32
+  parameter int CHANNELS = 32,
+  // Experimental exact two-sample look-ahead. Keep disabled in the product
+  // baseline until an FPGA implementation is routed and timing-qualified.
+  parameter bit PAIR_LOOKAHEAD = 1'b0
 ) (
   input  wire logic                         clk,
   input  wire logic                         rst_n,
@@ -67,6 +70,21 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
   logic signed [ACC_W:0] u_i_check, u_q_check;
   logic signed [ACC_W:0] e_i_raw_check, e_q_raw_check;
   logic signed [ACC_W:0] q_one_check;
+  typedef struct packed {
+    logic q0_positive;
+    logic q1_positive;
+    logic signed [STATE_W-1:0] e0_state;
+    logic signed [STATE_W-1:0] e1_state;
+    logic signed [ACC_W-1:0] u0;
+    logic signed [ACC_W-1:0] e0_raw;
+    logic signed [ACC_W-1:0] u1;
+    logic signed [ACC_W-1:0] e1_raw;
+    logic no_wrap;
+    logic in_bounds;
+    logic clamp_positive;
+    logic clamp_negative;
+  } ef2_pair_result_t;
+  ef2_pair_result_t pair_i, pair_q;
   logic y_i_positive, y_q_positive;
   logic [2*CHANNELS-1:0] raw_word_comb;
   logic [2*CHANNELS-1:0] raw_word_q;
@@ -89,6 +107,88 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
         sat_error = STATE_MIN[STATE_W-1:0];
       else
         sat_error = value[STATE_W-1:0];
+    end
+  endfunction
+
+  // Exact pairwise look-ahead. q0 is computed from u0 while both possible
+  // saturated e0 values and their corresponding u1 values are evaluated in
+  // parallel. q0 then selects the matching u1; q1 and the final state follow.
+  // This changes only the combinational factoring, not the recurrence.
+  function automatic ef2_pair_result_t ef2_pair_lookahead(
+    input logic signed [W-1:0] x0,
+    input logic signed [W-1:0] x1,
+    input logic signed [STATE_W-1:0] e1_prev,
+    input logic signed [STATE_W-1:0] e2_prev
+  );
+    logic signed [ACC_W-1:0] x0_wide, x1_wide;
+    logic signed [ACC_W-1:0] e1_wide, e2_wide;
+    logic signed [ACC_W-1:0] u1_positive, u1_negative;
+    logic signed [STATE_W-1:0] e0_positive, e0_negative;
+    logic signed [ACC_W:0] x0_check, x1_check;
+    logic signed [ACC_W:0] e1_check, e2_check;
+    logic signed [ACC_W:0] e0_check;
+    logic signed [ACC_W:0] u0_check, e0_raw_check;
+    logic signed [ACC_W:0] u1_check, e1_raw_check;
+    logic signed [ACC_W:0] q_one_wide;
+    ef2_pair_result_t result;
+    begin
+      result = '0;
+      result.no_wrap = 1'b1;
+      result.in_bounds = 1'b1;
+      x0_wide = {{(ACC_W-W){x0[W-1]}}, x0};
+      x1_wide = {{(ACC_W-W){x1[W-1]}}, x1};
+      e1_wide = {{(ACC_W-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};
+      e2_wide = {{(ACC_W-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};
+      result.u0 = x0_wide + (e1_wide <<< 1) - e2_wide;
+      result.q0_positive = (result.u0 > 0);
+      result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) :
+                                                       (result.u0 + Q_ONE);
+      e0_positive = sat_error(result.u0 - Q_ONE);
+      e0_negative = sat_error(result.u0 + Q_ONE);
+      result.e0_state = result.q0_positive ? e0_positive : e0_negative;
+
+      u1_positive = x1_wide +
+        ({{(ACC_W-STATE_W){e0_positive[STATE_W-1]}}, e0_positive} <<< 1) -
+        e1_wide;
+      u1_negative = x1_wide +
+        ({{(ACC_W-STATE_W){e0_negative[STATE_W-1]}}, e0_negative} <<< 1) -
+        e1_wide;
+      result.u1 = result.q0_positive ? u1_positive : u1_negative;
+      result.q1_positive = (result.u1 > 0);
+      result.e1_raw = result.q1_positive ? (result.u1 - Q_ONE) :
+                                                       (result.u1 + Q_ONE);
+      result.e1_state = sat_error(result.e1_raw);
+
+      x0_check = {{(ACC_W+1-W){x0[W-1]}}, x0};
+      x1_check = {{(ACC_W+1-W){x1[W-1]}}, x1};
+      e1_check = {{(ACC_W+1-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};
+      e2_check = {{(ACC_W+1-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};
+      e0_check = {{(ACC_W+1-STATE_W){result.e0_state[STATE_W-1]}},
+                  result.e0_state};
+      q_one_wide = $signed({Q_ONE[ACC_W-1], Q_ONE});
+      u0_check = x0_check + (e1_check <<< 1) - e2_check;
+      e0_raw_check = (u0_check > 0) ? (u0_check - q_one_wide) :
+                                                      (u0_check + q_one_wide);
+      u1_check = x1_check + (e0_check <<< 1) - e1_check;
+      e1_raw_check = (u1_check > 0) ? (u1_check - q_one_wide) :
+                                                      (u1_check + q_one_wide);
+      if (($signed(u0_check) != $signed({result.u0[ACC_W-1], result.u0})) ||
+          ($signed(e0_raw_check) != $signed({result.e0_raw[ACC_W-1], result.e0_raw})) ||
+          ($signed(u1_check) != $signed({result.u1[ACC_W-1], result.u1})) ||
+          ($signed(e1_raw_check) != $signed({result.e1_raw[ACC_W-1], result.e1_raw})))
+        result.no_wrap = 1'b0;
+      if ((u0_check < -U_ABS_BOUND) || (u0_check > U_ABS_BOUND) ||
+          (u1_check < -U_ABS_BOUND) || (u1_check > U_ABS_BOUND) ||
+          (e0_raw_check < -E_RAW_ABS_BOUND) ||
+          (e0_raw_check > E_RAW_ABS_BOUND) ||
+          (e1_raw_check < -E_RAW_ABS_BOUND) ||
+          (e1_raw_check > E_RAW_ABS_BOUND))
+        result.in_bounds = 1'b0;
+      if ((result.e0_raw > STATE_MAX) || (result.e1_raw > STATE_MAX))
+        result.clamp_positive = 1'b1;
+      if ((result.e0_raw < STATE_MIN) || (result.e1_raw < STATE_MIN))
+        result.clamp_negative = 1'b1;
+      ef2_pair_lookahead = result;
     end
   endfunction
 
@@ -123,9 +223,39 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
     e_i_raw_check = '0;
     e_q_raw_check = '0;
     q_one_check = $signed({Q_ONE[ACC_W-1], Q_ONE});
+    pair_i = '0;
+    pair_q = '0;
     y_i_positive = 1'b0;
     y_q_positive = 1'b0;
 
+    if (PAIR_LOOKAHEAD) begin
+      for (int lane = 0; lane < CHANNELS; lane = lane + 2) begin
+        pair_i = ef2_pair_lookahead(
+          in_i_poly_vec[lane*W +: W], in_i_poly_vec[(lane+1)*W +: W],
+          work_err1_i, work_err2_i);
+        pair_q = ef2_pair_lookahead(
+          in_q_poly_vec[lane*W +: W], in_q_poly_vec[(lane+1)*W +: W],
+          work_err1_q, work_err2_q);
+        if (!pair_i.no_wrap || !pair_q.no_wrap)
+          arithmetic_no_wrap_comb = 1'b0;
+        if (!pair_i.in_bounds || !pair_q.in_bounds)
+          arithmetic_bounds_comb = 1'b0;
+        if (pair_i.clamp_positive || pair_q.clamp_positive)
+          clamp_positive_comb = 1'b1;
+        if (pair_i.clamp_negative || pair_q.clamp_negative)
+          clamp_negative_comb = 1'b1;
+
+        // Even lane polarity, followed by the opposite odd-lane polarity.
+        raw_word_comb[2*lane]       = pair_i.q0_positive;
+        raw_word_comb[2*lane + 1]   = !pair_q.q0_positive;
+        raw_word_comb[2*(lane+1)]   = !pair_i.q1_positive;
+        raw_word_comb[2*(lane+1)+1] = pair_q.q1_positive;
+        work_err2_i = pair_i.e0_state;
+        work_err1_i = pair_i.e1_state;
+        work_err2_q = pair_q.e0_state;
+        work_err1_q = pair_q.e1_state;
+      end
+    end else begin
     for (int lane = 0; lane < CHANNELS; lane = lane + 1) begin
       x_i_wide = {{(ACC_W-W){in_i_poly_vec[lane*W+W-1]}},
                    in_i_poly_vec[lane*W +: W]};
@@ -186,6 +316,7 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
       work_err2_q = work_err1_q;
       work_err1_i = sat_error(e_i_raw);
       work_err1_q = sat_error(e_q_raw);
+    end
     end
 
     err1_i_next = work_err1_i;

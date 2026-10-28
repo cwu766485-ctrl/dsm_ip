@@ -1,5 +1,28 @@
 # Update Log
 
+## 2026-10-28 23:05 SGT - Add exact EF2 pair look-ahead and Linux signoff packaging
+
+- Added an opt-in two-sample EF2 look-ahead implementation behind
+  `PAIR_LOOKAHEAD`; the product wrappers keep the parameter disabled. Added a
+  32-sample VCS equivalence miter and a two-sample VC Formal relational proof.
+- Extended the licensed GitHub Actions job to run current EF2 Generic,
+  qualification, STOP/restart, pairwise look-ahead, serializer-loopback, and
+  GT-parent fault/recovery checks, then upload SHA-named signoff evidence.
+- Added a Linux signoff manifest that checks source/configuration consistency,
+  required functional coverage crosses, test markers, vector hashes, logs,
+  and formal properties. Added a job-ready baseline ledger and run commands.
+- Preliminary checks: Python reference tests 36/36 PASS; workflow YAML parse,
+  Python compile, and whitespace checks PASS. The pre-commit pair VCS miter
+  passed 4,096 cycles (2,662 accepts, 1,638 back-to-back accepts, 307 positive
+  clamps, 408 negative clamps, 818 output stalls, and 616 input bubbles).
+  Pre-commit VC Formal passed EF2 safety (6 assertions/3 covers) and pairwise
+  transfer equivalence (7 assertions/4 covers), with zero black boxes. These
+  runs used a dirty worktree and are development checks, not the final
+  source-SHA signoff package; the full clean-SHA regression is the next step.
+- Limitations: Linux has no Vivado/XSim, real XPM sources, or current GT Wizard
+  simulation model. Routed FPGA timing/resources and physical QAM256 BER remain
+  open. The GT-parent VCS test uses a controllable simulation replacement.
+
 ## 2026-10-28 10:32 SGT - Linux EF2 formal safety closure
 
 - Added `thermo5_ef2_stability_harness.sv` and a production-RTL monitor that

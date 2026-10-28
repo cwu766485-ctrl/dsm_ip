@@ -1,5 +1,32 @@
 # Execution frontier
 
+## Current execution state: EF2 pair-look-ahead experiment and signoff package (2026-10-28)
+
+The main thermo5 baseline remains centered-cubic x2 + EF2 TIDSM, ORDER=2,
+STEP=5120, 20-bit state, chronological 32-sample order. A separate exact
+two-sample look-ahead factoring is now implemented behind
+`PAIR_LOOKAHEAD=0`; no wrapper selects it. The 32-sample VCS miter passed
+4,096 cycles with bubbles, output backpressure, signed extrema, positive and
+negative state saturation, and back-to-back vectors. VC Formal passed the
+production EF2 safety harness (6 assertions/3 covers) and pair-transfer
+equivalence harness (7 assertions/4 covers), both with zero black boxes.
+These first checks were run with a dirty worktree and are not yet the
+current-SHA package.
+
+The current Linux signoff packager now verifies the same commit/configuration
+across Generic VCS, long-frame EF2 qualification, STOP/restart, formal, pair
+look-ahead, four-PA serializer loopback, and GT-parent fault/recovery evidence;
+it records SHA-256 hashes for vectors and reports. The licensed GitHub Actions
+workflow is configured to run this package and archive a commit-named artifact.
+The full clean-tree run, package manifest, and push are pending.
+
+XPM FIFO sources, XSim/Vivado, and the current GT Wizard/TXP simulation model
+are not installed on this Linux host. The GT-parent fault test uses a
+controllable test replacement, and the serializer loopback is vendor-neutral.
+Actual XPM/GT Wizard qualification, routed FPGA timing/resources, and physical
+QAM256 BER remain OPEN. Pair look-ahead has no measured LUT/FF/DSP/Fmax result;
+keep the product default unchanged until a routed comparison is available.
+
 ## Current execution state: centered-cubic EF2 main-chain integration (2026-10-28)
 
 The latest user instruction promotes EF2 after verification. Thermo5 wrappers,

@@ -21,6 +21,40 @@ are committed only when the raw-word boundary accepts a complete vector
 produces one 64-bit I/Q/Fs4 word per accepted vector, but places a 32-step
 nonlinear recurrence in one core-cycle path.
 
+## Exact pairwise look-ahead experiment
+
+The scalar transition has two quantizer decisions per sample pair. Starting
+from `(e1,e2)` and two inputs `(x0,x1)`, the exact candidate computes:
+
+```text
+u0 = x0 + 2*e1 - e2
+q0 = +Q if u0 > 0, else -Q
+e0_pos = sat20(u0 - Q)
+e0_neg = sat20(u0 + Q)
+u1_pos = x1 + 2*e0_pos - e1
+u1_neg = x1 + 2*e0_neg - e1
+u1 = u1_pos if u0 > 0, else u1_neg
+q1 = +Q if u1 > 0, else -Q
+e1_next = sat20(u1 - q1)
+```
+
+This preserves the `u == 0` tie rule, both signed-20 clamps, the final state
+`(e1_next,e0)`, and both quantizer outputs. It computes both second-sample
+state candidates while the first quantizer decision is being evaluated. The
+experimental RTL is selected only by `PAIR_LOOKAHEAD=1`; all wrappers and the
+main-chain default leave it disabled. It adds parallel arithmetic and muxing,
+so lower delay and area are hypotheses until FPGA mapping and routing.
+
+The standalone VCS miter checks the full 32-sample candidate against the
+scalar baseline through randomized valid/ready stalls, signed extrema,
+positive/negative state saturation, back-to-back acceptance, and 4,096 clock
+cycles. The formal harness proves the two-sample transfer for arbitrary
+signed-16 inputs and states; because the transfer preserves both outputs and
+the final state, it can be composed over the 16 chronological pairs in a
+production vector. Together these checks establish recurrence equivalence and
+unchanged interface II/latency at RTL; they do not establish an Fmax or
+resource improvement.
+
 ## Why a direct pipeline split is not yet qualified
 
 Registering an intermediate state after (for example) lane 7, 15, or 23
@@ -50,7 +84,7 @@ fixed-point oracle.
 
 ## Candidate architecture gates
 
-Before adding a pipelined EF2 implementation, produce a reviewed recurrence
+Before adding a registered or pipelined EF2 implementation, produce a reviewed recurrence
 derivation and a reference model that defines all corner behavior. Then:
 
 - compare every output bit and final I/Q error state against the scalar model
@@ -68,13 +102,15 @@ behavior, treat it as a new DSM architecture: regenerate the MATLAB/Python
 oracle, repeat EVM/SNDR/BER and clamp studies, and do not describe it as
 bit-true to the existing EF2 candidate.
 
-## Frozen/research disposition
+## Baseline and research disposition
 
-The default/frozen thermo5 path remains causal interpolation plus the existing
-first-order TIDSM. Centered-Cubic + EF2 stays an optional architecture
-candidate; its functional/benchmark results do not qualify its 218.75-MHz
-timing. The first-order TIDSM's existing registered prefix implementation is
-not evidence that EF2 has the same timing behavior.
+The current thermo5 main-chain configuration is centered-cubic x2 plus
+fixed-point EF2 at STEP=5120. The pairwise candidate remains disabled in the
+product wrappers until a reviewed implementation comparison and routed timing
+result are available. The first-order TIDSM and causal interpolation remain
+comparison configurations; neither implies timing qualification for EF2.
+FPGA LUT/FF/DSP/Fmax and physical RF evidence remain open when Vivado, board
+constraints, and measurement equipment are unavailable.
 
 ## References for future derivation
 

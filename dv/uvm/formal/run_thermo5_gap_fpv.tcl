@@ -35,6 +35,12 @@ switch -- $top {
       [file join $repo rtl tx_bandpass_if tid32_cartesian_ef2_fs4_gt_tx.sv] \
       [file join $repo dv uvm formal thermo5_ef2_stability_harness.sv]]
   }
+  thermo5_ef2_pair_equiv_harness {
+    set sources [list [file join $repo rtl gt gt_tx_user_bridge.sv] \
+      [file join $repo rtl gt gt_tx_raw64_boundary.sv] \
+      [file join $repo rtl tx_bandpass_if tid32_cartesian_ef2_fs4_gt_tx.sv] \
+      [file join $repo dv uvm formal thermo5_ef2_pair_equiv_harness.sv]]
+  }
   default { error "Unknown thermo5 scoped formal top: $top" }
 }
 lappend sources -assert svaext
@@ -55,8 +61,13 @@ if {$top eq "thermo5_reset_gap_harness"} {
 sim_run -stable
 sim_save_reset
 set_fml_var fml_coi_reduction true
-set_fml_var fml_max_time 5m
-set_fml_var fml_property_time_limit 1m
+if {$top eq "thermo5_ef2_pair_equiv_harness"} {
+  set_fml_var fml_max_time 6m
+  set_fml_var fml_property_time_limit 3m
+} else {
+  set_fml_var fml_max_time 5m
+  set_fml_var fml_property_time_limit 1m
+}
 set_fml_var fml_max_mem 8GB
 set_fml_var fml_cov_gen_trace on
 check_fv_setup -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -block

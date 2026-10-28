@@ -152,6 +152,7 @@ def main():
     revision = git_text(root, "rev-parse", "HEAD").strip()
     manifest = {
         "schema": "thermo5-ef2-qualification-v1",
+        "status": "PASS",
         "source": {
             "git_revision": revision,
             "worktree_dirty": bool(git_status.strip()),
