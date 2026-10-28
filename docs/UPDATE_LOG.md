@@ -1,5 +1,51 @@
 # Update Log
 
+## 2026-10-28 10:32 SGT - Linux EF2 formal safety closure
+
+- Added `thermo5_ef2_stability_harness.sv` and a production-RTL monitor that
+  recomputes every I/Q lane's EF2 quantizer input and raw error with one extra
+  signed bit. Added formal checks for 32-lane no-wrap/bounds, accepted state
+  updates, state hold without acceptance, output capture, and output stability
+  during stalls. The monitor is not on the datapath and is optimized away when
+  unused.
+- Enabled the EF2 job in the Linux VC Formal runner and documented the command
+  and proof scope. Fixed a pre-existing Tcl source-list syntax error in the
+  convergence runner, allowing the centered-interpolator bounds job to execute.
+- Corrected the VCS regression vector frame boundaries for the FIFO-empty
+  test: it sends one 7-output-word frame, so the first generated frame must end
+  after seven words. With starts at words 1, 8, and 29, the full current-source
+  centered-cubic + EF2 UVM regression and the 112-word AXI-Lite STOP/restart
+  test pass.
+- Re-ran the longer held-out QAM256 software benchmark: six independent seeds,
+  24 symbols/seed, 672,768 uncoded bits, 117 errors, BER 1.739e-4 with 95%
+  Wilson interval [1.451e-4, 2.084e-4], mean EVM 2.517%, and no input/state
+  saturation. This remains model-only evidence, not physical BER signoff.
+- Checks: EF2 VC Formal PASS (6/6 assertions, 3/3 covers, zero black boxes);
+  reset/counter/unbounded-counter/generic-CDC formal suite PASS; interpolator
+  bounds PASS (16 assertions, five covers); EF2 long-frame/saturation VCS
+  qualification PASS; full centered-cubic + EF2 VCS suite and STOP/restart
+  PASS; AXI-Lite VCS integration suite PASS; four-path serializer loopback and
+  GT-parent link-fault/reset recovery PASS; Python reference-model tests 36/36
+  PASS.
+- Exploratory DPD identity arithmetic formal run: the direct attempt proved six
+  assertions and covered four bins; the staged-lemma attempt promoted five
+  intermediate properties but still left twelve multiplier/saturation
+  properties inconclusive at the configured depth/time limit. This is not a
+  failure of the EF2 proof.
+- Not available on Linux: XSim/Vivado, real XPM/GT Wizard simulation models,
+  physical receiver/board BER. The Python held-out QAM256 BER remains model-only
+  and nonzero. FPGA resource/timing/power remains deferred per user direction.
+- Files: `rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv`,
+  `dv/uvm/formal/thermo5_ef2_stability_harness.sv`,
+  `dv/uvm/formal/run_thermo5_gap_fpv.tcl`,
+  `dv/uvm/formal/run_thermo5_convergence.tcl`,
+  `dv/uvm/formal/run_thermo5_scoped_formal.py`,
+  `dv/uvm/formal/README.md`, `docs/verification/thermo5-ef2-stability.md`,
+  `docs/verification/thermo5-centered-cubic-ef2-status.md`,
+  `docs/verification/thermo5-dv-portfolio.md`,
+  `docs/ai-native/commands.md`, `docs/exec-plans/active/execution-frontier.md`,
+  and `docs/UPDATE_LOG.md`.
+
 ## 2026-10-28 01:26 SGT - GT-parent active-packet loss response
 
 - Added a sticky GT-health fault latch in the ZU15EG parent. Raw health still

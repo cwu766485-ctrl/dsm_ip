@@ -25,9 +25,13 @@ also drops modeled GT health during an open packet and checks immediate PA
 blanking, sticky fault reporting, and reset-controlled recovery. It uses a GT
 Wizard substitute and generic FIFO. The current merged generic
 URG score is 79.86%; raw code coverage is not closed. No EF2 GT Wizard/TXP
-rerun, XSim run on this Linux host, formal EF2 proof, real-XPM coverage, or
-physical QAM256 signoff is claimed. FPGA timing/resource work remains deferred
-per user direction.
+rerun, XSim run on this Linux host, real-XPM coverage, or physical QAM256
+signoff is claimed. VC Formal V-2023.12-SP2 now proves the production EF2
+32-lane arithmetic bounds/no-wrap and state/output handshake properties
+(6/6 assertions, 3/3 covers, zero black boxes). This scoped safety proof is
+not formal equivalence to the Python oracle and does not guarantee no clamp
+for every signed-16 input. FPGA timing/resource work remains deferred per user
+direction.
 
 ## Historical checkpoint (2026-10-27; superseded)
 
@@ -54,7 +58,7 @@ errors: BER `1.7391e-4`, 95% Wilson interval `[1.4512e-4, 2.0840e-4]`; mean
 digital EVM `2.5170%`, worst-seed EVM `2.5403%`, mean SNDR `31.982 dB`, and zero
 input/state saturation samples. The input peak preflight ranged from 0.2505 to
 0.3153 against the model limit 0.35. Detailed per-seed data is in
-`runs/thermo5_ef2_heldout_extension_20261027/ef2_heldout.json`; the runner is
+`runs/thermo5_ef2_heldout_extension_20261028/ef2_heldout.json`; the runner is
 `dv/uvm/refmodel/python/benchmark_thermo5_ef2_heldout_extension.py`.
 
 This is a longer uncoded digital link-model statistic, not physical GT BER,
@@ -157,9 +161,10 @@ behavioral model's EVM/BER calculation.
    inputs can. Keep the 20-bit behavior and require the system owner to define
    the supported input envelope before claiming no-clamp operation. The
    ideal-loop NTF claim applies only while the clamp is inactive.
-3. **Remaining verification/physical boundary:** EF2-specific formal proof,
-   routed OOC timing, physical GT/board measurements, and a production BER/BLER
-   target remain open. The focused VCS STOP/drain/restart scenario now passes
+3. **Remaining verification/physical boundary:** formal equivalence to the
+   Python oracle, rerunning GT Wizard/TXP on EF2, real-XPM verification, routed
+   OOC timing, physical GT/board measurements, and a production BER/BLER target
+   remain open. The focused VCS STOP/drain/restart scenario now passes
    on the current source: two packets, 112 ordered four-plane outputs,
    six-of-six event bins, and zero underflow/protocol errors. This closes the
    earlier runtime blocker, but does not establish analog BER, eye/jitter
@@ -170,9 +175,10 @@ behavioral model's EVM/BER calculation.
 
 1. Obtain a supported input-amplitude envelope and a system BER/BLER/EVM
    acceptance plan tied to the intended waveform, coding, receiver, and channel.
-2. Complete EF2-specific formal properties and rerun the GT Wizard/TXP
-   scenarios on the EF2 defaults when the vendor simulation environment is
-   available.
+2. Rerun GT Wizard/TXP scenarios on the EF2 defaults and verify with real XPM
+   when the vendor simulation environment is available. The Linux VC Formal
+   arithmetic-safety and handshake proof is complete; a formal refinement
+   proof to the Python oracle remains follow-up work.
 3. Restructure EF2 into a timing-qualified architecture while preserving its
    required sample ordering, or keep it as a correctness/quality prototype and
    use the frozen first-order path for timing signoff. Only after that decision,

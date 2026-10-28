@@ -51,9 +51,12 @@ coverage over the current VCS hierarchy, not coverage closure or a signoff
 threshold.
 
 Still open: real-XPM URG/feature coverage (Vivado source package is not
-available here), formal proof of EF2 RTL equivalence, rerunning GT Wizard/TXP
-scenarios with the new EF2 defaults, XSim on this Linux host, and FPGA
-timing/resource/power analysis. Earlier Windows GT Wizard runs were on the
+available here), formal equivalence of EF2 RTL to the Python oracle, rerunning
+GT Wizard/TXP scenarios with the new EF2 defaults, XSim on this Linux host,
+and FPGA timing/resource/power analysis. A new scoped VC Formal proof passes
+the 32-lane EF2 arithmetic no-wrap/bounds and handshake properties (6
+assertions, 3 covers, zero black boxes); see
+`docs/verification/thermo5-ef2-stability.md`. Earlier Windows GT Wizard runs were on the
 prior configuration and do not qualify EF2. The PA-plane checks stop at the digital user
 word boundary. The finite Python QAM256 study still reports nonzero uncoded
 BER, so this verification does not establish stable physical QAM256 service.

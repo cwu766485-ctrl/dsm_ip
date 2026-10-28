@@ -15,6 +15,9 @@ SOURCES=('rtl/axis/dsm_reset_sync.sv','rtl/dpd/dpd_poly.v','rtl/dpd/dpd_memory_p
          'dv/uvm/formal/thermo5_dpd_counter_harness.sv',
          'dv/uvm/formal/thermo5_dpd_identity_harness.sv',
          'dv/uvm/formal/thermo5_generic_cdc_harness.sv',
+         'dv/uvm/formal/thermo5_ef2_stability_harness.sv',
+         'rtl/gt/gt_tx_user_bridge.sv','rtl/gt/gt_tx_raw64_boundary.sv',
+         'rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv',
          'dv/uvm/formal/run_thermo5_gap_fpv.tcl')
 
 def main():
@@ -26,7 +29,7 @@ def main():
                     help='Also prove identity arithmetic/latency and generic CDC residual legality')
     ap.add_argument('--residual-only',action='store_true',
                     help='Add the residual proof without the optional expensive arithmetic proof')
-    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual'),
+    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','ef2'),
                     help='Run selected existing jobs for focused diagnosis')
     args=ap.parse_args(); out=Path(args.out_dir).resolve()
     if ROOT/'runs' not in out.parents or out.exists(): ap.error('Use a new runs/ directory')
@@ -49,8 +52,12 @@ def main():
             result['scope']['cdc_residual']='production generic FIFO CDC; exact 7:4 scaled clock periods; constructed registered legal AXIS source; no runtime assumptions on DUT state'
     if args.unbounded_counter:
         result['scope']['counter_unbounded']='MAX_TAPS=1 identity; no acceptance budget; transition proofs do not imply URG hits'
+    if args.jobs and 'ef2' in args.jobs:
+        result['scope']['ef2']='Production 32-lane signed-16 EF2, arbitrary input/ready sequences; prove widened no-wrap/bounds, state handshake, and output hold/capture'
     for kind in kinds:
-        top=f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual') else f'thermo5_{kind}_gap_harness'
+        top=('thermo5_ef2_stability_harness' if kind=='ef2' else
+             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual') else
+             f'thermo5_{kind}_gap_harness')
         work=out/kind; work.mkdir()
         env=os.environ.copy()
         env.update(THERMO5_FORMAL_TOP=top,THERMO5_FORMAL_OUT=str(work),THERMO5_FORMAL_REPO=str(ROOT))
@@ -64,8 +71,8 @@ def main():
             properties=(work/'properties.txt').read_text()
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
-            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind=='cdc_residual' else 3
+            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 3 if kind=='ef2' else 4
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind=='cdc_residual' else 6 if kind=='ef2' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
             ok=ok and len(covers)==expected_covers and all(
                 s==('uncoverable' if n.endswith('.c_collision_bin') else 'covered') for s,n in covers)
@@ -83,6 +90,8 @@ def main():
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*2\b',properties))
                 elif kind=='cdc_residual':
                     ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_axis_stable',properties))
+                elif kind=='ef2':
+                    ok=ok and bool(re.search(r'# non_vacuous\s*:\s*4\b',properties))
                 else:
                     ok=ok and bool(re.search(r'constrained\s+\(non_vacuous\).*\.asm_payload_stable',properties))
             result['jobs'].append({'kind':kind,'top':top,'status':'PASS' if ok else 'FAIL',

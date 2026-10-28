@@ -29,6 +29,12 @@ switch -- $top {
       [file join $repo rtl axis dsm_axis14_to_core8_cdc.sv] \
       [file join $repo dv uvm formal thermo5_generic_cdc_harness.sv]]
   }
+  thermo5_ef2_stability_harness {
+    set sources [list [file join $repo rtl gt gt_tx_user_bridge.sv] \
+      [file join $repo rtl gt gt_tx_raw64_boundary.sv] \
+      [file join $repo rtl tx_bandpass_if tid32_cartesian_ef2_fs4_gt_tx.sv] \
+      [file join $repo dv uvm formal thermo5_ef2_stability_harness.sv]]
+  }
   default { error "Unknown thermo5 scoped formal top: $top" }
 }
 lappend sources -assert svaext

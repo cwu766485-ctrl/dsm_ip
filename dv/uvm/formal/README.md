@@ -20,6 +20,7 @@ for that job:
 | Identity DPD payload/latency | `thermo5_dpd_identity_harness.sv` | `thermo5_identity_harness` |
 | Identity DPD intermediate lemmas | `thermo5_dpd_identity_lemmas_harness.sv` | `thermo5_identity_lemmas_harness` |
 | Interpolator bounds | `thermo5_interp_bounds_harness.sv` | `thermo5_interp_bounds_harness` |
+| EF2 arithmetic bounds/no-wrap and streaming safety | `thermo5_ef2_stability_harness.sv` | `thermo5_ef2_stability_harness` |
 | XPM reset/FWFT/CDC | `thermo5_xpm_fifo_harness.sv` | three XPM proof tops |
 | AXI-Lite config | `thermo5_axil_cfg_coverage_harness.sv` | AXI-Lite configuration top |
 
@@ -31,6 +32,27 @@ relations without that traffic budget. Runners gate setup, assertions,
 expected cover outcomes, vacuity and **zero black boxes**, recording commands,
 source hashes and tool banners. These scoped proofs do not replace full-chain
 URG hits or prove analog metastability, system CDC timing, or every SKU.
+
+Run the EF2 and baseline thermo5 safety proofs in fresh `runs/` directories
+from Linux. On this workstation, add the installed VC Formal binary directory
+to `PATH`:
+
+```bash
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 \
+  --out-dir runs/thermo5_ef2_formal_review
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3 dv/uvm/formal/run_thermo5_scoped_formal.py \
+  --unbounded-counter --residual-only \
+  --out-dir runs/thermo5_formal_review
+```
+
+The EF2 assertions cover all 32 chronological lanes in I and Q. They prove
+the 22-bit RTL arithmetic agrees with its one-bit-wider signed recomputation,
+the derived bounds hold, accepted state transitions are captured, unaccepted
+state holds, and the output boundary holds data under stall. This is a scoped
+arithmetic-safety and handshake proof; formal equivalence to the Python
+four-plane oracle and clamp-free operation for every input remain unproven.
 
 This directory contains the VC Formal FPV flow for the frozen DSM IP
 Performance SKU control and protocol boundary.

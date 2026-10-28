@@ -54,6 +54,34 @@ every possible input. A state clamp changes the loop dynamics and can degrade
 noise shaping; that event is counted in the Python model and should remain
 zero for an intended operating profile.
 
+## Linux formal proof (2026-10-28)
+
+VC Formal V-2023.12-SP2 is installed outside the default `PATH` and its FPV
+license is available. `thermo5_ef2_stability_harness.sv` instantiates the
+production 32-lane RTL with arbitrary signed-16 I/Q words and unconstrained
+valid/ready behavior. The RTL exposes a non-datapath formal monitor that
+recomputes each lane's quantizer input and raw error with one extra signed bit.
+The proof passed:
+
+- 6/6 assertions: widened arithmetic matches the RTL-width result for all
+  lanes and I/Q, the analytical bounds hold, state updates/holds match the
+  accepted-word handshake, and captured output remains stable under stall;
+- 3/3 covers: input acceptance, output transfer, and output stall;
+- zero black boxes and no selected clock/loop/multidriver setup violations.
+
+The monitor is not connected to datapath outputs and should be pruned by
+synthesis when unused; synthesis was not rerun because FPGA resource/timing
+work is deferred. This proves fixed-width arithmetic safety and the checked
+streaming contracts for arbitrary input sequences. It does not prove formal
+bitwise equivalence to Python, absence of state clamps, waveform quality, or
+BER.
+Machine-readable evidence and source hashes are under the ignored
+`runs/thermo5_ef2_formal_signoff_20261028/` directory. The scoped reset,
+bounded/unbounded counter, and generic CDC proofs also passed; centered FIR
+accumulator bounds passed 16 assertions and five covers. A separate DPD
+identity arithmetic proof remained inconclusive on multiplier/saturation
+properties at the current run limit.
+
 ## RTL implementation and limits
 
 `tid32_cartesian_ef2_fs4_gt_tx.sv` implements the main thermo5 TIDSM. The
@@ -127,10 +155,10 @@ and changed-file hashes, VCS version, fixed
 configuration/seeds, oracle SHA256 values, test-log hashes, URG hashes, and
 required functional-bin disposition.
 
-No formal engine, XSim, Vivado XPM source package, or GT Wizard simulation
-model is available on this Linux host. Therefore XPM-specific coverage,
-formal proof, GT Wizard/TXP behavior, FPGA synthesis/timing, and PPA remain
-open. The behavioral serializer loopback checks all four PA planes at the
+XSim, Vivado XPM source package, and GT Wizard simulation model are unavailable
+on this Linux host. Therefore XPM-specific coverage, EF2 GT Wizard/TXP
+behavior, FPGA synthesis/timing, and PPA remain open. The behavioral
+serializer loopback checks all four PA planes at the
 digital user-word boundary; this
 does not establish stable physical QAM256 transmission. The held-out Python
 QAM256 screen had nonzero uncoded bit errors and the analog-chain assumptions

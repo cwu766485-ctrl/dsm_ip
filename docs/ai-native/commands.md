@@ -166,8 +166,9 @@ quantization/interpolation error is reported separately from random analog
 noise. Centered cubic is the current lowest-EVM candidate and the integrated
 streaming RTL default. Its FPGA resource and timing evaluation remains open.
 The centered-cubic EF2 main-chain default has passed generic and AXI-Lite VCS
-functional regressions, but XPM coverage, GT Wizard/TXP, XSim, formal
-equivalence, and FPGA timing/PPA remain open.
+functional regressions and the scoped VC Formal EF2 arithmetic-safety proof.
+Formal equivalence to the Python oracle, XPM coverage, GT Wizard/TXP, XSim, and
+FPGA timing/PPA remain open.
 The architecture A/B sweep evaluates FIR and input drive/PAPR only. It uses a
 complex-baseband DPA/output-network/noise surrogate with two development and
 three held-out seeds; the actual TID-plane waveform is not decoded for those

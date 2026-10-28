@@ -39,8 +39,17 @@ board QAM256 remain open. The current 32-level EF2 recurrence has no routed
 timing result. FPGA resources/timing/power remain deferred per user direction.
 
 XSim/PowerShell and Vivado XPM/GT Wizard sources are unavailable in this Linux
-environment. Formal EF2 proof and rerunning GT Wizard/TXP under EF2 remain
-open. FPGA resource/timing/power analysis is deferred per user direction.
+environment. VC Formal is installed and licensed through
+`/opt/Synopsys/vc_formal/V-2023.12-SP2/bin`; the production EF2 stability proof
+passed 6/6 assertions and 3/3 covers with zero black boxes. It proves 32-lane
+I/Q intermediate bounds/no-wrap and state/output handshake behavior, but is
+not formal equivalence against the Python oracle and does not prove clamp-free
+behavior for every legal input. Reset/counter/CDC scoped proofs and centered
+interpolator accumulator bounds also passed on Linux. A separate DPD identity
+arithmetic proof remains inconclusive on multiplier/saturation properties at
+the configured timeout. Rerunning GT Wizard/TXP under EF2, real-XPM coverage,
+and physical QAM256 BER remain open because their vendor/hardware environment
+is absent. FPGA resource/timing/power analysis is deferred per user direction.
 The dated candidate-only entries below are historical checkpoints and are
 superseded where they describe first-order/causal as the current default or
 STOP/restart VCS as unrun.
@@ -85,7 +94,7 @@ architecture candidate.
    and RMS drive 0.08 measured 117 bit errors (BER 1.739e-4; 95% Wilson
    interval 1.451e-4 to 2.084e-4), 2.517% mean digital EVM, and no input/state
    saturation. Result:
-   `runs/thermo5_ef2_heldout_extension_20261027/ef2_heldout.json`. This is not
+   `runs/thermo5_ef2_heldout_extension_20261028/ef2_heldout.json`. This is not
    physical GT BER or a production BER signoff; it uses a different RMS level
    and longer frame than the earlier held-out run.
 5. **Interview/frozen configuration: keep baseline frozen.** Causal
