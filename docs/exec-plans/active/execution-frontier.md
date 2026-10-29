@@ -44,6 +44,10 @@ distinction is retained in the coverage report. No RX or AI-DPD source was
 changed.
 
 Linux closure artifacts are complete through coverage audit and final report.
+The consolidated gate table and exact Gate 2/Gate 3 published revisions are in
+`docs/verification/thermo5-tx-final-signoff.md`. Gate 2 PR #4 is at
+`d65ac3762d344c1001552890ae81cd9d243a4910`; Gate 3 PR #5 code is at
+`459c69094f3353558321075305808d9712e6f335`.
 Gate 4 remains OPEN for real XPM/Vivado/XSim, current GT Wizard/TXP, CDC/RDC
 integration review, FPGA PPA, and physical QAM256 BER. Do not claim raw or
 eligible 100% code coverage, physical RF pass, or hardware readiness.

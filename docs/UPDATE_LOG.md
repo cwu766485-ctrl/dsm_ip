@@ -48,6 +48,10 @@
   A tracked-RTL cross-reference inventory found no module with zero textual
   references; no source was removed or archived without a safe candidate.
   No RX or AI-DPD source changed.
+- Published as Gate 3 PR #5 at code commit
+  `459c69094f3353558321075305808d9712e6f335`, stacked on Gate 2 PR #4 at
+  `d65ac3762d344c1001552890ae81cd9d243a4910`. The consolidated Gate 0–4
+  status is in `docs/verification/thermo5-tx-final-signoff.md`.
 
 ## 2026-10-29 20:38 SGT - Complete Linux TX Gate 1 functional A/B evidence
 

@@ -7,7 +7,9 @@
     "base_commit": "e5d1951dde51089ae431017aa39ea25af48cf26e",
     "base_tree_sha256": "7787534834410094a2840c175641fc5cbd3b48c1",
     "worktree_dirty_at_run": true,
-    "note": "All synthesizable RTL and DV source file hashes used for the two raw URG runs are embedded below. The run base commit tree is identical to remote Gate 1 commit 813db9c9a488b033dc4686553cbe3a06856acc0b."
+    "note": "All synthesizable RTL and DV source file hashes used for the two raw URG runs are embedded below. The run base commit tree is identical to remote Gate 1 commit 813db9c9a488b033dc4686553cbe3a06856acc0b. The exact tested source-file contents are SHA-256 indexed below and are published in the Gate 3 branch tree.",
+    "published_code_commit": "459c69094f3353558321075305808d9712e6f335",
+    "pull_request": "https://github.com/cwu766485-ctrl/dsm_ip/pull/5"
   },
   "tools": {
     "python": "Python 3.12",
