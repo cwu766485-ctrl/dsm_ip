@@ -1,5 +1,26 @@
 # Thermo5 graduate design-verification evidence
 
+## TX-only Gate 0 source-of-truth correction (2026-10-29)
+
+The latest traceable raw Generic URG artifact is bound to source SHA
+`759fc8e77446046cb942e7939c53ca49d3bde882` and reports **76.12% aggregate**
+(line 82.63%, condition 62.59%, toggle 79.66%, FSM 100%, branch 62.22%,
+assertion 76.47%, functional group 69.26%). Current HEAD
+`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e` differs from that source only by a
+documentation-only closure plan, but exact-HEAD VCS/URG was blocked before
+compile by license-server connectivity. Therefore 76.12% is the latest
+source-equivalent historical raw result, not an exact-HEAD rerun or adjusted
+DUT-only coverage. The earlier 79.86% statement below has no matching raw
+report in the inspected evidence and is not a supported current score; it is
+withdrawn as the source-of-truth baseline pending a traceable artifact.
+
+See [`thermo5-tx-baseline.md`](thermo5-tx-baseline.md),
+[`thermo5-tx-feature-matrix.md`](thermo5-tx-feature-matrix.md), and the
+784-row [`thermo5-tx-coverage-ledger.csv`](thermo5-tx-coverage-ledger.csv)
+for the Gate 0 audit, tests, denominators, uncovered inventory, and
+exact-HEAD blockers. Historical runtime evidence remains labeled by source
+SHA and does not substitute for the blocked rerun.
+
 Scope: thermo5, centered-cubic x2 interpolation, identity memory-DPD,
 125-MHz AXI ingress, and four 64-bit output planes. The current main-chain
 defaults are EF2 (`TIDSM_ORDER=2`, `STEP=5120`) and centered cubic;
@@ -8,9 +29,10 @@ Generic and real Vivado XPM FIFO builds are tracked separately.
 This portfolio records explicit integration limits rather than production or
 board signoff.
 
-## Current EF2 main-chain qualification (2026-10-28)
+## Historical EF2 main-chain qualification (2026-10-28)
 
-The ZU15EG GT parent and thermo5 wrappers now select centered-cubic
+At this 2026-10-28 checkpoint, the ZU15EG GT parent and thermo5 wrappers
+selected centered-cubic
 interpolation and EF2 at STEP=5120 by default. VCS V-2023.12-SP1 passed the
 full generic-FIFO UVM regression, AXI-Lite integration regression, and the
 two-packet STOP/drain/restart test on this configuration. The STOP/restart test
@@ -44,11 +66,14 @@ GT Wizard, real XPM FIFO, RX alignment, or board output.
 
 Targeted EF2 functional coverage hits all four bins in each of
 `positive_candidate_x_stall`, `negative_candidate_x_stall`,
-`positive_x_rail`, and `negative_x_rail`. The merged centered-cubic generic
-regression raw URG score is 79.86% (line 88.04%, condition 70.63%, toggle
-81.17%, FSM 100%, branch 73.45%, assertion 76.47%, group 69.26%). This is aggregate code
-coverage over the current VCS hierarchy, not coverage closure or a signoff
-threshold.
+`positive_x_rail`, and `negative_x_rail`. The historical portfolio text
+reported the merged centered-cubic generic regression raw URG score as 79.86%
+(line 88.04%, condition 70.63%, toggle 81.17%, FSM 100%, branch 73.45%,
+assertion 76.47%, group 69.26%), but the corresponding raw report was not
+found in the evidence bundle. Do not use that number as the current score.
+The latest traceable raw Generic result is 76.12% as documented above; it
+remains aggregate coverage over its measured hierarchy, not closure or a
+signoff threshold.
 
 Still open: real-XPM URG/feature coverage (Vivado source package is not
 available here), formal equivalence of EF2 RTL to the Python oracle, rerunning
@@ -73,7 +98,7 @@ targeted coverage disposition.
 | Long continuous traffic | PASS: centered-cubic EF2 sustains 2,072 words with zero output gaps and zero source stalls. |
 | EF2 saturation and recovery | PASS: positive/negative clamps, clamp during PA stall, state hold, reset, and bit-true replay are checked. |
 | Feature interaction crosses | PASS for selected digital crosses: TLAST × PA stall, STOP × partial PA-ready stall, pending commit × stopped RUN, EF2 nonzero-state reset, frame-tail stall × reset/replay, STOP/restart, and active-packet GT-health loss. The GT-health case uses a controllable substitute model, not GT Wizard. |
-| Code-coverage closure | OPEN: centered generic raw URG is 79.86%; targeted functional bins pass, but raw URG is not closed. Vivado XPM source is unavailable on this host. |
+| Code-coverage closure | OPEN: latest traceable source-equivalent raw Generic URG is 76.12%; the older 79.86% claim has no matching raw report. Targeted functional bins are separate from code coverage. Vivado XPM source is unavailable on this host. |
 | GT digital output model | PARTIAL: behavioral four-path loopback passes 56 words / 3,584 bits per path; parent health fault/blank/recovery also passes in VCS. GT Wizard/TXP, CDR, deskew, and board behavior remain untested. |
 | Reproducible package | PASS locally: the qualification target records source and oracle hashes, VCS version, seeds/configuration, logs, URG artifacts, and required functional-bin results. Hosted GitHub CI was not run. |
 | FPGA PPA / timing / power | DEFERRED per user direction; no Linux FPGA resource or timing result is claimed. |

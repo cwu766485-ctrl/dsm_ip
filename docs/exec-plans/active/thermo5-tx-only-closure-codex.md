@@ -17,7 +17,29 @@ Use **small PRs grouped by gates**. No speculative main-chain algorithm switch; 
 3. Publish `docs/verification/thermo5-tx-baseline.md`: current vs historical claims with exact source/config/test date. The currently reported 76.12% raw Generic URG (latest Linux package) versus 79.86% historical candidate aggregate MUST NOT be treated as comparable until same elaboration, hierarchy, source SHA, instrumentation and merge scope are verified.
 4. Maintain an issue/CSV ledger: item ID, requirement, owner module, top/SKU, evidence SHA, stimulus, independent checker, targeted coverpoint/code row, pass/fail/open, reproduction command.
 
-**Exit:** one unambiguous current baseline and complete inventory. No change of architecture yet.
+**Gate 0 execution checkpoint (2026-10-29): PARTIAL / ACCEPTANCE OPEN.**
+Audit source HEAD is `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`; it differs
+from the pinned runtime checkpoint only by this documentation plan. Python
+reference tests pass 36/36 and the 56-word centered-cubic/EF2 Python oracle
+vector set was generated. Current-HEAD Generic VCS/URG and EF2 VC Formal were
+attempted but stopped before compile/proof because the Synopsys license server
+was unreachable. AXI-Lite STOP/restart and 2,072-word qualification were not
+rerun at exact HEAD. The latest traceable raw Generic URG remains the
+source-equivalent historical 76.12% report at SHA
+`759fc8e77446046cb942e7939c53ca49d3bde882`; its source-linked inventory has
+784 records. The prior 79.86% current-score statement has no matching raw
+report in the inspected evidence and is withdrawn pending a traceable run.
+Full details and evidence hashes are in
+`docs/verification/thermo5-tx-baseline.md`,
+`docs/verification/thermo5-tx-feature-matrix.md`,
+`docs/verification/thermo5-tx-coverage-ledger.csv`, and
+`docs/verification/thermo5-tx-gate0-evidence.json`.
+
+**Gate 0 exit:** a baseline and complete raw inventory are documented, but
+acceptance remains open until Generic UVM/URG, AXI-Lite STOP/restart, the
+2,072-word EF2 qualification, and scoped EF2 formal are rerun at exact HEAD
+with licensed tools. No architecture change or Gate 1–4 work is included in
+this checkpoint.
 
 ## Gate 1 — dormant algorithms / compile-time alternatives (A/B, not automatic integration)
 

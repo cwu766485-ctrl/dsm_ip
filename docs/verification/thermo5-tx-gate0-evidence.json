@@ -1,0 +1,215 @@
+{
+  "schema": "thermo5-tx-gate0-evidence-v1",
+  "audit_timestamp": "2026-10-29T18:17:00+08:00",
+  "status": "PARTIAL_ACCEPTANCE_OPEN",
+  "source": {
+    "branch": "thermo5",
+    "audit_head_sha": "eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e",
+    "historical_runtime_sha": "759fc8e77446046cb942e7939c53ca49d3bde882",
+    "diff_from_historical_runtime_sha": [
+      "A docs/exec-plans/active/thermo5-tx-only-closure-codex.md"
+    ],
+    "initial_worktree_clean": true,
+    "rtl_dv_constraints_build_inputs_changed_since_historical_run": false
+  },
+  "tools": {
+    "python": "Python 3.12.13",
+    "vcs": "V-2023.12-SP1_Full64",
+    "vc_formal": "V-2023.12-SP2 for linux64",
+    "vivado": "NOT_FOUND",
+    "xsim": "NOT_FOUND",
+    "matlab": "NOT_FOUND",
+    "xpm_sources": "NOT_AVAILABLE"
+  },
+  "current_head_checks": [
+    {
+      "name": "Python reference unit tests",
+      "status": "PASS",
+      "result": "36/36",
+      "command": "cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+      "log": "runs/thermo5_tx_gate0_eb1081/python/unittest.log"
+    },
+    {
+      "name": "Generic Python oracle vector generation",
+      "status": "PASS",
+      "result": "56 source words; 56 outputs per plane; seed 610216; centered-cubic; EF2 order 2; STEP 5120",
+      "command": "python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/thermo5_tx_gate0_eb1081/vectors/generic --words 56 --seed 610216 --profile random --interp-mode centered_cubic --tidsm-order 2 --step 5120 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288",
+      "log": "runs/thermo5_tx_gate0_eb1081/python/generate_generic_vectors.log"
+    },
+    {
+      "name": "Generic VCS UVM/URG regression",
+      "status": "BLOCKED_BEFORE_COMPILE",
+      "result": "VCS license connection failure; no compile, runtime, or new URG",
+      "command": "make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_eb1081/generic_vcs THERMO5_VECTORS=$PWD/runs/thermo5_tx_gate0_eb1081/vectors/generic THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "log": "runs/thermo5_tx_gate0_eb1081/generic_vcs/full_regression.log"
+    },
+    {
+      "name": "EF2 scoped VC Formal",
+      "status": "BLOCKED_BEFORE_PROOF",
+      "result": "VC Formal license connection failure; no proof result",
+      "command": "python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 --out-dir runs/thermo5_tx_gate0_eb1081/formal/ef2",
+      "log": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/vcf.log"
+    },
+    {
+      "name": "AXI-Lite STOP/drain/restart",
+      "status": "NOT_RUN_CURRENT_HEAD",
+      "result": "Blocked by the same VCS license failure before compile"
+    },
+    {
+      "name": "2072-word EF2 qualification",
+      "status": "NOT_RUN_CURRENT_HEAD",
+      "result": "Blocked by the same VCS license failure before compile"
+    }
+  ],
+  "historical_raw_generic_urg": {
+    "source_sha": "759fc8e77446046cb942e7939c53ca49d3bde882",
+    "status": "SOURCE_EQUIVALENT_HISTORICAL_NOT_EXACT_HEAD_RERUN",
+    "fifo": "generic",
+    "hierarchy": "thermo5_sku_uvm_tb,uvm_pkg",
+    "reported_aggregate_percent": 76.12,
+    "metrics": {
+      "line": {
+        "covered": 2969,
+        "total": 3593
+      },
+      "condition": {
+        "covered": 594,
+        "total": 949
+      },
+      "toggle": {
+        "covered": 81740,
+        "total": 102612
+      },
+      "fsm": {
+        "covered": 22,
+        "total": 22
+      },
+      "branch": {
+        "covered": 336,
+        "total": 540
+      },
+      "assertion": {
+        "covered": 13,
+        "total": 17
+      },
+      "functional_group_percent": 69.2592
+    },
+    "inventory_rows": 784,
+    "inventory_detail": {
+      "uncovered_source_lines": 100,
+      "uncovered_condition_vectors": 214,
+      "uncovered_branch_vectors": 108,
+      "signal_direction_toggle_records": 292,
+      "unattempted_assertions": 3,
+      "assertion_failure_review": 1
+    },
+    "raw_scope": "No DUT-only adjusted denominator; no exclusions applied",
+    "session_xml": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/session.xml"
+  },
+  "current_run_artifacts": [
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/python/unittest.log",
+      "sha256": "a23628a8fc9854ceb64779b2c269947633cd65e06901c2e7dab6f5511c40c030"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/python/generate_generic_vectors.log",
+      "sha256": "33346a4273ddf22f3ee2ac3ef04da787d7028d7547e245bd96587dbdc7397e5c"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/generic_vcs/full_regression.log",
+      "sha256": "1b3ad3aadecca633c2f1f65c2a5855bcc0095d1c1bc4c820bf0c040886d7d615"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/generic_vcs/compile.log",
+      "sha256": "c888cbbbac85c1b3bd5a677e4ddc095cc0d4730f9f2ec61d425a7f11fffdc0ad"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/vcf.log",
+      "sha256": "6ea8dd1c91ff4c5c7fbb5b9a39b06312bd2aae11a1c694ab92abbf2a27a2f064"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/console.log",
+      "sha256": "842f33ac6e4949215475e6edec74f68ff5fa7bc1dbeb2d0e672dcbcc79522b90"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/vcst_command.log",
+      "sha256": "004c1ce90fd69185be507507694d1e3cebab21ac4511c7689b57e4ed6c533327"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/analysis/coverage_inventory_from_759fc8e.csv",
+      "sha256": "b0f80f205f477963ed4b9c134b74153f2b680f8f54f2cb6d7f85741dc48c8f32"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_frame_gain.mem",
+      "sha256": "023f8010589b9d76003fdac748fb2c12bf7b592fc344e9cc697062c07f901811"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_frame_start.mem",
+      "sha256": "a544490f60a4807444889abd49ee4f65153775725cc71ea68306e4e9889f4a33"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_i.mem",
+      "sha256": "13713eaab0ad674c41effd3db937faba8476f748103e5a4f040af30e4d37dd04"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa0.mem",
+      "sha256": "c817d7c0ecb1e3adb2f4e64b222e2be2c07044ac6b64d6c784473e1b30ce1db3"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa1.mem",
+      "sha256": "0d59efbdfcfba7cdf7a4d088da9f3f9764dba894214b72c5b8a8a4e281edaefa"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa2.mem",
+      "sha256": "457cdc7989f1c3aada62cf38bd08dee959a368a0c2750078cccaa69986e377d0"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa3.mem",
+      "sha256": "a602e92c4621d4cb5897941512522e5200a4bbc6f49ed45b9e688815f1f378bd"
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_q.mem",
+      "sha256": "b1669636fa94f52f12f8733620a728c005fcb066a0f7f88c050a1b4b1bf1a5de"
+    }
+  ],
+  "historical_artifacts": [
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/signoff_manifest.json",
+      "sha256": "49a6c13750c00f66dd5766ff4e6a3783b29232d2ea55f9096d98976e53fc86a7"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/session.xml",
+      "sha256": "b863d47b7445814b7bdea6b1c82ee15c7d7e5265981f1a3d78f0c8d1906c643e"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/dashboard.html",
+      "sha256": "4d0164c6567944a0777de4d918b263613fba48dc43bd6be96aaf34b2b84491e4"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/asserts.html",
+      "sha256": "fa6c7e10ae416ad01852a613d5ec026b33027e7f7f75c156cb141badbf9e5eeb"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage_merge.log",
+      "sha256": "5bdeb682d6b11895900b29883619efe0c00a6778de1df651d2b5f09428de2c4d"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/stop_restart_make.log",
+      "sha256": "6efd18be5f0dde6c810cd089b781e216aa08aadb563b334a68adc1fa02c1f362"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/qualification_make.log",
+      "sha256": "f81fcfc06d11041cf89c114275eb5cc27108f7bcb649d2900a91b035320816ee"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/formal/formal_summary.json",
+      "sha256": "7c367aa65a3f02ecfd96b4fef302a1fb82aee2c92cb52358181298139cf2b825"
+    }
+  ],
+  "note": "Logs, vectors and historical VDB/URG remain under ignored runs/. This tracked JSON is an index and checksum list, not a substitute for those artifacts.",
+  "published_inventory": {
+    "path": "docs/verification/thermo5-tx-coverage-ledger.csv",
+    "sha256": "b3993c366b4c3ac0f6d08a7563d9229e7ab1619509453afe919f155c7339ef2f",
+    "rows": 784
+  }
+}

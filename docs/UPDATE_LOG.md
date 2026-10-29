@@ -1,5 +1,14 @@
 # Update Log
 
+## 2026-10-29 18:17 SGT - Thermo5 TX-only Gate 0 baseline audit
+
+- Audited exact `thermo5` source HEAD `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`, active ZU15EG TX parent parameters, UVM top/filelist, reference model, and Linux tool availability. Compared with plan checkpoint `759fc8e77446046cb942e7939c53ca49d3bde882`; the intervening source change is documentation-only and does not alter RTL, DV, constraints, or build inputs.
+- Added a TX baseline report, feature/testpoint/coverage matrix, evidence metadata, and the full 784-record source-linked raw URG inventory. Corrected unsupported 79.86% “current” statements: the latest traceable Generic raw URG is 76.12% (line 2969/3593, condition 594/949, toggle 81740/102612, FSM 22/22, branch 336/540, assertion 13/17, functional group 69.26%). The inventory contains 100 uncovered source lines, 214 condition vectors, 108 branch vectors, 292 signal-direction toggle records, three unattempted assertions, and one assertion failure requiring review. No DUT-only denominator adjustment was made.
+- Current checks: Python reference suite PASS (36/36); 56-word centered-cubic/EF2 identity oracle-vector generation PASS. Generic VCS full regression and scoped EF2 VC Formal were attempted at current HEAD but blocked before compile/proof by Synopsys license-server connectivity. AXI-Lite STOP/restart and 2,072-word qualification were not rerun for the same reason. Vivado/XSim/MATLAB/real XPM remain unavailable on this Linux host.
+- No RTL, RX, AI-DPD, architecture, or coverage denominator changes. Gate 0 remains PARTIAL / ACCEPTANCE OPEN until exact-HEAD licensed VCS/URG and VC Formal runs are completed. The one raw assertion failure from the intentionally malformed-frame negative test remains visible and requires explicit review.
+- Files: `docs/exec-plans/active/thermo5-tx-only-closure-codex.md`, `docs/verification/thermo5-tx-baseline.md`, `docs/verification/thermo5-tx-feature-matrix.md`, `docs/verification/thermo5-tx-gate0-evidence.json`, `docs/verification/thermo5-tx-coverage-ledger.csv`, `docs/verification/thermo5-dv-portfolio.md`, `docs/verification/thermo5-uvm-coverage.md`, `docs/exec-plans/active/execution-frontier.md`, and this log.
+- Remaining limitations: exact-HEAD licensed reruns, real XPM/vendor GT model, routed FPGA timing/resources, and physical RF/QAM256 BER. No Gate 1/2/3 work started.
+
 ## 2026-10-28 23:40 SGT - Publish and verify EF2 Linux signoff
 
 - Published the EF2 look-ahead experiment, current-source signoff packager,

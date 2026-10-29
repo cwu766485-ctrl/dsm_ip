@@ -1,6 +1,35 @@
 # Execution frontier
 
-## Current execution state: EF2 look-ahead and uploaded Linux signoff (2026-10-28)
+## Current execution state: TX-only Gate 0 audit (2026-10-29)
+
+Gate 0 is **PARTIAL / ACCEPTANCE OPEN** at source HEAD
+`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`. The source/configuration audit,
+Python reference suite (36/36), Python vector generation, feature/testpoint
+matrix, and source-linked raw coverage inventory are complete. No RTL or
+architecture was changed. Exact-HEAD Generic VCS regression and EF2 VC Formal
+attempts both stopped before compile/proof because the Synopsys license server
+was unavailable. AXI-Lite STOP/restart and 2,072-word EF2 VCS qualification
+were therefore not rerun at exact HEAD.
+
+The only complete raw Generic URG artifact available for this source content
+is bound to `759fc8e77446046cb942e7939c53ca49d3bde882`; current HEAD differs
+from that checkpoint only by the added TX closure-plan document. That report
+is 76.12% aggregate (2,969/3,593 line, 594/949 condition, 81,740/102,612
+toggle, 22/22 FSM, 336/540 branch, 13/17 assertion, 69.26% functional group).
+It is not an exact-HEAD rerun or an audited DUT-only score. The prior 79.86%
+portfolio statement has no matching raw report in the inspected evidence set
+and is withdrawn as the current baseline. The 784-row uncovered inventory is
+in `docs/verification/thermo5-tx-coverage-ledger.csv`; the feature/testpoint
+matrix and test details are in `docs/verification/thermo5-tx-feature-matrix.md`
+and `docs/verification/thermo5-tx-baseline.md`.
+
+Next: restore VCS/VCF license access, rerun exact-HEAD Generic UVM/URG,
+AXI-Lite STOP/restart, 2,072-word EF2 qualification, and scoped EF2 formal.
+Do not begin Gate 1 A/B or Gate 2 worst-case experiments until Gate 0 evidence
+is accepted. Keep XPM, XSim/Vivado, GT Wizard, physical RF, and routed FPGA
+claims open where tools/models are unavailable.
+
+## Historical execution state: EF2 look-ahead and uploaded Linux signoff (2026-10-28)
 
 The thermo5 baseline remains centered-cubic x2 + EF2 TIDSM, ORDER=2,
 STEP=5120, 20-bit state, chronological 32-sample order. The exact two-sample

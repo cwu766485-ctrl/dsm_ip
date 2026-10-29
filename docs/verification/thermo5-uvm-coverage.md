@@ -1,8 +1,26 @@
 # Thermo5 UVM verification and coverage boundary
 
-## Current EF2 main-chain coverage snapshot (2026-10-28)
+## TX-only Gate 0 raw-score correction (2026-10-29)
 
-The current thermo5 wrapper and ZU15EG parent defaults are centered-cubic
+The latest traceable raw Generic URG report is 76.12% aggregate at source SHA
+`759fc8e77446046cb942e7939c53ca49d3bde882` (line 82.63%, condition 62.59%,
+toggle 79.66%, FSM 100%, branch 62.22%, assertion 76.47%, group 69.26%). The
+79.86% statement in the historical section below has no matching raw report
+in the inspected evidence set, so it is not a supported current score.
+Current HEAD `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e` adds only a plan
+document to that checkpoint, but the exact-HEAD VCS rerun was blocked before
+compile by license connectivity. This is source-equivalent historical
+evidence, not a fresh run or DUT-only adjusted score.
+
+The complete TX-only Gate 0 inventory is in
+[`thermo5-tx-coverage-ledger.csv`](thermo5-tx-coverage-ledger.csv); see also
+the [baseline](thermo5-tx-baseline.md) and
+[feature/testpoint matrix](thermo5-tx-feature-matrix.md).
+
+## Historical EF2 main-chain coverage snapshot (2026-10-28)
+
+At the recorded 2026-10-28 checkpoint, the thermo5 wrapper and ZU15EG parent
+defaults were centered-cubic
 interpolation with fixed-point EF2 TIDSM at STEP=5120. The current VCS
 V-2023.12-SP1 generic-FIFO regression passes with merged raw URG of 79.86%
 (88.04% line, 70.63% condition, 81.17% toggle, 100% FSM, 73.45% branch,
