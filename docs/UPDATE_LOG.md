@@ -1,5 +1,21 @@
 # Update Log
 
+## 2026-10-29 20:22 SGT - Complete Linux TX-only Gate 0 verification
+
+- Re-ran the Gate 0 suite at clean verification source SHA `04550289e1ecb5fa0e38168869d4f2539929cb80`. The first VCS checkout was blocked before compile; after license access recovered, Generic VCS, full AXI-Lite VCS, STOP/drain/restart, 2,072-word EF2 qualification, and Generic/AXI-Lite URG merges all passed. Python unit tests passed 36/36; EF2 scoped VC Formal proved 6 assertions and covered 3 properties with zero black boxes.
+- Fresh Generic raw URG is 76.12% (line 2969/3593, condition 594/949, toggle 81740/102612, FSM 22/22, branch 336/540, assertion 13/17, group 69.2592%). The 784-row ledger now links to this exact run. No denominator changes or exclusions were applied. One expected illegal-frame assertion failure and three unattempted assertions remain explicitly open.
+- Updated the Gate 0 baseline, feature/testpoint matrix, execution frontier, closure plan, coverage entry points, and evidence manifest. Full outputs remain under ignored `runs/thermo5_tx_gate0_0455028_recheck/`; generated logs, VDBs, and tool caches are not committed.
+- Gate 0 is accepted for Linux Generic/behavioral scope. Real XPM, XSim/Vivado, current GT Wizard simulation, routed FPGA PPA, and physical QAM256 BER remain unavailable or out of scope. No RX/AI-DPD/RTL behavior or main-chain configuration changed.
+- Next: run Gates 1/2/3 as separate reviewable stages; keep the verified baseline frozen until independent candidate evidence supports promotion.
+
+## 2026-10-29 20:22 SGT - Complete Linux TX-only Gate 0 verification
+
+- Re-ran the Gate 0 suite at clean verification source SHA `04550289e1ecb5fa0e38168869d4f2539929cb80`. The first VCS checkout was blocked before compile; after license access recovered, Generic VCS, full AXI-Lite VCS, STOP/drain/restart, 2,072-word EF2 qualification, and Generic/AXI-Lite URG merges all passed. Python unit tests passed 36/36; EF2 scoped VC Formal proved 6 assertions and covered 3 properties with zero black boxes.
+- Fresh Generic raw URG is 76.12% (line 2969/3593, condition 594/949, toggle 81740/102612, FSM 22/22, branch 336/540, assertion 13/17, group 69.2592%). The 784-row ledger now links to this exact run. No denominator changes or exclusions were applied. One expected illegal-frame assertion failure and three unattempted assertions remain explicitly open.
+- Updated the Gate 0 baseline, feature/testpoint matrix, execution frontier, closure plan, coverage entry points, and evidence manifest. Full outputs remain under ignored `runs/thermo5_tx_gate0_0455028_recheck/`; generated logs, VDBs, and tool caches are not committed.
+- Gate 0 is accepted for Linux Generic/behavioral scope. Real XPM, XSim/Vivado, current GT Wizard simulation, routed FPGA PPA, and physical QAM256 BER remain unavailable or out of scope. No RX/AI-DPD/RTL behavior or main-chain configuration changed.
+- Next: run Gates 1/2/3 as separate reviewable stages; keep the verified baseline frozen until independent candidate evidence supports promotion.
+
 ## 2026-10-29 18:17 SGT - Thermo5 TX-only Gate 0 baseline audit
 
 - Audited exact `thermo5` source HEAD `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`, active ZU15EG TX parent parameters, UVM top/filelist, reference model, and Linux tool availability. Compared with plan checkpoint `759fc8e77446046cb942e7939c53ca49d3bde882`; the intervening source change is documentation-only and does not alter RTL, DV, constraints, or build inputs.

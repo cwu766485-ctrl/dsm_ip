@@ -17,29 +17,35 @@ Use **small PRs grouped by gates**. No speculative main-chain algorithm switch; 
 3. Publish `docs/verification/thermo5-tx-baseline.md`: current vs historical claims with exact source/config/test date. The currently reported 76.12% raw Generic URG (latest Linux package) versus 79.86% historical candidate aggregate MUST NOT be treated as comparable until same elaboration, hierarchy, source SHA, instrumentation and merge scope are verified.
 4. Maintain an issue/CSV ledger: item ID, requirement, owner module, top/SKU, evidence SHA, stimulus, independent checker, targeted coverpoint/code row, pass/fail/open, reproduction command.
 
-**Gate 0 execution checkpoint (2026-10-29): PARTIAL / ACCEPTANCE OPEN.**
-Audit source HEAD is `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`; it differs
-from the pinned runtime checkpoint only by this documentation plan. Python
-reference tests pass 36/36 and the 56-word centered-cubic/EF2 Python oracle
-vector set was generated. Current-HEAD Generic VCS/URG and EF2 VC Formal were
-attempted but stopped before compile/proof because the Synopsys license server
-was unreachable. AXI-Lite STOP/restart and 2,072-word qualification were not
-rerun at exact HEAD. The latest traceable raw Generic URG remains the
-source-equivalent historical 76.12% report at SHA
-`759fc8e77446046cb942e7939c53ca49d3bde882`; its source-linked inventory has
-784 records. The prior 79.86% current-score statement has no matching raw
-report in the inspected evidence and is withdrawn pending a traceable run.
-Full details and evidence hashes are in
+**Gate 0 execution checkpoint (2026-10-29): PASS_LINUX_GENERIC_SCOPE.**
+Audited source HEAD is `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`; exact
+verification source is `04550289e1ecb5fa0e38168869d4f2539929cb80` with a clean
+worktree and unchanged RTL/DV/build-input tree. Python tests pass 36/36;
+Python vectors pass. Generic VCS/full regression and a fresh Generic URG
+merge pass; full AXI-Lite regression, 112-word STOP/drain/restart,
+three-seed 2,072-word EF2 qualification, and scoped EF2 VC Formal also pass.
+Formal proved 6/6 assertions and covered 3/3 cover properties with zero
+black boxes. Fresh raw Generic URG is 76.12% (2,969/3,593 line, 594/949
+condition, 81,740/102,612 toggle, 22/22 FSM, 336/540 branch, 13/17
+assertion, 69.2592% functional-group aggregate). The exact-source inventory
+has 784 records; no exclusions or denominator changes were made. The one
+assertion failure is the expected illegal-frame negative test; three
+assertions remain unattempted.
+
+The initial VCS attempt stopped at license checkout; a retry at the same
+verification SHA completed after access recovered. Real XPM, XSim/Vivado, and
+the current GT Wizard model are unavailable on this Linux host, so no such
+result is claimed. Full evidence and commands are recorded in
 `docs/verification/thermo5-tx-baseline.md`,
 `docs/verification/thermo5-tx-feature-matrix.md`,
 `docs/verification/thermo5-tx-coverage-ledger.csv`, and
 `docs/verification/thermo5-tx-gate0-evidence.json`.
 
-**Gate 0 exit:** a baseline and complete raw inventory are documented, but
-acceptance remains open until Generic UVM/URG, AXI-Lite STOP/restart, the
-2,072-word EF2 qualification, and scoped EF2 formal are rerun at exact HEAD
-with licensed tools. No architecture change or Gate 1–4 work is included in
-this checkpoint.
+**Gate 0 exit:** accepted for the Linux Generic/behavioral scope. Start the
+next gates as independent reviewable changes. Keep XPM/GT Wizard, routed FPGA
+PPA, and physical RF/QAM256 claims open until their required environments and
+measurements exist. Do not change the verified baseline as a side effect of
+candidate work.
 
 ## Gate 1 — dormant algorithms / compile-time alternatives (A/B, not automatic integration)
 

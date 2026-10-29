@@ -1,33 +1,38 @@
 # Execution frontier
 
-## Current execution state: TX-only Gate 0 audit (2026-10-29)
+## Current execution state: TX-only Gate 0 accepted; next independent closure stages (2026-10-29)
 
-Gate 0 is **PARTIAL / ACCEPTANCE OPEN** at source HEAD
-`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`. The source/configuration audit,
-Python reference suite (36/36), Python vector generation, feature/testpoint
-matrix, and source-linked raw coverage inventory are complete. No RTL or
-architecture was changed. Exact-HEAD Generic VCS regression and EF2 VC Formal
-attempts both stopped before compile/proof because the Synopsys license server
-was unavailable. AXI-Lite STOP/restart and 2,072-word EF2 VCS qualification
-were therefore not rerun at exact HEAD.
+Gate 0 is **PASS for Linux Generic/behavioral scope** at verification source
+`04550289e1ecb5fa0e38168869d4f2539929cb80` (clean worktree; run manifests
+record the exact SHA). The audited `thermo5` source was
+`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`; the verification commit changes
+documentation only relative to RTL/DV/build inputs. No RTL, RX, AI-DPD,
+architecture, or coverage denominator was changed.
 
-The only complete raw Generic URG artifact available for this source content
-is bound to `759fc8e77446046cb942e7939c53ca49d3bde882`; current HEAD differs
-from that checkpoint only by the added TX closure-plan document. That report
-is 76.12% aggregate (2,969/3,593 line, 594/949 condition, 81,740/102,612
-toggle, 22/22 FSM, 336/540 branch, 13/17 assertion, 69.26% functional group).
-It is not an exact-HEAD rerun or an audited DUT-only score. The prior 79.86%
-portfolio statement has no matching raw report in the inspected evidence set
-and is withdrawn as the current baseline. The 784-row uncovered inventory is
-in `docs/verification/thermo5-tx-coverage-ledger.csv`; the feature/testpoint
-matrix and test details are in `docs/verification/thermo5-tx-feature-matrix.md`
-and `docs/verification/thermo5-tx-baseline.md`.
+Exact-source checks pass: Python 36/36 and oracle vectors; Generic VCS UVM
+regression and URG merge; full AXI-Lite regression and URG merge; 112-word
+STOP/drain/restart; three-seed 2,072-word EF2 sustained/clamp/stall/reset
+qualification; EF2 scoped VC Formal (6 assertions proven, 3 covers covered,
+zero black boxes). Raw Generic URG is 76.12%: line 2,969/3,593 (82.63%),
+condition 594/949 (62.59%), toggle 81,740/102,612 (79.66%), FSM 22/22
+(100%), branch 336/540 (62.22%), assertion 13/17 (76.47%), functional group
+69.2592% (69.26%). The exact-source inventory has 784 records and no
+exclusions. The expected illegal-frame assertion failure and three
+unattempted assertions remain visible. The unsupported 79.86% score remains
+withdrawn.
 
-Next: restore VCS/VCF license access, rerun exact-HEAD Generic UVM/URG,
-AXI-Lite STOP/restart, 2,072-word EF2 qualification, and scoped EF2 formal.
-Do not begin Gate 1 A/B or Gate 2 worst-case experiments until Gate 0 evidence
-is accepted. Keep XPM, XSim/Vivado, GT Wizard, physical RF, and routed FPGA
-claims open where tools/models are unavailable.
+The first VCS invocation was license-blocked before compilation; the retry at
+the same source SHA completed after checkout recovered. Real XPM/XSim/Vivado,
+current GT Wizard simulation, routed FPGA PPA, and physical QAM256 BER are
+not available or measurable in this Linux environment; no vendor/board PASS
+is claimed.
+
+Next: execute Gate 1 algorithm A/B and Gate 2 TX worst-case benchmark as
+separate reviewable PRs, then Gate 3 feature/code coverage convergence. Keep
+the verified main-chain configuration frozen until candidate evidence supports
+an explicit promotion. Current commands, source SHA, reports, and evidence
+hashes are in `docs/verification/thermo5-tx-baseline.md` and
+`docs/verification/thermo5-tx-gate0-evidence.json`.
 
 ## Historical execution state: EF2 look-ahead and uploaded Linux signoff (2026-10-28)
 

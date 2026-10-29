@@ -1,33 +1,26 @@
 # Thermo5 graduate design-verification evidence
 
-## TX-only Gate 0 source-of-truth correction (2026-10-29)
+## TX-only Gate 0 exact-source rerun (2026-10-29)
 
-The latest traceable raw Generic URG artifact is bound to source SHA
-`759fc8e77446046cb942e7939c53ca49d3bde882` and reports **76.12% aggregate**
-(line 82.63%, condition 62.59%, toggle 79.66%, FSM 100%, branch 62.22%,
-assertion 76.47%, functional group 69.26%). Current HEAD
-`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e` differs from that source only by a
-documentation-only closure plan, but exact-HEAD VCS/URG was blocked before
-compile by license-server connectivity. Therefore 76.12% is the latest
-source-equivalent historical raw result, not an exact-HEAD rerun or adjusted
-DUT-only coverage. The earlier 79.86% statement below has no matching raw
-report in the inspected evidence and is not a supported current score; it is
-withdrawn as the source-of-truth baseline pending a traceable artifact.
+Gate 0 was rerun at clean source SHA
+`04550289e1ecb5fa0e38168869d4f2539929cb80`. Python reference tests (36/36),
+Generic VCS and URG, full AXI-Lite VCS and URG, 112-word STOP/drain/restart,
+three-seed 2,072-word EF2 qualification, and EF2 scoped VC Formal all pass.
+The exact Generic raw URG is 76.12% aggregate: 82.63% line, 62.59% condition,
+79.66% toggle, 100% FSM, 62.22% branch, 76.47% assertion, and 69.2592%
+functional group. The current raw report and its 784-row source-linked
+inventory use no exclusions or denominator adjustment. One expected
+illegal-frame assertion failure and three unattempted assertions remain
+visible. The unsupported 79.86% statement has no matching raw report and is
+withdrawn as a current score. See the [baseline](thermo5-tx-baseline.md),
+[feature/testpoint matrix](thermo5-tx-feature-matrix.md),
+[coverage ledger](thermo5-tx-coverage-ledger.csv), and
+[evidence manifest](thermo5-tx-gate0-evidence.json).
 
-See [`thermo5-tx-baseline.md`](thermo5-tx-baseline.md),
-[`thermo5-tx-feature-matrix.md`](thermo5-tx-feature-matrix.md), and the
-784-row [`thermo5-tx-coverage-ledger.csv`](thermo5-tx-coverage-ledger.csv)
-for the Gate 0 audit, tests, denominators, uncovered inventory, and
-exact-HEAD blockers. Historical runtime evidence remains labeled by source
-SHA and does not substitute for the blocked rerun.
-
-Scope: thermo5, centered-cubic x2 interpolation, identity memory-DPD,
-125-MHz AXI ingress, and four 64-bit output planes. The current main-chain
-defaults are EF2 (`TIDSM_ORDER=2`, `STEP=5120`) and centered cubic;
-first-order TIDSM and causal interpolation remain selectable fallbacks.
-Generic and real Vivado XPM FIFO builds are tracked separately.
-This portfolio records explicit integration limits rather than production or
-board signoff.
+Gate 0 is accepted for Linux Generic/behavioral scope. Real XPM,
+XSim/Vivado/current GT Wizard, routed FPGA PPA, and physical QAM256 BER remain
+OPEN or NOT RUN because those vendor tools/models and board measurements are
+unavailable in this Linux environment.
 
 ## Historical EF2 main-chain qualification (2026-10-28)
 

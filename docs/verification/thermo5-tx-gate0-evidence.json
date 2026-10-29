@@ -1,7 +1,7 @@
 {
   "schema": "thermo5-tx-gate0-evidence-v1",
-  "audit_timestamp": "2026-10-29T18:17:00+08:00",
-  "status": "PARTIAL_ACCEPTANCE_OPEN",
+  "audit_timestamp": "2026-10-29T20:22:00+08:00",
+  "status": "PASS_LINUX_GENERIC_SCOPE",
   "source": {
     "branch": "thermo5",
     "audit_head_sha": "eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e",
@@ -10,7 +10,14 @@
       "A docs/exec-plans/active/thermo5-tx-only-closure-codex.md"
     ],
     "initial_worktree_clean": true,
-    "rtl_dv_constraints_build_inputs_changed_since_historical_run": false
+    "rtl_dv_constraints_build_inputs_changed_since_historical_run": false,
+    "verification_branch": "codex/thermo5-tx-gate0-baseline",
+    "verification_sha": "04550289e1ecb5fa0e38168869d4f2539929cb80",
+    "verification_tree_sha": "b56d79ac3f3481a8dcaa86ae024539b10aff590a",
+    "verification_worktree_clean": true,
+    "rtl_dv_constraints_build_inputs_unchanged_since_audit": true,
+    "real_xpm_sources_available": false,
+    "vivado_xsim_gt_wizard_available": false
   },
   "tools": {
     "python": "Python 3.12.13",
@@ -19,9 +26,264 @@
     "vivado": "NOT_FOUND",
     "xsim": "NOT_FOUND",
     "matlab": "NOT_FOUND",
-    "xpm_sources": "NOT_AVAILABLE"
+    "xpm_sources": "NOT_AVAILABLE",
+    "vc_formal_path": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+    "license_retry_status": "VCS retry succeeded after license checkout recovered; VC Formal licensed and passed"
   },
   "current_head_checks": [
+    {
+      "name": "Python reference unit tests",
+      "status": "PASS",
+      "result": "36/36",
+      "command": "cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/python/unittest.log"
+    },
+    {
+      "name": "Generic Python oracle vector generation",
+      "status": "PASS",
+      "result": "56 source words; 56 output words per plane; seed 610216; centered-cubic; EF2 order 2; STEP 5120",
+      "command": "python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/thermo5_tx_gate0_0455028_recheck/vectors/generic --words 56 --seed 610216 --profile random --interp-mode centered_cubic --tidsm-order 2 --step 5120 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/python/generate_generic_vectors.log"
+    },
+    {
+      "name": "Generic VCS UVM regression",
+      "status": "PASS",
+      "result": "Bit-true, bubble/backpressure, FIFO boundary/empty, reset/replay and expected illegal-frame negative test; UVM errors/fatals zero",
+      "command": "make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/generic_vcs THERMO5_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/generic THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/full_regression.log"
+    },
+    {
+      "name": "Generic VCS URG merge",
+      "status": "PASS",
+      "result": "Raw score 76.12%; line 2969/3593; condition 594/949; toggle 81740/102612; FSM 22/22; branch 336/540; assertion 13/17; functional group 69.2592%",
+      "command": "make -C dv/uvm/sim thermo5-coverage-merge THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/generic_vcs",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage_merge_command.log",
+      "report": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage/session.xml"
+    },
+    {
+      "name": "Full AXI-Lite VCS regression",
+      "status": "PASS",
+      "result": "Register/config, graceful STOP, coefficient and nonlinear coefficient transport, tap-4 identity, boundary phase, negative frame/mailbox, parameter guard and AXI-Lite URG merge; legal UVM errors/fatals zero",
+      "command": "make -C dv/uvm/sim thermo5-axil-vcs-regression THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs THERMO5_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/axil THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs/full_regression.log"
+    },
+    {
+      "name": "AXI-Lite STOP/drain/restart",
+      "status": "PASS",
+      "result": "112 ordered four-plane outputs match oracle; second packet blocks until RUN restart; UVM errors/fatals zero",
+      "command": "make -C dv/uvm/sim thermo5-axil-stop-restart-vcs-run PYTHON=python3.12 THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/stop_restart_vcs THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120 THERMO5_STOP_RESTART_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/stop_restart",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/stop_restart_vcs/full_regression.log"
+    },
+    {
+      "name": "EF2 2072-word qualification",
+      "status": "PASS",
+      "result": "Three scenarios, seeds 271027/271028/271029; sustained 2072, clamp/stall/reset/replay, randomized PA stalls; all four targeted clamp/rail cross bins 4/4; UVM errors/fatals zero",
+      "command": "make -C dv/uvm/sim thermo5-ef2-qualification PYTHON=python3.12 THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs THERMO5_EF2_SUSTAINED_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/sustained THERMO5_EF2_RANDOM_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/random THERMO5_EF2_EXTREME_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/extreme",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs/full_qualification.log",
+      "qualification_manifest": "runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs/qualification_manifest.json"
+    },
+    {
+      "name": "EF2 scoped VC Formal",
+      "status": "PASS",
+      "result": "6/6 assertions proven; 3/3 cover properties covered; zero black boxes; scope is bounds/no-wrap and handshake",
+      "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 --out-dir runs/thermo5_tx_gate0_0455028_recheck/formal_withpath",
+      "log": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/ef2/console.log",
+      "formal_summary": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/formal_summary.json"
+    },
+    {
+      "name": "Vivado/XSim/MATLAB/real XPM/GT Wizard",
+      "status": "NOT_AVAILABLE",
+      "result": "Linux host lacks Vivado/XSim/MATLAB, packaged real XPM source and current GT Wizard simulation model; no vendor result claimed"
+    }
+  ],
+  "current_run_artifacts": [
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/python/unittest.log",
+      "sha256": "6d3099ae608984d8876b56800c07c64984b3a993e80cf45fbbc5a018dd3dcba4",
+      "size_bytes": 5779
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/python/generate_generic_vectors.log",
+      "sha256": "4c940f7b054e69a93adaa17b063ffddad69dda16a3e8fef50e70178070b0ff40",
+      "size_bytes": 263
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/python/generate_axil_vectors.log",
+      "sha256": "81f40d71a585b9849802a0991928ea56b4465287b687fe98a890272555f6276a",
+      "size_bytes": 260
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/full_regression.log",
+      "sha256": "6eaa311768c8595c3ca65b9bd2ec49b745f5a53989515f8848f118b05457dc86",
+      "size_bytes": 58433
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/compile.log",
+      "sha256": "97f4620027b74ad6174962aacab0991557784ce1c9b144f27370d5a8bae28f98",
+      "size_bytes": 34846
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage_merge_command.log",
+      "sha256": "94a01f9f9e86de16066adbb1783f2ae3b2f14a078172ecc6efc87fcfd176ffd6",
+      "size_bytes": 250
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage_merge.log",
+      "sha256": "0a38cb6bd51f6366dad61680f3e69c697967d6b8852a8b931cc754e0ef0aeacd",
+      "size_bytes": 1269
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage/session.xml",
+      "sha256": "7cea33d36d1bf1637a62d380f457406c08df71a0b7b926e2be8a19ebe40e9171",
+      "size_bytes": 3623
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage/dashboard.html",
+      "sha256": "e1e06bb73c478ba7b800b73218f9ead68c718567dbf0f223010d83e69a7cb5a9",
+      "size_bytes": 5761
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs/full_regression.log",
+      "sha256": "d48a4ab002cc66bbf88f9a034a8830429b78413fbdea25ea91ace05302a5a260",
+      "size_bytes": 75381
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs/compile.log",
+      "sha256": "28b145f4763ca193978a8677b1e66b03c49c94c925105336df27705375e0b5b3",
+      "size_bytes": 38184
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs/coverage_merge.log",
+      "sha256": "5ed6fcb141b634ccbec4545c1a875b0f7803fa4503cb2d28cd037b5dd907638d",
+      "size_bytes": 1271
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/stop_restart_vcs/full_regression.log",
+      "sha256": "eedd656569c571d42785e7da16d25594539ba5034f9e2e85bd5c42537f28c638",
+      "size_bytes": 41427
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/stop_restart_vcs/thermo5_sku_axil_stop_restart_test_seed610215.log",
+      "sha256": "68306ee43c0696ced208e22d50194f209c5c4542bdf08e87b170eceb310d9932",
+      "size_bytes": 3649
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs/full_qualification.log",
+      "sha256": "1ee0cc8eebb10d46f9c99b4bb91c66861817b609861b1706e3e9ceb7fb75a834",
+      "size_bytes": 45329
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs/qualification_manifest.json",
+      "sha256": "7785872532f2e0cd05f1309dc813be0b29c9e64263024a126d58ba0b804766dd",
+      "size_bytes": 9387
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs/ef2_qualification_coverage.log",
+      "sha256": "34b6c61c2b0d86fbb1ff677f2d510c541233762fc2ec624963ef8be2e359bc34",
+      "size_bytes": 1297
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/formal_summary.json",
+      "sha256": "a91feea8b1c91a1df81e591a0118fab73be10012ea7a3c80ef5b0e7b951fdd6b",
+      "size_bytes": 4498
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/ef2/console.log",
+      "sha256": "20f1627e3875598618fd3c06d8c28019de97669b669e4d6b40ca5bf2b2181c0b",
+      "size_bytes": 11583
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/ef2/vcf.log",
+      "sha256": "7e6eddda866fdd4448c6354b8cd0725434b3391b10813da1752ebb956a1c8af1",
+      "size_bytes": 10962
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/ef2/properties.txt",
+      "sha256": "c19a5c12b0914ecf963ba1652e75826522a7bce496a9e9ad9c375f8e1c40b1bb",
+      "size_bytes": 1528
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/formal_withpath/ef2/setup.txt",
+      "sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "size_bytes": 384
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/generic/tid32_thermo5_frontend_i.mem",
+      "sha256": "13713eaab0ad674c41effd3db937faba8476f748103e5a4f040af30e4d37dd04",
+      "size_bytes": 2240
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/generic/tid32_thermo5_frontend_q.mem",
+      "sha256": "b1669636fa94f52f12f8733620a728c005fcb066a0f7f88c050a1b4b1bf1a5de",
+      "size_bytes": 2240
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/axil/tid32_thermo5_frontend_i.mem",
+      "sha256": "13713eaab0ad674c41effd3db937faba8476f748103e5a4f040af30e4d37dd04",
+      "size_bytes": 2240
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/stop_restart/tid32_thermo5_frontend_i.mem",
+      "sha256": "462919a306aea463fb4acadbe7676fea8631cc8fc8e7e67ef7f184c042e45dc9",
+      "size_bytes": 4480
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/sustained/tid32_thermo5_frontend_i.mem",
+      "sha256": "7778244c876de7ce40d7512911fe69dcea613c72f6abc6513de9655c32cced80",
+      "size_bytes": 82880
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/random/tid32_thermo5_frontend_i.mem",
+      "sha256": "8d8bc570e7a4aba2b3b4e8fa29686daf689c55044166e2dc8b73232c0668701e",
+      "size_bytes": 82880
+    },
+    {
+      "path": "runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/extreme/tid32_thermo5_frontend_i.mem",
+      "sha256": "d78bad400f2c5b6e7796de51695fe44b10cb39afec89e17e0d2d3cc4cf56b4bc",
+      "size_bytes": 82880
+    }
+  ],
+  "historical_artifacts": [
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/signoff_manifest.json",
+      "sha256": "49a6c13750c00f66dd5766ff4e6a3783b29232d2ea55f9096d98976e53fc86a7"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/session.xml",
+      "sha256": "b863d47b7445814b7bdea6b1c82ee15c7d7e5265981f1a3d78f0c8d1906c643e"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/dashboard.html",
+      "sha256": "4d0164c6567944a0777de4d918b263613fba48dc43bd6be96aaf34b2b84491e4"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/asserts.html",
+      "sha256": "fa6c7e10ae416ad01852a613d5ec026b33027e7f7f75c156cb141badbf9e5eeb"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage_merge.log",
+      "sha256": "5bdeb682d6b11895900b29883619efe0c00a6778de1df651d2b5f09428de2c4d"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/stop_restart_make.log",
+      "sha256": "6efd18be5f0dde6c810cd089b781e216aa08aadb563b334a68adc1fa02c1f362"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/qualification_make.log",
+      "sha256": "f81fcfc06d11041cf89c114275eb5cc27108f7bcb649d2900a91b035320816ee"
+    },
+    {
+      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/formal/formal_summary.json",
+      "sha256": "7c367aa65a3f02ecfd96b4fef302a1fb82aee2c92cb52358181298139cf2b825"
+    }
+  ],
+  "note": "Complete VCS/UVM, URG, Python, vector, and VC Formal run directories are preserved under ignored runs/thermo5_tx_gate0_0455028_recheck/. This tracked index hashes reviewable logs/reports/vectors; VDB/tool working databases remain in that local ignored run directory and are not committed.",
+  "published_inventory": {
+    "path": "docs/verification/thermo5-tx-coverage-ledger.csv",
+    "sha256": "fc2fd45da5889abd47ee643b0dab979c3f929a4b1983753e335c6d587807de52",
+    "rows": 784
+  },
+  "initial_audit_attempts": [
     {
       "name": "Python reference unit tests",
       "status": "PASS",
@@ -61,7 +323,7 @@
       "result": "Blocked by the same VCS license failure before compile"
     }
   ],
-  "historical_raw_generic_urg": {
+  "historical_raw_generic_urg_prior_to_exact_rerun": {
     "source_sha": "759fc8e77446046cb942e7939c53ca49d3bde882",
     "status": "SOURCE_EQUIVALENT_HISTORICAL_NOT_EXACT_HEAD_RERUN",
     "fifo": "generic",
@@ -106,110 +368,98 @@
     "raw_scope": "No DUT-only adjusted denominator; no exclusions applied",
     "session_xml": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/session.xml"
   },
-  "current_run_artifacts": [
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/python/unittest.log",
-      "sha256": "a23628a8fc9854ceb64779b2c269947633cd65e06901c2e7dab6f5511c40c030"
+  "current_raw_generic_urg": {
+    "source_sha": "04550289e1ecb5fa0e38168869d4f2539929cb80",
+    "status": "EXACT_VERIFICATION_SOURCE_RAW_URG",
+    "fifo": "generic",
+    "hierarchy": "thermo5_sku_uvm_tb,uvm_pkg",
+    "reported_aggregate_percent": 76.12,
+    "metrics": {
+      "line": {
+        "covered": 2969,
+        "total": 3593
+      },
+      "condition": {
+        "covered": 594,
+        "total": 949
+      },
+      "toggle": {
+        "covered": 81740,
+        "total": 102612
+      },
+      "fsm": {
+        "covered": 22,
+        "total": 22
+      },
+      "branch": {
+        "covered": 336,
+        "total": 540
+      },
+      "assertion": {
+        "covered": 13,
+        "total": 17
+      },
+      "functional_group_percent": 69.2592
     },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/python/generate_generic_vectors.log",
-      "sha256": "33346a4273ddf22f3ee2ac3ef04da787d7028d7547e245bd96587dbdc7397e5c"
+    "inventory_rows": 784,
+    "inventory_detail": {
+      "uncovered_source_lines": 100,
+      "uncovered_condition_vectors": 214,
+      "uncovered_branch_vectors": 108,
+      "signal_direction_toggle_records": 292,
+      "unattempted_assertions": 3,
+      "assertion_failure_review": 1
     },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/generic_vcs/full_regression.log",
-      "sha256": "1b3ad3aadecca633c2f1f65c2a5855bcc0095d1c1bc4c820bf0c040886d7d615"
+    "raw_scope": "No DUT-only adjusted denominator; no exclusions applied",
+    "session_xml": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage/session.xml",
+    "dashboard": "runs/thermo5_tx_gate0_0455028_recheck/generic_vcs/coverage/dashboard.html"
+  },
+  "run_package_manifest": {
+    "path": "runs/thermo5_tx_gate0_0455028_recheck/gate0_run_manifest.json",
+    "sha256": "955b068dd3dcc5b5827c0e724bb04353f6ee619647cf1744be34010a6d9df7d5",
+    "reviewable_artifact_count": 191,
+    "binary_database_tree_count": 10
+  },
+  "current_raw_axil_urg": {
+    "source_sha": "04550289e1ecb5fa0e38168869d4f2539929cb80",
+    "status": "EXACT_VERIFICATION_SOURCE_RAW_URG_SEPARATE_ELABORATION",
+    "configuration": "AXI-Lite UVM regression, centered-cubic + EF2 STEP 5120",
+    "hierarchy": "thermo5_sku_uvm_tb,uvm_pkg",
+    "metrics": {
+      "line": {
+        "covered": 3328,
+        "total": 4241,
+        "percent": 78.47
+      },
+      "condition": {
+        "covered": 693,
+        "total": 1183,
+        "percent": 58.58
+      },
+      "toggle": {
+        "covered": 111362,
+        "total": 125344,
+        "percent": 88.85
+      },
+      "fsm": {
+        "covered": 17,
+        "total": 22,
+        "percent": 77.27
+      },
+      "branch": {
+        "covered": 453,
+        "total": 841,
+        "percent": 53.86
+      },
+      "assertion": {
+        "covered": 13,
+        "total": 17,
+        "percent": 76.47
+      },
+      "functional_group_percent": 80.787
     },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/generic_vcs/compile.log",
-      "sha256": "c888cbbbac85c1b3bd5a677e4ddc095cc0d4730f9f2ec61d425a7f11fffdc0ad"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/vcf.log",
-      "sha256": "6ea8dd1c91ff4c5c7fbb5b9a39b06312bd2aae11a1c694ab92abbf2a27a2f064"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/console.log",
-      "sha256": "842f33ac6e4949215475e6edec74f68ff5fa7bc1dbeb2d0e672dcbcc79522b90"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/formal/ef2/ef2/vcst_command.log",
-      "sha256": "004c1ce90fd69185be507507694d1e3cebab21ac4511c7689b57e4ed6c533327"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/analysis/coverage_inventory_from_759fc8e.csv",
-      "sha256": "b0f80f205f477963ed4b9c134b74153f2b680f8f54f2cb6d7f85741dc48c8f32"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_frame_gain.mem",
-      "sha256": "023f8010589b9d76003fdac748fb2c12bf7b592fc344e9cc697062c07f901811"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_frame_start.mem",
-      "sha256": "a544490f60a4807444889abd49ee4f65153775725cc71ea68306e4e9889f4a33"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_i.mem",
-      "sha256": "13713eaab0ad674c41effd3db937faba8476f748103e5a4f040af30e4d37dd04"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa0.mem",
-      "sha256": "c817d7c0ecb1e3adb2f4e64b222e2be2c07044ac6b64d6c784473e1b30ce1db3"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa1.mem",
-      "sha256": "0d59efbdfcfba7cdf7a4d088da9f3f9764dba894214b72c5b8a8a4e281edaefa"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa2.mem",
-      "sha256": "457cdc7989f1c3aada62cf38bd08dee959a368a0c2750078cccaa69986e377d0"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_pa3.mem",
-      "sha256": "a602e92c4621d4cb5897941512522e5200a4bbc6f49ed45b9e688815f1f378bd"
-    },
-    {
-      "path": "runs/thermo5_tx_gate0_eb1081/vectors/generic/tid32_thermo5_frontend_q.mem",
-      "sha256": "b1669636fa94f52f12f8733620a728c005fcb066a0f7f88c050a1b4b1bf1a5de"
-    }
-  ],
-  "historical_artifacts": [
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/signoff_manifest.json",
-      "sha256": "49a6c13750c00f66dd5766ff4e6a3783b29232d2ea55f9096d98976e53fc86a7"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/session.xml",
-      "sha256": "b863d47b7445814b7bdea6b1c82ee15c7d7e5265981f1a3d78f0c8d1906c643e"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/dashboard.html",
-      "sha256": "4d0164c6567944a0777de4d918b263613fba48dc43bd6be96aaf34b2b84491e4"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage/asserts.html",
-      "sha256": "fa6c7e10ae416ad01852a613d5ec026b33027e7f7f75c156cb141badbf9e5eeb"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/generic_vcs/coverage_merge.log",
-      "sha256": "5bdeb682d6b11895900b29883619efe0c00a6778de1df651d2b5f09428de2c4d"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/stop_restart_make.log",
-      "sha256": "6efd18be5f0dde6c810cd089b781e216aa08aadb563b334a68adc1fa02c1f362"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/qualification_make.log",
-      "sha256": "f81fcfc06d11041cf89c114275eb5cc27108f7bcb649d2900a91b035320816ee"
-    },
-    {
-      "path": "runs/thermo5_linux_ef2_signoff_759fc8e/formal/formal_summary.json",
-      "sha256": "7c367aa65a3f02ecfd96b4fef302a1fb82aee2c92cb52358181298139cf2b825"
-    }
-  ],
-  "note": "Logs, vectors and historical VDB/URG remain under ignored runs/. This tracked JSON is an index and checksum list, not a substitute for those artifacts.",
-  "published_inventory": {
-    "path": "docs/verification/thermo5-tx-coverage-ledger.csv",
-    "sha256": "b3993c366b4c3ac0f6d08a7563d9229e7ab1619509453afe919f155c7339ef2f",
-    "rows": 784
+    "raw_scope": "Separate AXI-Lite elaboration; not merged with Generic mainline URG; no DUT-only adjustment or exclusions",
+    "session_xml": "runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs/coverage/session.xml",
+    "dashboard": "runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs/coverage/dashboard.html"
   }
 }

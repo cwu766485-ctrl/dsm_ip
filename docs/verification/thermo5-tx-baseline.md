@@ -1,27 +1,35 @@
 # Thermo5 TX Gate 0 baseline
 
-**Status:** audit and inventory prepared; exact-HEAD licensed simulation/formal
-rerun is blocked by the Synopsys license connection. Gate 0 is therefore
-**PARTIAL / ACCEPTANCE OPEN**, not a full PASS.
+**Status:** `PASS_LINUX_GENERIC_SCOPE`. Gate 0's exact-source Linux checks,
+raw Generic URG, and source-linked inventory are complete. Vendor-specific
+XPM/GT Wizard and board/physical checks remain outside the available Linux
+tool environment; they are recorded as NOT RUN, not PASS.
 
 **Audit date:** 2026-10-29 (Asia/Singapore)
 
-**Current source:** branch `thermo5`, HEAD
-`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`
+**Audited branch source:** `thermo5`, HEAD
+`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`.
+
+**Verification source:** `codex/thermo5-tx-gate0-baseline`, commit
+`04550289e1ecb5fa0e38168869d4f2539929cb80`, tree
+`b56d79ac3f3481a8dcaa86ae024539b10aff590a`. The run manifests record a clean
+worktree. This commit changes documentation only relative to the audited RTL,
+DV, constraints, and build inputs.
 
 **Comparison checkpoint:** `759fc8e77446046cb942e7939c53ca49d3bde882`.
+The exact-current Generic URG report was independently regenerated and its
+HTML/XML coverage tables match the checkpoint report after timestamp/path
+normalization. The CSV inventory now points to the exact-current report.
 
 ## Scope and source identity
 
 The reviewed product is the thermo5 transmitter path only. No RX or AI-DPD
-source, parameter, test, or configuration was changed. `git status` was clean
-before this audit. Comparing the current HEAD with the plan's checkpoint shows
-one documentation-only change: the addition of
-`docs/exec-plans/active/thermo5-tx-only-closure-codex.md`. There are no HDL,
-testbench, filelist, constraint, or build-configuration changes between those
-two commits. The prior run at the checkpoint is useful source-equivalent
-historical evidence, but it is not an exact-HEAD rerun and is labeled as such
-throughout this report.
+source, parameter, test, or configuration was changed. The starting worktree
+was clean. Comparing the audited source with checkpoint 759fc8e shows only a
+documentation-only change: the TX closure plan. No HDL, testbench, filelist,
+constraint, or build-configuration input differs. The latest VCS, URG, and VC
+Formal results below were rerun at verification commit 04550289, not inferred
+from the earlier checkpoint.
 
 ## Active hierarchy and configuration
 
@@ -50,35 +58,43 @@ period, 200-MHz free-running clock period, and 125-MHz GT reference clock.
 Parent I/O budgets and board-level timing remain assumptions until measured
 board constraints are supplied.
 
-## Gate 0 commands and current-run results
+## Gate 0 commands and exact-source results
 
-All current-run outputs are preserved locally under the ignored directory
-`runs/thermo5_tx_gate0_eb1081/`.
-[`thermo5-tx-gate0-evidence.json`](thermo5-tx-gate0-evidence.json) records the
-source SHA, commands, outcomes, and log checksums. Generated logs and vectors
-remain in `runs/` and are not committed as project source.
+All current outputs and complete logs are preserved under the ignored
+`runs/thermo5_tx_gate0_0455028_recheck/` directory. The tracked
+[`thermo5-tx-gate0-evidence.json`](thermo5-tx-gate0-evidence.json) records
+commands, source SHA, selected artifact checksums, configuration, and results.
+Generated logs, VDBs, URG output, and vectors are not committed as source.
 
-| Check | Command / configuration | Result at current HEAD |
+| Check | Exact command/configuration | Result at verification SHA `0455028` |
 | --- | --- | --- |
-| Python reference tests | `cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v` | **PASS, 36/36** (`python/unittest.log`) |
-| Generic Python oracle vectors | `python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/thermo5_tx_gate0_eb1081/vectors/generic --words 56 --seed 610216 --profile random --interp-mode centered_cubic --tidsm-order 2 --step 5120 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288` | **PASS**, 56 source/output words, four planes (`python/generate_generic_vectors.log`) |
-| Generic VCS full regression | `make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_eb1081/generic_vcs THERMO5_VECTORS=$PWD/runs/thermo5_tx_gate0_eb1081/vectors/generic THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120` | **BLOCKED before compile**: VCS V-2023.12-SP1 could not connect to license server (`generic_vcs/full_regression.log`). No RTL compile or runtime result. |
-| AXI-Lite STOP/drain/restart | Would use `thermo5-axil-stop-restart-vcs-run`, order 2, STEP 5120 | **NOT RUN at current HEAD**: same VCS license blocker; historical exact test is listed below. |
-| 2,072-word EF2 qualification | Would use `thermo5-ef2-qualification`, seeds 271027/271028/271029 | **NOT RUN at current HEAD**: same VCS license blocker; historical exact test is listed below. |
-| EF2 scoped formal | `python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 --out-dir runs/thermo5_tx_gate0_eb1081/formal/ef2` | **BLOCKED**: VC Formal V-2023.12-SP2 started but could not connect to license server; no proof was produced (`formal/ef2/ef2/vcf.log`). |
-| Vivado / XSim / MATLAB / real XPM | Tool discovery on this Linux host | **NOT AVAILABLE**. No XPM, XSim, or GT Wizard run is claimed. |
+| Python reference suite | `cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v` | **PASS, 36/36**; `python/unittest.log` |
+| Generic Python oracle vectors | `python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/thermo5_tx_gate0_0455028_recheck/vectors/generic --words 56 --seed 610216 --profile random --interp-mode centered_cubic --tidsm-order 2 --step 5120 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288` | **PASS**, 56 source/output words on each of four planes |
+| Generic VCS UVM regression | `make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/generic_vcs THERMO5_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/generic THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120` | **PASS**: bit-true, bubble/backpressure, FIFO boundary/empty, reset/replay, and expected illegal-frame negative test; zero UVM errors/fatals |
+| Generic URG merge | `make -C dv/uvm/sim thermo5-coverage-merge THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/generic_vcs` | **PASS**; fresh raw URG at SHA 0455028, details below |
+| Full AXI-Lite VCS regression | `make -C dv/uvm/sim thermo5-axil-vcs-regression THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/axil_full_vcs THERMO5_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/axil THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120` | **PASS**: config/register, graceful STOP, coefficient transport, nonlinear coefficient transport, tap-4 identity, boundary phase, negative frame/mailbox, parameter guard, and separate AXI-Lite URG merge; raw AXI-Lite URG 78.47% line (3328/4241), 58.58% condition (693/1183), 88.85% toggle (111362/125344), 77.27% FSM (17/22), 53.86% branch (453/841), 76.47% assertion (13/17), 80.787% group; zero UVM errors/fatals in legal UVM cases |
+| STOP/drain/restart | `make -C dv/uvm/sim thermo5-axil-stop-restart-vcs-run PYTHON=python3.12 THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/stop_restart_vcs THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120 THERMO5_STOP_RESTART_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/stop_restart` | **PASS**: 112 ordered four-plane words matched the Python oracle; packet 2 remained blocked until RUN restarted; zero UVM errors/fatals |
+| EF2 2,072-word qualification | `make -C dv/uvm/sim thermo5-ef2-qualification PYTHON=python3.12 THERMO5_OUT=$PWD/runs/thermo5_tx_gate0_0455028_recheck/ef2_qualification_vcs THERMO5_EF2_SUSTAINED_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/sustained THERMO5_EF2_RANDOM_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/random THERMO5_EF2_EXTREME_VECTORS=$PWD/runs/thermo5_tx_gate0_0455028_recheck/vectors/qualification/extreme` | **PASS**, seeds 271027/271028/271029: sustained 2,072 words/no gaps, positive and negative clamp with stall-hold/reset/replay, random stalls, all four targeted clamp/rail crosses 4/4; zero UVM errors/fatals |
+| EF2 scoped VC Formal | `PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 --out-dir runs/thermo5_tx_gate0_0455028_recheck/formal_withpath` | **PASS**, 6/6 assertions proven, 3/3 covers covered, zero black boxes; VC Formal V-2023.12-SP2 |
+| Vivado / XSim / MATLAB / real XPM / GT Wizard | Linux tool and vendor-source discovery | **NOT AVAILABLE** on this host. No vendor-model or physical result is claimed. |
 
-The Python vector result verifies oracle generation only; it does not replace
-RTL simulation. The VCS and VC Formal attempts stopped before compiling or
-proving properties, so their current-run status is not PASS or RTL failure.
+The initial VCS checkout attempt failed before compile while the license
+service was unavailable. A retry at the same verification SHA completed the
+Generic, AXI-Lite, STOP/restart, and qualification flows after license access
+recovered; the retry logs are the PASS evidence. One assertion failure in the
+raw coverage report is the expected trip from the deliberately malformed
+frame negative test. Three assertions remain unattempted, so `13/17` does not
+mean every assertion passed.
 
-## Latest raw Generic URG baseline available
+The EF2 proof establishes its stated 32-lane no-wrap/bounds and handshake
+properties. It is not a formal equivalence proof against the Python model and
+does not prove clamp-free operation for every signed-16 input.
 
-The latest traceable Generic UVM/URG database is from source checkpoint
-`759fc8e77446046cb942e7939c53ca49d3bde882`, VCS V-2023.12-SP1, the centered
-cubic + EF2 configuration, Generic FIFO, and the UVM hierarchy recorded in
-`runs/thermo5_linux_ef2_signoff_759fc8e/signoff_manifest.json`. Its raw URG
-summary is:
+## Latest raw Generic URG baseline at exact verification source
+
+The freshly generated Generic URG report is bound to verification source
+`04550289e1ecb5fa0e38168869d4f2539929cb80`, VCS V-2023.12-SP1, centered-cubic
++ EF2, Generic FIFO, and the recorded UVM hierarchy. Its raw URG summary is:
 
 | URG category | Covered / total | Raw score |
 | --- | ---: | ---: |
@@ -92,24 +108,21 @@ summary is:
 | Mean of the seven URG category scores | — | **76.12%** |
 
 These are raw unmodified report values for the measured hierarchy, not an
-audited DUT-only denominator, and they do not mean 76.12% of required TX
-features are verified. The full source-linked uncovered inventory has 784
-records in [`thermo5-tx-coverage-ledger.csv`](thermo5-tx-coverage-ledger.csv):
-100 zero-hit source-line records, 214 uncovered condition vectors, 108
-uncovered branch vectors, 292 signal-direction toggle records, three
-unattempted assertion records, and one assertion failure requiring
-disposition. Toggle records are at the
-reported signal-direction granularity; Gate 3 must regenerate per-bit
-transitions from an exact-current-source VDB before declaring bit-toggle
-closure.
+audited DUT-only denominator and not a claim that 76.12% of required TX
+features are verified. The exact-source 784-row inventory is in
+[`thermo5-tx-coverage-ledger.csv`](thermo5-tx-coverage-ledger.csv): 100
+zero-hit source-line records, 214 uncovered condition vectors, 108 uncovered
+branch vectors, 292 signal-direction toggle records, three unattempted
+assertion records, and one assertion failure requiring disposition. The
+report's toggle detail is at signal-direction granularity; Gate 3 must
+regenerate per-bit transitions before declaring bit-toggle closure. No
+exclusions or denominator changes were applied.
 
-The portfolio's previous **79.86%** current-baseline statement has no
-traceable matching raw URG artifact in the inspected evidence set and conflicts
-with the exact Generic report numerators above. It is withdrawn as a current
-baseline, retained only as an unverified historical document claim, and must
-not be compared with 76.12% as if same-hierarchy evidence existed. The
-AXI-Lite session is a separate elaboration and is not merged into or compared
-with the Generic mainline score.
+The earlier **79.86%** current-baseline statement has no traceable matching
+raw URG artifact in the inspected evidence set and conflicts with the exact
+Generic report above. It is withdrawn as a current baseline. The AXI-Lite
+session is a separate elaboration and is not merged into or compared with the
+Generic mainline score.
 
 ## Historical source-equivalent regression evidence
 
@@ -132,16 +145,18 @@ unattempted. The ratio 13/17 must not be described as “all assertions passed.�
 
 ## Gate 0 disposition and next action
 
-**Completed:** source/configuration audit; exact current SHA capture; Python
-reference suite; Python vector generation; raw coverage snapshot; complete
-source-linked inventory; feature/testpoint matrix; evidence manifest; report
-correction. No TX RTL or architecture was changed.
+**Gate 0 accepted for the Linux Generic/behavioral verification scope.** The
+exact-source Python, Generic VCS/URG, full AXI-Lite VCS, STOP/drain/restart,
+2,072-word EF2 qualification, and scoped EF2 formal checks all passed at
+verification SHA `04550289e1ecb5fa0e38168869d4f2539929cb80`. The full raw
+coverage report and 784-row inventory are preserved without exclusions.
 
-**Open for Gate 0 acceptance:** re-run Generic UVM/URG, AXI-Lite STOP/restart,
-2,072-word EF2 qualification, and scoped EF2 formal at exact HEAD after the
-VCS/VCF license connection is restored. Then regenerate raw URG and replace
-historical 759fc8e coverage rows only with same-run evidence. Real XPM remains
-separate and unavailable on this host.
+**Still outside this Linux Gate 0 acceptance:** real XPM FIFO, XSim/Vivado,
+current GT Wizard model, routed FPGA timing/resources, and physical RF/QAM256
+BER. These remain explicit NOT RUN / OPEN items. Targeted functional bins do
+not equal complete feature coverage, and raw code coverage remains 76.12%.
 
-Do not begin Gate 1 A/B experiments or Gate 2 worst-case sweeps as part of this
-baseline checkpoint. Those are separate PRs in the closure plan.
+Gate 1 A/B candidates, Gate 2 worst-case benchmark, and Gate 3 coverage
+convergence may now proceed as separate reviewable stages/PRs. Keep the
+verified main-chain configuration unchanged until candidate evidence and
+acceptance criteria justify a promotion.
