@@ -1,5 +1,27 @@
 # Update Log
 
+## 2026-10-29 - Complete Linux TX Gate 2 model campaign
+
+- Added reproducible held-out EF2/STEP/input-level/backoff/PAPR/state-width,
+  fixed-image DPD A/B, and four-plane gain/skew/fault sensitivity campaigns.
+  The campaigns use deterministic Python models and leave the product RTL and
+  default configuration unchanged.
+- Gate 2 selected the finite-set RMS 0.10 / STEP 5120 / 20-bit / no-clip
+  point: 21/224,256 digital errors (BER 9.3643e-5), mean EVM 2.4640%, and
+  SNDR 32.1675 dB. The modeled nominal/stress BERs are 1.4269e-4 / 7.7144e-4.
+  No product communication target or calibrated RF model is available, so
+  this is not a stable-link or physical BER signoff.
+- The tested fixed 2/4-tap DPD images regress versus identity; the result
+  rejects those images only. Pair-look-ahead remains an equivalence-proven
+  experiment with no FPGA PPA and is not enabled in the product hierarchy.
+- Exact commands, seeds, JSON/log SHA-256 values, assumptions, and limits are
+  in `docs/verification/thermo5-tx-worst-case.md` and
+  `docs/verification/thermo5-tx-gate2-evidence.json`. Python unit tests passed
+  39/39. Full logs and JSON outputs remain under ignored `runs/`.
+- Gate 2 model work is complete for the Linux scope; acceptance against a
+  product BER/BLER/EVM/ACLR target and hardware PPA remain open. No RX or
+  AI-DPD source changed.
+
 ## 2026-10-29 20:38 SGT - Complete Linux TX Gate 1 functional A/B evidence
 
 - Added a four-tap non-identity DPD fixed-point coefficient image, Python vector profile, and AXI-Lite UVM bit-true case. Re-ran two-tap and four-tap centered-cubic + EF2 streams at `STEP=5120`: each passed one-frame (56-word) and two-frame (112-word) comparisons on all four output planes with zero UVM errors/fatals.
