@@ -90,6 +90,11 @@ The EF2 proof establishes its stated 32-lane no-wrap/bounds and handshake
 properties. It is not a formal equivalence proof against the Python model and
 does not prove clamp-free operation for every signed-16 input.
 
+The subsequent Linux Gate 1 candidate evidence is recorded separately in
+[`thermo5-tx-algorithm-ab.md`](thermo5-tx-algorithm-ab.md) and
+[`thermo5-tx-gate1-evidence.json`](thermo5-tx-gate1-evidence.json). Those
+candidate-run coverage numbers are not substituted for the Gate 0 baseline.
+
 ## Latest raw Generic URG baseline at exact verification source
 
 The freshly generated Generic URG report is bound to verification source

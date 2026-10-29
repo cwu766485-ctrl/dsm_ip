@@ -1,5 +1,13 @@
 # Update Log
 
+## 2026-10-29 20:38 SGT - Complete Linux TX Gate 1 functional A/B evidence
+
+- Added a four-tap non-identity DPD fixed-point coefficient image, Python vector profile, and AXI-Lite UVM bit-true case. Re-ran two-tap and four-tap centered-cubic + EF2 streams at `STEP=5120`: each passed one-frame (56-word) and two-frame (112-word) comparisons on all four output planes with zero UVM errors/fatals.
+- Re-ran the EF2 pair-lookahead miter (4,096 cycles, 2,662 accepts, both clamp signs, stalls and bubbles); VC Formal passed 7/7 assertions and 4/4 covers with zero black boxes. Python reference suite passed 37/37.
+- Merged the four exploratory DPD VCS VDBs with URG. Raw AXI-Lite hierarchy: line 3320/4241 (78.28%), condition 596/1183 (50.38%), toggle 96408/125344 (76.91%), FSM 15/22 (68.18%), branch 410/841 (48.75%), assertion 11/17 (64.71%), group 59.7958%. No exclusions or denominator changes. This exploratory run does not replace Gate 0 baseline URG.
+- Report and evidence manifest: `docs/verification/thermo5-tx-algorithm-ab.md` and `thermo5-tx-gate1-evidence.json`. Source commit `dfb15a278657e4417b545fc138df0f0dd0399ac4`; logs/VDB/formal artifacts and SHA-256 values are under ignored `runs/thermo5_tx_gate1_dfb15a2/`.
+- Gate 1 Linux functional/equivalence evidence passes. DPD QAM256 benefit from calibrated coefficients and FPGA LUT/FF/DSP/Fmax remain open; no candidate was promoted into the product GT parent. No RX or AI-DPD source changed. Next: Gate 2 worst-case TX model, then Gate 3 coverage closure.
+
 ## 2026-10-29 20:22 SGT - Complete Linux TX-only Gate 0 verification
 
 - Re-ran the Gate 0 suite at clean verification source SHA `04550289e1ecb5fa0e38168869d4f2539929cb80`. The first VCS checkout was blocked before compile; after license access recovered, Generic VCS, full AXI-Lite VCS, STOP/drain/restart, 2,072-word EF2 qualification, and Generic/AXI-Lite URG merges all passed. Python unit tests passed 36/36; EF2 scoped VC Formal proved 6 assertions and covered 3 properties with zero black boxes.

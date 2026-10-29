@@ -32,6 +32,18 @@ def nonlinear_test_dpd_coefficients():
     }
 
 
+def nonlinear_test_dpd_coefficients_4tap():
+    """Four-tap extension of the bit-true AXI-Lite DPD test image."""
+    return {
+        "c1_re": (0x4000, 0x0400, 0x0200, 0x0100),
+        "c1_im": (0, 0, 0, 0),
+        "c3_re": (0x0800, 0x0200, -0x0100, 0x0080),
+        "c3_im": (0, 0, 0, 0),
+        "c5_re": (0, 0, 0, 0),
+        "c5_im": (0, 0, 0, 0),
+    }
+
+
 def wrap_signed(value, bits):
     modulus = 1 << bits
     return ((int(value) + (modulus >> 1)) % modulus) - (modulus >> 1)

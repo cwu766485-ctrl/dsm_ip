@@ -49,6 +49,14 @@ candidate work.
 
 ## Gate 1 — dormant algorithms / compile-time alternatives (A/B, not automatic integration)
 
+**Linux status (2026-10-29):** pair look-ahead VCS/formal equivalence and
+non-identity 2/4-tap DPD full-chain bit-true cases pass at source
+`dfb15a278657e4417b545fc138df0f0dd0399ac4`; the Python suite passes 37/37.
+See `docs/verification/thermo5-tx-algorithm-ab.md` and its evidence JSON.
+This closes Linux functional/equivalence checks for those candidates only.
+QAM256 improvement of the test DPD coefficients and LUT/FF/DSP/Fmax remain
+open; no candidate was promoted to the product configuration.
+
 For every candidate, document *source exists?*, selected in current hierarchy?, independent bit-true?, desired benefit?, LUT/FF/DSP/BRAM cost, Fmax and II measured?, communication effect at matched settings? Include at least:
 
 | Candidate | Current status to confirm | Mandatory A/B gate |

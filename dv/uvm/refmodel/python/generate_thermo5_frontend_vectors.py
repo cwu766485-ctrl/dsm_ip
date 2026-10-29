@@ -7,6 +7,7 @@ from pathlib import Path
 from dsm_refmodel.thermo5 import (
     generate_source_vectors,
     nonlinear_test_dpd_coefficients,
+    nonlinear_test_dpd_coefficients_4tap,
     read_source_vectors,
     run_centered_cubic_frontend,
     run_frozen_frontend,
@@ -32,7 +33,8 @@ def main():
     parser.add_argument("--interp-taps", type=int, choices=(2, 3, 4), default=2)
     parser.add_argument("--interp-mode", choices=("causal", "centered_cubic"),
                         default="centered_cubic")
-    parser.add_argument("--dpd-profile", choices=("identity", "nonlinear_test"),
+    parser.add_argument("--dpd-profile", choices=("identity", "nonlinear_test",
+                                                    "nonlinear_test_4tap"),
                         default="identity")
     parser.add_argument("--step", type=int, default=5120)
     parser.add_argument("--tidsm-order", type=int, choices=(1, 2), default=2,
@@ -52,12 +54,16 @@ def main():
             frame_gains=_csv_ints(args.frame_gains),
         )
     if args.interp_mode == "centered_cubic":
-        coefficients = (nonlinear_test_dpd_coefficients()
-                        if args.dpd_profile == "nonlinear_test" else None)
+        if args.dpd_profile == "nonlinear_test":
+            coefficients, active_taps = nonlinear_test_dpd_coefficients(), 2
+        elif args.dpd_profile == "nonlinear_test_4tap":
+            coefficients, active_taps = nonlinear_test_dpd_coefficients_4tap(), 4
+        else:
+            coefficients, active_taps = None, None
         pa_words = run_centered_cubic_frontend(
             i_words, q_words, starts, gains, step=args.step,
             dpd_coefficients=coefficients,
-            dpd_active_taps=2 if coefficients is not None else None,
+            dpd_active_taps=active_taps,
             tidsm_order=args.tidsm_order)
     else:
         if args.dpd_profile != "identity":

@@ -43,6 +43,8 @@ THERMO5_LONG_VECTORS ?= $(ROOT)/runs/thermo5_axil_tlast_112_vectors
 THERMO5_CENTERED_LP_VECTORS ?= $(ROOT)/runs/thermo5_centered_low_power_vectors
 THERMO5_NONLINEAR_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_short_vectors
 THERMO5_NONLINEAR_LONG_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_long_vectors
+THERMO5_NONLINEAR_TAP4_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_tap4_short_vectors
+THERMO5_NONLINEAR_TAP4_LONG_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_tap4_long_vectors
 THERMO5_STOP_RESTART_VECTORS ?= $(ROOT)/runs/thermo5_centered_stop_restart_vectors
 THERMO5_STOP_RESTART_TIDSM_ORDER ?= 2
 THERMO5_STOP_RESTART_STEP ?= 5120
@@ -124,6 +126,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
 thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-ef2-pair-vcs thermo5-ef2-serdes-vcs \
         thermo5-gt-parent-link-fault-vcs \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
+        thermo5-axil-centered-nonlinear-tap4-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
 
@@ -555,6 +558,28 @@ thermo5-axil-centered-nonlinear-bittrue-vcs:
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_bittrue_test UVM_SEED=610214 \
 	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_LONG_VECTORS) \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32'
+
+thermo5-axil-centered-nonlinear-tap4-bittrue-vcs:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_NONLINEAR_TAP4_SHORT_VECTORS) --words 56 --seed 612004 \
+	  --interp-mode centered_cubic --dpd-profile nonlinear_test_4tap \
+	  --frame-start-words 1 --frame-gains 16384 \
+	  --tidsm-order $(THERMO5_TIDSM_ORDER) --step $(THERMO5_STEP)
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_NONLINEAR_TAP4_LONG_VECTORS) --words 112 --seed 612005 \
+	  --interp-mode centered_cubic --dpd-profile nonlinear_test_4tap \
+	  --frame-start-words 1,57 --frame-gains 16384,16384 \
+	  --tidsm-order $(THERMO5_TIDSM_ORDER) --step $(THERMO5_STEP)
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_TAP4_SHORT_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_tap4_bittrue_test UVM_SEED=612004 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_TAP4_SHORT_VECTORS) \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_tap4_bittrue_test UVM_SEED=612005 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_TAP4_LONG_VECTORS) \
 	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32'
 
 thermo5-vcs-multiseed: thermo5-vcs

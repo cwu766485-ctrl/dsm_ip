@@ -1,6 +1,37 @@
 # Execution frontier
 
-## Current execution state: TX-only Gate 0 accepted; next independent closure stages (2026-10-29)
+## Current execution state: TX-only Gate 1 Linux DV evidence complete; Gate 2 next (2026-10-29)
+
+Gate 0 remains **PASS for Linux Generic/behavioral scope** at verification
+source `04550289e1ecb5fa0e38168869d4f2539929cb80`; its complete baseline and
+raw URG inventory remain unchanged. Gate 1 candidate DV evidence is now
+complete at clean source commit `dfb15a278657e4417b545fc138df0f0dd0399ac4`
+(tree `ef075943be1b6fe3c9570d3bd8c54324240c0a1f`).
+
+At Gate 1, the EF2 pair-lookahead experiment passed a 4,096-cycle VCS miter
+and VC Formal (7/7 assertions, 4/4 covers, zero black boxes). Non-identity
+2-tap and 4-tap DPD images each matched all four output planes for both 56-word
+single-frame and 112-word two-frame streams; the Python suite passes 37/37.
+Their exploratory raw AXI-Lite URG is line 3,320/4,241, condition 596/1,183,
+toggle 96,408/125,344, FSM 15/22, branch 410/841, assertion 11/17, and
+functional group 59.7958%. No exclusions or denominator edits were made.
+
+Gate 1 is accepted for **Linux functional/equivalence evidence only**.
+Communication value of the hand-selected DPD images and FPGA LUT/FF/DSP/Fmax
+remain OPEN; pair look-ahead and 2/4-tap DPD remain disabled/unselected in the
+product hierarchy. Full logs, VDBs, formal summary and hashes are local under
+`runs/thermo5_tx_gate1_dfb15a2/`; tracked report/manifest:
+`docs/verification/thermo5-tx-algorithm-ab.md` and
+`docs/verification/thermo5-tx-gate1-evidence.json`.
+
+Next: Gate 2 TX worst-case modeling, including multiple seeds, RMS/PAPR,
+offset/clamp behavior, analog PA assumptions and fault cases. Keep behavioral
+results separate from physical RF claims. Then proceed to Gate 3 coverage
+closure and Gate 4 signoff. No RX/AI-DPD source was changed.
+
+<!-- Gate 0 historical state retained below for traceability. -->
+
+## Historical execution state: TX-only Gate 0 accepted (2026-10-29)
 
 Gate 0 is **PASS for Linux Generic/behavioral scope** at verification source
 `04550289e1ecb5fa0e38168869d4f2539929cb80` (clean worktree; run manifests

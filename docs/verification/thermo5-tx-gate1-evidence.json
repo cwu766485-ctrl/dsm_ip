@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "gate": "Gate 1 algorithm A/B Linux evidence",
+  "status": "PASS_LINUX_FUNCTIONAL_EQUIVALENCE_PERFORMANCE_OPEN",
+  "source": {
+    "branch": "codex/thermo5-tx-gate1-algorithm-ab",
+    "commit_sha": "dfb15a278657e4417b545fc138df0f0dd0399ac4",
+    "tree_sha": "ef075943be1b6fe3c9570d3bd8c54324240c0a1f",
+    "worktree_clean_before_runs": true,
+    "date": "2026-10-29"
+  },
+  "checks": [
+    {
+      "name": "Python reference suite",
+      "status": "PASS",
+      "command": "cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+      "result": "37 tests passed",
+      "log": "runs/thermo5_tx_gate1_dfb15a2/python_unittest.log"
+    },
+    {
+      "name": "2-tap non-identity DPD full-chain bit-true VCS",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-axil-centered-nonlinear-bittrue-vcs PYTHON=python3.12 THERMO5_OUT=$PWD/runs/thermo5_tx_gate1_dfb15a2/dpd2/vcs THERMO5_NONLINEAR_SHORT_VECTORS=$PWD/runs/thermo5_tx_gate1_dfb15a2/dpd2/vectors/short THERMO5_NONLINEAR_LONG_VECTORS=$PWD/runs/thermo5_tx_gate1_dfb15a2/dpd2/vectors/long THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "result": "56 words, one frame; 112 words, two frames; all four planes bit-true; zero UVM errors/fatals",
+      "log": "runs/thermo5_tx_gate1_dfb15a2/dpd2/make_vcs.log"
+    },
+    {
+      "name": "4-tap non-identity DPD full-chain bit-true VCS",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-axil-centered-nonlinear-tap4-bittrue-vcs PYTHON=python3.12 THERMO5_OUT=$PWD/runs/thermo5_tx_gate1_dfb15a2/dpd4/vcs THERMO5_NONLINEAR_TAP4_SHORT_VECTORS=$PWD/runs/thermo5_tx_gate1_dfb15a2/dpd4/vectors/short THERMO5_NONLINEAR_TAP4_LONG_VECTORS=$PWD/runs/thermo5_tx_gate1_dfb15a2/dpd4/vectors/long THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "result": "56 words, one frame; 112 words, two frames; all four planes bit-true; zero UVM errors/fatals",
+      "log": "runs/thermo5_tx_gate1_dfb15a2/dpd4/make_vcs.log"
+    },
+    {
+      "name": "EF2 pair look-ahead VCS miter",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-ef2-pair-vcs THERMO5_EF2_PAIR_OUT=$PWD/runs/thermo5_tx_gate1_dfb15a2/pair/vcs",
+      "result": "4096 cycles, seed 20261028, accepted 2662, back-to-back 1638, positive clamps 307, negative clamps 408, stalls 818, bubbles 616",
+      "log": "runs/thermo5_tx_gate1_dfb15a2/pair/make_vcs.log"
+    },
+    {
+      "name": "EF2 pair look-ahead scoped VC Formal",
+      "status": "PASS",
+      "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2_pair --out-dir $PWD/runs/thermo5_tx_gate1_dfb15a2/pair/formal_pair",
+      "result": "7/7 assertions proven; 4/4 covers covered; zero black boxes",
+      "summary": "runs/thermo5_tx_gate1_dfb15a2/pair/formal_pair/formal_summary.json"
+    },
+    {
+      "name": "Exploratory DPD candidate URG merge",
+      "status": "PASS_RAW_REPORT_ONLY",
+      "command": "/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -full64 -dir <2-tap and 4-tap compile/run VDBs> -report runs/thermo5_tx_gate1_dfb15a2/dpd_ab_urg/report -dbname thermo5_dpd_ab",
+      "raw_coverage": {
+        "line": "3320/4241 (78.28%)",
+        "condition": "596/1183 (50.38%)",
+        "toggle": "96408/125344 (76.91%)",
+        "fsm": "15/22 (68.18%)",
+        "branch": "410/841 (48.75%)",
+        "assertion": "11/17 (64.71%)",
+        "functional_group": "59.7958%"
+      },
+      "exclusions": 0,
+      "denominator_modified": false,
+      "log": "runs/thermo5_tx_gate1_dfb15a2/dpd_ab_urg/urg.log",
+      "html_report": "runs/thermo5_tx_gate1_dfb15a2/dpd_ab_urg/report/dashboard.html"
+    }
+  ],
+  "not_measured_or_open": [
+    "QAM256 communication benefit of the hand-selected DPD images",
+    "DPD coefficients fitted against a calibrated PA model",
+    "LUT/FF/DSP/Fmax or routed implementation comparison",
+    "Promotion of pair look-ahead or 2/4-tap DPD into the product GT parent"
+  ],
+  "artifact_sha256": {
+    "runs/thermo5_tx_gate1_dfb15a2/python_unittest.log": "68f9cdc46c23bded8eaff593bb89e49fbc537088b965fd107c753879210bf108",
+    "runs/thermo5_tx_gate1_dfb15a2/dpd2/make_vcs.log": "d2e92c62c94439bb3c88d12dcd09517579b9afbf7e5598388be2e7f1ffd6daa9",
+    "runs/thermo5_tx_gate1_dfb15a2/dpd4/make_vcs.log": "333b71bbd6b08ed6b3921f3a39675a710b085cbb5e67adbf109b03f524951182",
+    "runs/thermo5_tx_gate1_dfb15a2/pair/make_vcs.log": "3c2e39dad1f910c4d54acd02153bda38b8a3dbce84356ba58d1de341fcd8e340",
+    "runs/thermo5_tx_gate1_dfb15a2/pair/formal_pair.log": "b43ab3c0816007412a5c878c0ef467e217184c8d98469a4ad7048c43ad1adc69",
+    "runs/thermo5_tx_gate1_dfb15a2/pair/formal_pair/formal_summary.json": "575f619a2719bc048e70d7ee927df5d5f54417f89c1c7b8246bb884f534e005a",
+    "runs/thermo5_tx_gate1_dfb15a2/dpd_ab_urg/urg.log": "04eb97303ac1234b0ba38211bdfbc7f06f5c61af665aab6229dad5720e4f057c"
+  }
+}
