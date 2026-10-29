@@ -98,5 +98,10 @@ class thermo5_sku_base_test extends uvm_test;
          vif.dpd_saturation_count[lane] !== 0)
         `uvm_fatal("DPD_COUNT",$sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
           lane,vif.dpd_sample_count[lane],expected_dpd_words,vif.dpd_saturation_count[lane]))
+    if (require_signed_extremes &&
+        (env.coverage.signed_min_beats==0 || env.coverage.signed_max_beats==0))
+      `uvm_fatal("SIGNED_EXTREMES",
+        $sformatf("Signed input corners missing: min=%0d max=%0d",
+          env.coverage.signed_min_beats,env.coverage.signed_max_beats))
   endtask
 endclass

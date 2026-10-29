@@ -22,6 +22,33 @@
   product BER/BLER/EVM/ACLR target and hardware PPA remain open. No RX or
   AI-DPD source changed.
 
+## 2026-10-29 - Complete Linux TX Gate 3 coverage audit checkpoint
+
+- Strengthened EF2 positive/negative saturation and stall checks on every
+  thermometric branch; added an AXI-Lite EF2 qualification target, signed input
+  endpoint checking, and a legal digital corner-vector generator. Corrected
+  TLAST/backpressure coverage to correlate accepted packet output targets,
+  rather than using cumulative TLAST counts.
+- Re-ran the current Linux Generic and AXI-Lite VCS/UVM regressions, EF2
+  saturation/rail/stall/reset qualifications, STOP/drain/restart, digital
+  corner tests, scoped EF2 and pair-look-ahead VC Formal, and a negative
+  one-LSB oracle mutation. Python reference tests passed 39/39.
+- Applicable functional covergroups are 4/4 Generic and 8/8 AXI-Lite at
+  100%. Raw project RTL URG remains 80.81% Generic and 83.45% AXI-Lite; a
+  complete 30,913-row source-mapped ledger preserves every miss as OPEN.
+  No exclusions or denominator edits were made, and no adjusted score is
+  claimed. Gate 3 code coverage is therefore not signed off at 100%.
+- The coverage report records exact test commands, raw metric counts,
+  assertions, limitations, and hashes. The complete CSV is tracked as a
+  reproducible gzip artifact with its uncompressed SHA-256 in
+  `docs/verification/thermo5-tx-gate3-evidence.json`.
+- Linux environment audit found VCS and VC Formal installed but no Vivado,
+  XSim, Yosys, Verilator, or real XPM source. Current GT Wizard/XPM
+  simulation, VCU118/ZCU111 Vivado PPA, and physical QAM256 BER remain open.
+  A tracked-RTL cross-reference inventory found no module with zero textual
+  references; no source was removed or archived without a safe candidate.
+  No RX or AI-DPD source changed.
+
 ## 2026-10-29 20:38 SGT - Complete Linux TX Gate 1 functional A/B evidence
 
 - Added a four-tap non-identity DPD fixed-point coefficient image, Python vector profile, and AXI-Lite UVM bit-true case. Re-ran two-tap and four-tap centered-cubic + EF2 streams at `STEP=5120`: each passed one-frame (56-word) and two-frame (112-word) comparisons on all four output planes with zero UVM errors/fatals.

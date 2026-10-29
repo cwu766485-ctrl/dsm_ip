@@ -43,6 +43,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_axil_nonlinear_dpd_test.svh"
   `include "thermo5_sku_axil_nonlinear_bittrue_test.svh"
   `include "thermo5_sku_axil_nonlinear_tap4_bittrue_test.svh"
+  `include "thermo5_sku_axil_ef2_corner_test.svh"
   `include "thermo5_sku_axil_tap4_identity_test.svh"
   `include "thermo5_sku_axil_boundary_phase_test.svh"
   `include "thermo5_sku_axil_mailbox_fault_test.svh"

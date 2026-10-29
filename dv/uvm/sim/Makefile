@@ -123,7 +123,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
         thermo5-centered-cubic-vcs thermo5-centered-cubic-low-power-vcs \
-thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-ef2-pair-vcs thermo5-ef2-serdes-vcs \
+        thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-axil-ef2-qualification thermo5-ef2-pair-vcs thermo5-ef2-serdes-vcs \
         thermo5-gt-parent-link-fault-vcs \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
         thermo5-axil-centered-nonlinear-tap4-bittrue-vcs \
@@ -283,6 +283,7 @@ thermo5-axil-vcs-negative:
 		-l $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	status=$$?; set -e; \
 	grep -q 'DSM frame_start was not aligned to a 56-sample boundary' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'centered cubic frame-end vector was followed by same-frame data' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'THERMO5_AXIL_ILLEGAL_FRAME_UVM_PASS' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'UVM_WARNING *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
@@ -467,6 +468,30 @@ thermo5-ef2-qualification:
 	  --vectors $(THERMO5_EF2_SUSTAINED_VECTORS) \
 	  $(THERMO5_EF2_RANDOM_VECTORS) $(THERMO5_EF2_EXTREME_VECTORS)
 	@echo "THERMO5_EF2_QUALIFICATION_PASS report=$(THERMO5_OUT)/ef2_qualification_coverage"
+
+# AXI-Lite wrapper variant of EF2 saturation/state-hold qualification. This
+# uses its public RUN/STOP register rather than the generic core_enable BFM.
+THERMO5_AXIL_EF2_VECTORS ?= $(ROOT)/runs/thermo5_axil_ef2_qualification/extreme_vectors
+thermo5-axil-ef2-qualification:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_AXIL_EF2_VECTORS) --words 2072 --seed 271028 \
+	  --profile ef2_saturation --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+	  --frame-start-words 1,687,1380 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_AXIL_EF2_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_AXIL_EF2_VECTORS) \
+	  THERMO5_TESTNAME=thermo5_sku_axil_ef2_corner_test UVM_SEED=271030 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=2072
+	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_ef2_corner_test_seed271030.vdb \
+	  -report $(THERMO5_OUT)/axil_ef2_qualification_coverage -dbname thermo5_axil_ef2_qualification \
+	  > $(THERMO5_OUT)/axil_ef2_qualification_coverage.log 2>&1
+	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/axil_ef2_qualification_coverage.log || \
+	  { echo "ERROR: AXI-Lite EF2 URG merge failed; inspect axil_ef2_qualification_coverage.log"; exit 1; }
+	@grep -Fq 'THERMO5_AXIL_EF2_CORNER_UVM_PASS' \
+	  $(THERMO5_OUT)/thermo5_sku_axil_ef2_corner_test_seed271030.log
+	@echo "THERMO5_AXIL_EF2_QUALIFICATION_PASS report=$(THERMO5_OUT)/axil_ef2_qualification_coverage"
 
 # Exact look-ahead microarchitecture experiment. It is not selected by the
 # product wrappers and must not replace the baseline before routed timing.

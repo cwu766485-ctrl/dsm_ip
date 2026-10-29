@@ -1,33 +1,52 @@
 # Execution frontier
 
-## Current execution state: TX-only Gate 1 Linux DV evidence complete; Gate 2 next (2026-10-29)
+## Current execution state: TX-only Linux Gates 0–3 evidence recorded; raw code closure and physical signoff remain open (2026-10-29)
 
 Gate 0 remains **PASS for Linux Generic/behavioral scope** at verification
-source `04550289e1ecb5fa0e38168869d4f2539929cb80`; its complete baseline and
-raw URG inventory remain unchanged. Gate 1 candidate DV evidence is now
-complete at clean source commit `dfb15a278657e4417b545fc138df0f0dd0399ac4`
-(tree `ef075943be1b6fe3c9570d3bd8c54324240c0a1f`).
+source `04550289e1ecb5fa0e38168869d4f2539929cb80`. Gate 1 equivalence tests
+remain **PASS** at `dfb15a278657e4417b545fc138df0f0dd0399ac4`: pair-look-ahead
+passed a 4,096-cycle VCS miter and VC Formal (7/7 assertions, 4/4 covers, no
+black boxes); the 2/4-tap non-identity DPD cases matched all four output
+planes. No candidate was promoted to the product configuration.
 
-At Gate 1, the EF2 pair-lookahead experiment passed a 4,096-cycle VCS miter
-and VC Formal (7/7 assertions, 4/4 covers, zero black boxes). Non-identity
-2-tap and 4-tap DPD images each matched all four output planes for both 56-word
-single-frame and 112-word two-frame streams; the Python suite passes 37/37.
-Their exploratory raw AXI-Lite URG is line 3,320/4,241, condition 596/1,183,
-toggle 96,408/125,344, FSM 15/22, branch 410/841, assertion 11/17, and
-functional group 59.7958%. No exclusions or denominator edits were made.
+Gate 2 Linux model campaign is complete. The QAM256 staged sweep used four
+development and four disjoint held-out seeds and reports the finite-set
+winner at RMS 0.10, STEP 5120, 20-bit state, no backoff/clipping: digital
+BER `9.3643e-5` (21/224,256), EVM 2.4640%, SNDR 32.1675 dB. Nominal/stress
+behavioral chain BER is `1.4269e-4` / `7.7144e-4`. Fixed 2/4-tap verification
+coefficient images were worse than identity; this rejects those images only.
+Four-plane gain/skew/fault sensitivity is also recorded. These are synthetic
+model results with no product BER/BLER target, so communication acceptance is
+`TARGET_UNDEFINED`; no physical link claim is made. See
+`docs/verification/thermo5-tx-worst-case.md` and
+`docs/verification/thermo5-tx-gate2-evidence.json`.
 
-Gate 1 is accepted for **Linux functional/equivalence evidence only**.
-Communication value of the hand-selected DPD images and FPGA LUT/FF/DSP/Fmax
-remain OPEN; pair look-ahead and 2/4-tap DPD remain disabled/unselected in the
-product hierarchy. Full logs, VDBs, formal summary and hashes are local under
-`runs/thermo5_tx_gate1_dfb15a2/`; tracked report/manifest:
-`docs/verification/thermo5-tx-algorithm-ab.md` and
-`docs/verification/thermo5-tx-gate1-evidence.json`.
+Gate 3 has **100% URG score for currently sampled applicable functional
+covergroups**: Generic 4/4 applicable groups; AXI-Lite 8/8 groups. Generic
+STOP/Restart coverage is not applicable to that direct Generic configuration
+and remains 0% there; the AXI-Lite STOP/Restart group is 100%. This does not
+close every source-level feature cross. Raw project RTL code coverage is
+`RAW_100_OPEN`: Generic aggregate 80.81% (line 83.15%, condition 67.79%,
+toggle 82.78%, FSM 100%, branch 64.47%, assertion 86.67%); AXI-Lite aggregate
+83.45% (line 90.31%, condition 74.94%, toggle 89.86%, FSM 77.27%, branch
+81.63%, assertion 86.67%). No exclusions or denominator changes were applied;
+no adjusted score is claimed. Current per-bin CSV/manifest and negative
+checker mutation are in `docs/verification/thermo5-tx-coverage-signoff.md`
+and `docs/verification/thermo5-tx-gate3-evidence.json`.
 
-Next: Gate 2 TX worst-case modeling, including multiple seeds, RMS/PAPR,
-offset/clamp behavior, analog PA assumptions and fault cases. Keep behavioral
-results separate from physical RF claims. Then proceed to Gate 3 coverage
-closure and Gate 4 signoff. No RX/AI-DPD source was changed.
+Current-source Linux Generic and AXI-Lite VCS regressions, STOP/drain/restart,
+2,072-word EF2 positive/negative clamp/stall/rail/reset qualification,
+eight legal digital corner patterns per configuration, and scoped EF2 plus
+pair-look-ahead VC Formal pass. Generic EF2 reports a post-source finite-tail
+underflow diagnostic with `early_underflow=0` because its direct wrapper does
+not enable `core_drain`; AXI-Lite qualification reports zero underflow. This
+distinction is retained in the coverage report. No RX or AI-DPD source was
+changed.
+
+Linux closure artifacts are complete through coverage audit and final report.
+Gate 4 remains OPEN for real XPM/Vivado/XSim, current GT Wizard/TXP, CDC/RDC
+integration review, FPGA PPA, and physical QAM256 BER. Do not claim raw or
+eligible 100% code coverage, physical RF pass, or hardware readiness.
 
 <!-- Gate 0 historical state retained below for traceability. -->
 

@@ -15,6 +15,44 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
       `uvm_fatal("WORDS","EF2 corner test requires at least 2072 oracle words")
   endfunction
 
+  task automatic stall_candidate(input bit positive);
+    bit candidate;
+    candidate=0;
+    while (!candidate) begin
+      @(negedge vif.core_clk);
+      candidate=(vif.pa_valid==4'hf) &&
+                (positive ? (|vif.ef2_pos_clamp_candidate) :
+                            (|vif.ef2_neg_clamp_candidate));
+    end
+    vif.pa_ready=4'h0;
+    wait(vif.ef2_clamp_stalled &&
+         (positive ? (|vif.ef2_pos_clamp_candidate) :
+                     (|vif.ef2_neg_clamp_candidate)));
+    for (int branch=0;branch<4;branch++) begin
+      saved_e1_i[branch]=vif.ef2_err1_i[branch];
+      saved_e2_i[branch]=vif.ef2_err2_i[branch];
+      saved_e1_q[branch]=vif.ef2_err1_q[branch];
+      saved_e2_q[branch]=vif.ef2_err2_q[branch];
+    end
+    repeat(8) begin
+      @(posedge vif.core_clk);
+      #1ps;
+      if (!vif.ef2_clamp_stalled ||
+          !(positive ? (|vif.ef2_pos_clamp_candidate) :
+                       (|vif.ef2_neg_clamp_candidate)))
+        `uvm_fatal("CLAMP_STALL","Selected clamp candidate was not held during TIDSM backpressure")
+      for (int branch=0;branch<4;branch++)
+        if (vif.ef2_err1_i[branch]!==saved_e1_i[branch] ||
+            vif.ef2_err2_i[branch]!==saved_e2_i[branch] ||
+            vif.ef2_err1_q[branch]!==saved_e1_q[branch] ||
+            vif.ef2_err2_q[branch]!==saved_e2_q[branch])
+          `uvm_fatal("STATE_STALL",
+            $sformatf("EF2 branch %0d state advanced under PA stall",branch))
+    end
+    @(negedge vif.core_clk);
+    vif.pa_ready=4'hf;
+  endtask
+
   task send_and_check(bit check_saturation);
     fork
       send_source(cfg.source_beats);
@@ -22,30 +60,8 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
         wait(env.source.monitor.accepted_beats>=4);
         env.control.core_on();
         if (check_saturation) begin
-          do @(negedge vif.core_clk);
-          while ((vif.pa_valid!=4'hf) ||
-                 (!(|vif.ef2_pos_clamp_candidate) && !(|vif.ef2_neg_clamp_candidate)));
-          vif.pa_ready=4'h0;
-          wait(vif.ef2_clamp_stalled);
-          for (int branch=0;branch<4;branch++) begin
-            saved_e1_i[branch]=vif.ef2_err1_i[branch];
-            saved_e2_i[branch]=vif.ef2_err2_i[branch];
-            saved_e1_q[branch]=vif.ef2_err1_q[branch];
-            saved_e2_q[branch]=vif.ef2_err2_q[branch];
-          end
-          repeat(8) begin
-            @(posedge vif.core_clk);
-            if (vif.ef2_clamp_stalled !== 1'b1)
-              `uvm_fatal("CLAMP_STALL","Saturation candidate was not held during TIDSM backpressure")
-            for (int branch=0;branch<4;branch++)
-              if (vif.ef2_err1_i[branch]!==saved_e1_i[branch] ||
-                  vif.ef2_err2_i[branch]!==saved_e2_i[branch] ||
-                  vif.ef2_err1_q[branch]!==saved_e1_q[branch] ||
-                  vif.ef2_err2_q[branch]!==saved_e2_q[branch])
-                `uvm_fatal("STATE_STALL",$sformatf("EF2 branch %0d state advanced under PA stall",branch))
-          end
-          @(negedge vif.core_clk);
-          vif.pa_ready=4'hf;
+          stall_candidate(1'b1);
+          stall_candidate(1'b0);
         end
         wait(env.scoreboard.checked==cfg.core_words);
         env.control.core_off();
@@ -65,9 +81,9 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
         env.coverage.ef2_state_rail_cycles==0)
       `uvm_fatal("EF2_COVERAGE","Both clamp polarities, clamp candidate held, and a state rail must be observed")
     for (int branch=0;branch<4;branch++)
-      if ((env.coverage.ef2_positive_clamp_branch[branch] +
-           env.coverage.ef2_negative_clamp_branch[branch])==0)
-        `uvm_fatal("EF2_BRANCH_COVERAGE",$sformatf("branch %0d did not reach a state clamp (+%0d -%0d)",
+      if (env.coverage.ef2_positive_clamp_branch[branch]==0 ||
+          env.coverage.ef2_negative_clamp_branch[branch]==0)
+        `uvm_fatal("EF2_BRANCH_COVERAGE",$sformatf("branch %0d did not reach both state clamp polarities (+%0d -%0d)",
           branch,env.coverage.ef2_positive_clamp_branch[branch],
           env.coverage.ef2_negative_clamp_branch[branch]))
     `uvm_info("EF2_CLAMP_DETAIL",$sformatf("branch clamps: b0 +%0d/-%0d b1 +%0d/-%0d b2 +%0d/-%0d b3 +%0d/-%0d",

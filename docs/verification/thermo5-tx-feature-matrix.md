@@ -1,5 +1,31 @@
 # Thermo5 TX feature, testpoint, and coverage matrix — Gate 0
 
+## Current Gate 3 Linux snapshot (2026-10-29)
+
+The rows below update the historical Gate 0 inventory without rewriting its
+original baseline measurements. Source-level details and exact raw misses are
+in [`thermo5-tx-coverage-signoff.md`](thermo5-tx-coverage-signoff.md) and the
+decompressible [`thermo5-tx-gate3-coverage-ledger.csv.gz`](thermo5-tx-gate3-coverage-ledger.csv.gz).
+
+| Feature / requirement | Legal testpoint and independent checker | Current Linux evidence | Disposition |
+| --- | --- | --- | --- |
+| Signed input corners and four-plane bit-true stream | Zero, ±full-scale, alternating endpoints, impulse, ramp, PRBS, quantizer tie; per-plane Python oracle and signed min/max monitor | Eight unique seeds in Generic and AXI-Lite configurations; every output word checked on all four planes | Covered for the tested vectors; exhaustive input space not claimed |
+| AXIS FIFO / source bubbles / PA backpressure | FIFO boundary and empty tests, source valid gaps, all/partial/zero Ready masks; scoreboard and plane atomicity monitor | Generic full regression and 100% `plane_atomic_cg`/`source_cg` groups | Current sampled bins covered; residual/parameter source bins remain in raw code ledger |
+| Frame end concurrent with PA stall | Accepted TLAST is correlated to pending output word target; four-plane partial-ready during drain; scoreboard checks full drain | AXI-Lite graceful STOP: `tlast_pa_stall=5`, `stop_partial_pa_stall=5`, 56 ordered words; Generic bubble test reports TLAST/backpressure overlap | Covered in the directed AXI-Lite case; event monitor does not infer overlap from cumulative TLAST count |
+| EF2 positive and negative clamp, all four branches | Rotating signed-extreme vector, monitor-observed branch clamp events, exact oracle, candidate stall and state hold checker | Generic and AXI-Lite 2,072-word qualifications; both polarities per branch; eight-cycle clamp stall hold | Covered for targeted corner vectors; not a proof that every legal stream is clamp-free |
+| EF2 state rail, stall, reset and replay | Observe rail with backpressure; assert state hold; reset after nonzero state; replay against oracle | AXI-Lite: `rail=222`, `rail_stall=8`, `underflow=0`; reset/replay passes. Generic: `early_underflow=0`; post-source finite-tail diagnostic is nonzero because direct wrapper does not enable drain | Directed checks pass; retain the generic finite-tail diagnostic separately |
+| STOP / drain / restart | Stop mid-packet; monitor six event bins; block second packet until RUN; check output ordering and oracle | AXI-Lite `stop_restart_cg=100%`; 112 ordered four-plane words; zero underflow/protocol errors | Covered in AXI-Lite elaboration |
+| AXI-Lite read/write/reset and coefficient transport | Register, WSTRB, reset, coefficient transport and commit tests; bus monitor/readback/data oracle | AXI-Lite `read_cg`, `write_cg`, `reset_cg` and all current groups report 100% | Current covergroup bins covered; source code coverage is a separate OPEN metric |
+| DPD tap configurations | Product parent one-tap identity; test elaboration uses non-identity 2/4-tap image; Python fixed-point oracle and four-plane VCS scoreboard | Gate 1 one-frame/two-frame bit-true passes; Gate 2 fixed images are compared on held-out QAM256 seeds | Test-only candidates covered; product parent remains one-tap identity |
+| Malformed frame / negative assertions | Early TLAST and AXI-Lite mailbox negative tests; sticky error checker and explicit expected assertion markers | Negative paths observed; raw URG retains 1 Generic and 2 AXI-Lite expected assertion failures | Failures are preserved in raw evidence, not counted as positive assertion coverage |
+| Real XPM and GT Wizard implementation | Vendor simulation libraries and current board wrapper | No Vivado/XSim or real XPM/GT Wizard sources on this Linux host | `NOT_RUN`; not covered by Generic FIFO or behavioral GT replacement |
+
+All currently applicable URG functional groups are 100%: Generic has four
+applicable groups at 100%; its `stop_restart_cg` is AXI-Lite-only and therefore
+not applicable to the Generic configuration. AXI-Lite has eight of eight
+groups at 100%. This is not full Gate 3 signoff: the CSV retains every current
+raw-unhit code bin and no exclusions or denominator changes were applied.
+
 **Audited source SHA:** `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`; **verification SHA:** `04550289e1ecb5fa0e38168869d4f2539929cb80`
 
 **Runtime evidence:** exact-source Python, VCS/URG, AXI-Lite, STOP/restart,

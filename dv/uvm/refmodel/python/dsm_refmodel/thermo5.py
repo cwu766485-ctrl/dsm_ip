@@ -571,10 +571,14 @@ def generate_source_vectors(words=56, seed=20260930, profile="random",
             q_words[word] = [q_value] * LANES_IN
     elif profile == "ef2_saturation":
         for word in range(words):
-            i_value, q_value = ((32767, -32768) if word < words // 2
-                                else (-32768, 32767))
-            i_words[word] = [i_value] * LANES_IN
-            q_words[word] = [q_value] * LANES_IN
+            # Sweep both polarities at different lane positions so every
+            # offset branch sees positive and negative EF2 state saturation.
+            # A half-frame of constant +/- full scale misses one clamp
+            # polarity on the outer branches after their thermometric offsets.
+            i_words[word] = [extreme_i[(lane - word) % LANES_IN]
+                             for lane in range(LANES_IN)]
+            q_words[word] = [extreme_q[(lane - 3 * word) % LANES_IN]
+                             for lane in range(LANES_IN)]
     i_words[0] = extreme_i[:]
     q_words[0] = extreme_q[:]
 

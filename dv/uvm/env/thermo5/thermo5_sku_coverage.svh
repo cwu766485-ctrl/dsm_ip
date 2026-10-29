@@ -17,6 +17,8 @@ class thermo5_sku_coverage extends uvm_component;
   int tlast_pa_stall_cycles, stop_partial_pa_stall_cycles;
   int commit_pending_while_stopped_cycles, reset_nonzero_ef2_state_events;
   int ef2_positive_clamp_branch[0:3], ef2_negative_clamp_branch[0:3];
+  int unsigned accepted_source_beats_epoch, accepted_output_words_epoch;
+  int unsigned pending_tlast_output_targets[$];
   bit seen_src_release, last_src_rst_n, ef2_state_nonzero_seen;
 
   covergroup source_cg with function sample(bit full, bit stalled, bit start,
@@ -150,7 +152,15 @@ class thermo5_sku_coverage extends uvm_component;
                          accepted_last, sampled_packet_quanta);
         if (seen_src_release && last_src_rst_n && !vif.src_rst_n) reset_reassertions++;
         if (!vif.src_rst_n) packet_beats_since_boundary=0;
+        if (!vif.src_rst_n) begin
+          accepted_source_beats_epoch=0;
+          pending_tlast_output_targets.delete();
+        end
         else if (vif.src_valid && vif.src_ready) begin
+          accepted_source_beats_epoch++;
+          if (accepted_last && sampled_packet_quanta!=0)
+            pending_tlast_output_targets.push_back(
+              (accepted_source_beats_epoch*7)/4);
           packet_beats_since_boundary++;
           if (vif.src_last && packet_beats_since_boundary%32==0)
             packet_beats_since_boundary=0;
@@ -182,7 +192,13 @@ class thermo5_sku_coverage extends uvm_component;
           if (cfg.axil_control && !vif.core_run_request && vif.core_tx_active &&
               vif.pa_valid==4'hf && vif.pa_ready!=4'hf)
             stop_partial_pa_stall_cycles++;
-          if (accepted_tlast_markers!=0 && vif.pa_valid==4'hf && vif.pa_ready!=4'hf)
+          // Count this cross only while a legal accepted TLAST still has
+          // corresponding output words outstanding. The target is cumulative
+          // (7 output words per four 14-sample AXIS beats), and the PA word
+          // progress is observed independently in this clock domain.
+          if (pending_tlast_output_targets.size()!=0 &&
+              accepted_output_words_epoch<pending_tlast_output_targets[0] &&
+              vif.pa_valid==4'hf && vif.pa_ready!=4'hf)
             tlast_pa_stall_cycles++;
           if (|vif.ef2_pos_clamp_event) ef2_positive_clamp_events++;
           if (|vif.ef2_neg_clamp_event) ef2_negative_clamp_events++;
@@ -203,12 +219,20 @@ class thermo5_sku_coverage extends uvm_component;
           if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf) pa_stall_cycles++;
           if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf && vif.pa_ready!=4'h0)
             pa_partial_ready_stall_cycles++;
-          if (vif.pa_valid==4'hf && vif.pa_ready==4'hf) pa_words++;
+          if (vif.pa_valid==4'hf && vif.pa_ready==4'hf) begin
+            pa_words++;
+            accepted_output_words_epoch++;
+            while (pending_tlast_output_targets.size()!=0 &&
+                   accepted_output_words_epoch>=pending_tlast_output_targets[0])
+              void'(pending_tlast_output_targets.pop_front());
+          end
           if (vif.ef2_state_zero !== 4'hf) ef2_state_nonzero_seen=1'b1;
         end
       end
       forever begin
         @(negedge vif.core_rst_n);
+        accepted_output_words_epoch=0;
+        pending_tlast_output_targets.delete();
         if (ef2_state_nonzero_seen && vif.ef2_order2_enabled)
           reset_nonzero_ef2_state_events++;
         ef2_state_nonzero_seen=1'b0;
