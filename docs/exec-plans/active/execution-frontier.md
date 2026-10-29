@@ -28,11 +28,14 @@ and remains 0% there; the AXI-Lite STOP/Restart group is 100%. This does not
 close every source-level feature cross. Raw project RTL code coverage is
 `RAW_100_OPEN`: Generic aggregate 80.81% (line 83.15%, condition 67.79%,
 toggle 82.78%, FSM 100%, branch 64.47%, assertion 86.67%); AXI-Lite aggregate
-83.45% (line 90.31%, condition 74.94%, toggle 89.86%, FSM 77.27%, branch
-81.63%, assertion 86.67%). No exclusions or denominator changes were applied;
-no adjusted score is claimed. Current per-bin CSV/manifest and negative
-checker mutation are in `docs/verification/thermo5-tx-coverage-signoff.md`
-and `docs/verification/thermo5-tx-gate3-evidence.json`.
+84.59% (line 90.31%, condition 75.06%, toggle 96.63%, FSM 77.27%, branch
+81.63%, assertion 86.67%). Current-source non-identity 2-tap/4-tap DPD
+bit-true VDBs are included in that AXI-Lite report. The refreshed source-linked
+ledger has 22,720 OPEN rows (17,941 Generic and 4,779 AXI-Lite). No exclusions
+or denominator changes were applied; no adjusted score is claimed. Current
+per-bin CSV/manifest and negative checker mutation are in
+`docs/verification/thermo5-tx-coverage-signoff.md` and
+`docs/verification/thermo5-tx-gate3-evidence.json`.
 
 Current-source Linux Generic and AXI-Lite VCS regressions, STOP/drain/restart,
 2,072-word EF2 positive/negative clamp/stall/rail/reset qualification,

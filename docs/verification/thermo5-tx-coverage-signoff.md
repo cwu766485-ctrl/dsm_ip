@@ -12,7 +12,7 @@ EF2 clamp/rail/stall/reset cases, STOP/restart, legal vector corners, scoped
 VC Formal, and a checker negative mutation. URG was merged and parsed
 separately for each elaboration. Every unhit row is preserved as OPEN in the
 source-linked, gzip-compressed [`thermo5-tx-gate3-coverage-ledger.csv.gz`](thermo5-tx-gate3-coverage-ledger.csv.gz).
-Decompress it with `gzip -dc thermo5-tx-gate3-coverage-ledger.csv.gz > thermo5-tx-gate3-coverage-ledger.csv` to inspect all 30,913 rows.
+Decompress it with `gzip -dc thermo5-tx-gate3-coverage-ledger.csv.gz > thermo5-tx-gate3-coverage-ledger.csv` to inspect all 22,720 rows.
 The current Feature/Testpoint/Checker summary is in
 [`thermo5-tx-feature-matrix.md`](thermo5-tx-feature-matrix.md).
 
@@ -24,10 +24,10 @@ changes. The aggregate score is the raw URG DUT score, not an adjusted score.
 
 | Metric | Generic | AXI-Lite |
 | --- | ---: | ---: |
-| Raw aggregate score | 80.81% | 83.45% |
+| Raw aggregate score | 80.81% | 84.59% |
 | Line | 2,965 / 3,566 = 83.15% | 3,428 / 3,796 = 90.31% |
-| Condition | 482 / 711 = 67.79% | 634 / 846 = 74.94% |
-| Toggle, both directions | 81,348 / 98,270 = 82.78% | 108,720 / 120,990 = 89.86% |
+| Condition | 482 / 711 = 67.79% | 635 / 846 = 75.06% |
+| Toggle, both directions | 81,348 / 98,270 = 82.78% | 116,912 / 120,990 = 96.63% |
 | Branch | 343 / 532 = 64.47% | 520 / 637 = 81.63% |
 | FSM states | 13 / 13 = 100% | 13 / 13 = 100% |
 | FSM transitions | 22 / 22 = 100% | 17 / 22 = 77.27% |
@@ -42,8 +42,11 @@ in `dsm_axis14_to_core8_cdc.sv` (both runs) and
 failures in the signed report and are not relabeled as successful assertion
 coverage.
 
-The exact unhit-bin ledger contains **17,941 Generic rows** and **12,972
-AXI-Lite rows**. It includes exact source file, elaborated instance, line or
+The refreshed exact unhit-bin ledger contains **17,941 Generic rows** and
+**4,779 AXI-Lite rows**. Current-source one- and two-packet non-identity
+2-tap and 4-tap DPD tests were added to the AXI-Lite VDB merge; the raw
+AXI-Lite toggle score rose from 89.86% to 96.63%. The ledger includes exact
+source file, elaborated instance, line or
 branch/condition/toggle/FSM bin, review status, reason, and a stable bin ID.
 No row is waived. For AXI-Lite, five individual unhit
 `rem_count_q` transitions are named in the ledger; the Generic FSM transition
@@ -72,8 +75,9 @@ Targeted independent checks also confirm:
   backpressure (`tlast_pa_stall=5`, `stop_partial_pa_stall=5`) and checks 56
   drained words. STOP/drain/restart checks 112 ordered four-plane words and
   six event bins.
-- Non-identity two- and four-tap DPD cases are test-only elaborations with
-  independent bit-true four-plane checkers. The product GT parent remains
+- Current-source non-identity two- and four-tap DPD cases each pass 56-word
+  and 112-word bit-true comparisons on all four planes with zero UVM errors or
+  fatals. These are test-only elaborations; the product GT parent remains
   one-tap identity.
 - The corrupted-oracle negative mutation flips bit 0 of output word 0 in the
   expected `pa0` memory image. The scoreboard reports a one-LSB mismatch at
@@ -127,10 +131,18 @@ Additional checks recorded in the run manifest:
 
   ```bash
   python3.12 tools/hw/thermo5_gap_ledger.py \
-    runs/thermo5_tx_linux_closure_wip \
-    runs/thermo5_tx_linux_closure_wip/raw_gap_ledger_gate3 \
+    runs/thermo5_tx_linux_closure_wip/coverage_refresh \
+    runs/thermo5_tx_linux_closure_wip/coverage_refresh/gaps \
     --report-layout flat --variants generic axil
   ```
+
+- Current-source non-identity DPD coverage was collected with
+  `thermo5-axil-centered-nonlinear-bittrue-vcs` and
+  `thermo5-axil-centered-nonlinear-tap4-bittrue-vcs`, using
+  `TIDSM_ORDER=2`, `STEP=5120`, and the vector/output paths in the evidence
+  manifest. Their four VDBs were added to the AXI-Lite URG merge at
+  `axil_all_with_dpd/report`; the updated raw score and gap ledger come from
+  that report.
 
 The machine-readable source hashes, exact run paths, raw summary hashes,
 logs, VDBs, expected-negative assertions, and no-exclusion record are in

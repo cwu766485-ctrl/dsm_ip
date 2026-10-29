@@ -112,12 +112,14 @@ branch, state hold under stall, rail interaction, reset, and bit-true output.
 Raw unmodified project-RTL URG remains below target: Generic score 80.81%
 (line 2965/3566, condition 482/711, toggle 81348/98270, branch 343/532;
 FSM states/transitions covered; assertion statuses retain one expected
-negative-test failure); AXI-Lite score 83.45% (line 3428/3796, condition
-634/846, toggle 108720/120990, branch 520/637; FSM states 13/13 but
-transitions 17/22; two expected negative-test assertion failures). There are
+negative-test failure); AXI-Lite score 84.59% (line 3428/3796, condition
+635/846, toggle 116912/120990, branch 520/637; FSM states 13/13 but
+transitions 17/22; two expected negative-test assertion failures). Current-
+source non-identity 2-tap and 4-tap DPD bit-true VDBs are included in this
+AXI-Lite URG merge. There are
 no coverage exclusions or denominator changes, and no audited-adjusted score
 is claimed. The exact source-linked gap ledger contains 17,941 Generic and
-12,972 AXI-Lite raw-unhit records (30,913 total); every row remains OPEN.
+4,779 AXI-Lite raw-unhit records (22,720 total); every row remains OPEN.
 The compressed CSV and its checksums are in
 `docs/verification/thermo5-tx-gate3-evidence.json`. These are review queues,
 not waivers. `RAW_100_OPEN` remains the Gate 3 disposition. Real-XPM coverage

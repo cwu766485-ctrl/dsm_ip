@@ -32,10 +32,13 @@
 - Re-ran the current Linux Generic and AXI-Lite VCS/UVM regressions, EF2
   saturation/rail/stall/reset qualifications, STOP/drain/restart, digital
   corner tests, scoped EF2 and pair-look-ahead VC Formal, and a negative
-  one-LSB oracle mutation. Python reference tests passed 39/39.
+  one-LSB oracle mutation. Then reran current-source non-identity 2-tap and
+  4-tap DPD bit-true cases for one and two packets; all four cases matched
+  every output plane with zero UVM errors/fatals. Python tests passed 39/39.
 - Applicable functional covergroups are 4/4 Generic and 8/8 AXI-Lite at
-  100%. Raw project RTL URG remains 80.81% Generic and 83.45% AXI-Lite; a
-  complete 30,913-row source-mapped ledger preserves every miss as OPEN.
+  100%. Raw project RTL URG remains 80.81% Generic and 84.59% AXI-Lite; AXI-Lite
+  toggle coverage rose to 96.63% after the DPD VDB merge. The refreshed
+  22,720-row source-mapped ledger preserves every miss as OPEN.
   No exclusions or denominator edits were made, and no adjusted score is
   claimed. Gate 3 code coverage is therefore not signed off at 100%.
 - The coverage report records exact test commands, raw metric counts,

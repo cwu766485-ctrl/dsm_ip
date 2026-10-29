@@ -7,9 +7,11 @@
     "base_commit": "e5d1951dde51089ae431017aa39ea25af48cf26e",
     "base_tree_sha256": "7787534834410094a2840c175641fc5cbd3b48c1",
     "worktree_dirty_at_run": true,
-    "note": "All synthesizable RTL and DV source file hashes used for the two raw URG runs are embedded below. The run base commit tree is identical to remote Gate 1 commit 813db9c9a488b033dc4686553cbe3a06856acc0b. The exact tested source-file contents are SHA-256 indexed below and are published in the Gate 3 branch tree.",
+    "note": "All synthesizable RTL and DV source file hashes used for the two raw URG runs are embedded below. The run base commit tree is identical to remote Gate 1 commit 813db9c9a488b033dc4686553cbe3a06856acc0b. The exact tested source-file contents are SHA-256 indexed below and are published in the Gate 3 branch tree. A current-source rerun added non-identity 2-tap and 4-tap DPD bit-true VDBs before the Gate 3 AXI-Lite URG merge; the coverage refresh ran with a clean worktree.",
     "published_code_commit": "459c69094f3353558321075305808d9712e6f335",
-    "pull_request": "https://github.com/cwu766485-ctrl/dsm_ip/pull/5"
+    "pull_request": "https://github.com/cwu766485-ctrl/dsm_ip/pull/5",
+    "coverage_run_commit": "fcfeb4d7eda8f8495bec4087ca935cac0f03e63a",
+    "coverage_worktree_dirty": false
   },
   "tools": {
     "python": "Python 3.12",
@@ -187,10 +189,10 @@
     },
     "axil": {
       "raw_dut": {
-        "score": "83.45",
+        "score": "84.59",
         "line": "90.31",
-        "cond": "74.94",
-        "toggle": "89.86",
+        "cond": "75.06",
+        "toggle": "96.63",
         "fsm": "77.27",
         "branch": "81.63",
         "assert": "86.67"
@@ -208,17 +210,17 @@
           "ownership": "PROJECT_RTL",
           "metric": "cond",
           "total": 846,
-          "covered": 634,
-          "missing": 212,
-          "percent": 74.9409
+          "covered": 635,
+          "missing": 211,
+          "percent": 75.0591
         },
         {
           "ownership": "PROJECT_RTL",
           "metric": "toggle",
           "total": 120990,
-          "covered": 108720,
-          "missing": 12270,
-          "percent": 89.8587
+          "covered": 116912,
+          "missing": 4078,
+          "percent": 96.6295
         },
         {
           "ownership": "PROJECT_RTL",
@@ -324,8 +326,8 @@
           "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
           "category": "0",
           "severity": "0",
-          "attempts": "51",
-          "successes": "50",
+          "attempts": "57",
+          "successes": "56",
           "failures": "1",
           "incomplete": "0",
           "status": "FAILURE",
@@ -357,9 +359,11 @@
           "write_cg": 100.0,
           "reset_cg": 100.0
         },
-        "urg_group_aggregate_percent": 100.0
+        "urg_group_aggregate_percent": 100.0,
+        "group_count": 8,
+        "all_groups_percent": 100.0
       },
-      "unhit_ledger_records": 12972,
+      "unhit_ledger_records": 4779,
       "source_map_entries": 81,
       "exclusions_applied": false,
       "denominator_modified": false
@@ -453,8 +457,11 @@
   },
   "unhit_ledger": {
     "path": "docs/verification/thermo5-tx-gate3-coverage-ledger.csv.gz",
-    "rows": 30913,
-    "sha256": "9bf6ce1f9739cc558c2f39688fe49fe4e082983223ac51bbc4115ee741552c83",
+    "rows": 22720,
+    "sha256": "7016217ccb8bdd2886ccf46b95f8afd8cac18d1d8ee2d5d070a2159fb6bbbcd5",
+    "uncompressed_sha256": "1d7769705190e6c0619e77da7bee16bfb9cf456959ab7460886166fbf244aa70",
+    "uncompressed_bytes": 7601089,
+    "compression": "gzip -n -9; decompress with gzip -dc",
     "generic_status_counts": {
       "OPEN_CONFIGURATION_REVIEW": 9918,
       "OPEN": 2732,
@@ -463,17 +470,14 @@
       "OPEN_COUNTER_FORMAL_REVIEW": 640
     },
     "axil_status_counts": {
-      "OPEN_CONFIGURATION_REVIEW": 8608,
-      "OPEN": 2717,
+      "OPEN_CONFIGURATION_REVIEW": 416,
+      "OPEN": 2716,
       "OPEN_FORMAL_MAPPING_REVIEW": 139,
       "OPEN_ARITHMETIC_REVIEW": 868,
       "OPEN_COUNTER_FORMAL_REVIEW": 640
     },
     "all_project_bins_source_mapped": true,
-    "all_statuses_open": true,
-    "uncompressed_sha256": "7502bd598bbd1d8da4d698f7eaa7181998e1c12b6eb517b95b59926de1ab0f26",
-    "uncompressed_bytes": 10429390,
-    "compression": "gzip -n -9; decompress with gzip -dc"
+    "all_statuses_open": true
   },
   "checks": [
     {
@@ -527,6 +531,40 @@
       "mutation": "Bit 0 flipped in expected PA0 word 0; scoreboard observed a one-LSB mismatch and raised UVM_FATAL. VCS returns 0 due UVM $finish; marker was checked in log.",
       "simv_command": "runs/thermo5_tx_linux_closure_wip/generic_vcs/simv +UVM_TESTNAME=thermo5_sku_bittrue_test +VEC_DIR=runs/thermo5_tx_linux_closure_wip/mutation/bittrue_fault/vectors +ntb_random_seed=610701 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_linux_closure_wip/mutation/bittrue_fault/cov.vdb +CORE_WORDS=56 -l runs/thermo5_tx_linux_closure_wip/mutation/bittrue_fault/sim.log",
       "log": "runs/thermo5_tx_linux_closure_wip/mutation/bittrue_fault/sim.log"
+    },
+    {
+      "name": "Current-source AXI-Lite non-identity 2-tap DPD bit-true coverage",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-axil-centered-nonlinear-bittrue-vcs PYTHON=python3.12 THERMO5_OUT=\"$PWD/runs/thermo5_tx_linux_closure_wip/axil_vcs\" THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_NONLINEAR_SHORT_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/dpd_nonid_2tap/short\" THERMO5_NONLINEAR_LONG_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/dpd_nonid_2tap/long\"",
+      "result": "One- and two-packet (56/112 word) non-identity 2-tap cases match all four output planes; UVM_ERROR=0, UVM_FATAL=0.",
+      "logs": [
+        "runs/thermo5_tx_linux_closure_wip/axil_vcs/thermo5_sku_axil_nonlinear_bittrue_test_seed610213.log",
+        "runs/thermo5_tx_linux_closure_wip/axil_vcs/thermo5_sku_axil_nonlinear_bittrue_test_seed610214.log"
+      ]
+    },
+    {
+      "name": "Current-source AXI-Lite non-identity 4-tap DPD bit-true coverage",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-axil-centered-nonlinear-tap4-bittrue-vcs PYTHON=python3.12 THERMO5_OUT=\"$PWD/runs/thermo5_tx_linux_closure_wip/axil_vcs\" THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_NONLINEAR_TAP4_SHORT_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/dpd_nonid_4tap/short\" THERMO5_NONLINEAR_TAP4_LONG_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/dpd_nonid_4tap/long\"",
+      "result": "One- and two-packet (56/112 word) non-identity 4-tap cases match all four output planes; UVM_ERROR=0, UVM_FATAL=0.",
+      "logs": [
+        "runs/thermo5_tx_linux_closure_wip/axil_vcs/thermo5_sku_axil_nonlinear_tap4_bittrue_test_seed612004.log",
+        "runs/thermo5_tx_linux_closure_wip/axil_vcs/thermo5_sku_axil_nonlinear_tap4_bittrue_test_seed612005.log"
+      ]
+    },
+    {
+      "name": "AXI-Lite URG refresh with current-source non-identity DPD VDBs",
+      "status": "PASS",
+      "command": "/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -full64 -dir runs/thermo5_tx_linux_closure_wip/axil_vcs/simv.vdb runs/thermo5_tx_linux_closure_wip/axil_vcs/cov_*.vdb -report runs/thermo5_tx_linux_closure_wip/axil_all_with_dpd/report -dbname thermo5_tx_gate3_axil_with_dpd && python3.12 tools/hw/thermo5_coverage_denominator.py runs/thermo5_tx_linux_closure_wip/axil_all_with_dpd/report runs/thermo5_tx_linux_closure_wip/axil_all_with_dpd/raw_code_coverage.json",
+      "result": "Raw project RTL aggregate 84.59%; toggle 96.63%; no exclusions or denominator edits. Applicable functional group score 100% (8/8).",
+      "summary": "runs/thermo5_tx_linux_closure_wip/axil_all_with_dpd/raw_code_coverage.json/summary.json"
+    },
+    {
+      "name": "Regenerated source-linked raw gap ledger",
+      "status": "PASS_OPEN_GAPS_RETAINED",
+      "command": "python3.12 tools/hw/thermo5_gap_ledger.py runs/thermo5_tx_linux_closure_wip/coverage_refresh runs/thermo5_tx_linux_closure_wip/coverage_refresh/gaps --report-layout flat --variants generic axil",
+      "result": "22720 source-mapped rows retained OPEN; Generic 17941 and AXI-Lite 4779. No exclusions or denominator edits.",
+      "summary": "runs/thermo5_tx_linux_closure_wip/coverage_refresh/gaps/summary.json"
     }
   ],
   "artifact_sha256": {
@@ -539,70 +577,92 @@
     "generic_corners_final.log": "13365508925dd1f55bc1eacabd7325784b659438205524a301fd2e1a7a650e30",
     "axil_corners_final.log": "121c0c980eacc0dd165653eb907bc08b5c7cca0468fedec287f8cd60fe88ad29",
     "generic_all_final/urg.log": "a5699ba49abdfa10b2e6c090d0d6efaa01ca277d3d187b53ce73de3843636108",
-    "axil_all_final/urg.log": "5de664860144fab960ec4eff4e5f29599f1f7bc30dc25e2d89350e6daf8f9221",
     "generic_all_final/raw_code_coverage.json/summary.json": "718bf68e7e92a0d7c01d2722b3436c00e7ec343cd412a56e01cf1e3c4c5413ec",
-    "axil_all_final/raw_code_coverage.json/summary.json": "fdd7e9c7da3f22a4cd24b4e43032e5ac905c7921676a04c7dbaf242c00caca36",
-    "raw_gap_ledger_gate3/summary.json": "c433c0de858a791a945a3820e59f3dba31ec50d0eb8f5c4c9583ded2da023833",
-    "raw_gap_ledger_gate3/generic_gap_ledger.json": "84320a0be60c710c51af2ab6193c4005868b68bbdbb43be4afb2e7ddb96288ae",
-    "raw_gap_ledger_gate3/axil_gap_ledger.json": "62b32d2b39f9d15932e5cc054d2158ab13bf615052e474451fa8e3db4c687d5f",
-    "raw_gap_ledger_gate3/thermo5-tx-gate3-coverage-ledger.csv": "7502bd598bbd1d8da4d698f7eaa7181998e1c12b6eb517b95b59926de1ab0f26",
     "formal/formal_summary.json": "9337075b9d53d799b5e10f70c229995ede839380a0c96e51d1b62c6d798904db",
-    "mutation/bittrue_fault/sim.log": "4ca2f7cc1efbd09e87a402112aecbd9cee43bc57e448d7d53ef214581dcff0b0"
+    "mutation/bittrue_fault/sim.log": "4ca2f7cc1efbd09e87a402112aecbd9cee43bc57e448d7d53ef214581dcff0b0",
+    "axil_all_with_dpd/urg.log": "e1525bf348d87987a3ef44ea961ee93c2b38241084eeeb0aa44aefce53c7e637",
+    "axil_all_with_dpd/raw_code_coverage.json/summary.json": "c023b868fa38faa851828ec1c70df8166521ace682bf26f246fd8663128480a5",
+    "axil_vcs/thermo5_sku_axil_nonlinear_bittrue_test_seed610213.log": "5cdd88e3858c57a02570717747f71b29d23b3131824a621aeb0b4dcc615d820c",
+    "axil_vcs/thermo5_sku_axil_nonlinear_bittrue_test_seed610214.log": "5f8203f94a3be6a1218141d46253fa27ef6252e977b31c7a1ac8e374e5547eff",
+    "axil_vcs/thermo5_sku_axil_nonlinear_tap4_bittrue_test_seed612004.log": "a93e101140b22648b037da99cbf128014a7285eb12d3f3969ae12e3e2d2a19ce",
+    "axil_vcs/thermo5_sku_axil_nonlinear_tap4_bittrue_test_seed612005.log": "c6775b0b28a52e9508814993a23b30a4d774c62adb0672635708c86e12e12b77",
+    "coverage_refresh/gaps/summary.json": "170d8c1ab6efab4ea5fc9a65c9de197666090c3ae4d0e3fb8e81a297c4ead80b",
+    "coverage_refresh/gaps/generic_gap_ledger.json": "2833160e2f709ee6f36f33b25e887ca13fea73ed0ba9e8fd614a91c9b9c1a3a1",
+    "coverage_refresh/gaps/axil_gap_ledger.json": "191cd43fdc9a39747e69fc6909e53edf00370fbe987addb4c361736292d0e13a",
+    "coverage_refresh/gaps/thermo5-tx-gate3-coverage-ledger.csv": "1d7769705190e6c0619e77da7bee16bfb9cf456959ab7460886166fbf244aa70"
   },
   "artifact_tree_sha256": {
     "generic_vcs": {
-      "tree_sha256": "60f3f91e705c01e2f1d2b4c740f49c30bf1c4fc9c2a6b64e5044f95d2f367d19",
+      "tree_sha256": "93d3904642874c07c4cf7c5d058bfbfcba7a26108e4156269c496c28de119794",
       "file_count": 609,
       "total_bytes": 43991580,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "axil_vcs": {
-      "tree_sha256": "8ca5c54e57ce329d2ee64f42ebc0ff2e9b289b8f231673c6facdd8cf43bb139b",
-      "file_count": 633,
-      "total_bytes": 84259994,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "tree_sha256": "275ddd31695388c5f3ce4c8f5a3a87ccd5b1b44b35435bd224c45fef9d2b5d09",
+      "file_count": 691,
+      "total_bytes": 84329291,
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "generic_all_final/report": {
-      "tree_sha256": "f5912549f8d1ec986a84b78fd1fb8ea339f5f711aad532727445119683d6e79b",
+      "tree_sha256": "b9374b3e8ab0201a695d7d20d5ad83a2fc159275938785947de15866a7f7d493",
       "file_count": 43,
       "total_bytes": 2713078,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
-    "axil_all_final/report": {
-      "tree_sha256": "c3ad8590eabecaa831439f03cf7ff22cd614d0e35e165eaa2ba5bddc54b85d32",
+    "axil_all_with_dpd/report": {
+      "tree_sha256": "1214ca2a5603784c079ad756de4203ea5e4135f0d1a6e1b2b5196809734c223a",
       "file_count": 47,
-      "total_bytes": 3124870,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "total_bytes": 3124862,
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "corners": {
-      "tree_sha256": "6bc10a27ac60e09ab09f585d54746c75d426adc3f746def254c7c55e9b984aa9",
+      "tree_sha256": "f3fa8739e8479c4b3732c42d9faca798fcab05d66c739360bd35b4a1a606e9d1",
       "file_count": 88,
       "total_bytes": 110846,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "ef2_qualification": {
-      "tree_sha256": "70e8c58268e5d73a844831568a8a7c31840f6080030d849b58f7a6af5e1e6cc6",
+      "tree_sha256": "80d0a2780ccaf0fbc9640bdc86a8dc77c2389410e177f7390f3cde1e30846803",
       "file_count": 225,
       "total_bytes": 41677433,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "axil_ef2_qualification": {
-      "tree_sha256": "363d77ed7d0fb6ce3f095b5c9a432d8d1700fdb286db28727d46d9e6865478b9",
+      "tree_sha256": "de29a13010cff4f1439252c29d89c1655b9ad0c830ca7fe5549225730c923fd1",
       "file_count": 244,
       "total_bytes": 79572690,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "formal": {
-      "tree_sha256": "d5c8f64ff9de2f08eb157e411437ef6fa91870b87b3214fb4bcd46abc4c9eecd",
+      "tree_sha256": "c0c658d9faf8646203d868743f3ea8d7e8b987020eb19534bf0d6ef17cfd6e8b",
       "file_count": 253,
       "total_bytes": 4038578,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     },
     "mutation/bittrue_fault": {
-      "tree_sha256": "3492742ddb1b6f0d688d2ce1ac880c81fceb3340a89c1f861b08432d4cb642d8",
+      "tree_sha256": "1d90eb4200e9d2551eafc4687303088b0b7fac2924bc20c7224b66564d9a738e",
       "file_count": 18,
       "total_bytes": 17259,
-      "hash_algorithm": "SHA256 over sorted relative path length/path and raw file SHA256"
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
+    },
+    "dpd_nonid_2tap": {
+      "tree_sha256": "f72d6901b8538325f33c8d37121c0db67cfaf40af0cd9dbc712373f04a8062cf",
+      "file_count": 16,
+      "total_bytes": 26544,
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
+    },
+    "dpd_nonid_4tap": {
+      "tree_sha256": "b72b0a893de445a5ed4f4327a963173be73a5d8a5a0e0f52cc113577002edc6e",
+      "file_count": 16,
+      "total_bytes": 26544,
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
+    },
+    "coverage_refresh/gaps": {
+      "tree_sha256": "31aca6a2597d2e9a6d97c372cd78fb197796947b3c81c98a64b98112db76e34f",
+      "file_count": 4,
+      "total_bytes": 28960895,
+      "hash_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path byte length, path bytes, then raw SHA256(file) digest."
     }
   },
   "limitations": [
