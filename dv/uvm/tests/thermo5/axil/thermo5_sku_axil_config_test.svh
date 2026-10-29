@@ -370,3 +370,35 @@ class thermo5_sku_axil_config_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_config_test)
   function new(string name, uvm_component parent); super.new(name,parent); endfunction
 endclass
+
+// Actual GT-parent product setting: one active tap with the reset-default
+// unity coefficient. The broader MAX_TAPS=4 test remains a separate candidate
+// configuration and is not part of product coverage.
+class thermo5_sku_axil_product_identity_test extends thermo5_sku_axil_config_test;
+  `uvm_component_utils(thermo5_sku_axil_product_identity_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function int unsigned configured_active_taps();
+    return 1;
+  endfunction
+
+  virtual function bit [386:0] configured_payload();
+    return {3'd1,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0};
+  endfunction
+
+  virtual function string scenario_pass_message();
+    return "THERMO5_AXIL_PRODUCT_IDENTITY_UVM_PASS: one-tap GT-parent product image committed atomically; all four planes matched the identity oracle";
+  endfunction
+
+  virtual task program_dpd_image(output bit [1:0] resp);
+    axil_write(8'h08,32'd1,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_TAPS","Product one-tap setting was rejected")
+    axil_write(8'h10,32'h0000_4000,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_COEFF","Product unity coefficient write failed")
+    axil_write(8'h14,32'd0,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_COEFF","Product coefficient high-word write failed")
+  endtask
+endclass

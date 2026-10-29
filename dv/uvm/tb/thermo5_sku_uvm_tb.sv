@@ -28,6 +28,11 @@ module thermo5_sku_uvm_tb;
 `else
   localparam int USE_STEP = 5120;
 `endif
+`ifdef THERMO5_DPD_MAX_TAPS
+  localparam int USE_DPD_MAX_TAPS = `THERMO5_DPD_MAX_TAPS;
+`else
+  localparam int USE_DPD_MAX_TAPS = 4;
+`endif
   logic src_clk=0, core_clk=0;
   logic axil_clk=0;
   logic axil_rst_n;
@@ -61,7 +66,7 @@ module thermo5_sku_uvm_tb;
   tid32_thermo5_axi_lite_axis_frontend_tx #(
     .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),
     .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
-    .DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+    .DPD_MAX_TAPS(USE_DPD_MAX_TAPS),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
     .s_axil_aclk(axil_clk),.s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(axil_bus.awaddr),.s_axil_awvalid(axil_bus.awvalid),.s_axil_awready(axil_bus.awready),

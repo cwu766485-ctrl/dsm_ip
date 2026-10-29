@@ -1,6 +1,38 @@
 # Execution frontier
 
-## Current execution state: TX-only Linux Gates 0–3 evidence recorded; raw code closure and physical signoff remain open (2026-10-29)
+## Current execution state: TX-only product-scoped Gate 3 baseline recorded; closure remains open (2026-10-30)
+
+PRs #2 → #3 → #4 → #5 are a stacked sequence based respectively on
+`thermo5`, the Gate 0 head, the Gate 1 head, and the Gate 2 head. The PR #5
+head is `0c974aa45b8875794d33195530242320b419c249`; its 84 source-file hashes
+and 22 individually hashed artifact files match. Five of 12 directory-tree
+digests do not reproduce; the exact mismatch is recorded in the product
+coverage audit. The PR #5 AXI-Lite URG merge also
+contains nonidentity 2/4-tap DPD candidate VDBs, so its 84.59% AXI-Lite
+aggregate is retained as a historical combined-campaign result, not the
+actual product-only score.
+
+A distinct Linux product run now uses the GT-parent TX configuration:
+centered-cubic, EF2 order 2, STEP 5120, `DPD_MAX_TAPS=1`, identity DPD, and
+Generic FIFO substitution. Code coverage is scoped to the elaborated
+AXI-Lite `dut` hierarchy. Five selected VCS tests pass with zero UVM errors
+and fatals; the complete earlier regression/formal/mutation evidence is
+retained without repetition. Product-only raw URG is 75.96% aggregate: line
+84.04%, condition 68.44%, toggle 79.37%, branch 69.07%, FSM states 13/13,
+transitions 15/22, assertions 86.67%. Functional group aggregate is 97.97%
+(six of eight groups at 100%). There are no exclusions or denominator edits;
+the waiver CSV is empty and the gate script rejects active exclusions.
+Evidence and candidate-separated metrics are in
+`docs/verification/thermo5-tx-coverage-closure.md` and
+`docs/verification/thermo5-tx-product-coverage-evidence.json`.
+
+**Next action: Task 4** — close AXI-Lite's remaining five CDC FSM transitions,
+then reachable branch, condition, line, and toggle bins. Keep the two
+centered-cubic transitions and all fixed-configuration/formal-review items
+open until specifically justified. Follow with the legal/negative assertion
+split, exact reachability and checker mutation work in Tasks 5–6. Keep raw
+scores unchanged and report `RAW_100_OPEN` when raw bins remain. Real XPM,
+GT Wizard/raw64 and physical FPGA PPA remain outside Linux signoff.
 
 Gate 0 remains **PASS for Linux Generic/behavioral scope** at verification
 source `04550289e1ecb5fa0e38168869d4f2539929cb80`. Gate 1 equivalence tests

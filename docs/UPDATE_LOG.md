@@ -4229,3 +4229,32 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   have no I/O delays. It does not include placement/routing, VCU118 board I/O,
   or the ZU15EG-specific GT parent. The memory-inference and DPD set/reset
   warnings need review before promoting the mapping.
+
+## 2026-10-30 00:23 SGT - Establish product-scoped Thermo5 TX coverage baseline
+
+- Audited the stacked PR #2 → #3 → #4 → #5 dependency chain and the Gate 3
+  source/artifact manifest. All 84 source hashes and 22 individually hashed
+  artifacts match their PR #5 contents. Five of 12 historical directory-tree
+  hashes do not reproduce; exact observed digests and limits are documented
+  in `thermo5-tx-coverage-closure.md` and its evidence JSON.
+- Scoped VCS coverage to `thermo5_sku_uvm_tb.dut`; added a test-only
+  `DPD_MAX_TAPS` override and a one-tap identity configuration check matching
+  the actual GT-parent settings. The RTL algorithm and RX/AI-DPD were not
+  changed. Candidate 2/4-tap DPD and PAIR_LOOKAHEAD remain separate reports.
+- Checks: five selected AXI-Lite product-config VCS tests PASS with zero UVM
+  errors/fatals; VCS V-2023.12-SP1 / URG generated raw product coverage.
+  Product raw score is 75.96% (line 3190/3796, condition 579/846, branch
+  440/637, toggle 82919/104478, FSM 13/13 states and 15/22 transitions,
+  assertion score 86.67%). Eight functional groups score 97.97%; no waiver
+  or exclusion is applied. Python coverage-gate syntax and source-hash audit
+  pass; strict mode correctly remains open (`RAW_100_OPEN`) and rejects an
+  active exclusion directive.
+- Evidence and commands: `docs/verification/thermo5-tx-coverage-closure.md`,
+  `docs/verification/thermo5-tx-product-coverage-evidence.json`,
+  `runs/thermo5_tx_product_axil_cov_20261030/` (ignored local VDB/log/report),
+  and the separate candidate report under
+  `runs/thermo5_tx_candidate_cov_20261030/`.
+- Remaining: complete Functional Coverage and eligible code closure in Tasks
+  4–6; audit the five historical directory digest mismatches without rerunning
+  full regressions; real XPM, GT Wizard/raw64, and physical FPGA evidence are
+  unavailable in this Linux baseline.

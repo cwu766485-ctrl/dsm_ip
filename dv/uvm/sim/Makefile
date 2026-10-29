@@ -57,15 +57,19 @@ THERMO5_CENTERED_CUBIC ?= 1
 THERMO5_LOW_POWER ?= 0
 THERMO5_TIDSM_ORDER ?= 2
 THERMO5_STEP ?= 5120
+THERMO5_DPD_MAX_TAPS ?=
 THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,) \
 	$(if $(filter 1,$(THERMO5_CENTERED_CUBIC)),+define+THERMO5_CENTERED_CUBIC,) \
 	$(if $(filter 1,$(THERMO5_LOW_POWER)),+define+THERMO5_LOW_POWER,) \
 	+define+THERMO5_TIDSM_ORDER=$(THERMO5_TIDSM_ORDER) \
 	+define+THERMO5_STEP=$(THERMO5_STEP)
+THERMO5_DPD_ARGS := $(if $(strip $(THERMO5_DPD_MAX_TAPS)),+define+THERMO5_DPD_MAX_TAPS=$(THERMO5_DPD_MAX_TAPS),)
 THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
 THERMO5_COV_ARGS := $(if $(filter 1,$(THERMO5_COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
+THERMO5_COV_HIER ?=
+THERMO5_COV_HIER_ARGS := $(if $(and $(filter 1,$(THERMO5_COVERAGE)),$(strip $(THERMO5_COV_HIER))),-cm_hier $(THERMO5_COV_HIER),)
 GT_PARENT_FAULT_OUT ?= $(ROOT)/runs/thermo5_gt_parent_fault_vcs
 GT_PARENT_FAULT_SRCS := \
 	dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv \
@@ -199,9 +203,9 @@ thermo5-vcs:
 	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 vectors with MATLAB or generate_thermo5_frontend_vectors.py first"; exit 2; }
 	@mkdir -p $(THERMO5_OUT)
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L \
-		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) \
+		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) $(THERMO5_DPD_ARGS) \
 		-top $(THERMO5_TOP) -Mdir=$(THERMO5_OUT)/csrc \
-		$(THERMO5_COV_ARGS) $(THERMO5_DEBUG_ARGS) \
+		$(THERMO5_COV_ARGS) $(THERMO5_COV_HIER_ARGS) $(THERMO5_DEBUG_ARGS) \
 		-o $(THERMO5_OUT)/simv -l $(THERMO5_OUT)/compile.log
 
 thermo5-vcs-run: thermo5-vcs thermo5-vcs-run-only

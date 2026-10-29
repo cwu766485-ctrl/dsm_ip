@@ -7,6 +7,16 @@
 **Coverage denominator edits:** 0
 **Audited-adjusted score:** not calculated; no exclusion review has been approved.
 
+> **Product-only scope update (2026-10-30):** This file retains the historical
+> PR #5 Gate 3 campaign, whose AXI-Lite VDB merge includes
+> nonidentity 2/4-tap candidate DPD runs. It is not the product-only score for
+> the actual GT-parent one-tap identity setting. The selected-test,
+> AXI-Lite/Generic-FIFO product baseline, candidate separation, and zero-waiver
+> audit are recorded in
+> [`thermo5-tx-coverage-closure.md`](thermo5-tx-coverage-closure.md) and
+> [`thermo5-tx-product-coverage-evidence.json`](thermo5-tx-product-coverage-evidence.json).
+> Do not substitute either report for the other.
+
 The Gate 3 Linux campaign reran Generic and AXI-Lite VCS/UVM suites, targeted
 EF2 clamp/rail/stall/reset cases, STOP/restart, legal vector corners, scoped
 VC Formal, and a checker negative mutation. URG was merged and parsed
