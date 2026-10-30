@@ -1,10 +1,16 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 12:22 SGT
+**Date:** 2026-10-30 13:01 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
 **Product source commit tested:** `cab04feb6b41bfc75efd064eb1f13b2a4262c22d`
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
 **Machine-readable evidence:** [`thermo5-tx-linux-coverage-closure-evidence.json`](thermo5-tx-linux-coverage-closure-evidence.json)
+
+**License-restored continuation:** The first boundary-phase attempt and fresh
+CDC Formal rerun below were blocked by the license service. After license
+checkout recovered, the boundary tests and fresh CDC proof completed. This
+continuation supersedes those blocked-status statements for current signoff;
+the failed attempts remain in the run history for traceability.
 
 This is the Task 4–6 follow-up to the product denominator, waiver ledger, and
 coverage gate established in PR #6. Earlier PASS evidence is retained; the
@@ -46,38 +52,59 @@ That run increased raw toggle hits without changing any denominator.
 
 ### Latest raw product DUT code coverage
 
-Raw URG includes the original five selected legal product tests plus the
-reset-sweep and coefficient-transport VDBs. The expected-negative assertion
-VDB and checker-mutation VDB are excluded from this merge. No candidate DPD or
-PAIR_LOOKAHEAD VDB is included.
+Raw URG includes seven selected legal product tests, reset-sweep and
+coefficient-transport tests, ten boundary/traffic tests, and six RUN-relative
+COMMIT-delay tests (23 simulation VDBs plus the compile VDB). The
+expected-negative assertion VDB and checker-mutation VDB are not in this
+merge. No candidate DPD or PAIR_LOOKAHEAD VDB is included.
 
 | Metric | Covered / total | Open | Raw coverage |
 | --- | ---: | ---: | ---: |
-| URG aggregate | — | — | 81.95% |
+| URG aggregate | — | — | 81.97% |
 | Line | 3,190 / 3,796 | 606 | 84.0358% |
-| Condition | 581 / 846 | 265 | 68.6761% |
+| Condition | 582 / 846 | 264 | 68.7943% |
 | Branch | 440 / 637 | 197 | 69.0738% |
 | Toggle, both directions | 86,951 / 104,478 | 17,527 | 83.2242% |
 | FSM states | 13 / 13 | 0 | 100.0000% |
 | FSM transitions | 22 / 22 | 0 | 100.0000% |
 
-Relative to PR #6's product-only run, the same denominators are retained;
-toggle hits increased by 4,032, conditions by 2, and all 7 remaining FSM
-transitions were hit. Line and branch counts did not change. The exact
-source-linked gap ledger now contains 18,595 open rows: 9,513 configuration
-review, 3,789 open stimulus/checker review, 141 formal-mapping review, 4,512
-arithmetic review, and 640 counter/formal review. These are review states,
-not waivers.
+Denominators are unchanged from the product-only run before the boundary
+follow-up. Legal RUN+COMMIT overlap with AW/W skew increased condition hits by
+one (581 to 582); line, branch, and toggle totals did not move. The offset 0
+retry, offsets 1/2/4/8/16/32, and source-gap placements at beats 8/20 all
+passed the independent bit-true checker. A COMMIT-delay sweep at 0, 1, 2, 4,
+8, and 16 core cycles after RUN also passed bit-true checking but did not
+change aggregate counters. These scenarios add interaction evidence without
+increasing code-coverage hits. The exact source-linked gap ledger now contains
+18,594 rows: 9,513 configuration review, 3,788 open
+stimulus/checker review, 141 formal-mapping review, 4,512 arithmetic review,
+and 640 counter/formal review. These are review states, not waivers.
 
 The priority queue is still real: 37 branch arms remain generic project-bin
 review, while fixed-parameter error arms, identity/saturation branches, and
 the CDC residual default branch remain explicitly open. The coefficient
 transport test improved toggle coverage, but did not close the outstanding
-line, branch, or condition sets. A follow-up AXI-Lite boundary-phase test was
-attempted at seed 610806, but VCS returned 255 before the UVM test started
-because it could not connect to the license server. It produced no usable
-coverage result and its VDB was not merged. No bin was removed from the
+line, branch, or condition sets. The first seed-610806 attempt was blocked
+before UVM by the license server; its license-restored retry passed and is
+included. Seeds 610807–610812 cover boundary offsets 1/2/4/8/16/32; seed
+610813 covers RUN+COMMIT overlap with AW/W skew and early BREADY; seeds
+610814/610815 insert source gaps at beats 8/20; seeds 610816–610821 sweep
+COMMIT delay after RUN at 0/1/2/4/8/16 core cycles. All passed with zero UVM
+errors/fatals and bit-true output checking. No bin was removed from the
 denominator.
+
+### Fixed-parameter EF2 branch audit
+
+The current product instantiates four EF2 planes through
+`tid32_thermo5_fs4_multipa_tx.sv:80-85`. That wrapper passes `W` and `CHANNELS`
+to `tid32_cartesian_ef2_fs4_gt_tx`, but not `PAIR_LOOKAHEAD`; the module
+default at `tid32_cartesian_ef2_fs4_gt_tx.sv:20` is `1'b0`. Therefore the
+`if (PAIR_LOOKAHEAD)` true arm at line 231 is structurally inactive for this
+GT-parent product. The exact Raw ledger retains one unhit `231:1` branch bin
+in each `g_branch[0..3].g_order2.u_tid` instance as
+`OPEN_CONFIGURATION_REVIEW`. Candidate PAIR_LOOKAHEAD runs remain separate;
+this source/configuration trace is not a waiver or a formal proof, and the
+four Raw bins remain in the denominator.
 
 ### Functional coverage and applicability
 
@@ -144,15 +171,19 @@ report and are not merged into legal product coverage.
   inductive bounds, state update/hold, output capture, and output hold under
   stall. This is not an end-to-end BER proof or formal equivalence to the
   Python oracle.
-- **Generic FIFO CDC: prior PASS retained.** The existing exact-clock
-  Generic CDC proof has 7/7 assertions, 9/9 covers, and zero black boxes.
-  Current simulation also hits every product `rem_count_q` state/transition.
-  A fresh rerun in this update was blocked before setup by
-  `Cannot connect to license server`; it is not marked as a new PASS. The
-  proof does not transfer to XPM.
-- **DPD identity arithmetic: OPEN.** Prior scoped work proves selected
-  no-saturation/bounds properties, but the full identity-payload proof remains
-  inconclusive. No unreachable DPD bins are waived from that result.
+- **Generic FIFO CDC: fresh PASS.** After license recovery, the exact 7:4
+  scaled-clock proof completed with 7/7 assertions proven, 9/9 covers hit,
+  zero black boxes, and 56.67 seconds runtime. Current simulation also hits
+  every product `rem_count_q` state/transition. The proof does not transfer
+  to XPM.
+- **DPD identity arithmetic: OPEN.** The initial license-restored run and a
+  second extended run both report 1/5 assertions proven (`a_valid_latency`),
+  4/5 inconclusive (`a_identity_payload`, both no-saturation assertions,
+  and saturation count), 4/4 covers hit, and zero black boxes. The extended
+  run raised the per-property limit to 2 minutes and max effort to 6 minutes;
+  it ended at the maximum-effort limit after 367.39 seconds with the same
+  four properties inconclusive and no counterexample. This does not prove
+  identity payload or absence of saturation. No DPD bins are waived.
 - **Centered frame tail: simulation reachable; formal mapping OPEN.** The
   legal four-plane replay covers normal frame-tail processing, and the
   separate negative assertion run checks malformed tail ordering. There is
@@ -222,11 +253,34 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   --out-dir runs/thermo5_tx_product_formal_20261030
 ```
 
-Both Make targets passed. The combined formal command proved EF2 before
-the identity job stalled; a separate fresh CDC proof attempt stopped at VCF
-license connection. These are recorded as a partial run and a blocked rerun,
-not as a combined formal PASS. The retained exact-clock Generic CDC proof is
-the earlier Linux result named above.
+The extended identity-only attempt changed only the temporary Tcl effort
+limits (per-property 2 minutes, total 6 minutes); the original RTL and formal
+harness were unchanged:
+
+```bash
+repo_dir=$PWD
+run_dir="$repo_dir/runs/thermo5_tx_product_formal_identity_extended_20261030"
+cd "$run_dir"
+env THERMO5_FORMAL_TOP=thermo5_identity_harness \
+  THERMO5_FORMAL_OUT="$run_dir/identity" \
+  THERMO5_FORMAL_REPO="$repo_dir" \
+  PATH="/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH" \
+  /opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf -batch -fmode FPV \
+  -f "$run_dir/run_thermo5_gap_fpv_extended.tcl" \
+  > "$run_dir/manual_console.log" 2>&1
+```
+
+Both Make targets passed. The combined formal command proved EF2 before the
+identity job exceeded its bounded run; that combined command is not a full
+formal PASS. The fresh CDC proof is separately recorded as PASS above. The
+license-restored identity-only retry completed but remained inconclusive as
+reported above; the generated summary is the source of the counts.
+
+The follow-up with the longer effort budget used a retained Tcl snapshot and
+completed at its 6-minute maximum-effort limit. Its exact property report and
+machine summary are under
+`runs/thermo5_tx_product_formal_identity_extended_20261030/`; it did not
+change the identity proof disposition.
 
 The coefficient-transport VDB included in the seven-VDB merge was produced by
 the same product-configured simulator executable with this invocation:
@@ -241,8 +295,95 @@ runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
   -l runs/thermo5_tx_product_axil_reset_cov_20261030/thermo5_sku_axil_coeff_transport_test_seed610803.log
 ```
 
-The additional legal boundary-phase attempt used this invocation and was
-blocked before the test ran; it did not contribute to Raw coverage:
+The license-restored boundary-phase family used the same product-configured
+simulator executable, with seeds 610806–610821 and per-run options captured
+under `runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/`.
+The exact latest URG command and all 23 simulation VDB paths are preserved in
+`runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_run_sweep_20261030.command.txt`;
+its results are in the adjacent `.log` file.
+The following loops reproduce the license-restored legal runs. Each invocation
+has its own seed, log, and VDB; the VCS executable and vectors come from the
+product-configured run described above.
+
+```bash
+for spec in '1 610807' '2 610808' '4 610809' '8 610810' '16 610811' '32 610812'; do
+  set -- $spec
+  offset=$1
+  seed=$2
+  case_dir="runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset${offset}_seed${seed}"
+  mkdir -p "$case_dir"
+  runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
+    +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+    +VEC_DIR="$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors" \
+    +ntb_random_seed="$seed" -cm line+cond+fsm+tgl+branch+assert \
+    -cm_dir "$case_dir/cov.vdb" +CORE_WORDS=56 \
+    +AXIL_BOUNDARY_OFFSET="$offset" -l "$case_dir/sim.log" \
+    > "$case_dir/console.log" 2>&1
+done
+```
+
+```bash
+case_dir=runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/commit_on_run_seed610813
+mkdir -p "$case_dir"
+runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
+  +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+  +VEC_DIR="$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors" \
+  +ntb_random_seed=610813 -cm line+cond+fsm+tgl+branch+assert \
+  -cm_dir "$case_dir/cov.vdb" +CORE_WORDS=56 \
+  +AXIL_COMMIT_ON_RUN +AXIL_BOUNDARY_AW_GAP=3 +AXIL_BOUNDARY_W_GAP=1 \
+  +AXIL_EARLY_BREADY -l "$case_dir/sim.log" > "$case_dir/console.log" 2>&1
+```
+
+```bash
+for spec in '8 610814' '20 610815'; do
+  set -- $spec
+  gap_beat=$1
+  seed=$2
+  case_dir="runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat${gap_beat}_seed${seed}"
+  mkdir -p "$case_dir"
+  runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
+    +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+    +VEC_DIR="$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors" \
+    +ntb_random_seed="$seed" -cm line+cond+fsm+tgl+branch+assert \
+    -cm_dir "$case_dir/cov.vdb" +CORE_WORDS=56 \
+    +AXIL_BOUNDARY_GAP_BEAT="$gap_beat" +AXIL_BOUNDARY_GAP_CYCLES=4 \
+    -l "$case_dir/sim.log" > "$case_dir/console.log" 2>&1
+done
+```
+
+The six RUN-relative COMMIT-delay invocations use the following exact
+parameter sweep (each pair maps to its own seed, log, and VDB):
+
+```bash
+for spec in '0 610816' '1 610817' '2 610818' '4 610819' '8 610820' '16 610821'; do
+  set -- $spec
+  delay=$1
+  seed=$2
+  case_dir="runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay${delay}_seed${seed}"
+  mkdir -p "$case_dir"
+  runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
+    +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+    +VEC_DIR="$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors" \
+    +ntb_random_seed="$seed" -cm line+cond+fsm+tgl+branch+assert \
+    -cm_dir "$case_dir/cov.vdb" +CORE_WORDS=56 \
+    +AXIL_COMMIT_AFTER_RUN_CORE_CYCLES="$delay" -l "$case_dir/sim.log"
+done
+```
+
+The first seed-610806 invocation was blocked before UVM and is retained as a
+failed attempt. Its license-restored retry passed:
+
+```bash
+case_dir=runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/license_retry_seed610806
+runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
+  +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+  +VEC_DIR="$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors" \
+  +ntb_random_seed=610806 -cm line+cond+fsm+tgl+branch+assert \
+  -cm_dir "$case_dir/cov.vdb" +CORE_WORDS=56 +AXIL_BOUNDARY_OFFSET=0 \
+  -l "$case_dir/sim.log" > "$case_dir/console.log" 2>&1
+```
+
+The original blocked attempt's command is retained below for traceability:
 
 ```bash
 runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
@@ -254,8 +395,8 @@ runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
   -l runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/sim_retry.log
 ```
 
-The console license failure and exit status are retained in
-`runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/attempt_result.txt`.
+The console license failure and exit status for the first attempt are retained
+in `runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/attempt_result.txt`.
 
 **Acceptance:** Task 4 closed the previously missing product FSM transitions
 and improved toggles, while reachable line/branch/condition closure remains

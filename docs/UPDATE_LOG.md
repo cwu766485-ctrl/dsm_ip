@@ -4304,3 +4304,45 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - The product Raw coverage remains unchanged at 81.95% aggregate and the gate
   remains `RAW_100_OPEN`. Further VCS branch/condition/line/toggle closure
   requires a working license service.
+
+## 2026-10-30 13:01 SGT - Resume licensed TX coverage closure
+
+- After VCS/VC Formal license recovery, reran the blocked AXI-Lite boundary
+  phase at seed 610806 and exercised offsets 1/2/4/8/16/32, RUN+COMMIT with
+  AW/W skew, source gaps before beats 8 and 20, and six RUN-relative COMMIT
+  delays. All 16 legal cases passed the four-plane bit-true checker with zero
+  UVM errors/fatals. No RTL, RX, AI-DPD, or frozen TX algorithm changed.
+- Added the six RUN-relative COMMIT VDBs to the positive product Raw merge
+  and regenerated URG, the exact raw denominator/gate, and source-linked gap
+  ledger. The merge contains 23 positive simulation VDBs plus the compile
+  VDB. One condition bin was newly hit by RUN+COMMIT overlap; the later delay
+  sweep did not change aggregate code counters. Current Raw is 81.97%:
+  line 3,190/3,796, condition 582/846, branch 440/637, toggle
+  86,951/104,478, FSM states 13/13 and transitions 22/22. Functional raw
+  coverage remains 170/174 bins, with 170/170 applicable positive bins hit.
+  Raw equals adjusted; zero approved waivers and exclusions; gate
+  `RAW_100_OPEN`.
+- Audited the EF2 `PAIR_LOOKAHEAD` branch against the actual GT-parent
+  parameter chain. The four product instances inherit the module default 0;
+  their unhit line-231 true-arm bins remain in the denominator as
+  `OPEN_CONFIGURATION_REVIEW`. No exclusion or waiver was applied, and the
+  candidate branch remains separately reported.
+- Fresh Generic CDC VC Formal passes 7/7 assertions and 9/9 covers with zero
+  black boxes in 56.67 seconds. Identity DPD Formal completed but remains
+  inconclusive: 1/5 assertions proven, 4/5 inconclusive, 4/4 covers hit,
+  zero black boxes. A second run with 2-minute per-property and 6-minute
+  total effort limits reached max effort after 367.39 seconds with the same
+  four assertions inconclusive and no counterexample. Identity remains OPEN;
+  no DPD bins are waived.
+- Refreshed `thermo5-tx-linux-coverage-closure.md` and its evidence JSON,
+  updated the historical coverage-signoff landing note and execution frontier.
+  Evidence hashes cover the latest URG report, gate, gap ledger, VDBs, and
+  fresh formal reports.
+- Checks: 16/16 boundary/traffic UVM tests PASS; refreshed URG/denominator and
+  gap-ledger generation PASS; coverage gate reports `RAW_100_OPEN`; fresh CDC
+  Formal PASS; identity Formal signoff gate fails to converge and remains
+  explicitly OPEN; boundary/coverage/formal evidence consistency checks,
+  JSON parse, and `git diff --check` PASS.
+- Limits: line/branch/condition/toggle closure remains incomplete; identity
+  arithmetic and frame-tail reachability remain open. Real XPM, GT Wizard,
+  FPGA PPA/routed timing, and physical QAM256 BER remain outside Linux scope.

@@ -3,13 +3,16 @@
 > **Latest Linux product follow-up (2026-10-30):** This page retains the
 > original Gate 3/PR #5 campaign as historical evidence. The current
 > one-tap identity product-scoped update, including the AXI-Lite FSM reset
-> sweep, Raw and adjusted counts, separate legal/negative assertions, formal
-> and mutation status, and open signoff items is in
+> and boundary sweeps, Raw and adjusted counts, separate legal/negative
+> assertions, fresh Generic CDC proof, identity proof status, and open signoff
+> items is in
 > [`thermo5-tx-linux-coverage-closure.md`](thermo5-tx-linux-coverage-closure.md)
 > and its machine-readable
 > [`evidence JSON`](thermo5-tx-linux-coverage-closure-evidence.json). Current
-> Raw URG aggregate is 81.95%, FSM transitions are 22/22, and the gate remains
-> `RAW_100_OPEN`; there are no approved waivers or active exclusions.
+> Raw URG aggregate is 81.97%, FSM transitions are 22/22, and the gate remains
+> `RAW_100_OPEN`; there are no approved waivers or active exclusions. The
+> current condition tally is 582/846; see the closure report for exact counts
+> and the 23-VDB merge manifest.
 
 **Disposition:** `FUNCTIONAL_GROUPS_PASS; RAW_100_OPEN; GATE3_NOT_SIGNED_OFF`
 **Date:** 2026-10-29 (Asia/Singapore)
