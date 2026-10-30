@@ -1,5 +1,16 @@
 # Thermo5 TX coverage audit — Gate 3 Linux result
 
+> **Latest Linux product follow-up (2026-10-30):** This page retains the
+> original Gate 3/PR #5 campaign as historical evidence. The current
+> one-tap identity product-scoped update, including the AXI-Lite FSM reset
+> sweep, Raw and adjusted counts, separate legal/negative assertions, formal
+> and mutation status, and open signoff items is in
+> [`thermo5-tx-linux-coverage-closure.md`](thermo5-tx-linux-coverage-closure.md)
+> and its machine-readable
+> [`evidence JSON`](thermo5-tx-linux-coverage-closure-evidence.json). Current
+> Raw URG aggregate is 81.95%, FSM transitions are 22/22, and the gate remains
+> `RAW_100_OPEN`; there are no approved waivers or active exclusions.
+
 **Disposition:** `FUNCTIONAL_GROUPS_PASS; RAW_100_OPEN; GATE3_NOT_SIGNED_OFF`
 **Date:** 2026-10-29 (Asia/Singapore)
 **Coverage source base:** `e5d1951dde51089ae431017aa39ea25af48cf26e` (same tree as the pushed Gate 1 branch commit `813db9c9a488b033dc4686553cbe3a06856acc0b`)

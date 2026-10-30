@@ -4258,3 +4258,36 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   4–6; audit the five historical directory digest mismatches without rerunning
   full regressions; real XPM, GT Wizard/raw64, and physical FPGA evidence are
   unavailable in this Linux baseline.
+
+## 2026-10-30 12:22 SGT - Continue Thermo5 TX Linux coverage closure Tasks 4-6
+
+- Added a legal AXI-Lite reset sweep that hits all five previously missing
+  Generic CDC residual FSM transitions, with five public reset epochs and a
+  post-reset four-plane identity replay. Added the test to the UVM package and
+  Linux Make targets; RTL and frozen TX algorithms are unchanged.
+- Reused the five selected product VDBs from PR #6 and merged the reset-sweep
+  and one-tap coefficient-transport runs only. Product Raw URG is 81.95%
+  aggregate; FSM is 13/13 states and 22/22 transitions. Functional URG is
+  170/174 raw bins (97.97% average group score); adjusted code coverage equals
+  raw, with zero approved waivers and exclusions. The fail-closed gate returns
+  `RAW_100_OPEN`.
+- Added a separate expected-negative AXI-Lite assertion report, EF2 Formal
+  evidence, retained Generic CDC Formal evidence, and a PA0 bit-true scoreboard
+  mutation run. DPD identity Formal and dedicated frame-tail reachability remain
+  open; fresh CDC rerun was blocked by the license server. Candidate DPD and
+  PAIR_LOOKAHEAD remain separate from the product coverage merge.
+- Updated `thermo5-tx-linux-coverage-closure.md` and its evidence JSON,
+  linked the current product result from the historical coverage signoff,
+  refreshed the execution frontier, and recorded exact artifact hashes.
+- Checks: reset-sweep UVM PASS (seed 610802; five resets, 56 post-reset
+  four-plane words); one-tap coefficient transport UVM PASS (seed 610803; 56
+  four-plane words); illegal-frame expected assertions observed separately
+  (seed 610804); PA0 checker mutation caught (seed 610805); EF2 VC Formal PASS
+  (6/6 assertions, 3/3 covers); prior exact Generic CDC proof retained (7/7,
+  9/9); coverage gate `RAW_100_OPEN`; JSON parse and evidence-consistency checks pass,
+  as do the fail-closed gate re-evaluation and `git diff --check`.
+- Limits: line/branch/condition/toggle closure remains open; DPD identity
+  arithmetic proof remains inconclusive; fresh CDC Formal rerun could not
+  reach setup; real XPM/GT Wizard, routed FPGA PPA, and physical QAM256 BER are
+  unavailable. The Python worst-case campaign is a model screen without a
+  defined product BER/BLER acceptance target.

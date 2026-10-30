@@ -1,0 +1,337 @@
+{
+  "artifact_sha256": {
+    "coeff_transport_log": "d779947f0cb4e6e71995ee14667fae8934e6bd3415afe7b08e37ce55498077d9",
+    "compile_log": "7475893ee8fc3cbba4d62b4916ec63f88ff69c9c3ef9b3e965c59fe3520b28eb",
+    "coverage_gate_result": "5cbde53d614ea7250ffa496d7807a25a68671a16f07d81e09a3327014613a893",
+    "ef2_properties": "c19a5c12b0914ecf963ba1652e75826522a7bce496a9e9ad9c375f8e1c40b1bb",
+    "ef2_setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "ef2_vcf_log": "357ef27e97bad4bc499f86d69187d4eb52ecb166838bfe20fe798664fffe8575",
+    "gap_ledger_csv": "5078322425cafbdb446d794c7bff1345b476d6cf6a9129f60060ec70a0372c2a",
+    "gap_ledger_summary": "b41193c345bb2b9d3f1b8ca7ee0ab9d8d6604cfa392a1ccbb769a3554ddf9b33",
+    "mutation_log": "cacd97fb4020d420b9181ed762e1aa47c062847303217ecc6980f3eb43ea6654",
+    "negative_assertion_html": "0e63167065ac6acc2cd60a6b0668a4f296bf0459c9b4f4661cbdbc83b89ddb3c",
+    "negative_assertion_summary": "94b75c99ef9355c7c40491fe62a184004fcae17da3674ff243220e14b74e8142",
+    "negative_test_log": "2158ebccf09e6b300ad1e000fad901f16d69e1adc4d80e08b6f4870b758f7930",
+    "negative_urg_log": "c86bfe0327d9c81ad757b28b92e993221cb2229e13dcad3a3c9c1d33dc1f82b8",
+    "product_asserts_html": "f813f00a569b944d125ad0331c5332e423170c46ab85086739cbddb8a268427f",
+    "product_groups_html": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
+    "raw_urg_log": "bcd8c05e6cc7fe6096bc9cbd2098925299c7c1d09c023dcdcbf8439f21e60a1d",
+    "raw_urg_summary": "89ea30a06bdeebdb952dcbbfcf085ba1dd75174887dcb89403359fb7b7214186",
+    "reset_sweep_log": "2025ac03df2f1aa04038433a43f8f244a073c5bb1f3e39db06c29986dabe15ba",
+    "retained_formal_summary": "fbe7819297d4e0625580c9b1ae7bfa76bce89b512da6bc1d99089c5bae5dcb14",
+    "source_manifest": "212e85525ff6bd5d8371ca0f966e7ed74b782338338d716ec3e618c643b8aa4f"
+  },
+  "artifact_tree_sha256": {
+    "expected_negative_assertion_urg_report": {
+      "file_count": 45,
+      "total_bytes": 2822455,
+      "tree_sha256": "2b77a46f952ff35e2d36989e8256f74680edf7a329aef889b3c66616d06ecbab"
+    },
+    "incremental_vdbs": {
+      "coefficient_transport": {
+        "file_count": 13,
+        "total_bytes": 11655,
+        "tree_sha256": "70ddc029acbcf4355ea11c3cc1cd5f9b71f9fb65cba210e419dda2ac92a62a39"
+      },
+      "negative_frame_test": {
+        "file_count": 13,
+        "total_bytes": 11522,
+        "tree_sha256": "e1330cd46d641c741bb53f93b7f62b06f40e6e57447703865e7a2b85c560cba0"
+      },
+      "reset_sweep": {
+        "file_count": 13,
+        "total_bytes": 11606,
+        "tree_sha256": "97f81332ff97447c74757424fdd3784a75ce9d3036df9689f79965771cdbdd31"
+      },
+      "scoreboard_mutation": {
+        "file_count": 13,
+        "total_bytes": 15767,
+        "tree_sha256": "c30cca26ab4c809891e6b25c97cd1b35c0225584130d418f39b58b79017ad0dc"
+      }
+    },
+    "product_raw_urg_report": {
+      "file_count": 45,
+      "total_bytes": 2807983,
+      "tree_sha256": "68d6ddecfef0c40fad46c9f65e3c7b7a5af7954ed186643194aeea9abe0aafff"
+    }
+  },
+  "artifact_tree_sha256_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path length, relative path bytes, then the raw SHA256(file) digest.",
+  "benchmark": {
+    "behavioral_nominal_ber": 0.00014269,
+    "behavioral_stress_ber": 0.00077144,
+    "digital_ber": "21/224256 = 9.3643e-5",
+    "digital_evm_percent": 2.464,
+    "physical_qam256_acceptance": null,
+    "product_ber_bler_target_defined": false,
+    "status": "MODEL_SCREEN_PASS; COMMUNICATION_ACCEPTANCE_UNDEFINED"
+  },
+  "code_coverage": {
+    "adjusted": {
+      "active_exclusion_count": 0,
+      "coverage_gate": "RAW_100_OPEN",
+      "denominator_edits": 0,
+      "disposition": "IDENTICAL_TO_RAW_NO_APPROVED_WAIVERS",
+      "waiver_count": 0
+    },
+    "gap_ledger": {
+      "extraction_gaps": 0,
+      "rows": 18595,
+      "status_counts": {
+        "OPEN": 3789,
+        "OPEN_ARITHMETIC_REVIEW": 4512,
+        "OPEN_CONFIGURATION_REVIEW": 9513,
+        "OPEN_COUNTER_FORMAL_REVIEW": 640,
+        "OPEN_FORMAL_MAPPING_REVIEW": 141
+      }
+    },
+    "raw": {
+      "assertions": {
+        "attempted_denominator": 15,
+        "attempted_percent": 86.6667,
+        "failures": 0,
+        "successful": 13,
+        "uncovered": 2,
+        "without_attempts": 2
+      },
+      "branch": {
+        "covered": 440,
+        "missing": 197,
+        "percent": 69.0738,
+        "total": 637
+      },
+      "condition": {
+        "covered": 581,
+        "missing": 265,
+        "percent": 68.6761,
+        "total": 846
+      },
+      "fsm_states": {
+        "covered": 13,
+        "percent": 100.0,
+        "total": 13
+      },
+      "fsm_transitions": {
+        "covered": 22,
+        "percent": 100.0,
+        "total": 22
+      },
+      "line": {
+        "covered": 3190,
+        "missing": 606,
+        "percent": 84.0358,
+        "total": 3796
+      },
+      "toggle_both_directions": {
+        "covered": 86951,
+        "missing": 17527,
+        "percent": 83.2242,
+        "total": 104478
+      },
+      "urg_aggregate_percent": 81.95
+    }
+  },
+  "commands": [
+    "make -C dv/uvm/sim thermo5-tx-product-axil-reset-sweep VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_OUT=\"$PWD/runs/thermo5_tx_product_axil_reset_cov_20261030\" THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\" THERMO5_DPD_MAX_TAPS=1",
+    "make -C dv/uvm/sim thermo5-tx-product-axil-coeff-transport VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 PYTHON=python3.12 THERMO5_OUT=\"$PWD/runs/thermo5_tx_product_coeff_target_20261030\" THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\" THERMO5_DPD_MAX_TAPS=1",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_coeff_transport_test +VEC_DIR=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" +ntb_random_seed=610803 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_coeff_transport_test_seed610803.vdb +CORE_WORDS=56 -l runs/thermo5_tx_product_axil_reset_cov_20261030/thermo5_sku_axil_coeff_transport_test_seed610803.log",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_illegal_frame_test +VEC_DIR=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" +ntb_random_seed=610804 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_illegal_frame_test_seed610804.vdb +CORE_WORDS=56 -l runs/thermo5_tx_product_axil_reset_cov_20261030/thermo5_sku_axil_illegal_frame_test_seed610804.log",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_product_identity_test +VEC_DIR=runs/thermo5_tx_product_axil_reset_cov_20261030/mutation/bittrue_fault/vectors +ntb_random_seed=610805 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_product_axil_reset_cov_20261030/mutation/bittrue_fault/cov.vdb +CORE_WORDS=56 -l runs/thermo5_tx_product_axil_reset_cov_20261030/mutation/bittrue_fault/sim.log",
+    "python3.12 tools/hw/thermo5_coverage_denominator.py runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage.json",
+    "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage.json/summary.json --groups-html runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw/groups.html --waivers-csv docs/verification/thermo5_tx_waivers.csv --el-file dv/uvm/sim/thermo5_tx_main.el --source-manifest runs/thermo5_tx_product_axil_reset_cov_20261030/source_manifest.json --output runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_result.json",
+    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 identity cdc_residual --out-dir runs/thermo5_tx_product_formal_20261030"
+  ],
+  "date": "2026-10-30",
+  "disposition": "TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN",
+  "formal": {
+    "centered_frame_tail_reachability": {
+      "simulation": "normal tail bit-true replay plus separate malformed-tail assertion test",
+      "status": "OPEN_NO_DEDICATED_FORMAL_HARNESS"
+    },
+    "dpd_identity_arithmetic": {
+      "status": "OPEN_INCONCLUSIVE",
+      "waiver": false
+    },
+    "ef2_safety": {
+      "artifact_directory": "runs/thermo5_tx_product_formal_20261030/ef2",
+      "assertions_proven": "6/6",
+      "black_boxes": 0,
+      "covers": "3/3",
+      "non_vacuous": 4,
+      "status": "PASS"
+    },
+    "generic_fifo_cdc_residual": {
+      "assertions_proven": "7/7",
+      "black_boxes": 0,
+      "covers": "9/9",
+      "fresh_rerun": "BLOCKED_LICENSE_SERVER",
+      "status": "PASS_RETAINED_PRIOR_EXACT_SOURCE",
+      "summary": "runs/thermo5_linux_formal_regression_20261028/formal_summary.json"
+    },
+    "pair_lookahead_and_nonidentity_2_4tap_dpd": {
+      "included_in_product_denominator": false,
+      "status": "CANDIDATE_ONLY_SEPARATE_REPORTS"
+    }
+  },
+  "functional_coverage": {
+    "groups": {
+      "core_cg": {
+        "covered": 14,
+        "expected": 16,
+        "negative_only_unhit_bin": "cp_illegal.bad_frame",
+        "urg_percent": 87.5
+      },
+      "ef2_cg": {
+        "covered": 28,
+        "expected": 28,
+        "urg_percent": 100.0
+      },
+      "plane_atomic_cg": {
+        "covered": 16,
+        "expected": 16,
+        "urg_percent": 100.0
+      },
+      "read_cg": {
+        "covered": 22,
+        "expected": 22,
+        "urg_percent": 100.0
+      },
+      "reset_cg": {
+        "covered": 4,
+        "expected": 4,
+        "urg_percent": 100.0
+      },
+      "source_cg": {
+        "covered": 38,
+        "expected": 40,
+        "negative_only_unhit_bin": "cp_packet_quanta.malformed_early",
+        "urg_percent": 96.3
+      },
+      "stop_restart_cg": {
+        "covered": 12,
+        "expected": 12,
+        "urg_percent": 100.0
+      },
+      "write_cg": {
+        "covered": 36,
+        "expected": 36,
+        "urg_percent": 100.0
+      }
+    },
+    "legally_applicable_positive_bins": {
+      "basis": "Four uncovered raw bins are malformed-frame bins excluded from legal stimulus; both are hit in the separate expected-negative run. This classification does not modify the raw URG denominator.",
+      "covered": 170,
+      "expected": 170
+    },
+    "negative_only_bins": {
+      "core_cg.cp_illegal.bad_frame": {
+        "negative_test_hits": 49,
+        "positive_product_hits": 0
+      },
+      "source_cg.cp_packet_quanta.malformed_early": {
+        "negative_test_hits": 1,
+        "positive_product_hits": 0
+      }
+    },
+    "raw_bins": {
+      "covered": 170,
+      "expected": 174,
+      "uncovered": 4
+    },
+    "raw_urg_percent": 97.97,
+    "urg_group_score_is_unweighted_mean": true
+  },
+  "not_run_or_open": [
+    "real XPM FIFO simulation/formal coverage",
+    "actual GT Wizard/raw64 vendor-model simulation",
+    "Vivado FPGA PPA/routed timing",
+    "physical QAM256 BER",
+    "reachable line/condition/branch/toggle closure",
+    "DPD identity arithmetic formal completion",
+    "dedicated Frame Tail formal reachability"
+  ],
+  "product_configuration": {
+    "coverage_hierarchy": "+tree thermo5_sku_uvm_tb.dut",
+    "coverage_hierarchy_file": "dv/uvm/sim/thermo5_tx_product_coverage.hier",
+    "dpd": "identity one-tap",
+    "dpd_max_taps": 1,
+    "ef2_order": 2,
+    "fifo": "Generic asynchronous FIFO Linux substitute",
+    "interpolation": "Centered-Cubic x2+x2",
+    "source": "fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv",
+    "state_bits": 20,
+    "step": 5120
+  },
+  "run_directories": {
+    "current_ef2_formal": "runs/thermo5_tx_product_formal_20261030/ef2",
+    "product": "runs/thermo5_tx_product_axil_reset_cov_20261030",
+    "retained_cdc_formal": "runs/thermo5_linux_formal_regression_20261028"
+  },
+  "schema_version": 1,
+  "scope": "Thermo5 TX product configuration; Linux Generic FIFO substitute; VCS/URG and VC Formal only",
+  "stack": {
+    "pr6_base_sha": "006d52deaaf8ef3980461a6d4efdf1d2c0aa7011",
+    "remote_pr7_commit_sha": "pending PR creation",
+    "tested_local_source_sha": "cab04feb6b41bfc75efd064eb1f13b2a4262c22d"
+  },
+  "tests": {
+    "mutation": {
+      "checker": "four-plane independent bit-true scoreboard",
+      "fault": "PA0 oracle word 0 bit 0 flipped from 0x33BB39BF8B9F88C8 to 0x33BB39BF8B9F88C9",
+      "note": "VCS exits 0 because UVM finishes; fatal marker is the mutation oracle.",
+      "observed": "one UVM_FATAL at epoch 0, word 0, plane 0",
+      "seed": 610805,
+      "status": "PASS_MUTATION_CAUGHT",
+      "test": "thermo5_sku_axil_product_identity_test",
+      "vdb_merged": false
+    },
+    "negative_assertions": {
+      "expected_assertion_failures": 2,
+      "locations": [
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv:257",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310"
+      ],
+      "merged_into_product_raw": false,
+      "seed": 610804,
+      "separate_vdb_and_urg": true,
+      "status": "EXPECTED_FAILURES_OBSERVED; UVM_TEST_PASS",
+      "test": "thermo5_sku_axil_illegal_frame_test"
+    },
+    "positive_product_campaign": {
+      "candidate_or_negative_vdbs_merged": false,
+      "merged_product_vdb_count": 7,
+      "new_tests": [
+        {
+          "name": "thermo5_sku_axil_reset_sweep_test",
+          "post_reset_bittrue_words": 56,
+          "reset_epochs": 5,
+          "residual_counts": [
+            2,
+            4,
+            6,
+            10,
+            12
+          ],
+          "seed": 610802,
+          "status": "PASS",
+          "uvm_error": 0,
+          "uvm_fatal": 0
+        },
+        {
+          "four_plane_words": 56,
+          "name": "thermo5_sku_axil_coeff_transport_test",
+          "seed": 610803,
+          "status": "PASS",
+          "uvm_error": 0,
+          "uvm_fatal": 0
+        }
+      ],
+      "status": "PASS",
+      "tests_retained_from_pr6": 5
+    }
+  },
+  "tool_versions": {
+    "urg": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2",
+    "vcs": "V-2023.12-SP1"
+  }
+}

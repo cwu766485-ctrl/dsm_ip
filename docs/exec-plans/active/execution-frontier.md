@@ -1,38 +1,52 @@
 # Execution frontier
 
-## Current execution state: TX-only product-scoped Gate 3 baseline recorded; closure remains open (2026-10-30)
+## Current execution state: TX-only Linux closure Tasks 4–6 in progress (2026-10-30)
 
-PRs #2 → #3 → #4 → #5 are a stacked sequence based respectively on
-`thermo5`, the Gate 0 head, the Gate 1 head, and the Gate 2 head. The PR #5
-head is `0c974aa45b8875794d33195530242320b419c249`; its 84 source-file hashes
-and 22 individually hashed artifact files match. Five of 12 directory-tree
-digests do not reproduce; the exact mismatch is recorded in the product
-coverage audit. The PR #5 AXI-Lite URG merge also
-contains nonidentity 2/4-tap DPD candidate VDBs, so its 84.59% AXI-Lite
-aggregate is retained as a historical combined-campaign result, not the
-actual product-only score.
+PRs #2 → #3 → #4 → #5 remain the historical Gate 0 → Gate 3 dependency
+chain; PR #6 adds the product-scoped denominator/waiver gate and is the base
+for this Task 4–6 follow-up. The local tested source commit is
+`cab04feb6b41bfc75efd064eb1f13b2a4262c22d` (reset-sweep test only; no RTL,
+RX, AI-DPD, or frozen TX algorithm changed). Publish this delta as an
+independent PR stacked on PR #6.
 
-A distinct Linux product run now uses the GT-parent TX configuration:
-centered-cubic, EF2 order 2, STEP 5120, `DPD_MAX_TAPS=1`, identity DPD, and
-Generic FIFO substitution. Code coverage is scoped to the elaborated
-AXI-Lite `dut` hierarchy. Five selected VCS tests pass with zero UVM errors
-and fatals; the complete earlier regression/formal/mutation evidence is
-retained without repetition. Product-only raw URG is 75.96% aggregate: line
-84.04%, condition 68.44%, toggle 79.37%, branch 69.07%, FSM states 13/13,
-transitions 15/22, assertions 86.67%. Functional group aggregate is 97.97%
-(six of eight groups at 100%). There are no exclusions or denominator edits;
-the waiver CSV is empty and the gate script rejects active exclusions.
-Evidence and candidate-separated metrics are in
-`docs/verification/thermo5-tx-coverage-closure.md` and
-`docs/verification/thermo5-tx-product-coverage-evidence.json`.
+The actual GT-parent product scope remains centered-cubic interpolation, EF2
+ORDER=2, STEP=5120, `DPD_MAX_TAPS=1`, identity DPD, and Generic FIFO as the
+Linux substitute. Coverage is scoped to the elaborated `dut` hierarchy.
+Retained PR #6 runs were not repeated. Two additional legal VCS tests pass:
+five public reset epochs at CDC residual counts 2/4/6/10/12 followed by a
+56-word four-plane bit-true replay, and legal one-tap coefficient transport
+followed by another 56-word replay.
 
-**Next action: Task 4** — close AXI-Lite's remaining five CDC FSM transitions,
-then reachable branch, condition, line, and toggle bins. Keep the two
-centered-cubic transitions and all fixed-configuration/formal-review items
-open until specifically justified. Follow with the legal/negative assertion
-split, exact reachability and checker mutation work in Tasks 5–6. Keep raw
-scores unchanged and report `RAW_100_OPEN` when raw bins remain. Real XPM,
-GT Wizard/raw64 and physical FPGA PPA remain outside Linux signoff.
+Latest product-only Raw URG is 81.95%: line 3,190/3,796 (84.04%), condition
+581/846 (68.68%), branch 440/637 (69.07%), both-direction toggle
+86,951/104,478 (83.22%), FSM states 13/13, transitions 22/22, and DUT
+assertions 13/15 attempted (86.67%; two uncovered and two without attempts).
+Functional URG is 170/174 raw bins and 97.97% mean group score; the four
+uncovered raw bins are two malformed-frame bin types, each present in two
+sampled group instances, which hit in a separate negative run. The 170 legal
+positive bins are hit. Raw and adjusted code coverage are identical; zero
+waivers and zero active exclusions. The fail-closed gate remains
+`RAW_100_OPEN`. The source-linked gap ledger has 18,595 OPEN/review rows. Full counts and artifact hashes
+are in `docs/verification/thermo5-tx-linux-coverage-closure.md` and its evidence
+JSON.
+
+**Next:** continue Task 4 in order: reachable branches, conditions, lines,
+then toggle high bits and fixed-configuration paths. Do not waive a bin until
+instance, source line, applicability, evidence, source SHA, and review status
+are individually approved. Continue Task 5 with exact formal reachability for
+DPD and frame-tail paths; keep DPD identity arithmetic open while the proof is
+inconclusive. EF2 safety is freshly proven 6/6 plus 3/3 covers; the prior
+Generic CDC residual proof is retained (7/7 plus 9/9), but a fresh rerun was
+license-blocked. Scoreboard mutation was caught and expected illegal-frame
+assertions are reported in a separate negative VDB. Continue Task 6 only with
+Linux evidence: current Python TX benchmark is a model screen, not communication
+acceptance; real XPM/GT Wizard, FPGA PPA/routed timing, and physical QAM256 BER
+remain open. Never combine candidate PAIR_LOOKAHEAD or 2/4-tap DPD reports
+with product metrics, or turn unresolved raw bins into a synthetic 100%.
+
+The Gate 0–3 notes immediately below preserve the earlier Gate 3/PR #5
+checkpoint. Product-only coverage and Task 4–6 status above supersede its
+older combined-campaign numbers.
 
 Gate 0 remains **PASS for Linux Generic/behavioral scope** at verification
 source `04550289e1ecb5fa0e38168869d4f2539929cb80`. Gate 1 equivalence tests
