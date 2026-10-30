@@ -152,8 +152,12 @@ default at `tid32_cartesian_ef2_fs4_gt_tx.sv:20` is `1'b0`. Therefore the
 GT-parent product. The exact Raw ledger retains one unhit `231:1` branch bin
 in each `g_branch[0..3].g_order2.u_tid` instance as
 `OPEN_CONFIGURATION_REVIEW`. Candidate PAIR_LOOKAHEAD runs remain separate;
-this source/configuration trace is not a waiver or a formal proof, and the
-four Raw bins remain in the denominator.
+the exact-parameter VC Formal harness now also elaborates `W=16`,
+`CHANNELS=32` with the module-default `PAIR_LOOKAHEAD=0`: 2/2 parameter
+assertions are proven and both the enabled look-ahead cover and
+invalid-parameter guard cover are `uncoverable`, with zero black boxes and
+zero setup violations. This is static-parameter reachability evidence; it
+does not hit or waive the four Raw bins, which remain in the denominator.
 
 ### Functional coverage and applicability
 
@@ -211,6 +215,15 @@ the sticky error, resets through the public interface, and finishes with zero
 UVM warning/error/fatal. These two expected failures remain in the negative
 report and are not merged into legal product coverage.
 
+A separate mailbox-corruption negative test (seed 420103) deliberately forces
+the pending AXI-Lite mailbox bundle to change before acknowledgement. VCS
+observed the expected `$error` at `thermo5_dpd_axi_lite_cfg.sv:365`; the UVM
+test checked the message, released the force, reasserted public reset, and
+passed with zero UVM warnings/errors/fatals. Its VDB is included only in a
+separate expected-negative URG report alongside the illegal-frame VDB. The
+combined report contains two test VDBs; mailbox `$error` is not counted as an
+SVA failure. Neither negative VDB is merged into positive product Raw.
+
 ### Formal and reachability
 
 - **AXI-Lite default reachability: PASS for the exact `MAX_TAPS=1` product
@@ -259,9 +272,23 @@ report and are not merged into legal product coverage.
   module-level and does not prove end-to-end composition between the two
   cascaded stages. This is reachability evidence only: Raw bins remain in the
   denominator, no waiver is applied, and URG counts do not change.
+- **EF2 product parameters: scoped reachability PASS.** At clean source
+  `f6956b9342add9af86c8977999c517283232275e`, the production EF2 module was
+  elaborated at `W=16`, `CHANNELS=32` without overriding `PAIR_LOOKAHEAD`.
+  VC Formal proved 2/2 static parameter assertions and returned `uncoverable`
+  for both the `PAIR_LOOKAHEAD=1` arm and invalid-parameter guard cover; zero
+  black boxes and zero setup violations. These are elaboration-constant checks,
+  not temporal proofs. Raw branch bins remain in the denominator and no
+  waiver is applied.
 - **PAIR_LOOKAHEAD and nonidentity 2/4-tap DPD:** candidate-only. Their prior
   A/B/formal evidence remains separate; none is counted in the product Raw
   denominator.
+
+The latest command, logs, formal manifest, property/setup reports, and hashes
+for the EF2 parameter check and mailbox expected-negative test are indexed
+in `thermo5-tx-linux-coverage-closure-evidence.json`. The product Raw VDB set
+was not changed by these checks, so Raw DUT and functional coverage remain the
+81.99% / 170-of-174 figures above; no coverage waiver or exclusion was added.
 
 ### Checker mutation
 

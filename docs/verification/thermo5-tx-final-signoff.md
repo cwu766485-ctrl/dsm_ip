@@ -4,10 +4,13 @@
 source-code coverage and Gate 4 hardware signoff remain open. This report does
 not claim a stable physical QAM256 link.
 
-> **Current product-only follow-up — PR #7, 2026-10-30:** The latest tested
-> source is `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree
+> **Current product-only follow-up — PR #7, 2026-10-30:** The product VCS
+> source remains `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree
 > `694457bbacf2eda2a061da910f404975fd75ec8d`); the product VCS filelist is
 > unchanged from simulation source SHA `913be930bfcbbad0f78dbc90e06299db3d1bb337`.
+> A later Formal-only source commit `f6956b9342add9af86c8977999c517283232275e`
+> adds exact EF2 product-parameter reachability evidence; it does not change
+> VCS inputs or TX RTL.
 > The TX product Raw URG is 81.99%: line 3190/3796, condition 583/846, branch
 > 440/637, toggle 86951/104478, FSM states 13/13 and transitions 22/22.
 > Functional applicable legal bins are 170/170. There are 0 waivers/exclusions;
@@ -82,6 +85,14 @@ All three assertions and all three applicable covers pass; the fourth cover is
 expected uncoverable, with zero black boxes and setup violations. This does not
 prove full two-stage composition and does not change Raw URG coverage or its
 denominator.
+
+The exact EF2 product parameters (`W=16`, `CHANNELS=32`, default
+`PAIR_LOOKAHEAD=0`) also pass a scoped VC Formal reachability check: 2/2
+parameter assertions proven and 2/2 candidate covers expected-uncoverable,
+zero black boxes. The Raw branch bins remain open and counted. A mailbox fault
+injection test separately observed the expected RTL `$error` and passed public
+reset recovery; its report is kept with other expected-negative results and
+outside positive Raw coverage.
 
 ## Historical PR #5 multi-configuration Gate 3 coverage result
 

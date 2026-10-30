@@ -1,3 +1,32 @@
+## 2026-10-30 14:12 SGT - Prove EF2 product parameter reachability
+
+- Added a focused VC Formal harness for the exact product EF2 parameters
+  (`W=16`, `CHANNELS=32`, default `PAIR_LOOKAHEAD=0`) and invalid-parameter
+  guard. The clean-source run at `f6956b9` proves 2/2 static assertions and
+  confirms both corresponding covers are `uncoverable`; no black boxes or
+  setup violations. These results are parameter reachability evidence, not
+  URG hits or waivers.
+- Ran the exact-product mailbox corruption fault test at seed 420103. VCS
+  observed the expected `$error`, the test released the injection and checked
+  public-reset recovery, and UVM warnings/errors/fatals were zero. Its VDB is
+  reported only in the expected-negative URG report.
+- Confirmed the legal AXI-Lite register-access test passes; its same-seed
+  stimulus was already present in the positive product VDB set, so the
+  diagnostic rerun is not added to the merge.
+- Product Raw coverage did not change: 3,190/3,796 lines, 583/846 conditions,
+  440/637 branches, 86,951/104,478 toggles, 13/13 FSM states, 22/22 FSM
+  transitions, and 170/174 raw functional bins (170/170 applicable positive).
+  Raw equals adjusted; zero waivers/exclusions; gate remains `RAW_100_OPEN`.
+- Evidence commands, logs, VDB/report/formal hashes and the exact Formal source
+  commit are indexed in `thermo5-tx-linux-coverage-closure-evidence.json`.
+- Checks: focused VC Formal PASS; mailbox expected-negative check PASS;
+  `python3.12 -m py_compile`, Formal runner `--help`, `git diff --check`, and
+  evidence JSON/hash validation PASS. No VCS product Raw merge or full
+  Gate 0–3 regression was repeated.
+- Remaining: Task 4–6 remain partial; DPD identity Formal is inconclusive;
+  Raw 100%, actual XPM/GT Wizard, routed FPGA PPA, product BER/BLER target and
+  physical QAM256 BER remain open.
+
 ## 2026-10-30 13:44 SGT - Resume product coverage closure with restored licenses
 
 - Recompiled the exact TX product VCS configuration at source commit

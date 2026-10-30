@@ -48,6 +48,20 @@ append-enabled legal tail, and confirms the append-disabled parameter's tail
 cover is uncoverable. This is not a full two-stage composition proof and does
 not alter URG bins.
 
+Formal-only follow-up commit `f6956b9342add9af86c8977999c517283232275e`
+(tree `57721ea3fc8af228525a2d06074ed6967edd71b0`) adds exact EF2 product
+parameter reachability. At `W=16`, `CHANNELS=32`, and default
+`PAIR_LOOKAHEAD=0`, VC Formal proves 2/2 static parameter assertions and marks
+the enabled look-ahead and invalid-parameter covers `uncoverable`; zero black
+boxes/setup violations. Raw bins remain counted and no waiver is applied.
+
+The exact-product mailbox fault test (seed 420103) separately observes the
+expected RTL `$error` at `thermo5_dpd_axi_lite_cfg.sv:365`, then passes public
+reset recovery with zero UVM warnings/errors/fatals. It remains in the
+expected-negative report and is excluded from positive Raw. Current product
+Raw coverage is unchanged at 81.99% and functional bins remain 170/174 raw,
+170/170 applicable positive. This addition does not close Task 4–6.
+
 The product EF2 `PAIR_LOOKAHEAD` true arm is fixed inactive in the current
 wrapper: four `231:1` branch bins remain in Raw as `OPEN_CONFIGURATION_REVIEW`.
 No candidate configuration is merged. Full Gate 0–3 regression was not
