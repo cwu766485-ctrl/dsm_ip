@@ -1,8 +1,8 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 13:09 SGT
+**Date:** 2026-10-30 13:26 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
-**Product source commit tested:** `cab04feb6b41bfc75efd064eb1f13b2a4262c22d`
+**Product testbench source SHA:** `913be930bfcbbad0f78dbc90e06299db3d1bb337` (same source tree uploaded to PR #7 as `09c2e082876801d79946787d71f78082c4983f62`; tree `7bbee88ea7d6fbd3e0db1a61c1106cde1753c9d5`)
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
 **Machine-readable evidence:** [`thermo5-tx-linux-coverage-closure-evidence.json`](thermo5-tx-linux-coverage-closure-evidence.json)
 
@@ -52,54 +52,59 @@ That run increased raw toggle hits without changing any denominator.
 
 ### Latest raw product DUT code coverage
 
-Raw URG includes seven selected legal product tests, reset-sweep and
-coefficient-transport tests, ten boundary/traffic tests, six RUN-relative
-COMMIT-delay tests, and one extended-backpressure test (24 simulation VDBs
-plus the compile VDB). The
-expected-negative assertion VDB and checker-mutation VDB are not in this
-merge. No candidate DPD or PAIR_LOOKAHEAD VDB is included.
+The authoritative merge contains **25 scoped product simulation VDBs plus the
+product compile VDB**. It includes the established product tests, seeds
+610806–610821, the two-frame identity/inter-frame-gap run (610824), and the
+properly hierarchy-scoped 64-cycle all-plane PA backpressure run (610825).
+Candidate PAIR_LOOKAHEAD/nonidentity DPD and expected-negative/mutation VDBs
+remain separate. The older 610822 PA-stall VDB was compiled without the product
+hierarchy filter and is intentionally excluded; its scoped replacement is
+610825.
 
 | Metric | Covered / total | Open | Raw coverage |
 | --- | ---: | ---: | ---: |
-| URG aggregate | — | — | 81.97% |
+| URG aggregate | — | — | 81.99% |
 | Line | 3,190 / 3,796 | 606 | 84.0358% |
-| Condition | 582 / 846 | 264 | 68.7943% |
+| Condition | 583 / 846 | 263 | 68.9125% |
 | Branch | 440 / 637 | 197 | 69.0738% |
 | Toggle, both directions | 86,951 / 104,478 | 17,527 | 83.2242% |
 | FSM states | 13 / 13 | 0 | 100.0000% |
 | FSM transitions | 22 / 22 | 0 | 100.0000% |
+| DUT assertions attempted | 13 / 15 | 2 additionally unhit | 86.6667% |
 
-Denominators are unchanged from the product-only run before the boundary
-follow-up. Legal RUN+COMMIT overlap with AW/W skew increased condition hits by
-one (581 to 582); line, branch, and toggle totals did not move. The offset 0
-retry, offsets 1/2/4/8/16/32, and source-gap placements at beats 8/20 all
-passed the independent bit-true checker. A COMMIT-delay sweep at 0, 1, 2, 4,
-8, and 16 core cycles after RUN also passed bit-true checking but did not
-change aggregate counters. These scenarios add interaction evidence without
-increasing code-coverage hits. An additional legal product identity run at
-seed 610822 held all four PA ready signals low for 64 core cycles after output
-valid appeared, then completed the 56-word independent four-plane bit-true
-check with zero UVM warnings/errors/fatals. Its VDB added no Raw code or
-functional coverage bins; line/condition/branch/toggle and group scores are
-unchanged. Exact compile/run commands are retained in
-`runs/thermo5_tx_product_counter_stall_20261030/commands.txt`. The refreshed
-source-linked gap ledger still contains 18,594 rows: 9,513 configuration
-review, 3,788 open
+The seed-610824 test sends two legal 32-beat frames in one RUN epoch, with one
+source-clock bubble before beat 32. The independent checker matched all 112
+words on all four planes, accepted two TLASTs, observed two frame starts, and
+checked 114 one-tap DPD samples per lane with no DPD saturation. UVM warning,
+error, and fatal counts were zero; `early_underflow=0`. The direct Generic
+wrapper still reports 71 post-source finite-tail underflow diagnostic cycles,
+which are not hidden or counted as early underflow.
+
+The seed-610825 test held all four PA ready signals low for 64 requested core
+cycles. It then checked a 56-word four-plane identity replay; the monitor
+observed 65 PA stall cycles, including pipeline interaction. UVM warning,
+error, and fatal counts were zero and `early_underflow=0`; the direct Generic
+wrapper reported 70 post-source finite-tail diagnostic cycles. This scoped VDB
+added no Raw line, condition, branch, toggle, FSM, or functional bins.
+
+The inter-frame-gap VDB exposed one additional legal centered-interpolator
+frame-tail condition combination at
+`rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:309`: condition coverage
+rose from 582/846 to 583/846. The scoped PA-stall VDB did not change the
+counters. Denominators and
+waivers are unchanged: Raw equals Adjusted, waiver count is zero, and no
+Exclusion was applied. The freshly regenerated source-linked Raw gap ledger
+contains 18,593 open/review records: 9,513 configuration review, 3,787 open
 stimulus/checker review, 141 formal-mapping review, 4,512 arithmetic review,
-and 640 counter/formal review. These are review states, not waivers.
+and 640 counter/formal review. These are not approved waivers.
 
-The priority queue is still real: 37 branch arms remain generic project-bin
-review, while fixed-parameter error arms, identity/saturation branches, and
-the CDC residual default branch remain explicitly open. The coefficient
-transport test improved toggle coverage, but did not close the outstanding
-line, branch, or condition sets. The first seed-610806 attempt was blocked
-before UVM by the license server; its license-restored retry passed and is
-included. Seeds 610807–610812 cover boundary offsets 1/2/4/8/16/32; seed
-610813 covers RUN+COMMIT overlap with AW/W skew and early BREADY; seeds
-610814/610815 insert source gaps at beats 8/20; seeds 610816–610821 sweep
-COMMIT delay after RUN at 0/1/2/4/8/16 core cycles. All passed with zero UVM
-errors/fatals and bit-true output checking. No bin was removed from the
-denominator.
+The branch inventory still has 37 `OPEN_PROJECT_BIN_REVIEW` rows. A new exact
+VC Formal property proves the AXI-Lite write-case `default` arm at
+`thermo5_dpd_axi_lite_cfg.sv:282` unreachable for the legal product register
+map; this is review evidence only. The raw branch bin remains in the 637-bin
+denominator until a separate waiver review approves any disposition. The
+current hierarchy manifest, command, Raw/Adjusted gate JSON, full URG report,
+and regenerated ledger paths and hashes are indexed in the machine evidence.
 
 ### Fixed-parameter EF2 branch audit
 
@@ -172,6 +177,15 @@ report and are not merged into legal product coverage.
 
 ### Formal and reachability
 
+- **AXI-Lite write-case default reachability: PASS for the exact legal product
+  configuration.** A fresh VC Formal run on the actual AXI-Lite configuration
+  block proved 3/3 assertions, including non-vacuous
+  `a_write_case_default_unreachable` mapped to
+  `thermo5_dpd_axi_lite_cfg.sv:282`. The proof checks that a successful write
+  response cannot select the sequential write `case default` arm. There were
+  zero clock, glitch, combinational-loop, or multidriver setup violations;
+  two reset assumptions were vacuous. This is reachability evidence only: the
+  Raw branch bin remains in the denominator, with no waiver or exclusion.
 - **EF2 safety: PASS.** The fresh VC Formal property report has 6/6 proven
   assertions and 3/3 covered properties, zero black boxes, and four
   non-vacuous properties. Scope is the 32-lane signed-16 production EF2
@@ -229,14 +243,32 @@ open and are not claimed as PASS.
 
 ## Commands and evidence
 
-The VCS reset-sweep target and coefficient-transport target use VCS
+The initial VCS reset-sweep and coefficient-transport checkpoint used VCS
 V-2023.12-SP1, EF2 ORDER=2, STEP=5120, centered-cubic, one DPD tap, and
-`thermo5_tx_product_coverage.hier`. The raw URG merge uses only the seven
-positive product VDBs. The illegal-frame test and PA0 mutation use separate
-VDBs/reports. Exact commands, SHA-256 hashes, coverage numerators and
-denominators, and tool/run directories are recorded in the adjacent machine
-evidence file. Large VDBs, generated HTML, logs, vectors, and formal workdirs
-remain ignored under `runs/`.
+`thermo5_tx_product_coverage.hier`; its historical URG checkpoint used seven
+positive product VDBs. The current 25-simulation-VDB product merge is listed
+below. The illegal-frame test and PA0 mutation use separate VDBs/reports.
+Exact commands, SHA-256 hashes, coverage numerators and denominators, and
+tool/run directories are recorded in the adjacent machine evidence file.
+Large VDBs, generated HTML, logs, vectors, and formal workdirs remain ignored
+under `runs/`.
+
+Latest license-restored evidence (source SHA
+`913be930bfcbbad0f78dbc90e06299db3d1bb337`):
+
+- Two-frame inter-frame-gap VCS command and full compile/run logs:
+  `runs/thermo5_tx_product_interframe_gap_scoped_20261030/commands.txt`.
+- Correctly scoped PA-stall VCS command/log:
+  `runs/thermo5_tx_product_pa_stall_scoped_20261030/commands.txt`.
+- Latest 25-VDB URG merge command and report:
+  `runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_pa_stall_20261030.command.txt`
+  and `.../product_raw_after_pa_stall_20261030/`.
+- Latest Raw/Adjusted gate: `.../coverage_gate_after_pa_stall_20261030.json`;
+  source-linked ledger: `.../gap_ledger_after_pa_stall_20261030/`.
+- AXI-Lite case-default reachability proof (3/3 assertions proven; target
+  property non-vacuous; zero setup violations):
+  `runs/thermo5_tx_product_formal_case_default_20261030/axil_cfg/`.
+
 
 Key reproduction commands (run from the repository root):
 
@@ -306,9 +338,11 @@ runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
 The license-restored boundary-phase family used the same product-configured
 simulator executable, with seeds 610806–610821 and per-run options captured
 under `runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/`.
-The exact latest URG command and all 23 simulation VDB paths are preserved in
+The prior boundary-phase checkpoint's URG command and 23 simulation VDB paths
+are preserved in
 `runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_run_sweep_20261030.command.txt`;
-its results are in the adjacent `.log` file.
+its historical results are in the adjacent `.log` file. The latest command
+uses the inter-frame-gap and properly scoped PA-stall VDBs and is linked above.
 The following loops reproduce the license-restored legal runs. Each invocation
 has its own seed, log, and VDB; the VCS executable and vectors come from the
 product-configured run described above.

@@ -4,6 +4,17 @@
 source-code coverage and Gate 4 hardware signoff remain open. This report does
 not claim a stable physical QAM256 link.
 
+> **Current product-only follow-up — PR #7, 2026-10-30:** At testbench source
+> SHA `913be930bfcbbad0f78dbc90e06299db3d1bb337` (uploaded equivalent tree
+> `09c2e082876801d79946787d71f78082c4983f62`), the TX product Raw URG is
+> 81.99%: line 3190/3796, condition 583/846, branch 440/637, toggle
+> 86951/104478, FSM states 13/13 and transitions 22/22. Functional applicable
+> legal bins
+> are 170/170. There are 0 waivers/exclusions; Raw 100% remains open. The
+> detailed product-only report and exact run provenance are in
+> [`thermo5-tx-linux-coverage-closure.md`](thermo5-tx-linux-coverage-closure.md)
+> and its evidence JSON.
+
 ## Gate status and published revisions
 
 | Gate | Result | Published change / evidence | Acceptance boundary |
@@ -11,7 +22,7 @@ not claim a stable physical QAM256 link.
 | Gate 0 — baseline | `PASS_LINUX_GENERIC_SCOPE` | Verification source `04550289e1ecb5fa0e38168869d4f2539929cb80`; [PR #2](https://github.com/cwu766485-ctrl/dsm_ip/pull/2) | Generic Linux baseline and documented AXI-Lite behavioral checks pass. XPM/vendor and board behavior are outside this result. |
 | Gate 1 — algorithm A/B | `PASS_FUNCTIONAL_EQUIVALENCE` | Tested source `dfb15a278657e4417b545fc138df0f0dd0399ac4`; published commit `813db9c9a488b033dc4686553cbe3a06856acc0b`; [PR #3](https://github.com/cwu766485-ctrl/dsm_ip/pull/3) | Pair-look-ahead miter/formal and 2/4-tap bit-true tests pass. No candidate was promoted. Hardware cost, routed timing, and fitted DPD benefit remain open. |
 | Gate 2 — TX worst-case model | `MODEL_CAMPAIGN_COMPLETE; TARGET_UNDEFINED` | Published commit `d65ac3762d344c1001552890ae81cd9d243a4910`; [PR #4](https://github.com/cwu766485-ctrl/dsm_ip/pull/4) | Held-out Python results and sensitivity cases are recorded. Product BER/BLER/EVM/ACLR limits and physical performance are not defined or signed off. |
-| Gate 3 — functional/code coverage | `FUNCTIONAL_GROUPS_PASS; RAW_100_OPEN` | Published code commit `459c69094f3353558321075305808d9712e6f335`; [PR #5](https://github.com/cwu766485-ctrl/dsm_ip/pull/5) | Applicable functional groups close for Generic and AXI-Lite. Raw source coverage remains below 100%; all 22,720 misses are retained as OPEN. |
+| Gate 3 — functional/code coverage | `FUNCTIONAL_GROUPS_PASS; RAW_100_OPEN` | Historical PR #5 code `459c69094f3353558321075305808d9712e6f335`; current product-only follow-up [PR #7](https://github.com/cwu766485-ctrl/dsm_ip/pull/7) | Current product-only result is 81.99% Raw; the exact source-linked open/review ledger has 18,593 rows. No exclusions or denominator edits are applied. |
 | Gate 4 — hardware/link signoff | `OPEN` | No Linux signoff revision | Real XPM, current GT Wizard/TXP, parent CDC/RDC, FPGA PPA, and physical QAM256 BER require unavailable vendor or hardware flows. |
 
 The Gate 2 and Gate 3 PRs are stacked on the Gate 1 branch and remain open
@@ -38,7 +49,26 @@ Full assumptions, matrices, commands, and hashes are in
 [`thermo5-tx-worst-case.md`](thermo5-tx-worst-case.md) and
 [`thermo5-tx-gate2-evidence.json`](thermo5-tx-gate2-evidence.json).
 
-## Gate 3 coverage result
+## Current product-only coverage follow-up (PR #7)
+
+| Raw product DUT metric | Covered / total | Raw coverage |
+| --- | ---: | ---: |
+| Aggregate URG | — | 81.99% |
+| Line | 3,190 / 3,796 | 84.0358% |
+| Condition | 583 / 846 | 68.9125% |
+| Branch | 440 / 637 | 69.0738% |
+| Toggle, both directions | 86,951 / 104,478 | 83.2242% |
+| FSM states / transitions | 13/13; 22/22 | 100% |
+
+The latest Raw merge contains 25 product-hierarchy-scoped simulation VDBs
+plus the compile VDB. All 170 legally applicable positive functional bins are hit;
+raw URG remains 170/174 because malformed-frame bins are reported separately.
+The 18,593-row source-linked ledger remains OPEN/review-only. The targeted
+inter-frame-gap VCS test and AXI-Lite case-default Formal proof are documented
+in the linked closure report. No full Gate 0–3 regression was repeated in PR
+#7.
+
+## Historical PR #5 multi-configuration Gate 3 coverage result
 
 | Raw project RTL metric | Generic | AXI-Lite |
 | --- | ---: | ---: |
@@ -91,9 +121,11 @@ the manifest records both compressed and reconstructed CSV hashes.
 
 - Define the supported communication envelope and product BER/BLER/EVM/ACLR
   limits before judging QAM256 stability.
-- Resolve the 22,720 source-level raw coverage misses by legal tests or
-  evidence-based, reviewed reachability dispositions; keep every current row
-  OPEN until reviewed. Do not alter denominators to reach 100%.
+- Resolve the current PR #7 product ledger's 18,593 open/review records by
+  legal tests or evidence-based, reviewed reachability dispositions; keep
+  every current row OPEN until reviewed. The 22,720 count below is the
+  historical PR #5 multi-configuration ledger. Do not alter denominators to
+  reach 100%.
 - Run real XPM and current GT Wizard/TXP simulation, parent CDC/RDC review,
   VCU118/ZCU111 Vivado implementation/PPA, and physical QAM256 BER when those
   tools, IP sources, constraints, and hardware are available.

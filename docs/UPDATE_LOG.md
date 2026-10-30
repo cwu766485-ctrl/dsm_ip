@@ -1,3 +1,39 @@
+## 2026-10-30 13:26 SGT - Continue licensed TX Linux coverage closure
+
+- Added a product-configured legal two-frame identity test with one source
+  clock bubble at the frame boundary, plus a targeted 64-cycle all-plane PA
+  backpressure run. RTL, RX, AI-DPD, and frozen TX algorithms are unchanged.
+  Local source SHA `913be930bfcbbad0f78dbc90e06299db3d1bb337` was uploaded to
+  PR #7 as equivalent tree/commit `09c2e082876801d79946787d71f78082c4983f62`
+  (`7bbee88ea7d6fbd3e0db1a61c1106cde1753c9d5`).
+- The two-frame VCS run passed at seed 610824: 64 source beats, two TLASTs,
+  112 output words on all four planes, 114 identity-DPD samples per lane,
+  zero DPD saturation and zero UVM warning/error/fatal. `early_underflow=0`;
+  the direct Generic wrapper's post-source finite-tail diagnostic (71 cycles)
+  remains reported. The scoped PA-stall run passed seed 610825 with 56
+  four-plane words, 65 observed PA stall cycles, zero UVM warning/error/fatal,
+  and no Raw code-coverage delta.
+- Rebuilt URG from 25 product-hierarchy-scoped simulation VDBs plus the
+  product compile VDB. Raw/Adjusted is 81.99% aggregate; line 3190/3796,
+  condition 583/846, branch 440/637, toggle 86951/104478, FSM 13/13 states
+  and 22/22 transitions. The gap ledger has 18,593 open/review records.
+  Waivers and exclusions remain zero; gate remains `RAW_100_OPEN`.
+- Re-ran the fail-closed coverage gate against the updated source manifest.
+  Regenerated the source-linked gap ledger. VC Formal on the actual AXI-Lite
+  configuration block proved 3/3 assertions, including non-vacuous proof that
+  the legal write response cannot reach the `case default` at line 282; zero
+  clock/glitch/loop/multidriver setup violations. The corresponding Raw bin
+  remains included pending independent waiver review.
+- Exact logs, commands, VDB/URG/formal tree hashes, source manifest, test counts,
+  and remaining limits are recorded in `thermo5-tx-linux-coverage-closure.md`
+  and its evidence JSON. `git diff --check`, JSON parse and coverage gate pass.
+  Full Gate 0–3 regression was not rerun.
+- Remaining: 606 lines, 263 condition vectors, 197 branches, 17,527 directional
+  toggles and 2 uncovered/2 unattempted DUT assertions; 37 branch arms remain
+  in general review. DPD identity arithmetic Formal remains inconclusive.
+  Actual XPM/GT Wizard, Vivado FPGA PPA, physical QAM256 BER and product
+  BER/BLER acceptance target remain open. No claim of Raw 100% is made.
+
 # Update Log
 
 ## 2026-10-29 - Complete Linux TX Gate 2 model campaign

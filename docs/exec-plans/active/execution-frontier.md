@@ -5,29 +5,36 @@
 PRs #2 → #3 → #4 → #5 remain the historical Gate 0 → Gate 3 dependency
 chain; PR #6 provides the product denominator and waiver gate, and PR #7 is
 the current Task 4–6 follow-up. The current documentation branch is
-`codex/thermo5-tx-closure-gates4-6`; the tested product RTL/source revision is
-`cab04feb6b41bfc75efd064eb1f13b2a4262c22d`. The tested source configuration
-is centered-cubic interpolation, EF2 ORDER=2, STEP=5120, `DPD_MAX_TAPS=1`,
-identity DPD, and Generic FIFO as the Linux substitute. Coverage is scoped to
+`codex/thermo5-tx-closure-gates4-6`; the tested product testbench source
+revision is
+`913be930bfcbbad0f78dbc90e06299db3d1bb337` (same tree uploaded to PR #7 as
+`09c2e082876801d79946787d71f78082c4983f62`; RTL is unchanged). The tested
+source configuration is centered-cubic interpolation, EF2 ORDER=2,
+STEP=5120, `DPD_MAX_TAPS=1`, identity DPD, and Generic FIFO as the Linux
+substitute. Coverage is scoped to
 the elaborated TX DUT hierarchy. RX, AI-DPD, frozen TX algorithms, XPM, GT
 Wizard, and Vivado physical implementation are not part of this Linux task.
 
-License recovery enabled a fresh legal boundary campaign. Seeds 610806–610821
-all passed bit-true checking with zero UVM errors/fatals. The RUN+COMMIT/AW-W
-skew case closed one condition bin; offset, source-gap, and RUN-relative
-COMMIT-delay variants did not change further aggregate counters. A 64-cycle
-all-plane PA backpressure test also passed the product bit-true checker but
-added no code or functional bins. Twenty-four positive simulation VDBs plus
-the compile VDB are now in the current Raw URG merge. Current Raw coverage is
-aggregate
-81.97%: line 3,190/3,796 (84.04%), condition 582/846 (68.79%), branch
-440/637 (69.07%), both-direction toggle 86,951/104,478 (83.22%), FSM states
-13/13 and transitions 22/22. DUT assertions report 13 successful, 2
-uncovered, 2 without attempts, 0 failures (13/15 attempted). Functional
-coverage remains 170/174 raw bins; 170/170 applicable positive bins hit.
-Raw equals adjusted, with zero waivers and zero exclusions. The source-linked
-ledger has 18,594 open/review rows. The fail-closed gate remains
-`RAW_100_OPEN`.
+License recovery enabled targeted legal product follow-ups. Seeds 610806–610821
+passed their boundary/traffic checks. Seed 610824 passed a two-frame identity
+stream with a one-cycle source bubble between frames; seed 610825 passed a
+64-cycle all-plane PA-ready hold using the product-filtered simulator. The
+former exposed one additional frame-tail condition combination; the latter
+added no coverage bins. The current Raw URG merge contains 25 scoped simulation
+VDBs plus the compile VDB. Raw coverage is 81.99% aggregate: line 3,190/3,796
+(84.04%), condition 583/846 (68.91%), branch 440/637 (69.07%), both-direction
+toggle 86,951/104,478 (83.22%), FSM states 13/13 and transitions 22/22.
+Assertions report 13 successful, 2 uncovered, 2 without attempts, 0 failures
+(13/15 attempted). Functional coverage remains 170/174 raw bins; all 170
+applicable positive bins hit. Raw equals adjusted, with zero waivers and zero
+exclusions. The regenerated source-linked ledger has 18,593 open/review rows.
+The fail-closed gate remains `RAW_100_OPEN`.
+
+VC Formal now proves the AXI-Lite write-case default branch unreachable under
+the exact legal register-address response logic (3/3 assertions proven; target
+property non-vacuous, zero setup violations). This proof has not removed its
+Raw branch bin and is not a waiver. A separate identity-DPD arithmetic proof
+remains inconclusive after max effort. Full regression was not repeated.
 
 The product EF2 `PAIR_LOOKAHEAD` true-arm branch is structurally inactive:
 the four plane instances inherit the module default `PAIR_LOOKAHEAD=0` from
