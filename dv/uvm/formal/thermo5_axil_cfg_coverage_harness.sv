@@ -30,7 +30,7 @@ module thermo5_axil_cfg_coverage_harness (
   logic signed [63:0] c1_re, c1_im, c3_re, c3_im, c5_re, c5_im;
   logic cfg_busy, cfg_done, cfg_error;
 
-  thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(4)) dut (
+  thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(1)) dut (
     .s_axil_aclk(axil_clk), .s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(awaddr), .s_axil_awvalid(awvalid), .s_axil_awready(awready),
     .s_axil_wdata(wdata), .s_axil_wstrb(wstrb), .s_axil_wvalid(wvalid), .s_axil_wready(wready),
@@ -80,6 +80,22 @@ module thermo5_axil_cfg_coverage_harness (
          dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
          dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
          dut.write_addr == 8'h3c));
+
+  // The coefficient-address decoder admits only the six aligned coefficient
+  // words and their high-word aliases. Therefore the masked address entering
+  // coeff_read_word can never select that function's default arm (line 142).
+  a_coeff_read_default_unreachable:
+    assert property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.coeff_word_addr(dut.s_axil_araddr) |->
+        ((dut.s_axil_araddr & 8'hf8) inside
+          {8'h10,8'h18,8'h20,8'h28,8'h30,8'h38}));
+
+  // Ensure the reachability assertion is not vacuous: a legal coefficient
+  // read transaction can enter the function through the production mux.
+  c_coeff_read_transaction:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.s_axil_arvalid && dut.s_axil_arready &&
+      dut.coeff_word_addr(dut.s_axil_araddr));
 
 endmodule
 

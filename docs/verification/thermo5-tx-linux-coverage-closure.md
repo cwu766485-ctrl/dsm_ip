@@ -1,8 +1,9 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 13:32 SGT
+**Date:** 2026-10-30 13:44 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
-**Product testbench source SHA:** `913be930bfcbbad0f78dbc90e06299db3d1bb337` (same source tree uploaded to PR #7 as `09c2e082876801d79946787d71f78082c4983f62`; tree `7bbee88ea7d6fbd3e0db1a61c1106cde1753c9d5`)
+**Current tested source SHA:** `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree `694457bbacf2eda2a061da910f404975fd75ec8d`)
+**Product simulation-source SHA:** `913be930bfcbbad0f78dbc90e06299db3d1bb337` (the refreshed VCS filelist excludes the Formal-only harness update)
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
 **Machine-readable evidence:** [`thermo5-tx-linux-coverage-closure-evidence.json`](thermo5-tx-linux-coverage-closure-evidence.json)
 
@@ -20,6 +21,21 @@ configuration is centered-cubic interpolation, EF2 ORDER=2, STEP=5120,
 XPM. Coverage remains restricted to the elaborated DUT main chain. RX,
 AI-DPD, frozen TX algorithms, and physical FPGA implementation were not
 changed or started.
+
+**License-restored continuation at source SHA `c1fa9f3`:** VCS recompiled the
+product configuration (20 modules) and the positive Raw URG merge was refreshed
+with 29 product-scoped simulation VDBs plus the current product compile VDB.
+Three targeted two-frame source-gap runs (2, 4, and 8 source-clock cycles)
+passed the independent four-plane checker with zero UVM errors/fatals and
+`early_underflow=0`; the 16-cycle point failed the stream-contract checker with
+54 underflow events despite producing all 112 expected words and observing both
+TLASTs. The failing VDB is excluded from the positive merge. The sampled points
+do not establish an exact starvation threshold. Coverage numerators and
+denominators did not change. A new AXI-Lite read-default VC Formal proof under
+the exact `MAX_TAPS=1` product setting proves the mapped decoder default arm
+unreachable (4/4 assertions and 1/1 cover; target non-vacuous); its Raw branch
+bin remains present and no waiver was added. Identity-DPD Formal with helper
+constraints remains inconclusive (1/13 assertions proven, 12/13 inconclusive).
 
 ## Task 4 — product coverage convergence
 
@@ -52,8 +68,8 @@ That run increased raw toggle hits without changing any denominator.
 
 ### Latest raw product DUT code coverage
 
-The authoritative merge contains **26 scoped product simulation VDBs plus the
-product compile VDB**. It includes the established product tests, seeds
+The latest authoritative merge contains **29 scoped product simulation VDBs
+plus the product compile VDB**. It includes the established product tests, seeds
 610806–610821, a zero-gap continuous two-frame identity run (610823), the
 inter-frame-gap run (610824), and the properly hierarchy-scoped 64-cycle
 all-plane PA backpressure run (610825).
@@ -105,6 +121,17 @@ Exclusion was applied. The freshly regenerated source-linked Raw gap ledger
 contains 18,593 open/review records: 9,513 configuration review, 3,787 open
 stimulus/checker review, 141 formal-mapping review, 4,512 arithmetic review,
 and 640 counter/formal review. These are not approved waivers.
+
+The license-restored source-gap sweep compiled the current product testbench
+and ran the same two-frame, four-plane identity checker at 2/4/8/16 source
+clock cycles of gap before frame 2. Seeds 610834, 610835, and 610836 passed
+with 112/112 output words, 2/2 TLASTs, zero protocol errors, zero early
+underflow, and zero UVM warning/error/fatal. Seed 610837 at gap 16 failed the
+stream-contract assertion: 64/64 inputs, 2/2 TLASTs, 2/2 frames, and 112/112
+outputs were observed, but the monitor counted 54 underflow events. The VCS
+process exit was 0 because UVM terminates with `$finish`; the checked UVM_FATAL
+means the test result is FAIL. That VDB was not merged. These four points do
+not establish the exact starvation boundary, and none changed coverage bins.
 
 The branch inventory still has 37 `OPEN_PROJECT_BIN_REVIEW` rows. A new exact
 VC Formal property proves the AXI-Lite write-case `default` arm at
@@ -185,15 +212,17 @@ report and are not merged into legal product coverage.
 
 ### Formal and reachability
 
-- **AXI-Lite write-case default reachability: PASS for the exact legal product
-  configuration.** A fresh VC Formal run on the actual AXI-Lite configuration
-  block proved 3/3 assertions, including non-vacuous
-  `a_write_case_default_unreachable` mapped to
-  `thermo5_dpd_axi_lite_cfg.sv:282`. The proof checks that a successful write
-  response cannot select the sequential write `case default` arm. There were
-  zero clock, glitch, combinational-loop, or multidriver setup violations;
-  two reset assumptions were vacuous. This is reachability evidence only: the
-  Raw branch bin remains in the denominator, with no waiver or exclusion.
+- **AXI-Lite default reachability: PASS for the exact `MAX_TAPS=1` product
+  configuration.** The latest VC Formal run proved 4/4 assertions, including
+  non-vacuous `a_write_case_default_unreachable` at
+  `thermo5_dpd_axi_lite_cfg.sv:282` and
+  `a_coeff_read_default_unreachable` at the coefficient decoder/default
+  (`:135/:142`); the legal coefficient-read cover hit (1/1). The earlier
+  3/3 write-default run is retained as historical evidence. Setup checks report
+  zero clock, glitch, oscillating/combinational-loop, or multidriver violations;
+  two reset assumptions are vacuous. This is exact-configuration reachability
+  evidence only: Raw branch bins remain in the denominator, with no waiver or
+  exclusion.
 - **EF2 safety: PASS.** The fresh VC Formal property report has 6/6 proven
   assertions and 3/3 covered properties, zero black boxes, and four
   non-vacuous properties. Scope is the 32-lane signed-16 production EF2
@@ -214,6 +243,11 @@ report and are not merged into legal product coverage.
   it ended at the maximum-effort limit after 367.39 seconds with the same
   four properties inconclusive and no counterexample. This does not prove
   identity payload or absence of saturation. No DPD bins are waived.
+  A subsequent bounded helper-constraint attempt completed in 131.33 seconds:
+  1/13 assertions proven (`a_valid_latency`), 12/13 inconclusive, 4/4 covers
+  hit, zero black boxes. Five non-vacuous helper constraints were activated,
+  but identity payload and no-saturation assertions remained inconclusive. No
+  RTL or formal harness was changed in that attempt.
 - **Centered frame tail: simulation reachable; formal mapping OPEN.** The
   legal four-plane replay covers normal frame-tail processing, and the
   separate negative assertion run checks malformed tail ordering. There is
@@ -254,15 +288,15 @@ open and are not claimed as PASS.
 The initial VCS reset-sweep and coefficient-transport checkpoint used VCS
 V-2023.12-SP1, EF2 ORDER=2, STEP=5120, centered-cubic, one DPD tap, and
 `thermo5_tx_product_coverage.hier`; its historical URG checkpoint used seven
-positive product VDBs. The current 26-simulation-VDB product merge is listed
+positive product VDBs. The current 29-simulation-VDB product merge is listed
 below. The illegal-frame test and PA0 mutation use separate VDBs/reports.
 Exact commands, SHA-256 hashes, coverage numerators and denominators, and
 tool/run directories are recorded in the adjacent machine evidence file.
 Large VDBs, generated HTML, logs, vectors, and formal workdirs remain ignored
 under `runs/`.
 
-Latest license-restored evidence (source SHA
-`913be930bfcbbad0f78dbc90e06299db3d1bb337`):
+Latest license-restored evidence (current tested source SHA
+`c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`):
 
 - Two-frame inter-frame-gap VCS command and full compile/run logs:
   `runs/thermo5_tx_product_interframe_gap_scoped_20261030/commands.txt`.
@@ -270,14 +304,23 @@ Latest license-restored evidence (source SHA
   `runs/thermo5_tx_product_continuous_scoped_20261030/commands.txt`.
 - Correctly scoped PA-stall VCS command/log:
   `runs/thermo5_tx_product_pa_stall_scoped_20261030/commands.txt`.
-- Latest 26-VDB URG merge command and report:
-  `runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_continuous_20261030.command.txt`
-  and `.../product_raw_after_continuous_20261030/`.
-- Latest Raw/Adjusted gate: `.../coverage_gate_after_continuous_20261030.json`;
-  source-linked ledger: `.../gap_ledger_after_continuous_20261030/`.
-- AXI-Lite case-default reachability proof (3/3 assertions proven; target
-  property non-vacuous; zero setup violations):
-  `runs/thermo5_tx_product_formal_case_default_20261030/axil_cfg/`.
+- Latest 29-VDB URG merge command and report:
+  `runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_source_gap_current_20261030.command.txt`
+  and `.../product_raw_after_source_gap_current_20261030/`.
+- Latest Raw/Adjusted gate: `.../coverage_gate_after_source_gap_current_20261030.json`;
+  source-linked ledger: `.../gap_ledger_after_source_gap_current_20261030/`.
+- Product VCS compile and source-gap results:
+  `runs/thermo5_tx_product_current_compile_20261030/compile.log` and
+  `runs/thermo5_tx_product_source_gap_current_20261030/results.json`.
+- Exact product AXI-Lite read-default proof:
+  `runs/thermo5_tx_product_formal_axil_read_default_20261030/`.
+- Identity-DPD helper-constraint Formal attempt:
+  `runs/thermo5_tx_product_formal_identity_lemmas_retry2_20261030/`.
+- Earlier AXI-Lite write-case default proof (3/3 assertions) and current exact
+  product configuration proof (4/4 assertions, 1/1 cover; both default targets
+  non-vacuous; zero setup violations):
+  `runs/thermo5_tx_product_formal_case_default_20261030/axil_cfg/` and
+  `runs/thermo5_tx_product_formal_axil_read_default_20261030/axil_cfg/`.
 
 
 Key reproduction commands (run from the repository root):

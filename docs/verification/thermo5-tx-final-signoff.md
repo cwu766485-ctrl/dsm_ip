@@ -4,15 +4,15 @@
 source-code coverage and Gate 4 hardware signoff remain open. This report does
 not claim a stable physical QAM256 link.
 
-> **Current product-only follow-up — PR #7, 2026-10-30:** At testbench source
-> SHA `913be930bfcbbad0f78dbc90e06299db3d1bb337` (uploaded equivalent tree
-> `09c2e082876801d79946787d71f78082c4983f62`), the TX product Raw URG is
-> 81.99%: line 3190/3796, condition 583/846, branch 440/637, toggle
-> 86951/104478, FSM states 13/13 and transitions 22/22. Functional applicable
-> legal bins
-> are 170/170. There are 0 waivers/exclusions; Raw 100% remains open. The
-> detailed product-only report and exact run provenance are in
-> [`thermo5-tx-linux-coverage-closure.md`](thermo5-tx-linux-coverage-closure.md)
+> **Current product-only follow-up — PR #7, 2026-10-30:** The latest tested
+> source is `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree
+> `694457bbacf2eda2a061da910f404975fd75ec8d`); the product VCS filelist is
+> unchanged from simulation source SHA `913be930bfcbbad0f78dbc90e06299db3d1bb337`.
+> The TX product Raw URG is 81.99%: line 3190/3796, condition 583/846, branch
+> 440/637, toggle 86951/104478, FSM states 13/13 and transitions 22/22.
+> Functional applicable legal bins are 170/170. There are 0 waivers/exclusions;
+> Raw 100% remains open. The detailed product-only report and exact run
+> provenance are in [`thermo5-tx-linux-coverage-closure.md`](thermo5-tx-linux-coverage-closure.md)
 > and its evidence JSON.
 
 ## Gate status and published revisions
@@ -60,12 +60,19 @@ Full assumptions, matrices, commands, and hashes are in
 | Toggle, both directions | 86,951 / 104,478 | 83.2242% |
 | FSM states / transitions | 13/13; 22/22 | 100% |
 
-The latest Raw merge contains 26 product-hierarchy-scoped simulation VDBs
+The latest Raw merge contains 29 product-hierarchy-scoped simulation VDBs
 plus the compile VDB. All 170 legally applicable positive functional bins are hit;
 raw URG remains 170/174 because malformed-frame bins are reported separately.
-The 18,593-row source-linked ledger remains OPEN/review-only. The targeted zero-gap and inter-frame-gap VCS tests and AXI-Lite case-default Formal proof are documented
-in the linked closure report. No full Gate 0–3 regression was repeated in PR
-#7.
+The 18,593-row source-linked ledger remains OPEN/review-only. The targeted
+zero-gap, inter-frame-gap, and source-pacing VCS tests and AXI-Lite reachability
+proof are documented in the linked closure report. At `MAX_TAPS=1`, Formal
+proved 4/4 AXI-Lite assertions, including both write-case and coefficient-read
+default targets, plus a 1/1 legal-read cover; both targets are non-vacuous. This
+has not removed a raw bin or created a waiver. A source-gap
+sweep passed at 2/4/8 cycles and failed at 16 cycles due to 54 underflow events
+even though all 112 outputs and both frame markers were observed; the failed
+VDB is excluded from Raw coverage. No full Gate 0–3 regression was repeated in
+PR #7.
 
 ## Historical PR #5 multi-configuration Gate 3 coverage result
 

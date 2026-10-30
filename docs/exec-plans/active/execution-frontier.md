@@ -4,63 +4,51 @@
 
 PRs #2 → #3 → #4 → #5 remain the historical Gate 0 → Gate 3 dependency
 chain; PR #6 provides the product denominator and waiver gate, and PR #7 is
-the current Task 4–6 follow-up. The current documentation branch is
-`codex/thermo5-tx-closure-gates4-6`; the tested product testbench source
-revision is
-`913be930bfcbbad0f78dbc90e06299db3d1bb337` (same tree uploaded to PR #7 as
-`09c2e082876801d79946787d71f78082c4983f62`; RTL is unchanged). The tested
-source configuration is centered-cubic interpolation, EF2 ORDER=2,
-STEP=5120, `DPD_MAX_TAPS=1`, identity DPD, and Generic FIFO as the Linux
-substitute. Coverage is scoped to
-the elaborated TX DUT hierarchy. RX, AI-DPD, frozen TX algorithms, XPM, GT
-Wizard, and Vivado physical implementation are not part of this Linux task.
+the current Task 4–6 follow-up. Local tested source SHA is
+`c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree
+`694457bbacf2eda2a061da910f404975fd75ec8d`). The product simulation source
+inputs are unchanged from `913be930bfcbbad0f78dbc90e06299db3d1bb337`; the new
+Formal harness is not in the VCS simulation filelist. Product settings remain
+centered-cubic interpolation, EF2 ORDER=2, STEP=5120, `DPD_MAX_TAPS=1`, identity
+DPD, and Generic FIFO as the Linux substitute. RX, AI-DPD, frozen TX algorithms,
+XPM, GT Wizard, and Vivado physical implementation are outside this Linux task.
 
-License recovery enabled targeted legal product follow-ups. Seeds 610806–610821
-passed their boundary/traffic checks. Seed 610823 passed zero-gap continuous
-identity frames and seed 610824 passed a two-frame stream with a one-cycle
-source bubble; seed 610825 passed a
-64-cycle all-plane PA-ready hold using the product-filtered simulator. The one-cycle-gap run exposed one additional frame-tail condition combination;
-the zero-gap and PA-stall runs added no bins. The current Raw URG merge contains
-26 scoped simulation VDBs plus the compile VDB. Raw coverage is 81.99% aggregate: line 3,190/3,796
-(84.04%), condition 583/846 (68.91%), branch 440/637 (69.07%), both-direction
-toggle 86,951/104,478 (83.22%), FSM states 13/13 and transitions 22/22.
-Assertions report 13 successful, 2 uncovered, 2 without attempts, 0 failures
-(13/15 attempted). Functional coverage remains 170/174 raw bins; all 170
-applicable positive bins hit. Raw equals adjusted, with zero waivers and zero
-exclusions. The regenerated source-linked ledger has 18,593 open/review rows.
-The fail-closed gate remains `RAW_100_OPEN`.
+With the license restored, VCS recompiled the 20-module product setup and the
+positive Raw URG merge now contains 29 product-scoped simulation VDBs plus the
+compile VDB. The source-gap checks passed at 2/4/8 cycles (seeds 610834–610836)
+and failed at 16 cycles (seed 610837): 112/112 output words and 2/2 frame
+markers were observed, but the monitor counted 54 underflow events. That VDB
+is excluded from the positive merge. This does not establish the exact
+starvation threshold, and none of the four runs changed coverage bins. Raw
+coverage remains 81.99% aggregate: line 3,190/3,796, condition 583/846, branch
+440/637, both-direction toggle 86,951/104,478, FSM states 13/13 and transitions
+22/22. DUT assertions are 13 successful, 2 uncovered, 2 without attempts, 0
+failures (13/15 attempted). Functional coverage is 170/174 raw bins, with
+170/170 legally applicable positive bins hit. Raw equals adjusted; there are
+zero waivers and zero exclusions. The 18,593-row ledger remains review-only;
+the gate remains `RAW_100_OPEN`.
 
-VC Formal now proves the AXI-Lite write-case default branch unreachable under
-the exact legal register-address response logic (3/3 assertions proven; target
-property non-vacuous, zero setup violations). This proof has not removed its
-Raw branch bin and is not a waiver. A separate identity-DPD arithmetic proof
-remains inconclusive after max effort. Full regression was not repeated.
+The exact `MAX_TAPS=1` AXI-Lite Formal harness proves the coefficient-read
+decoder default unreachable: 4/4 assertions, 1/1 legal-read cover, non-vacuous
+target, and zero setup violations. The Raw branch bin remains in the denominator;
+no waiver is applied. The earlier write-case default proof also remains. Product
+DPD identity Formal with helper constraints remains open: 1/13 assertions
+proven, 12/13 inconclusive, 4/4 covers, zero black boxes. EF2 safety remains
+PASS (6/6 assertions, 3/3 covers), and Generic FIFO CDC remains PASS (7/7,
+9/9, zero black boxes). Expected-negative assertions and scoreboard mutation
+remain separate from legal product Raw.
 
-The product EF2 `PAIR_LOOKAHEAD` true-arm branch is structurally inactive:
-the four plane instances inherit the module default `PAIR_LOOKAHEAD=0` from
-the product wrapper. Its four `231:1` bins remain in the Raw denominator as
-`OPEN_CONFIGURATION_REVIEW`; no waiver was applied. See the source SHA and
-exact instance list in the closure evidence JSON.
+The product EF2 `PAIR_LOOKAHEAD` true arm is fixed inactive in the current
+wrapper: four `231:1` branch bins remain in Raw as `OPEN_CONFIGURATION_REVIEW`.
+No candidate configuration is merged. Full Gate 0–3 regression was not
+repeated.
 
-Fresh Generic CDC Formal is PASS: 7/7 assertions proven, 9/9 covers hit, zero
-black boxes, 56.67 seconds. Fresh identity arithmetic Formal completed with
-1/5 assertions proven, 4/5 inconclusive, 4/4 covers hit, and zero black boxes;
-it remains OPEN. A second run used a 2-minute property limit and 6-minute
-maximum effort; after 367 seconds the same four properties remained
-inconclusive, with no counterexample and zero black boxes. EF2 safety remains
-PASS (6/6 assertions, 3/3 covers). Expected-negative frame
-assertions and scoreboard mutation remain separate from legal product Raw.
-
-**Next:** analyze why the four identity properties remain inconclusive and
-whether sound proof decomposition can close them; then continue Task 4 in
-order with targeted legal stimuli for reachable branches, conditions, lines,
-and high toggles. The COMMIT-delay sweep added no code coverage hits.
-Fixed-configuration/unreachable paths remain in the denominator until their
-exact applicability is proven and reviewed; no waiver is currently approved.
-Continue Task 5 with exact DPD and
-frame-tail reachability and independent checker mutations. Task 6 remains a
-Linux-only model screen: product BER/BLER acceptance is undefined. Real XPM,
-GT Wizard, FPGA PPA/routed timing, and physical QAM256 BER remain open. Keep
+**Next:** continue Task 4 in order with legal stimuli for reachable branches,
+conditions, lines, and high toggles; keep exact configuration-inactive bins in
+Raw pending reviewed evidence. Continue Task 5 with exact DPD and frame-tail
+reachability and independent checker mutations. Task 6 remains a Linux model
+screen because product BER/BLER acceptance is undefined. Real XPM, GT Wizard,
+FPGA PPA/routed timing, and physical QAM256 BER remain open. Keep
 PAIR_LOOKAHEAD and 2/4-tap DPD candidate reports separate from the product.
 
 The Gate 0–3 notes immediately below preserve the earlier Gate 3/PR #5

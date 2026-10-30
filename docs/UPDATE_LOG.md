@@ -1,3 +1,41 @@
+## 2026-10-30 13:44 SGT - Resume product coverage closure with restored licenses
+
+- Recompiled the exact TX product VCS configuration at source commit
+  `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`; VCS completed all 20 modules.
+  Simulation inputs remain the product filelist at `913be930`; the changed
+  AXI-Lite Formal harness is not included in that simulation filelist.
+- Ran a targeted two-frame source-gap sweep at 2/4/8/16 cycles (seeds
+  610834–610837). Gaps 2/4/8 passed the independent four-plane checker with
+  112/112 outputs and no early underflow or UVM errors/fatals. Gap 16 failed
+  the stream-contract check with 54 underflow events despite 112/112 outputs,
+  2/2 TLASTs, and zero protocol errors. The UVM_FATAL is the failure oracle
+  (VCS exits 0 after `$finish`); its VDB was excluded from the positive merge.
+  The four sample points do not define an exact starvation threshold.
+- Refreshed product URG from 29 product-scoped simulation VDBs plus the compile
+  VDB. Coverage numerators/denominators did not change: aggregate 81.99%, line
+  3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478, FSM
+  13/13 states and 22/22 transitions. Functional coverage is 170/174 raw bins,
+  all 170 legal positive bins hit. Raw equals adjusted; zero waivers/exclusions;
+  gate `RAW_100_OPEN`. The 18,593-row source-linked ledger remains open/review.
+- Updated the Formal harness instance to `MAX_TAPS=1` and added a targeted
+  coefficient-read default reachability assertion plus a legal-read cover.
+  VC Formal PASS: 4/4 assertions, 1/1 cover, target non-vacuous, zero setup
+  violations, and two vacuous reset assumptions. The raw branch bin remains
+  included and no waiver is applied.
+- A bounded identity-DPD helper-constraint Formal attempt completed in 131.33
+  seconds with 1/13 assertions proven, 12/13 inconclusive, 4/4 covers hit, zero
+  black boxes, and no counterexample. Identity payload and no-saturation remain
+  OPEN; the harness and RTL were unchanged for this attempt.
+- Refreshed the closure report, machine-readable evidence (including artifact
+  hashes), Gate 3 coverage landing note, final signoff landing note, execution frontier, and this update log.
+- Checks: product VCS compile PASS; three source-gap tests PASS and one FAIL as
+  reported; exact-product AXI-Lite read-default Formal PASS; product URG/gate/
+  ledger refresh PASS with `RAW_100_OPEN`; evidence JSON and tracked artifact
+  hashes revalidated; `git diff --check` PASS; JSON parsing and selected current artifact hashes PASS; coverage gate re-evaluation matches the stored `RAW_100_OPEN` result.
+- Remaining: Task 4–5 remain partial, Raw 100% remains open, identity DPD
+  Formal and frame-tail reachability remain open. Real XPM, GT Wizard, FPGA
+  PPA/routed timing, and physical QAM256 BER remain outside Linux signoff.
+
 ## 2026-10-30 13:32 SGT - Verify zero-gap continuous product frames
 
 - Ran the two-frame one-tap identity product test with no source-clock bubble
