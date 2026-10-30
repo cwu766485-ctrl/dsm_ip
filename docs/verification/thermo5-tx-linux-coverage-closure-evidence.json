@@ -270,7 +270,6 @@
   "scope": "Thermo5 TX product configuration; Linux Generic FIFO substitute; VCS/URG and VC Formal only",
   "stack": {
     "pr6_base_sha": "006d52deaaf8ef3980461a6d4efdf1d2c0aa7011",
-    "remote_pr7_commit_sha": "pending PR creation",
     "tested_local_source_sha": "cab04feb6b41bfc75efd064eb1f13b2a4262c22d"
   },
   "tests": {
