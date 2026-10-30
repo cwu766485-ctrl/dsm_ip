@@ -39,6 +39,9 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic interp1_stage1_held, interp1_stage0_held, interp2_stage1_held;
   logic interp1_output_held, interp2_output_held;
   logic interp1_output_empty_blocked, interp2_stage1_empty_blocked;
+  // Read-only exact event probes for the centered-cubic two-entry queues.
+  logic interp1_centered_pop_push, interp2_centered_pop_push;
+  logic [7:0] interp1_centered_state, interp2_centered_state;
   wire [31:0] dpd_sample_count[0:15], dpd_saturation_count[0:15];
   // Read-only observation of real EF2 saturation, held input, and state.
   logic centered_cubic_enabled;

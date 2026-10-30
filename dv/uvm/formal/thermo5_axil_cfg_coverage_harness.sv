@@ -76,6 +76,17 @@ module thermo5_axil_cfg_coverage_harness (
          dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
          dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
          dut.write_addr == 8'h3c));
+  c_write_case_default_unreachable:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.write_fire && dut.write_resp == 2'b00 &&
+      !(dut.write_addr == 8'h00 || dut.write_addr == 8'h04 ||
+        dut.write_addr == 8'h08 || dut.write_addr == 8'h10 ||
+        dut.write_addr == 8'h14 || dut.write_addr == 8'h18 ||
+        dut.write_addr == 8'h1c || dut.write_addr == 8'h20 ||
+        dut.write_addr == 8'h24 || dut.write_addr == 8'h28 ||
+        dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
+        dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
+        dut.write_addr == 8'h3c));
 
   // The coefficient-address decoder admits only the six aligned coefficient
   // words and their high-word aliases. Therefore the masked address entering
@@ -91,16 +102,9 @@ module thermo5_axil_cfg_coverage_harness (
       !((dut.s_axil_araddr & 8'hf8) inside
         {8'h10,8'h18,8'h20,8'h28,8'h30,8'h38}));
 
-  // The Linux product compiles the AXI-Lite DPD block with MAX_TAPS=1.
-  // Keep the initial-parameter guard branch visible in Raw, and prove that
-  // this exact product parameter does not trigger it.
-  a_product_max_taps_guard_inactive:
-    assert property (@(posedge axil_clk)
-      dut.MAX_TAPS >= 1 && dut.MAX_TAPS <= 4);
-
-  c_invalid_max_taps_guard:
-    cover property (@(posedge axil_clk)
-      dut.MAX_TAPS < 1 || dut.MAX_TAPS > 4);
+  // MAX_TAPS is tied to 1 in this harness. Its initial guard is a static
+  // configuration fact, not a non-tautological Formal reachability property;
+  // the corresponding Raw code bin is reviewed separately and stays OPEN.
 
   // Ensure the reachability assertion is not vacuous: a legal coefficient
   // read transaction can enter the function through the production mux.

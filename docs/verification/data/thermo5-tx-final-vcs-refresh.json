@@ -1,0 +1,275 @@
+{
+  "artifact_policy": "Full VCS/URG logs, VDBs, generated vectors and reports remain under ignored runs/; this compact record is tracked.",
+  "branch": "codex/thermo5-tx-final-signoff",
+  "compile": {
+    "command": "make -C dv/uvm/sim thermo5-vcs PYTHON=python3.12 VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_FIFO_IMPL=generic THERMO5_VECTORS=\"$PWD/runs/thermo5_ef2_qualification/regression_centered_vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_tx_final_vcs_resume_20261030_41691\" THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\"",
+    "compile_manifest": {
+      "controlled_inputs": 2,
+      "coverage_hierarchy_sha256": "1b01e3c9a7c86a189660dcb0529369dc8ef4d1ff535ebbdb619e5d7c5651c5fa",
+      "filelist_sha256": "cc24e2fb0cdfcc132458134c454d41e45eecefae63d13f7df84e0a00a9b97808",
+      "parsed_local_hdl_uvm_sources": 73,
+      "path": "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_compile_manifest.json",
+      "sha256": "c27e6e5eda50892f3a5cad9c94b31f379579a96fd6b37fbd0b5a97248ddf752f",
+      "top": "thermo5_sku_uvm_tb"
+    },
+    "defines": [
+      "+define+THERMO5_AXIL_CONTROL",
+      "+define+THERMO5_CENTERED_CUBIC",
+      "+define+THERMO5_TIDSM_ORDER=2",
+      "+define+THERMO5_STEP=5120",
+      "+define+THERMO5_DPD_MAX_TAPS=1"
+    ],
+    "log": {
+      "path": "runs/thermo5_tx_final_vcs_resume_20261030_41691/compile.log",
+      "sha256": "6a6ae8960491c5ab5a7a3971019aa271a0ce12df24e0c6172d6a57f3382ea287"
+    },
+    "status": "PASS"
+  },
+  "coverage": {
+    "approved_waivers": 0,
+    "compile_vdb_count": 1,
+    "coverage_gate": "runs/thermo5_tx_final_vcs_resume_20261030_41691/coverage_gate_after_register_access.json",
+    "coverage_gate_sha256": "373adee43db429c20841fef7be722cf65f446da84c755c8bdfe0d33043e5d617",
+    "dut_assertions": {
+      "attempted_denominator": 15,
+      "failures": 0,
+      "percent_of_attempted": 86.6667,
+      "success": 13,
+      "uncovered": 2,
+      "without_attempts": 2
+    },
+    "el_exclusions_applied": false,
+    "fresh_test_vdb_count": 2,
+    "fsm": {
+      "states": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      },
+      "transitions": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      }
+    },
+    "full_regression_rerun": false,
+    "functional_groups": {
+      "thermo5_sku_uvm_pkg::thermo5_axil_monitor::read_cg": 100.0,
+      "thermo5_sku_uvm_pkg::thermo5_axil_monitor::reset_cg": 100.0,
+      "thermo5_sku_uvm_pkg::thermo5_axil_monitor::write_cg": 100.0,
+      "thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg": 87.5,
+      "thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg": 100.0,
+      "thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg": 100.0,
+      "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg": 96.3,
+      "thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg": 100.0
+    },
+    "functional_scoreable_records": {
+      "covered": 210,
+      "legal_positive_covered": 210,
+      "legal_positive_total": 210,
+      "total": 214,
+      "zero_hit_records": 4
+    },
+    "gate_status": "RAW_100_OPEN",
+    "groups_html": "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/groups.html",
+    "groups_html_sha256": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
+    "raw_equals_adjusted": true,
+    "raw_project_rtl": {
+      "branch": {
+        "covered": 440,
+        "missing": 197,
+        "percent": 69.0738,
+        "total": 637
+      },
+      "cond": {
+        "covered": 583,
+        "missing": 263,
+        "percent": 68.9125,
+        "total": 846
+      },
+      "line": {
+        "covered": 3190,
+        "missing": 606,
+        "percent": 84.0358,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 86951,
+        "missing": 17527,
+        "percent": 83.2242,
+        "total": 104478
+      }
+    },
+    "raw_report_sha_unchanged_vs_initial_fresh_merge": true,
+    "raw_summary": "runs/thermo5_tx_final_vcs_resume_20261030_41691/raw_summary_after_register_access/summary.json",
+    "raw_summary_sha256": "0024a8add98e54d79f18907ebd4d824caa35b4125f6759c0c9a8c28aaeecdb05",
+    "raw_summary_sha_unchanged_vs_initial_fresh_merge": true,
+    "reused_test_vdb_count": 27,
+    "test_vdb_count": 29,
+    "urg_command_file": "runs/thermo5_tx_final_vcs_resume_20261030_41691/urg_after_register_access.command.sh",
+    "urg_command_file_sha256": "de0af067a268f166044f50900424a9e45c145bbe7e79f3476ebf0c4d8a716119",
+    "urg_log": {
+      "path": "runs/thermo5_tx_final_vcs_resume_20261030_41691/urg_after_register_access.log",
+      "sha256": "4894ccee9f9b4066de34fa120dda5d05c87b0802aa674aa458f6f51924fe479d"
+    },
+    "urg_refresh_status": "PASS",
+    "zero_hit_negative_only_bins": [
+      {
+        "bin": "bad_frame",
+        "coverpoint": "cp_illegal",
+        "legal_applicability": "ILLEGAL_TEST_ONLY",
+        "separate_negative_report_hits": "49",
+        "urg_scope": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg"
+      },
+      {
+        "bin": "bad_frame",
+        "coverpoint": "cp_illegal",
+        "legal_applicability": "ILLEGAL_TEST_ONLY",
+        "separate_negative_report_hits": "49",
+        "urg_scope": "thermo5_sku_uvm_tb.me.obj.core_cg"
+      },
+      {
+        "bin": "malformed_early",
+        "coverpoint": "cp_packet_quanta",
+        "legal_applicability": "ILLEGAL_TEST_ONLY",
+        "separate_negative_report_hits": "1",
+        "urg_scope": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg"
+      },
+      {
+        "bin": "malformed_early",
+        "coverpoint": "cp_packet_quanta",
+        "legal_applicability": "ILLEGAL_TEST_ONLY",
+        "separate_negative_report_hits": "1",
+        "urg_scope": "thermo5_sku_uvm_tb.me.obj.source_cg"
+      }
+    ]
+  },
+  "interpretation": {
+    "code": "Both new tests passed but the Raw code metrics and functional Group Report are byte-for-byte unchanged from the first fresh merge; no code-coverage gain was observed.",
+    "formal": "Five exact bins are currently PROVEN_UNREACHABLE in the audit ledger only: two non-tautological frame-tail paths and three AXI-Lite paths (two re-proven plus the write-address default path). Two formerly listed candidates were removed after their exact assertions were found tautological: the MAX_TAPS=1 guard and append-arm-disabled property. Both remain OPEN. Raw URG denominators are unchanged.",
+    "functional": "All 210 legally applicable positive scoreable records are covered. The four Raw zero-hit records are two semantic illegal-test-only bins repeated in type and instance views; separate negative URG hits are retained."
+  },
+  "outstanding": [
+    "18,588 code-gap records remain OPEN; Raw 100% remains OPEN.",
+    "The MAX_TAPS guard candidate remains OPEN because its property/Cover were tautological for the constant parameter.",
+    "DPD identity arithmetic/saturation reachability remains Formal-inconclusive.",
+    "16-cycle source-gap underflow/service contract remains unresolved.",
+    "Real XPM FIFO, GT Wizard, FPGA routed PPA/timing, and physical QAM256 BER remain outside Linux signoff."
+  ],
+  "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+  "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
+  "recorded_at": "2026-10-31T00:15:06+08:00",
+  "rootcause_audit": {
+    "branch_root_cause_records": {
+      "branch:CDC_OR_RESIDUAL_STATE": 3,
+      "branch:FIXED_PRODUCT_CONFIGURATION": 105,
+      "branch:GUARDED_ADDRESS_DECODE": 2,
+      "branch:IDENTITY_DPD_ARITHMETIC": 80,
+      "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 7
+    },
+    "ledger_rows": 18593,
+    "rootcause_input_groups_html_sha256": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
+    "status_counts": {
+      "OPEN": 18588,
+      "PROVEN_UNREACHABLE": 5
+    },
+    "task_count": 492
+  },
+  "schema_version": 1,
+  "targeted_formal_run": {
+    "accepted_disposition_count": 5,
+    "assertions": {
+      "a_bvalid_clears_pending": "proven",
+      "a_coeff_read_default_unreachable": "proven",
+      "a_line88_tuple_unreachable": "proven",
+      "a_write_case_default_unreachable": "proven"
+    },
+    "assumption_count": 0,
+    "black_box_instances": 0,
+    "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
+    "covers": {
+      "c_coeff_read_default_arm_unreachable": "uncoverable",
+      "c_coeff_read_transaction": "covered",
+      "c_line88_tuple_unreachable": "uncoverable",
+      "c_write_case_default_unreachable": "uncoverable"
+    },
+    "manifest": "runs/thermo5_axil_cfg_coverage_clean_default_20261031/formal_manifest.json",
+    "manifest_sha256": "e00c946d8035d51b0d2ce554841874837eaefb202aeb96b6090eee4dc44c2d70",
+    "non_vacuous_assertion_count": 3,
+    "parameter_guard_candidate": {
+      "reason": "Compile-time MAX_TAPS=1 guard has no non-tautological Formal property in the clean harness; not counted among the six accepted dispositions.",
+      "semantic_bin_id": "TXB-054d97a87a8d74c36c8b",
+      "status": "OPEN"
+    },
+    "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
+    "runner_sha256": "fb6827cf47b6933813e0157d96c510fde7c70865620f5a70118b3db43a2e32c5",
+    "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "status": "PASS",
+    "target_bin": {
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable",
+      "assertion_status": "proven",
+      "assumptions": [],
+      "cover": "thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable",
+      "cover_status": "uncoverable",
+      "semantic_bin_id": "TXB-3df5f13a8d51ee9bdea5",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246"
+    },
+    "tautology_review": {
+      "open_candidates": [
+        {
+          "reason": "MAX_TAPS=1 parameter guard property was tautological; remains OPEN.",
+          "semantic_bin_id": "TXB-054d97a87a8d74c36c8b"
+        },
+        {
+          "reason": "a_plain_append_arm_disabled was tautological; remains OPEN.",
+          "semantic_bin_id": "TXB-c79cdf2b9f5b4620688e"
+        }
+      ],
+      "status": "PASS; no accepted assertion/Cover is named in a tautology warning in its own evidence run"
+    },
+    "tautology_scan": "PASS; no SVA goal was marked trivially proven/uncoverable",
+    "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+  },
+  "targeted_tests": [
+    {
+      "command": "make -C dv/uvm/sim thermo5-vcs-run-only PYTHON=python3.12 VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_FIFO_IMPL=generic THERMO5_VECTORS=\"$PWD/runs/thermo5_ef2_qualification/regression_centered_vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_tx_final_vcs_resume_20261030_41691\" THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 THERMO5_EXTRA_ARGS=+CORE_WORDS=56 THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\"",
+      "functional_claim": "five legal residual resets and complete four-plane bit-true replay",
+      "log": {
+        "pass_marker": "THERMO5_AXIL_RESET_SWEEP_UVM_PASS",
+        "pass_marker_present": true,
+        "path": "runs/thermo5_tx_final_vcs_resume_20261030_41691/thermo5_sku_axil_reset_sweep_test_seed610802.log",
+        "sha256": "253d9cc8961c9052b1a95d591530a395ed835b8fbb10314d3d019f102cb98349",
+        "uvm_error_count": 0,
+        "uvm_fatal_count": 0
+      },
+      "result": "PASS",
+      "seed": 610802,
+      "test": "thermo5_sku_axil_reset_sweep_test",
+      "vdb": "runs/thermo5_tx_final_vcs_resume_20261030_41691/cov_thermo5_sku_axil_reset_sweep_test_seed610802.vdb"
+    },
+    {
+      "command": "make -C dv/uvm/sim thermo5-vcs-run-only PYTHON=python3.12 VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_FIFO_IMPL=generic THERMO5_VECTORS=\"$PWD/runs/thermo5_ef2_qualification/regression_centered_vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_tx_final_vcs_resume_20261030_41691\" THERMO5_TESTNAME=thermo5_sku_axil_register_access_test UVM_SEED=610830 THERMO5_EXTRA_ARGS= THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\"",
+      "functional_claim": "ID/STATUS/TAPS/coefficient map, AW/W skew, WSTRB, DECERR and response backpressure; 52 writes, 47 reads, 2 SLVERR, 7 DECERR",
+      "log": {
+        "pass_marker": "THERMO5_AXIL_REGISTER_ACCESS_UVM_PASS",
+        "pass_marker_present": true,
+        "path": "runs/thermo5_tx_final_vcs_resume_20261030_41691/thermo5_sku_axil_register_access_test_seed610830.log",
+        "sha256": "4b43c2682cfa9abeadbd363398acd0a14c4ca62da351749813371ad87f5fbd8d",
+        "uvm_error_count": 0,
+        "uvm_fatal_count": 0
+      },
+      "result": "PASS",
+      "seed": 610830,
+      "test": "thermo5_sku_axil_register_access_test",
+      "vdb": "runs/thermo5_tx_final_vcs_resume_20261030_41691/cov_thermo5_sku_axil_register_access_test_seed610830.vdb"
+    }
+  ],
+  "tested_checkout_sha": "41691b675d4be63221f046e007aa9a37cb156e1e",
+  "tools": {
+    "urg": "V-2023.12-SP1",
+    "vcs": "V-2023.12-SP1_Full64",
+    "verdi_pli": "V-2023.12-SP2"
+  }
+}

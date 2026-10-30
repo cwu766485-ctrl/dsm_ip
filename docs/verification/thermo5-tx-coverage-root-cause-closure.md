@@ -1,37 +1,29 @@
 # Thermo5 TX Coverage Root-Cause Closure — Step 1/2
 
-- Raw VCS/URG product source SHA: c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b; product RTL/UVM compile source hashes match.
-- The inherited product source manifest has one Formal-only harness mismatch (`dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv`), which is outside the VCS product filelist. This closure carries fresh source-bound Formal evidence for the updated harness in `thermo5-tx-formal-bin-dispositions.json`; it is not mixed into the Raw VCS source identity.
+- Raw VCS/URG product source SHA: c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b; the baseline Raw report remains bound to its original compile source manifest.
+- Current-tree source-manifest differences are listed in the machine-readable summary. Three testbench-only files contain read-only diagnostic probes and are pinned to the separate frame-review evidence; that diagnostic VDB is not merged into baseline Raw. DUT RTL and the coverage model are unchanged. The separate AXI-Lite Formal harness change is outside the product VCS compile.
 - Raw gap ledger: 18,593 rows; SHA-256 e586d27684fffe4e98b1d4c4bd43b22839c349ef31c07b1779d4a69c4ce45222.
 - Expression-aware semantic IDs: 18,593; old ID collisions: 17 groups, 17 extra rows.
 - Product: Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, 20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite wrapper and Generic FIFO.
 - All code gaps start OPEN. Root-cause labels are review hypotheses, not approved exclusions.
 - Raw equals Adjusted; approved waivers 0; exclusions 0.
-- The VCS compile transcript resolves the product build to 73 local parsed
-  sources plus the filelist and coverage hierarchy. This derived 75-entry
-  manifest matches the captured hashes and current source; 14 other broad
-  manifest entries were not parsed by the product compile.
-- The fail-closed Raw gate recheck returned `RAW_100_OPEN`, with Raw identical
-  to Adjusted. Gate output SHA-256:
-  `62f32d3c27baba959eb1302a3efc0875f8af4ea074d938664ded3e517501e6c2`.
 
 ## Functional Group Report audit
 
-The complete Raw URG Group Report has 214 denominator-eligible bin records across covergroup-type and monitor-instance views: 210 hit and four zero-hit. The earlier 170/174 tally omitted 40 generated EF2 cross-bin records (20 in each view) and is superseded; the URG database and denominator were not modified. The four zero-hit records are two semantic illegal-frame bins repeated in both report views. Separate negative URG evidence hits them; they remain in the Raw denominator and are not legal positive-product stimulus.
+The complete product Group Report contains 210/214 denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.
 
-| Group | Raw hits / scoreable records | Uncovered |
+| Group | Raw bin hits / denominator | Uncovered |
 |---|---:|---:|
 | core_cg | 14/16 | 2 |
-| source_cg | 38/40 | 2 |
-| stop_restart_cg | 12/12 | 0 |
 | ef2_cg | 68/68 | 0 |
 | plane_atomic_cg | 16/16 | 0 |
 | read_cg | 22/22 | 0 |
-| write_cg | 36/36 | 0 |
 | reset_cg | 4/4 | 0 |
-| **Total** | **210/214** | **4** |
+| source_cg | 38/40 | 2 |
+| stop_restart_cg | 12/12 | 0 |
+| write_cg | 36/36 | 0 |
 
-The complete detail export contains 226 rows, including 12 bins already marked Illegal/Excluded by the existing URG model. See [`thermo5-tx-functional-bin-detail.csv`](data/thermo5-tx-coverage-root-cause/thermo5-tx-functional-bin-detail.csv) for each Group, coverpoint/cross, bin, count, report view, status, and source-page SHA. The 12 pre-existing URG model statuses are disclosed separately and are not new waiver or `.el` exclusions.
+The complete bin CSV has 226 rows: 214 scoreable Raw records and 12 bins already marked Illegal/Excluded by the URG model. These model statuses are listed transparently; no URG exclusion directive or waiver was added. See `thermo5-tx-functional-bin-detail.csv` for every group, coverpoint/cross, bin, count, report view, and source-page SHA.
 
 | Exact URG scope | Raw product hits | Separate negative hits | Classification |
 |---|---:|---:|---|
@@ -40,7 +32,7 @@ The complete detail export contains 226 rows, including 12 bins already marked I
 | thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg.cp_illegal.bad_frame | 0 | 49 | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |
 | thermo5_sku_uvm_tb.me.obj.core_cg.cp_illegal.bad_frame | 0 | 49 | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |
 
-Legally applicable positive scoreable bins are 210/210. The four Raw zero-hit report rows remain visible in the denominator; no waiver or denominator edit was applied.
+Legally applicable positive bins are 210/210. The four Raw zero-hit report rows remain visible in the denominator.
 
 ## Code coverage and root-cause task inventory
 
@@ -51,14 +43,16 @@ Legally applicable positive scoreable bins are 210/210. The four Raw zero-hit re
 | line | 3,190/3,796 (84.0358%) | 606 | 123 |
 | toggle | 86,951/104,478 (83.2242%) | 17,527 | 209 |
 
-The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. Every row was OPEN at the initial audit; the exact later dispositions are listed below.
+The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. After exact Formal review, 5 rows are PROVEN_UNREACHABLE and 18588 remain OPEN; Raw URG is unchanged.
 
 | Metric / root-cause hypothesis | Raw gap rows |
 |---|---:|
-| branch / CDC_OR_RESIDUAL_STATE | 4 |
-| branch / FIXED_PRODUCT_CONFIGURATION | 92 |
-| branch / IDENTITY_DPD_ARITHMETIC | 64 |
-| branch / LEGAL_STIMULUS_OR_CHECKER_REVIEW | 37 |
+| branch / CDC_OR_RESIDUAL_STATE | 3 |
+| branch / FIXED_PRODUCT_CONFIGURATION | 105 |
+| branch / GUARDED_ADDRESS_DECODE | 2 |
+| branch / IDENTITY_DPD_ARITHMETIC | 80 |
+| branch / LEGAL_STIMULUS_OR_CHECKER_REVIEW | 5 |
+| branch / PRODUCT_CADENCE_ALIGNMENT | 2 |
 | cond / INTERPOLATOR_EMPTY_OR_BLOCKED | 4 |
 | cond / RESET_RELEASE_OR_STATE_HOLD | 259 |
 | line / CDC_OR_RESIDUAL_STATE | 7 |
@@ -73,53 +67,47 @@ The task CSV has 492 source/instance/location-rooted tasks. The compressed bin l
 | toggle / FIXED_PRODUCT_CONFIGURATION | 793 |
 | toggle / IDENTITY_DPD_ARITHMETIC | 4,320 |
 
-The initial Step 1/2 inventory was a deterministic re-analysis of fixed-SHA VCS/URG evidence. Its later targeted follow-up is recorded below; no Raw/Adjusted denominator changed.
+This source-linked audit uses the fresh licensed VCS/URG report recorded in `docs/verification/data/thermo5-tx-final-vcs-refresh.json`. The Raw report was regenerated from two fresh targeted product tests plus retained exact-source VDBs; no full regression was rerun. No Raw/Adjusted denominator changed.
+
+## Clean AXI-Lite Formal refresh (2026-10-31)
+
+VC Formal V-2023.12-SP2 reran the AXI-Lite configuration harness against its current source and the unchanged DUT. The run passed with 4/4 assertions proven, one legal coefficient-read Cover hit, and three exact path Covers reported uncoverable. It used zero environment assumptions, had zero black-box instances and zero setup violations, and reported three non-vacuous assertions. The runner now fails if VC Formal marks any goal as tautological.
+
+This refresh supplies current-source proof evidence for the AXI-Lite bins listed below, including the branch at `rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246`: `write_fire` with `write_resp==OKAY` cannot select the write-address `default` arm. The exact Raw bin remains present in the Raw denominator; Formal disposition does not remove it.
+
+The `MAX_TAPS=1` initialization-guard candidate and one interpolator append-arm candidate were removed from the accepted Formal disposition set after their exact properties were identified as tautologies. Both candidates remain OPEN for separately audited evidence; neither has a waiver or exclusion.
+
+## Centered-Cubic product cadence review for two missing pop/push branches (2026-10-31)
+
+The exact missing bins are `TXB-9141942b3f6f51689217` in `g_interp1_centered.u_interp_1` and `TXB-33db6d34081fd3b6ec60` in `g_interp2_centered.u_interp_2`, both at the `end else if (push_input)` arm of `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:255`. A reproducible AXI-Lite product test sends two legal back-to-back 32-beat packets using the fixed product configuration. The independent four-plane scoreboard checks all 112 output words, and DPD lane sample/saturation counts are checked.
+
+The same waveform seed (610901) was run across nine source-start and seventeen RUN-start phase placements. All 26 UVM runs passed with zero errors/fatals. In each interpolator, the test observed `q_count==1 && q0_end` once and the corresponding `pop_head` once; neither instance asserted `push_input` on that pop edge. Thus neither exact Raw Branch bin was hit. One phase VDB was merged into a separate diagnostic URG report; the Raw metrics and denominator were unchanged: line 3190/3796, condition 583/846, branch 440/637, toggle 86951/104478; target branch coverage delta was zero. Standalone stage-level Formal has a valid pop/push Cover witness, so the paths are not structurally impossible; product-bound cadence reachability remains OPEN. No waiver or exclusion was created.
+
+Exact VCS and URG command lines, source hashes, all 26 log hashes, VDB tree hash, URG report hash, coverage gate, target Bin IDs, and per-instance event counts are recorded in [`thermo5-tx-frame-replacement-coverage-review.json`](data/thermo5-tx-frame-replacement-coverage-review.json). The next action is a product-bound reachability/root-cause analysis of the 14-to-8 ingress cadence and frame-tail timing. Do not repeat random seeds or convert this miss into a Formal disposition without a non-vacuous product-bound proof.
 
 ## Evidence inputs
 
-- Raw Group Report: runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030
+- Raw Group Report: runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access
 - Separate expected-negative Group Report: runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report
 - Source-linked gap ledger: runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv
 - Source manifest: runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/axil_gap_ledger.json
 - Closure evidence JSON: docs/verification/thermo5-tx-linux-coverage-closure-evidence.json
 
+## Formal disposition update
 
-## Targeted Branch/Formal follow-up — 2026-10-30
+The source-bound review closed 5 exact bins as PROVEN_UNREACHABLE; 18588 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
-Product-scoped branch attempt used two legal packet organizations (four back-to-back 32-beat frames and one 32-beat frame) with the existing four-plane independent oracle. The monitor saw zero `q_count==1 && pop_head && push_input` events in both interpolator instances. UVM stopped at the required coverage assertion; the attempt was not merged into the product VDB set. The Raw URG rerun included its one exploratory VDB and one prior baseline VDB (30 test VDBs total): line remained 3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478. This is no coverage gain, not evidence of unreachability. The two single-entry pop/push product bins remain OPEN.
-
-Fresh VC Formal V-2023.12-SP2 on exact W=16/LANES=8 interpolator instances proves four assertions and reaches all four legal frame/queue covers. It also reports four exact covers as `uncoverable` with zero black boxes and zero setup violations:
-
-| Semantic Bin ID | Product instance/path | Formal disposition | Raw treatment |
+| Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
-| `TXB-39a0a549d32bc9ef1e01` | Stage 1 `pop_head && q0_tail`; product ties `in_tail=0` | `PROVEN_UNREACHABLE`; no-input-tail assertion proven; cover uncoverable | Raw retained; no waiver |
-| `TXB-603e97cceda8c0d4d0ed` | Stage 2 `tail_fire`; product sets `APPEND_TAIL_VECTOR=0` | `PROVEN_UNREACHABLE`; cover uncoverable | Raw retained; no waiver |
-| `TXB-c79cdf2b9f5b4620688e` | Stage 2 append-tail arm; product sets `APPEND_TAIL_VECTOR=0` | `PROVEN_UNREACHABLE`; cover uncoverable | Raw retained; no waiver |
-| `TXB-9141942b3f6f51689217`, `TXB-33db6d34081fd3b6ec60` | Stage 1/2 single-entry pop+push, q_count=1 | Formal covers reached at depth 2; product UVM has not hit them | `OPEN`; legal product stimulus still required |
+| `TXB-39a0a549d32bc9ef1e01` | `thermo5_frame_tail_harness.a_append_no_input_tail` | `thermo5_frame_tail_harness.c_append_tail_head_drop_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-3df5f13a8d51ee9bdea5` | `thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-603e97cceda8c0d4d0ed` | `thermo5_frame_tail_harness.a_plain_tail_fire_disabled` | `thermo5_frame_tail_harness.c_plain_tail_fire_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-74a3bacf0956921ac9bf` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-872eb98e51c3229e4c86` | `thermo5_axil_cfg_coverage_harness.a_line88_tuple_unreachable` | `thermo5_axil_cfg_coverage_harness.c_line88_tuple_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 
-Full formal run artifacts: `runs/thermo5_tx_final_interp_reachability_retry_20261030/`. Exact bin dispositions are reflected in the compressed open-bin ledger, task CSV, and summary JSON. The three proven-unreachable bins remain in Raw URG and the denominator; no `.el` directive has been added.
+Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
 
-DPD Identity Formal remains unresolved. The fresh direct proof completed with 5/18 assertions proven and 13 inconclusive; all four covers were reached, assumptions were non-vacuous, and black-box count was zero. The staged auto-lemma rerun did not close payload identity: final report has 1/13 assertions proven and 12 inconclusive, with all four covers reached. No counterexample was produced; these results remain OPEN.
-
-The prior 16-cycle AXI source gap is a real observed underflow while RUN stays active: the test generated two legal 32-beat packets, paused 16 source-clock cycles before beat 32, then matched all 112 expected words but its monitor counted 54 underflow events and the stream-contract checker failed. The AXI-stream interface does not currently declare a maximum inter-beat gap, while the continuous GT path cannot backpressure. Treat this as an unresolved product contract/risk, not a coverage waiver or a passing legal-environment exception.
-
-## AXI-Lite, EF2 and counter Formal follow-up — 2026-10-30
-
-The AXI-Lite reachability harness was rerun after removing its two previous reset-coupling assumptions, which VC Formal had classified as vacuous. The reviewed run has zero environment assumptions, zero formal setup violations and zero black boxes. Three assertions are non-vacuous; a legal coefficient-read transaction is covered. The matching default-arm, illegal-MAX_TAPS and `bvalid`/pending/take Covers are `uncoverable`. These proofs close three exact ledger dispositions only:
-
-| Semantic Bin ID | Exact product bin | VC Formal result | Raw handling |
-|---|---|---|---|
-| `TXB-872eb98e51c3229e4c86` | AXI-Lite `write_fire` Condition, line 93 (`!bvalid=0`, pending/take groups true) | `a_line88_tuple_unreachable` proven; exact Cover uncoverable | `PROVEN_UNREACHABLE`; Raw retained |
-| `TXB-74a3bacf0956921ac9bf` | AXI-Lite coefficient-read default Line, line 142 | exact default-arm Cover uncoverable; legal coefficient-read witness covered | `PROVEN_UNREACHABLE`; Raw retained |
-| `TXB-054d97a87a8d74c36c8b` | AXI-Lite `MAX_TAPS` invalid-parameter Branch, line 348 | MAX_TAPS=1 guard assertion proven; invalid-parameter Cover uncoverable | `PROVEN_UNREACHABLE`; Raw retained |
-
-Together with the three interpolator paths above, the ledger now has six exact formally unreachable bins and 18,587 OPEN bins. No waiver or `.el` exclusion is approved; the Raw denominator remains unchanged.
-
-Additional fresh VC Formal results:
-
-- EF2 production core: 6/6 safety, accepted-word and stall/state assertions proven; 3/3 input, transfer and stall Covers hit; zero black boxes and setup violations.
-- Counter: 3/3 bounded properties proven, including `sample_count[31:12]==0` under an explicit 2,072-acceptance-per-reset-epoch assumption. Separately, 35/35 full-width transition properties and 4/4 shallow Covers pass without that budget. This finite budget is not a declared lifetime traffic contract, so no counter-high-bit URG Toggle is dispositioned.
-- Product EF2 parameters: 2/2 assertions proven; `PAIR_LOOKAHEAD=1` and illegal-parameter Covers are uncoverable at the fixed product configuration.
-- Identity DPD: direct proof remains 5/18 proven and 13 inconclusive; staged auto-lemma proof remains 1/13 proven and 12 inconclusive. Both hit their non-vacuity Covers, use zero black boxes and produce no counterexample. DPD arithmetic/saturation rows remain OPEN.
-
-Targeted product UVM was not rerun after the two event-counter misses; no new product VDB was included. A fresh URG merge could not run in this WSL session: the installed VCS `-location` check rejects kernel `6.6.87.2-microsoft-standard-WSL2` as unsupported, so URG cannot resolve its VCS installation location. The reused raw report remains line 3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478. Raw equals Adjusted and the gate stays `RAW_100_OPEN`.
+| Semantic Bin ID | Status | Reason |
+|---|---|---|
+| `TXB-054d97a87a8d74c36c8b` | OPEN | Not accepted as a Formal disposition: VC Formal reports the MAX_TAPS assertion/Cover as tautological for compile-time MAX_TAPS=1. Retain Raw bin and OPEN status pending separately audited static configuration evidence. |
+| `TXB-c79cdf2b9f5b4620688e` | OPEN | Not accepted as a Formal disposition: the assertion a_plain_append_arm_disabled is explicitly reported tautological by VC Formal. Retain Raw bin and OPEN status; no waiver or exclusion. |

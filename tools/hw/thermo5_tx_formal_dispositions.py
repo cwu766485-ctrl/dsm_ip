@@ -27,6 +27,47 @@ def fail(message: str) -> None:
     raise ValueError(message)
 
 
+def tautological_property_names(console: str) -> set[str]:
+    names: set[str] = set()
+    for warning in re.finditer(r"Warning-\[SVAC-TAUT-(?:PROPERTY|COVER)\]", console):
+        heading = console[warning.start():].splitlines()[:5]
+        names.update(re.findall(r',\s*"([^"]+)"', "\n".join(heading)))
+    return names
+
+
+def validate_refresh_evidence(path: Path, summary: dict, rootcause_manifest: dict) -> dict:
+    """Validate a VCS/URG refresh record against the audited Raw inputs."""
+    evidence = json.loads(path.read_text(encoding="utf-8"))
+    if evidence.get("product_source_sha") != summary.get("source_product_sha"):
+        fail("VCS refresh record and root-cause summary product SHAs differ")
+    coverage = evidence.get("coverage", {})
+    if coverage.get("urg_refresh_status") != "PASS":
+        fail("refresh record does not report a passing URG refresh")
+    raw_summary_path = ROOT / coverage.get("raw_summary", "")
+    gate_path = ROOT / coverage.get("coverage_gate", "")
+    if not raw_summary_path.is_file() or not gate_path.is_file():
+        fail("refresh record is missing its Raw summary or coverage-gate evidence")
+    if sha256(raw_summary_path) != coverage.get("raw_summary_sha256"):
+        fail("Raw summary SHA differs from the refresh record")
+    if sha256(gate_path) != coverage.get("coverage_gate_sha256"):
+        fail("coverage-gate SHA differs from the refresh record")
+    gate = json.loads(gate_path.read_text(encoding="utf-8"))
+    report_hashes = rootcause_manifest.get("input_sha256", {}).get("raw_groups_html", {})
+    report_path = coverage.get("groups_html", "")
+    if report_hashes.get(report_path) != coverage.get("groups_html_sha256"):
+        fail("URG Group Report SHA is not one of the root-cause audit inputs")
+    gate_inputs = gate.get("inputs", {})
+    if gate_inputs.get("groups_html") != report_path:
+        fail("coverage gate did not audit the same URG Group Report")
+    if gate_inputs.get("raw_summary") != coverage.get("raw_summary"):
+        fail("coverage gate did not audit the recorded Raw summary")
+    if gate.get("status") != "RAW_100_OPEN" or gate.get("exclusions_applied"):
+        fail("refresh coverage gate is not fail-closed Raw_100_OPEN with no exclusions")
+    if gate.get("raw_project_rtl") != gate.get("adjusted_project_rtl"):
+        fail("Raw and adjusted coverage differ in the refresh gate")
+    return evidence
+
+
 def read_csv(path: Path, compressed: bool = False) -> tuple[list[str], list[dict[str, str]]]:
     opener = gzip.open if compressed else open
     with opener(path, "rt", newline="", encoding="utf-8") as stream:
@@ -85,6 +126,15 @@ def verify_review(review: dict) -> list[dict]:
         console = console_path.read_text(encoding="utf-8", errors="replace")
         if not re.search(r"Number of Black-Box Instances\s*=\s*0\b", console):
             fail(f"zero-black-box evidence is absent: {console_path}")
+        tautology_report = proof_dir / "vcst_rtdb/logs/tautologySVAGoals.rpt"
+        if tautology_report.is_file():
+            tautologies = tautology_report.read_text(encoding="utf-8", errors="replace")
+            if item["assertion"] in tautologies or item["cover"] in tautologies:
+                fail(f"{bin_id}: an exact Formal property is tautological")
+        tautological_names = tautological_property_names(console)
+        exact_names = {item["assertion"].rsplit(".", 1)[-1], item["cover"].rsplit(".", 1)[-1]}
+        if exact_names & tautological_names:
+            fail(f"{bin_id}: an exact Formal property is marked tautological in the console")
         assumptions = item.get("assumptions", [])
         observed_assumptions = re.findall(r"^\s*\[\s*\d+\]\s+constrained\s+\(non_vacuous\).*?-\s+(\S*\.asm_\S+)\s*$", properties, re.M)
         if set(observed_assumptions) != set(assumptions):
@@ -115,17 +165,44 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--closure-report", type=Path, required=True)
     parser.add_argument("--review", type=Path, required=True)
+    parser.add_argument(
+        "--refresh-evidence", type=Path,
+        help="Optional machine-readable fresh VCS/URG record, checked against the exact Raw report and gate.",
+    )
     args = parser.parse_args()
     ledger_fields, ledger_rows = read_csv(args.ledger, compressed=True)
     task_fields, tasks = read_csv(args.tasks)
     summary = json.loads(args.summary.read_text(encoding="utf-8"))
     review = json.loads(args.review.read_text(encoding="utf-8"))
+    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
     if review.get("product_source_sha") != summary.get("source_product_sha"):
         fail("Formal review and source-ledger product SHAs differ")
+    refresh_evidence = None
+    if args.refresh_evidence:
+        refresh_evidence = validate_refresh_evidence(args.refresh_evidence, summary, manifest)
     dispositions = verify_review(review)
+    reviewed_open = review.get("reviewed_candidates", [])
+    if not isinstance(reviewed_open, list):
+        fail("reviewed_candidates must be an array")
     by_id = {row["semantic_bin_id"]: row for row in ledger_rows}
     if len(by_id) != len(ledger_rows):
         fail("semantic Bin IDs are not unique in the ledger")
+    disposition_ids = {item["semantic_bin_id"] for item in dispositions}
+    for candidate in reviewed_open:
+        bin_id = candidate.get("semantic_bin_id", "")
+        if not bin_id or bin_id in disposition_ids:
+            fail(f"missing or conflicting reviewed OPEN candidate Bin ID: {bin_id}")
+        if candidate.get("status") != "OPEN" or not candidate.get("reason"):
+            fail(f"{bin_id}: reviewed candidate must have OPEN status and an audit reason")
+        row = by_id.get(bin_id)
+        if row is None:
+            fail(f"reviewed OPEN candidate is absent from raw ledger: {bin_id}")
+        row["closure_status"] = "OPEN"
+        row["status"] = "OPEN"
+        row["reason"] = candidate["reason"]
+        row["evidence_hint"] = "FORMAL_TAUTOLOGY_REJECTED; retain Raw bin"
+        row["root_cause_hypothesis"] = candidate["reason"]
+        row["next_action"] = "Keep this exact Raw bin OPEN until valid non-tautological evidence or a separately reviewed configuration disposition is supplied."
     for item in dispositions:
         bin_id = item["semantic_bin_id"]
         row = by_id.get(bin_id)
@@ -174,6 +251,8 @@ def main() -> int:
         for row in ledger_rows
     )
     formal_map = summary.setdefault("formal_dispositions", {})
+    for item in reviewed_open:
+        formal_map.pop(item["semantic_bin_id"], None)
     for item in dispositions:
         formal_map[item["semantic_bin_id"]] = {
             "status": "PROVEN_UNREACHABLE",
@@ -186,21 +265,76 @@ def main() -> int:
         }
     summary["approved_waivers"] = 0
     summary["exclusions_applied"] = 0
+    summary["reviewed_formal_open_candidates"] = reviewed_open
     summary["interpretation"] = (
         f"{counts.get('PROVEN_UNREACHABLE', 0)} exact bins are Formal-proven unreachable; "
         f"{counts.get('OPEN', 0)} code gaps remain OPEN. Raw URG bins and denominators are unchanged; "
         "no waiver or exclusion is applied."
     )
     args.summary.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+
+    closure = args.closure_report.read_text(encoding="utf-8")
+    closure = closure.replace(
+        "Every row is OPEN at this audit stage.",
+        f"After exact Formal review, {counts.get('PROVEN_UNREACHABLE', 0)} rows are "
+        f"PROVEN_UNREACHABLE and {counts.get('OPEN', 0)} remain OPEN; Raw URG is unchanged.",
+    )
+    closure = re.sub(
+        r"After exact Formal review, [^.]*; Raw URG is unchanged\.",
+        f"After exact Formal review, {counts.get('PROVEN_UNREACHABLE', 0)} rows are "
+        f"PROVEN_UNREACHABLE and {counts.get('OPEN', 0)} remain OPEN; Raw URG is unchanged.",
+        closure,
+    )
+    marker = "## Formal disposition update"
+    if marker in closure:
+        closure = closure[:closure.index(marker)].rstrip() + "\n"
+    formal_lines = [
+        marker,
+        "",
+        f"The source-bound review closed {counts.get('PROVEN_UNREACHABLE', 0)} exact bins as "
+        f"PROVEN_UNREACHABLE; {counts.get('OPEN', 0)} remain OPEN. Formal Inconclusive is not "
+        "a closure. Raw URG and its denominator are unchanged; approved waivers and active "
+        ".el exclusions are both zero.",
+        "",
+        "| Semantic Bin ID | Assertion | Cover | Disposition |",
+        "|---|---|---|---|",
+    ]
+    for item in sorted(dispositions, key=lambda row: row["semantic_bin_id"]):
+        formal_lines.append(
+            f"| `{item['semantic_bin_id']}` | `{item['assertion']}` | `{item['cover']}` | "
+            "PROVEN_UNREACHABLE; retained in Raw |"
+        )
+    formal_lines.extend([
+        "",
+        "Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:",
+        "",
+        "| Semantic Bin ID | Status | Reason |",
+        "|---|---|---|",
+    ])
+    for item in sorted(reviewed_open, key=lambda row: row["semantic_bin_id"]):
+        formal_lines.append(
+            f"| `{item['semantic_bin_id']}` | OPEN | {item['reason']} |"
+        )
+    formal_lines.append("")
+    closure = closure.rstrip() + "\n\n" + "\n".join(formal_lines)
+    args.closure_report.write_text(closure, encoding="utf-8")
+
     manifest["followup"] = {
         **manifest.get("followup", {}),
         "formal_review_json": str(args.review.resolve().relative_to(ROOT)),
         "formal_review_sha256": sha256(args.review),
+        "formal_disposition_script_sha256": sha256(Path(__file__).resolve()),
         "formal_status": "PASS_FOR_EXACT_REACHABILITY_DISPOSITIONS; DPD_IDENTITY_OPEN",
         "proven_unreachable_bin_count": counts.get("PROVEN_UNREACHABLE", 0),
+        "reviewed_open_candidate_count": len(reviewed_open),
         "raw_coverage_edited": False,
-        "product_urg_refreshed": False,
+        "product_urg_refreshed": refresh_evidence is not None,
+        "product_urg_refresh_evidence": (
+            str(args.refresh_evidence.resolve().relative_to(ROOT)) if refresh_evidence else None
+        ),
+        "product_urg_refresh_evidence_sha256": (
+            sha256(args.refresh_evidence) if refresh_evidence else None
+        ),
         "approved_waivers": 0,
         "exclusions_applied": 0,
     }

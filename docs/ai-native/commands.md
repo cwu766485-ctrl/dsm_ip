@@ -1246,21 +1246,38 @@ resource/timing, formal equivalence, XPM, and GT/board integration remain open.
 Use the existing canonical flow. Start with a dry-run or smoke check; capture tool versions, configuration, seed, command, exit status, and log path under the project's established run convention.
 ## Thermo5 TX coverage root-cause inventory
 
-Rebuild the Step 1/2 functional-bin and source-linked Raw gap audit from the
-fixed product URG reports. This is report analysis only; it does not rerun VCS
-or Formal, change a coverage database, or modify a denominator.
+The latest audit uses a licensed VCS/URG refresh from
+`runs/thermo5_tx_final_vcs_resume_20261030_41691/`. The compact run manifest at
+`docs/verification/data/thermo5-tx-final-vcs-refresh.json` records exact
+compile/test commands, tool versions, log hashes, report hashes and the 29-test
+VDB merge (2 fresh, 27 reused). The full regression was not rerun.
+
+Rebuild the source-linked gap and Functional Coverage audit from that exact
+Raw report. The script audits report data only; it does not alter URG, the Raw
+denominator, or product RTL.
 
     python3.12 -m py_compile tools/hw/thermo5_tx_coverage_rootcause.py tools/hw/thermo5_tx_functional_bin_detail.py
     python3.12 tools/hw/thermo5_tx_coverage_rootcause.py \
       --ledger runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv \
-      --raw-report runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030 \
+      --raw-report runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access \
+      --branch-arms runs/thermo5_tx_final_vcs_resume_20261030_41691/raw_summary_after_register_access/branch_arms.csv \
       --negative-report runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report \
       --evidence docs/verification/thermo5-tx-linux-coverage-closure-evidence.json \
-      --output-dir runs/thermo5_tx_coverage_rootcause_audit_20261030
+      --refresh-evidence docs/verification/data/thermo5-tx-final-vcs-refresh.json \
+      --output-dir runs/thermo5_tx_coverage_rootcause_audit
+
+To apply only the reviewed exact `PROVEN_UNREACHABLE` Formal dispositions to
+the audit ledger, pass the generated ledger/task/summary/manifest/report files
+and `docs/verification/thermo5-tx-formal-bin-dispositions.json` to
+`tools/hw/thermo5_tx_formal_dispositions.py`. For a fresh product report, add
+`--refresh-evidence docs/verification/data/thermo5-tx-final-vcs-refresh.json`;
+the updater checks that the source SHA, URG Group Report, Raw summary, and
+fail-closed gate are the same evidence set before modifying the audit files.
 
 The script verifies source-file SHA-256 values, maps every missing Condition to
-the Raw URG expression/subexpression, preserves each source ledger row, and
-fails if metric totals or semantic IDs do not reconcile. It also exports every
+the Raw URG expression/subexpression, maps compound Branch targets to exact RTL
+source lines, preserves each source ledger row, and fails if metric totals,
+branch signatures or semantic IDs do not reconcile. It also exports every
 scoreable Group/coverpoint/cross/bin record from the complete URG HTML, retaining
 type and instance views and the URG page SHA. The current fixed-source report
 contains 226 rows: 214 scoreable records (210 hit, four negative-only misses)
@@ -1268,6 +1285,59 @@ and 12 pre-existing model Illegal/Excluded rows. This corrects the earlier
 170/174 tally, which omitted 40 generated EF2 cross-bin records; no URG database
 or denominator was changed. The tracked audit artifacts are under
 docs/verification/data/thermo5-tx-coverage-root-cause/.
+
+The latest current-source partial refresh is recorded in
+`docs/verification/data/thermo5-tx-final-vcs-refresh.json`; it is evidence for
+two focused tests and an URG merge, not a full regression. For a new source
+revision, rerun the exact command strings in that JSON into a new ignored
+`runs/` directory, then regenerate Raw URG, the denominator summary and the
+fail-closed gate before invoking this audit.
+
+### Centered-Cubic two-frame pop/push Branch review
+
+This reproducible product test sends two 32-beat packets with no source gaps,
+checks all 112 four-plane output words, and observes the exact queue event in
+both centered-cubic stages. Keep the seed fixed and vary only legal control
+phases. The recorded sweep has nine source-start phases and seventeen RUN-start
+phases. Every run passed the bit-true stream checker, but neither stage accepted
+a replacement input on a single-entry pop edge; both Raw Branch bins remain
+OPEN. See
+`docs/verification/data/thermo5-tx-frame-replacement-coverage-review.json` for
+source hashes and run/report hashes.
+
+```bash
+python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+  --output-dir runs/thermo5_tx_frame_replace/vectors --words 112 --seed 610901 \
+  --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+  --frame-start-words 1,57 --frame-gains 16384,16384
+make -C dv/uvm/sim thermo5-vcs PYTHON=python3.12 \
+  VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 \
+  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_FIFO_IMPL=generic \
+  THERMO5_VECTORS="$PWD/runs/thermo5_tx_frame_replace/vectors" \
+  THERMO5_OUT="$PWD/runs/thermo5_tx_frame_replace" \
+  THERMO5_COV_HIER="$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier"
+for phase in $(seq 0 8); do
+  runs/thermo5_tx_frame_replace/simv \
+    +UVM_TESTNAME=thermo5_sku_axil_frame_replacement_test \
+    +VEC_DIR="$PWD/runs/thermo5_tx_frame_replace/vectors" \
+    +ntb_random_seed=610901 -cm line+cond+fsm+tgl+branch+assert \
+    -cm_dir "runs/thermo5_tx_frame_replace/source_phase_${phase}.vdb" \
+    -l "runs/thermo5_tx_frame_replace/source_phase_${phase}.log" \
+    +CORE_WORDS=112 +PACKET_BEATS=32 \
+    +THERMO5_SOURCE_START_DELAY_CYCLES="$phase"
+done
+for phase in $(seq 0 16); do
+  runs/thermo5_tx_frame_replace/simv \
+    +UVM_TESTNAME=thermo5_sku_axil_frame_replacement_test \
+    +VEC_DIR="$PWD/runs/thermo5_tx_frame_replace/vectors" \
+    +ntb_random_seed=610901 -cm line+cond+fsm+tgl+branch+assert \
+    -cm_dir "runs/thermo5_tx_frame_replace/run_phase_${phase}.vdb" \
+    -l "runs/thermo5_tx_frame_replace/run_phase_${phase}.log" \
+    +CORE_WORDS=112 +PACKET_BEATS=32 \
+    +THERMO5_RUN_PHASE_CYCLES="$phase"
+done
+```
 
 ## Thermo5 TX product Raw gate and compile-source audit
 

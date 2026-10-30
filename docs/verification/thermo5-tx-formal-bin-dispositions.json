@@ -819,7 +819,7 @@
       "semantic_bin_id": "TXB-39a0a549d32bc9ef1e01",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
-      "source_position": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:182",
+      "source_position": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:229",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "7135da3ae5a1cc613d1f88b38bd1f5713aa69384efdc6d5ca33b65670a704a9f",
         "dv/uvm/formal/thermo5_frame_tail_harness.sv": "94df1b997970f735d49d011efb42be66f7950a4aafc855e7aea6e21fb4b930df",
@@ -843,31 +843,7 @@
       "semantic_bin_id": "TXB-603e97cceda8c0d4d0ed",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
-      "source_position": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:182",
-      "source_sha256": {
-        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "7135da3ae5a1cc613d1f88b38bd1f5713aa69384efdc6d5ca33b65670a704a9f",
-        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "94df1b997970f735d49d011efb42be66f7950a4aafc855e7aea6e21fb4b930df",
-        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
-      },
-      "status": "PROVEN_UNREACHABLE"
-    },
-    {
-      "assertion": "thermo5_frame_tail_harness.a_plain_append_arm_disabled",
-      "assumptions": [
-        "thermo5_frame_tail_harness.asm_source_stable"
-      ],
-      "bin": "182:0/0/-/-/1/1/-/-/-/-/-/-/-",
-      "configuration": "axil",
-      "console_sha256": "3a552b91e176f64f0ab44b9a7c3b47bc0e18f7e0416f9740f3e40f652998db50",
-      "cover": "thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable",
-      "formal_run": "runs/thermo5_tx_final_interp_bin_dispositions_20261030/frame_tail",
-      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
-      "metric": "branch",
-      "properties_sha256": "6a3a0d0d16e8ae67e6f9c3e0feb5dc7e96be02de93132b6c11f8ccac36f5ad10",
-      "semantic_bin_id": "TXB-c79cdf2b9f5b4620688e",
-      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
-      "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
-      "source_position": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:182",
+      "source_position": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:217",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "7135da3ae5a1cc613d1f88b38bd1f5713aa69384efdc6d5ca33b65670a704a9f",
         "dv/uvm/formal/thermo5_frame_tail_harness.sv": "94df1b997970f735d49d011efb42be66f7950a4aafc855e7aea6e21fb4b930df",
@@ -880,19 +856,20 @@
       "assumptions": [],
       "bin": "93:0/1/1",
       "configuration": "axil",
-      "console_sha256": "fb10fc980f67925667c1de15db95d631c843b6e8e54202782f8ec88b66281d6b",
+      "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
       "cover": "thermo5_axil_cfg_coverage_harness.c_line88_tuple_unreachable",
-      "formal_run": "runs/thermo5_tx_axil_cfg_coverage_harnessed_20261030",
+      "evidence_note": "Re-proven in the clean current-source AXI-Lite run; no tautological properties or environment assumptions.",
+      "formal_run": "runs/thermo5_axil_cfg_coverage_clean_default_20261031",
       "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
       "metric": "cond",
-      "properties_sha256": "8f3fb186d5d41d4b2eaf8cff35b2af26acd5ae45cfbb04bec017c9c7dd394679",
+      "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
       "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
       "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
-        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "c70ffd489aa122d74d377d39c9155b181e1022725398f7740b789c8090da8c92",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
         "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
       },
       "status": "PROVEN_UNREACHABLE"
@@ -902,50 +879,63 @@
       "assumptions": [],
       "bin": "142:0",
       "configuration": "axil",
-      "console_sha256": "fb10fc980f67925667c1de15db95d631c843b6e8e54202782f8ec88b66281d6b",
+      "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
       "cover": "thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable",
-      "formal_run": "runs/thermo5_tx_axil_cfg_coverage_harnessed_20261030",
+      "evidence_note": "Re-proven in the clean current-source AXI-Lite run; no tautological properties or environment assumptions.",
+      "formal_run": "runs/thermo5_axil_cfg_coverage_clean_default_20261031",
       "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
       "metric": "line",
-      "properties_sha256": "8f3fb186d5d41d4b2eaf8cff35b2af26acd5ae45cfbb04bec017c9c7dd394679",
+      "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
       "semantic_bin_id": "TXB-74a3bacf0956921ac9bf",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
       "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:142",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
-        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "c70ffd489aa122d74d377d39c9155b181e1022725398f7740b789c8090da8c92",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
         "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
       },
       "status": "PROVEN_UNREACHABLE"
     },
     {
-      "assertion": "thermo5_axil_cfg_coverage_harness.a_product_max_taps_guard_inactive",
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable",
       "assumptions": [],
-      "bin": "348:1",
+      "bin": "190:0/-/-/-/-/1/0/-/default/-/-/-/-/-/-/-/-/-",
       "configuration": "axil",
-      "console_sha256": "fb10fc980f67925667c1de15db95d631c843b6e8e54202782f8ec88b66281d6b",
-      "cover": "thermo5_axil_cfg_coverage_harness.c_invalid_max_taps_guard",
-      "formal_run": "runs/thermo5_tx_axil_cfg_coverage_harnessed_20261030",
+      "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable",
+      "evidence_note": "Re-proven in the clean current-source AXI-Lite run; no tautological properties or environment assumptions.",
+      "formal_run": "runs/thermo5_axil_cfg_coverage_clean_default_20261031",
       "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
       "metric": "branch",
-      "properties_sha256": "8f3fb186d5d41d4b2eaf8cff35b2af26acd5ae45cfbb04bec017c9c7dd394679",
-      "semantic_bin_id": "TXB-054d97a87a8d74c36c8b",
+      "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
+      "semantic_bin_id": "TXB-3df5f13a8d51ee9bdea5",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
-      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:348",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
-        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "c70ffd489aa122d74d377d39c9155b181e1022725398f7740b789c8090da8c92",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
         "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
-      },
-      "status": "PROVEN_UNREACHABLE"
+      }
     }
   ],
   "disposition": "PROVEN_UNREACHABLE",
   "no_urg_coverage_update": true,
-  "note": "Formal reachability changes the audit disposition only; raw VCS URG bins and denominators stay unchanged. No waiver is approved.",
+  "note": "Only exact bins with current-source Formal evidence free of per-property tautology warnings are listed in bins. Two reviewed candidates are retained OPEN because the corresponding Formal assertions were tautological. Raw URG is not edited.",
   "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
   "raw_coverage_reused": true,
+  "reviewed_candidates": [
+    {
+      "reason": "Not accepted as a Formal disposition: VC Formal reports the MAX_TAPS assertion/Cover as tautological for compile-time MAX_TAPS=1. Retain Raw bin and OPEN status pending separately audited static configuration evidence.",
+      "semantic_bin_id": "TXB-054d97a87a8d74c36c8b",
+      "status": "OPEN"
+    },
+    {
+      "reason": "Not accepted as a Formal disposition: the assertion a_plain_append_arm_disabled is explicitly reported tautological by VC Formal. Retain Raw bin and OPEN status; no waiver or exclusion.",
+      "semantic_bin_id": "TXB-c79cdf2b9f5b4620688e",
+      "status": "OPEN"
+    }
+  ],
   "schema_version": 1
 }

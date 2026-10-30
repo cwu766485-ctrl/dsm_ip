@@ -23,14 +23,13 @@ EXPECTED_ASSERTIONS = {
     "a_bvalid_clears_pending": "proven",
     "a_coeff_read_default_unreachable": "proven",
     "a_line88_tuple_unreachable": "proven",
-    "a_product_max_taps_guard_inactive": "proven",
     "a_write_case_default_unreachable": "proven",
 }
 EXPECTED_COVERS = {
     "c_coeff_read_transaction": "covered",
     "c_coeff_read_default_arm_unreachable": "uncoverable",
-    "c_invalid_max_taps_guard": "uncoverable",
     "c_line88_tuple_unreachable": "uncoverable",
+    "c_write_case_default_unreachable": "uncoverable",
 }
 
 
@@ -102,6 +101,8 @@ def main() -> int:
         errors.append("zero black-box evidence missing")
     if not re.search(r"# non_vacuous\s*:\s*3\b", properties):
         errors.append("expected three non-vacuous AXI-Lite assertions")
+    if "SVA goal(s) have been marked trivially proven/uncoverable" in console:
+        errors.append("Formal marked a goal as tautological; it cannot support this reachability audit")
     if exit_code != 0:
         errors.append(f"VC Formal exit code {exit_code}")
 

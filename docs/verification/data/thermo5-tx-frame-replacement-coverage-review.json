@@ -1,0 +1,652 @@
+{
+  "base_checkout_sha": "41691b675d4be63221f046e007aa9a37cb156e1e",
+  "compile": {
+    "command_log": "runs/thermo5_tx_centered_frame_replacement_20261031/compile.log",
+    "command_log_sha256": "2051afaa7b8a39f096813724ea875a17a227dd3d2a08227a6dd7de77a5140f9d",
+    "compile_log_sha256": "2051afaa7b8a39f096813724ea875a17a227dd3d2a08227a6dd7de77a5140f9d",
+    "configuration_defines": [
+      "THERMO5_AXIL_CONTROL",
+      "THERMO5_CENTERED_CUBIC",
+      "THERMO5_TIDSM_ORDER=2",
+      "THERMO5_STEP=5120",
+      "THERMO5_DPD_MAX_TAPS=1"
+    ],
+    "parsed_local_sources": 74,
+    "product_compile_manifest": "runs/thermo5_tx_centered_frame_replacement_20261031/product_compile_manifest.json",
+    "product_compile_manifest_sha256": "d8225aaed1e7977cf61cd4e731fc04c8a2c5677f39d8b657f88a7f50f2214648",
+    "command_line": "vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps \\\n-f /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL \\\n+define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120 \\\n+define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_frame_replacement_20261031/csrc \\\n-cm line+cond+fsm+tgl+branch+assert -cm_hier /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_tx_product_coverage.hier \\\n-debug_access+all -o /home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_frame_replacement_20261031/simv \\\n-l /home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_frame_replacement_20261031/compile.log \\"
+  },
+  "conclusion": {
+    "functional_stream": "PASS; all four output planes bit-true for 112 words",
+    "no_seed_sweep": "same waveform seed held fixed; only legal source start phase varied",
+    "raw_denominator_modified": false,
+    "root_cause_evidence": "Each instance reached q_count==1 with q0_end asserted and popped once, but the same-edge push_input was not asserted. No source phase gained the event.",
+    "target_branch": "OPEN; no simultaneous single-entry pop/push observed in either centered-cubic product instance across 9 legal source-phase placements",
+    "waiver_or_exclusion": "none"
+  },
+  "coverage_merge": {
+    "approved_waivers": 0,
+    "coverage_gate": "runs/thermo5_tx_centered_frame_replacement_20261031/coverage_gate.json",
+    "coverage_gate_sha256": "7363d636d320e6ad88b6a551d96a6974e6f84e7873f2ed3bcb6f5c11df20d9eb",
+    "exclusions_applied": false,
+    "gate_status": "RAW_100_OPEN",
+    "merged_group_report": "runs/thermo5_tx_centered_frame_replacement_20261031/merged_raw/groups.html",
+    "new_vdb_file_count": 13,
+    "new_vdb_included": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_0.vdb",
+    "new_vdb_tree_sha256": "e008944eba6b04f8b9daa4eaecbb5e0db9f6ab08634deafc50369b9b46567699",
+    "raw_coverage": {
+      "branch": {
+        "covered": 440,
+        "missing": 197,
+        "percent": 69.0738,
+        "total": 637
+      },
+      "cond": {
+        "covered": 583,
+        "missing": 263,
+        "percent": 68.9125,
+        "total": 846
+      },
+      "line": {
+        "covered": 3190,
+        "missing": 606,
+        "percent": 84.0358,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 86951,
+        "missing": 17527,
+        "percent": 83.2242,
+        "total": 104478
+      }
+    },
+    "raw_delta_vs_previous": {
+      "branch_covered": 0,
+      "condition_covered": 0,
+      "line_covered": 0,
+      "toggle_covered": 0
+    },
+    "raw_equals_adjusted": true,
+    "raw_summary": "runs/thermo5_tx_centered_frame_replacement_20261031/merged_rootcause/summary.json",
+    "raw_summary_sha256": "0024a8add98e54d79f18907ebd4d824caa35b4125f6759c0c9a8c28aaeecdb05",
+    "target_branch_bins": [
+      {
+        "decision_path": "0/0/-/-/-/-/-/1/0/-/1/-/-",
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+        "raw_status": "Not Covered",
+        "source_predicate": "1:182            if (!rst_n) begin; 2:201            end else if (!enable) begin; 3:210              if (!HOLD_STATE_ON_DISABLE) begin; 4:217              if (tail_fire); 5:220              if (pop_head && !q0_tail) begin; 6:223                if (APPEND_TAIL_VECTOR && head_final) begin; 7:229              if (pop_head && q0_tail) begin; 8:234              if (pop_head) begin; 9:235                if (q_count == 2) begin; 10:243                  if (push_input) begin; 11:255                end else if (push_input) begin; 12:267              end else if (push_input) begin; 13:268                if (q_count == 0) begin",
+        "semantic_bin_id": "TXB-33db6d34081fd3b6ec60"
+      },
+      {
+        "decision_path": "0/0/-/-/-/-/-/1/0/-/1/-/-",
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+        "raw_status": "Not Covered",
+        "source_predicate": "1:182            if (!rst_n) begin; 2:201            end else if (!enable) begin; 3:210              if (!HOLD_STATE_ON_DISABLE) begin; 4:217              if (tail_fire); 5:220              if (pop_head && !q0_tail) begin; 6:223                if (APPEND_TAIL_VECTOR && head_final) begin; 7:229              if (pop_head && q0_tail) begin; 8:234              if (pop_head) begin; 9:235                if (q_count == 2) begin; 10:243                  if (push_input) begin; 11:255                end else if (push_input) begin; 12:267              end else if (push_input) begin; 13:268                if (q_count == 0) begin",
+        "semantic_bin_id": "TXB-9141942b3f6f51689217"
+      }
+    ],
+    "urg_command": "runs/thermo5_tx_centered_frame_replacement_20261031/merged_urg.command.sh",
+    "urg_log": "runs/thermo5_tx_centered_frame_replacement_20261031/merged_urg.log",
+    "urg_log_sha256": "b5783c82cae1cac4596922f400a367b3ffdbc40ace26a943c30bba6a1da8a505",
+    "urg_command_line": "/opt/Synopsys/vcs/V-2023.12-SP1/linux64/bin/urg1 -full64 -dir runs/thermo5_tx_final_vcs_resume_20261030_41691/simv.vdb runs/thermo5_tx_final_vcs_resume_20261030_41691/cov_thermo5_sku_axil_register_access_test_seed610830.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_product_identity_test_seed610801.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_ef2_corner_test_seed271030.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_graceful_stop_test_seed420108.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_stop_restart_test_seed610215.vdb runs/thermo5_tx_final_vcs_resume_20261030_41691/cov_thermo5_sku_axil_reset_sweep_test_seed610802.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_coeff_transport_test_seed610803.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/license_retry_seed610806/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset1_seed610807/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset2_seed610808/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset4_seed610809/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset8_seed610810/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset16_seed610811/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset32_seed610812/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/commit_on_run_seed610813/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat8_seed610814/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat20_seed610815/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay0_seed610816/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay1_seed610817/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay2_seed610818/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay4_seed610819/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay8_seed610820/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay16_seed610821/cov.vdb runs/thermo5_tx_product_interframe_gap_scoped_20261030/cov_thermo5_sku_axil_product_identity_interframe_gap_test_seed610824.vdb runs/thermo5_tx_product_pa_stall_scoped_20261030/cov.vdb runs/thermo5_tx_product_continuous_scoped_20261030/cov.vdb runs/thermo5_tx_product_source_gap_current_20261030/gap2/cov.vdb runs/thermo5_tx_product_source_gap_current_20261030/gap4/cov.vdb runs/thermo5_tx_product_source_gap_current_20261030/gap8/cov.vdb /home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_0.vdb -report /home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_frame_replacement_20261031/merged_raw -dbname thermo5_tx_product_after_frame_phase_20261031 -log /home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_frame_replacement_20261031/merged_urg.log",
+    "urg_command_sha256": "98dadc027d19161d693c37ef77cb0a3faff3f8ebe1076466412f4fc496f4d175"
+  },
+  "directed_phase_runs": {
+    "results": [
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_0.log",
+        "log_sha256": "94416f071cb0183db8a00c9dbb81ac0c0cc9388e4fd8c7f573baeb23b4111c61",
+        "source_start_delay_cycles": 0,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_1.log",
+        "log_sha256": "4a408d8fd45983446705e725b0d8632a3445305f2d3fbdd471a3c8e120f009e5",
+        "source_start_delay_cycles": 1,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_2.log",
+        "log_sha256": "5785bb5c14ec75b72e4fb672570686ca18a7d22ee82412875fe20257b785b883",
+        "source_start_delay_cycles": 2,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_3.log",
+        "log_sha256": "4a46504a25c199dc2b2b9e6e93242c48651c72ad49b430dba9175dad4c4a6ebd",
+        "source_start_delay_cycles": 3,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_4.log",
+        "log_sha256": "b52e16d175c27379bee9cc5978f0d8c14b6f0b411cb5588763ec4d502005b7d0",
+        "source_start_delay_cycles": 4,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_5.log",
+        "log_sha256": "4d5710c50a0aca8355cd466600c068f97887c4772c5c9a32dee503dac4e6142b",
+        "source_start_delay_cycles": 5,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_6.log",
+        "log_sha256": "ad8cb833402d4741095be358502b42ca30b692c1a089d3bf9c627f4605c0d73c",
+        "source_start_delay_cycles": 6,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_7.log",
+        "log_sha256": "32eebdb4804b19b8e357320c9a16b4b475936732f914c47aafc0c82072476bde",
+        "source_start_delay_cycles": 7,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/source_phase_8.log",
+        "log_sha256": "faf5dccb0111bc0277a809c5cedb87a027984a0b9e49f7e89fea761227302e71",
+        "source_start_delay_cycles": 8,
+        "target_event_counts": {
+          "stage1": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          },
+          "stage2": {
+            "pop_push": 0,
+            "qcount1_end_occupancy": 1,
+            "qcount1_end_pop": 1
+          }
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      }
+    ],
+    "run_command_template": "simv +UVM_TESTNAME=thermo5_sku_axil_frame_replacement_test +VEC_DIR=<vectors> +ntb_random_seed=610901 -cm line+cond+fsm+tgl+branch+assert -cm_dir <phase-N.vdb> -l <phase-N.log> +CORE_WORDS=112 +PACKET_BEATS=32 +THERMO5_SOURCE_START_DELAY_CYCLES=N",
+    "source_start_delay_cycles_swept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "test": "thermo5_sku_axil_frame_replacement_test",
+    "test_source": "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_frame_replacement_test.svh",
+    "all_pass": true,
+    "all_target_pop_push_misses": true
+  },
+  "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite; Generic FIFO",
+  "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
+  "recorded_at": "2026-10-31T00:31:20+08:00",
+  "review": "Centered-Cubic product frame-boundary pop/push Branch stimulus review",
+  "schema_version": 1,
+  "source_sha256": {
+    "dv/uvm/agent/interfaces/thermo5_sku_if.sv": "4a56ea6e1fe111390f48efedd66950dd0c8327ecd08944e2684952cd444c25a3",
+    "dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv": "ffe215a3673ad9fe2e1ba76388c3fdc4389b50b4f94ebfd6e7cdb6c4e6c48e7b",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "71ebe6a90aaf2ecc936030d6ef47662b1f4f91f91e0f8eeb439bb0d176a3b492",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_frame_replacement_test.svh": "84fb7a0ce5abb99b33af54fa43773f37fa82b0eb60ec50ceabb271704094d7bb",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
+  },
+  "stimulus": {
+    "frame_starts": 2,
+    "independent_checker": "Four-plane bit-true UVM scoreboard; all 112 output words and DPD sample/saturation counts checked",
+    "packet_beats": 32,
+    "source_beats": 64,
+    "source_words": 112,
+    "tlast_count": 2,
+    "upstream_gaps": 0,
+    "vector_command": "python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/thermo5_tx_centered_frame_replacement_20261031/vectors --words 112 --seed 610901 --interp-mode centered_cubic --tidsm-order 2 --step 5120 --frame-start-words 1,57 --frame-gains 16384,16384"
+  },
+  "tools": {
+    "urg": "V-2023.12-SP1",
+    "vcs": "V-2023.12-SP1_Full64"
+  },
+  "run_phase_sweep": {
+    "run_phase_cycles_swept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "command_template": "simv +UVM_TESTNAME=thermo5_sku_axil_frame_replacement_test +VEC_DIR=<vectors> +ntb_random_seed=610901 -cm line+cond+fsm+tgl+branch+assert -cm_dir <phase-N.vdb> -l <phase-N.log> +CORE_WORDS=112 +PACKET_BEATS=32 +THERMO5_RUN_PHASE_CYCLES=N",
+    "results": [
+      {
+        "run_phase_cycles": 0,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_0.log",
+        "log_sha256": "f5f19a4cf22839ba60897eadcc30a2f159e4e64002f334c8454f55cd2167de6b",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 1,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_1.log",
+        "log_sha256": "5409321ea5f9695c755678304cfe56cafec275243412ed32b9730d7db6a0f585",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 2,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_2.log",
+        "log_sha256": "04edf10dea50d6f6e715f5471baaf8568ef8480ecd42d0534ecfa0b21e028eeb",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 3,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_3.log",
+        "log_sha256": "06ac63c7037f856f1e65bec00a20b407ac4075da4c6e0a575509e744e0edc82a",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 4,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_4.log",
+        "log_sha256": "17565ad9e448f85670b5e0c487748ebf9bad1c96b5f75eb2fafa3e289b148813",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 5,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_5.log",
+        "log_sha256": "2423453ad7185f9eb8aab9099e095cbbdafd007e4f173f9e94dba5d990d37aab",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 6,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_6.log",
+        "log_sha256": "6e34c8df3a6c6ed27f2dda5bb4a70ab466921b25ddccde61b01b217f3e38bb1a",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 7,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_7.log",
+        "log_sha256": "4148eb5f178bfef284876e28b6faa0b1463cb893693b265a68424241a334e029",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 8,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_8.log",
+        "log_sha256": "fb65ad3cb4f07e369f15849f3f42432ab4acb0d1802e3cd8b5729b95d1f8f68d",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 9,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_9.log",
+        "log_sha256": "2fc583f0c3e0efc7ef2cb197e6d2fbd90650727c005f08c2f09d0143ce1c753d",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 10,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_10.log",
+        "log_sha256": "6157b31d93dd1a571a39deb5671820971002a601d5b7a8f4614e2deb24d8b43f",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 11,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_11.log",
+        "log_sha256": "9056cfb8447b4f19f907fb66e2dc16437101c0a0696af8250bc486b6eff839f5",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 12,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_12.log",
+        "log_sha256": "7e7bab8a9916921f3997eea40efac6ecd717a43a461bc03825a68cfdc62dc2d9",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 13,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_13.log",
+        "log_sha256": "53a609886a45e2997236782bbb58ae930a56c6d766b92eb468ada7111b4cb227",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 14,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_14.log",
+        "log_sha256": "e9e7894f88a3830524f3fb9ebb5730ffb4d145548138695799615472190cc641",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 15,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_15.log",
+        "log_sha256": "92c06fe5c067f8a0ac26ec87e1745e44d0f50eb3a3baf5e0d50dbdd47e674de7",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      },
+      {
+        "run_phase_cycles": 16,
+        "log_path": "runs/thermo5_tx_centered_frame_replacement_20261031/final_phase_16.log",
+        "log_sha256": "c5266dc2fcee036d75545b3e74e24acb6a223d4192e6d4ac85a58b8794340719",
+        "stage1": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "stage2": {
+          "pop_push": 0,
+          "qcount1_end_pop": 1,
+          "qcount1_end_occupancy": 1
+        },
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "uvm_pass": true
+      }
+    ],
+    "all_pass": true,
+    "all_target_pop_push_misses": true
+  }
+}

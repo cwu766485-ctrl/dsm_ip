@@ -8,11 +8,61 @@
 20-bit state; 32 chronological lanes; `DPD_MAX_TAPS=1` identity; AXI-Lite
 product parent and Generic FIFO model.
 
+## Latest licensed Linux refresh (2026-10-30)
+
+VCS and URG are available again. A fresh product compile passed for checkout
+`41691b675d4be63221f046e007aa9a37cb156e1e`; the product RTL/UVM source identity
+is unchanged. Two focused tests passed: AXI-Lite reset sweep (seed 610802) and
+AXI-Lite register access (seed 610830), both with zero UVM errors/fatals.
+The refreshed URG database contains 29 product simulation VDBs (2 fresh, 27
+retained exact-source VDBs) plus one compile VDB. A full regression was not
+rerun.
+
+The fresh URG `groups.html` and extracted Raw summary are byte-for-byte equal
+to the initial fresh merge. Therefore these tests add functional execution
+evidence, but do not improve code coverage. The report remains
+`RAW_100_OPEN`, Raw equals Adjusted, with zero approved waivers and zero `.el`
+exclusions. Exact commands, tool versions, log/report/gate hashes, metrics,
+and zero-hit Functional Coverage records are in
+[`thermo5-tx-final-vcs-refresh.json`](data/thermo5-tx-final-vcs-refresh.json).
+
 This report records the current Linux evidence without treating parameter
 proofs as simulator coverage hits. The root-cause ledger and per-bin detail are
 in [`thermo5-tx-coverage-root-cause-closure.md`](thermo5-tx-coverage-root-cause-closure.md),
 with machine-readable formal dispositions in
 [`thermo5-tx-formal-bin-dispositions.json`](thermo5-tx-formal-bin-dispositions.json).
+
+## Clean AXI-Lite Formal refresh (2026-10-31)
+
+The current AXI-Lite coverage harness was rerun with VC Formal V-2023.12-SP2.
+It passed with 4/4 assertions proven, one legal coefficient-read Cover hit,
+and three exact path Covers uncoverable; it used no environment assumptions,
+reported no setup violations or black boxes, and had three non-vacuous
+assertions. The runner now rejects tautological goals. This provides current
+source evidence for the write-address default bin at
+`thermo5_dpd_axi_lite_cfg.sv:246` and revalidates the two existing AXI-Lite
+dispositions.
+
+The separate `MAX_TAPS=1` initialization-guard property and one interpolator
+append-arm property were identified as tautologies and removed from the
+accepted Formal disposition set. Both Raw code bins remain OPEN and in the
+unmodified Raw denominator. The accepted ledger now has five exact proven
+bins and 18,588 OPEN records.
+
+## Centered-Cubic frame-boundary Branch review (2026-10-31)
+
+A reproducible AXI-Lite product test now sends two legal 32-beat packets and
+checks all 112 four-plane output words against the independent bit-true
+scoreboard. Nine legal source-start phases and seventeen RUN-start phase
+placements passed with zero UVM errors/fatals. Each centered-cubic instance
+reached a single-entry frame-end pop, but no same-edge input push occurred.
+Therefore the two exact line-255 pop/push Branch bins remain OPEN and Raw URG
+did not gain a hit. A diagnostic VDB was merged into a separate report; line,
+condition, branch and toggle counters were unchanged. The standalone
+interpolator Formal Cover witness shows the path is structurally reachable,
+but does not establish reachability in the cascaded product schedule. The
+product-bound cadence still needs analysis. See the
+[machine-readable phase and URG evidence](data/thermo5-tx-frame-replacement-coverage-review.json).
 
 ## Coverage results
 
@@ -27,8 +77,8 @@ with machine-readable formal dispositions in
 | DUT assertion status | 13/15 attempted (86.67%) | unchanged | 2 uncovered and 2 without attempts are retained in the URG status table |
 
 There are no approved waivers and no active URG exclusions. Adjusted therefore
-equals Raw. Six exact bins have a Formal `PROVEN_UNREACHABLE` disposition; they
-remain visible in the Raw URG denominators. The ledger contains 18,587 OPEN
+equals Raw. Five exact bins have a Formal `PROVEN_UNREACHABLE` disposition; they
+remain visible in the Raw URG denominators. The ledger contains 18,588 OPEN
 records out of 18,593. No adjusted score is used to claim closure.
 
 The complete product URG Group Report has 214 denominator-eligible bin records
@@ -77,10 +127,10 @@ retains exact semantic IDs and separate negative-test hits.
 
 | Scope | Result | Limits |
 |---|---|---|
-| Centered interpolator product parameters | 6/6 assertions proven; 5/9 Covers hit, 4/9 uncoverable; 1 valid source-stability assumption is non-vacuous | Single-entry pop/push is formally reachable in both stages but still missed by targeted product UVM |
-| AXI-Lite config defaults, `MAX_TAPS=1` | 5/5 assertions proven; legal coefficient read hit; three exact path Covers uncoverable; zero environment assumptions, setup violations, and black boxes | Closes only the three Bin IDs listed in the disposition JSON |
+| Centered interpolator product parameters | VC Formal reports 6/6 assertions proven and 5/9 Covers hit, 4/9 uncoverable; one assertion is explicitly tautological; one source-stability assumption is non-vacuous | Two exact frame-tail dispositions are retained; the tautological append-arm candidate remains OPEN. Single-entry pop/push is formally reachable but still missed by targeted product UVM. |
+| AXI-Lite configuration and address decode | 4/4 assertions proven; one legal coefficient-read Cover hit; three exact path Covers uncoverable; zero environment assumptions, setup violations, or black boxes; no tautological goals | Closes only the three AXI-Lite Bin IDs listed in the disposition JSON; the `MAX_TAPS=1` guard candidate remains OPEN |
 | EF2 arithmetic/state | 6/6 assertions proven; 3/3 Covers hit; zero setup violations and black boxes | Does not increase URG hits |
-| Product EF2 parameter guards | 2/2 assertions proven; pair-look-ahead and invalid-parameter Covers uncoverable | Exact fixed-product elaboration only |
+| Product EF2 parameter guards | The parameter guard assertion is proven and invalid-parameter Cover is uncoverable; pair-look-ahead-disabled assertion/Cover were reported as tautological | No ledger closure is credited from the tautological pair-look-ahead properties; parameter evidence remains configuration-bound |
 | DPD counter | bounded: 3/3 assertions and 4/4 Covers; unbounded: 35/35 bit-transition assertions and 4/4 Covers | The 2,072-acceptance bound is not a declared product lifetime contract; high-bit Toggle bins remain OPEN |
 | Identity DPD arithmetic | direct: 5/18 proven, 13 inconclusive; staged auto-lemma: 1/13 proven, 12 inconclusive; Covers hit and no counterexample | `INCONCLUSIVE` is not a proof; DPD arithmetic/saturation remains OPEN |
 | Checker mutation | `PASS_MUTATION_CAUGHT` | A one-bit PA0 oracle corruption raised UVM_FATAL at epoch 0 / word 0 / plane 0; VCS process exit alone is not the mutation oracle |
@@ -102,8 +152,9 @@ removed before the accepted run.
 
 | Verification item | Result | Exact interpretation |
 |---|---|---|
-| Existing positive product UVM campaign | `PASS_REUSED; NOT_RERUN` | The fixed-source Raw merge retains 29 product-scoped simulation VDBs plus the compile VDB. It is not a fresh regression from this closure branch. |
-| Targeted single-entry interpolator pop/push tests | `FAIL_COVERAGE_REQUIREMENT; SOURCE_NOT_REPRODUCIBLE` | Seeds 716001 and 716002 completed the four-plane oracle but did not observe the required DUT event in either stage; both have an explicit UVM_FATAL and neither VDB was merged. Their named test source is absent from the tracked tree, so the attempt is diagnostic evidence only. |
+| Product VCS compile and targeted UVM | `PASS_TARGETED_REFRESH` | Two fresh tests pass with zero UVM errors/fatals; 27 exact-source VDBs were reused. This is not a full regression rerun. |
+| Product Raw URG and fail-closed gate | `PASS_AUDIT; RAW_100_OPEN` | 29 product simulation VDBs plus the compile VDB; Raw report and Raw summary match the first fresh merge byte-for-byte. |
+| Centered-Cubic product frame-replacement phase sweep | `PASS_STREAM; TARGET_BRANCH_OPEN` | Nine fixed-seed legal source-start phases pass the 112-word four-plane oracle; each instance observes one single-entry frame-end pop and zero same-edge pushes. One VDB was added to a diagnostic URG merge; Raw code counters and target-bin status are unchanged. |
 | Expected-negative malformed-frame UVM | `PASS_NEGATIVE_CHECKER` | The separate test observes the expected protocol assertions and checker outcome; its VDB is not mixed into positive Raw. |
 | Scoped Formal jobs | `PASS_FOR_SCOPED_PROPERTIES` | Exact assertion/Cover counts and assumptions are in the Formal table above; they do not count as URG hits. |
 | Identity-DPD Formal | `OPEN_INCONCLUSIVE` | Direct 5/18 proven, 13 inconclusive; auto-lemma 1/13 proven, 12 inconclusive. No counterexample is not a proof. |
@@ -111,18 +162,15 @@ removed before the accepted run.
 
 ## Targeted stimulus and assertion status
 
-The two targeted packetization runs attempted to hit
-`q_count==1 && pop_head && push_input` with four contiguous frames and one
-frame. Both runs completed the independent four-plane stream comparison, then
-failed the explicit event-coverage requirement because neither interpolator
-instance observed the event. They are failed diagnostic runs, not regression
-PASS, and neither VDB was merged. Repeating random seeds is stopped until the
-stimulus is re-root-caused. The run logs record the `simv` commands and UVM
-fatal messages, but `dv/uvm/tests/thermo5/axil/thermo5_sku_axil_four_frame_coverage_test.svh`
-is absent from the tracked source tree; the exact attempted test cannot be
-rebuilt from this checkout. Its local log hashes and missing-source status are
-recorded in the coverage evidence manifest. The module-level Formal witness at
-depth 2 proves reachability but is not a product integration witness.
+The new test observes the exact product-instance event
+`q_count==1 && pop_head && push_input` directly. It also records the adjacent
+state `q_count==1 && q0_end && pop_head`: both interpolator stages reached and
+popped that state once in every phase, while `push_input` remained low on that
+edge. The 9-phase sweep changes only the legal source-start phase; the vector
+seed and packet contents remain fixed. There is no coverage credit for the
+missing pop/push event. The test log and a diagnostic URG merge are hashed in
+the linked review JSON. The module-only depth-2 Formal witness remains a
+module-level result, not a product integration witness.
 
 The separate illegal-frame assertion test has two expected assertion
 failures, passes its UVM expected-negative checker, and is not merged into the
@@ -185,7 +233,7 @@ export PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH
 python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs frame_tail --out-dir runs/thermo5_tx_final_interp_bin_dispositions_20261030
 python3.12 dv/uvm/formal/run_thermo5_axil_cfg_coverage.py \
-  --out-dir runs/thermo5_tx_axil_cfg_coverage_harnessed_20261030
+  --out-dir runs/thermo5_axil_cfg_coverage_clean_default_20261031
 python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs counter_unbounded ef2 ef2_product_params \
   --out-dir runs/thermo5_tx_final_formal_remaining_20261030
@@ -193,22 +241,23 @@ python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs counter --out-dir runs/thermo5_tx_final_counter_bound_20261030
 ```
 
-The product VCS/URG report was reused because no passing targeted product VDB
-was added. A fresh VCS/URG attempt in this WSL environment was blocked before
-simulation by the installed VCS location check: kernel
-`6.6.87.2-microsoft-standard-WSL2` is rejected as unsupported. This is a
-platform compatibility error, not a license checkout failure. Consequently,
-the product Raw database was not regenerated. The Raw gate did run against the
-existing product report and passed its audit checks while returning
-`RAW_100_OPEN`. The adjusted-URG path for approved nonempty waivers is still
-OPEN: the current gate accepts only an empty waiver ledger and comment-only
-`.el`, and this environment could not validate a real URG exclusion template
-or adjusted database. No synthetic or unreviewed exclusion was installed.
+The current Product Raw database was regenerated after the VCS license was
+restored. Two targeted VCS tests passed and URG merged their VDBs with 27
+retained exact-source test VDBs plus the compile VDB. The fresh report SHA is
+`d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852`; the
+fail-closed gate is `RAW_100_OPEN`, Raw equals Adjusted, with zero waivers and
+zero exclusions. This refresh did not rerun the full regression and did not
+change any Raw coverage counter.
+
+The adjusted-URG path for approved nonempty waivers remains OPEN: the current
+gate accepts only an empty waiver ledger and comment-only `.el`; no real
+approved exclusion template or adjusted database has been validated. No
+synthetic or unreviewed exclusion was installed.
 
 ## Acceptance status and remaining work
 
 - **Legal functional coverage:** 210/210 applicable scoreable records; negative-only bins reported separately. The complete report lists 214 scoreable records and 12 pre-existing URG model Illegal/Excluded records.
-- **Reachable/applicable DUT code coverage:** not closed; 18,587 rows remain OPEN.
+- **Reachable/applicable DUT code coverage:** not closed; 18,588 rows remain OPEN.
 - **Raw 100% code coverage:** `RAW_100_OPEN`; not claimed.
 - **Identity DPD Formal:** OPEN / inconclusive.
 - **TX worst-case benchmark:** model-only evidence exists; product BER/BLER acceptance threshold is undefined, so product communication acceptance remains OPEN.

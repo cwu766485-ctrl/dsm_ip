@@ -222,6 +222,30 @@ module thermo5_sku_uvm_tb;
   assign bus.interp1_output_empty_blocked = !dut.u_frontend.i1_valid && !dut.u_frontend.i1_ready;
   assign bus.interp2_stage1_empty_blocked = 1'b0;
   assign bus.interp2_empty_blocked = !dut.u_frontend.i2_valid && !dut.u_frontend.i2_ready;
+  assign bus.interp1_centered_pop_push =
+      (dut.u_frontend.g_interp1_centered.u_interp_1.q_count == 1) &&
+      dut.u_frontend.g_interp1_centered.u_interp_1.pop_head &&
+      dut.u_frontend.g_interp1_centered.u_interp_1.push_input;
+  assign bus.interp2_centered_pop_push =
+      (dut.u_frontend.g_interp2_centered.u_interp_2.q_count == 1) &&
+      dut.u_frontend.g_interp2_centered.u_interp_2.pop_head &&
+      dut.u_frontend.g_interp2_centered.u_interp_2.push_input;
+  assign bus.interp1_centered_state = {
+      dut.u_frontend.g_interp1_centered.u_interp_1.q_count,
+      dut.u_frontend.g_interp1_centered.u_interp_1.q0_end,
+      dut.u_frontend.g_interp1_centered.u_interp_1.pop_head,
+      dut.u_frontend.g_interp1_centered.u_interp_1.push_input,
+      dut.u_frontend.g_interp1_centered.u_interp_1.in_valid,
+      dut.u_frontend.g_interp1_centered.u_interp_1.in_ready,
+      dut.u_frontend.g_interp1_centered.u_interp_1.out_ready};
+  assign bus.interp2_centered_state = {
+      dut.u_frontend.g_interp2_centered.u_interp_2.q_count,
+      dut.u_frontend.g_interp2_centered.u_interp_2.q0_end,
+      dut.u_frontend.g_interp2_centered.u_interp_2.pop_head,
+      dut.u_frontend.g_interp2_centered.u_interp_2.push_input,
+      dut.u_frontend.g_interp2_centered.u_interp_2.in_valid,
+      dut.u_frontend.g_interp2_centered.u_interp_2.in_ready,
+      dut.u_frontend.g_interp2_centered.u_interp_2.out_ready};
 `else
   assign bus.interp1_empty_blocked = !dut.u_frontend.g_interp1_causal.u_interp_1.s2_valid &&
                                      !dut.u_frontend.g_interp1_causal.u_interp_1.s3_ready;
@@ -248,6 +272,10 @@ module thermo5_sku_uvm_tb;
                                      !dut.u_frontend.g_interp2_causal.u_interp_2.s3_ready;
   assign bus.dpd_empty_blocked = !dut.u_frontend.dpd_valid &&
                                  !dut.u_frontend.dpd_ready;
+  assign bus.interp1_centered_pop_push = 1'b0;
+  assign bus.interp2_centered_pop_push = 1'b0;
+  assign bus.interp1_centered_state = '0;
+  assign bus.interp2_centered_state = '0;
 `endif
   initial begin
     string testname;

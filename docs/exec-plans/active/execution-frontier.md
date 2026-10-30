@@ -1,55 +1,80 @@
 # Execution frontier
 
-## Current execution state: Formal closure partial; Raw signoff open (2026-10-30)
+## Current execution state: licensed VCS refresh; coverage closure open (2026-10-31)
 
-The active branch `codex/thermo5-tx-final-signoff` is a follow-up stacked on
-open PR #9 as draft PR #10; PR #9 and historical PR #2–#8 remain unmerged. Do
-not merge them as part of this work.
+The active branch is `codex/thermo5-tx-final-signoff`, stacked on draft PR #10
+and PR #9. This tranche began from checkout
+`41691b675d4be63221f046e007aa9a37cb156e1e`; do not merge historical PRs as
+part of this closure.
 
-Coverage Step 1/2 uses the fixed product Raw source SHA
-`c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`. The product configuration remains
+The audited product source identity is
+`c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`. Configuration is unchanged:
 Centered-Cubic x2+x2, EF2 ORDER=2 STEP=5120, 20-bit state, 32 chronological
-lanes, DPD_MAX_TAPS=1 identity, AXI-Lite parent and Generic FIFO. No TX DUT
-algorithm was changed.
+lanes, `DPD_MAX_TAPS=1` identity, AXI-Lite parent, Generic FIFO. No TX
+algorithm, RX, or AI-DPD changes were made.
 
-The complete product URG Group Report has 214 denominator-eligible bin records
-across covergroup-type and monitor-instance views: 210 hit and four zero-hit.
-The earlier 170/174 tally omitted 40 generated EF2 cross-bin records and is
-superseded; 12 URG-model Illegal/Excluded records are separately listed in the
-complete 226-row detail. All 210/210 legally applicable positive bins are hit;
-the negative report hits both illegal-frame bins separately. See the final
-signoff snapshot and `thermo5-tx-functional-bin-detail.csv`.
+VCS/URG licenses are available. A fresh VCS product compile passed, followed
+by two focused PASS tests with zero UVM errors/fatals: reset sweep seed 610802
+(five legal residual resets and four-plane bit-true replay), and AXI-Lite
+register access seed 610830 (ID/status/taps/coefficient map, AW/W skew, WSTRB,
+DECERR and response backpressure). URG merged 29 product test VDBs: 2 fresh and
+27 retained exact-source VDBs, plus the compile VDB. The full regression was
+not rerun. Exact commands, tool versions, log and report hashes are in
+`docs/verification/data/thermo5-tx-final-vcs-refresh.json`.
 
-The source-linked ledger preserves all 18,593 Raw code gaps in 492 tasks:
-197 Branch, 263 Condition, 606 Line and 17,527 Toggle. Six exact bins have
-source-bound `PROVEN_UNREACHABLE` Formal evidence; 18,587 remain OPEN. Raw
-metrics are unchanged: line 3,190/3,796; condition 583/846; branch 440/637;
-toggle 86,951/104,478; FSM states/transitions 13/13 and 22/22. Raw equals
-Adjusted, with zero approved waivers and zero exclusions; status remains
-`RAW_100_OPEN`.
+The refreshed Raw report matches the initial fresh merge byte-for-byte, so
+neither focused test changed code coverage. Raw is line 3,190/3,796 (84.0358%),
+condition 583/846 (68.9125%), branch 440/637 (69.0738%), toggle
+86,951/104,478 (83.2242%); FSM states 13/13 and transitions 22/22. DUT
+assertions: 13 successful, 2 uncovered, 2 without attempts. Raw equals
+Adjusted; approved waivers 0; `.el` exclusions 0; status is `RAW_100_OPEN`.
 
-Two targeted packetization tests completed the four-plane oracle but missed the
-single-entry interpolator pop/push events and failed the explicit event
-coverage check. Neither VDB was merged, and the named targeted test source is
-absent from the tracked tree, so these are diagnostic logs rather than a
-reproducible regression. Formal reaches both events, so product coverage
-remains OPEN. EF2 safety/state and counter properties pass within
-scoped harnesses; bounded counter proof uses a finite 2,072-acceptance budget
-that is not a product lifetime contract. DPD Identity remains inconclusive.
-The 16-cycle source gap produced 54 underflow events while RUN stayed active;
-this is an unresolved rate/contract risk.
+Functional URG has 214 scoreable records across type and monitor-instance
+views, 210 hit and four zero-hit. Those four rows are the two illegal-frame
+negative-only bins repeated in both views; separate negative URG evidence hits
+them. All 210/210 legally applicable positive records are hit. There are 12
+additional records already labelled Illegal/Excluded by the URG model; no new
+waiver or exclusion was applied.
 
-The VCS location check rejects the current WSL kernel
-`6.6.87.2-microsoft-standard-WSL2`, so fresh VCS/URG execution is unavailable
-in this environment despite VC Formal license checkout succeeding. Existing
-Raw reports are reused without modification. The product-source audit has
-been reconciled against the saved VCS transcript: 73 local parsed sources plus
-the filelist and coverage hierarchy match the captured hashes. The fail-closed
-Raw gate passed its audit and returned `RAW_100_OPEN`; no waiver or `.el`
-exclusion was applied. Next: refresh product URG on a supported VCS runtime,
-then close only root-caused reachable Branch/Condition bins with legal
-stimulus and independent checking. Do not add random seeds without predicted
-bin movement.
+The source-linked root-cause ledger retains 18,593 code-gap rows in 492 tasks:
+197 Branch, 263 Condition, 606 Line and 17,527 Toggle. Exact URG Branch paths
+now bind to source lines, correcting the 16 DPD nested paths formerly anchored
+to the enclosing reset line; 80 DPD saturation Branch records remain OPEN
+because Identity-DPD Formal is inconclusive. Current Branch root-cause bins:
+CDC/residual 3, fixed product configuration 105, guarded address decode 2,
+Identity-DPD arithmetic 80, product cadence alignment 2, legal
+stimulus/checker review 5. Five exact bins have source-bound
+`PROVEN_UNREACHABLE` proofs; they remain in Raw. The other
+18,588 rows remain OPEN. The clean AXI-Lite VC Formal refresh re-proved the
+write-address `default` branch at `thermo5_dpd_axi_lite_cfg.sv:246` unreachable
+for an OKAY response, with no assumptions, no black boxes, three non-vacuous
+assertions, and no tautological goals. Two older candidates (the `MAX_TAPS=1`
+guard and an interpolator append-arm property) were removed from the accepted
+disposition count after VC Formal identified their properties as tautological;
+both Raw candidates remain OPEN.
+
+The reproducible two-frame AXI-Lite test checks 112 output words against the
+four-plane oracle and directly observes both centered-cubic product instances.
+Nine source-start and seventeen RUN-start phase placements pass; each instance
+reaches `q_count==1 && q0_end && pop_head` without same-edge `push_input`. The
+two line-255 Branch bins are explicitly grouped as
+`PRODUCT_CADENCE_ALIGNMENT` and stay OPEN. A separate diagnostic URG merge
+shows zero Raw code-coverage delta; its testbench-only source differences are
+bound to diagnostic evidence hashes and are not mixed into baseline Raw.
+Standalone stage Formal proves the pop/push event possible; end-to-end product
+reachability remains OPEN. Do not repeat these phase sweeps. Next, derive the
+14-to-8 ingress/two-stage cadence and use a legal product schedule or a
+non-vacuous end-to-end Formal Cover before changing either bin's status. The
+16-cycle source gap observed 54 underflow events with RUN asserted; the
+interface/service-rate contract remains unresolved. DPD Identity remains
+Formal-inconclusive.
+
+Next: root-cause the remaining legal Branch paths and add a directed test only
+when it predicts an exact Raw bin delta, with an independent checker; then
+continue Condition, Line and Toggle closure. Keep illegal-only stimuli
+separate from positive product coverage. Do not alter the frozen TX algorithm,
+Raw URG, or denominators. Real XPM, GT Wizard, FPGA PPA/timing, and physical
+QAM256 BER remain outside Linux signoff.
 
 ## Previous execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
 

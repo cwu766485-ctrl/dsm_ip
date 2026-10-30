@@ -22,6 +22,11 @@ PRODUCT_CONFIG = (
     "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; "
     "32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO"
 )
+DIAGNOSTIC_TESTBENCH_FILES = {
+    "dv/uvm/agent/interfaces/thermo5_sku_if.sv",
+    "dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv",
+}
 
 
 def sha256_file(path: Path) -> str:
@@ -30,6 +35,55 @@ def sha256_file(path: Path) -> str:
         for block in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def validate_refresh_record(path: Path, product_sha: str, raw_report: Path) -> dict:
+    """Validate that the reported fresh URG is the exact audited Raw report."""
+    evidence = json.loads(path.read_text(encoding="utf-8"))
+    if evidence.get("product_source_sha") != product_sha:
+        raise ValueError("fresh VCS/URG record uses a different product source SHA")
+    coverage = evidence.get("coverage", {})
+    report_path = coverage.get("groups_html", "")
+    if Path(report_path).resolve() != (raw_report / "groups.html").resolve():
+        raise ValueError("fresh VCS/URG record points to a different Group Report")
+    if coverage.get("groups_html_sha256") != sha256_file(raw_report / "groups.html"):
+        raise ValueError("fresh VCS/URG Group Report SHA does not match this audit input")
+    if coverage.get("urg_refresh_status") != "PASS":
+        raise ValueError("fresh VCS/URG record does not report a passing URG run")
+    for key, hash_key in (("raw_summary", "raw_summary_sha256"),
+                          ("coverage_gate", "coverage_gate_sha256")):
+        path_value = coverage.get(key, "")
+        evidence_path = (ROOT / path_value).resolve()
+        if not path_value or not evidence_path.is_file():
+            raise ValueError(f"fresh VCS/URG record is missing {key}")
+        if sha256_file(evidence_path) != coverage.get(hash_key):
+            raise ValueError(f"fresh VCS/URG record has a stale {key} SHA")
+    gate = json.loads((ROOT / coverage["coverage_gate"]).read_text(encoding="utf-8"))
+    if gate.get("status") != "RAW_100_OPEN" or gate.get("exclusions_applied"):
+        raise ValueError("fresh VCS/URG gate must remain fail-closed RAW_100_OPEN with no exclusions")
+    if gate.get("inputs", {}).get("groups_html") != report_path:
+        raise ValueError("fresh VCS/URG gate audited a different Group Report")
+    return evidence
+
+
+def validate_diagnostic_instrumentation(path: Path, product_sha: str) -> dict:
+    """Bind known testbench-only diagnostic edits to their VCS evidence hashes."""
+    evidence = json.loads(path.read_text(encoding="utf-8"))
+    if evidence.get("product_source_sha") != product_sha:
+        raise ValueError("diagnostic frame test uses a different product RTL SHA")
+    if evidence.get("review") != "Centered-Cubic product frame-boundary pop/push Branch stimulus review":
+        raise ValueError("unexpected diagnostic instrumentation evidence type")
+    if evidence.get("directed_phase_runs", {}).get("test_source") != "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_frame_replacement_test.svh":
+        raise ValueError("diagnostic evidence does not identify the expected directed test")
+    observed = evidence.get("source_sha256", {})
+    missing = DIAGNOSTIC_TESTBENCH_FILES - observed.keys()
+    if missing:
+        raise ValueError(f"diagnostic evidence omits testbench instrumentation hashes: {sorted(missing)}")
+    for relative in DIAGNOSTIC_TESTBENCH_FILES:
+        source = ROOT / relative
+        if not source.is_file() or sha256_file(source) != observed[relative]:
+            raise ValueError(f"diagnostic testbench source differs from its evidence hash: {relative}")
+    return evidence
 
 
 def stable_id(*parts: str, prefix: str = "") -> str:
@@ -83,6 +137,136 @@ def root_cause(hint: str, reason: str, metric: str) -> tuple[str, str, str]:
             "Inspect the exact source expression and elaborated instance; add legal directed stimulus only with an independent checker.")
 
 
+def parse_branch_predicates(value: str) -> dict[int, tuple[int, str]]:
+    """Return URG's decision-index to (source line, predicate) mapping."""
+    matches = re.findall(r"(?:^|;\s*)(\d+):(\d+)\s+(.*?)(?=;\s*\d+:|$)", value)
+    return {int(index): (int(line), " ".join(text.split()))
+            for index, line, text in matches}
+
+
+def branch_path_context(decision_path: str, predicates: str) -> dict[str, str]:
+    """Map one exact uncovered URG branch signature to its terminal predicate."""
+    parsed = parse_branch_predicates(predicates)
+    if not parsed:
+        raise ValueError(f"URG branch record has no source predicates: {predicates!r}")
+    values = decision_path.split("/")
+    numeric_positions = [index for index, value in enumerate(values, start=1)
+                         if value in {"0", "1"}]
+    # Decision vectors use '-' for predicates skipped by an earlier arm.
+    # For case/default signatures, use the only mapped decision at the source line.
+    target_index = numeric_positions[-1] if numeric_positions else max(parsed)
+    if target_index not in parsed:
+        raise ValueError(
+            f"branch signature {decision_path!r} selects decision {target_index}, "
+            f"but URG only maps decisions {sorted(parsed)}"
+        )
+    target_line, target_expression = parsed[target_index]
+    path_text = " ; ".join(
+        f"{index}:{parsed[index][0]} {parsed[index][1]}={value}"
+        for index, value in enumerate(values, start=1)
+        if value != "-" and index in parsed
+    )
+    return {
+        "branch_decision_path": decision_path,
+        "branch_predicate_path": path_text,
+        "branch_target_line": str(target_line),
+        "branch_target_expression": target_expression,
+    }
+
+
+def source_bound_branch_context(
+    context: dict[str, str], predicates: str, source_files: str
+) -> dict[str, str]:
+    """Replace lossy URG predicate text with exact source lines for this path."""
+    source_path = next(
+        (ROOT / name for name in source_files.split(";") if (ROOT / name).is_file()),
+        None,
+    )
+    if source_path is None:
+        raise ValueError(f"no source file is available for branch predicates: {source_files}")
+    source_lines = source_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    parsed = parse_branch_predicates(predicates)
+
+    def source_line(line_number: int) -> str:
+        if line_number < 1 or line_number > len(source_lines):
+            raise ValueError(f"branch source line is out of range: {source_path}:{line_number}")
+        return source_lines[line_number - 1].strip()
+
+    path_values = context["branch_decision_path"].split("/")
+    exact_path = []
+    for index, value in enumerate(path_values, start=1):
+        if value == "-" or index not in parsed:
+            continue
+        line_number, _ = parsed[index]
+        exact_path.append(f"{index}:{line_number} {source_line(line_number)}={value}")
+    result = dict(context)
+    target_line = int(context["branch_target_line"])
+    result["branch_target_expression"] = source_line(target_line)
+    result["branch_predicate_path"] = " ; ".join(exact_path)
+    return result
+
+
+def root_cause_for_row(row: dict[str, object], branch: dict[str, str] | None) -> tuple[str, str, str]:
+    """Use the exact terminal branch predicate when URG exposes a compound path."""
+    metric = str(row["metric"])
+    if metric == "branch" and branch:
+        predicate = branch["branch_target_expression"].lower()
+        predicate_path = branch.get("branch_predicate_path", "").lower()
+        source = str(row["source_files"]).lower()
+        if "sat_i" in predicate or "sat_q" in predicate or "din > max_val" in predicate or "din < min_val" in predicate:
+            return (
+                "IDENTITY_DPD_ARITHMETIC",
+                "The uncovered path is a DPD saturation event; reset activity alone cannot hit it. Identity-DPD reachability remains unproven.",
+                "Use the fixed product coefficient image and legal input range to derive the exact saturation condition; then prove reachability or run a directed bit-true test with an independent checker. Keep Formal Inconclusive OPEN.",
+            )
+        if "rst_n" in predicate or "reset" in predicate:
+            return (
+                "RESET_RELEASE_OR_STATE_HOLD",
+                "The terminal uncovered predicate is reset-related; confirm assertion/release at this exact instance and state with a legal reset sequence.",
+                "Run a targeted reset/release sequence and verify public outputs and the exact internal state transition; do not infer a hit from reset-test PASS alone.",
+            )
+        if "mailbox" in predicate:
+            return (
+                "CDC_OR_RESIDUAL_STATE",
+                "The uncovered path depends on the AXI-Lite configuration mailbox handshake/state; this is a reachability hypothesis, not an exclusion.",
+                "Drive a legal coefficient update through the public AXI-Lite interface while checking mailbox request/acknowledge and applied configuration; require the exact DUT event or a non-vacuous proof.",
+            )
+        if (
+            branch.get("branch_target_line") == "255"
+            and source.endswith("dsm_interp_x2_centered_cubic_vector.sv")
+            and "q_count == 2" in predicate_path
+            and "push_input" in predicate
+        ):
+            return (
+                "PRODUCT_CADENCE_ALIGNMENT",
+                "The centered-cubic stage-level Formal cover shows single-entry pop/push is structurally reachable, but the exact cascaded AXI-Lite product stream did not align push_input with pop_head in the directed frame-replacement sweep.",
+                "Derive the accepted-vector cadence through the 14-to-8 ingress and both centered stages; then add a legal product-bound schedule or a non-vacuous end-to-end Formal cover witness. Keep the Raw bin OPEN until an exact hit or proof is reviewed.",
+            )
+        if ("default" in predicate_path and "write_addr" in predicate_path) or "case (addr & 8'hf8)" in predicate:
+            return (
+                "GUARDED_ADDRESS_DECODE",
+                "The uncovered path is nested under the AXI-Lite write-address default decode; confirm which public addresses legally reach its response branch.",
+                "Check the exact address mask and response guard against elaborated RTL, then use a legal AXI-Lite access and independent response checker or an exact non-vacuous proof.",
+            )
+        if any(token in predicate for token in (
+            "pair_lookahead", "max_taps", "channels <", "channels %", "parallel_w !=",
+            "hold_state_on_disable", "coeff_frac", "lanes <", "append_tail_vector",
+            "tail_output", "src_lanes", "core_lanes", "dpd_max_taps",
+        )):
+            return (
+                "FIXED_PRODUCT_CONFIGURATION",
+                "The uncovered path is controlled by a parameter or fixed product configuration; this label is a review lead, not proof.",
+                "Tie the exact elaborated parameter, produce a non-vacuous Formal assertion and Cover witness, and keep the Raw bin until the proof is reviewed.",
+            )
+        if "case (addr & 8'hf8)" in predicate or ("default" in str(row["bin"]).lower() and "coeff" in source):
+            return (
+                "GUARDED_ADDRESS_DECODE",
+                "The coefficient-read default arm is selected only through a guarded address decode; verify the exact guard-to-case implication.",
+                "Prove the address decode implication against the elaborated RTL and cover a legal coefficient-read witness; retain Raw coverage and do not apply an exclusion without approval.",
+            )
+    return root_cause(str(row["evidence_hint"]), str(row["reason"]), metric)
+
+
 def location_for(row: dict[str, object]) -> str:
     metric = str(row["metric"])
     if metric == "toggle":
@@ -116,6 +300,15 @@ def source_position(row: dict[str, object]) -> tuple[str, str]:
     except (OSError, IndexError):
         source_line = ""
     return f"{source}:{line_number}", source_line
+
+
+def audited_source_position(
+    row: dict[str, object], branch: dict[str, str] | None = None
+) -> tuple[str, str]:
+    """Return the terminal RTL line for Branch bins, otherwise the URG line."""
+    if branch and branch.get("branch_target_position"):
+        return branch["branch_target_position"], branch["branch_target_expression"]
+    return source_position(row)
 
 
 def write_gzip_csv(path: Path, fields: list[str], rows: list[dict[str, object]]) -> None:
@@ -155,8 +348,14 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ledger", required=True, type=Path)
     ap.add_argument("--raw-report", required=True, type=Path)
+    ap.add_argument("--branch-arms", required=True, type=Path,
+                    help="Exact URG branch-arm CSV exported from the same Raw report")
     ap.add_argument("--negative-report", required=True, type=Path)
     ap.add_argument("--evidence", required=True, type=Path)
+    ap.add_argument("--refresh-evidence", type=Path,
+                    help="Fresh licensed VCS/URG manifest whose Raw report must match --raw-report.")
+    ap.add_argument("--diagnostic-instrumentation-evidence", type=Path,
+                    help="Hash-bound evidence for separate read-only testbench probes; these are not merged into baseline Raw.")
     ap.add_argument("--output-dir", required=True, type=Path)
     args = ap.parse_args()
 
@@ -197,9 +396,39 @@ def main() -> int:
         "dv/uvm/tb/",
         "dv/uvm/sim/",
     )
-    raw_compile_mismatches = [p for p in mismatches if p.startswith(product_compile_roots)]
+    diagnostic_evidence = None
+    diagnostic_only_mismatches: set[str] = set()
+    if args.diagnostic_instrumentation_evidence:
+        diagnostic_evidence = validate_diagnostic_instrumentation(
+            args.diagnostic_instrumentation_evidence, product_sha
+        )
+        diagnostic_only_mismatches = DIAGNOSTIC_TESTBENCH_FILES & set(mismatches)
+    raw_compile_mismatches = [
+        p for p in mismatches
+        if p.startswith(product_compile_roots)
+        and p not in diagnostic_only_mismatches
+        and not p.startswith("dv/uvm/formal/")
+    ]
     if raw_compile_mismatches:
         raise ValueError(f"current VCS/URG product source differs from evidence: {raw_compile_mismatches[:8]}")
+
+    with args.branch_arms.open(encoding="utf-8", newline="") as stream:
+        branch_arm_rows = list(csv.DictReader(stream))
+    branch_arm_index = {
+        (row["instance"], row["line"], row["decisions"]): row
+        for row in branch_arm_rows
+    }
+    if len(branch_arm_index) != len(branch_arm_rows):
+        raise ValueError("Raw URG branch-arm export contains duplicate instance/line/signature rows")
+    source_branch_rows = [row for row in original_rows if row["metric"] == "branch"]
+    expected_branch_keys = Counter(
+        (row["instance"], row["bin"].split(":", 1)[0], row["bin"].split(":", 1)[1])
+        for row in source_branch_rows
+    )
+    if expected_branch_keys != Counter(branch_arm_index.keys()):
+        missing_branch_keys = list((expected_branch_keys - Counter(branch_arm_index)).elements())
+        extra_branch_keys = list((Counter(branch_arm_index) - expected_branch_keys).elements())
+        raise ValueError(f"Raw branch-arm rows do not exactly match the source ledger: missing={missing_branch_keys[:3]} extra={extra_branch_keys[:3]}")
 
     # Restore expression identity from exact Raw URG HTML. The old bin_id
     # omitted expression/subexpression and therefore collided on 17 rows.
@@ -233,10 +462,34 @@ def main() -> int:
             })
         else:
             item.update({"urg_expression": "", "condition_class": "", "condition_operands": "", "urg_module_page": ""})
-        category, hypothesis, action = root_cause(row["evidence_hint"], row["reason"], row["metric"])
+        branch_context = None
+        if row["metric"] == "branch":
+            line, decision_path = row["bin"].split(":", 1)
+            arm = branch_arm_index[(row["instance"], line, decision_path)]
+            branch_context = branch_path_context(decision_path, arm["predicates"])
+            branch_context = source_bound_branch_context(
+                branch_context, arm["predicates"], str(row["source_files"])
+            )
+            raw_source_pos, _ = source_position(item)
+            branch_context["branch_target_position"] = (
+                f"{raw_source_pos.rsplit(':', 1)[0]}:{branch_context['branch_target_line']}"
+            )
+            item.update(branch_context)
+        else:
+            item.update({
+                "branch_decision_path": "",
+                "branch_predicate_path": "",
+                "branch_target_line": "",
+                "branch_target_position": "",
+                "branch_target_expression": "",
+            })
+        category, hypothesis, action = root_cause_for_row(row, branch_context)
         normalized_inst = normalize_instance(row["instance"])
-        location = location_for(item)
-        source_pos, source_code = source_position(item)
+        if branch_context:
+            location = f"line:{branch_context['branch_target_line']}:decision_path:{branch_context['branch_decision_path']}"
+        else:
+            location = location_for(item)
+        source_pos, source_code = audited_source_position(item, branch_context)
         source_file_hashes = ";".join(
             f"{path}={source_manifest.get('source_sha256', {}).get(path, 'MISSING')}"
             for path in row["source_files"].split(";")
@@ -272,7 +525,9 @@ def main() -> int:
 
     tasks: list[dict[str, object]] = []
     for key, members in sorted(buckets.items()):
-        category, hypothesis, action = root_cause(members[0]["evidence_hint"], members[0]["reason"], key[1])
+        category = str(members[0]["root_cause_class"])
+        hypothesis = str(members[0]["root_cause_hypothesis"])
+        action = str(members[0]["next_action"])
         tid = stable_id(*key, prefix="TXC-")
         for member in members:
             member["task_id"] = tid
@@ -290,6 +545,10 @@ def main() -> int:
             "source_location": key[4],
             "source_position": members[0]["source_position"],
             "source_code_text": members[0]["source_code_text"],
+            "branch_decision_path": members[0].get("branch_decision_path", ""),
+            "branch_predicate_path": members[0].get("branch_predicate_path", ""),
+            "branch_target_position": members[0].get("branch_target_position", ""),
+            "branch_target_expression": members[0].get("branch_target_expression", ""),
             "bin_records": len(members),
             "semantic_bin_ids": ";".join(str(row["semantic_bin_id"]) for row in members),
             "raw_bin_id_examples": ";".join(str(row["source_bin_id"]) for row in members[:12]),
@@ -314,6 +573,9 @@ def main() -> int:
         if report == args.raw_report:
             for candidate in sorted(report.glob("mod*.html")):
                 report_hashes[str(candidate)] = sha256_file(candidate)
+    refresh_evidence = None
+    if args.refresh_evidence:
+        refresh_evidence = validate_refresh_record(args.refresh_evidence, product_sha, args.raw_report)
     for group, point, bin_name, negative_expected, meaning in functional_specs:
         for view in ["package", "instance"]:
             raw_count, raw_page = read_urg_bin(args.raw_report, group, point, bin_name, view)
@@ -387,6 +649,11 @@ def main() -> int:
         "source_manifest_sha_matches_current_tree": not mismatches,
         "source_manifest_mismatches": mismatches,
         "raw_simulation_source_mismatches": raw_compile_mismatches,
+        "separately_hash_bound_diagnostic_testbench_mismatches": sorted(diagnostic_only_mismatches),
+        "diagnostic_testbench_evidence_sha256": (
+            sha256_file(args.diagnostic_instrumentation_evidence)
+            if args.diagnostic_instrumentation_evidence else None
+        ),
         "source_ledger_rows": len(original_rows),
         "unique_expression_aware_semantic_bin_ids": len(set(semantic_ids)),
         "raw_bin_id_collision_groups": sum(1 for count in collisions.values() if count > 1),
@@ -423,6 +690,28 @@ def main() -> int:
             "expected": sum(row["legal_applicability"] == "LEGAL_PRODUCT" for row in functional_scoreable),
         },
         "functional_negative_only_semantic_bins": 2,
+        "diagnostic_product_branch_review": ({
+            "test": diagnostic_evidence.get("directed_phase_runs", {}).get("test"),
+            "source_start_phase_run_count": len(diagnostic_evidence.get("directed_phase_runs", {}).get("results", [])),
+            "run_phase_run_count": len(diagnostic_evidence.get("run_phase_sweep", {}).get("results", [])),
+            "all_stream_checks_pass": all(
+                item.get("uvm_pass") and item.get("uvm_errors") == 0 and item.get("uvm_fatals") == 0
+                for item in (
+                    diagnostic_evidence.get("directed_phase_runs", {}).get("results", [])
+                    + diagnostic_evidence.get("run_phase_sweep", {}).get("results", [])
+                )
+            ),
+            "target_branch_bins": [
+                {
+                    "semantic_bin_id": item.get("semantic_bin_id"),
+                    "instance": item.get("instance"),
+                    "raw_status": item.get("raw_status"),
+                }
+                for item in diagnostic_evidence.get("coverage_merge", {}).get("target_branch_bins", [])
+            ],
+            "raw_coverage_delta": diagnostic_evidence.get("coverage_merge", {}).get("raw_delta_vs_previous"),
+            "disposition": "OPEN",
+        } if diagnostic_evidence else None),
         "interpretation": "Root-cause groups are planning hypotheses. All code gaps remain OPEN until an exact simulator hit or non-vacuous proof is recorded.",
     }
     (args.output_dir / "thermo5-tx-coverage-root-cause-summary.json").write_text(
@@ -431,8 +720,8 @@ def main() -> int:
     lines = [
         "# Thermo5 TX Coverage Root-Cause Closure — Step 1/2",
         "",
-        f"- Raw VCS/URG product source SHA: {product_sha}; product RTL/UVM compile source hashes match.",
-        f"- Source manifest mismatches: {len(mismatches)} ({', '.join(mismatches) if mismatches else 'none'}). Any Formal-harness mismatch is reported separately and is not represented as current Formal evidence.",
+        f"- Raw VCS/URG product source SHA: {product_sha}; the baseline Raw report remains bound to its original compile source manifest.",
+        f"- Current-tree source manifest mismatches: {len(mismatches)} ({', '.join(mismatches) if mismatches else 'none'}). Only the three hash-bound diagnostic testbench files are accepted as separate read-only instrumentation; their VDB is not merged into baseline Raw. DUT RTL and the coverage model are unchanged.",
         f"- Raw gap ledger: {len(original_rows):,} rows; SHA-256 {sha256_file(args.ledger)}.",
         f"- Expression-aware semantic IDs: {len(set(semantic_ids)):,}; old ID collisions: {summary['raw_bin_id_collision_groups']} groups, {collision_extra_rows} extra rows.",
         "- Product: Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, 20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite wrapper and Generic FIFO.",
@@ -486,7 +775,11 @@ def main() -> int:
         lines.append(f"| {metric} / {cause} | {count:,} |")
     lines += [
         "",
-        "This was a deterministic re-analysis of the fixed-SHA VCS/URG evidence. No simulator was rerun, no new hit was claimed, and no Raw/Adjusted denominator changed.",
+        ("This source-linked audit uses the fresh licensed VCS/URG report recorded in "
+         f"`{args.refresh_evidence}`. The Raw report was regenerated from two fresh targeted "
+         "product tests plus retained exact-source VDBs; no full regression was rerun. "
+         "No Raw/Adjusted denominator changed." if refresh_evidence else
+         "This was a deterministic re-analysis of the fixed-SHA VCS/URG evidence. No simulator was rerun, no new hit was claimed, and no Raw/Adjusted denominator changed."),
         "",
         "## Evidence inputs",
         "",
@@ -497,6 +790,34 @@ def main() -> int:
         f"- Closure evidence JSON: {args.evidence}",
         "",
     ]
+    if diagnostic_evidence:
+        phase_results = (
+            diagnostic_evidence.get("directed_phase_runs", {}).get("results", [])
+            + diagnostic_evidence.get("run_phase_sweep", {}).get("results", [])
+        )
+        target_bins = diagnostic_evidence.get("coverage_merge", {}).get("target_branch_bins", [])
+        phase_pass = all(
+            item.get("uvm_pass") and item.get("uvm_errors") == 0 and item.get("uvm_fatals") == 0
+            for item in phase_results
+        )
+        lines += [
+            "## Product cadence targeted Branch experiment",
+            "",
+            f"A separate licensed VCS test ran {len(diagnostic_evidence.get('directed_phase_runs', {}).get('results', []))} source-start phases plus {len(diagnostic_evidence.get('run_phase_sweep', {}).get('results', []))} RUN-start phases, all with a fixed waveform seed. All four-plane stream-oracle checks passed with zero UVM errors/fatals: {phase_pass}. No phase hit the target event; the diagnostic URG merge showed zero Raw code-coverage delta.",
+            "",
+            "| Semantic Bin ID | Product instance | Raw status |",
+            "|---|---|---|",
+        ]
+        for item in target_bins:
+            lines.append(
+                f"| `{item.get('semantic_bin_id', 'ID_NOT_RECORDED')}` | "
+                f"`{item['instance']}` | {item['raw_status']} |"
+            )
+        lines += [
+            "",
+            "Standalone interpolator Formal has a single-entry pop/push Cover witness, so these paths are not classified as structurally impossible. The end-to-end AXI-Lite product did not align `push_input` and `pop_head` in the legal frame-replacement sweep. Derive the 14-to-8 ingress and two-stage cadence, then create a legal product schedule or a non-vacuous end-to-end Formal Cover. Both exact bins remain OPEN; no waiver or exclusion is approved.",
+            "",
+        ]
     (args.output_dir / "thermo5-tx-coverage-root-cause-closure.md").write_text("\n".join(lines), encoding="utf-8")
     output_names = [
         "thermo5-tx-coverage-open-bins.csv.gz",
@@ -509,9 +830,14 @@ def main() -> int:
     command = (
         "python3.12 tools/hw/thermo5_tx_coverage_rootcause.py "
         f"--ledger {args.ledger} --raw-report {args.raw_report} "
+        f"--branch-arms {args.branch_arms} "
         f"--negative-report {args.negative_report} --evidence {args.evidence} "
-        f"--output-dir {args.output_dir}"
     )
+    if args.refresh_evidence:
+        command += f"--refresh-evidence {args.refresh_evidence} "
+    if args.diagnostic_instrumentation_evidence:
+        command += f"--diagnostic-instrumentation-evidence {args.diagnostic_instrumentation_evidence} "
+    command += f"--output-dir {args.output_dir}"
     manifest = {
         "schema_version": 1,
         "product_source_sha": product_sha,
@@ -523,6 +849,7 @@ def main() -> int:
         "input_sha256": {
             "ledger": sha256_file(args.ledger),
             "raw_groups_html": report_hashes,
+            "raw_branch_arms_csv": sha256_file(args.branch_arms),
             "negative_urg_groups_html": {
                 str(path): sha256_file(path)
                 for path in sorted(args.negative_report.glob("grp*.html"))
@@ -533,8 +860,22 @@ def main() -> int:
         "output_sha256": {
             name: sha256_file(args.output_dir / name) for name in output_names
         },
-        "raw_coverage_reused": True,
-        "simulator_rerun": False,
+        "raw_coverage_reused": refresh_evidence is None,
+        "simulator_rerun": refresh_evidence is not None,
+        "refresh_evidence": str(args.refresh_evidence) if args.refresh_evidence else None,
+        "refresh_evidence_sha256": sha256_file(args.refresh_evidence) if args.refresh_evidence else None,
+        "diagnostic_instrumentation_evidence": (
+            str(args.diagnostic_instrumentation_evidence)
+            if args.diagnostic_instrumentation_evidence else None
+        ),
+        "diagnostic_instrumentation_evidence_sha256": (
+            sha256_file(args.diagnostic_instrumentation_evidence)
+            if args.diagnostic_instrumentation_evidence else None
+        ),
+        "diagnostic_testbench_source_hashes": {
+            relative: sha256_file(ROOT / relative)
+            for relative in sorted(diagnostic_only_mismatches)
+        },
         "waivers": 0,
         "exclusions": 0,
     }

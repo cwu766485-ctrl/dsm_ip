@@ -1,3 +1,79 @@
+## 2026-10-31 00:31 SGT - Classify and reproduce TX product cadence review
+
+- Added read-only centered-cubic queue event probes and a two-packet AXI-Lite
+  product UVM test. The same fixed waveform seed was exercised at nine legal
+  source-start phases and seventeen RUN-start phases; all 112 four-plane
+  outputs and DPD counters matched in every run.
+- Each interpolation instance reached and popped `q_count==1 && q0_end`, but
+  no same-edge `push_input` occurred. The two exact line-255 Branch bins remain
+  OPEN; no Formal disposition, waiver, exclusion, or denominator change was
+  made.
+- Merged one passing phase VDB into a diagnostic URG report and ran the
+  fail-closed gate. Raw code metrics were unchanged (line 3190/3796, condition
+  583/846, branch 440/637, toggle 86951/104478); zero waivers/exclusions and
+  `RAW_100_OPEN` remain.
+- Classified the two exact bins as product-cadence alignment tasks (not
+  structurally unreachable), bound diagnostic-only testbench changes to
+  source hashes, and added all 26 run-log hashes plus exact VCS/URG commands to
+  `docs/verification/data/thermo5-tx-frame-replacement-coverage-review.json`.
+- Checks: current VCS compile PASS; 26/26 phase UVM runs PASS with 0 errors
+  and 0 fatals; diagnostic URG PASS; coverage gate PASS (`RAW_100_OPEN`); raw
+  coverage delta 0; no full regression or TX RTL change.
+- Remaining: product-bound Formal/causality review for the missing two
+  pop/push Branch events; 18,588 code-gap rows remain OPEN.
+
+## 2026-10-31 00:10 SGT - Re-audit TX Formal dispositions and reject tautologies
+
+- Reran the AXI-Lite configuration proof on current harness/DUT hashes with
+  VC Formal V-2023.12-SP2. Clean run: 4/4 assertions proven, one legal read
+  transaction Cover hit, three exact paths uncoverable, zero assumptions,
+  zero black boxes, zero setup violations, three non-vacuous assertions, and
+  no tautological goals. The write-address `default` Raw bin at line 246 now has
+  exact current-source assertion/Cover evidence.
+- Re-audited prior exact-bin dispositions. Removed two candidates whose exact
+  assertions had VC Formal tautology warnings: the constant `MAX_TAPS=1` guard
+  and an interpolator append-arm property. Both are restored to OPEN and remain
+  in Raw; no waiver or exclusion was applied. Five valid exact dispositions
+  remain and 18,588 of 18,593 code-gap rows are OPEN.
+- Hardened the Formal runner/disposition utility to reject exact tautological
+  goals, track reviewed OPEN candidates, and refresh counts without mutating
+  Raw URG. Updated the formal ledger, root-cause report, signoff snapshot, and
+  execution frontier.
+- Checks: focused VC Formal run PASS; Formal disposition reconciliation PASS
+  (5 `PROVEN_UNREACHABLE`, 18,588 OPEN, zero exclusions); root-cause and
+  Formal utility tests PASS; Python compilation and `git diff --check` PASS.
+- Limits unchanged: Raw DUT code coverage remains 84.0358% line, 68.9125%
+  condition, 69.0738% branch, 83.2242% toggle; legal positive Functional
+  Coverage is 210/210. DPD Identity remains inconclusive; source-gap underflow
+  remains unresolved; actual XPM, GT Wizard, FPGA PPA/timing, and physical
+  QAM256 BER remain outside Linux signoff.
+
+## 2026-10-31 00:01 SGT - Refresh licensed TX Raw URG and source-bound closure
+
+- Resumed the fixed Centered-Cubic / EF2 / identity-DPD product compile after
+  VCS license recovery. Two focused AXI-Lite UVM tests passed (reset sweep and
+  register access); merged their VDBs with 27 retained exact-source test VDBs
+  and the compile VDB. The complete regression was not rerun.
+- Refreshed Raw URG and the fail-closed gate. Raw and Adjusted remain identical
+  with zero waivers/exclusions; all code metrics are unchanged. Functional
+  coverage remains 210/214 scoreable records and 210/210 legal positive bins.
+- Bound nested URG Branch predicates to exact RTL source lines, correcting the
+  DPD saturation location mapping. The source-linked ledger remains 18,593
+  records / 492 tasks, with six exact Formal-proven unreachable rows retained
+  in Raw and 18,587 OPEN.
+- Added a VCS refresh evidence JSON with exact commands, versions, log/report
+  hashes, VDB reuse counts, coverage denominators and gate state. Updated the
+  final signoff, root-cause closure, execution frontier and checked-in audit
+  artifacts. No TX RTL, algorithm, RX, or AI-DPD source changed.
+- Checks: VCS compile PASS; reset-sweep UVM PASS; register-access UVM PASS;
+  URG merge PASS; Raw coverage gate PASS (`RAW_100_OPEN`); Python compile PASS;
+  7 focused audit-tool unit tests PASS; exact report, summary, gate and
+  root-cause inputs SHA-validated.
+- Remaining: no code-coverage increase from the two new tests; 18,587 rows
+  remain OPEN, DPD Identity Formal remains inconclusive, and the 16-cycle
+  source-gap underflow contract remains unresolved. Real XPM, GT Wizard,
+  FPGA PPA/timing and physical QAM256 BER remain outside Linux signoff.
+
 ## 2026-10-30 22:34 SGT - Reconcile TX product source scope and Raw gate
 
 - Added a deterministic product compile-source manifest derived from the saved
