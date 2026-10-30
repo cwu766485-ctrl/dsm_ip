@@ -1,3 +1,38 @@
+## 2026-10-30 16:54 SGT - Complete TX Phase 0/1 Linux closure studies
+
+- Reconciled PR #2–#7 ancestry and the current PR #7 base; recorded the frozen
+  GT-parent product configuration, exact product-source identities, historical
+  PR #5 manifest discrepancy, and reusable current coverage evidence.
+- Added the four-cell QAM256 architecture A/B benchmark with shared stimulus,
+  receiver, nominal/stress behavioral output assumptions, per-seed CSV/JSON,
+  held-out spectrum and constellation figures. Kept first-order STEP=7168 as a
+  separate sensitivity point.
+- Added nominal behavioral-DPA ILA fitting for two-/four-tap signed Q2.14 DPD,
+  held-out evaluation with BER confidence intervals, and PA/output-chain
+  PAPR, compression count, modeled power, and adjacent-band proxy metrics.
+  Both fitted DPD images passed standalone 93,184-sample VCS bit-true miters;
+  neither was promoted over identity.
+- Extended the PAIR_LOOKAHEAD equivalence test with an exact final-pair
+  quantizer tie, both clamp polarities, output stalls, input bubbles, and a
+  drained midstream reset. The 4,096-cycle VCS comparison passed for handshake,
+  output data, and all four EF2 state registers.
+- Added compact review artifacts and a SHA-256 evidence packager under
+  `docs/verification/data/` and updated the architecture report, baseline,
+  signoff checklist, command index, and execution frontier. Product RTL,
+  defaults, coverage denominator, and product VDB merge are unchanged.
+- Checks: Python 3.12 compile plus 44/44 unit tests PASS; fitted 2-tap and
+  4-tap VCS bit-true miters PASS (93,184 I/Q samples each); PAIR_LOOKAHEAD VCS
+  miter PASS (4,096 cycles; 103 negative ties, 408 positive clamps, 409
+  negative clamps, 817 stall cycles, 616 input bubbles, one reset epoch);
+  architecture and DPD held-out benchmarks PASS; evidence packager PASS with
+  all referenced local run artifacts present. Product coverage is reused,
+  not rerun: Raw 81.99%, functional 170/174 raw and 170/170 applicable
+  positive, `RAW_100_OPEN`.
+- Remaining: no approved BER/BLER/EVM/ACLR/power limits; model profiles are not
+  calibrated; no measured pair-lookahead timing/PPA; raw DUT code coverage and
+  DPD identity Formal remain open. XPM/GT Wizard, Vivado routed PPA, and
+  physical QAM256 BER are NOT_RUN. Independent PR is pending; it is not merged.
+
 ## 2026-10-30 14:18 SGT - Prove AXI-Lite product tap guard reachability
 
 - Extended the focused AXI-Lite Formal harness for the exact product

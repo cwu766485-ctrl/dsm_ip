@@ -133,7 +133,8 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-centered-nonlinear-tap4-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs \
-        thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-coeff-transport
+        thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-coeff-transport \
+        thermo5-dpd-bittrue-vcs
 
 help:
 	@echo "Primary targets:"
@@ -525,6 +526,7 @@ thermo5-axil-ef2-qualification:
 # Exact look-ahead microarchitecture experiment. It is not selected by the
 # product wrappers and must not replace the baseline before routed timing.
 THERMO5_EF2_PAIR_OUT ?= $(ROOT)/runs/thermo5_ef2_pair_lookahead/vcs
+THERMO5_DPD_BITTRUE_OUT ?= $(ROOT)/runs/thermo5_tx_dpd_bittrue
 thermo5-ef2-pair-vcs:
 	@mkdir -p $(THERMO5_EF2_PAIR_OUT)/csrc
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
@@ -539,6 +541,25 @@ thermo5-ef2-pair-vcs:
 	@grep -Fq 'THERMO5_EF2_PAIR_LOOKAHEAD_PASS cycles=4096 seed=20261028' \
 	  $(THERMO5_EF2_PAIR_OUT)/sim.log
 	@echo "THERMO5_EF2_PAIR_LOOKAHEAD_PASS report=$(THERMO5_EF2_PAIR_OUT)/sim.log"
+
+# Candidate-only vector DPD RTL/oracle miter, separate from product coverage.
+thermo5-dpd-bittrue-vcs:
+	@test -n '$(THERMO5_DPD_VECTORS)' || { echo "ERROR: set THERMO5_DPD_VECTORS"; exit 2; }
+	@test -f $(THERMO5_DPD_VECTORS)/manifest.json || { echo "ERROR: missing DPD vector manifest"; exit 2; }
+	@mkdir -p $(THERMO5_DPD_BITTRUE_OUT)/csrc
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
+	  -top tb_thermo5_fitted_dpd -Mdir=$(THERMO5_DPD_BITTRUE_OUT)/csrc \
+	  -o $(THERMO5_DPD_BITTRUE_OUT)/simv \
+	  rtl/dpd/dpd_poly.v rtl/dpd/dpd_memory_poly.v \
+	  rtl/dpd/dpd_vector16_memory_poly.sv \
+	  dv/verif/block/dpd/tb/tb_thermo5_fitted_dpd.sv \
+	  -l $(THERMO5_DPD_BITTRUE_OUT)/compile.log
+	@cd $(ROOT) && $(THERMO5_DPD_BITTRUE_OUT)/simv \
+	  +VECTOR_DIR=$(THERMO5_DPD_VECTORS) \
+	  +SAMPLES=$$(python3.12 -c 'import json,sys;print(json.load(open(sys.argv[1]))["dpd_samples"])' "$(THERMO5_DPD_VECTORS)/manifest.json") \
+	  +ACTIVE_TAPS=$$(python3.12 -c 'import json,sys;print(json.load(open(sys.argv[1]))["active_taps"])' "$(THERMO5_DPD_VECTORS)/manifest.json") \
+	  -l $(THERMO5_DPD_BITTRUE_OUT)/run.log
+	@grep -q 'THERMO5_FITTED_DPD_RTL_BITTRUE_PASS' $(THERMO5_DPD_BITTRUE_OUT)/run.log
 
 # Main-chain EF2 -> four independent raw64 serializer/deserializer models.
 THERMO5_EF2_SERDES_DIR ?= $(ROOT)/runs/thermo5_ef2_serdes

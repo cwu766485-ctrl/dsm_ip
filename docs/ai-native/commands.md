@@ -82,6 +82,64 @@ for seed in 101 307 503; do
 done
 ```
 
+## Thermo5 TX final Phase 0/1 Linux closure studies
+
+The final closure A/B uses a common QAM256 waveform, 4 development seeds,
+4 disjoint held-out seeds, 12 symbols per seed, RMS 0.10, a 4097-tap receiver,
+and matched digital/nominal/stress measurement. The four primary architecture
+cells use STEP 5120; first-order STEP 7168 is a separate sensitivity point.
+The study emits per-seed JSON/CSV, PSD data, and a held-out constellation.
+Fitted DPD candidates are trained only on development seeds, then evaluated on
+the same four held-out seeds; they are not product defaults.
+
+```bash
+mkdir -p runs/thermo5_tx_final_ablation
+(cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v)
+python3.12 dv/uvm/refmodel/python/benchmark_thermo5_arch_ablation.py \
+  --development-seeds 271001,271003,271005,271007 \
+  --heldout-seeds 281001,281003,281005,281007 \
+  --symbols 12 --rms-drive 0.10 --rx-fir-taps 4097 \
+  --first-order-steps 5120,7168 --jobs 4 \
+  --json runs/thermo5_tx_final_ablation/summary.json \
+  --summary-csv runs/thermo5_tx_final_ablation/summary.csv \
+  --psd-csv runs/thermo5_tx_final_ablation/psd.csv \
+  --constellation-svg runs/thermo5_tx_final_ablation/constellation.svg
+python3.12 dv/uvm/refmodel/python/fit_thermo5_dpd_ila.py \
+  --seeds 271001,271003,271005,271007 --symbols 12 --rms-drive 0.10 \
+  --json runs/thermo5_tx_final_ablation/dpd_ila_fit.json
+python3.12 dv/uvm/refmodel/python/benchmark_thermo5_tx_dpd_ab.py \
+  --seeds 281001,281003,281005,281007 --symbols 9 --rms-drive 0.10 \
+  --step 5120 --fir-taps 4097 --jobs 4 \
+  --candidate-json runs/thermo5_tx_final_ablation/dpd_ila_fit.json \
+  --json runs/thermo5_tx_final_ablation/dpd_heldout.json \
+  > runs/thermo5_tx_final_ablation/dpd_heldout.log 2>&1
+python3.12 dv/uvm/refmodel/python/generate_thermo5_dpd_bittrue_vectors.py \
+  --candidate-json runs/thermo5_tx_final_ablation/dpd_ila_fit.json \
+  --candidate ila_nominal_2tap --output-dir runs/thermo5_tx_final_ablation/dpd_vectors_2tap
+make -C dv/uvm/sim thermo5-dpd-bittrue-vcs \
+  THERMO5_DPD_VECTORS=$PWD/runs/thermo5_tx_final_ablation/dpd_vectors_2tap \
+  THERMO5_DPD_BITTRUE_OUT=$PWD/runs/thermo5_tx_final_ablation/vcs_dpd_2tap
+python3.12 dv/uvm/refmodel/python/generate_thermo5_dpd_bittrue_vectors.py \
+  --candidate-json runs/thermo5_tx_final_ablation/dpd_ila_fit.json \
+  --candidate ila_nominal_4tap --output-dir runs/thermo5_tx_final_ablation/dpd_vectors_4tap
+make -C dv/uvm/sim thermo5-dpd-bittrue-vcs \
+  THERMO5_DPD_VECTORS=$PWD/runs/thermo5_tx_final_ablation/dpd_vectors_4tap \
+  THERMO5_DPD_BITTRUE_OUT=$PWD/runs/thermo5_tx_final_ablation/vcs_dpd_4tap
+make -C dv/uvm/sim thermo5-ef2-pair-vcs \
+  THERMO5_EF2_PAIR_OUT=$PWD/runs/thermo5_tx_final_ablation/pair_lookahead_vcs
+python3.12 dv/uvm/refmodel/python/package_thermo5_tx_final_ablation.py \
+  --run-dir runs/thermo5_tx_final_ablation \
+  --output-dir docs/verification/data \
+  --pair-log runs/thermo5_tx_final_ablation/pair_lookahead_vcs/sim.log
+```
+
+The pair look-ahead experiment checks chronological bit/state equivalence,
+including exact quantizer ties, clamps, stalls, bubbles, and a drained reset
+epoch. It does not provide synthesized timing or PPA. The DPD vectors and VCS
+runs are candidate-only and must not be merged into product coverage. The
+packager writes compact review data plus a SHA-256 evidence manifest; full VCS
+logs and large vector files remain in ignored `runs/`.
+
 The 0.10 common RMS keeps all three Python-native waveforms below the 0.35
 peak-drive limit. The benchmark refuses a waveform that exceeds that limit.
 It verifies the scalar EFM timing before accepting EVM/SNDR, then evaluates

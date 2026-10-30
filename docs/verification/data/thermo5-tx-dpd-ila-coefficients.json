@@ -1,0 +1,245 @@
+{
+  "benchmark": "thermo5_tx_dpd_ila_fit",
+  "candidate_count": 2,
+  "candidates": [
+    {
+      "active_taps": 2,
+      "coefficients": {
+        "c1_im": [
+          -7,
+          -1,
+          0,
+          0
+        ],
+        "c1_re": [
+          16380,
+          2,
+          0,
+          0
+        ],
+        "c3_im": [
+          429,
+          -1743,
+          0,
+          0
+        ],
+        "c3_re": [
+          -86,
+          346,
+          0,
+          0
+        ],
+        "c5_im": [
+          82,
+          -44,
+          0,
+          0
+        ],
+        "c5_re": [
+          86,
+          133,
+          0,
+          0
+        ]
+      },
+      "fit": {
+        "coefficient_clip_count": 0,
+        "coefficient_format": "signed Q2.14, int16 saturation",
+        "development_seeds": [
+          271001,
+          271003,
+          271005,
+          271007
+        ],
+        "fit_samples": 31600,
+        "floating_coefficients": [
+          {
+            "c1": [
+              0.9997532252011084,
+              -0.0004119382609380067
+            ],
+            "c3": [
+              -0.005268665593631857,
+              0.0261610536236303
+            ],
+            "c5": [
+              0.005273486300597036,
+              0.004980127483071137
+            ]
+          },
+          {
+            "c1": [
+              0.00012836048054571604,
+              -5.9585028289387766e-05
+            ],
+            "c3": [
+              0.02109284625581487,
+              -0.10636473898432865
+            ],
+            "c5": [
+              0.008101181580678154,
+              -0.0027140549738073182
+            ]
+          }
+        ],
+        "method": "indirect learning architecture: desired x[n] fit from PA-output y[n-k]*|y[n-k]|^(0,2,4)",
+        "model_note": "Fits the deterministic behavioral DPA at the first centered x2 interpolation stage; output network and noise are evaluated separately on held-out seeds.",
+        "profile": "nominal",
+        "ridge_diagonal_added": 0.0010533946616961345,
+        "ridge_relative": 1e-05,
+        "rms_drive": 0.1,
+        "samples_per_seed_cap": 8192,
+        "solver": {
+          "max_abs_pivot": 315.9320160375354,
+          "min_abs_pivot": 0.0010895169721831977,
+          "pivot_ratio": 3.448580444135025e-06
+        },
+        "symbols_per_seed": 12,
+        "training_peak": 0.3366652302349405,
+        "training_rms": 0.10000985559592743
+      },
+      "name": "ila_nominal_2tap"
+    },
+    {
+      "active_taps": 4,
+      "coefficients": {
+        "c1_im": [
+          -50,
+          76,
+          -41,
+          9
+        ],
+        "c1_re": [
+          15924,
+          1158,
+          -952,
+          249
+        ],
+        "c3_im": [
+          -314,
+          -122,
+          -260,
+          -749
+        ],
+        "c3_re": [
+          94,
+          -27,
+          -6,
+          222
+        ],
+        "c5_im": [
+          26,
+          39,
+          30,
+          -4
+        ],
+        "c5_re": [
+          93,
+          104,
+          112,
+          126
+        ]
+      },
+      "fit": {
+        "coefficient_clip_count": 0,
+        "coefficient_format": "signed Q2.14, int16 saturation",
+        "development_seeds": [
+          271001,
+          271003,
+          271005,
+          271007
+        ],
+        "fit_samples": 31600,
+        "floating_coefficients": [
+          {
+            "c1": [
+              0.9719118822439899,
+              -0.0030278622914467345
+            ],
+            "c3": [
+              0.005749842970885456,
+              -0.01915636595920304
+            ],
+            "c5": [
+              0.005706448314631196,
+              0.0016059447645441058
+            ]
+          },
+          {
+            "c1": [
+              0.07065433394728488,
+              0.004620949301799221
+            ],
+            "c3": [
+              -0.00164187682160759,
+              -0.007442740078404016
+            ],
+            "c5": [
+              0.006335135234153186,
+              0.002380935833738004
+            ]
+          },
+          {
+            "c1": [
+              -0.05810811203675601,
+              -0.0025120045731063106
+            ],
+            "c3": [
+              -0.0003377180646621442,
+              -0.015868885914472403
+            ],
+            "c5": [
+              0.006837546519064481,
+              0.0018250508866591072
+            ]
+          },
+          {
+            "c1": [
+              0.015196491370211451,
+              0.000540545858194289
+            ],
+            "c3": [
+              0.01353726487978367,
+              -0.04573490519739839
+            ],
+            "c5": [
+              0.007691012144045904,
+              -0.00021623927998072246
+            ]
+          }
+        ],
+        "method": "indirect learning architecture: desired x[n] fit from PA-output y[n-k]*|y[n-k]|^(0,2,4)",
+        "model_note": "Fits the deterministic behavioral DPA at the first centered x2 interpolation stage; output network and noise are evaluated separately on held-out seeds.",
+        "profile": "nominal",
+        "ridge_diagonal_added": 0.0010530908953252627,
+        "ridge_relative": 1e-05,
+        "rms_drive": 0.1,
+        "samples_per_seed_cap": 8192,
+        "solver": {
+          "max_abs_pivot": 315.932015733769,
+          "min_abs_pivot": 0.0010832331790963747,
+          "pivot_ratio": 3.4286907472182197e-06
+        },
+        "symbols_per_seed": 12,
+        "training_peak": 0.3366652302349405,
+        "training_rms": 0.10000985559592743
+      },
+      "name": "ila_nominal_4tap"
+    }
+  ],
+  "development_seeds": [
+    271001,
+    271003,
+    271005,
+    271007
+  ],
+  "limits": [
+    "The fit is valid only for the named deterministic behavioral DPA profile and operating drive.",
+    "Held-out Python communications and bit-true RTL tests are required before candidate acceptance.",
+    "This file does not alter the product one-tap identity configuration."
+  ],
+  "pa_profile": "nominal",
+  "rms_drive": 0.1,
+  "status": "CANDIDATES_ONLY_REQUIRES_HELDOUT_AND_RTL_CHECK",
+  "symbols_per_seed": 12
+}

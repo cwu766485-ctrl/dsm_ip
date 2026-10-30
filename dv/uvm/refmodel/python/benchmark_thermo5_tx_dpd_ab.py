@@ -15,15 +15,18 @@ from multiprocessing import Pool
 from pathlib import Path
 
 from benchmark_thermo5_step_ntf import _analog_metrics
+from benchmark_thermo5_arch_ablation import _papr_db, _spectrum
 from benchmark_thermo5_tid_receiver import (
     PA_OUTPUT_PROFILES,
     RX_FIR_TAPS,
+    SOURCE_FS_HZ,
     _expand_iq_x4,
     demodulate_metrics,
     make_256qam_ofdm,
     receive_filter_decimate,
     reconstruct_baseband_7g,
 )
+from dsm_refmodel.link_models import BehavioralDPA, apply_complex_fir
 from dsm_refmodel.thermo5 import (
     nonlinear_test_dpd_coefficients,
     nonlinear_test_dpd_coefficients_4tap,
@@ -76,12 +79,47 @@ def _wilson(errors, trials, z=1.959963984540054):
     return [max(0.0, center - radius), min(1.0, center + radius)]
 
 
+def _analog_chain_diagnostics(baseband_7g, stimulus):
+    """Measure per-profile PAPR, compression incidence, and adjacent-band proxy."""
+    normalized_input = [value / 4.0 for value in baseband_7g]
+    diagnostics = []
+    for profile_name, profile in PA_OUTPUT_PROFILES.items():
+        pa = BehavioralDPA(
+            saturation=profile["dpa_saturation"],
+            smoothness=profile["dpa_smoothness"],
+            ampm_degrees=profile["dpa_ampm_degrees"],
+            envelope_memory=profile["dpa_envelope_memory"],
+        )
+        pa_output = pa.process(normalized_input)
+        output = apply_complex_fir(pa_output, profile["output_network_taps"])
+        spectrum = _spectrum(
+            output, SOURCE_FS_HZ * 4.0, stimulus["actual_bandwidth_hz"])
+        compressed = sum(
+            abs(after) < abs(before) * (1.0 - 1e-12)
+            for before, after in zip(normalized_input, pa_output)
+        )
+        diagnostics.append({
+            "profile": profile_name,
+            "pa_input_papr_db": _papr_db(normalized_input),
+            "dpa_output_papr_db": _papr_db(pa_output),
+            "output_network_papr_db": _papr_db(output),
+            "pa_am_am_compressed_samples": compressed,
+            "pa_input_peak_normalized": max(map(abs, normalized_input), default=0.0),
+            "dpa_output_peak_normalized": max(map(abs, pa_output), default=0.0),
+            "output_network_peak_normalized": max(map(abs, output), default=0.0),
+            "adjacent_band_proxy_dbc": spectrum["adjacent_band_proxy_dbc"],
+            "mainband_power_normalized": spectrum["mainband_power"],
+            "measurement": "4k Blackman-window PSD integrated over adjacent +/-125..375 MHz bands; model proxy only",
+        })
+    return diagnostics
+
+
 def _one_seed(task):
-    seed, symbols, rms_drive, step, fir_taps = task
+    seed, symbols, rms_drive, step, fir_taps, candidates = task
     stimulus = make_256qam_ofdm(seed, symbols=symbols, rms_drive=rms_drive)
     i_words, q_words, starts, gains = _frontend_words(stimulus["source_iq"])
     candidate_data = []
-    for candidate in CANDIDATES:
+    for candidate in candidates:
         planes = run_centered_cubic_frontend(
             i_words, q_words, starts, gains, step=step,
             dpd_coefficients=candidate["coefficients"],
@@ -124,6 +162,7 @@ def _one_seed(task):
         analog = (baseline_analog if index == 0 else _analog_metrics(
             data["baseband_7g"], stimulus, tuple(PA_OUTPUT_PROFILES), fir_taps,
             reference_output_rms=reference_output_rms))
+        chain_diagnostics = _analog_chain_diagnostics(data["baseband_7g"], stimulus)
         results.append({
             "seed": int(seed),
             "candidate": data["candidate"]["name"],
@@ -142,15 +181,17 @@ def _one_seed(task):
             "step": int(step),
             "digital_metrics": data["digital_metrics"],
             "analog_profiles": analog,
+            "analog_chain_diagnostics": chain_diagnostics,
             "reconstruction": data["reconstruction"],
             "receiver": data["receiver"],
         })
     return results
 
 
-def _summaries(records):
+def _summaries(records, candidates):
     result = []
-    for candidate in (row["name"] for row in CANDIDATES):
+    for candidate_config in candidates:
+        candidate = candidate_config["name"]
         rows = [row for row in records if row["candidate"] == candidate]
         bits = sum(8 * row["digital_metrics"]["qam_symbols"] for row in rows)
         errors = sum(row["digital_metrics"][
@@ -208,17 +249,41 @@ def _summaries(records):
                 "modeled_output_power_dbm": statistics.mean(
                     item["modeled_signal_power_dbm"] for item in profile_rows),
             }
+            diagnostic_rows = [next(
+                item for item in row["analog_chain_diagnostics"]
+                if item["profile"] == profile_name) for row in rows]
+            mean_adjacent_ratio = statistics.mean(
+                10.0 ** (item["adjacent_band_proxy_dbc"] / 10.0)
+                for item in diagnostic_rows)
+            summary["analog"][profile_name].update({
+                "mean_adjacent_band_proxy_dbc": 10.0 * math.log10(
+                    max(mean_adjacent_ratio, 1e-30)),
+                "worst_seed_adjacent_band_proxy_dbc": max(
+                    item["adjacent_band_proxy_dbc"] for item in diagnostic_rows),
+                "mean_pa_input_papr_db": statistics.mean(
+                    item["pa_input_papr_db"] for item in diagnostic_rows),
+                "mean_output_network_papr_db": statistics.mean(
+                    item["output_network_papr_db"] for item in diagnostic_rows),
+                "pa_am_am_compressed_samples": sum(
+                    item["pa_am_am_compressed_samples"] for item in diagnostic_rows),
+            })
         result.append(summary)
     return result
 
 
 def run(seeds=DEFAULT_SEEDS, symbols=9, rms_drive=0.10, step=5120,
-        fir_taps=RX_FIR_TAPS, jobs=1):
+        fir_taps=RX_FIR_TAPS, jobs=1, candidates=None):
     if not seeds or len(set(seeds)) != len(seeds):
         raise ValueError("seeds must be non-empty and unique")
     if symbols < 1 or jobs < 1:
         raise ValueError("symbols and jobs must be positive")
-    tasks = [(seed, symbols, rms_drive, step, fir_taps) for seed in seeds]
+    candidates = tuple(CANDIDATES if candidates is None else candidates)
+    if not candidates or len({item["name"] for item in candidates}) != len(candidates):
+        raise ValueError("candidate names must be non-empty and unique")
+    if not any(item["name"] == "identity_1tap" for item in candidates):
+        raise ValueError("candidate set must include the identity reference")
+    tasks = [(seed, symbols, rms_drive, step, fir_taps, candidates)
+             for seed in seeds]
     if jobs == 1:
         batches = [_one_seed(task) for task in tasks]
     else:
@@ -239,9 +304,11 @@ def run(seeds=DEFAULT_SEEDS, symbols=9, rms_drive=0.10, step=5120,
         "rms_drive": float(rms_drive),
         "heldout_selection": "All coefficient images fixed before held-out run; no fitting to these seeds.",
         "candidates": [
-            {key: value for key, value in candidate.items() if key != "coefficients"} |
-            {"coefficient_image": candidate["coefficients"]}
-            for candidate in CANDIDATES
+            {key: value for key, value in candidate.items()
+             if key not in ("coefficients", "fit")} |
+            {"coefficient_image": candidate["coefficients"],
+             **({"fit": candidate["fit"]} if "fit" in candidate else {})}
+            for candidate in candidates
         ],
         "pa_models": {
             name: {key: value for key, value in profile.items()
@@ -250,7 +317,7 @@ def run(seeds=DEFAULT_SEEDS, symbols=9, rms_drive=0.10, step=5120,
                                              for tap in profile["output_network_taps"]]}
             for name, profile in PA_OUTPUT_PROFILES.items()
         },
-        "summaries": _summaries(records),
+        "summaries": _summaries(records, candidates),
         "records": records,
         "limitations": [
             "non-identity coefficients are verification stimuli, not fitted inverse-PA solutions",
@@ -276,10 +343,19 @@ def main():
     parser.add_argument("--step", type=int, default=5120)
     parser.add_argument("--fir-taps", type=int, default=RX_FIR_TAPS)
     parser.add_argument("--jobs", type=int, default=1)
+    parser.add_argument("--candidate-json", type=Path,
+                        help="append separately fitted candidates from an ILA JSON file")
     parser.add_argument("--json", type=Path, required=True)
     args = parser.parse_args()
+    candidates = list(CANDIDATES)
+    if args.candidate_json:
+        candidate_data = json.loads(args.candidate_json.read_text())
+        fitted = candidate_data.get("candidates", [])
+        if not fitted:
+            parser.error("candidate JSON contains no candidates")
+        candidates.extend(fitted)
     result = run(args.seeds, args.symbols, args.rms_drive, args.step,
-                 args.fir_taps, args.jobs)
+                 args.fir_taps, args.jobs, candidates)
     args.json.parent.mkdir(parents=True, exist_ok=True)
     args.json.write_text(json.dumps(result, indent=2) + "\n")
     for row in result["summaries"]:
