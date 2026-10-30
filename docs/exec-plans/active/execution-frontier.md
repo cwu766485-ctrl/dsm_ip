@@ -15,9 +15,11 @@ Wizard, and Vivado physical implementation are not part of this Linux task.
 License recovery enabled a fresh legal boundary campaign. Seeds 610806–610821
 all passed bit-true checking with zero UVM errors/fatals. The RUN+COMMIT/AW-W
 skew case closed one condition bin; offset, source-gap, and RUN-relative
-COMMIT-delay variants did not change further aggregate counters. Twenty-three
-positive simulation VDBs plus the compile VDB are now in the current Raw URG
-merge. Current Raw coverage is aggregate
+COMMIT-delay variants did not change further aggregate counters. A 64-cycle
+all-plane PA backpressure test also passed the product bit-true checker but
+added no code or functional bins. Twenty-four positive simulation VDBs plus
+the compile VDB are now in the current Raw URG merge. Current Raw coverage is
+aggregate
 81.97%: line 3,190/3,796 (84.04%), condition 582/846 (68.79%), branch
 440/637 (69.07%), both-direction toggle 86,951/104,478 (83.22%), FSM states
 13/13 and transitions 22/22. DUT assertions report 13 successful, 2

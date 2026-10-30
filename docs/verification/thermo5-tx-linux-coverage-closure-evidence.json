@@ -37,7 +37,7 @@
     "commit_delay_610821_console_log": "ef34a88dc0594bbdd66e70b45e3a498fe23f4905538db74a61858f3daa1e40c2",
     "commit_delay_610821_sim_log": "494e1565e9db4e24af0c313e91d23e5ea78bf0bbef90bf57d8b32ae1570be3ef",
     "compile_log": "7475893ee8fc3cbba4d62b4916ec63f88ff69c9c3ef9b3e965c59fe3520b28eb",
-    "coverage_gate_result": "f5207c5d972685b2c40ac4b8954b90c0f345a45c1d9461f9044a9be424b8c52c",
+    "coverage_gate_result": "b3e607f2df5b59e2de600d084a3abecb6930c258977d9c285d15c65ff0c042f2",
     "ef2_properties": "c19a5c12b0914ecf963ba1652e75826522a7bce496a9e9ad9c375f8e1c40b1bb",
     "ef2_setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
     "ef2_vcf_log": "357ef27e97bad4bc499f86d69187d4eb52ecb166838bfe20fe798664fffe8575",
@@ -55,8 +55,8 @@
     "fresh_identity_formal_properties": "1eeb5e603132861d9334d9c5d40c8302a3af91398c2ff59f69b6619c1781da3f",
     "fresh_identity_formal_summary": "0d3376be36f16001bc470e474e16a95ad5c44f25c3ebf628252d1db2b88d3a78",
     "gap_ledger_csv": "c6ef16a080a4cdf5c981c9d6ad7063628a0b9aa9ab2219b7dbbdcf15595ca8a9",
-    "gap_ledger_summary": "599c7a1bb374a8f8d32b314e290a672ee606e919430d41c205683c100a109260",
-    "latest_urg_command": "d6283321243e04fd62ef2770c5af1849ecadaa14b7cb316337d9c58bafc02c95",
+    "gap_ledger_summary": "cf5c500771448c971cb7c8cbf232284308ca7342ef6a246368a6b959a8e21afb",
+    "latest_urg_command": "ebc2a2c4afa655ab75e8696998901f1fad86d12cad41b750ceab528a130a2877",
     "mutation_log": "cacd97fb4020d420b9181ed762e1aa47c062847303217ecc6980f3eb43ea6654",
     "negative_assertion_html": "0e63167065ac6acc2cd60a6b0668a4f296bf0459c9b4f4661cbdbc83b89ddb3c",
     "negative_assertion_summary": "94b75c99ef9355c7c40491fe62a184004fcae17da3674ff243220e14b74e8142",
@@ -64,11 +64,14 @@
     "negative_urg_log": "c86bfe0327d9c81ad757b28b92e993221cb2229e13dcad3a3c9c1d33dc1f82b8",
     "product_asserts_html": "f813f00a569b944d125ad0331c5332e423170c46ab85086739cbddb8a268427f",
     "product_groups_html": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
-    "raw_urg_log": "2ba712ced61ce6dc337aad01e1df32b2a03774c1ddcf992c22ab5ad446785e10",
+    "raw_urg_log": "67de41def3975de45bb0806868df8e630c7ce1c2b20365f6584f8633635950e2",
     "raw_urg_summary": "efbaca0b35195f54ca9e97877cb6c9f35cc4bc20dc5fb341afd3f1eb780a41c6",
     "reset_sweep_log": "2025ac03df2f1aa04038433a43f8f244a073c5bb1f3e39db06c29986dabe15ba",
     "retained_formal_summary": "fbe7819297d4e0625580c9b1ae7bfa76bce89b512da6bc1d99089c5bae5dcb14",
-    "source_manifest": "212e85525ff6bd5d8371ca0f966e7ed74b782338338d716ec3e618c643b8aa4f"
+    "source_manifest": "d7787db843f6c57cbfed7810a9f84abb1988c093bec9af376a7ad6e8d5cb7e3f",
+    "counter_stall_commands": "960086cf8beaf00a36f21449b8c016bf3638c9f35ac2807ba6a2831305b131f2",
+    "counter_stall_compile_log": "2b053dad308599c26e06d41eb3f6ddda9864228bb6e9d35b881935a805a6c755",
+    "counter_stall_sim_log": "5d4745b1a622cc4a0c617ee8e7bef16c9eaa3d6d80f2eae3f236df003712c7f0"
   },
   "artifact_tree_sha256": {
     "boundary_phase_vdbs": {
@@ -152,8 +155,8 @@
     },
     "product_raw_urg_report": {
       "file_count": 45,
-      "total_bytes": 2813875,
-      "tree_sha256": "7b77a3cdb3b6f0d7e93f2a1e7682c43235e9a95ba6ebcb0b0df4a33199d8c490"
+      "total_bytes": 2813772,
+      "tree_sha256": "e2f3d472c5444c00936a72c72ea49025626b9c3bbfa13f32e548311b7e991260"
     },
     "run_after_run_sweep_vdbs": {
       "delay0_seed610816": {
@@ -186,6 +189,11 @@
         "total_bytes": 11619,
         "tree_sha256": "e3056f063dc27e05c6676a3792aea00ee422ef4435def51d05fc222182eec5e6"
       }
+    },
+    "product_pa_backpressure_vdb": {
+      "file_count": 13,
+      "total_bytes": 12028,
+      "tree_sha256": "edc53545eb6b09845677cc76ac99dc379653bc67c6998b57fa147c4b0b532d2e"
     }
   },
   "artifact_tree_sha256_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path length, relative path bytes, then the raw SHA256(file) digest.",
@@ -208,9 +216,9 @@
     },
     "gap_ledger": {
       "extraction_gaps": 0,
-      "generated_source_sha": "c84fe67432b23bd1ee95277e7082f62a7a7bc052",
+      "generated_source_sha": "815d5b6bb06dab6b38b8705ec6fbb00668b46ac0",
       "generated_worktree_dirty": true,
-      "report_path": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_run_sweep_20261030",
+      "report_path": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_counter_stall_20261030",
       "rows": 18594,
       "status_counts": {
         "OPEN": 3788,
@@ -291,7 +299,13 @@
     "for spec in '0 610816' '1 610817' '2 610818' '4 610819' '8 610820' '16 610821'; do\n  set -- $spec; delay=$1; seed=$2\n  case_dir=\"runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay${delay}_seed${seed}\"\n  mkdir -p \"$case_dir\"\n  runs/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test +VEC_DIR=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" +ntb_random_seed=\"$seed\" -cm line+cond+fsm+tgl+branch+assert -cm_dir \"$case_dir/cov.vdb\" +CORE_WORDS=56 +AXIL_COMMIT_AFTER_RUN_CORE_CYCLES=\"$delay\" -l \"$case_dir/sim.log\" > \"$case_dir/console.log\" 2>&1\ndone",
     "case_dir=runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/license_retry_seed610806\nruns/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test +VEC_DIR=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" +ntb_random_seed=610806 -cm line+cond+fsm+tgl+branch+assert -cm_dir \"$case_dir/cov.vdb\" +CORE_WORDS=56 +AXIL_BOUNDARY_OFFSET=0 -l \"$case_dir/sim.log\" > \"$case_dir/console.log\" 2>&1",
     "CWD=runs/thermo5_tx_product_formal_identity_extended_20261030; env THERMO5_FORMAL_TOP=thermo5_identity_harness THERMO5_FORMAL_OUT=/home/ray/workspace/dsm_ip/runs/thermo5_tx_product_formal_identity_extended_20261030/identity THERMO5_FORMAL_REPO=/home/ray/workspace/dsm_ip PATH=\"/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH\" /opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf -batch -fmode FPV -f /home/ray/workspace/dsm_ip/runs/thermo5_tx_product_formal_identity_extended_20261030/run_thermo5_gap_fpv_extended.tcl",
-    "LD_LIBRARY_PATH=/opt/Synopsys/vcs/V-2023.12-SP1/linux64/lib:/opt/Synopsys/vcs/V-2023.12-SP1/lib:/opt/Synopsys/verdi/V-2023.12-SP2/share/PLI/VCS/LINUX64 /opt/Synopsys/vcs/V-2023.12-SP1/linux64/bin/urg1 -full64 -dir runs/thermo5_tx_product_axil_reset_cov_20261030/simv.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_register_access_test_seed420100.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_product_identity_test_seed610801.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_ef2_corner_test_seed271030.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_graceful_stop_test_seed420108.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_stop_restart_test_seed610215.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_reset_sweep_test_seed610802.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_coeff_transport_test_seed610803.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/license_retry_seed610806/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset1_seed610807/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset2_seed610808/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset4_seed610809/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset8_seed610810/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset16_seed610811/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset32_seed610812/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/commit_on_run_seed610813/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat8_seed610814/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat20_seed610815/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay0_seed610816/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay1_seed610817/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay2_seed610818/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay4_seed610819/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay8_seed610820/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay16_seed610821/cov.vdb -report runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_run_sweep_20261030 -dbname thermo5_tx_product_axil_merged_after_run_sweep_20261030 -log runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_run_sweep_20261030.log"
+    "LD_LIBRARY_PATH=/opt/Synopsys/vcs/V-2023.12-SP1/linux64/lib:/opt/Synopsys/vcs/V-2023.12-SP1/lib:/opt/Synopsys/verdi/V-2023.12-SP2/share/PLI/VCS/LINUX64 /opt/Synopsys/vcs/V-2023.12-SP1/linux64/bin/urg1 -full64 -dir runs/thermo5_tx_product_axil_reset_cov_20261030/simv.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_register_access_test_seed420100.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_product_identity_test_seed610801.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_ef2_corner_test_seed271030.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_graceful_stop_test_seed420108.vdb runs/thermo5_tx_product_axil_cov_20261030/cov_thermo5_sku_axil_stop_restart_test_seed610215.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_reset_sweep_test_seed610802.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/cov_thermo5_sku_axil_coeff_transport_test_seed610803.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/license_retry_seed610806/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset1_seed610807/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset2_seed610808/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset4_seed610809/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset8_seed610810/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset16_seed610811/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/offset32_seed610812/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/commit_on_run_seed610813/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat8_seed610814/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/source_gap_beat20_seed610815/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay0_seed610816/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay1_seed610817/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay2_seed610818/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay4_seed610819/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay8_seed610820/cov.vdb runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/run_after_run_sweep/delay16_seed610821/cov.vdb -report runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_run_sweep_20261030 -dbname thermo5_tx_product_axil_merged_after_run_sweep_20261030 -log runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_run_sweep_20261030.log",
+    "make -C dv/uvm/sim thermo5-vcs THERMO5_OUT=\"$PWD/runs/thermo5_tx_product_counter_stall_20261030\" THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" THERMO5_TESTNAME=thermo5_sku_axil_product_identity_test UVM_SEED=610822",
+    "make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=\"$PWD/runs/thermo5_tx_product_counter_stall_20261030\" THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" THERMO5_TESTNAME=thermo5_sku_axil_product_identity_test THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +AXIL_PA_STALL_CYCLES=64' UVM_SEED=610822",
+    "python3.12 tools/hw/thermo5_coverage_denominator.py runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_counter_stall_20261030 runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage_after_counter_stall_20261030",
+    "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage_after_counter_stall_20261030/summary.json --groups-html runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_counter_stall_20261030/groups.html --waivers-csv docs/verification/thermo5_tx_waivers.csv --el-file dv/uvm/sim/thermo5_tx_main.el --source-manifest runs/thermo5_tx_product_axil_reset_cov_20261030/source_manifest_after_counter_stall.json --output runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_after_counter_stall_20261030.json",
+    "python3.12 tools/hw/thermo5_gap_ledger.py runs/thermo5_tx_product_axil_reset_cov_20261030/ledger_closure_after_counter_stall --variants axil --report-layout flat",
+    "cat runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_counter_stall_20261030.command.txt  # exact argv and merged VDB list; result: runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_counter_stall_20261030.log"
   ],
   "configuration_applicability_review": [
     {
@@ -452,16 +466,16 @@
   },
   "latest_coverage_artifacts": {
     "compile_vdb_included": true,
-    "coverage_gate": "runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_after_run_sweep_20261030.json",
-    "gap_ledger": "runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_run_sweep_20261030/thermo5-tx-gate3-coverage-ledger.csv",
+    "coverage_gate": "runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_after_counter_stall_20261030.json",
+    "gap_ledger": "runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_counter_stall_20261030/thermo5-tx-gate3-coverage-ledger.csv",
     "negative_and_candidate_vdbs_included": false,
-    "raw_summary": "runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage_after_run_sweep_20261030/summary.json",
-    "simulation_vdb_count": 23,
-    "urg_command": "runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_run_sweep_20261030.command.txt",
-    "urg_report": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_run_sweep_20261030"
+    "raw_summary": "runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage_after_counter_stall_20261030/summary.json",
+    "simulation_vdb_count": 24,
+    "urg_command": "runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_counter_stall_20261030.command.txt",
+    "urg_report": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_counter_stall_20261030"
   },
-  "latest_evidence_revision": "c84fe67432b23bd1ee95277e7082f62a7a7bc052",
-  "latest_evidence_time_sgt": "2026-10-30 13:01",
+  "latest_evidence_revision": "815d5b6bb06dab6b38b8705ec6fbb00668b46ac0",
+  "latest_evidence_time_sgt": "2026-10-30 13:09 SGT",
   "not_run_or_open": [
     "real XPM FIFO simulation/formal coverage",
     "actual GT Wizard/raw64 vendor-model simulation",
@@ -489,7 +503,8 @@
     "fresh_identity_formal": "runs/thermo5_tx_product_formal_identity_extended_20261030",
     "initial_identity_formal": "runs/thermo5_tx_product_formal_identity_retry_20261030",
     "product": "runs/thermo5_tx_product_axil_reset_cov_20261030",
-    "retained_cdc_formal": "runs/thermo5_linux_formal_regression_20261028"
+    "retained_cdc_formal": "runs/thermo5_linux_formal_regression_20261028",
+    "product_pa_backpressure": "runs/thermo5_tx_product_counter_stall_20261030"
   },
   "schema_version": 1,
   "scope": "Thermo5 TX product configuration; Linux Generic FIFO substitute; VCS/URG and VC Formal only",
@@ -705,11 +720,42 @@
       ],
       "status": "PASS; RAW MERGE REFRESHED AFTER LICENSE-RESTORED SWEEPS",
       "tests_retained_from_pr6": 5
+    },
+    "extended_pa_backpressure": {
+      "bittrue_checker": "four-plane independent oracle",
+      "compile_log": "runs/thermo5_tx_product_counter_stall_20261030/compile.log",
+      "core_words": 56,
+      "configured_pa_stall_cycles": 64,
+      "product_configuration": "Centered-Cubic; EF2 ORDER=2 STEP=5120; DPD_MAX_TAPS=1 identity; Generic FIFO",
+      "raw_code_coverage_effect": {
+        "branch_changed": false,
+        "condition_changed": false,
+        "functional_group_scores_changed": false,
+        "line_changed": false,
+        "toggle_changed": false
+      },
+      "run_dir": "runs/thermo5_tx_product_counter_stall_20261030",
+      "seed": 610822,
+      "simulation_log": "runs/thermo5_tx_product_counter_stall_20261030/thermo5_sku_axil_product_identity_test_seed610822.log",
+      "simulation_vdb": "runs/thermo5_tx_product_counter_stall_20261030/cov_thermo5_sku_axil_product_identity_test_seed610822.vdb",
+      "status": "PASS_BITTRUE",
+      "uvm_errors": 0,
+      "uvm_fatals": 0,
+      "uvm_warnings": 0
     }
   },
   "tool_versions": {
     "urg": "V-2023.12-SP1",
     "vc_formal": "V-2023.12-SP2",
     "vcs": "V-2023.12-SP1"
+  },
+  "testbench_changes": {
+    "bounded_pa_stall_override": {
+      "path": "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_config_test.svh",
+      "sha256": "480c736ca974bbce0a46058a856466d0265cab74f74318d87255e61595ac02a4",
+      "default_cycles": 4,
+      "allowed_cycles": "4..4096",
+      "product_algorithm_or_rtl_changed": false
+    }
   }
 }

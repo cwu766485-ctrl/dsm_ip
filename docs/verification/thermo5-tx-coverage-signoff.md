@@ -12,7 +12,7 @@
 > Raw URG aggregate is 81.97%, FSM transitions are 22/22, and the gate remains
 > `RAW_100_OPEN`; there are no approved waivers or active exclusions. The
 > current condition tally is 582/846; see the closure report for exact counts
-> and the 23-VDB merge manifest.
+> and the 24-VDB merge manifest.
 
 **Disposition:** `FUNCTIONAL_GROUPS_PASS; RAW_100_OPEN; GATE3_NOT_SIGNED_OFF`
 **Date:** 2026-10-29 (Asia/Singapore)

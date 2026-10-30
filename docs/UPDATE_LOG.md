@@ -4346,3 +4346,24 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Limits: line/branch/condition/toggle closure remains incomplete; identity
   arithmetic and frame-tail reachability remain open. Real XPM, GT Wizard,
   FPGA PPA/routed timing, and physical QAM256 BER remain outside Linux scope.
+
+## 2026-10-30 13:09 SGT - Extend product PA backpressure stress
+
+- Added a bounded `AXIL_PA_STALL_CYCLES` override to the existing AXI-Lite
+  config test; its default remains the prior four-cycle stall. The test rejects
+  values outside 4..4096 cycles.
+- Recompiled the unchanged product configuration and ran seed 610822 with all
+  four PA ready signals held low for 64 core cycles after output-valid. The
+  56-word four-plane identity stream passed the independent bit-true checker;
+  UVM warnings/errors/fatals were all zero.
+- Merged that positive product VDB into the Raw URG report (24 simulation
+  VDBs plus compile VDB). Code metrics, functional group scores, and the 18,594
+  open/review ledger rows did not change. No waiver, exclusion, denominator,
+  or DUT algorithm change was made.
+- Checks: licensed VCS compile and targeted product run PASS; URG merge,
+  denominator extraction, gap-ledger extraction, and coverage gate PASS with
+  `RAW_100_OPEN`; source manifest and evidence hashes refreshed; JSON parse
+  and `git diff --check` PASS.
+- Limits: the longer PA hold did not hit additional DUT code bins. Coverage
+  convergence, identity DPD proof, frame-tail formal reachability, vendor
+  XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open.

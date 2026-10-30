@@ -1,6 +1,6 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 13:01 SGT
+**Date:** 2026-10-30 13:09 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
 **Product source commit tested:** `cab04feb6b41bfc75efd064eb1f13b2a4262c22d`
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
@@ -53,8 +53,9 @@ That run increased raw toggle hits without changing any denominator.
 ### Latest raw product DUT code coverage
 
 Raw URG includes seven selected legal product tests, reset-sweep and
-coefficient-transport tests, ten boundary/traffic tests, and six RUN-relative
-COMMIT-delay tests (23 simulation VDBs plus the compile VDB). The
+coefficient-transport tests, ten boundary/traffic tests, six RUN-relative
+COMMIT-delay tests, and one extended-backpressure test (24 simulation VDBs
+plus the compile VDB). The
 expected-negative assertion VDB and checker-mutation VDB are not in this
 merge. No candidate DPD or PAIR_LOOKAHEAD VDB is included.
 
@@ -75,8 +76,15 @@ retry, offsets 1/2/4/8/16/32, and source-gap placements at beats 8/20 all
 passed the independent bit-true checker. A COMMIT-delay sweep at 0, 1, 2, 4,
 8, and 16 core cycles after RUN also passed bit-true checking but did not
 change aggregate counters. These scenarios add interaction evidence without
-increasing code-coverage hits. The exact source-linked gap ledger now contains
-18,594 rows: 9,513 configuration review, 3,788 open
+increasing code-coverage hits. An additional legal product identity run at
+seed 610822 held all four PA ready signals low for 64 core cycles after output
+valid appeared, then completed the 56-word independent four-plane bit-true
+check with zero UVM warnings/errors/fatals. Its VDB added no Raw code or
+functional coverage bins; line/condition/branch/toggle and group scores are
+unchanged. Exact compile/run commands are retained in
+`runs/thermo5_tx_product_counter_stall_20261030/commands.txt`. The refreshed
+source-linked gap ledger still contains 18,594 rows: 9,513 configuration
+review, 3,788 open
 stimulus/checker review, 141 formal-mapping review, 4,512 arithmetic review,
 and 640 counter/formal review. These are review states, not waivers.
 

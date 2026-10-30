@@ -223,8 +223,14 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
     bit boundary_seen;
     bit [386:0] expected_cfg_payload;
     int unsigned expected_active_taps;
+    int unsigned pa_stall_cycles;
     expected_active_taps=configured_active_taps();
     expected_cfg_payload=configured_payload();
+    pa_stall_cycles=4;
+    void'($value$plusargs("AXIL_PA_STALL_CYCLES=%d",pa_stall_cycles));
+    if (pa_stall_cycles<4 || pa_stall_cycles>4096)
+      `uvm_fatal("AXIL_PA_STALL_ARGUMENT",
+        $sformatf("AXIL_PA_STALL_CYCLES must be in [4,4096], got %0d",pa_stall_cycles))
     phase.raise_objection(this);
     fork
       begin
@@ -285,7 +291,7 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
         end
         if (!boundary_seen)
           `uvm_fatal("AXIL_PA_STALL_TIMEOUT","PA did not present a four-plane word under backpressure")
-        repeat (4) begin
+        repeat (pa_stall_cycles) begin
           @(posedge vif.core_clk);
           if (vif.pa_valid!=4'hf || vif.pa_ready!=4'h0)
             `uvm_fatal("AXIL_PA_STALL","PA valid was not held during backpressure")
