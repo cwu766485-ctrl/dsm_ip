@@ -16,12 +16,12 @@ the elaborated TX DUT hierarchy. RX, AI-DPD, frozen TX algorithms, XPM, GT
 Wizard, and Vivado physical implementation are not part of this Linux task.
 
 License recovery enabled targeted legal product follow-ups. Seeds 610806–610821
-passed their boundary/traffic checks. Seed 610824 passed a two-frame identity
-stream with a one-cycle source bubble between frames; seed 610825 passed a
-64-cycle all-plane PA-ready hold using the product-filtered simulator. The
-former exposed one additional frame-tail condition combination; the latter
-added no coverage bins. The current Raw URG merge contains 25 scoped simulation
-VDBs plus the compile VDB. Raw coverage is 81.99% aggregate: line 3,190/3,796
+passed their boundary/traffic checks. Seed 610823 passed zero-gap continuous
+identity frames and seed 610824 passed a two-frame stream with a one-cycle
+source bubble; seed 610825 passed a
+64-cycle all-plane PA-ready hold using the product-filtered simulator. The one-cycle-gap run exposed one additional frame-tail condition combination;
+the zero-gap and PA-stall runs added no bins. The current Raw URG merge contains
+26 scoped simulation VDBs plus the compile VDB. Raw coverage is 81.99% aggregate: line 3,190/3,796
 (84.04%), condition 583/846 (68.91%), branch 440/637 (69.07%), both-direction
 toggle 86,951/104,478 (83.22%), FSM states 13/13 and transitions 22/22.
 Assertions report 13 successful, 2 uncovered, 2 without attempts, 0 failures

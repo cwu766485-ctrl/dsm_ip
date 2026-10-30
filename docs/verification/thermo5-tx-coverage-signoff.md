@@ -12,9 +12,9 @@
 > Raw URG aggregate is 81.99%, FSM transitions are 22/22, and the gate remains
 > `RAW_100_OPEN`; there are no approved waivers or active exclusions. The
 > current condition tally is 583/846; see the closure report for exact counts
-> and the 25-scoped-simulation-VDB merge manifest. The latest checkpoint also
-> includes a legal two-frame inter-frame-gap test, a properly scoped 64-cycle
-> PA-stall test, and an exact AXI-Lite case-default Formal proof.
+> and the 26-scoped-simulation-VDB merge manifest. The latest checkpoint also
+> includes zero-gap and inter-frame-gap two-frame tests, a properly scoped
+> 64-cycle PA-stall test, and an exact AXI-Lite case-default Formal proof.
 
 **Disposition:** `FUNCTIONAL_GROUPS_PASS; RAW_100_OPEN; GATE3_NOT_SIGNED_OFF`
 **Date:** 2026-10-29 (Asia/Singapore)

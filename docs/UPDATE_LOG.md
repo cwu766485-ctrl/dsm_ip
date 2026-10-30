@@ -1,3 +1,23 @@
+## 2026-10-30 13:32 SGT - Verify zero-gap continuous product frames
+
+- Ran the two-frame one-tap identity product test with no source-clock bubble
+  between frames, using the product-filtered simulator at seed 610823. The
+  independent checker matched 112 words on all four planes, two TLASTs and
+  114 DPD samples per lane; UVM warnings/errors/fatals were zero. The direct
+  Generic wrapper's 71 post-source finite-tail diagnostic cycles and
+  `early_underflow=0` are both recorded.
+- Merged the scoped zero-gap VDB with the prior product VDB set and regenerated
+  URG, Raw summary, gate, and source-linked ledger. Raw totals did not change:
+  81.99% aggregate, 583/846 conditions, 440/637 branches, and 26 simulation
+  VDBs plus the compile VDB. The ledger remains 18,593 open/review records;
+  no waiver or exclusion was added.
+- The exact command, logs, VDB/URG trees, and SHA-256 values are indexed in the
+  closure evidence JSON. `git diff --check`, JSON validation, source manifest
+  checks, coverage gate and artifact-hash checks pass. No full regression was
+  rerun and no RTL/algorithm was changed.
+- Remaining coverage, formal, vendor-XPM/GT, FPGA PPA, and physical QAM256
+  limits are unchanged from the current closure report.
+
 ## 2026-10-30 13:26 SGT - Continue licensed TX Linux coverage closure
 
 - Added a product-configured legal two-frame identity test with one source

@@ -60,11 +60,10 @@ Full assumptions, matrices, commands, and hashes are in
 | Toggle, both directions | 86,951 / 104,478 | 83.2242% |
 | FSM states / transitions | 13/13; 22/22 | 100% |
 
-The latest Raw merge contains 25 product-hierarchy-scoped simulation VDBs
+The latest Raw merge contains 26 product-hierarchy-scoped simulation VDBs
 plus the compile VDB. All 170 legally applicable positive functional bins are hit;
 raw URG remains 170/174 because malformed-frame bins are reported separately.
-The 18,593-row source-linked ledger remains OPEN/review-only. The targeted
-inter-frame-gap VCS test and AXI-Lite case-default Formal proof are documented
+The 18,593-row source-linked ledger remains OPEN/review-only. The targeted zero-gap and inter-frame-gap VCS tests and AXI-Lite case-default Formal proof are documented
 in the linked closure report. No full Gate 0–3 regression was repeated in PR
 #7.
 

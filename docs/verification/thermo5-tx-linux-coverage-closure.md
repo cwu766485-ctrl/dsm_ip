@@ -1,6 +1,6 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 13:26 SGT
+**Date:** 2026-10-30 13:32 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
 **Product testbench source SHA:** `913be930bfcbbad0f78dbc90e06299db3d1bb337` (same source tree uploaded to PR #7 as `09c2e082876801d79946787d71f78082c4983f62`; tree `7bbee88ea7d6fbd3e0db1a61c1106cde1753c9d5`)
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
@@ -52,10 +52,11 @@ That run increased raw toggle hits without changing any denominator.
 
 ### Latest raw product DUT code coverage
 
-The authoritative merge contains **25 scoped product simulation VDBs plus the
+The authoritative merge contains **26 scoped product simulation VDBs plus the
 product compile VDB**. It includes the established product tests, seeds
-610806–610821, the two-frame identity/inter-frame-gap run (610824), and the
-properly hierarchy-scoped 64-cycle all-plane PA backpressure run (610825).
+610806–610821, a zero-gap continuous two-frame identity run (610823), the
+inter-frame-gap run (610824), and the properly hierarchy-scoped 64-cycle
+all-plane PA backpressure run (610825).
 Candidate PAIR_LOOKAHEAD/nonidentity DPD and expected-negative/mutation VDBs
 remain separate. The older 610822 PA-stall VDB was compiled without the product
 hierarchy filter and is intentionally excluded; its scoped replacement is
@@ -71,6 +72,13 @@ hierarchy filter and is intentionally excluded; its scoped replacement is
 | FSM states | 13 / 13 | 0 | 100.0000% |
 | FSM transitions | 22 / 22 | 0 | 100.0000% |
 | DUT assertions attempted | 13 / 15 | 2 additionally unhit | 86.6667% |
+
+The seed-610823 zero-gap test sends two legal 32-beat frames in one RUN epoch.
+The independent checker matched all 112 words on all four planes, accepted two
+TLASTs and checked 114 one-tap DPD samples per lane with no saturation. UVM
+warning/error/fatal counts were zero and `early_underflow=0`; the direct Generic
+wrapper reports 71 post-source finite-tail diagnostic cycles. Its correctly
+scoped VDB added no code or functional bins.
 
 The seed-610824 test sends two legal 32-beat frames in one RUN epoch, with one
 source-clock bubble before beat 32. The independent checker matched all 112
@@ -246,7 +254,7 @@ open and are not claimed as PASS.
 The initial VCS reset-sweep and coefficient-transport checkpoint used VCS
 V-2023.12-SP1, EF2 ORDER=2, STEP=5120, centered-cubic, one DPD tap, and
 `thermo5_tx_product_coverage.hier`; its historical URG checkpoint used seven
-positive product VDBs. The current 25-simulation-VDB product merge is listed
+positive product VDBs. The current 26-simulation-VDB product merge is listed
 below. The illegal-frame test and PA0 mutation use separate VDBs/reports.
 Exact commands, SHA-256 hashes, coverage numerators and denominators, and
 tool/run directories are recorded in the adjacent machine evidence file.
@@ -258,13 +266,15 @@ Latest license-restored evidence (source SHA
 
 - Two-frame inter-frame-gap VCS command and full compile/run logs:
   `runs/thermo5_tx_product_interframe_gap_scoped_20261030/commands.txt`.
+- Zero-gap continuous two-frame VCS command/log:
+  `runs/thermo5_tx_product_continuous_scoped_20261030/commands.txt`.
 - Correctly scoped PA-stall VCS command/log:
   `runs/thermo5_tx_product_pa_stall_scoped_20261030/commands.txt`.
-- Latest 25-VDB URG merge command and report:
-  `runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_pa_stall_20261030.command.txt`
-  and `.../product_raw_after_pa_stall_20261030/`.
-- Latest Raw/Adjusted gate: `.../coverage_gate_after_pa_stall_20261030.json`;
-  source-linked ledger: `.../gap_ledger_after_pa_stall_20261030/`.
+- Latest 26-VDB URG merge command and report:
+  `runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_continuous_20261030.command.txt`
+  and `.../product_raw_after_continuous_20261030/`.
+- Latest Raw/Adjusted gate: `.../coverage_gate_after_continuous_20261030.json`;
+  source-linked ledger: `.../gap_ledger_after_continuous_20261030/`.
 - AXI-Lite case-default reachability proof (3/3 assertions proven; target
   property non-vacuous; zero setup violations):
   `runs/thermo5_tx_product_formal_case_default_20261030/axil_cfg/`.
