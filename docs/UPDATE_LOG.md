@@ -1,3 +1,34 @@
+## 2026-10-30 21:18 SGT - Audit TX functional bins and code-gap root causes
+
+- Added a deterministic Linux/Python audit for the latest product-only
+  VCS/URG evidence. It reports the four exact 170/174 Functional Coverage
+  records, resolves them to two illegal-frame-only semantic bins, and confirms
+  all 170 legal positive semantic bins are hit. Raw remains 170/174; no bin,
+  group, or denominator was changed.
+- Preserved and enriched all 18,593 Raw code-gap rows (197 Branch, 263
+  Condition, 606 Line, 17,527 Toggle) into 492 location-rooted closure tasks.
+  All rows remain OPEN; zero waivers/exclusions are applied. Raw and Adjusted
+  coverage remain identical.
+- Audited 17 duplicate historical Condition bin IDs. Each collision joins
+  full-expression and subexpression bins on the same source line. Recovered
+  expression identity from raw URG module pages and emitted unique semantic
+  IDs without dropping rows or changing denominator.
+- Recorded one source-manifest mismatch in the later AXI-Lite Formal harness.
+  Product RTL/UVM simulation compile inputs match the recorded Raw evidence;
+  Formal results from the changed harness are not represented as current and
+  must be rerun in the final fixed-SHA package.
+- Added the root-cause report, row/task CSVs, functional-bin audit, summary,
+  input/output SHA manifest, execution command, and reproducibility section in
+  docs/ai-native/commands.md. Updated the active execution frontier.
+- Checks: Python 3.12 py_compile PASS; audit script PASS; consistency checks
+  confirm 18,593 unique row IDs and expression-aware semantic IDs, 492 unique
+  task IDs with 18,593 assigned bins, exactly four functional audit rows, and
+  only OPEN code-gap dispositions. No VCS or Formal regression was rerun;
+  existing fixed-source URG evidence was reused.
+- Remaining: targeted legal Branch/Condition closure (Step 3 onward), Formal
+  reachability and Identity-DPD resolution, source-gap contract disposition,
+  waiver/exclusion gate validation, and fixed-SHA final signoff remain OPEN.
+
 ## 2026-10-30 17:02 SGT - Publish Phase 0/1 TX closure PR #8
 
 - Opened draft PR #8, `Thermo5 TX: Phase 0/1 Linux design and verification

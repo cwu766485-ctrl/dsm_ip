@@ -1244,3 +1244,21 @@ resource/timing, formal equivalence, XPM, and GT/board integration remain open.
 ## Execution rule
 
 Use the existing canonical flow. Start with a dry-run or smoke check; capture tool versions, configuration, seed, command, exit status, and log path under the project's established run convention.
+## Thermo5 TX coverage root-cause inventory
+
+Rebuild the Step 1/2 functional-bin and source-linked Raw gap audit from the
+fixed product URG reports. This is report analysis only; it does not rerun VCS
+or Formal, change a coverage database, or modify a denominator.
+
+    python3.12 -m py_compile tools/hw/thermo5_tx_coverage_rootcause.py
+    python3.12 tools/hw/thermo5_tx_coverage_rootcause.py \
+      --ledger runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv \
+      --raw-report runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030 \
+      --negative-report runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report \
+      --evidence docs/verification/thermo5-tx-linux-coverage-closure-evidence.json \
+      --output-dir runs/thermo5_tx_coverage_rootcause_audit_20261030
+
+The script verifies source-file SHA-256 values, maps every missing Condition to
+the Raw URG expression/subexpression, preserves each source ledger row, and
+fails if metric totals or semantic IDs do not reconcile. The tracked audit
+artifacts are under docs/verification/data/thermo5-tx-coverage-root-cause/.

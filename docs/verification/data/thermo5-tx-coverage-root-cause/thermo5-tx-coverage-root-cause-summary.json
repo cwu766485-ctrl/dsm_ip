@@ -1,0 +1,123 @@
+{
+  "all_rows_have_allowed_status": true,
+  "approved_waivers": 0,
+  "bin_records_by_metric_and_root_cause": {
+    "branch:CDC_OR_RESIDUAL_STATE": 4,
+    "branch:FIXED_PRODUCT_CONFIGURATION": 92,
+    "branch:IDENTITY_DPD_ARITHMETIC": 64,
+    "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 37,
+    "cond:INTERPOLATOR_EMPTY_OR_BLOCKED": 4,
+    "cond:RESET_RELEASE_OR_STATE_HOLD": 259,
+    "line:CDC_OR_RESIDUAL_STATE": 7,
+    "line:DPD_TAP_HISTORY_CONFIGURATION": 192,
+    "line:FIXED_PRODUCT_CONFIGURATION": 244,
+    "line:IDENTITY_DPD_ARITHMETIC": 128,
+    "line:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 35,
+    "toggle:CDC_OR_RESIDUAL_STATE": 130,
+    "toggle:COUNTER_HIGH_BITS": 640,
+    "toggle:DATA_VALUE_OR_TOGGLE_STIMULUS": 3452,
+    "toggle:DPD_TAP_HISTORY_CONFIGURATION": 8192,
+    "toggle:FIXED_PRODUCT_CONFIGURATION": 793,
+    "toggle:IDENTITY_DPD_ARITHMETIC": 4320
+  },
+  "closure_status_counts": {
+    "OPEN": 18593
+  },
+  "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
+  "exclusions_applied": 0,
+  "functional_legally_applicable_positive_bins": {
+    "covered": 170,
+    "expected": 170
+  },
+  "functional_negative_only_semantic_bins": 2,
+  "functional_raw_bins": {
+    "covered": 170,
+    "expected": 174,
+    "uncovered_records": 4
+  },
+  "interpretation": "Root-cause groups are planning hypotheses. All code gaps remain OPEN until an exact simulator hit or non-vacuous proof is recorded.",
+  "negative_report": "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report",
+  "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+  "raw_bin_id_collision_extra_rows": 17,
+  "raw_bin_id_collision_groups": 17,
+  "raw_dut_coverage": {
+    "branch": {
+      "covered": 440,
+      "missing": 197,
+      "percent": 69.0738,
+      "total": 637
+    },
+    "cond": {
+      "covered": 583,
+      "missing": 263,
+      "percent": 68.9125,
+      "total": 846
+    },
+    "line": {
+      "covered": 3190,
+      "missing": 606,
+      "percent": 84.0358,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 86951,
+      "missing": 17527,
+      "percent": 83.2242,
+      "total": 104478
+    }
+  },
+  "raw_report": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030",
+  "raw_report_sha256": {
+    "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/groups.html": "9a3375a588eb9986f8b8c5f6b0eef1e72cf521d818b4cf2b12454572692aac1f",
+    "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp6.html": "99302b068244bb10654461a46b1c2a6cfa29b881c4a6ec3102d636601cf927b4",
+    "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp7.html": "3f21a7816173ab001637554017379606c6bb3d5844cd4f865347e0484dd6a40b",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/groups.html": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp6.html": "d3c11d0d3bd16a39914bc6a48fb5d7ba321cde93f7ba853e055c9dc1e148ba03",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp7.html": "4e4030eec014baefce92d65ecf7cd5713df50b63508a2628dbffa1fa28dc24aa",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod1.html": "3b1ff292fc254de5ade572ea1e25ebf148dacee84f3081fd15c3d6dea7f55e2f",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod10.html": "414476831db832f5ed40390ffb391148cc8d065dd6d3b72f2fd2281b1b04c689",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod12.html": "0ff0640ec86cc92a4de75ef038bd455fee24ddbf816541df3d3f4888cb7a124b",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod13.html": "4bb98f88abb5e62cf9b17efb8bd6353bb80026283e1c5be289f7107f2a12fa87",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod15.html": "e236cc5fceba7c782036f04ffaf10f78e13a504cd96e05652aa062a9ca48dbf9",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod16.html": "dcbae5f44cb729f97c58fab76a95c4e5f0b4396ec09b45c11e7913275c5c992f",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod18.html": "57a7f4701ccbb91acbc91398ba904081a5228320326305777462827c0552fe07",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod18_0.html": "f5341fca3c4190eb72c38e87e07f1714ecd507d706d76fc4bbe31c659c8171d1",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod2.html": "c75fe3aee353f7f6dd698e7115f5472ac0dd355eaf5fff454c8fe61fdb7b72df",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod20.html": "6705712969a5abd4b73ea49c8c0e559ce0a16ade4b59a7f4c71150f128d4569d",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod21.html": "91a630392fadbd55e61c2b5355f7fa752f1b4a4f6f062381d343c67a3d7c15d3",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod22.html": "d7ee17f9e230370e73434b12a7626827b89bb7397ff0be43c337682987e8b126",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod23.html": "ea1f9850e3fd92669700685d2a544b765ac06833091455657ebe6b4deb544009",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod3.html": "b1545e56e331c0a7dd6b9265c2ccdb5490fa07dbd5bb2bfe060e4de162709404",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod4.html": "54e76e9a856d376bfb57e4f1217df7ca526dc2536e257c67ea315903bf0d4a94",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod6.html": "e8e2e1e739cf6cc7fa679a2eef399ff7283a9ccbb06eac0913223de1ebe55f64",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod7.html": "0ec3961fd690d9994d21548b63510c7f9453be980e80dbed031db8e61605b6dd",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod8.html": "5bc5710b9bbb349c3159ee774047ff51db959c7fdf15aed39bc0cac9530b3f5f",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/mod9.html": "dbecf897985abacb2c7142241c17be66ce3c4ae176c06e1de71e7a2fa8ccd478",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/modlist.html": "dbd545381ab2f997f0e10474b12d478c732f12928122b4ef4daa0bfda0ac1deb"
+  },
+  "raw_simulation_source_mismatches": [],
+  "root_cause_task_count": 492,
+  "schema_version": 2,
+  "source_ledger": "runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv",
+  "source_ledger_metric_counts": {
+    "branch": 197,
+    "cond": 263,
+    "line": 606,
+    "toggle": 17527
+  },
+  "source_ledger_rows": 18593,
+  "source_ledger_sha256": "e586d27684fffe4e98b1d4c4bd43b22839c349ef31c07b1779d4a69c4ce45222",
+  "source_manifest_mismatches": [
+    "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv"
+  ],
+  "source_manifest_sha256": "3e875543c44f93c4d418f73eea76f17a898205239ae937d2f60df7ccba2340eb",
+  "source_manifest_sha_matches_current_tree": false,
+  "source_product_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
+  "task_count_by_metric": {
+    "branch": 53,
+    "cond": 107,
+    "line": 123,
+    "toggle": 209
+  },
+  "unique_expression_aware_semantic_bin_ids": 18593
+}

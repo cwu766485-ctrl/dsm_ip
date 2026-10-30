@@ -1,6 +1,43 @@
 # Execution frontier
 
-## Current execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
+## Current execution state: Coverage closure Step 1/2 audited; Step 3 next (2026-10-30)
+
+The active local branch codex/thermo5-tx-coverage-audit is preparing an
+independent Linux coverage-audit PR stacked on open, draft PR #8. PR #8 remains
+open and unmerged; PR #2–#8 must not be merged as part of this work.
+
+Coverage Closure Step 1/2 are complete as a deterministic review of existing
+VCS/URG evidence. The exact Product VCS/URG source is
+2a2ce4d9e6f73c135cb355cdbeef52b8f386f359 for the current worktree, with product
+simulation evidence at c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b. Product RTL
+and UVM simulation compile inputs still match that evidence. The later AXI-Lite
+Formal harness dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv differs from
+its recorded hash, so old Formal results are not treated as current-source
+proof and must be rerun for the final fixed-SHA package.
+
+Functional URG is 170/174 Raw. The four zero-hit rows resolve to two semantic
+illegal-frame-only bins, each repeated in type and instance report views:
+source_cg.cp_packet_quanta.malformed_early and core_cg.cp_illegal.bad_frame.
+Both are observed by the separate negative test/report; all 170 legal positive
+semantic bins are hit. No Raw denominator or coverage model was changed.
+
+The 18,593 Raw code gaps are mapped into 492 location-rooted closure tasks:
+197 Branch, 263 Condition, 606 Line, 17,527 Toggle. All source rows remain
+OPEN; no bin was removed. The prior ledger's 17 duplicate bin_id groups were
+collisions between expression and subexpression bins, not missing source rows.
+The new audit restores exact URG expression text and unique semantic IDs.
+Raw and Adjusted are still identical; waivers and exclusions remain zero;
+RAW_100_OPEN.
+
+Tracked artifacts are in
+docs/verification/thermo5-tx-coverage-root-cause-closure.md and
+docs/verification/data/thermo5-tx-coverage-root-cause/.
+No VCS or Formal run was repeated for this inventory. The fixed-SHA Raw
+coverage is reused. Next: target the highest-value legal Branch/Condition bins
+with independent checkers and monitor-observed DUT events; compare Raw
+coverage after each focused run and stop if the hit count does not move.
+
+## Previous execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
 
 The working branch `codex/thermo5-tx-final-closure` started at exact PR #7
 head `f5394c3eaa6d283caf91c5c64b08a7d83c714a57`; PR #2–#7 ancestry is
