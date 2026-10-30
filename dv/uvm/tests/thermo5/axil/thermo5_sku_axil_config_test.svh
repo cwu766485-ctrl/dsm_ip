@@ -408,3 +408,66 @@ class thermo5_sku_axil_product_identity_test extends thermo5_sku_axil_config_tes
     if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_COEFF","Product coefficient high-word write failed")
   endtask
 endclass
+
+// Continuous two-frame identity stream for product-configuration coverage.
+// Unlike STOP/restart qualification, both legal packets enter one RUN epoch;
+// the independent scoreboard checks that frame-tail/lookahead handling keeps
+// the complete four-plane output bit-true across the packet boundary.
+class thermo5_sku_axil_product_identity_continuous_test extends thermo5_sku_axil_product_identity_test;
+  `uvm_component_utils(thermo5_sku_axil_product_identity_continuous_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=2;
+    if (cfg.core_words!=112 || cfg.source_beats!=64)
+      `uvm_fatal("PRODUCT_CONTINUOUS_WORDS",
+        "Use CORE_WORDS=112 for two contiguous identity-product frames")
+  endfunction
+
+  virtual function string scenario_pass_message();
+    return "THERMO5_AXIL_PRODUCT_IDENTITY_CONTINUOUS_UVM_PASS: two one-tap identity frames matched all four planes";
+  endfunction
+
+  virtual task check_scenario_stream();
+    int expected_dpd_words;
+    expected_dpd_words=cfg.core_words+cfg.frame_starts;
+    if (env.source.monitor.accepted_beats!=cfg.source_beats ||
+        env.source.monitor.accepted_last_count!=2 ||
+        env.scoreboard.source_checked!=cfg.source_beats ||
+        env.scoreboard.checked!=cfg.core_words ||
+        env.coverage.pa_words!=cfg.core_words ||
+        env.coverage.frame_starts!=cfg.frame_starts ||
+        vif.protocol_error || env.coverage.underflow_before_last_source!=0)
+      `uvm_fatal("PRODUCT_CONTINUOUS_STREAM",
+        $sformatf("source=%0d/%0d TLAST=%0d/2 frames=%0d/%0d output=%0d/%0d protocol=%b underflow=%0d",
+          env.source.monitor.accepted_beats,cfg.source_beats,
+          env.source.monitor.accepted_last_count,
+          env.coverage.frame_starts,cfg.frame_starts,
+          env.scoreboard.checked,cfg.core_words,vif.protocol_error,
+          env.coverage.underflow_before_last_source))
+    for (int lane=0;lane<16;lane++) begin
+      if (vif.dpd_sample_count[lane]!==expected_dpd_words ||
+          vif.dpd_saturation_count[lane]!==0)
+        `uvm_fatal("PRODUCT_CONTINUOUS_DPD_COUNT",
+          $sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
+            lane,vif.dpd_sample_count[lane],expected_dpd_words,
+            vif.dpd_saturation_count[lane]))
+    end
+  endtask
+endclass
+
+class thermo5_sku_axil_product_identity_interframe_gap_test extends thermo5_sku_axil_product_identity_continuous_test;
+  `uvm_component_utils(thermo5_sku_axil_product_identity_interframe_gap_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function string scenario_pass_message();
+    return "THERMO5_AXIL_PRODUCT_IDENTITY_INTERFRAME_GAP_UVM_PASS: one legal source-clock bubble between two identity frames matched all four planes";
+  endfunction
+endclass
