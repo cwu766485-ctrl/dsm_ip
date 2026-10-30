@@ -5,8 +5,8 @@
 The working branch `codex/thermo5-tx-final-closure` started at exact PR #7
 head `f5394c3eaa6d283caf91c5c64b08a7d83c714a57`; PR #2–#7 ancestry is
 continuous, and none were merged. Phase 0 source/evidence reconciliation and
-Phase 1 Linux architecture studies are complete on the local follow-up. An
-independent stacked PR is being prepared; do not merge it.
+Phase 1 Linux architecture studies are complete. PR #8 is open as a draft
+stacked on PR #7 and is not merged; do not merge it.
 
 The product contract is unchanged: Centered-Cubic x2+x2, EF2 ORDER=2,
 STEP=5120, 20-bit state, 32 chronological lanes, four planes, one-tap identity
@@ -46,11 +46,9 @@ manifest generated. Full product coverage/regression was intentionally not
 repeated because its simulation inputs are unchanged from the source-linked
 PR #7 evidence.
 
-**Next:** finish documentation/evidence consistency checks, commit and push
-the independent follow-up branch, and open its stacked PR without merging.
-Phase 2–6 TX coverage/formal closure, DPD identity proof convergence, real
-XPM/GT Wizard, FPGA PPA/routed timing, and physical QAM256 BER remain later
-OPEN work. Vivado is not available in this Linux flow.
+**Next:** review PR #8. Phase 2–6 TX coverage/formal closure, DPD identity
+proof convergence, real XPM/GT Wizard, FPGA PPA/routed timing, and physical
+QAM256 BER remain later OPEN work. Vivado is not available in this Linux flow.
 
 The Gate 0–3 notes immediately below preserve the earlier closure checkpoints
 for traceability; their source/configuration scopes do not change here.

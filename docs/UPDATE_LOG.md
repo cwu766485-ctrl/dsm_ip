@@ -1,3 +1,18 @@
+## 2026-10-30 17:02 SGT - Publish Phase 0/1 TX closure PR #8
+
+- Opened draft PR #8, `Thermo5 TX: Phase 0/1 Linux design and verification
+  closure`, stacked on PR #7; it remains open and unmerged.
+- The locally tested commit is `99c852dc46cbb9091c6099267535465acfac2d47`.
+  The GitHub API-created PR head is `3da1ab21142218ce795252bd62d8865176a9ffe5`;
+  both resolve to the same complete tree SHA
+  `20a10962b1979349b15fcbf9a9b4807f78f26786`.
+- Updated the active execution frontier to reflect the published PR and its
+  review as the next action. No RTL, verification behavior, product coverage,
+  or benchmark result changed in this publication bookkeeping.
+- Checks: clean source state before this note; PR metadata confirms open,
+  draft, unmerged, with PR #7 as base. A follow-up docs-only commit will keep
+  this entry and the active frontier synchronized on the PR branch.
+
 ## 2026-10-30 16:54 SGT - Complete TX Phase 0/1 Linux closure studies
 
 - Reconciled PR #2–#7 ancestry and the current PR #7 base; recorded the frozen
