@@ -74,6 +74,15 @@ even though all 112 outputs and both frame markers were observed; the failed
 VDB is excluded from Raw coverage. No full Gate 0–3 regression was repeated in
 PR #7.
 
+The Frame Tail module-level VC Formal check now passes with the parameter split
+used by `tid32_thermo5_frontend_tx.sv:102/:178`: the append-enabled stage
+reaches and transfers its synthetic tail, while the append-disabled stage's
+tail output is uncoverable.
+All three assertions and all three applicable covers pass; the fourth cover is
+expected uncoverable, with zero black boxes and setup violations. This does not
+prove full two-stage composition and does not change Raw URG coverage or its
+denominator.
+
 ## Historical PR #5 multi-configuration Gate 3 coverage result
 
 | Raw project RTL metric | Generic | AXI-Lite |

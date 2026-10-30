@@ -1,8 +1,9 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 13:44 SGT
+**Date:** 2026-10-30 13:59 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
-**Current tested source SHA:** `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree `694457bbacf2eda2a061da910f404975fd75ec8d`)
+**Current product VCS source SHA:** `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree `694457bbacf2eda2a061da910f404975fd75ec8d`)
+**Formal follow-up SHA:** `23214fbe4b7a06bcf489e39ec9110d76885eda9e` (tree `498d78da91ce2bc48e29f3c28e1a8c4d52a19efd`; clean Formal run)
 **Product simulation-source SHA:** `913be930bfcbbad0f78dbc90e06299db3d1bb337` (the refreshed VCS filelist excludes the Formal-only harness update)
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
 **Machine-readable evidence:** [`thermo5-tx-linux-coverage-closure-evidence.json`](thermo5-tx-linux-coverage-closure-evidence.json)
@@ -248,11 +249,16 @@ report and are not merged into legal product coverage.
   hit, zero black boxes. Five non-vacuous helper constraints were activated,
   but identity payload and no-saturation assertions remained inconclusive. No
   RTL or formal harness was changed in that attempt.
-- **Centered frame tail: simulation reachable; formal mapping OPEN.** The
-  legal four-plane replay covers normal frame-tail processing, and the
-  separate negative assertion run checks malformed tail ordering. There is
-  no dedicated tail reachability harness in the current formal package, so no
-  formal-unreachability claim is made for tail-related bins.
+- **Centered frame tail: scoped parameter reachability PASS.** A new
+  VC Formal harness uses the production stage parameters (`W=16`, `LANES=8`)
+  and the frontend's `APPEND_TAIL_VECTOR=1` / `0` split at
+  `tid32_thermo5_frontend_tx.sv:102` / `:178`. It proves 3/3
+  assertions, covers the legal frame-end and appended-tail transfer at the
+  enabled parameter, and marks the disabled parameter's tail cover
+  `uncoverable`; zero black boxes and setup violations. The harness is
+  module-level and does not prove end-to-end composition between the two
+  cascaded stages. This is reachability evidence only: Raw bins remain in the
+  denominator, no waiver is applied, and URG counts do not change.
 - **PAIR_LOOKAHEAD and nonidentity 2/4-tap DPD:** candidate-only. Their prior
   A/B/formal evidence remains separate; none is counted in the product Raw
   denominator.
@@ -316,6 +322,8 @@ Latest license-restored evidence (current tested source SHA
   `runs/thermo5_tx_product_formal_axil_read_default_20261030/`.
 - Identity-DPD helper-constraint Formal attempt:
   `runs/thermo5_tx_product_formal_identity_lemmas_retry2_20261030/`.
+- Frame-tail parameter reachability Formal at the clean follow-up SHA:
+  `runs/thermo5_tx_frame_tail_formal_clean_20261030/`.
 - Earlier AXI-Lite write-case default proof (3/3 assertions) and current exact
   product configuration proof (4/4 assertions, 1/1 cover; both default targets
   non-vacuous; zero setup violations):
@@ -496,6 +504,8 @@ in `runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/attempt_resul
 **Acceptance:** Task 4 closed the previously missing product FSM transitions
 and improved toggles, while reachable line/branch/condition closure remains
 open. Task 5 has legal/negative assertion separation and a caught product
-checker mutation; DPD identity formal and dedicated Frame Tail formal remain
-open. Task 6 is Linux-only partial signoff: functional applicable bins are
-covered, but `RAW_100_OPEN` and `COMMUNICATION_ACCEPTANCE_UNDEFINED` remain.
+checker mutation; DPD identity formal and end-to-end Frame Tail composition
+remain open. The Frame Tail parameter reachability proof passes at module level, but
+full cascaded-stage composition remains open. Task 6 is Linux-only partial
+signoff: functional applicable bins are covered, but `RAW_100_OPEN` and
+`COMMUNICATION_ACCEPTANCE_UNDEFINED` remain.

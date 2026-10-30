@@ -120,7 +120,16 @@
     "identity_helper_formal_manifest": "b52f1960d8e0c8e663d5bfc1dcc30f5e17e3967bcec2a93920945efe6673cb28",
     "identity_helper_formal_properties_stage1": "aec99b93a73fc41a2583a677fcb7aa6ba09930a5071be42d2b58ba0d08620b48",
     "identity_helper_formal_properties_compositional": "872ffd9cd95dc4e27f518b5dd352dcc8f1d9f5026ba65e46748e2eb48e942c57",
-    "identity_helper_formal_console": "4f8d7836d163ffedf97da9cc243341d8daea8b6b5d9d5e0598a1e0cda92e15db"
+    "identity_helper_formal_console": "4f8d7836d163ffedf97da9cc243341d8daea8b6b5d9d5e0598a1e0cda92e15db",
+    "frame_tail_formal_console": "aa8c4e5ba90d641059f1264cace5d96f80a59874a22644a2ce5cf7ec5cbea3c2",
+    "frame_tail_formal_properties": "49091addd710b7de3c483888f0c0b05408c0b6cdd21f26d919c28defa6d64d1d",
+    "frame_tail_formal_setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "frame_tail_formal_summary": "73973df18750a4bd699c267fb260b9d2456127181aa202e655b71d8999c42898",
+    "frame_tail_formal_harness": "c2d8af8a82945c5f423d092c598b17900b7ae926715ab6cafb6df1dae41ca193",
+    "frame_tail_formal_runner": "d7993b6ae04baa1a31b9c99c3aee9220aa4fa1c1b90b9e861ccf6eb6fba2e355",
+    "frame_tail_formal_tcl": "3ba2959ea5e50004d4cc66551e045c33d63662479a1a07cea0623b84ef64ad65",
+    "frame_tail_formal_dut": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+    "frame_tail_frontend_parameter_mapping": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d"
   },
   "artifact_tree_sha256": {
     "axil_cfg_default_formal_run": "a3f14ed411aabd4ab9ae5bf22a8ac7bf383b69a7e208479997a1a5d6d4b45880",
@@ -252,7 +261,8 @@
     "product_source_gap_2_vdb": "80fc25a5ccb223c2a38ee7d61cb104f49cc0b9814b893a9501d552ef0caebb7c",
     "product_source_gap_4_vdb": "b81388f20c6352585937689f418a4c7e3b81e7c9d474078f8eae2518d84e8d55",
     "product_source_gap_8_vdb": "31370845c0b4beed3aa0ecf977f81941cf0ac43ca6560e447df154930a181bae",
-    "product_source_gap_16_vdb_excluded": "dec8d32c77ca5dbf31bd8c88b759813ff4b59e2eac62ad2d6ca60775a8519615"
+    "product_source_gap_16_vdb_excluded": "dec8d32c77ca5dbf31bd8c88b759813ff4b59e2eac62ad2d6ca60775a8519615",
+    "frame_tail_formal_run": "7133e7f4b9d66b4aa3c4049a211fe6ab9a6e7c4a9346c40265def61e780a2749"
   },
   "artifact_tree_sha256_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path length, relative path bytes, then the raw SHA256(file) digest.",
   "benchmark": {
@@ -383,7 +393,8 @@
     "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage_after_source_gap_current_20261030/summary.json --groups-html runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/groups.html --waivers-csv docs/verification/thermo5_tx_waivers.csv --el-file dv/uvm/sim/thermo5_tx_main.el --source-manifest runs/thermo5_tx_product_axil_reset_cov_20261030/source_manifest_after_current_sha.json --output runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_after_source_gap_current_20261030.json",
     "python3.12 tools/hw/thermo5_gap_ledger.py runs/thermo5_tx_product_axil_reset_cov_20261030/ledger_closure_after_source_gap_current runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030 --variants axil",
     "runs/thermo5_tx_product_formal_axil_read_default_20261030/command.txt (VC Formal AXI-Lite MAX_TAPS=1; 4/4 assertions and 1/1 cover)",
-    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_convergence.py --job identity --auto-lemmas --out-dir runs/thermo5_tx_product_formal_identity_lemmas_retry2_20261030"
+    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_convergence.py --job identity --auto-lemmas --out-dir runs/thermo5_tx_product_formal_identity_lemmas_retry2_20261030",
+    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs frame_tail --out-dir runs/thermo5_tx_frame_tail_formal_clean_20261030"
   ],
   "configuration_applicability_review": [
     {
@@ -460,8 +471,46 @@
       }
     },
     "centered_frame_tail_reachability": {
-      "simulation": "normal tail bit-true replay plus separate malformed-tail assertion test",
-      "status": "OPEN_NO_DEDICATED_FORMAL_HARNESS"
+      "status": "PASS_MODULE_LEVEL_PARAMETER_REACHABILITY",
+      "artifact_directory": "runs/thermo5_tx_frame_tail_formal_clean_20261030",
+      "source_git_sha": "23214fbe4b7a06bcf489e39ec9110d76885eda9e",
+      "source_tree_sha": "498d78da91ce2bc48e29f3c28e1a8c4d52a19efd",
+      "worktree_dirty": false,
+      "dut_source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+      "dut_source_sha256": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+      "frontend_parameter_mapping": "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv:102/178",
+      "frontend_parameter_mapping_sha256": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+      "harness": "dv/uvm/formal/thermo5_frame_tail_harness.sv",
+      "runner": "dv/uvm/formal/run_thermo5_scoped_formal.py --jobs frame_tail",
+      "tcl": "dv/uvm/formal/run_thermo5_gap_fpv.tcl",
+      "production_stage_parameters": {
+        "W": 16,
+        "LANES": 8
+      },
+      "frontend_parameter_split": {
+        "append_stage": "APPEND_TAIL_VECTOR=1",
+        "second_stage": "APPEND_TAIL_VECTOR=0"
+      },
+      "assertions": "3/3 proven",
+      "covers": {
+        "append_frame_end": "COVERED",
+        "append_tail_transfer": "COVERED",
+        "plain_frame_end": "COVERED",
+        "plain_tail": "UNCOVERABLE_EXPECTED"
+      },
+      "source_assumption": "Stable source payload while either stage applies backpressure; assumption non-vacuous.",
+      "black_boxes": 0,
+      "setup_violations": {
+        "clock": 0,
+        "glitch": 0,
+        "combinational_loop": 0,
+        "multidriven": 0
+      },
+      "duration_seconds": 18.23,
+      "formal_scope_limit": "Module-level parameter reachability only; does not prove end-to-end composition between cascaded stages.",
+      "raw_coverage_delta": "None; Formal evidence does not count as URG hit.",
+      "raw_bins_removed": false,
+      "waiver_applied": false
     },
     "dpd_identity_arithmetic": {
       "assertions_inconclusive": "4/5",
@@ -627,16 +676,15 @@
     "urg_command": "runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_source_gap_current_20261030.command.txt",
     "urg_report": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030"
   },
-  "latest_evidence_revision": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
-  "latest_evidence_time_sgt": "2026-10-30 13:44 SGT",
+  "latest_evidence_revision": "23214fbe4b7a06bcf489e39ec9110d76885eda9e",
+  "latest_evidence_time_sgt": "2026-10-30 13:59 SGT",
   "not_run_or_open": [
     "real XPM FIFO simulation/formal coverage",
     "actual GT Wizard/raw64 vendor-model simulation",
     "Vivado FPGA PPA/routed timing",
     "physical QAM256 BER",
     "reachable line/condition/branch/toggle closure",
-    "DPD identity arithmetic formal completion",
-    "dedicated Frame Tail formal reachability"
+    "DPD identity arithmetic formal completion"
   ],
   "product_configuration": {
     "coverage_hierarchy": "+tree thermo5_sku_uvm_tb.dut",
@@ -666,7 +714,8 @@
     "current_product_compile": "runs/thermo5_tx_product_current_compile_20261030",
     "product_source_gap_sweep": "runs/thermo5_tx_product_source_gap_current_20261030",
     "axil_cfg_read_default_formal": "runs/thermo5_tx_product_formal_axil_read_default_20261030",
-    "identity_helper_formal": "runs/thermo5_tx_product_formal_identity_lemmas_retry2_20261030"
+    "identity_helper_formal": "runs/thermo5_tx_product_formal_identity_lemmas_retry2_20261030",
+    "frame_tail_formal": "runs/thermo5_tx_frame_tail_formal_clean_20261030"
   },
   "schema_version": 1,
   "scope": "Thermo5 TX product configuration; Linux Generic FIFO substitute; VCS/URG and VC Formal only",
@@ -674,7 +723,9 @@
     "pr6_base_sha": "006d52deaaf8ef3980461a6d4efdf1d2c0aa7011",
     "tested_local_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
     "tested_source_tree_sha": "694457bbacf2eda2a061da910f404975fd75ec8d",
-    "previous_uploaded_pr_code_commit_sha": "09c2e082876801d79946787d71f78082c4983f62"
+    "previous_uploaded_pr_code_commit_sha": "09c2e082876801d79946787d71f78082c4983f62",
+    "formal_harness_source_sha": "23214fbe4b7a06bcf489e39ec9110d76885eda9e",
+    "formal_harness_source_tree": "498d78da91ce2bc48e29f3c28e1a8c4d52a19efd"
   },
   "testbench_changes": {
     "bounded_pa_stall_override": {
@@ -1067,5 +1118,5 @@
     "vc_formal": "V-2023.12-SP2",
     "vcs": "V-2023.12-SP1"
   },
-  "latest_evidence_tree_sha256": "694457bbacf2eda2a061da910f404975fd75ec8d"
+  "latest_evidence_tree_sha256": "498d78da91ce2bc48e29f3c28e1a8c4d52a19efd"
 }

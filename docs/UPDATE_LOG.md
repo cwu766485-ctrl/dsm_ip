@@ -4461,3 +4461,29 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Limits: the longer PA hold did not hit additional DUT code bins. Coverage
   convergence, identity DPD proof, frame-tail formal reachability, vendor
   XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open.
+
+## 2026-10-30 13:59 SGT - Prove centered frame-tail parameter reachability
+
+- Added a scoped VC Formal harness for the centered interpolator's two
+  frontend parameter settings (`APPEND_TAIL_VECTOR=1` and `0`, W=16,
+  LANES=8). Added the corresponding scoped Formal runner job and recorded the
+  exact result in the TX closure evidence and signoff notes.
+- VC Formal V-2023.12-SP2: 3/3 assertions proven; all three legal covers hit;
+  the append-disabled tail cover is expected `uncoverable`; zero black boxes
+  and zero clock/glitch/loop/multidriver setup violations. The source-stability
+  assumption is non-vacuous. Repeated the proof from clean source SHA
+  `23214fbe4b7a06bcf489e39ec9110d76885eda9e`; the manifest hashes the
+  production interpolator RTL and reports a clean worktree.
+- The proof is module-level parameter reachability, not end-to-end composition
+  of the cascaded interpolators. It does not add URG hits, alter the coverage
+  denominator, or approve a waiver.
+- Rechecked the existing product Raw gate without rerunning VCS/URG:
+  `RAW_100_OPEN`, Raw equals Adjusted, zero waivers/exclusions; line
+  3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478,
+  FSM states 13/13 and transitions 22/22.
+- Checks: Formal proof PASS; coverage gate recheck PASS with `RAW_100_OPEN`;
+  evidence JSON parses; `git diff --check` PASS.
+- Remaining: product Raw code coverage and DPD identity arithmetic Formal
+  remain open. The module-level proof does not qualify full-chain frame-tail
+  composition. Real XPM, GT Wizard, FPGA PPA, and physical QAM256 BER remain
+  outside this Linux signoff.

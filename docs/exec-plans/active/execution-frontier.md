@@ -13,6 +13,11 @@ centered-cubic interpolation, EF2 ORDER=2, STEP=5120, `DPD_MAX_TAPS=1`, identity
 DPD, and Generic FIFO as the Linux substitute. RX, AI-DPD, frozen TX algorithms,
 XPM, GT Wizard, and Vivado physical implementation are outside this Linux task.
 
+Formal follow-up SHA `23214fbe4b7a06bcf489e39ec9110d76885eda9e` (tree
+`498d78da91ce2bc48e29f3c28e1a8c4d52a19efd`) is clean and proves the centered
+interpolator parameter-level frame-tail reachability. Product VCS inputs did
+not change in that follow-up.
+
 With the license restored, VCS recompiled the 20-module product setup and the
 positive Raw URG merge now contains 29 product-scoped simulation VDBs plus the
 compile VDB. The source-gap checks passed at 2/4/8 cycles (seeds 610834–610836)
@@ -38,6 +43,11 @@ PASS (6/6 assertions, 3/3 covers), and Generic FIFO CDC remains PASS (7/7,
 9/9, zero black boxes). Expected-negative assertions and scoreboard mutation
 remain separate from legal product Raw.
 
+A new module-level Frame Tail Formal check proves 3/3 assertions, reaches the
+append-enabled legal tail, and confirms the append-disabled parameter's tail
+cover is uncoverable. This is not a full two-stage composition proof and does
+not alter URG bins.
+
 The product EF2 `PAIR_LOOKAHEAD` true arm is fixed inactive in the current
 wrapper: four `231:1` branch bins remain in Raw as `OPEN_CONFIGURATION_REVIEW`.
 No candidate configuration is merged. Full Gate 0–3 regression was not
@@ -45,9 +55,9 @@ repeated.
 
 **Next:** continue Task 4 in order with legal stimuli for reachable branches,
 conditions, lines, and high toggles; keep exact configuration-inactive bins in
-Raw pending reviewed evidence. Continue Task 5 with exact DPD and frame-tail
-reachability and independent checker mutations. Task 6 remains a Linux model
-screen because product BER/BLER acceptance is undefined. Real XPM, GT Wizard,
+Raw pending reviewed evidence. Continue Task 5 with exact DPD identity proofs,
+remaining reachability, and independent checker mutations. Task 6 remains a
+Linux model screen because product BER/BLER acceptance is undefined. Real XPM, GT Wizard,
 FPGA PPA/routed timing, and physical QAM256 BER remain open. Keep
 PAIR_LOOKAHEAD and 2/4-tap DPD candidate reports separate from the product.
 
