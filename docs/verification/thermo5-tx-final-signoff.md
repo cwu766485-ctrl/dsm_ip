@@ -15,10 +15,20 @@ not claim a stable physical QAM256 link.
 > AXI-Lite `MAX_TAPS=1` parameter guard proof; it changes no VCS input or DUT RTL.
 > The TX product Raw URG is 81.99%: line 3190/3796, condition 583/846, branch
 > 440/637, toggle 86951/104478, FSM states 13/13 and transitions 22/22.
-> Functional applicable legal bins are 170/170. There are 0 waivers/exclusions;
+> Functional report: 210/214 scoreable Raw bin records, including all generated
+> crosses; 210/210 legally applicable positive records are hit. There are 0
+> approved code waivers/exclusions;
 > Raw 100% remains open. The detailed product-only report and exact run
 > provenance are in [`thermo5-tx-linux-coverage-closure.md`](thermo5-tx-linux-coverage-closure.md)
 > and its evidence JSON.
+
+> **Functional bin accounting correction — 2026-10-30:** The previous 170/174
+> tally omitted 40 automatically generated EF2 cross-bin records from the same
+> unchanged URG Group Report. The full type and instance view now enumerates
+> 214 scoreable rows (210 hit, four illegal-frame-only misses) plus 12 bins
+> already marked Illegal/Excluded by the URG model. Raw URG data and its
+> denominator were not changed. See the [complete bin detail](data/thermo5-tx-coverage-root-cause/thermo5-tx-functional-bin-detail.csv)
+> and [current Linux signoff snapshot](thermo5-tx-coverage-final-signoff.md).
 
 ## Gate status and published revisions
 
@@ -66,8 +76,10 @@ Full assumptions, matrices, commands, and hashes are in
 | FSM states / transitions | 13/13; 22/22 | 100% |
 
 The latest Raw merge contains 29 product-hierarchy-scoped simulation VDBs
-plus the compile VDB. All 170 legally applicable positive functional bins are hit;
-raw URG remains 170/174 because malformed-frame bins are reported separately.
+plus the compile VDB. The full URG Group Report contains 214 scoreable bin
+records; 210/210 legally applicable positives are hit, while four illegal-frame
+rows remain unhit in Raw. The earlier 170/174 tally omitted the 40 EF2
+cross-bin records and is superseded by the complete bin detail.
 The 18,593-row source-linked ledger remains OPEN/review-only. The targeted
 zero-gap, inter-frame-gap, and source-pacing VCS tests and AXI-Lite reachability
 proof are documented in the linked closure report. At `MAX_TAPS=1`, Formal

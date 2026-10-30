@@ -11,6 +11,7 @@ import io
 import json
 import re
 import sys
+import subprocess
 from collections import Counter, defaultdict, deque
 from pathlib import Path
 
@@ -351,6 +352,23 @@ def main() -> int:
         writer.writeheader()
         writer.writerows(functional_rows)
 
+    functional_detail_path = args.output_dir / "thermo5-tx-functional-bin-detail.csv"
+    functional_detail_script = ROOT / "tools" / "hw" / "thermo5_tx_functional_bin_detail.py"
+    subprocess.run([
+        sys.executable, str(functional_detail_script),
+        "--raw-report", str(args.raw_report),
+        "--negative-audit", str(args.output_dir / "thermo5-tx-functional-bin-audit.csv"),
+        "--out", str(functional_detail_path),
+    ], check=True)
+    with functional_detail_path.open(encoding="utf-8", newline="") as stream:
+        functional_detail_rows = list(csv.DictReader(stream))
+    functional_scoreable = [row for row in functional_detail_rows
+                            if row["raw_denominator_applicable"] == "true"]
+    functional_covered = [row for row in functional_scoreable if row["raw_status"] == "COVERED"]
+    functional_uncovered = [row for row in functional_scoreable if row["raw_status"] == "UNCOVERED"]
+    functional_excluded = [row for row in functional_detail_rows
+                           if row["raw_denominator_applicable"] == "false"]
+
     status_counts = Counter(row["closure_status"] for row in classified)
     cause_counts = Counter((row["metric"], row["root_cause_class"]) for row in classified)
     task_metric_counts = Counter(task["metric"] for task in tasks)
@@ -385,8 +403,25 @@ def main() -> int:
         "bin_records_by_metric_and_root_cause": {
             f"{metric}:{cause}": count for (metric, cause), count in sorted(cause_counts.items())
         },
-        "functional_raw_bins": {"covered": 170, "expected": 174, "uncovered_records": 4},
-        "functional_legally_applicable_positive_bins": {"covered": 170, "expected": 170},
+        "functional_raw_bins": {
+            "covered": len(functional_covered),
+            "expected": len(functional_scoreable),
+            "uncovered_records": len(functional_uncovered),
+            "detail_rows_including_urg_model_excluded": len(functional_detail_rows),
+            "urg_model_excluded_rows": len(functional_excluded),
+            "includes_generated_cross_bins": True,
+        },
+        "functional_bin_detail_report": {
+            "file": functional_detail_path.name,
+            "sha256": sha256_file(functional_detail_path),
+            "groups_html_sha256": sha256_file(args.raw_report / "groups.html"),
+            "scoreable_rows": len(functional_scoreable),
+            "rows_including_existing_urg_model_exclusions": len(functional_detail_rows),
+        },
+        "functional_legally_applicable_positive_bins": {
+            "covered": sum(row["legal_applicability"] == "LEGAL_PRODUCT" and row["raw_status"] == "COVERED" for row in functional_scoreable),
+            "expected": sum(row["legal_applicability"] == "LEGAL_PRODUCT" for row in functional_scoreable),
+        },
         "functional_negative_only_semantic_bins": 2,
         "interpretation": "Root-cause groups are planning hypotheses. All code gaps remain OPEN until an exact simulator hit or non-vacuous proof is recorded.",
     }
@@ -406,7 +441,21 @@ def main() -> int:
         "",
         "## Functional Group Report audit",
         "",
-        "Raw URG reports 170/174 hits. The four zero-hit records are two semantic illegal-frame bins, each shown in covergroup-type and monitor-instance views. Separate negative URG evidence hits them. They remain in the Raw denominator and are not legal positive-product stimulus.",
+        f"The complete product Group Report contains {len(functional_covered)}/{len(functional_scoreable)} denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.",
+        "",
+        "| Group | Raw bin hits / denominator | Uncovered |",
+        "|---|---:|---:|",
+    ]
+    functional_by_group: dict[str, list[dict[str, str]]] = defaultdict(list)
+    for row in functional_scoreable:
+        functional_by_group[row["group"]].append(row)
+    for group, rows in sorted(functional_by_group.items()):
+        group_hits = sum(row["raw_status"] == "COVERED" for row in rows)
+        group_misses = len(rows) - group_hits
+        lines.append(f"| {group} | {group_hits}/{len(rows)} | {group_misses} |")
+    lines += [
+        "",
+        f"The complete bin CSV has {len(functional_detail_rows)} rows: {len(functional_scoreable)} scoreable Raw records and {len(functional_excluded)} bins already marked Illegal/Excluded by the URG model. These model statuses are listed transparently; no URG exclusion directive or waiver was added. See `thermo5-tx-functional-bin-detail.csv` for every group, coverpoint/cross, bin, count, report view, and source-page SHA.",
         "",
         "| Exact URG scope | Raw product hits | Separate negative hits | Classification |",
         "|---|---:|---:|---|",
@@ -415,7 +464,7 @@ def main() -> int:
         lines.append(f"| {row['urg_scope']} | {row['raw_product_hits']} | {row['negative_report_hits']} | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |")
     lines += [
         "",
-        "Legal positive semantic bins are 170/170. The four Raw zero-hit report rows remain visible; Raw is still 170/174.",
+        f"Legally applicable positive bins are {summary['functional_legally_applicable_positive_bins']['covered']}/{summary['functional_legally_applicable_positive_bins']['expected']}. The four Raw zero-hit report rows remain visible in the denominator.",
         "",
         "## Code coverage and root-cause task inventory",
         "",
@@ -453,6 +502,7 @@ def main() -> int:
         "thermo5-tx-coverage-open-bins.csv.gz",
         "thermo5-tx-coverage-root-cause-tasks.csv",
         "thermo5-tx-functional-bin-audit.csv",
+        "thermo5-tx-functional-bin-detail.csv",
         "thermo5-tx-coverage-root-cause-summary.json",
         "thermo5-tx-coverage-root-cause-closure.md",
     ]
@@ -466,6 +516,7 @@ def main() -> int:
         "schema_version": 1,
         "product_source_sha": product_sha,
         "analysis_script_sha256": sha256_file(Path(__file__).resolve()),
+        "functional_bin_detail_script_sha256": sha256_file(functional_detail_script),
         "python": sys.version.split()[0],
         "eda_tool_versions_from_source_evidence": evidence.get("tool_versions", {}),
         "command": command,
@@ -497,6 +548,8 @@ def main() -> int:
         "semantic_id_collision_extra_rows": collision_extra_rows,
         "root_cause_tasks": len(tasks),
         "functional_audit_rows": len(functional_rows),
+        "functional_detail_rows": len(functional_detail_rows),
+        "functional_raw_bins": f"{len(functional_covered)}/{len(functional_scoreable)}",
         "status_counts": dict(status_counts),
         "output_dir": str(args.output_dir),
     }, indent=2))

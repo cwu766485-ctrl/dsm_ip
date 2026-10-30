@@ -17,7 +17,7 @@ module thermo5_frame_tail_harness (
     .W(16), .LANES(8), .APPEND_TAIL_VECTOR(1'b1)
   ) append_stage (
     .clk, .rst_n, .enable, .in_valid, .in_ready(append_ready),
-    .in_frame_start, .in_frame_end, .in_tail, .in_i_vec, .in_q_vec,
+    .in_frame_start, .in_frame_end, .in_tail(1'b0), .in_i_vec, .in_q_vec,
     .out_valid(append_valid), .out_frame_start(append_start),
     .out_frame_end(append_end), .out_tail(append_tail), .out_ready,
     .out_i_vec(append_i), .out_q_vec(append_q)
@@ -55,4 +55,25 @@ module thermo5_frame_tail_harness (
     in_valid && plain_ready && in_frame_end);
   c_plain_tail_unreachable: cover property (disable iff (!rst_n)
     plain_stage.tail_output);
+  // These covers target the line-182 single-entry queue transition in both
+  // elaborated product stage configurations. They require a real accepted
+  // input on the same edge that a legal frame-ending head is consumed.
+  c_append_single_pop_push: cover property (disable iff (!rst_n)
+    append_stage.q_count == 1 && append_stage.pop_head &&
+    append_stage.push_input);
+  c_plain_single_pop_push: cover property (disable iff (!rst_n)
+    plain_stage.q_count == 1 && plain_stage.pop_head &&
+    plain_stage.push_input);
+  a_append_no_input_tail: assert property (disable iff (!rst_n)
+    !append_stage.q0_tail);
+  a_plain_tail_fire_disabled: assert property (disable iff (!rst_n)
+    !plain_stage.tail_fire);
+  a_plain_append_arm_disabled: assert property (disable iff (!rst_n)
+    !plain_stage.APPEND_TAIL_VECTOR);
+  c_append_tail_head_drop_unreachable: cover property (disable iff (!rst_n)
+    append_stage.pop_head && append_stage.q0_tail);
+  c_plain_tail_fire_unreachable: cover property (disable iff (!rst_n)
+    plain_stage.tail_fire);
+  c_plain_append_tail_arm_unreachable: cover property (disable iff (!rst_n)
+    plain_stage.APPEND_TAIL_VECTOR && plain_stage.head_final);
 endmodule

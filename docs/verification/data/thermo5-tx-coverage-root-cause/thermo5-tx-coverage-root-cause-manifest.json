@@ -1,5 +1,5 @@
 {
-  "analysis_script_sha256": "d39e18acc696412b7c5de405632852046d45b1e2466318264b016c7c158329b9",
+  "analysis_script_sha256": "0ea23433df4f69642138f8a2b43ce4dec869a758dbc8ac7576bdfe250c16fc62",
   "command": "python3.12 tools/hw/thermo5_tx_coverage_rootcause.py --ledger runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv --raw-report runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030 --negative-report runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report --evidence docs/verification/thermo5-tx-linux-coverage-closure-evidence.json --output-dir runs/thermo5_tx_coverage_rootcause_audit_20261030",
   "eda_tool_versions_from_source_evidence": {
     "urg": "V-2023.12-SP1",
@@ -7,8 +7,94 @@
     "vcs": "V-2023.12-SP1"
   },
   "exclusions": 0,
+  "followup": {
+    "approved_waivers": 0,
+    "exclusions_applied": 0,
+    "formal_review_json": "docs/verification/thermo5-tx-formal-bin-dispositions.json",
+    "formal_review_sha256": "25e0409a5eedec23303b82a8191609df4afb819134c62ee8471ca07e4f520573",
+    "formal_run": "runs/thermo5_tx_final_interp_reachability_retry_20261030/formal_summary.json",
+    "formal_status": "PASS_FOR_EXACT_REACHABILITY_DISPOSITIONS; DPD_IDENTITY_OPEN",
+    "functional_bin_detail": {
+      "legacy_170_of_174_tally_superseded": true,
+      "path": "docs/verification/data/thermo5-tx-coverage-root-cause/thermo5-tx-functional-bin-detail.csv",
+      "raw_hits": 210,
+      "raw_uncovered": 4,
+      "reason": "The earlier tally omitted 40 automatically generated EF2 cross-bin records across type and instance report views.",
+      "rows": 226,
+      "scoreable_rows": 214,
+      "sha256": "67e8b96d92803de7fbc173aef8b26d29c2cffabcf7c5f09a7340952831620323",
+      "urg_model_illegal_or_excluded_rows": 12
+    },
+    "new_product_code_hits": 0,
+    "note": "Reachability review changes status only; Raw VDBs, denominator, and adjusted score are not changed.",
+    "product_compile_scope_audit": {
+      "adjusted_urg_generated": false,
+      "approved_waivers": 0,
+      "compile_log_sha256": "7475893ee8fc3cbba4d62b4916ec63f88ff69c9c3ef9b3e965c59fe3520b28eb",
+      "compiled_local_sources": 73,
+      "controlled_input_count": 2,
+      "raw_gate_output_sha256": "62f32d3c27baba959eb1302a3efc0875f8af4ea074d938664ded3e517501e6c2",
+      "raw_gate_status": "RAW_100_OPEN",
+      "scoped_manifest_entries": 75,
+      "scoped_manifest_sha256": "c1b4ec0219d5fbfe0d50c5a44b5332b06665cfd7521e8af6b1cdd115be07bc3c",
+      "status": "PASS_RAW_GATE_OPEN",
+      "unparsed_parent_manifest_entries": 14,
+      "urg_exclusions_applied": 0
+    },
+    "product_urg_refreshed": false,
+    "proven_unreachable_bin_count": 6,
+    "raw_coverage_edited": false,
+    "targeted_uvm_attempts": [
+      {
+        "command": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vcs/simv +UVM_TESTNAME=thermo5_sku_axil_four_frame_coverage_test +VEC_DIR=/home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vectors_four_frames +ntb_random_seed=716001 -cm line+cond+fsm+tgl+branch+assert -cm_dir /home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vcs/cov_thermo5_sku_axil_four_frame_coverage_test_seed716001.vdb +CORE_WORDS=224 +PACKET_BEATS=32 -l /home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vcs/thermo5_sku_axil_four_frame_coverage_test_seed716001.log",
+        "explicit_event_counts": null,
+        "fatal_id": "INTERP2_POP_PUSH_NOT_OBSERVED",
+        "log": "runs/thermo5_tx_coverage_targeted_20261030/vcs/thermo5_sku_axil_four_frame_coverage_test_seed716001.log",
+        "log_sha256": "8741e2c1dfed9d6b61d8a2382bd575a2d79de946d78a71c18b5bb70a0d9106c2",
+        "result": "FAIL_COVERAGE_REQUIREMENT",
+        "seed": 716001,
+        "test_source": "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_four_frame_coverage_test.svh",
+        "test_source_present_in_tracked_tree": false,
+        "tool": "VCS V-2023.12-SP1_Full64",
+        "unobserved_event": "q_count==1 && pop_head && push_input",
+        "vdb": "runs/thermo5_tx_coverage_targeted_20261030/vcs/cov_thermo5_sku_axil_four_frame_coverage_test_seed716001.vdb",
+        "vdb_merged_to_product_raw": false
+      },
+      {
+        "command": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vcs/simv +UVM_TESTNAME=thermo5_sku_axil_four_frame_coverage_test +VEC_DIR=/home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vectors_four_frames +ntb_random_seed=716002 -cm line+cond+fsm+tgl+branch+assert -cm_dir /home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vcs/cov_thermo5_sku_axil_four_frame_coverage_test_seed716002.vdb +CORE_WORDS=224 -l /home/ray/workspace/dsm_ip/runs/thermo5_tx_coverage_targeted_20261030/vcs/thermo5_sku_axil_four_frame_coverage_test_seed716002.log",
+        "explicit_event_counts": {
+          "interp1": 0,
+          "interp2": 0
+        },
+        "fatal_id": "INTERP2_POP_PUSH_NOT_OBSERVED",
+        "log": "runs/thermo5_tx_coverage_targeted_20261030/vcs/thermo5_sku_axil_four_frame_coverage_test_seed716002.log",
+        "log_sha256": "56841fb65edc5ea3129ed492f01d722946816a9faea91af1c41ec7a0e8828b0c",
+        "result": "FAIL_COVERAGE_REQUIREMENT",
+        "seed": 716002,
+        "test_source": "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_four_frame_coverage_test.svh",
+        "test_source_present_in_tracked_tree": false,
+        "tool": "VCS V-2023.12-SP1_Full64",
+        "unobserved_event": "q_count==1 && pop_head && push_input",
+        "vdb": "runs/thermo5_tx_coverage_targeted_20261030/vcs/cov_thermo5_sku_axil_four_frame_coverage_test_seed716002.vdb",
+        "vdb_merged_to_product_raw": false
+      }
+    ],
+    "targeted_uvm_disposition": "Diagnostic failure only; source is absent from tracked tree, so attempt is not reproducible from this checkout."
+  },
+  "functional_bin_detail_script_sha256": "701a519c522cd0fc3f6838f7330791732107400bb41a806b836a8b9554ace0c4",
   "input_sha256": {
     "closure_evidence": "88477a719576d443344640e4551b57f6c9a64250b543d83a4d0854c55c7bd369",
+    "full_functional_group_pages": {
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/groups.html": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp0.html": "fd518b7c2719e75bd2e2874d1da7e5b44a5a14428286e88f7721dce88a094a78",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp1.html": "a49dc15adb5d860c76e3c8a001da84d4a3420a20075ea4f38f24b82a5a98c83c",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp2.html": "1527cbc605ce20f2da17b0abe61a79e3d82952e36d6ff91b30f7063520eb551e",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp3.html": "debf9e398a72443c595c66d5e2a889ee3c171311dba08a75890877cc3401573c",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp4.html": "fb246b9dfc90f9974c6b2e8cc9a7bb93a610f6b0ebce30f1d495bca5f51982d3",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp5.html": "324d043d4a423c87b2e9f7b8e4a77ecdb1e9e2a2856150c112dbcf2c64cc88f3",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp6.html": "d3c11d0d3bd16a39914bc6a48fb5d7ba321cde93f7ba853e055c9dc1e148ba03",
+      "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/grp7.html": "4e4030eec014baefce92d65ecf7cd5713df50b63508a2628dbffa1fa28dc24aa"
+    },
     "ledger": "e586d27684fffe4e98b1d4c4bd43b22839c349ef31c07b1779d4a69c4ce45222",
     "negative_urg_groups_html": {
       "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp0.html": "573ffcaa3f14f3c45ba2b3e85bbed32e65a36c826e31b1d910d4566c5ed25f8f",
@@ -51,11 +137,27 @@
     "source_manifest": "3e875543c44f93c4d418f73eea76f17a898205239ae937d2f60df7ccba2340eb"
   },
   "output_sha256": {
-    "thermo5-tx-coverage-open-bins.csv.gz": "90bdeab9e21f9ac355965e8400151f2ffb4206505e2df8267cbca2a5e5dc79fa",
-    "thermo5-tx-coverage-root-cause-closure.md": "dadbb90c276b2909abf1ec71d5862f6c925ef254828f37cf496aaefdf7074adf",
-    "thermo5-tx-coverage-root-cause-summary.json": "d33df517428d1a11c3de22f0d2c7caee7765521f3685504f64aea2aad0ba0a61",
-    "thermo5-tx-coverage-root-cause-tasks.csv": "c1758f0b48133544721c65b608c9c36bd166bf3d7057c168b9a733918af0772f",
-    "thermo5-tx-functional-bin-audit.csv": "703e9c22002e9bf1c45a45847a2a21363b2a29227a64a365610f6e9b4c7d806d"
+    "UPDATE_LOG.md": "888f73be19f662dac5bf9b242db8362b03dc77df3e17590709207a87b883c464",
+    "commands.md": "e35cf2f3fcb430f4f5d560fc8f63ec650cf88ec4776994b4390d8c2b5fe9fd3e",
+    "execution-frontier.md": "ae4acc2974088a56271ba534b5f87cc2fb20b9eb39a4ec30c914d07fb978b4a7",
+    "run_thermo5_axil_cfg_coverage.py": "caf16f5ad77876028c2b1d581735dd2a901573550f97e0a0289fc7a0222477aa",
+    "thermo5-tx-coverage-final-signoff.md": "1de0862e90813f1b6fbbf9012b78e96ef47347dd5cb5fbc3c08618291ec328ab",
+    "thermo5-tx-coverage-open-bins.csv.gz": "19a7bbaccdab81d77c260d10842307583fa78aace075c72c73b116fade60e244",
+    "thermo5-tx-coverage-root-cause-closure.md": "d166cdf52c87ba7372e7eef6dc05eb6dac1637ab1a7e54a317636c112a4ffc39",
+    "thermo5-tx-coverage-root-cause-summary.json": "5c783445e6eaec567f3dc5ccdbdbb74d2ff886962069e5559e8ec7a3960c25f5",
+    "thermo5-tx-coverage-root-cause-tasks.csv": "104abf9501431178b2618d75c11259c52e5e606eedff6c7d20f8333e0816750d",
+    "thermo5-tx-final-baseline.md": "d556eb44c4cf805c3fdca47dc0f7de1c76b4a4ee8d2d49a0b4eb0b81c04fda84",
+    "thermo5-tx-final-signoff.md": "fc144d15ebb5da8216f7157ff3b5b06dfe73a4998d64bb9a43d453e4c78385cf",
+    "thermo5-tx-formal-bin-dispositions.json": "25e0409a5eedec23303b82a8191609df4afb819134c62ee8471ca07e4f520573",
+    "thermo5-tx-functional-bin-audit.csv": "703e9c22002e9bf1c45a45847a2a21363b2a29227a64a365610f6e9b4c7d806d",
+    "thermo5-tx-functional-bin-detail.csv": "67e8b96d92803de7fbc173aef8b26d29c2cffabcf7c5f09a7340952831620323",
+    "thermo5-tx-linux-coverage-closure.md": "de912ab19d43cdd60d36cddf5342d4741cb2317262ee84cff07f83b4c9fdcbf5",
+    "thermo5-tx-product-compile-manifest.json": "c1b4ec0219d5fbfe0d50c5a44b5332b06665cfd7521e8af6b1cdd115be07bc3c",
+    "thermo5-tx-signoff-checklist.md": "def95bcba72c1ddb00cb699a51cc062a87bcff890d38eed9bb8611466686541a",
+    "thermo5_tx_coverage_rootcause.py": "0ea23433df4f69642138f8a2b43ce4dec869a758dbc8ac7576bdfe250c16fc62",
+    "thermo5_tx_formal_dispositions.py": "9e4a986050645ff21c8840dae43b8eeb4123758eda8ff837af7f3c1cd3d54ded",
+    "thermo5_tx_functional_bin_detail.py": "701a519c522cd0fc3f6838f7330791732107400bb41a806b836a8b9554ace0c4",
+    "thermo5_tx_product_compile_manifest.py": "c8d0b504f04a4a9c1c79f1dcd79ae976698b99ffd270ab262af2c1beefa6d5b3"
   },
   "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
   "python": "3.12.13",

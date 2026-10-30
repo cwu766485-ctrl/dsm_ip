@@ -1250,7 +1250,7 @@ Rebuild the Step 1/2 functional-bin and source-linked Raw gap audit from the
 fixed product URG reports. This is report analysis only; it does not rerun VCS
 or Formal, change a coverage database, or modify a denominator.
 
-    python3.12 -m py_compile tools/hw/thermo5_tx_coverage_rootcause.py
+    python3.12 -m py_compile tools/hw/thermo5_tx_coverage_rootcause.py tools/hw/thermo5_tx_functional_bin_detail.py
     python3.12 tools/hw/thermo5_tx_coverage_rootcause.py \
       --ledger runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv \
       --raw-report runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030 \
@@ -1260,5 +1260,36 @@ or Formal, change a coverage database, or modify a denominator.
 
 The script verifies source-file SHA-256 values, maps every missing Condition to
 the Raw URG expression/subexpression, preserves each source ledger row, and
-fails if metric totals or semantic IDs do not reconcile. The tracked audit
-artifacts are under docs/verification/data/thermo5-tx-coverage-root-cause/.
+fails if metric totals or semantic IDs do not reconcile. It also exports every
+scoreable Group/coverpoint/cross/bin record from the complete URG HTML, retaining
+type and instance views and the URG page SHA. The current fixed-source report
+contains 226 rows: 214 scoreable records (210 hit, four negative-only misses)
+and 12 pre-existing model Illegal/Excluded rows. This corrects the earlier
+170/174 tally, which omitted 40 generated EF2 cross-bin records; no URG database
+or denominator was changed. The tracked audit artifacts are under
+docs/verification/data/thermo5-tx-coverage-root-cause/.
+
+## Thermo5 TX product Raw gate and compile-source audit
+
+Derive a product-scoped manifest from the saved VCS transcript, then run the
+fail-closed Raw gate against the fixed product URG report. This verifies the
+parsed source set, filelist, and coverage hierarchy without conflating
+uncompiled Formal-only sources with product VDB inputs. A zero-waiver result
+reports Raw and Adjusted identically; it does not create an adjusted URG DB.
+
+    python3.12 tools/hw/thermo5_tx_product_compile_manifest.py \
+      --compile-log runs/thermo5_tx_product_axil_reset_cov_20261030/compile.log \
+      --source-manifest runs/thermo5_tx_product_axil_reset_cov_20261030/source_manifest_after_current_sha.json \
+      --product-filelist dv/uvm/sim/thermo5_sku_filelist.f \
+      --coverage-hierarchy dv/uvm/sim/thermo5_tx_product_coverage.hier \
+      --output docs/verification/data/thermo5-tx-product-compile-manifest.json
+    python3.12 tools/hw/thermo5_tx_coverage_gate.py \
+      --raw-summary runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage_after_source_gap_current_20261030/summary.json \
+      --groups-html runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030/groups.html \
+      --waivers-csv docs/verification/thermo5_tx_waivers.csv \
+      --el-file dv/uvm/sim/thermo5_tx_main.el \
+      --source-manifest docs/verification/data/thermo5-tx-product-compile-manifest.json \
+      --output runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_final_audit.json
+
+The source audit fails when a compiled file, compile profile, filelist, or
+coverage hierarchy differs. A valid audit can still return `RAW_100_OPEN`.

@@ -69,6 +69,8 @@ def main():
         result['scope']['ef2_pair']='Relational proof of exact pairwise look-ahead against scalar EF2 for arbitrary signed-16 input, stalls, and state saturation; product parameter remains disabled'
     if args.jobs and 'ef2_product_params' in args.jobs:
         result['scope']['ef2_product_params']='Exact W=16, CHANNELS=32 product EF2 parameter elaboration; prove PAIR_LOOKAHEAD=0 and legal parameter guard, while requiring corresponding candidate arms to be uncoverable'
+    if args.jobs and 'frame_tail' in args.jobs:
+        result['scope']['frame_tail']='Exact W=16, LANES=8 centered-cubic stage parameters; stage-1 input tail tied low as in the product, stage-2 APPEND_TAIL_VECTOR=0; prove single-entry pop/push reachable and exact tail-only paths uncoverable'
     if any(kind in kinds for kind in ('ef2','ef2_pair')):
         result['configuration']={'proof_core':'thermo5_ef2',
             'input_width_bits':16,'state_width_bits':20,
@@ -96,13 +98,18 @@ def main():
             properties=(work/'properties.txt').read_text()
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
-            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 3
+            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 4
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
             if kind=='frame_tail':
                 expected_cover_states={'c_append_frame_end':'covered',
                     'c_append_tail_transfer':'covered','c_plain_frame_end':'covered',
-                    'c_plain_tail_unreachable':'uncoverable'}
+                    'c_plain_tail_unreachable':'uncoverable',
+                    'c_append_single_pop_push':'covered',
+                    'c_plain_single_pop_push':'covered',
+                    'c_append_tail_head_drop_unreachable':'uncoverable',
+                    'c_plain_tail_fire_unreachable':'uncoverable',
+                    'c_plain_append_tail_arm_unreachable':'uncoverable'}
                 observed_cover_states={n.rsplit('.',1)[-1]:s for s,n in covers}
                 ok=ok and len(covers)==expected_covers and observed_cover_states==expected_cover_states
             elif kind=='ef2_product_params':

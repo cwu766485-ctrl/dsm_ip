@@ -1,3 +1,55 @@
+## 2026-10-30 22:34 SGT - Reconcile TX product source scope and Raw gate
+
+- Added a deterministic product compile-source manifest derived from the saved
+  VCS transcript. It covers 73 local parsed sources plus the filelist and
+  coverage hierarchy; all 75 hashes match the captured source manifest and
+  current checkout. Fourteen unrelated broad-manifest entries are disclosed
+  as not parsed by this product compile.
+- Re-ran the zero-waiver coverage gate against the fixed Raw product URG data.
+  Gate audit passed and reported `RAW_100_OPEN`; Raw and Adjusted remain
+  identical with zero waivers/exclusions. The full functional audit remains
+  210/210 legally applicable bins, with four negative-only Raw zero-hit rows.
+- Checks: source-manifest derivation PASS; coverage gate audit PASS; the
+  `--require-closed`, nonempty-waiver, active-`.el`, and stale-source probes
+  all failed closed as expected. Replayed the Formal disposition updater on
+  temporary copies: 18,593 rows reconciled, six exact proofs retained, 18,587
+  OPEN. Python compilation, JSON/gzip integrity, bin/hash reconciliation, and
+  `git diff --check` PASS.
+- Limits: fresh VCS/URG remains blocked by WSL kernel support. Nonempty
+  approved CSV → `.el` → adjusted URG is not exercised. 18,587 code gaps remain
+  OPEN; Identity DPD is Formal-inconclusive; targeted product pop/push coverage
+  remains unhit; source-gap underflow and real XPM/GT/PPA/physical QAM256 BER
+  remain unresolved.
+
+## 2026-10-30 22:21 SGT - Complete TX functional-bin audit and signoff correction
+
+- Added a deterministic URG HTML exporter that inventories every current
+  product Functional Coverage coverpoint and generated cross bin in both
+  covergroup-type and monitor-instance views, with count, applicability,
+  existing URG status, and source-page SHA.
+- Full report audit: 226 rows total, 214 denominator-eligible records, 210
+  hits, four negative-only misses, and 12 bins already marked Illegal/Excluded
+  by the original URG model. The previous 170/174 tally omitted 40 generated
+  EF2 cross-bin records. Corrected current reports to 210/214 and 210/210 legal
+  positive records; no URG database, denominator, or exclusion was changed.
+- Refreshed the deterministic root-cause audit summary and manifest, then
+  reapplied the six exact source-bound `PROVEN_UNREACHABLE` dispositions.
+  Raw code coverage remains unchanged: 18,593 gaps, 18,587 OPEN, six proven
+  unreachable but retained in Raw; zero approved waivers/exclusions.
+- Updated the final signoff, current coverage closure, baseline, checklist,
+  command index, and execution frontier. No TX RTL or algorithm changed.
+- Checks: Python 3.12 compilation PASS; full functional report parser PASS
+  (all eight groups reconcile to 214 scoreable rows and the four exact misses);
+  root-cause extractor PASS; Formal disposition validator PASS; JSON/gzip
+  integrity and `git diff --check` PASS. No new VCS/URG regression was run:
+  the installed VCS location check rejects the WSL kernel, so existing Raw URG
+  is explicitly reused.
+- Remaining: two targeted legal UVM packetizations still miss interpolator
+  single-entry pop/push, and their test source is absent from the tracked tree;
+  DPD Identity remains Formal-inconclusive; 18,587 code
+  gaps remain OPEN; adjusted URG/wavier validation, source-gap contract, real
+  XPM/GT, FPGA PPA, and physical link signoff remain OPEN.
+
 ## 2026-10-30 21:18 SGT - Audit TX functional bins and code-gap root causes
 
 - Added a deterministic Linux/Python audit for the latest product-only
@@ -4620,3 +4672,37 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   remain open. The module-level proof does not qualify full-chain frame-tail
   composition. Real XPM, GT Wizard, FPGA PPA, and physical QAM256 BER remain
   outside this Linux signoff.
+## 2026-10-30 22:04 SGT - Formal reachability closure for TX coverage bins
+
+- Added exact product-configuration Formal Covers/assertions for the two
+  centered-interpolator stage settings and AXI-Lite default/parameter paths.
+  Removed two reset-coupling assumptions from the AXI-Lite harness after VC
+  Formal reported them vacuous; the accepted harness run has no environment
+  assumptions.
+- Added a fail-closed AXI-Lite Formal runner and a formal-bin disposition
+  updater. The updater validates exact semantic Bin IDs, instances, source
+  positions and source-file hashes against the raw ledger, plus proof/Cover
+  status, setup report, black-box count and non-vacuous assumptions. It changes
+  ledger status only and cannot edit URG denominators or `.el` exclusions.
+- Applied six exact `PROVEN_UNREACHABLE` dispositions: three interpolator
+  product-parameter bins and three AXI-Lite default/parameter bins. Raw URG
+  denominator and counters remain unchanged; 18,587 of 18,593 code-gap rows
+  remain OPEN. No waiver or exclusion was approved.
+- Added `thermo5-tx-coverage-final-signoff.md`, refreshed the root-cause
+  closure report, evidence manifest, task table and execution frontier.
+- Checks: VC Formal frame-tail 6/6 assertions, 5/9 Covers reached and 4/9
+  uncoverable; AXI-Lite 5/5 assertions with exact three unreachable Covers,
+  0 assumptions, 0 setup violations and 0 black boxes; EF2 6/6 assertions and
+  3/3 Covers; product EF2 parameter 2/2 assertions and 2/2 expected
+  uncoverable Covers; bounded counter 3/3 assertions and 4/4 Covers; unbounded
+  counter 35/35 bit-transition assertions and 4/4 shallow Covers. Formal
+  disposition script validated all six exact ledger mappings. JSON, gzip
+  integrity and `git diff --check` were also checked.
+- Limits: Identity DPD remains inconclusive (direct 5/18 proven, staged
+  auto-lemma 1/13 proven). The 2,072-sample counter proof budget is not a
+  product traffic contract. Targeted product UVM did not hit the interpolator
+  pop/push branch and was not merged into URG. Fresh VCS/URG is blocked by the
+  installed VCS platform check rejecting WSL kernel
+  `6.6.87.2-microsoft-standard-WSL2`; product Raw remains reused, Adjusted is
+  identical with zero waivers, and `RAW_100_OPEN` remains. The observed
+  16-cycle source-gap underflow remains an interface/service-rate risk.

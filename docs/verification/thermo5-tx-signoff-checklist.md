@@ -24,8 +24,11 @@ promote or replace the product configuration.
 - [x] Existing Generic-FIFO UVM product tests and current product coverage
   evidence retained with exact source/configuration.
 - [x] Current product FSM state/transition bins: 13/13 and 22/22.
-- [x] Applicable positive functional bins: 170/170.
-- [ ] Remaining functional raw-bin applicability review: 170/174 raw bins.
+- [x] Applicable positive functional scoreable records: 210/210.
+- [ ] Four illegal-frame Raw records remain uncovered in the denominator
+  (210/214 scoreable records); the complete 226-row audit includes 12
+  pre-existing URG model Illegal/Excluded rows. The earlier 170/174 tally
+  omitted 40 generated EF2 cross-bin records and is superseded.
 - [ ] Raw DUT code coverage closure: current 81.99%; `RAW_100_OPEN`.
 - [ ] All legal, reachable DUT branches, conditions, lines, and toggles closed
   or individually dispositioned with source-specific proof.

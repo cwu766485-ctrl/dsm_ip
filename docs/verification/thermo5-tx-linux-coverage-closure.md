@@ -164,21 +164,33 @@ does not hit or waive the four Raw bins, which remain in the denominator.
 
 The unchanged raw URG functional report remains **97.97%** across 8 groups:
 `source_cg` 96.30%, `core_cg` 87.50%, and the other six groups 100%.
-URG reports 170/174 expected bins hit across these groups (the reported
-97.97% is the unweighted average of the eight group scores, not the aggregate
-bin ratio):
+The complete URG pages contain 214 denominator-eligible bin records across
+covergroup-type and monitor-instance views: 210 hit and four are unhit. The
+earlier 170/174 report tally omitted 40 generated EF2 cross-bin records (20
+per view); this is an accounting correction from the unchanged Raw report,
+not a change to the coverage database or denominator. The 97.97% figure is
+the unweighted average of the eight URG group scores, not the aggregate bin
+ratio.
 
 | Functional group | Covered / expected bins | URG group score |
 | --- | ---: | ---: |
 | `stop_restart_cg` | 12 / 12 | 100.00% |
-| `ef2_cg` | 28 / 28 | 100.00% |
+| `ef2_cg` | 68 / 68 | 100.00% |
 | `plane_atomic_cg` | 16 / 16 | 100.00% |
 | AXI-Lite `read_cg` | 22 / 22 | 100.00% |
 | AXI-Lite `write_cg` | 36 / 36 | 100.00% |
 | AXI-Lite `reset_cg` | 4 / 4 | 100.00% |
 | `source_cg` | 38 / 40 | 96.30% |
 | `core_cg` | 14 / 16 | 87.50% |
-| **Total bins** | **170 / 174** | **97.97% group average** |
+| **Total scoreable bin records** | **210 / 214** | **97.97% group average** |
+
+The complete bin-level export has 226 rows: the 214 scoreable records above
+and 12 bins that the existing URG model already labels Illegal/Excluded.
+Those model-defined records remain visible in the [full functional bin CSV](data/thermo5-tx-coverage-root-cause/thermo5-tx-functional-bin-detail.csv);
+they are not newly waived or excluded. That export records both report views,
+all coverpoints and generated crosses, each count/status, and the source-page
+SHA. The separate [negative-only audit](data/thermo5-tx-coverage-root-cause/thermo5-tx-functional-bin-audit.csv)
+contains the expected illegal-frame hits.
 
 The positive-only report leaves two negative-only bins open:
 
@@ -187,11 +199,12 @@ The positive-only report leaves two negative-only bins open:
 | `source_cg.cp_packet_quanta.malformed_early` | 0 | 1 hit |
 | `core_cg.cp_illegal.bad_frame` | 0 | 49 hits |
 
-All other existing functional bins are hit by the legal product tests. The two
-bins above describe deliberately malformed framing and are exercised only in
-the separately reported illegal test. This applicability annotation does
-not edit URG bins or its denominator: raw functional coverage remains 97.97%,
-and the machine gate continues to return `RAW_100_OPEN`.
+All 210 legally applicable positive scoreable records are hit by the legal
+product tests. The two bins above describe deliberately malformed framing and
+are exercised only in the separately reported illegal test. This applicability
+annotation does not edit URG bins or its denominator: the eight-group URG
+score remains 97.97%, and the machine gate continues to return
+`RAW_100_OPEN`.
 
 ## Task 5 — assertions, formal evidence, and mutation
 

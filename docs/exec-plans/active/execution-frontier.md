@@ -1,41 +1,55 @@
 # Execution frontier
 
-## Current execution state: Coverage closure Step 1/2 audited; Step 3 next (2026-10-30)
+## Current execution state: Formal closure partial; Raw signoff open (2026-10-30)
 
-The active local branch codex/thermo5-tx-coverage-audit is preparing an
-independent Linux coverage-audit PR stacked on open, draft PR #8. PR #8 remains
-open and unmerged; PR #2–#8 must not be merged as part of this work.
+The active branch `codex/thermo5-tx-formal-closure` is a follow-up stacked on
+open PR #9; PR #9 and historical PR #2–#8 remain unmerged. Do not merge them as
+part of this work.
 
-Coverage Closure Step 1/2 are complete as a deterministic review of existing
-VCS/URG evidence. The exact Product VCS/URG source is
-2a2ce4d9e6f73c135cb355cdbeef52b8f386f359 for the current worktree, with product
-simulation evidence at c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b. Product RTL
-and UVM simulation compile inputs still match that evidence. The later AXI-Lite
-Formal harness dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv differs from
-its recorded hash, so old Formal results are not treated as current-source
-proof and must be rerun for the final fixed-SHA package.
+Coverage Step 1/2 uses the fixed product Raw source SHA
+`c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`. The product configuration remains
+Centered-Cubic x2+x2, EF2 ORDER=2 STEP=5120, 20-bit state, 32 chronological
+lanes, DPD_MAX_TAPS=1 identity, AXI-Lite parent and Generic FIFO. No TX DUT
+algorithm was changed.
 
-Functional URG is 170/174 Raw. The four zero-hit rows resolve to two semantic
-illegal-frame-only bins, each repeated in type and instance report views:
-source_cg.cp_packet_quanta.malformed_early and core_cg.cp_illegal.bad_frame.
-Both are observed by the separate negative test/report; all 170 legal positive
-semantic bins are hit. No Raw denominator or coverage model was changed.
+The complete product URG Group Report has 214 denominator-eligible bin records
+across covergroup-type and monitor-instance views: 210 hit and four zero-hit.
+The earlier 170/174 tally omitted 40 generated EF2 cross-bin records and is
+superseded; 12 URG-model Illegal/Excluded records are separately listed in the
+complete 226-row detail. All 210/210 legally applicable positive bins are hit;
+the negative report hits both illegal-frame bins separately. See the final
+signoff snapshot and `thermo5-tx-functional-bin-detail.csv`.
 
-The 18,593 Raw code gaps are mapped into 492 location-rooted closure tasks:
-197 Branch, 263 Condition, 606 Line, 17,527 Toggle. All source rows remain
-OPEN; no bin was removed. The prior ledger's 17 duplicate bin_id groups were
-collisions between expression and subexpression bins, not missing source rows.
-The new audit restores exact URG expression text and unique semantic IDs.
-Raw and Adjusted are still identical; waivers and exclusions remain zero;
-RAW_100_OPEN.
+The source-linked ledger preserves all 18,593 Raw code gaps in 492 tasks:
+197 Branch, 263 Condition, 606 Line and 17,527 Toggle. Six exact bins have
+source-bound `PROVEN_UNREACHABLE` Formal evidence; 18,587 remain OPEN. Raw
+metrics are unchanged: line 3,190/3,796; condition 583/846; branch 440/637;
+toggle 86,951/104,478; FSM states/transitions 13/13 and 22/22. Raw equals
+Adjusted, with zero approved waivers and zero exclusions; status remains
+`RAW_100_OPEN`.
 
-Tracked artifacts are in
-docs/verification/thermo5-tx-coverage-root-cause-closure.md and
-docs/verification/data/thermo5-tx-coverage-root-cause/.
-No VCS or Formal run was repeated for this inventory. The fixed-SHA Raw
-coverage is reused. Next: target the highest-value legal Branch/Condition bins
-with independent checkers and monitor-observed DUT events; compare Raw
-coverage after each focused run and stop if the hit count does not move.
+Two targeted packetization tests completed the four-plane oracle but missed the
+single-entry interpolator pop/push events and failed the explicit event
+coverage check. Neither VDB was merged, and the named targeted test source is
+absent from the tracked tree, so these are diagnostic logs rather than a
+reproducible regression. Formal reaches both events, so product coverage
+remains OPEN. EF2 safety/state and counter properties pass within
+scoped harnesses; bounded counter proof uses a finite 2,072-acceptance budget
+that is not a product lifetime contract. DPD Identity remains inconclusive.
+The 16-cycle source gap produced 54 underflow events while RUN stayed active;
+this is an unresolved rate/contract risk.
+
+The VCS location check rejects the current WSL kernel
+`6.6.87.2-microsoft-standard-WSL2`, so fresh VCS/URG execution is unavailable
+in this environment despite VC Formal license checkout succeeding. Existing
+Raw reports are reused without modification. The product-source audit has
+been reconciled against the saved VCS transcript: 73 local parsed sources plus
+the filelist and coverage hierarchy match the captured hashes. The fail-closed
+Raw gate passed its audit and returned `RAW_100_OPEN`; no waiver or `.el`
+exclusion was applied. Next: refresh product URG on a supported VCS runtime,
+then close only root-caused reachable Branch/Condition bins with legal
+stimulus and independent checking. Do not add random seeds without predicted
+bin movement.
 
 ## Previous execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
 
@@ -50,8 +64,11 @@ STEP=5120, 20-bit state, 32 chronological lanes, four planes, one-tap identity
 DPD, Generic FIFO for Linux. No product algorithm/default, RX, AI-DPD, or
 candidate parameter was changed. PR #7 product Raw remains 81.99%:
 line 3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478,
-FSM 13/13 states and 22/22 transitions; functional 170/174 raw and 170/170
-applicable positive bins. Raw equals adjusted; there are zero waivers and zero
+FSM 13/13 states and 22/22 transitions; the then-reported functional tally was
+170/174 raw and 170/170 applicable positive bins. A later complete Group
+Report extraction found 40 omitted EF2 cross-bin records and corrected the
+active count to 210/214, without changing URG data or the denominator. Raw
+equals adjusted; there are zero waivers and zero
 exclusions; status stays `RAW_100_OPEN`. No product VDB was regenerated or
 merged during this study.
 

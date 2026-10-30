@@ -45,16 +45,9 @@ module thermo5_axil_cfg_coverage_harness (
     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
   );
 
-  // The integrated wrapper contract is a common reset assertion source for
-  // AXI-Lite and core, with each domain releasing synchronously on its own
-  // clock. This formal harness checks only protocol reachability under that
-  // integration contract; the configuration block's independent-reset
-  // windows are exercised by the block-level AXI-Lite testbench under
-  // dv/verif/block/axil/tb/.
-  assume_core_reset_asserts_axil:
-    assume property (@(posedge core_clk) !core_rst_n |-> !axil_rst_n);
-  assume_axil_reset_fall_requires_core_reset:
-    assume property (@(posedge axil_clk) $fell(axil_rst_n) |-> !core_rst_n);
+  // No protocol or reset assumptions are imposed here. VC Formal's saved
+  // reset state is the only initialization; the two reset-coupling assumptions
+  // used by an earlier revision were vacuous and are intentionally removed.
 
   // These properties are deliberately bound to the production RTL instance.
   // They justify only the exact condition bins named in the coverage ledger.
@@ -65,6 +58,9 @@ module thermo5_axil_cfg_coverage_harness (
   a_line88_tuple_unreachable:
     assert property (@(posedge axil_clk) disable iff (!axil_rst_n)
       !(bvalid && (dut.aw_pending || dut.aw_take) && (dut.w_pending || dut.w_take)));
+  c_line88_tuple_unreachable:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      bvalid && (dut.aw_pending || dut.aw_take) && (dut.w_pending || dut.w_take));
 
   // The sequential OKAY-only write case is reached only after write_resp
   // has decoded an explicit register address. This proves the case default
@@ -89,6 +85,11 @@ module thermo5_axil_cfg_coverage_harness (
       dut.coeff_word_addr(dut.s_axil_araddr) |->
         ((dut.s_axil_araddr & 8'hf8) inside
           {8'h10,8'h18,8'h20,8'h28,8'h30,8'h38}));
+  c_coeff_read_default_arm_unreachable:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.coeff_word_addr(dut.s_axil_araddr) &&
+      !((dut.s_axil_araddr & 8'hf8) inside
+        {8'h10,8'h18,8'h20,8'h28,8'h30,8'h38}));
 
   // The Linux product compiles the AXI-Lite DPD block with MAX_TAPS=1.
   // Keep the initial-parameter guard branch visible in Raw, and prove that
