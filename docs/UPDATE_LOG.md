@@ -4706,3 +4706,6 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   `6.6.87.2-microsoft-standard-WSL2`; product Raw remains reused, Adjusted is
   identical with zero waivers, and `RAW_100_OPEN` remains. The observed
   16-cycle source-gap underflow remains an interface/service-rate risk.
+- 2026-10-30: Reconciled the active execution-frontier branch name with draft
+  PR #10 (`codex/thermo5-tx-final-signoff`). No RTL, evidence database, coverage
+  denominator, or verification result changed; `RAW_100_OPEN` remains.

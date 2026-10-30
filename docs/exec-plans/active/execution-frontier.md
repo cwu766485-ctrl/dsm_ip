@@ -2,9 +2,9 @@
 
 ## Current execution state: Formal closure partial; Raw signoff open (2026-10-30)
 
-The active branch `codex/thermo5-tx-formal-closure` is a follow-up stacked on
-open PR #9; PR #9 and historical PR #2–#8 remain unmerged. Do not merge them as
-part of this work.
+The active branch `codex/thermo5-tx-final-signoff` is a follow-up stacked on
+open PR #9 as draft PR #10; PR #9 and historical PR #2–#8 remain unmerged. Do
+not merge them as part of this work.
 
 Coverage Step 1/2 uses the fixed product Raw source SHA
 `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`. The product configuration remains
