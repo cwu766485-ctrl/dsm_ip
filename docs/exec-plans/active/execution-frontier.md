@@ -42,7 +42,10 @@ assertions are reported in a separate negative VDB. Continue Task 6 only with
 Linux evidence: current Python TX benchmark is a model screen, not communication
 acceptance; real XPM/GT Wizard, FPGA PPA/routed timing, and physical QAM256 BER
 remain open. Never combine candidate PAIR_LOOKAHEAD or 2/4-tap DPD reports
-with product metrics, or turn unresolved raw bins into a synthetic 100%.
+with product metrics, or turn unresolved raw bins into a synthetic 100%. A
+seed-610806 boundary-phase follow-up was blocked before simulation by VCS
+license-server failure and was not merged; further VCS closure waits for a
+working license service.
 
 The Gate 0–3 notes immediately below preserve the earlier Gate 3/PR #5
 checkpoint. Product-only coverage and Task 4–6 status above supersede its

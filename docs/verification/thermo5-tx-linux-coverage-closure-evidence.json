@@ -1,5 +1,7 @@
 {
   "artifact_sha256": {
+    "boundary_phase_blocked_log": "ac280a2d619bdada2ff873a844702eeda7c03e10392438d99b449ef70e180b3a",
+    "boundary_phase_blocked_result": "1c2032960a1513007ece57f956f84a77e6c19d0257e0c6978c41a53c0a0a5bfd",
     "coeff_transport_log": "d779947f0cb4e6e71995ee14667fae8934e6bd3415afe7b08e37ce55498077d9",
     "compile_log": "7475893ee8fc3cbba4d62b4916ec63f88ff69c9c3ef9b3e965c59fe3520b28eb",
     "coverage_gate_result": "5cbde53d614ea7250ffa496d7807a25a68671a16f07d81e09a3327014613a893",
@@ -138,7 +140,8 @@
     "runs/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_product_identity_test +VEC_DIR=runs/thermo5_tx_product_axil_reset_cov_20261030/mutation/bittrue_fault/vectors +ntb_random_seed=610805 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_product_axil_reset_cov_20261030/mutation/bittrue_fault/cov.vdb +CORE_WORDS=56 -l runs/thermo5_tx_product_axil_reset_cov_20261030/mutation/bittrue_fault/sim.log",
     "python3.12 tools/hw/thermo5_coverage_denominator.py runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage.json",
     "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_tx_product_axil_reset_cov_20261030/raw_code_coverage.json/summary.json --groups-html runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw/groups.html --waivers-csv docs/verification/thermo5_tx_waivers.csv --el-file dv/uvm/sim/thermo5_tx_main.el --source-manifest runs/thermo5_tx_product_axil_reset_cov_20261030/source_manifest.json --output runs/thermo5_tx_product_axil_reset_cov_20261030/coverage_gate_result.json",
-    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 identity cdc_residual --out-dir runs/thermo5_tx_product_formal_20261030"
+    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2 identity cdc_residual --out-dir runs/thermo5_tx_product_formal_20261030",
+    "runs/thermo5_tx_product_axil_reset_cov_20261030/simv +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test +VEC_DIR=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" +ntb_random_seed=610806 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/cov.vdb +CORE_WORDS=56 +AXIL_BOUNDARY_OFFSET=0 -l runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/sim_retry.log"
   ],
   "date": "2026-10-30",
   "disposition": "TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN",
@@ -273,6 +276,17 @@
     "tested_local_source_sha": "cab04feb6b41bfc75efd064eb1f13b2a4262c22d"
   },
   "tests": {
+    "branch_focused_followup_attempt": {
+      "captured_result": "runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/attempt_result.txt",
+      "console_result": "Cannot connect to the license server; Failed to obtain license",
+      "coverage_vdb_merged": false,
+      "log": "runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/sim_retry.log",
+      "seed": 610806,
+      "simulator_exit_code": 255,
+      "status": "BLOCKED_LICENSE_BEFORE_TEST",
+      "test": "thermo5_sku_axil_boundary_phase_test",
+      "uvm_started": false
+    },
     "mutation": {
       "checker": "four-plane independent bit-true scoreboard",
       "fault": "PA0 oracle word 0 bit 0 flipped from 0x33BB39BF8B9F88C8 to 0x33BB39BF8B9F88C9",

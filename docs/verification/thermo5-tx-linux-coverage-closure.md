@@ -73,7 +73,11 @@ The priority queue is still real: 37 branch arms remain generic project-bin
 review, while fixed-parameter error arms, identity/saturation branches, and
 the CDC residual default branch remain explicitly open. The coefficient
 transport test improved toggle coverage, but did not close the outstanding
-line, branch, or condition sets. No bin was removed from the denominator.
+line, branch, or condition sets. A follow-up AXI-Lite boundary-phase test was
+attempted at seed 610806, but VCS returned 255 before the UVM test started
+because it could not connect to the license server. It produced no usable
+coverage result and its VDB was not merged. No bin was removed from the
+denominator.
 
 ### Functional coverage and applicability
 
@@ -236,6 +240,22 @@ runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
   +CORE_WORDS=56 \
   -l runs/thermo5_tx_product_axil_reset_cov_20261030/thermo5_sku_axil_coeff_transport_test_seed610803.log
 ```
+
+The additional legal boundary-phase attempt used this invocation and was
+blocked before the test ran; it did not contribute to Raw coverage:
+
+```bash
+runs/thermo5_tx_product_axil_reset_cov_20261030/simv \
+  +UVM_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+  +VEC_DIR="$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors" \
+  +ntb_random_seed=610806 -cm line+cond+fsm+tgl+branch+assert \
+  -cm_dir runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/cov.vdb \
+  +CORE_WORDS=56 +AXIL_BOUNDARY_OFFSET=0 \
+  -l runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/sim_retry.log
+```
+
+The console license failure and exit status are retained in
+`runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/attempt_result.txt`.
 
 **Acceptance:** Task 4 closed the previously missing product FSM transitions
 and improved toggles, while reachable line/branch/condition closure remains

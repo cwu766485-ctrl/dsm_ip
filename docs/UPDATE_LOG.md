@@ -4291,3 +4291,16 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   reach setup; real XPM/GT Wizard, routed FPGA PPA, and physical QAM256 BER are
   unavailable. The Python worst-case campaign is a model screen without a
   defined product BER/BLER acceptance target.
+
+## 2026-10-30 12:29 SGT - Record blocked boundary-phase coverage attempt
+
+- Attempted the legal AXI-Lite boundary-phase test at seed 610806 to continue
+  Task 4 branch closure after opening PR #7.
+- VCS exited 255 before UVM started because the license server could not be
+  reached. No coverage result was produced and the attempt VDB was not merged.
+- Preserved the invocation, simulator output, and exit status under the ignored
+  `runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/` directory;
+  indexed the log hashes in the machine-readable evidence.
+- The product Raw coverage remains unchanged at 81.95% aggregate and the gate
+  remains `RAW_100_OPEN`. Further VCS branch/condition/line/toggle closure
+  requires a working license service.
