@@ -11,6 +11,8 @@ not claim a stable physical QAM256 link.
 > A later Formal-only source commit `f6956b9342add9af86c8977999c517283232275e`
 > adds exact EF2 product-parameter reachability evidence; it does not change
 > VCS inputs or TX RTL.
+> Formal-only source `36d88f41de20202bd42d98fa9b510cb8dc1bf0f7` extends the
+> AXI-Lite `MAX_TAPS=1` parameter guard proof; it changes no VCS input or DUT RTL.
 > The TX product Raw URG is 81.99%: line 3190/3796, condition 583/846, branch
 > 440/637, toggle 86951/104478, FSM states 13/13 and transitions 22/22.
 > Functional applicable legal bins are 170/170. There are 0 waivers/exclusions;
@@ -93,6 +95,12 @@ zero black boxes. The Raw branch bins remain open and counted. A mailbox fault
 injection test separately observed the expected RTL `$error` and passed public
 reset recovery; its report is kept with other expected-negative results and
 outside positive Raw coverage.
+
+The exact AXI-Lite `MAX_TAPS=1` Formal harness also checks the parameter guard:
+5/5 assertions proven, with the guard assertion identified as a static
+tautology and the invalid-parameter cover expected uncoverable. Its
+`thermo5_dpd_axi_lite_cfg.sv:348` Raw branch remains counted and unwaived;
+this is elaboration-parameter evidence, not a sequential proof.
 
 ## Historical PR #5 multi-configuration Gate 3 coverage result
 

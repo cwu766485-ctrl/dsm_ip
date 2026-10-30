@@ -1,9 +1,10 @@
 # Thermo5 TX Linux Coverage Closure — Tasks 4–6 Update
 
-**Date:** 2026-10-30 13:59 SGT
+**Date:** 2026-10-30 14:18 SGT
 **Disposition:** `TASK4_PARTIAL; TASK5_PARTIAL; RAW_100_OPEN; LINUX_SIGNOFF_OPEN`
 **Current product VCS source SHA:** `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` (tree `694457bbacf2eda2a061da910f404975fd75ec8d`)
 **Formal follow-up SHA:** `23214fbe4b7a06bcf489e39ec9110d76885eda9e` (tree `498d78da91ce2bc48e29f3c28e1a8c4d52a19efd`; clean Formal run)
+**Latest exact-parameter Formal SHA:** `36d88f41de20202bd42d98fa9b510cb8dc1bf0f7` (tree `a0219fd779c20b7b85ecaaf3a2275567a0cf65de`; clean AXI-Lite `MAX_TAPS=1` check)
 **Product simulation-source SHA:** `913be930bfcbbad0f78dbc90e06299db3d1bb337` (the refreshed VCS filelist excludes the Formal-only harness update)
 **Stack base:** PR #6 head `006d52deaaf8ef3980461a6d4efdf1d2c0aa7011`
 **Machine-readable evidence:** [`thermo5-tx-linux-coverage-closure-evidence.json`](thermo5-tx-linux-coverage-closure-evidence.json)
@@ -280,15 +281,24 @@ SVA failure. Neither negative VDB is merged into positive product Raw.
   black boxes and zero setup violations. These are elaboration-constant checks,
   not temporal proofs. Raw branch bins remain in the denominator and no
   waiver is applied.
+- **AXI-Lite `MAX_TAPS` guard: static product-parameter check PASS.** At clean
+  Formal source `36d88f41de20202bd42d98fa9b510cb8dc1bf0f7`, the production
+  config harness elaborates `MAX_TAPS=1`. VC Formal reports 5/5 assertions
+  proven; the new `a_product_max_taps_guard_inactive` is a constant/tautology,
+  and its invalid-parameter cover is expected `uncoverable`. The legal
+  coefficient-read cover is hit; there are zero black boxes and setup
+  violations. This is a static elaboration check, not a temporal proof. The
+  `thermo5_dpd_axi_lite_cfg.sv:348` Raw branch remains counted and unwaived.
 - **PAIR_LOOKAHEAD and nonidentity 2/4-tap DPD:** candidate-only. Their prior
   A/B/formal evidence remains separate; none is counted in the product Raw
   denominator.
 
-The latest command, logs, formal manifest, property/setup reports, and hashes
-for the EF2 parameter check and mailbox expected-negative test are indexed
-in `thermo5-tx-linux-coverage-closure-evidence.json`. The product Raw VDB set
-was not changed by these checks, so Raw DUT and functional coverage remain the
-81.99% / 170-of-174 figures above; no coverage waiver or exclusion was added.
+The latest commands, logs, source manifest, property/setup reports, and hashes
+for the EF2 and AXI-Lite parameter checks and mailbox expected-negative test
+are indexed in `thermo5-tx-linux-coverage-closure-evidence.json`. These checks
+did not change the product Raw VDB set, so Raw DUT and functional coverage
+remain the 81.99% / 170-of-174 figures above; no coverage waiver or exclusion
+was added.
 
 ### Checker mutation
 

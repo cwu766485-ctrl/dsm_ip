@@ -140,7 +140,17 @@
     "ef2_product_params_formal_runner": "fb3300fd840a0e37d3685903089998d1bac9f5f791e31c0bf918e523bdd6a413",
     "mailbox_fault_sim_log": "2f6d3b91e75c2ce45e5f507a7ed0ad6b6aa8acf0d93f488ef1202f41c3c87a10",
     "mailbox_fault_commands": "3b3403dee5f5f3a3f57884b943c441e4938f110c40dc632424ab4e6e41fefa18",
-    "mailbox_fault_urg_log": "b22771ed66a8c5be24883c97d5469cfa9854ee4ec8aa94838fb70b98c8b24afe"
+    "mailbox_fault_urg_log": "b22771ed66a8c5be24883c97d5469cfa9854ee4ec8aa94838fb70b98c8b24afe",
+    "axil_cfg_param_guard_formal_summary": "1a119ddb33788463d77b7115c1222f6e0e15727be87a66b3617e0116a88bf187",
+    "axil_cfg_param_guard_formal_manifest": "782410c145d1589700ca3acb82c2016b057438e5da4f4ff2b1e94a98cf6fbbc8",
+    "axil_cfg_param_guard_formal_command": "23d0a3fe32e64e0ee473896cd3ad8b62dd69b0f98ccf04d22c1d01d4475dc521",
+    "axil_cfg_param_guard_formal_console": "a6b032a7c26a7bc8d518b3db5b1792e0886fe9e30b1ed3c54ba506c9ac121f33",
+    "axil_cfg_param_guard_formal_properties": "618f0efe99b55480c9909d432ec2e2d72efaf8faeab63c531b38fa38d5a2c421",
+    "axil_cfg_param_guard_formal_setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "axil_cfg_param_guard_formal_engines": "1734e6a9c8126378e3c95a711ffdde9b1acc0c4989d78d2e44568869716f17d6",
+    "axil_cfg_param_guard_harness": "4228b3681684bff0082e5c7bd8f796ae90f7032eb64116e25fbbe73a5e9bb6e1",
+    "axil_cfg_param_guard_tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+    "axil_cfg_param_guard_dut": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
   },
   "artifact_tree_sha256": {
     "axil_cfg_default_formal_run": "a3f14ed411aabd4ab9ae5bf22a8ac7bf383b69a7e208479997a1a5d6d4b45880",
@@ -288,6 +298,11 @@
       "file_count": 45,
       "total_bytes": 2824089,
       "tree_sha256": "1afd279e0c930b052a0a8b984ced1553ef79b7879e7032254b1fa61c51f7afdc"
+    },
+    "axil_cfg_param_guard_formal_run": {
+      "file_count": 7,
+      "total_bytes": 15442,
+      "tree_sha256": "d53cd71b80d9e9aa6157a1b46ffa08fc52046b808d62c584ce2407e98837e0d8"
     }
   },
   "artifact_tree_sha256_algorithm": "For sorted files: SHA256 update with 8-byte big-endian UTF-8 relative-path length, relative path bytes, then the raw SHA256(file) digest.",
@@ -423,7 +438,8 @@
     "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs frame_tail --out-dir runs/thermo5_tx_frame_tail_formal_clean_20261030",
     "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs ef2_product_params --out-dir runs/thermo5_tx_ef2_product_params_formal_clean_20261030",
     "make -C dv/uvm/sim thermo5-axil-vcs-mailbox-negative VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_OUT=\"$PWD/runs/thermo5_tx_product_axil_register_access_20261030\" THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_linux_closure_wip/corners/regression_vectors\" THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\" THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
-    "runs/thermo5_tx_product_axil_register_access_20261030/commands.txt (exact URG argv for separate expected-negative report; mailbox-fault VDB plus existing illegal-frame VDB; excluded from positive Raw)"
+    "runs/thermo5_tx_product_axil_register_access_20261030/commands.txt (exact URG argv for separate expected-negative report; mailbox-fault VDB plus existing illegal-frame VDB; excluded from positive Raw)",
+    "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH THERMO5_FORMAL_REPO=\"$PWD\" THERMO5_FORMAL_OUT=\"$PWD/runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/axil_cfg\" vcf -batch -fmode FPV -f \"$PWD/dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl\""
   ],
   "configuration_applicability_review": [
     {
@@ -456,6 +472,25 @@
         "black_boxes": 0,
         "setup_violations": 0
       }
+    },
+    {
+      "candidate": "AXI-Lite MAX_TAPS invalid-parameter guard",
+      "configuration": "axil",
+      "count": 1,
+      "instances": [
+        "thermo5_sku_uvm_tb.dut.u_cfg"
+      ],
+      "product_parameter": "DPD_MAX_TAPS=1; MAX_TAPS=1",
+      "unhit_raw_bin": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:348 branch 348:1",
+      "basis": "Exact product parameter elaboration plus static VC Formal property; not a temporal proof.",
+      "formal_evidence": {
+        "source_git_sha": "36d88f41de20202bd42d98fa9b510cb8dc1bf0f7",
+        "run_directory": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030",
+        "assertions": "5/5 proven",
+        "invalid_parameter_cover": "UNCOVERABLE_EXPECTED"
+      },
+      "status": "OPEN_CONFIGURATION_REVIEW",
+      "waiver_applied": false
     }
   ],
   "date": "2026-10-30",
@@ -679,6 +714,63 @@
         "setup": "runs/thermo5_tx_ef2_product_params_formal_clean_20261030/ef2_product_params/setup.txt",
         "vcf_log": "runs/thermo5_tx_ef2_product_params_formal_clean_20261030/ef2_product_params/vcf.log"
       }
+    },
+    "axil_cfg_product_max_taps_guard": {
+      "status": "PASS_STATIC_PRODUCT_PARAMETER_GUARD_REACHABILITY",
+      "artifact_directory": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030",
+      "source_git_sha": "36d88f41de20202bd42d98fa9b510cb8dc1bf0f7",
+      "source_git_tree": "a0219fd779c20b7b85ecaaf3a2275567a0cf65de",
+      "worktree_dirty": false,
+      "top": "thermo5_axil_cfg_coverage_harness",
+      "configuration": {
+        "MAX_TAPS": 1,
+        "source": "production harness parameter override"
+      },
+      "dut": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "mapped_raw_bin": "thermo5_dpd_axi_lite_cfg.sv:348 branch 348:1",
+      "harness": "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv",
+      "tcl": "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl",
+      "assertions": {
+        "found": 5,
+        "proven": 5,
+        "target": "a_product_max_taps_guard_inactive",
+        "target_status": "proven_static_tautology"
+      },
+      "covers": {
+        "found": 2,
+        "covered": 1,
+        "uncoverable": 1,
+        "legal_coefficient_read": "covered",
+        "invalid_parameter_guard": "uncoverable_expected_static_tautology"
+      },
+      "tautology_properties": [
+        "a_product_max_taps_guard_inactive",
+        "c_invalid_max_taps_guard"
+      ],
+      "black_boxes": 0,
+      "setup_violations": {
+        "clock": 0,
+        "glitch": 0,
+        "combinational_loop": 0,
+        "osc_loop": 0,
+        "osc_seq": 0,
+        "multidriven": 0
+      },
+      "vacuous_reset_assumptions": 2,
+      "duration_seconds": 25.78,
+      "scope_limit": "Static elaboration parameter check only; not a temporal proof. The initial RTL MAX_TAPS guard is inactive in the exact MAX_TAPS=1 product build.",
+      "raw_coverage_delta": "None; the mapped Raw branch remains counted.",
+      "raw_bins_removed": false,
+      "waiver_applied": false,
+      "evidence_files": {
+        "summary": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/formal_summary.json",
+        "source_manifest": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/source_manifest.json",
+        "command": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/command.txt",
+        "console": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/axil_cfg/console.log",
+        "properties": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/axil_cfg/properties.txt",
+        "setup": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/axil_cfg/setup.txt",
+        "engines": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030/axil_cfg/engines.txt"
+      }
     }
   },
   "functional_coverage": {
@@ -759,8 +851,8 @@
     "urg_command": "runs/thermo5_tx_product_axil_reset_cov_20261030/urg_product_raw_after_source_gap_current_20261030.command.txt",
     "urg_report": "runs/thermo5_tx_product_axil_reset_cov_20261030/product_raw_after_source_gap_current_20261030"
   },
-  "latest_evidence_revision": "f6956b9342add9af86c8977999c517283232275e",
-  "latest_evidence_time_sgt": "2026-10-30 14:12 SGT",
+  "latest_evidence_revision": "36d88f41de20202bd42d98fa9b510cb8dc1bf0f7",
+  "latest_evidence_time_sgt": "2026-10-30 14:18 SGT",
   "not_run_or_open": [
     "real XPM FIFO simulation/formal coverage",
     "actual GT Wizard/raw64 vendor-model simulation",
@@ -801,7 +893,8 @@
     "frame_tail_formal": "runs/thermo5_tx_frame_tail_formal_clean_20261030",
     "ef2_product_params_formal": "runs/thermo5_tx_ef2_product_params_formal_clean_20261030",
     "mailbox_fault_injection": "runs/thermo5_tx_product_axil_register_access_20261030",
-    "expected_negative_assertions_latest": "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions"
+    "expected_negative_assertions_latest": "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions",
+    "axil_cfg_param_guard_formal": "runs/thermo5_tx_axil_cfg_param_guard_formal_clean_20261030"
   },
   "schema_version": 1,
   "scope": "Thermo5 TX product configuration; Linux Generic FIFO substitute; VCS/URG and VC Formal only",
@@ -812,8 +905,10 @@
     "previous_uploaded_pr_code_commit_sha": "09c2e082876801d79946787d71f78082c4983f62",
     "formal_harness_source_sha": "f6956b9342add9af86c8977999c517283232275e",
     "formal_harness_source_tree": "57721ea3fc8af228525a2d06074ed6967edd71b0",
-    "latest_formal_only_source_sha": "f6956b9342add9af86c8977999c517283232275e",
-    "latest_formal_only_source_tree": "57721ea3fc8af228525a2d06074ed6967edd71b0"
+    "latest_formal_only_source_sha": "36d88f41de20202bd42d98fa9b510cb8dc1bf0f7",
+    "latest_formal_only_source_tree": "a0219fd779c20b7b85ecaaf3a2275567a0cf65de",
+    "axil_cfg_parameter_guard_source_sha": "36d88f41de20202bd42d98fa9b510cb8dc1bf0f7",
+    "axil_cfg_parameter_guard_source_tree": "a0219fd779c20b7b85ecaaf3a2275567a0cf65de"
   },
   "testbench_changes": {
     "bounded_pa_stall_override": {
@@ -1238,5 +1333,5 @@
     "vc_formal": "V-2023.12-SP2",
     "vcs": "V-2023.12-SP1"
   },
-  "latest_evidence_tree_sha256": "57721ea3fc8af228525a2d06074ed6967edd71b0"
+  "latest_evidence_tree_sha256": "a0219fd779c20b7b85ecaaf3a2275567a0cf65de"
 }

@@ -1,3 +1,25 @@
+## 2026-10-30 14:18 SGT - Prove AXI-Lite product tap guard reachability
+
+- Extended the focused AXI-Lite Formal harness for the exact product
+  `MAX_TAPS=1` setting. VC Formal V-2023.12-SP2 reported 5/5 assertions
+  proven and 1/2 covers hit; the invalid-parameter guard cover is
+  `uncoverable`. The new parameter assertion/cover are static tautologies,
+  explicitly recorded as elaboration evidence rather than temporal proof.
+- Setup reported zero clock, glitch, combinational-loop, oscillation, and
+  multidriver violations; zero black boxes. The guard Raw bin at
+  `thermo5_dpd_axi_lite_cfg.sv:348` remains in the denominator and has no
+  waiver/exclusion.
+- Added the exact command, console, property/setup report, source manifest,
+  run tree hash, and source SHA/tree to the Linux closure evidence.
+- Checks: VC Formal PASS; source SHA `36d88f41de20202bd42d98fa9b510cb8dc1bf0f7`
+  was clean; evidence artifacts parsed and hashes validated; `git diff
+  --check` PASS. No VCS Raw merge or full regression was repeated.
+- Raw remains unchanged at 81.99%, with 170/174 raw functional bins and
+  170/170 applicable positive bins. `RAW_100_OPEN` remains.
+- Remaining: Task 4/5/6 are partial; identity-DPD Formal remains
+  inconclusive; actual XPM/GT Wizard, routed FPGA PPA, product BER/BLER target,
+  and physical QAM256 BER remain open.
+
 ## 2026-10-30 14:12 SGT - Prove EF2 product parameter reachability
 
 - Added a focused VC Formal harness for the exact product EF2 parameters

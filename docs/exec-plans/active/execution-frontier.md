@@ -55,6 +55,14 @@ parameter reachability. At `W=16`, `CHANNELS=32`, and default
 the enabled look-ahead and invalid-parameter covers `uncoverable`; zero black
 boxes/setup violations. Raw bins remain counted and no waiver is applied.
 
+At Formal-only source `36d88f41de20202bd42d98fa9b510cb8dc1bf0f7` (tree
+`a0219fd779c20b7b85ecaaf3a2275567a0cf65de`), the exact AXI-Lite
+`MAX_TAPS=1` harness reports 5/5 assertions proven and 1/2 covers hit; the
+invalid-parameter guard cover is expected uncoverable. The new guard property
+is a static tautology, not a temporal proof. The Raw branch at
+`thermo5_dpd_axi_lite_cfg.sv:348` stays in the denominator without waiver.
+The run has zero black boxes/setup violations and does not change product Raw.
+
 The exact-product mailbox fault test (seed 420103) separately observes the
 expected RTL `$error` at `thermo5_dpd_axi_lite_cfg.sv:365`, then passes public
 reset recovery with zero UVM warnings/errors/fatals. It remains in the
