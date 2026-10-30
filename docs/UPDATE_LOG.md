@@ -2,16 +2,17 @@
 
 - Opened draft PR #8, `Thermo5 TX: Phase 0/1 Linux design and verification
   closure`, stacked on PR #7; it remains open and unmerged.
-- The locally tested commit is `99c852dc46cbb9091c6099267535465acfac2d47`.
-  The GitHub API-created PR head is `3da1ab21142218ce795252bd62d8865176a9ffe5`;
-  both resolve to the same complete tree SHA
-  `20a10962b1979349b15fcbf9a9b4807f78f26786`.
+- The locally tested implementation commit is
+  `99c852dc46cbb9091c6099267535465acfac2d47`; the initial GitHub PR head was
+  `3da1ab21142218ce795252bd62d8865176a9ffe5`. Their complete tree SHA matched
+  at publication (`20a10962b1979349b15fcbf9a9b4807f78f26786`).
 - Updated the active execution frontier to reflect the published PR and its
   review as the next action. No RTL, verification behavior, product coverage,
-  or benchmark result changed in this publication bookkeeping.
+  or benchmark result changed in this publication bookkeeping. A docs-only
+  follow-up commit synchronized the frontier on the PR branch.
 - Checks: clean source state before this note; PR metadata confirms open,
-  draft, unmerged, with PR #7 as base. A follow-up docs-only commit will keep
-  this entry and the active frontier synchronized on the PR branch.
+  draft, unmerged, with PR #7 as base; updated documentation passed
+  `git diff --check`.
 
 ## 2026-10-30 16:54 SGT - Complete TX Phase 0/1 Linux closure studies
 
