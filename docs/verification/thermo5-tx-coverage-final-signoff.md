@@ -52,8 +52,28 @@ version.
 The separate `MAX_TAPS=1` initialization-guard property and one interpolator
 append-arm property were identified as tautologies and removed from the
 accepted Formal disposition set. Both Raw code bins remain OPEN and in the
-unmodified Raw denominator. The accepted ledger now has six exact proven
-bins and 18,587 OPEN records.
+unmodified Raw denominator. The accepted ledger now has seven exact proven
+bins and 18,586 OPEN records.
+
+## Product 14:8 CDC immediate frame-end Branch (2026-10-31)
+
+VC Formal V-2023.12-SP2 was run at clean source SHA
+`bcf1f9a10b7a203e13cefb6fa64efcff0e588815` against the production 14:8 CDC
+gearbox and Generic FIFO, with the fixed AXI-Lite product configuration and a
+deterministic legal 32-beat AXIS source. The non-vacuous assertion proves the
+line-210 immediate frame-end arm unreachable; the matching arm Cover is
+uncoverable. Covers reached the enclosing product frame-end context at depth
+59 and a completed legal frame at depth 63. The run used no environment
+assumptions, had zero setup violations and zero black boxes, and passed its
+fail-closed runner. Exact hashes and properties are in
+`runs/thermo5_cdc_end_branch_20261031_bcf1f9a/`.
+
+The disposition closes exactly one audit-ledger row as
+`PROVEN_UNREACHABLE`; it does not remove or exclude the Raw URG Branch bin.
+Raw coverage remains line 3,190/3,796, condition 583/846, branch 440/637,
+toggle 86,951/104,478, FSM state 13/13 and transition 22/22. The ledger now
+contains seven proven-unreachable rows and 18,586 OPEN rows out of 18,593.
+Waivers and active `.el` exclusions remain zero.
 
 An exploratory mailbox-stability assertion remains OPEN. Its full Formal run
 was inconclusive; a selected-property trace attempt marked the AW/W stability
@@ -102,9 +122,9 @@ product-bound cadence still needs analysis. See the
 | DUT assertion status | 13/15 attempted (86.67%) | unchanged | 2 uncovered and 2 without attempts are retained in the URG status table |
 
 There are no approved waivers and no active URG exclusions. Adjusted therefore
-equals Raw. Six exact bins have a Formal `PROVEN_UNREACHABLE` disposition; they
-remain visible in the Raw URG denominators. The ledger contains 18,587 OPEN
-records out of 18,593. No adjusted score is used to claim closure.
+equals Raw. Seven exact bins have a Formal `PROVEN_UNREACHABLE` disposition;
+they remain visible in the Raw URG denominators. The ledger contains 18,586
+OPEN records out of 18,593. No adjusted score is used to claim closure.
 
 The complete product URG Group Report has 214 denominator-eligible bin records
 across covergroup-type and monitor-instance views: 210 hit and four zero-hit.
@@ -292,7 +312,7 @@ synthetic or unreviewed exclusion was installed.
 ## Acceptance status and remaining work
 
 - **Legal functional coverage:** 210/210 applicable scoreable records; negative-only bins reported separately. The complete report lists 214 scoreable records and 12 pre-existing URG model Illegal/Excluded records.
-- **Reachable/applicable DUT code coverage:** not closed; 18,587 rows remain OPEN.
+- **Reachable/applicable DUT code coverage:** not closed; 18,586 rows remain OPEN after seven exact Formal-proven-unreachable dispositions.
 - **Raw 100% code coverage:** `RAW_100_OPEN`; not claimed.
 - **Identity DPD Formal:** OPEN / inconclusive.
 - **TX worst-case benchmark:** model-only evidence exists; product BER/BLER acceptance threshold is undefined, so product communication acceptance remains OPEN.

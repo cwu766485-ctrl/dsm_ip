@@ -23,8 +23,8 @@
     "toggle:IDENTITY_DPD_ARITHMETIC": 4320
   },
   "closure_status_counts": {
-    "OPEN": 18587,
-    "PROVEN_UNREACHABLE": 6
+    "OPEN": 18586,
+    "PROVEN_UNREACHABLE": 7
   },
   "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
   "current_worktree_coverage_gate_recheck": {
@@ -84,6 +84,26 @@
   "diagnostic_testbench_evidence_sha256": "7d7b0d3b97a8f97fe54b3df68a33e02633b0e3d83a3c60c5e9b16c4d7bbe62e9",
   "exclusions_applied": 0,
   "formal_dispositions": {
+    "TXB-222f90478aca6253d9a5": {
+      "assertion": "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable",
+      "assumptions": [],
+      "cover": "thermo5_cdc_end_branch_harness.c_immediate_end_arm",
+      "evidence_sha256": {
+        "console": "60fdeaba9fa80fdbce87fee0f83cce16476db9a9ce234803867ad47ecb1d8000",
+        "properties": "c42a8079a7dc75cc95f1f169f2bd9f8db39dd2507a4dc112f34f6c3222b872d2",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_cdc_end_branch_20261031_bcf1f9a/cdc_end_branch",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "1c1fe6f08c4b1edc672233f2ac4b1432a047172b73993c90097609103a0fa196",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "2236280d63824491f59e1b9becb5a0f634ebfcb3b6f9a5282048a4f990673555",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
     "TXB-39a0a549d32bc9ef1e01": {
       "assertion": "thermo5_frame_tail_harness.a_append_no_input_tail",
       "assumptions": [
@@ -211,7 +231,7 @@
     "uncovered_records": 4,
     "urg_model_excluded_rows": 12
   },
-  "interpretation": "6 exact bins are Formal-proven unreachable; 18587 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "interpretation": "7 exact bins are Formal-proven unreachable; 18586 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
   "negative_report": "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report",
   "outstanding_counter_formal_attempt": {
     "evidence_file": "docs/verification/data/thermo5-tx-outstanding-counter-formal-evidence.json",

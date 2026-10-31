@@ -940,11 +940,36 @@
         "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
       },
       "status": "PROVEN_UNREACHABLE"
+    },
+    {
+      "semantic_bin_id": "TXB-222f90478aca6253d9a5",
+      "assertion": "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable",
+      "cover": "thermo5_cdc_end_branch_harness.c_immediate_end_arm",
+      "formal_run": "runs/thermo5_cdc_end_branch_20261031_bcf1f9a/cdc_end_branch",
+      "configuration": "axil",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "branch",
+      "bin": "117:0/-/1/-/-/0 2 4 6/1/-/1/1/-/-",
+      "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:210",
+      "assumptions": [],
+      "evidence_note": "Exact 14:8 product CDC with Generic FIFO; deterministic legal full-rate source; product frame-end context and completed-frame covers reached; target arm uncoverable.",
+      "properties_sha256": "c42a8079a7dc75cc95f1f169f2bd9f8db39dd2507a4dc112f34f6c3222b872d2",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "console_sha256": "60fdeaba9fa80fdbce87fee0f83cce16476db9a9ce234803867ad47ecb1d8000",
+      "source_sha256": {
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "2236280d63824491f59e1b9becb5a0f634ebfcb3b6f9a5282048a4f990673555",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "1c1fe6f08c4b1edc672233f2ac4b1432a047172b73993c90097609103a0fa196"
+      }
     }
   ],
   "disposition": "PROVEN_UNREACHABLE",
   "no_urg_coverage_update": true,
-  "note": "Only exact bins with current-source Formal evidence free of per-property tautology warnings are listed in bins. Two reviewed candidates are retained OPEN because the corresponding Formal assertions were tautological. Raw URG is not edited.",
+  "note": "Only exact bins with source-bound current VC Formal evidence, non-vacuous assertions, and a matching uncoverable Cover are listed. Two tautological candidates remain OPEN. Raw URG bins and denominators are unchanged.",
   "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
   "raw_coverage_reused": true,
   "reviewed_candidates": [

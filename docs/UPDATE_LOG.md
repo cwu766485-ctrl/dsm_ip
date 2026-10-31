@@ -1,3 +1,28 @@
+## 2026-10-31 11:06 SGT - Prove the fixed 14:8 CDC frame-end arm unreachable
+
+- Added a product-bound VC Formal harness using the production 14:8 CDC
+  gearbox and Generic FIFO, a deterministic legal 32-beat AXIS source, and no
+  environment assumptions. The true arm of the immediate frame-end branch at
+  `dsm_axis14_to_core8_cdc.sv:210` is proven unreachable; the enclosing frame
+  context and a completed legal frame are both covered.
+- Kept the new proof in a dedicated Tcl flow so previously accepted Formal
+  dispositions that hash the shared Tcl source remain source-valid.
+- The source-bound disposition utility classified exactly
+  `TXB-222f90478aca6253d9a5` as `PROVEN_UNREACHABLE`. The Raw URG bin,
+  denominator, VDBs, and coverage counters were not modified. The ledger now
+  records seven proven-unreachable rows and 18,586 OPEN rows out of 18,593;
+  waivers and `.el` exclusions remain zero.
+- Checks: clean-source VC Formal V-2023.12-SP2 PASS at commit
+  `bcf1f9a10b7a203e13cefb6fa64efcff0e588815` (1/1 assertion proven
+  non-vacuously, 2/3 Covers reached, exact target Cover uncoverable, zero
+  assumptions/setup violations/black boxes); disposition reconciliation and
+  raw-preservation check PASS. No DUT RTL or VCS compile input changed, so the
+  existing VCS PASS results were retained without repeating the full UVM run.
+- Remaining: 18,586 code-gap rows OPEN, including reachable Branch/Condition
+  work; product-bound outstanding-word and DPD identity Formal remain
+  inconclusive; source-gap underflow contract, exact-current-worktree Raw
+  compile identity, and vendor/physical signoff remain open.
+
 ## 2026-10-31 00:31 SGT - Classify and reproduce TX product cadence review
 
 - Added read-only centered-cubic queue event probes and a two-packet AXI-Lite

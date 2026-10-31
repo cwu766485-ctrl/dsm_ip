@@ -80,7 +80,9 @@ plus the compile VDB. The full URG Group Report contains 214 scoreable bin
 records; 210/210 legally applicable positives are hit, while four illegal-frame
 rows remain unhit in Raw. The earlier 170/174 tally omitted the 40 EF2
 cross-bin records and is superseded by the complete bin detail.
-The 18,593-row source-linked ledger remains OPEN/review-only. The targeted
+The 18,593-row source-linked ledger now has seven exact Formal-proven
+unreachable records and 18,586 OPEN records; every record remains in the Raw
+denominator. The targeted
 zero-gap, inter-frame-gap, and source-pacing VCS tests and AXI-Lite reachability
 proof are documented in the linked closure report. At `MAX_TAPS=1`, Formal
 proved 4/4 AXI-Lite assertions, including both write-case and coefficient-read
@@ -90,6 +92,14 @@ sweep passed at 2/4/8 cycles and failed at 16 cycles due to 54 underflow events
 even though all 112 outputs and both frame markers were observed; the failed
 VDB is excluded from Raw coverage. No full Gate 0–3 regression was repeated in
 PR #7.
+
+The fixed 14:8 ingress CDC immediate frame-end Branch at line 210 is also
+proven unreachable with a non-vacuous product-bound VC Formal property and
+matching uncoverable Cover. Its legal frame-end context and full-frame Covers
+are reached. The Raw bin remains counted and unexcluded; the source-linked
+audit now records seven proven-unreachable rows and 18,586 OPEN rows. See the
+[coverage closure snapshot](thermo5-tx-coverage-final-signoff.md) and
+[root-cause ledger](thermo5-tx-coverage-root-cause-closure.md).
 
 The Frame Tail module-level VC Formal check now passes with the parameter split
 used by `tid32_thermo5_frontend_tx.sv:102/:178`: the append-enabled stage

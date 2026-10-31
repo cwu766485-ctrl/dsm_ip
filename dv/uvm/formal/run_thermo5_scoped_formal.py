@@ -16,13 +16,15 @@ SOURCES=('rtl/axis/dsm_reset_sync.sv','rtl/dpd/dpd_poly.v','rtl/dpd/dpd_memory_p
          'dv/uvm/formal/thermo5_dpd_counter_harness.sv',
          'dv/uvm/formal/thermo5_dpd_identity_harness.sv',
          'dv/uvm/formal/thermo5_generic_cdc_harness.sv',
+         'dv/uvm/formal/thermo5_cdc_end_branch_harness.sv',
          'dv/uvm/formal/thermo5_ef2_stability_harness.sv',
          'dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv',
          'dv/uvm/formal/thermo5_frame_tail_harness.sv',
          'dv/uvm/formal/thermo5_ef2_product_params_harness.sv',
          'rtl/gt/gt_tx_user_bridge.sv','rtl/gt/gt_tx_raw64_boundary.sv',
          'rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv',
-         'dv/uvm/formal/run_thermo5_gap_fpv.tcl')
+         'dv/uvm/formal/run_thermo5_gap_fpv.tcl',
+         'dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl')
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
@@ -33,7 +35,7 @@ def main():
                     help='Also prove identity arithmetic/latency and generic CDC residual legality')
     ap.add_argument('--residual-only',action='store_true',
                     help='Add the residual proof without the optional expensive arithmetic proof')
-    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','ef2','ef2_pair','frame_tail','ef2_product_params'),
+    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','cdc_end_branch','ef2','ef2_pair','frame_tail','ef2_product_params'),
                     help='Run selected existing jobs for focused diagnosis')
     args=ap.parse_args(); out=Path(args.out_dir).resolve()
     if ROOT/'runs' not in out.parents or out.exists(): ap.error('Use a new runs/ directory')
@@ -69,6 +71,8 @@ def main():
         result['scope']['ef2_pair']='Relational proof of exact pairwise look-ahead against scalar EF2 for arbitrary signed-16 input, stalls, and state saturation; product parameter remains disabled'
     if args.jobs and 'ef2_product_params' in args.jobs:
         result['scope']['ef2_product_params']='Exact W=16, CHANNELS=32 product EF2 parameter elaboration; prove PAIR_LOOKAHEAD=0 and legal parameter guard, while requiring corresponding candidate arms to be uncoverable'
+    if args.jobs and 'cdc_end_branch' in args.jobs:
+        result['scope']['cdc_end_branch']='Exact product 14:8 CDC gearbox and Generic FIFO; legal 32-beat AXIS packets; prove line-210 immediate frame-end arm unreachable and require legal frame-end context Cover'
     if args.jobs and 'frame_tail' in args.jobs:
         result['scope']['frame_tail']='Exact W=16, LANES=8 centered-cubic stage parameters; stage-1 input tail tied low as in the product, stage-2 APPEND_TAIL_VECTOR=0; prove single-entry pop/push reachable and exact tail-only paths uncoverable'
     if any(kind in kinds for kind in ('ef2','ef2_pair')):
@@ -83,12 +87,14 @@ def main():
     for kind in kinds:
         top=('thermo5_ef2_stability_harness' if kind=='ef2' else
              'thermo5_ef2_pair_equiv_harness' if kind=='ef2_pair' else
-             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual','frame_tail','ef2_product_params') else
+             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual','cdc_end_branch','frame_tail','ef2_product_params') else
              f'thermo5_{kind}_gap_harness')
         work=out/kind; work.mkdir()
         env=os.environ.copy()
         env.update(THERMO5_FORMAL_TOP=top,THERMO5_FORMAL_OUT=str(work),THERMO5_FORMAL_REPO=str(ROOT))
-        argv=['vcf','-batch','-fmode','FPV','-f',str(ROOT/'dv/uvm/formal/run_thermo5_gap_fpv.tcl')]
+        tcl_script=(ROOT/'dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl'
+                    if kind=='cdc_end_branch' else ROOT/'dv/uvm/formal/run_thermo5_gap_fpv.tcl')
+        argv=['vcf','-batch','-fmode','FPV','-f',str(tcl_script)]
         started=time.monotonic(); log=work/'console.log'
         try:
             with log.open('w') as stream:
@@ -98,8 +104,8 @@ def main():
             properties=(work/'properties.txt').read_text()
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
-            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 3
+            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 3 if kind=='cdc_end_branch' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 4
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 1 if kind=='cdc_end_branch' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
             if kind=='frame_tail':
                 expected_cover_states={'c_append_frame_end':'covered',
@@ -115,6 +121,12 @@ def main():
             elif kind=='ef2_product_params':
                 expected_cover_states={'c_pair_lookahead_arm_enabled':'uncoverable',
                     'c_invalid_parameter_guard':'uncoverable'}
+                observed_cover_states={n.rsplit('.',1)[-1]:s for s,n in covers}
+                ok=ok and len(covers)==expected_covers and observed_cover_states==expected_cover_states
+            elif kind=='cdc_end_branch':
+                expected_cover_states={'c_product_end_branch_context':'covered',
+                    'c_immediate_end_arm':'uncoverable',
+                    'c_completed_legal_frame':'covered'}
                 observed_cover_states={n.rsplit('.',1)[-1]:s for s,n in covers}
                 ok=ok and len(covers)==expected_covers and observed_cover_states==expected_cover_states
             else:
@@ -134,6 +146,9 @@ def main():
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*2\b',properties))
                 elif kind=='cdc_residual':
                     ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_axis_stable',properties))
+                elif kind=='cdc_end_branch':
+                    ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_immediate_end_arm_unreachable',properties))
+                    ok=ok and not re.search(r'inconclusive|undetermined',properties)
                 elif kind=='ef2':
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*4\b',properties))
                 elif kind=='ef2_pair':

@@ -17,6 +17,7 @@ for that job:
 | Reset release | `thermo5_reset_harness.sv` | `thermo5_reset_gap_harness` |
 | DPD sample counter | `thermo5_dpd_counter_harness.sv` | bounded and unbounded counter tops |
 | Generic FIFO CDC / 14:8 residual | `thermo5_generic_cdc_harness.sv` | `thermo5_cdc_residual_harness` |
+| Product 14:8 CDC frame-end branch | `thermo5_cdc_end_branch_harness.sv` | `thermo5_cdc_end_branch_harness` |
 | Identity DPD payload/latency | `thermo5_dpd_identity_harness.sv` | `thermo5_identity_harness` |
 | Identity DPD intermediate lemmas | `thermo5_dpd_identity_lemmas_harness.sv` | `thermo5_identity_lemmas_harness` |
 | Interpolator bounds | `thermo5_interp_bounds_harness.sv` | `thermo5_interp_bounds_harness` |
@@ -46,6 +47,9 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --unbounded-counter --residual-only \
   --out-dir runs/thermo5_formal_review
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
+  --jobs cdc_end_branch --out-dir runs/thermo5_cdc_end_branch_review
 ```
 
 The EF2 assertions cover all 32 chronological lanes in I and Q. They prove
@@ -160,6 +164,13 @@ exact 7:4 clock periods; source stability is non-vacuous and black boxes zero.
 `--residual-only` adds this job without arithmetic; `--jobs cdc_residual`
 runs only that job. Original reset/budget defaults remain. Proofs do not
 become URG hits, and no exclusions are applied.
+
+The product CDC end-branch job elaborates the production 14:8 gearbox and
+Generic FIFO with a deterministic legal 32-beat AXIS source. It proves the
+line-210 immediate frame-end arm unreachable, while Covers demonstrate both
+the enclosing frame-end context and a completed legal frame. It uses no
+environment assumptions. Its dedicated Tcl flow leaves the shared historic
+Formal Tcl source unchanged so prior source-hashed dispositions stay valid.
 
 This FPV result is not a CDC/RDC report, formal arithmetic equivalence proof,
 gate-level/SDF sign-off, physical implementation sign-off, or proof of every
