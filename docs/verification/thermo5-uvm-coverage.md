@@ -1,14 +1,36 @@
 # Thermo5 UVM verification and coverage boundary
 
-## Current EF2 main-chain coverage snapshot (2026-10-28)
+## TX-only Gate 0 exact-source rerun (2026-10-29)
 
-The current thermo5 wrapper and ZU15EG parent defaults are centered-cubic
-interpolation with fixed-point EF2 TIDSM at STEP=5120. The current VCS
-V-2023.12-SP1 generic-FIFO regression passes with merged raw URG of 79.86%
-(88.04% line, 70.63% condition, 81.17% toggle, 100% FSM, 73.45% branch,
-76.47% assertion, 69.26% group). EF2 positive/negative rail and candidate-under-stall bins
-are covered in the dedicated qualification run. This is not code-coverage
-closure.
+Gate 0 was rerun at clean source SHA
+`04550289e1ecb5fa0e38168869d4f2539929cb80`. Python reference tests (36/36),
+Generic VCS and URG, full AXI-Lite VCS and URG, 112-word STOP/drain/restart,
+three-seed 2,072-word EF2 qualification, and EF2 scoped VC Formal all pass.
+The exact Generic raw URG is 76.12% aggregate: 82.63% line, 62.59% condition,
+79.66% toggle, 100% FSM, 62.22% branch, 76.47% assertion, and 69.2592%
+functional group. The current raw report and its 784-row source-linked
+inventory use no exclusions or denominator adjustment. One expected
+illegal-frame assertion failure and three unattempted assertions remain
+visible. The unsupported 79.86% statement has no matching raw report and is
+withdrawn as a current score. See the [baseline](thermo5-tx-baseline.md),
+[feature/testpoint matrix](thermo5-tx-feature-matrix.md),
+[coverage ledger](thermo5-tx-coverage-ledger.csv), and
+[evidence manifest](thermo5-tx-gate0-evidence.json).
+
+Gate 0 is accepted for Linux Generic/behavioral scope. Real XPM,
+XSim/Vivado/current GT Wizard, routed FPGA PPA, and physical QAM256 BER remain
+OPEN or NOT RUN because those vendor tools/models and board measurements are
+unavailable in this Linux environment.
+
+## Historical EF2 main-chain coverage snapshot (2026-10-28)
+
+At the recorded 2026-10-28 checkpoint, the thermo5 wrapper and ZU15EG parent
+defaults were centered-cubic interpolation with fixed-point EF2 TIDSM at
+STEP=5120. The dated document reported a 79.86% merged raw Generic URG score,
+but no matching raw report was found; that score is withdrawn and must not be
+used. The fresh exact-source score is 76.12%, as stated above. EF2
+positive/negative rail and candidate-under-stall bins are covered in the
+dedicated qualification run. This is not code-coverage closure.
 
 The AXI-Lite regression also passes targeted TLAST × PA stall, STOP ×
 partial-ready stall, pending-commit × stopped-RUN, and two-packet

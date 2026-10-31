@@ -12,6 +12,7 @@ from dsm_refmodel.thermo5 import (
     tid_word_ef2,
     apply_memory_polynomial,
     nonlinear_test_dpd_coefficients,
+    nonlinear_test_dpd_coefficients_4tap,
     write_vectors,
 )
 
@@ -81,6 +82,19 @@ class Thermo5ReferenceTests(unittest.TestCase):
             words=56, seed=113, frame_start_words=(1, 15, 36),
             frame_gains=(16384, 14336, 12288))
         output = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        self.assertEqual(len(output), 56)
+        self.assertTrue(all(len(word) == 4 for word in output))
+
+    def test_four_tap_nonlinear_dpd_image_runs_through_centered_frontend(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=56, seed=612004, frame_start_words=(1,), frame_gains=(16384,))
+        coefficients = nonlinear_test_dpd_coefficients_4tap()
+        self.assertEqual(len(coefficients["c1_re"]), 4)
+        self.assertTrue(all(coefficients["c1_re"][tap] != 0 for tap in range(4)))
+        self.assertTrue(all(coefficients["c3_re"][tap] != 0 for tap in range(4)))
+        output = run_centered_cubic_frontend(
+            i_words, q_words, starts, gains, dpd_coefficients=coefficients,
+            dpd_active_taps=4, tidsm_order=2)
         self.assertEqual(len(output), 56)
         self.assertTrue(all(len(word) == 4 for word in output))
 

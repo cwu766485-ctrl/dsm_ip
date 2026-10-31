@@ -1,0 +1,120 @@
+{
+  "analysis_script_sha256": "89f50d6e56e9313c0f207b12ecf99c790270b34113017d9a89dde7890ca48491",
+  "command": "python3.12 tools/hw/thermo5_tx_coverage_rootcause.py --ledger runs/thermo5_tx_product_axil_reset_cov_20261030/gap_ledger_after_source_gap_current_20261030/thermo5-tx-gate3-coverage-ledger.csv --raw-report runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access --branch-arms runs/thermo5_tx_final_vcs_resume_20261030_41691/raw_summary_after_register_access/branch_arms.csv --negative-report runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report --evidence docs/verification/thermo5-tx-linux-coverage-closure-evidence.json --refresh-evidence docs/verification/data/thermo5-tx-final-vcs-refresh.json --diagnostic-instrumentation-evidence docs/verification/data/thermo5-tx-frame-replacement-coverage-review.json --output-dir docs/verification/data/thermo5-tx-coverage-root-cause",
+  "current_worktree_coverage_gate_recheck": {
+    "evidence_manifest": "runs/thermo5_tx_final_closure_20261031/coverage_gate_recheck_manifest.json",
+    "evidence_manifest_sha256": "adb08141691787a6eb30b2d23413c9a64676edd5131da0fe13ee9d47de7ee6ba",
+    "exit_code": 3,
+    "raw_changed": false,
+    "raw_denominator_changed": false,
+    "rtl_source_mismatches": 0,
+    "status": "FAIL_CLOSED_SOURCE_HASH_MISMATCH"
+  },
+  "diagnostic_instrumentation_evidence": "docs/verification/data/thermo5-tx-frame-replacement-coverage-review.json",
+  "diagnostic_instrumentation_evidence_sha256": "7d7b0d3b97a8f97fe54b3df68a33e02633b0e3d83a3c60c5e9b16c4d7bbe62e9",
+  "diagnostic_testbench_source_hashes": {
+    "dv/uvm/agent/interfaces/thermo5_sku_if.sv": "4a56ea6e1fe111390f48efedd66950dd0c8327ecd08944e2684952cd444c25a3",
+    "dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv": "ffe215a3673ad9fe2e1ba76388c3fdc4389b50b4f94ebfd6e7cdb6c4e6c48e7b",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "71ebe6a90aaf2ecc936030d6ef47662b1f4f91f91e0f8eeb439bb0d176a3b492"
+  },
+  "eda_tool_versions_from_source_evidence": {
+    "urg": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2",
+    "vcs": "V-2023.12-SP1"
+  },
+  "exclusions": 0,
+  "followup": {
+    "approved_waivers": 0,
+    "exclusions_applied": 0,
+    "formal_disposition_script_sha256": "d0135fbaa1d1dfce45aa4d157c19afbcd263cbb00d056c8c5dd7187a9b0881a6",
+    "formal_review_json": "docs/verification/thermo5-tx-formal-bin-dispositions.json",
+    "formal_review_sha256": "180103e650fd885d0e60cab3a1e48426d67038c0d21cf8cb7534304d2a18aab5",
+    "formal_status": "PASS_FOR_EXACT_REACHABILITY_DISPOSITIONS; DPD_IDENTITY_OPEN",
+    "product_urg_refresh_evidence": null,
+    "product_urg_refresh_evidence_sha256": null,
+    "product_urg_refreshed": false,
+    "proven_unreachable_bin_count": 8,
+    "raw_coverage_edited": false,
+    "reviewed_open_candidate_count": 2
+  },
+  "functional_bin_detail_script_sha256": "701a519c522cd0fc3f6838f7330791732107400bb41a806b836a8b9554ace0c4",
+  "input_sha256": {
+    "closure_evidence": "88477a719576d443344640e4551b57f6c9a64250b543d83a4d0854c55c7bd369",
+    "ledger": "e586d27684fffe4e98b1d4c4bd43b22839c349ef31c07b1779d4a69c4ce45222",
+    "negative_urg_groups_html": {
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp0.html": "573ffcaa3f14f3c45ba2b3e85bbed32e65a36c826e31b1d910d4566c5ed25f8f",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp1.html": "b75eb74be52934520c54974ca2210dfcca43e3aa92b524fbdadb5af1e237e64c",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp2.html": "e0b9890918f111ab2a61105bca2cb47c73ef8ec38cac4d0e756c6dbec80133c5",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp3.html": "62add8b18b1a9e119f94f81d1e99f225f9d426891a8816fa8987a113f0c1a8bb",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp4.html": "dd065e96342613ac636ac72e516fe281a5583e77aa7712d4b05e2567ca6dc387",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp5.html": "c33b04c6e6ce122020cdc8327dbc3f41b52250969d25c00f0136e22075f4014e",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp6.html": "99302b068244bb10654461a46b1c2a6cfa29b881c4a6ec3102d636601cf927b4",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp7.html": "3f21a7816173ab001637554017379606c6bb3d5844cd4f865347e0484dd6a40b"
+    },
+    "raw_branch_arms_csv": "5c3265dbe0dc49f2705d0893c0cb0bece40ef57d90521d30cc850779137fd3d1",
+    "raw_groups_html": {
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/groups.html": "d595b7fdd529ff1010b81e2d93a1a66e6cfeb9bf911615b5ad67b8dd12d69852",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/grp6.html": "fb3b66eb5ce7d31eeb31e03f19aa1318f128e1b8dfc0825d7fcdd4ea2c7d4dc6",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/grp7.html": "1937cce29da22304935ecdbc6163a8e5d090172dab89e056c4a86ca6980f80b8",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod1.html": "3b1ff292fc254de5ade572ea1e25ebf148dacee84f3081fd15c3d6dea7f55e2f",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod10.html": "414476831db832f5ed40390ffb391148cc8d065dd6d3b72f2fd2281b1b04c689",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod12.html": "0ff0640ec86cc92a4de75ef038bd455fee24ddbf816541df3d3f4888cb7a124b",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod13.html": "4bb98f88abb5e62cf9b17efb8bd6353bb80026283e1c5be289f7107f2a12fa87",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod15.html": "e236cc5fceba7c782036f04ffaf10f78e13a504cd96e05652aa062a9ca48dbf9",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod16.html": "dcbae5f44cb729f97c58fab76a95c4e5f0b4396ec09b45c11e7913275c5c992f",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod18.html": "57a7f4701ccbb91acbc91398ba904081a5228320326305777462827c0552fe07",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod18_0.html": "f5341fca3c4190eb72c38e87e07f1714ecd507d706d76fc4bbe31c659c8171d1",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod2.html": "c75fe3aee353f7f6dd698e7115f5472ac0dd355eaf5fff454c8fe61fdb7b72df",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod20.html": "6705712969a5abd4b73ea49c8c0e559ce0a16ade4b59a7f4c71150f128d4569d",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod21.html": "91a630392fadbd55e61c2b5355f7fa752f1b4a4f6f062381d343c67a3d7c15d3",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod22.html": "d7ee17f9e230370e73434b12a7626827b89bb7397ff0be43c337682987e8b126",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod23.html": "ea1f9850e3fd92669700685d2a544b765ac06833091455657ebe6b4deb544009",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod3.html": "b1545e56e331c0a7dd6b9265c2ccdb5490fa07dbd5bb2bfe060e4de162709404",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod4.html": "54e76e9a856d376bfb57e4f1217df7ca526dc2536e257c67ea315903bf0d4a94",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod6.html": "e8e2e1e739cf6cc7fa679a2eef399ff7283a9ccbb06eac0913223de1ebe55f64",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod7.html": "0ec3961fd690d9994d21548b63510c7f9453be980e80dbed031db8e61605b6dd",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod8.html": "5bc5710b9bbb349c3159ee774047ff51db959c7fdf15aed39bc0cac9530b3f5f",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/mod9.html": "dbecf897985abacb2c7142241c17be66ce3c4ae176c06e1de71e7a2fa8ccd478",
+      "runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access/modlist.html": "dbd545381ab2f997f0e10474b12d478c732f12928122b4ef4daa0bfda0ac1deb",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/groups.html": "9a3375a588eb9986f8b8c5f6b0eef1e72cf521d818b4cf2b12454572692aac1f",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp6.html": "99302b068244bb10654461a46b1c2a6cfa29b881c4a6ec3102d636601cf927b4",
+      "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report/grp7.html": "3f21a7816173ab001637554017379606c6bb3d5844cd4f865347e0484dd6a40b"
+    },
+    "source_manifest": "3e875543c44f93c4d418f73eea76f17a898205239ae937d2f60df7ccba2340eb"
+  },
+  "output_sha256": {
+    "thermo5-tx-coverage-open-bins.csv.gz": "b2e5b1b00ba6ed50082f3818e7911eaeff0f17ef018fb138610f0da5b0934902",
+    "thermo5-tx-coverage-root-cause-closure.md": "ea912227057e1c07d6a54575c554f47594be54bb128d67470068415269636803",
+    "thermo5-tx-coverage-root-cause-summary.json": "4345ce65c3a47e306451564aa43bd69a513079bc6d72e61b99ecb7f49a8418dc",
+    "thermo5-tx-coverage-root-cause-tasks.csv": "39a528be32f58f76a9ac0ac1d5a689470c724661e614e915070654d0ae739ee9",
+    "thermo5-tx-functional-bin-audit.csv": "96c7806a3ad056d6ab21e926829b61da5e08d773618f2cdeb8228f098a8cd7df",
+    "thermo5-tx-functional-bin-detail.csv": "0106a4a89595004d95a17b5b04c5e4176fd8e6748939b6324dae83525b5520bf"
+  },
+  "outstanding_counter_formal_attempt": {
+    "evidence_file": "docs/verification/data/thermo5-tx-outstanding-counter-formal-evidence.json",
+    "evidence_sha256": "69cc6049a3de4cb313c5074e33c30108ed379d00a7250b897950ed93e7c0ac1f",
+    "formal_manifest_sha256": "fab9f0f01761745fd211eee590514986eb8970292abf940ca0bf4c8b56c4ecaa",
+    "raw_modified": false,
+    "status": "INCONCLUSIVE_OPEN"
+  },
+  "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
+  "python": "3.12.13",
+  "raw_coverage_reused": false,
+  "refresh_evidence": "docs/verification/data/thermo5-tx-final-vcs-refresh.json",
+  "refresh_evidence_sha256": "26a2b4203ceabcfd5de15cf628d08d2ab5248be3d23c6937970de41935e86292",
+  "schema_version": 1,
+  "simulator_rerun": true,
+  "supplemental_negative_code_coverage": {
+    "evidence_file": "docs/verification/data/thermo5-tx-negative-assertion-evidence.json",
+    "evidence_sha256": "80d23df25a8fe407484132bcc4b3a7d383e7c206605c1c83139e4a1a3e8b7ce1",
+    "raw_modified": false,
+    "semantic_bin_id": "TXB-646dd03c99766d877d30",
+    "separate_from_raw": true
+  },
+  "tracked_review_documents": {
+    "docs/exec-plans/active/execution-frontier.md": "a2232308c68e1f807f36d7d3e28a0b07de07c6b5d09cc8263e611c2804156632",
+    "docs/verification/thermo5-tx-coverage-final-signoff.md": "1ce653c2a836535b39519943810666a0c64b872ea85807cf2515df4145e816fd",
+    "docs/verification/thermo5-tx-coverage-root-cause-closure.md": "ea912227057e1c07d6a54575c554f47594be54bb128d67470068415269636803"
+  },
+  "waivers": 0
+}

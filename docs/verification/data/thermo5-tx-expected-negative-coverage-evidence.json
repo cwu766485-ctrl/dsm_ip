@@ -1,0 +1,143 @@
+{
+  "assertion_reporting": "Positive legal DUT assertion counts are taken only from the legal product report. The malformed-frame run is checker-passing expected-negative evidence with two expected RTL assertion failures; those failures are not included in legal assertion totals. Combined code Raw is a transparent union for code-bin auditing.",
+  "combined_code_raw": {
+    "combined_raw_scoreable_functional": "214/214",
+    "coverage_delta_vs_legal_13_plus_gap_runs": {
+      "branch": 2,
+      "condition": 7,
+      "line": 2,
+      "toggle": 12
+    },
+    "coverage_gate": "runs/thermo5_tx_final_closure_20261031/checks/coverage-gate.json",
+    "coverage_gate_sha256": "5e632f8ae8e30af0bacba94e7bf975f42d1c59311735d697f1f3fb406596e1bf",
+    "expected_negative_semantic_bins": "2/2; four repeated URG view records retained",
+    "gate_status": "RAW_100_OPEN",
+    "legal_applicable_functional": "210/210",
+    "legal_group_scores": {
+      "core_cg": 100.0,
+      "ef2_cg": 100.0,
+      "plane_atomic_cg": 100.0,
+      "read_cg": 100.0,
+      "reset_cg": 100.0,
+      "source_cg": 100.0,
+      "stop_restart_cg": 100.0,
+      "write_cg": 100.0
+    },
+    "metrics": {
+      "branch": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "cond": {
+        "covered": 610,
+        "missing": 239,
+        "percent": 71.8492,
+        "total": 849
+      },
+      "line": {
+        "covered": 3350,
+        "missing": 446,
+        "percent": 88.2508,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 83587,
+        "missing": 20893,
+        "percent": 80.0029,
+        "total": 104480
+      }
+    },
+    "negative_only_branch_hit": "TXB-646dd03c99766d877d30 at rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:141",
+    "negative_union_branch_hits": [
+      {
+        "semantic_bin_id": "TXB-646dd03c99766d877d30",
+        "source": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:141",
+        "stimulus": "intentional malformed early TLAST"
+      },
+      {
+        "semantic_bin_id": "TXB-158c42868bfe37061f07",
+        "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv:224",
+        "stimulus": "intentional malformed frame start/residual path"
+      }
+    ],
+    "report": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code",
+    "status": "RAW_100_OPEN",
+    "summary": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative/combined_raw_inventory/summary.json"
+  },
+  "compile_witness": {
+    "baseline_compile_log": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/compile.log",
+    "baseline_compile_log_sha256": "ae56fa66bc2402ff4e0154e98c6d65f783790b6721d54d514758c9e77b111d78",
+    "manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+    "sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+    "source_control_entries": 77,
+    "source_file_count": 75
+  },
+  "expected_negative_test": {
+    "assertions": [
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc.unnamed$$_1",
+        "line": 262,
+        "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+        "line": 310,
+        "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv"
+      }
+    ],
+    "command_file": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative/illegal_frame.command.txt",
+    "command_sha256": "1f881e64514e9cf715faba21b5be94a944f774a5da89f3d31f0ab37bef21a8c6",
+    "exit_code": 0,
+    "expected_rtl_assertion_failures": 2,
+    "functional_observation": "illegal=49; early TLAST at source beat 15; sticky protocol error cleared by public reset",
+    "log": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative/illegal_frame.log",
+    "log_sha256": "ad319cb15a71ae74ef43fd8f289f4470a2acda19dbe125773e2677bdfb823274",
+    "seed": 420102,
+    "test": "thermo5_sku_axil_illegal_frame_test",
+    "uvm_errors": 0,
+    "uvm_fatals": 0,
+    "uvm_pass_marker": "THERMO5_AXIL_ILLEGAL_FRAME_UVM_PASS",
+    "uvm_warnings": 0,
+    "vdb": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative/illegal_frame.vdb",
+    "vdb_tree_file_count": 13,
+    "vdb_tree_sha256": "4b7315f06bfb6a75baf2354799afc3afb8f8244c3e155171a837c22de5ad1c5f"
+  },
+  "formal_early_tlast": {
+    "assertion_depth": 312,
+    "black_box_instances": 0,
+    "environment_assumptions": 0,
+    "legal_packet_end_cover_depth": 59,
+    "manifest": "runs/thermo5_tx_early_tlast_legal_formal_20261031/formal_manifest.json",
+    "manifest_sha256": "8f76caadb94c6fab4a57252fcc09294e9f6f47a8babbc07f2b0bedb2e9a8670a",
+    "setup_violations": 0,
+    "status": "INCONCLUSIVE",
+    "target_cover_depth": 342
+  },
+  "generated_local": "2026-10-31 16:42 Asia/Singapore",
+  "legal_assertion_regression": {
+    "attempted": 15,
+    "status": "PASS_WITH_OPEN_ASSERTION_COVERAGE",
+    "success": 13,
+    "uncovered": 2,
+    "unexpected_failures": 0,
+    "without_attempts": 2
+  },
+  "limitations": [
+    "No RTL or algorithm changes.",
+    "The mailbox stability Branch and two outstanding-word counter branches remain OPEN.",
+    "The 16-cycle source-gap/service-rate contract remains OPEN.",
+    "Raw 100% remains OPEN; zero waivers/exclusions."
+  ],
+  "negative_assertion_regression": {
+    "expected_rtl_failures": 2,
+    "seed": 420102,
+    "status": "PASS_EXPECTED_NEGATIVE_ASSERTIONS",
+    "uvm_errors": 0,
+    "uvm_fatals": 0
+  },
+  "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+  "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+  "schema_version": 1
+}

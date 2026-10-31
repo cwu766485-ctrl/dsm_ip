@@ -17,9 +17,45 @@ Use **small PRs grouped by gates**. No speculative main-chain algorithm switch; 
 3. Publish `docs/verification/thermo5-tx-baseline.md`: current vs historical claims with exact source/config/test date. The currently reported 76.12% raw Generic URG (latest Linux package) versus 79.86% historical candidate aggregate MUST NOT be treated as comparable until same elaboration, hierarchy, source SHA, instrumentation and merge scope are verified.
 4. Maintain an issue/CSV ledger: item ID, requirement, owner module, top/SKU, evidence SHA, stimulus, independent checker, targeted coverpoint/code row, pass/fail/open, reproduction command.
 
-**Exit:** one unambiguous current baseline and complete inventory. No change of architecture yet.
+**Gate 0 execution checkpoint (2026-10-29): PASS_LINUX_GENERIC_SCOPE.**
+Audited source HEAD is `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`; exact
+verification source is `04550289e1ecb5fa0e38168869d4f2539929cb80` with a clean
+worktree and unchanged RTL/DV/build-input tree. Python tests pass 36/36;
+Python vectors pass. Generic VCS/full regression and a fresh Generic URG
+merge pass; full AXI-Lite regression, 112-word STOP/drain/restart,
+three-seed 2,072-word EF2 qualification, and scoped EF2 VC Formal also pass.
+Formal proved 6/6 assertions and covered 3/3 cover properties with zero
+black boxes. Fresh raw Generic URG is 76.12% (2,969/3,593 line, 594/949
+condition, 81,740/102,612 toggle, 22/22 FSM, 336/540 branch, 13/17
+assertion, 69.2592% functional-group aggregate). The exact-source inventory
+has 784 records; no exclusions or denominator changes were made. The one
+assertion failure is the expected illegal-frame negative test; three
+assertions remain unattempted.
+
+The initial VCS attempt stopped at license checkout; a retry at the same
+verification SHA completed after access recovered. Real XPM, XSim/Vivado, and
+the current GT Wizard model are unavailable on this Linux host, so no such
+result is claimed. Full evidence and commands are recorded in
+`docs/verification/thermo5-tx-baseline.md`,
+`docs/verification/thermo5-tx-feature-matrix.md`,
+`docs/verification/thermo5-tx-coverage-ledger.csv`, and
+`docs/verification/thermo5-tx-gate0-evidence.json`.
+
+**Gate 0 exit:** accepted for the Linux Generic/behavioral scope. Start the
+next gates as independent reviewable changes. Keep XPM/GT Wizard, routed FPGA
+PPA, and physical RF/QAM256 claims open until their required environments and
+measurements exist. Do not change the verified baseline as a side effect of
+candidate work.
 
 ## Gate 1 — dormant algorithms / compile-time alternatives (A/B, not automatic integration)
+
+**Linux status (2026-10-29):** pair look-ahead VCS/formal equivalence and
+non-identity 2/4-tap DPD full-chain bit-true cases pass at source
+`dfb15a278657e4417b545fc138df0f0dd0399ac4`; the Python suite passes 37/37.
+See `docs/verification/thermo5-tx-algorithm-ab.md` and its evidence JSON.
+This closes Linux functional/equivalence checks for those candidates only.
+QAM256 improvement of the test DPD coefficients and LUT/FF/DSP/Fmax remain
+open; no candidate was promoted to the product configuration.
 
 For every candidate, document *source exists?*, selected in current hierarchy?, independent bit-true?, desired benefit?, LUT/FF/DSP/BRAM cost, Fmax and II measured?, communication effect at matched settings? Include at least:
 
@@ -37,6 +73,22 @@ Develop `docs/verification/thermo5-tx-algorithm-ab.md` with ACCEPT/REJECT/DEFER 
 
 ## Gate 2 — TX worst-case test campaign
 
+**Linux checkpoint (2026-10-29): model campaign complete; product target and
+physical signoff OPEN.** The EF2 STEP/input/state-width plus backoff/PAPR
+staged sweep, DPD fixed-image A/B, and four-plane gain/skew/fault sensitivity
+campaign are recorded in `docs/verification/thermo5-tx-worst-case.md` and
+`docs/verification/thermo5-tx-gate2-evidence.json`. Four development seeds
+and four disjoint held-out seeds were used for the main QAM256 sweep. The
+held-out digital point at RMS=0.10/STEP=5120/20-bit state/no clip has 21
+errors in 224,256 bits (BER `9.3643e-5`), 2.4640% EVM, and 32.1675 dB SNDR.
+Nominal and stress modeled-link BER are `1.4269e-4` and `7.7144e-4`.
+The fixed non-identity 2/4-tap verification images lose to identity; they
+were not fitted inverse predistorters. No QAM BER/BLER product target exists,
+so Gate 2 cannot claim communication acceptance. Pair-look-ahead VCS/Formal
+equivalence is complete from Gate 1; Fmax/LUT/FF/DSP comparison remains
+NOT_RUN because the Linux flow has no Vivado implementation result. The
+production defaults are unchanged.
+
 **2A. Legal digital corners (must be exact):** zero, constant ±full-scale, alternating 0x7fff/0x8000, impulse, ramp, PRBS, threshold/tie `u==0`, polarity offsets, all four EF2 positive/negative clamps, input clipping, saturating Q1.15, Frame Gain extrema, DPD coef extrema, different tap histories and frame boundaries. Test 32/64/96+ beat legal TLASTs; early/missing TLAST and reset/sticky error as *negative* contract tests. Exhaust representative 14:8 residual states and FIFO low/full. Source pauses, PA 4-bit Ready masks (including partial), stall lengths, STOP→Drain→Restart, Commit at frame boundary, reset during nonzero EF2 state/stall/drain and GT-health loss in behavioral parent. Check hold, no drop/duplicate/reorder, exact four-plane Python integer oracle, counters, epoch and data-tail semantics. Reuse existing tests; extend only uncovered feature/checker combinations.
 
 **2B. Communication worst case (model-only, separate from RTL):** use 256-QAM 4096-FFT, 512-CP, 584 subcarriers, ~249.512-MHz actual occupation and fixed receiver/equalization contract. Freeze development and disjoint held-out seeds; more than existing six seeds, report count/uncertainty and all failures, not just winners. A staged smoke/full matrix is acceptable. Sweep input RMS/backoff 0/3/6 dB, PAPR unclipped vs 7/9 dB radial limiting, peak envelope at/below supported model 0.35; candidate STEP, state widths (18/19/20 *model only*); PA nominal/stress (AM/AM, AM/PM, memory, observation noise and output BPF), branch gain mismatch, representative inter-lane skew {0,2,5,10,20} ps, filter bandwidth/group delay. Separate **within-contract worst case** from **overstress / expected fault**. Measure digital EVM, SNDR, uncoded BER with error count and CI, throughput, PAPR, clipped samples, EF2 clamp, normalized Pout, and real integrated adjacent-band power using documented channel bandwidth/window/normalization. Retain existing **ACLR proxy** under that label; never rename it standard-compliant ACLR. Never compare different RMS/receiver/PA setups as controlled A/B. Compare Identity, candidate nonzero DPD, first-order and EF2 under same conditions.
@@ -46,6 +98,35 @@ Develop `docs/verification/thermo5-tx-algorithm-ab.md` with ACCEPT/REJECT/DEFER 
 Outputs: deterministic `benchmark_thermo5_tx_worst_case.py` (or reuse/refactor existing scripts), `docs/verification/thermo5-tx-worst-case.md`, machine-readable CSV/JSON with seed, stimulus params, expected/observed, worst-case provenance, PSD/constellation plots and failure trace.
 
 ## Gate 3 — functional coverage 100% / code coverage 100%
+
+**Linux checkpoint (2026-10-29): functional covergroup score closed for
+currently sampled groups; source-level feature/code closure remains OPEN.**
+Generic URG has 4/4 applicable functional groups at 100%; its AXI-Lite-only
+STOP/Restart group is not applicable and is 0% in that separate configuration.
+AXI-Lite URG has 8/8 current groups at 100%. The required AXI-Lite graceful
+STOP test observed TLAST with partial-PA backpressure, and the dedicated
+STOP/Restart test matched 112 ordered four-plane words. Both Generic and
+AXI-Lite EF2 corner qualification checks both clamp polarities on every
+branch, state hold under stall, rail interaction, reset, and bit-true output.
+
+Raw unmodified project-RTL URG remains below target: Generic score 80.81%
+(line 2965/3566, condition 482/711, toggle 81348/98270, branch 343/532;
+FSM states/transitions covered; assertion statuses retain one expected
+negative-test failure); AXI-Lite score 84.59% (line 3428/3796, condition
+635/846, toggle 116912/120990, branch 520/637; FSM states 13/13 but
+transitions 17/22; two expected negative-test assertion failures). Current-
+source non-identity 2-tap and 4-tap DPD bit-true VDBs are included in this
+AXI-Lite URG merge. There are
+no coverage exclusions or denominator changes, and no audited-adjusted score
+is claimed. The exact source-linked gap ledger contains 17,941 Generic and
+4,779 AXI-Lite raw-unhit records (22,720 total); every row remains OPEN.
+The compressed CSV and its checksums are in
+`docs/verification/thermo5-tx-gate3-evidence.json`. These are review queues,
+not waivers. `RAW_100_OPEN` remains the Gate 3 disposition. Real-XPM coverage
+is `NOT_RUN` because vendor simulation sources are absent. Full commands,
+run artifacts, hashes, checker mutation, and details are in
+`docs/verification/thermo5-tx-coverage-signoff.md` and
+`docs/verification/thermo5-tx-gate3-evidence.json`.
 
 **Functional objective:** 100% of the **reviewed, required, legal, applicable** Feature→Testpoint→Coverage bins in the *current fixed TX SKU* AND targeted selected candidate SKUs. Construct `docs/verification/thermo5-tx-feature-matrix.md`: AXIS/AXIL independent channels and WSTRB; FIFO/gearbox/residual; gain; FIR sample history/tail; DPD 1/2/4 taps & coeff bank/tie/round/saturation (per elaboration); four-branch offsets/atomicity; EF2 clamp (positive and negative per branch), state rail, stalls, reset/epoch; STOP/TLAST/drain/restart; bad frames; GT-user 4-plane idle/health/fault. Every required cross must have independent monitor + checker + legal directed stimulus; no bin counted on test intent alone. Coverage code must not sample cumulative `accepted_tlast_markers>0` as proof of *simultaneous* TLAST-tail/PA stall, nor all-zero Ready as partial Ready. Explicitly correlate packet ID/word index/time window and mask in sampled DUT observation.
 

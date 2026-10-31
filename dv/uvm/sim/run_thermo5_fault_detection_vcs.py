@@ -19,7 +19,8 @@ VECTORS = ROOT / "runs/uvm_thermo5_i2_d1/vectors"
 MUTANTS = {
     "plane_swap": (
         "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv",
-        ".gt_data(pa_data[b])", ".gt_data(pa_data[3-b])",
+        ".gt_ready(common_ready), .gt_data(pa_data[b])\n        );\n      end else begin : g_bad_order",
+        ".gt_ready(common_ready), .gt_data(pa_data[3-b])\n        );\n      end else begin : g_bad_order",
         "UVM_FATAL.*\\[BITTRUE\\]",
     ),
     "late_gain": (
@@ -28,13 +29,13 @@ MUTANTS = {
         "s0_gain <= active_gain;",
         "UVM_FATAL.*\\[BITTRUE\\]",
     ),
-    "interp_lsb_corruption": (
-        "rtl/interp/dsm_interp_x2_polyphase_vector.sv",
-        "acc_i = acc_i + s1_prod_i[lane][tap];",
-        "acc_i = acc_i + s1_prod_i[lane][tap] + 1;",
-        "UVM_FATAL.*\\[BITTRUE\\]",
-    ),
 }
+PRODUCT_DEFINES = [
+    "+define+THERMO5_CENTERED_CUBIC",
+    "+define+THERMO5_TIDSM_ORDER=2",
+    "+define+THERMO5_STEP=5120",
+    "+define+THERMO5_DPD_MAX_TAPS=1",
+]
 
 
 def sha(path: Path) -> str:
@@ -68,9 +69,18 @@ def main() -> int:
     rows = []
     manifest = {
         "created_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-        "scope": "thermo5 full-chain UVM, generic FIFO; intentional single RTL mutations",
-        "vcs": subprocess.run(["vcs", "-ID"], capture_output=True, text=True,
-                               check=False).stdout.strip(),
+        "scope": "thermo5 frozen product UVM, Centered-Cubic EF2 one-tap identity DPD, Generic FIFO; intentional single RTL mutations",
+        "git_revision": subprocess.run(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
+            text=True, check=False
+        ).stdout.strip(),
+        "worktree_dirty": bool(subprocess.run(
+            ["git", "status", "--porcelain"], cwd=ROOT, capture_output=True,
+            text=True, check=False
+        ).stdout.strip()),
+        "runner_sha256": sha(Path(__file__).resolve()),
+        "filelist_sha256": sha(FILELIST),
+        "product_defines": PRODUCT_DEFINES,
         "seed": 1,
         "test": "thermo5_sku_bittrue_test",
         "vectors": str(VECTORS),
@@ -100,12 +110,18 @@ def main() -> int:
         compile_log = case / "compile.log"
         compile_args = ["vcs", "-full64", "-sverilog", "-ntb_opts", "uvm",
                         "+lint=TFIPC-L", "-timescale=1ns/1ps", "-f", str(fl),
+                        *PRODUCT_DEFINES,
                         "-top", "thermo5_sku_uvm_tb", "-Mdir=" + str(bin_dir),
                         "-o", str(simv), "-l", str(compile_log)]
         compile_rc = invoke(compile_args, ROOT, case / "compile_launcher.log")
         if compile_rc != 0 or not simv.is_file():
-            rows.append({"case": name, "status": "COMPILE_FAIL", "compile_exit": compile_rc})
+            rows.append({"case": name, "status": "COMPILE_FAIL", "compile_exit": compile_rc,
+                         "compile_log": str(compile_log.relative_to(ROOT)),
+                         "compile_log_sha256": sha(compile_log) if compile_log.is_file() else None})
             break
+        compile_text = compile_log.read_text(encoding="utf-8", errors="replace")
+        vcs_banner = next((line.strip() for line in compile_text.splitlines()
+                           if "Version V-" in line), "UNKNOWN")
         run_log = case / "simulation.log"
         run_args = [str(simv), "+UVM_TESTNAME=thermo5_sku_bittrue_test",
                     "+VEC_DIR=" + str(VECTORS), "+ntb_random_seed=1",
@@ -118,7 +134,12 @@ def main() -> int:
                   re.search(r"UVM_FATAL\s*:\s*0", text))
             rows.append({"case": name, "status": "PASS" if ok else "BASELINE_FAIL",
                          "compile_exit": compile_rc, "run_exit": run_rc,
-                         "pass_marker": "THERMO5_SKU_UVM_PASS" in text})
+                         "pass_marker": "THERMO5_SKU_UVM_PASS" in text,
+                         "vcs_banner": vcs_banner,
+                         "compile_log": str(compile_log.relative_to(ROOT)),
+                         "compile_log_sha256": sha(compile_log),
+                         "simulation_log": str(run_log.relative_to(ROOT)),
+                         "simulation_log_sha256": sha(run_log) if run_log.is_file() else None})
             if not ok:
                 break
         else:
@@ -131,7 +152,12 @@ def main() -> int:
             rows.append({"case": name, "status": "DETECTED" if ok else "SURVIVED_OR_WRONG_CHECKER",
                          "compile_exit": compile_rc, "run_exit": run_rc,
                          "expected_checker_seen": found, "pass_marker": unexpected_pass,
-                         "first_failure": first})
+                         "first_failure": first,
+                         "vcs_banner": vcs_banner,
+                         "compile_log": str(compile_log.relative_to(ROOT)),
+                         "compile_log_sha256": sha(compile_log),
+                         "simulation_log": str(run_log.relative_to(ROOT)),
+                         "simulation_log_sha256": sha(run_log) if run_log.is_file() else None})
         if name != "baseline":
             manifest["mutants"].append(source_map[name] | {"case": name})
     manifest["cases"] = rows

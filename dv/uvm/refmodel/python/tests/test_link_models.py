@@ -3,6 +3,17 @@ import unittest
 
 from benchmark_thermo5_interp import metrics as interpolation_metrics
 from benchmark_thermo5_link import _symbol_metrics, run
+from benchmark_thermo5_tid_receiver import (
+    _expand_iq_x4,
+    make_256qam_ofdm,
+    reconstruct_baseband_7g,
+)
+from benchmark_thermo5_tx_branch_sensitivity import (
+    branch_gains_db,
+    branch_skews_ps,
+    fractional_delay_lagrange4,
+    reconstruct_branch_output,
+)
 from dsm_refmodel.link_models import (
     BehavioralDPA,
     add_thermal_noise,
@@ -11,6 +22,7 @@ from dsm_refmodel.link_models import (
     thermal_noise_dbm,
 )
 from dsm_refmodel.thermo5 import generate_source_vectors, run_frozen_frontend
+from dsm_refmodel.thermo5_experiments import generate_thermo5_tidsm_planes
 
 
 class LinkModelTests(unittest.TestCase):
@@ -94,6 +106,30 @@ class LinkModelTests(unittest.TestCase):
         self.assertIsNone(result_row["thermal_noise"])
         self.assertEqual(result_row["digital_interpolation"],
                          result_row["after_dpa_and_output_network"])
+
+    def test_branch_skew_gain_patterns_and_zero_delay(self):
+        values = [complex(index, -index / 2.0) for index in range(12)]
+        self.assertEqual(fractional_delay_lagrange4(values, 0.0), values)
+        for actual, expected in zip(branch_skews_ps(20.0),
+                                    (-10.0, -20.0 / 6.0,
+                                     20.0 / 6.0, 10.0)):
+            self.assertAlmostEqual(actual, expected)
+        for actual, expected in zip(branch_gains_db(1.0),
+                                    (-0.5, -1.0 / 6.0, 1.0 / 6.0, 0.5)):
+            self.assertAlmostEqual(actual, expected)
+
+    def test_branch_reconstruction_matches_existing_four_plane_path(self):
+        stimulus = make_256qam_ofdm(992, symbols=1, rms_drive=0.10)
+        source_i, source_q = _expand_iq_x4(
+            stimulus["source_iq"], "centered_cubic")
+        planes, _ = generate_thermo5_tidsm_planes(
+            source_i, source_q, 5120, mode="ef_order2_fixed", state_width=20)
+        branch_output, _ = reconstruct_branch_output(
+            planes, bandwidth_hz=stimulus["actual_bandwidth_hz"], fir_taps=129)
+        reference_output, _ = reconstruct_baseband_7g(
+            planes, stimulus["actual_bandwidth_hz"], latency_samples=0,
+            fir_taps=129)
+        self.assertEqual(branch_output, reference_output)
 
 
 if __name__ == "__main__":

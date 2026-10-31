@@ -28,6 +28,11 @@ module thermo5_sku_uvm_tb;
 `else
   localparam int USE_STEP = 5120;
 `endif
+`ifdef THERMO5_DPD_MAX_TAPS
+  localparam int USE_DPD_MAX_TAPS = `THERMO5_DPD_MAX_TAPS;
+`else
+  localparam int USE_DPD_MAX_TAPS = 4;
+`endif
   logic src_clk=0, core_clk=0;
   logic axil_clk=0;
   logic axil_rst_n;
@@ -61,7 +66,7 @@ module thermo5_sku_uvm_tb;
   tid32_thermo5_axi_lite_axis_frontend_tx #(
     .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),
     .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
-    .DPD_MAX_TAPS(4),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
+    .DPD_MAX_TAPS(USE_DPD_MAX_TAPS),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
     .s_axil_aclk(axil_clk),.s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(axil_bus.awaddr),.s_axil_awvalid(axil_bus.awvalid),.s_axil_awready(axil_bus.awready),
@@ -197,6 +202,16 @@ module thermo5_sku_uvm_tb;
     assign bus.dpd_saturation_count[lane]=dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[lane].u_dpd.saturation_count;
   end
   assign bus.cdc_residual = dut.u_cdc.rem_count_q;
+  assign bus.cdc_core_valid = dut.core_valid;
+  assign bus.cdc_core_ready = dut.core_ready;
+  assign bus.cdc_frame_start = dut.core_frame_start;
+  assign bus.cdc_frame_end = dut.core_frame_end;
+  assign bus.cdc_end_pending = dut.u_cdc.end_pending_q;
+  assign bus.cdc_end_remaining = dut.u_cdc.end_remaining_q;
+  assign bus.cdc_source_reset_released = dut.u_cdc.s_rst_n;
+  assign bus.cdc_end_false_arm = dut.u_cdc.advance &&
+    (dut.u_cdc.rem_count_q >= 8) && dut.u_cdc.end_pending_q &&
+    (dut.u_cdc.end_remaining_q > 8);
 `ifdef THERMO5_XPM_FIFO
   // Monitor only: expose the exact XPM FWFT state and synchronous read reset.
   assign bus.xpm_fwft_state = dut.u_cdc.g_xpm_fifo.u_async_fifo.u_xpm_fifo_async.gnuram_async_fifo.xpm_fifo_base_inst.curr_fwft_state;
@@ -217,6 +232,30 @@ module thermo5_sku_uvm_tb;
   assign bus.interp1_output_empty_blocked = !dut.u_frontend.i1_valid && !dut.u_frontend.i1_ready;
   assign bus.interp2_stage1_empty_blocked = 1'b0;
   assign bus.interp2_empty_blocked = !dut.u_frontend.i2_valid && !dut.u_frontend.i2_ready;
+  assign bus.interp1_centered_pop_push =
+      (dut.u_frontend.g_interp1_centered.u_interp_1.q_count == 1) &&
+      dut.u_frontend.g_interp1_centered.u_interp_1.pop_head &&
+      dut.u_frontend.g_interp1_centered.u_interp_1.push_input;
+  assign bus.interp2_centered_pop_push =
+      (dut.u_frontend.g_interp2_centered.u_interp_2.q_count == 1) &&
+      dut.u_frontend.g_interp2_centered.u_interp_2.pop_head &&
+      dut.u_frontend.g_interp2_centered.u_interp_2.push_input;
+  assign bus.interp1_centered_state = {
+      dut.u_frontend.g_interp1_centered.u_interp_1.q_count,
+      dut.u_frontend.g_interp1_centered.u_interp_1.q0_end,
+      dut.u_frontend.g_interp1_centered.u_interp_1.pop_head,
+      dut.u_frontend.g_interp1_centered.u_interp_1.push_input,
+      dut.u_frontend.g_interp1_centered.u_interp_1.in_valid,
+      dut.u_frontend.g_interp1_centered.u_interp_1.in_ready,
+      dut.u_frontend.g_interp1_centered.u_interp_1.out_ready};
+  assign bus.interp2_centered_state = {
+      dut.u_frontend.g_interp2_centered.u_interp_2.q_count,
+      dut.u_frontend.g_interp2_centered.u_interp_2.q0_end,
+      dut.u_frontend.g_interp2_centered.u_interp_2.pop_head,
+      dut.u_frontend.g_interp2_centered.u_interp_2.push_input,
+      dut.u_frontend.g_interp2_centered.u_interp_2.in_valid,
+      dut.u_frontend.g_interp2_centered.u_interp_2.in_ready,
+      dut.u_frontend.g_interp2_centered.u_interp_2.out_ready};
 `else
   assign bus.interp1_empty_blocked = !dut.u_frontend.g_interp1_causal.u_interp_1.s2_valid &&
                                      !dut.u_frontend.g_interp1_causal.u_interp_1.s3_ready;
@@ -243,6 +282,10 @@ module thermo5_sku_uvm_tb;
                                      !dut.u_frontend.g_interp2_causal.u_interp_2.s3_ready;
   assign bus.dpd_empty_blocked = !dut.u_frontend.dpd_valid &&
                                  !dut.u_frontend.dpd_ready;
+  assign bus.interp1_centered_pop_push = 1'b0;
+  assign bus.interp2_centered_pop_push = 1'b0;
+  assign bus.interp1_centered_state = '0;
+  assign bus.interp2_centered_state = '0;
 `endif
   initial begin
     string testname;

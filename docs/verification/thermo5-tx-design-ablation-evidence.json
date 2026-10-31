@@ -1,0 +1,472 @@
+{
+  "commands": [
+    "python3.12 -m py_compile dv/uvm/refmodel/python/benchmark_thermo5_arch_ablation.py dv/uvm/refmodel/python/benchmark_thermo5_tx_dpd_ab.py dv/uvm/refmodel/python/fit_thermo5_dpd_ila.py dv/uvm/refmodel/python/generate_thermo5_dpd_bittrue_vectors.py dv/uvm/refmodel/python/package_thermo5_tx_final_ablation.py dv/uvm/refmodel/python/tests/test_thermo5_arch_ablation.py dv/uvm/refmodel/python/tests/test_thermo5_dpd_ila.py && cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+    "python3.12 dv/uvm/refmodel/python/benchmark_thermo5_arch_ablation.py --development-seeds 271001,271003,271005,271007 --heldout-seeds 281001,281003,281005,281007 --symbols 12 --rms-drive 0.10 --rx-fir-taps 4097 --first-order-steps 5120,7168 --jobs 4 --json runs/thermo5_tx_final_ablation_20261030/summary.json --summary-csv runs/thermo5_tx_final_ablation_20261030/summary.csv --psd-csv runs/thermo5_tx_final_ablation_20261030/psd.csv --constellation-svg runs/thermo5_tx_final_ablation_20261030/constellation.svg",
+    "python3.12 dv/uvm/refmodel/python/fit_thermo5_dpd_ila.py --seeds 271001,271003,271005,271007 --symbols 12 --rms-drive 0.10 --json runs/thermo5_tx_final_ablation_20261030/dpd_ila_fit.json",
+    "python3.12 dv/uvm/refmodel/python/benchmark_thermo5_tx_dpd_ab.py --seeds 281001,281003,281005,281007 --symbols 9 --rms-drive 0.10 --step 5120 --fir-taps 4097 --jobs 4 --candidate-json runs/thermo5_tx_final_ablation_20261030/dpd_ila_fit.json --json runs/thermo5_tx_final_ablation_20261030/dpd_heldout.json",
+    "python3.12 dv/uvm/refmodel/python/generate_thermo5_dpd_bittrue_vectors.py --candidate-json runs/thermo5_tx_final_ablation_20261030/dpd_ila_fit.json --candidate ila_nominal_2tap --output-dir runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap",
+    "make -C dv/uvm/sim thermo5-dpd-bittrue-vcs THERMO5_DPD_VECTORS=$PWD/runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap THERMO5_DPD_BITTRUE_OUT=$PWD/runs/thermo5_tx_final_ablation_20261030/vcs_dpd_2tap (ACTIVE_TAPS=2)",
+    "python3.12 dv/uvm/refmodel/python/generate_thermo5_dpd_bittrue_vectors.py --candidate-json runs/thermo5_tx_final_ablation_20261030/dpd_ila_fit.json --candidate ila_nominal_4tap --output-dir runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap",
+    "make -C dv/uvm/sim thermo5-dpd-bittrue-vcs THERMO5_DPD_VECTORS=$PWD/runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap THERMO5_DPD_BITTRUE_OUT=$PWD/runs/thermo5_tx_final_ablation_20261030/vcs_dpd_4tap (ACTIVE_TAPS=4)",
+    "make -C dv/uvm/sim thermo5-ef2-pair-vcs THERMO5_EF2_PAIR_OUT=runs/thermo5_ef2_pair_lookahead",
+    "python3.12 dv/uvm/refmodel/python/package_thermo5_tx_final_ablation.py --run-dir runs/thermo5_tx_final_ablation_20261030 --output-dir docs/verification/data --pair-log runs/thermo5_ef2_pair_lookahead/vcs/sim.log"
+  ],
+  "coverage_snapshot": {
+    "approved_exclusions": 0,
+    "approved_waivers": 0,
+    "branch": {
+      "hit": 440,
+      "total": 637
+    },
+    "condition": {
+      "hit": 583,
+      "total": 846
+    },
+    "fsm_states": {
+      "hit": 13,
+      "total": 13
+    },
+    "fsm_transitions": {
+      "hit": 22,
+      "total": 22
+    },
+    "functional_legal_positive": {
+      "hit": 170,
+      "total": 170
+    },
+    "functional_raw": {
+      "hit": 170,
+      "total": 174
+    },
+    "line": {
+      "hit": 3190,
+      "total": 3796
+    },
+    "raw_aggregate_percent": 81.99,
+    "status": "RAW_100_OPEN",
+    "toggle": {
+      "hit": 86951,
+      "total": 104478
+    }
+  },
+  "created_local_date": "2026-10-30",
+  "dpd_vector_checks": {
+    "2tap": {
+      "active_taps": 2,
+      "candidate": "ila_nominal_2tap",
+      "coefficient_image": {
+        "c1_im": [
+          -7,
+          -1,
+          0,
+          0
+        ],
+        "c1_re": [
+          16380,
+          2,
+          0,
+          0
+        ],
+        "c3_im": [
+          429,
+          -1743,
+          0,
+          0
+        ],
+        "c3_re": [
+          -86,
+          346,
+          0,
+          0
+        ],
+        "c5_im": [
+          82,
+          -44,
+          0,
+          0
+        ],
+        "c5_re": [
+          86,
+          133,
+          0,
+          0
+        ]
+      },
+      "dpd_samples": 93184,
+      "dpd_words_16lane": 5824,
+      "files_sha256": {
+        "coefficients.mem": "4f6b45e6edce1cbc2b2b24720de5c4c1a165ba9fb21bc2735b94689cc3b3ebb4",
+        "expected_i.mem": "3aa0c2188fcd36ccb9cce5c4c9b328c99aad3c40e700fc2b1c555dba79289353",
+        "expected_q.mem": "380560638787d8e369918071baeba3a32b6c3367c7c3499fa64b65c4983606aa",
+        "input_i.mem": "d95cf0f6d36f3ac56b4c6137ffa5059d6ad188133aded74fcdbfa3b7bac56355",
+        "input_q.mem": "02c9a497f51fee543179a95042ae5524ad66869d8ea7b2389923244cd5c6cacb"
+      },
+      "final_history_iq": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "output_saturation_samples": 0,
+      "python_oracle": "dsm_refmodel.thermo5.apply_memory_polynomial",
+      "q_format": {
+        "coefficient": "signed Q2.14",
+        "input": "signed Q1.15"
+      },
+      "rms_drive_target": 0.1,
+      "seed": 281001,
+      "source_samples": 46592,
+      "symbols": 9
+    },
+    "4tap": {
+      "active_taps": 4,
+      "candidate": "ila_nominal_4tap",
+      "coefficient_image": {
+        "c1_im": [
+          -50,
+          76,
+          -41,
+          9
+        ],
+        "c1_re": [
+          15924,
+          1158,
+          -952,
+          249
+        ],
+        "c3_im": [
+          -314,
+          -122,
+          -260,
+          -749
+        ],
+        "c3_re": [
+          94,
+          -27,
+          -6,
+          222
+        ],
+        "c5_im": [
+          26,
+          39,
+          30,
+          -4
+        ],
+        "c5_re": [
+          93,
+          104,
+          112,
+          126
+        ]
+      },
+      "dpd_samples": 93184,
+      "dpd_words_16lane": 5824,
+      "files_sha256": {
+        "coefficients.mem": "8f3e7c87645945f8accff897170e73bf6cc925d0efe8aa1d790613d9cbe241f8",
+        "expected_i.mem": "94904ce7303b88328aff1649055ed3bd2bc4f40a400e1b189ca9630df41d7c46",
+        "expected_q.mem": "9b8625ea3e7841ce8b1a3955c7133eb7175811f9a638251283f9b0ba6acb6e6f",
+        "input_i.mem": "d95cf0f6d36f3ac56b4c6137ffa5059d6ad188133aded74fcdbfa3b7bac56355",
+        "input_q.mem": "02c9a497f51fee543179a95042ae5524ad66869d8ea7b2389923244cd5c6cacb"
+      },
+      "final_history_iq": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "output_saturation_samples": 0,
+      "python_oracle": "dsm_refmodel.thermo5.apply_memory_polynomial",
+      "q_format": {
+        "coefficient": "signed Q2.14",
+        "input": "signed Q1.15"
+      },
+      "rms_drive_target": 0.1,
+      "seed": 281001,
+      "source_samples": 46592,
+      "symbols": 9
+    }
+  },
+  "limitations": [
+    "QAM256 BER/EVM/SNDR and PA/noise results are Python model-only and have no target-owner acceptance limits.",
+    "The integrated PA, output network, and thermal-noise settings are illustrative and not calibrated hardware data.",
+    "Adjacent-band leakage is a simulation proxy, not standards ACLR.",
+    "The pair-lookahead miter establishes bit/state equivalence for its tested traffic; no synthesized critical-path, routed WNS/Fmax, resource, or power comparison was run.",
+    "The raw product code-coverage gate remains RAW_100_OPEN with the retained PR #7 denominator and evidence."
+  ],
+  "product_configuration": {
+    "dpd_coefficients": "one-tap identity, C1_RE[0]=0x4000",
+    "dpd_max_taps": 1,
+    "interpolator": "centered-cubic x2+x2",
+    "lanes": 32,
+    "linux_fifo": "Generic FIFO substitute",
+    "output_planes": 4,
+    "state_width_bits": 20,
+    "step": 5120,
+    "tidsm_order": 2
+  },
+  "product_rtl_changed": false,
+  "published_artifacts_sha256": {
+    "constellation_svg": {
+      "bytes": 769262,
+      "sha256": "73191af5c222bb8dc08c8706560378ae2f65eaf300fa2affb33f31ef825ded6f"
+    },
+    "dpd_coefficients": {
+      "bytes": 6064,
+      "sha256": "95a63f365db92b0fc5bdcc7e5ff7a03c321677ac302160d373f8fe40f4b7ff5a"
+    },
+    "dpd_heldout": {
+      "bytes": 204865,
+      "sha256": "037a39d8cfdbebea8c6dc533696917501763760fb9d4bf26832c3e6878a6792d"
+    },
+    "psd_gzip": {
+      "bytes": 1301151,
+      "sha256": "9261133f07ab0e1e7f6a7502e9751f375e8875b933bf3a83bab4b2e23fa23580"
+    },
+    "spectrum_svg": {
+      "bytes": 82149,
+      "sha256": "3998f423e2809e9318d3a5a20f8d56fbe19cd35084d7b5b3cb906da0e45f03bd"
+    },
+    "summary_csv": {
+      "bytes": 5366,
+      "sha256": "49be6bf775053c671ca7563b66cfcd107b07a1a1950e4dd1648da36bd7fefb4e"
+    },
+    "summary_json": {
+      "bytes": 556668,
+      "sha256": "9dc5447fbc1ae8c61022f1bad6c65d6e7b95e133213361e5eff362fe06ec6291"
+    }
+  },
+  "run_artifacts_sha256": {
+    "runs/thermo5_ef2_pair_lookahead/vcs/sim.log": {
+      "bytes": 790,
+      "sha256": "402bece3af92f3afa7b70e1f3df3db47655cb5471e539b92bae3905e1d5ac101"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/constellation.svg": {
+      "bytes": 769262,
+      "sha256": "73191af5c222bb8dc08c8706560378ae2f65eaf300fa2affb33f31ef825ded6f"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_heldout.json": {
+      "bytes": 204865,
+      "sha256": "037a39d8cfdbebea8c6dc533696917501763760fb9d4bf26832c3e6878a6792d"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_heldout.log": {
+      "bytes": 719,
+      "sha256": "cabb4a6767475ab31bc8fa676f31c736b984efebd4d8f8d0a4cc4042e0e89b1b"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_ila_fit.json": {
+      "bytes": 6064,
+      "sha256": "95a63f365db92b0fc5bdcc7e5ff7a03c321677ac302160d373f8fe40f4b7ff5a"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap/coefficients.mem": {
+      "bytes": 120,
+      "sha256": "4f6b45e6edce1cbc2b2b24720de5c4c1a165ba9fb21bc2735b94689cc3b3ebb4"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap/expected_i.mem": {
+      "bytes": 465920,
+      "sha256": "3aa0c2188fcd36ccb9cce5c4c9b328c99aad3c40e700fc2b1c555dba79289353"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap/expected_q.mem": {
+      "bytes": 465920,
+      "sha256": "380560638787d8e369918071baeba3a32b6c3367c7c3499fa64b65c4983606aa"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap/input_i.mem": {
+      "bytes": 465920,
+      "sha256": "d95cf0f6d36f3ac56b4c6137ffa5059d6ad188133aded74fcdbfa3b7bac56355"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap/input_q.mem": {
+      "bytes": 465920,
+      "sha256": "02c9a497f51fee543179a95042ae5524ad66869d8ea7b2389923244cd5c6cacb"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_2tap/manifest.json": {
+      "bytes": 1364,
+      "sha256": "311c37262c433022681bb9a33056e539372d6bfdb9f19d7917f0f8f79b8009fb"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap/coefficients.mem": {
+      "bytes": 120,
+      "sha256": "8f3e7c87645945f8accff897170e73bf6cc925d0efe8aa1d790613d9cbe241f8"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap/expected_i.mem": {
+      "bytes": 465920,
+      "sha256": "94904ce7303b88328aff1649055ed3bd2bc4f40a400e1b189ca9630df41d7c46"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap/expected_q.mem": {
+      "bytes": 465920,
+      "sha256": "9b8625ea3e7841ce8b1a3955c7133eb7175811f9a638251283f9b0ba6acb6e6f"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap/input_i.mem": {
+      "bytes": 465920,
+      "sha256": "d95cf0f6d36f3ac56b4c6137ffa5059d6ad188133aded74fcdbfa3b7bac56355"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap/input_q.mem": {
+      "bytes": 465920,
+      "sha256": "02c9a497f51fee543179a95042ae5524ad66869d8ea7b2389923244cd5c6cacb"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/dpd_vectors_4tap/manifest.json": {
+      "bytes": 1388,
+      "sha256": "d2d58ae94df7154997eb1e36be93874913a5ddf894e2473124b8d612c42e2ef8"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/psd.csv": {
+      "bytes": 8633755,
+      "sha256": "9b67ff8760389998b25c47d05a0ff25685fea1c9a0941d89479cf2eb599c51d4"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/summary.csv": {
+      "bytes": 5379,
+      "sha256": "0af042947602545a2de020be59ca97b47b0ea41d4b5328070bfac1a3018f933b"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/summary.json": {
+      "bytes": 6477513,
+      "sha256": "e7e10afe72fa144a09e75351e69ae25aa8610a90ffec9cd0a80be7cadf026948"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/vcs_dpd_2tap/compile.log": {
+      "bytes": 3504,
+      "sha256": "40392a9059f538ec9dfe410400d3b5723dccc2540e0ead31521e07cc4fee136e"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/vcs_dpd_2tap/run.log": {
+      "bytes": 859,
+      "sha256": "8fc3681b82003ecc7ff5f1c5afd2de92cdb7b52869d3b49892569bea0e86e40a"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/vcs_dpd_4tap/compile.log": {
+      "bytes": 3504,
+      "sha256": "a5292b29008c1ca84849c3d6c5535777f070d09ac8e25a260071f72208a608f7"
+    },
+    "runs/thermo5_tx_final_ablation_20261030/vcs_dpd_4tap/run.log": {
+      "bytes": 859,
+      "sha256": "49ca5713ff088e31e06fa11ed7a7f5bb9d85e427186e96f886192c2076435d99"
+    }
+  },
+  "schema": "thermo5-tx-final-ablation-evidence-v1",
+  "scope": "Phase 0 baseline reconciliation and Phase 1 Linux-only algorithm/architecture/DPD study",
+  "source_identity": {
+    "branch": "codex/thermo5-tx-final-closure",
+    "note": "Repository head is the PR #7 base; source_file_sha256 binds the exact local study scripts, standalone miter, Make target, and arithmetic RTL. Product coverage is reused and not regenerated here.",
+    "product_vcs_source_sha": "913be930bfcbbad0f78dbc90e06299db3d1bb337",
+    "repository_head_before_packaging": "f5394c3eaa6d283caf91c5c64b08a7d83c714a57",
+    "source_file_sha256": {
+      "dv/uvm/refmodel/python/benchmark_thermo5_arch_ablation.py": {
+        "bytes": 31914,
+        "sha256": "8c5ecab6800e39dcd2e660e302a3dc693bb2c614f84c24d2b603cc855a1b7e44"
+      },
+      "dv/uvm/refmodel/python/benchmark_thermo5_interp.py": {
+        "bytes": 10198,
+        "sha256": "eea3295714e5bf3870e08d49f3491b8a081391e128ff27ea84f25cbadf881629"
+      },
+      "dv/uvm/refmodel/python/benchmark_thermo5_step_ntf.py": {
+        "bytes": 17899,
+        "sha256": "73473a882983112735944f6334cdc1827d5a0bb66aad005d0a4780f771eb874a"
+      },
+      "dv/uvm/refmodel/python/benchmark_thermo5_tid_receiver.py": {
+        "bytes": 22249,
+        "sha256": "c5ee76a5761104e24bfbcbbcf3243b4d2f7e45c57d0a97b54da27b229e75e06a"
+      },
+      "dv/uvm/refmodel/python/benchmark_thermo5_tx_dpd_ab.py": {
+        "bytes": 17242,
+        "sha256": "0eee5b651a7790a2ab8a63f913a6b92cbe48eb7dad2a6d38fef838a215c896ac"
+      },
+      "dv/uvm/refmodel/python/dsm_refmodel/link_models.py": {
+        "bytes": 7010,
+        "sha256": "b99383f3e39b9eb3e39ceef4bec420ef08265d25f6f59689072ca5f74f6dad3d"
+      },
+      "dv/uvm/refmodel/python/dsm_refmodel/thermo5.py": {
+        "bytes": 25835,
+        "sha256": "f38367ba00aec84b6270ab98b6f1c3fd272c4aebf9e815c80e44d67194026969"
+      },
+      "dv/uvm/refmodel/python/dsm_refmodel/thermo5_experiments.py": {
+        "bytes": 11089,
+        "sha256": "abf0976e2dbe3d2ca590e492d48693c849f4bd948095d776e05f315f0f3e35d1"
+      },
+      "dv/uvm/refmodel/python/dsm_refmodel/thermo5_receiver.py": {
+        "bytes": 11010,
+        "sha256": "464d5da90968e3a3c2feea5660c1e889ce198f2ac502c7907fdc9ad84b5a0ecc"
+      },
+      "dv/uvm/refmodel/python/fit_thermo5_dpd_ila.py": {
+        "bytes": 11036,
+        "sha256": "e4cafee1a56763d83e23a123597775b259563d9907120c3bc8fd21b0eec2b611"
+      },
+      "dv/uvm/refmodel/python/generate_thermo5_dpd_bittrue_vectors.py": {
+        "bytes": 4162,
+        "sha256": "d48e4ae89dcc982561f753d18c786af39ba326c7f35cbae282e1ff550fc8c9c9"
+      },
+      "dv/uvm/refmodel/python/package_thermo5_tx_final_ablation.py": {
+        "bytes": 20047,
+        "sha256": "b88ea6a06b945e9a05933b33f052a7d12c75b8a5e5aa3d907b12027b1b68b226"
+      },
+      "dv/uvm/refmodel/python/tests/test_thermo5_arch_ablation.py": {
+        "bytes": 1994,
+        "sha256": "6028b3cc5651416a122400d15b772d6ebbe150486b473a286b9c688083d63273"
+      },
+      "dv/uvm/refmodel/python/tests/test_thermo5_dpd_ila.py": {
+        "bytes": 1722,
+        "sha256": "d24a9953f2cd8f0e0133e2936df4b5a8be0a58b341ff2334bc6b2eb6e786c799"
+      },
+      "dv/uvm/sim/Makefile": {
+        "bytes": 42241,
+        "sha256": "c86487e67cfdc0f3243523a25df550957d3b78504114694af22a7fe70877f530"
+      },
+      "dv/verif/block/dpd/tb/tb_thermo5_fitted_dpd.sv": {
+        "bytes": 4812,
+        "sha256": "9522677ffedba27e032f82a5ccd1eda676f3b161e9f6d628a427347cfc729b1c"
+      },
+      "dv/verif/integration/thermo5_ef2_pair_lookahead/tb_thermo5_ef2_pair_lookahead.sv": {
+        "bytes": 6271,
+        "sha256": "55c33bf85d1e03acb44ffbfe0590823a7d82e0c9a638a4d3e3e597464583fb94"
+      },
+      "rtl/dpd/dpd_memory_poly.v": {
+        "bytes": 13241,
+        "sha256": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156"
+      },
+      "rtl/dpd/dpd_poly.v": {
+        "bytes": 14285,
+        "sha256": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a"
+      },
+      "rtl/dpd/dpd_vector16_memory_poly.sv": {
+        "bytes": 5628,
+        "sha256": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a"
+      },
+      "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": {
+        "bytes": 15211,
+        "sha256": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+      }
+    }
+  },
+  "tools": {
+    "python": "Python 3.12",
+    "urg_product_coverage": "not rerun; PR #7 evidence retained",
+    "vcs": "Compiler version V-2023.12-SP1_Full64; Runtime version V-2023.12-SP1_Full64;  Oct 30 16:43 2026"
+  },
+  "validation": {
+    "architecture_ablation": "PASS; 4 development + 4 disjoint held-out seeds, 12 symbols per seed, primary STEP 5120 plus separate first-order STEP sensitivity",
+    "fitted_dpd_heldout": "PASS; 4 disjoint held-out seeds, 9 symbols per seed; coefficients remain candidates only",
+    "fitted_dpd_rtl_miter_2tap": "PASS; 5,824 words / 93,184 I/Q samples; zero output saturation",
+    "fitted_dpd_rtl_miter_4tap": "PASS; 5,824 words / 93,184 I/Q samples; zero output saturation",
+    "formal": "REUSED; existing pair-lookahead proof retained, not rerun in this follow-up",
+    "pair_lookahead_equivalence": "PASS; 4,096 cycles, exact tie, positive/negative clamps, stalls, bubbles, midstream reset; see pass marker",
+    "pair_lookahead_pass_marker": "THERMO5_EF2_PAIR_LOOKAHEAD_PASS cycles=4096 seed=20261028 accepted=2663 back_to_back=1639 positive_clamps=408 negative_clamps=409 stalls=817 bubbles=616 negative_ties=103 reset_epochs=1",
+    "pair_lookahead_vc_formal": {
+      "assertions_proven": "7/7",
+      "black_boxes": 0,
+      "covers_hit": "4/4",
+      "source_sha": "dfb15a278657e4417b545fc138df0f0dd0399ac4",
+      "status": "REUSED_PASS; not rerun for the testbench-only corner extension"
+    },
+    "physical_qam256_ber": "NOT_RUN",
+    "product_raw_coverage": "REUSED; unchanged from PR #7; candidate-only runs are excluded",
+    "python_unit_tests": "PASS; 44/44 tests on current Phase 1 Python sources",
+    "vivado_fpga_ppa": "NOT_RUN",
+    "xpm_gt_wizard": "NOT_RUN"
+  }
+}

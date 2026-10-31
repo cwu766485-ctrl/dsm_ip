@@ -30,7 +30,7 @@ module thermo5_axil_cfg_coverage_harness (
   logic signed [63:0] c1_re, c1_im, c3_re, c3_im, c5_re, c5_im;
   logic cfg_busy, cfg_done, cfg_error;
 
-  thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(4)) dut (
+  thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(1)) dut (
     .s_axil_aclk(axil_clk), .s_axil_aresetn(axil_rst_n),
     .s_axil_awaddr(awaddr), .s_axil_awvalid(awvalid), .s_axil_awready(awready),
     .s_axil_wdata(wdata), .s_axil_wstrb(wstrb), .s_axil_wvalid(wvalid), .s_axil_wready(wready),
@@ -45,16 +45,9 @@ module thermo5_axil_cfg_coverage_harness (
     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
   );
 
-  // The integrated wrapper contract is a common reset assertion source for
-  // AXI-Lite and core, with each domain releasing synchronously on its own
-  // clock. This formal harness checks only protocol reachability under that
-  // integration contract; the configuration block's independent-reset
-  // windows are exercised by the block-level AXI-Lite testbench under
-  // dv/verif/block/axil/tb/.
-  assume_core_reset_asserts_axil:
-    assume property (@(posedge core_clk) !core_rst_n |-> !axil_rst_n);
-  assume_axil_reset_fall_requires_core_reset:
-    assume property (@(posedge axil_clk) $fell(axil_rst_n) |-> !core_rst_n);
+  // No protocol or reset assumptions are imposed here. VC Formal's saved
+  // reset state is the only initialization; the two reset-coupling assumptions
+  // used by an earlier revision were vacuous and are intentionally removed.
 
   // These properties are deliberately bound to the production RTL instance.
   // They justify only the exact condition bins named in the coverage ledger.
@@ -65,6 +58,9 @@ module thermo5_axil_cfg_coverage_harness (
   a_line88_tuple_unreachable:
     assert property (@(posedge axil_clk) disable iff (!axil_rst_n)
       !(bvalid && (dut.aw_pending || dut.aw_take) && (dut.w_pending || dut.w_take)));
+  c_line88_tuple_unreachable:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      bvalid && (dut.aw_pending || dut.aw_take) && (dut.w_pending || dut.w_take));
 
   // The sequential OKAY-only write case is reached only after write_resp
   // has decoded an explicit register address. This proves the case default
@@ -80,6 +76,42 @@ module thermo5_axil_cfg_coverage_harness (
          dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
          dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
          dut.write_addr == 8'h3c));
+  c_write_case_default_unreachable:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.write_fire && dut.write_resp == 2'b00 &&
+      !(dut.write_addr == 8'h00 || dut.write_addr == 8'h04 ||
+        dut.write_addr == 8'h08 || dut.write_addr == 8'h10 ||
+        dut.write_addr == 8'h14 || dut.write_addr == 8'h18 ||
+        dut.write_addr == 8'h1c || dut.write_addr == 8'h20 ||
+        dut.write_addr == 8'h24 || dut.write_addr == 8'h28 ||
+        dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
+        dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
+        dut.write_addr == 8'h3c));
+
+  // The coefficient-address decoder admits only the six aligned coefficient
+  // words and their high-word aliases. Therefore the masked address entering
+  // coeff_read_word can never select that function's default arm (line 142).
+  a_coeff_read_default_unreachable:
+    assert property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.coeff_word_addr(dut.s_axil_araddr) |->
+        ((dut.s_axil_araddr & 8'hf8) inside
+          {8'h10,8'h18,8'h20,8'h28,8'h30,8'h38}));
+  c_coeff_read_default_arm_unreachable:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.coeff_word_addr(dut.s_axil_araddr) &&
+      !((dut.s_axil_araddr & 8'hf8) inside
+        {8'h10,8'h18,8'h20,8'h28,8'h30,8'h38}));
+
+  // MAX_TAPS is tied to 1 in this harness. Its initial guard is a static
+  // configuration fact, not a non-tautological Formal reachability property;
+  // the corresponding Raw code bin is reviewed separately and stays OPEN.
+
+  // Ensure the reachability assertion is not vacuous: a legal coefficient
+  // read transaction can enter the function through the production mux.
+  c_coeff_read_transaction:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.s_axil_arvalid && dut.s_axil_arready &&
+      dut.coeff_word_addr(dut.s_axil_araddr));
 
 endmodule
 

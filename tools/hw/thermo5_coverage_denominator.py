@@ -113,7 +113,11 @@ def inventory(report):
                 if metric == 'Branch':
                     # URG reports chained IF arms at the first line. Preserve
                     # the actual decision vector; a missing arm is never a hit.
-                    pattern = r'<td>(?:IF|CASE)</td>\s*<td class="rt">(\d+)</td>\s*<td class="rt">(\d+)</td>\s*<td class="rt">(\d+)</td>'
+                    # Recent URG versions emit expression branches as
+                    # TERNARY rows. Keep them in the same ordered source-bin
+                    # inventory as IF/CASE arms; omitting them makes the
+                    # detail tables appear to have unmatched source rows.
+                    pattern = r'<td>(?:IF|CASE|TERNARY)</td>\s*<td class="rt">(\d+)</td>\s*<td class="rt">(\d+)</td>\s*<td class="rt">(\d+)</td>'
                     summary_lines = [int(m[0]) for m in re.findall(pattern, section)]
                     details = list(re.finditer(r'<pre class="code">(.*?)</pre>\s*<br clear=all>\s*<span class=repname>Branches:</span>\s*<br clear=all>\s*<table.*?</table>', section, re.S))
                     for number, detail in enumerate(details):
@@ -163,6 +167,43 @@ def fsm_inventory(report):
                         total,covered=map(int,row[1:3])
                         rows.append(dict(instance=instance,ownership=audit.ownership(instance),fsm=clean(fsm),
                             metric=row[0].lower(),total=total,covered=covered,missing=total-covered))
+    return rows
+
+
+def fsm_gap_inventory(report):
+    """Return exact raw-unhit state/transition bins, not only FSM totals."""
+    rows=[]
+    for path in sorted(report.glob('mod*.html')):
+        page=path.read_text(errors='replace')
+        for tag_name,block,single in audit.instance_blocks(page):
+            name=re.search(r'(?:Module Instance|\w+ Coverage for Instance)\s*:\s*<a[^>]*>(.*?)</a>',block,re.S)
+            if not name:
+                continue
+            instance=clean(name[1])
+            if not instance.startswith('thermo5_sku_uvm_tb.dut'):
+                continue
+            prefix='' if single else tag_name+'_'
+            anchor=re.search(r'<a name="'+prefix+r'FSM"></a>',block)
+            if not anchor:
+                continue
+            section=block[anchor.end():]
+            for fsm,details in re.findall(
+                    r'<b>State, Transition and Sequence Details for FSM :: (.*?)</b><hr>(.*?)(?:<hr>|$)',
+                    section,re.S):
+                tables=re.findall(r'<table.*?</table>',details,re.S)
+                for table in tables:
+                    parser=frozen.TableRows();parser.feed(table)
+                    if not parser.rows:
+                        continue
+                    kind=clean(parser.rows[0][0]).lower()
+                    if kind not in ('states','transitions'):
+                        continue
+                    for row in parser.rows[1:]:
+                        if len(row)<3 or clean(row[2]).lower()!='not covered':
+                            continue
+                        rows.append(dict(instance=instance,ownership=audit.ownership(instance),
+                            fsm=clean(fsm),metric=kind,bin=clean(row[0]),line=int(row[1]),
+                            status='Not Covered'))
     return rows
 
 

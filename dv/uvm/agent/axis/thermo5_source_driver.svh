@@ -9,7 +9,14 @@ class thermo5_source_driver extends uvm_driver#(thermo5_source_item);
   endfunction
   task run_phase(uvm_phase phase);
     thermo5_source_item tr;
-    wait(vif.src_rst_n && vif.core_rst_n);
+    if ($test$plusargs("THERMO5_SOURCE_START_AFTER_SRC_RESET")) begin
+      wait(vif.src_rst_n);
+      // AXI-Stream requires TVALID low for the first source-clock cycle after
+      // ARESETn deasserts. Start on the following cycle, even if core reset
+      // remains asserted and the DUT-local reset synchronizer is still active.
+      @(posedge vif.src_clk);
+    end else
+      wait(vif.src_rst_n && vif.core_rst_n);
     forever begin
       @(negedge vif.src_clk);
       tr=null;

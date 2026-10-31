@@ -223,8 +223,14 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
     bit boundary_seen;
     bit [386:0] expected_cfg_payload;
     int unsigned expected_active_taps;
+    int unsigned pa_stall_cycles;
     expected_active_taps=configured_active_taps();
     expected_cfg_payload=configured_payload();
+    pa_stall_cycles=4;
+    void'($value$plusargs("AXIL_PA_STALL_CYCLES=%d",pa_stall_cycles));
+    if (pa_stall_cycles<4 || pa_stall_cycles>4096)
+      `uvm_fatal("AXIL_PA_STALL_ARGUMENT",
+        $sformatf("AXIL_PA_STALL_CYCLES must be in [4,4096], got %0d",pa_stall_cycles))
     phase.raise_objection(this);
     fork
       begin
@@ -285,7 +291,7 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
         end
         if (!boundary_seen)
           `uvm_fatal("AXIL_PA_STALL_TIMEOUT","PA did not present a four-plane word under backpressure")
-        repeat (4) begin
+        repeat (pa_stall_cycles) begin
           @(posedge vif.core_clk);
           if (vif.pa_valid!=4'hf || vif.pa_ready!=4'h0)
             `uvm_fatal("AXIL_PA_STALL","PA valid was not held during backpressure")
@@ -369,4 +375,335 @@ endclass
 class thermo5_sku_axil_config_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_config_test)
   function new(string name, uvm_component parent); super.new(name,parent); endfunction
+endclass
+
+// Actual GT-parent product setting: one active tap with the reset-default
+// unity coefficient. The broader MAX_TAPS=4 test remains a separate candidate
+// configuration and is not part of product coverage.
+class thermo5_sku_axil_product_identity_test extends thermo5_sku_axil_config_test;
+  `uvm_component_utils(thermo5_sku_axil_product_identity_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function int unsigned configured_active_taps();
+    return 1;
+  endfunction
+
+  virtual function bit [386:0] configured_payload();
+    return {3'd1,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0};
+  endfunction
+
+  virtual function string scenario_pass_message();
+    return "THERMO5_AXIL_PRODUCT_IDENTITY_UVM_PASS: one-tap GT-parent product image committed atomically; all four planes matched the identity oracle";
+  endfunction
+
+  virtual task program_dpd_image(output bit [1:0] resp);
+    axil_write(8'h08,32'd1,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_TAPS","Product one-tap setting was rejected")
+    axil_write(8'h10,32'h0000_4000,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_COEFF","Product unity coefficient write failed")
+    axil_write(8'h14,32'd0,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_PRODUCT_COEFF","Product coefficient high-word write failed")
+  endtask
+endclass
+
+// Continuous two-frame identity stream for product-configuration coverage.
+// Unlike STOP/restart qualification, both legal packets enter one RUN epoch;
+// the independent scoreboard checks that frame-tail/lookahead handling keeps
+// the complete four-plane output bit-true across the packet boundary.
+class thermo5_sku_axil_product_identity_continuous_test extends thermo5_sku_axil_product_identity_test;
+  `uvm_component_utils(thermo5_sku_axil_product_identity_continuous_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=2;
+    if (cfg.core_words!=112 || cfg.source_beats!=64)
+      `uvm_fatal("PRODUCT_CONTINUOUS_WORDS",
+        "Use CORE_WORDS=112 for two contiguous identity-product frames")
+  endfunction
+
+  virtual function string scenario_pass_message();
+    return "THERMO5_AXIL_PRODUCT_IDENTITY_CONTINUOUS_UVM_PASS: two one-tap identity frames matched all four planes";
+  endfunction
+
+  virtual task check_scenario_stream();
+    int expected_dpd_words;
+    expected_dpd_words=cfg.core_words+cfg.frame_starts;
+    if (env.source.monitor.accepted_beats!=cfg.source_beats ||
+        env.source.monitor.accepted_last_count!=2 ||
+        env.scoreboard.source_checked!=cfg.source_beats ||
+        env.scoreboard.checked!=cfg.core_words ||
+        env.coverage.pa_words!=cfg.core_words ||
+        env.coverage.frame_starts!=cfg.frame_starts ||
+        vif.protocol_error || env.coverage.underflow_before_last_source!=0)
+      `uvm_fatal("PRODUCT_CONTINUOUS_STREAM",
+        $sformatf("source=%0d/%0d TLAST=%0d/2 frames=%0d/%0d output=%0d/%0d protocol=%b underflow=%0d",
+          env.source.monitor.accepted_beats,cfg.source_beats,
+          env.source.monitor.accepted_last_count,
+          env.coverage.frame_starts,cfg.frame_starts,
+          env.scoreboard.checked,cfg.core_words,vif.protocol_error,
+          env.coverage.underflow_before_last_source))
+    for (int lane=0;lane<16;lane++) begin
+      if (vif.dpd_sample_count[lane]!==expected_dpd_words ||
+          vif.dpd_saturation_count[lane]!==0)
+        `uvm_fatal("PRODUCT_CONTINUOUS_DPD_COUNT",
+          $sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
+            lane,vif.dpd_sample_count[lane],expected_dpd_words,
+            vif.dpd_saturation_count[lane]))
+    end
+  endtask
+endclass
+
+// Start the product core while a legal packet is still being accepted. This
+// avoids full-FIFO prefill and checks frame-tail timing during live ingress.
+class thermo5_sku_axil_cdc_end_remaining_test extends thermo5_sku_axil_product_identity_test;
+  `uvm_component_utils(thermo5_sku_axil_cdc_end_remaining_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=1;
+    if (cfg.core_words!=56 || cfg.source_beats!=32)
+      `uvm_fatal("CDC_END_WORDS",
+        "Use CORE_WORDS=56 for one legal 32-beat product packet")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    bit [1:0] resp;
+    int unsigned wait_cycles;
+    phase.raise_objection(this);
+    fork
+      begin
+        fork
+          send_source(cfg.source_beats);
+          begin
+            wait(vif.src_rst_n && vif.core_rst_n);
+            wait_axil_reset_release();
+            if (vif.dpd_active_taps!==3'd1 ||
+                vif.cfg_active_payload!==
+                  {3'd1,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0})
+              `uvm_fatal("CDC_END_PRODUCT_DEFAULT",
+                "AXI-Lite reset did not select the one-tap identity product image")
+            wait(env.source.monitor.accepted_beats>=4);
+            axil_write(8'h00,32'h1,2,0,resp);
+            if (resp!=2'b00) `uvm_fatal("CDC_END_RUN","RUN request failed")
+            wait(env.source.monitor.accepted_beats>=20);
+            axil_write(8'h00,32'd0,0,1,resp);
+            if (resp!=2'b00) `uvm_fatal("CDC_END_STOP","STOP request failed during the open packet")
+
+            wait_cycles=0;
+            while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
+              @(posedge vif.core_clk);
+              wait_cycles++;
+            end
+            if (env.scoreboard.checked!=cfg.core_words)
+              `uvm_fatal("CDC_END_STREAM_TIMEOUT",
+                $sformatf("continuous product stream checked %0d/%0d output words",
+                  env.scoreboard.checked,cfg.core_words))
+            check_full();
+            if (vif.underflow || vif.protocol_error)
+              `uvm_fatal("CDC_END_STREAM_STATUS",
+                $sformatf("drained packet reported underflow=%b protocol_error=%b",
+                  vif.underflow,vif.protocol_error))
+            if (env.coverage.cdc_frame_end_events!=1)
+              `uvm_fatal("CDC_END_FRAME_CHECK",
+                $sformatf("independent CDC checker observed %0d frame ends, expected 1",
+                  env.coverage.cdc_frame_end_events))
+            if ($test$plusargs("REQUIRE_CDC_END_FALSE_ARM") &&
+                env.coverage.cdc_end_remaining_false_arm_events==0)
+              `uvm_fatal("CDC_END_FALSE_ARM_MISS",
+                "required legal end_remaining false-arm event was not observed")
+            `uvm_info("SKU_CDC_END",
+              $sformatf("single-packet product stream passed; cdc_frame_end=%0d false_arm=%0d",
+                env.coverage.cdc_frame_end_events,
+                env.coverage.cdc_end_remaining_false_arm_events),UVM_NONE)
+            `uvm_info("SKU_PASS",
+              "THERMO5_AXIL_CDC_END_REMAINING_UVM_PASS: STOP/drain preserved the continuous one-tap product packet; all four planes and CDC frame-end checker matched",
+              UVM_NONE)
+          end
+        join
+      end
+      begin
+        repeat(18000) @(posedge vif.core_clk);
+        `uvm_fatal("CDC_END_TIMEOUT","Thermo5 CDC end-remaining test timed out")
+      end
+    join_any
+    disable fork;
+    phase.drop_objection(this);
+  endtask
+endclass
+
+// Generic-FIFO full-IP control variant for comparison against the CDC proof.
+// This does not contribute to AXI-Lite product Raw coverage; it checks the
+// wrapper's RUN/prefill scheduling with the same packet and bit-true oracle.
+class thermo5_sku_cdc_end_remaining_generic_test extends thermo5_sku_bittrue_test;
+  `uvm_component_utils(thermo5_sku_cdc_end_remaining_generic_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=1;
+    if (cfg.core_words!=56 || cfg.source_beats!=32)
+      `uvm_fatal("CDC_END_WORDS",
+        "Use CORE_WORDS=56 for one legal 32-beat product packet")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    int unsigned wait_cycles;
+    phase.raise_objection(this);
+    fork
+      begin
+        fork
+          send_source(cfg.source_beats);
+          begin
+            wait(vif.src_rst_n && vif.core_rst_n);
+            wait(env.source.monitor.accepted_beats>=4);
+            env.control.core_on();
+            wait_cycles=0;
+            while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
+              @(posedge vif.core_clk);
+              wait_cycles++;
+            end
+            if (env.scoreboard.checked!=cfg.core_words)
+              `uvm_fatal("CDC_END_STREAM_TIMEOUT",
+                $sformatf("continuous Generic-FIFO stream checked %0d/%0d output words",
+                  env.scoreboard.checked,cfg.core_words))
+            env.control.core_off();
+            check_full();
+            if (env.coverage.cdc_frame_end_events!=1)
+              `uvm_fatal("CDC_END_FRAME_CHECK",
+                $sformatf("independent CDC checker observed %0d frame ends, expected 1",
+                  env.coverage.cdc_frame_end_events))
+            if (vif.protocol_error)
+              `uvm_fatal("CDC_END_STREAM_STATUS",
+                "stream reported a CDC protocol error")
+            if ($test$plusargs("REQUIRE_CDC_END_FALSE_ARM") &&
+                env.coverage.cdc_end_remaining_false_arm_events==0)
+              `uvm_fatal("CDC_END_FALSE_ARM_MISS",
+                "required legal end_remaining false-arm event was not observed")
+            `uvm_info("SKU_CDC_END",
+              $sformatf("Generic-FIFO product stream passed; cdc_frame_end=%0d false_arm=%0d",
+                env.coverage.cdc_frame_end_events,
+                env.coverage.cdc_end_remaining_false_arm_events),UVM_NONE)
+            `uvm_info("SKU_PASS",
+              "THERMO5_GENERIC_CDC_END_REMAINING_UVM_PASS: one-tap product packet matched all four planes and CDC frame-end checker",
+              UVM_NONE)
+          end
+        join
+      end
+      begin
+        repeat(18000) @(posedge vif.core_clk);
+        `uvm_fatal("CDC_END_TIMEOUT","Thermo5 Generic-FIFO end-remaining test timed out")
+      end
+    join_any
+    disable fork;
+    phase.drop_objection(this);
+  endtask
+endclass
+
+class thermo5_sku_axil_product_identity_interframe_gap_test extends thermo5_sku_axil_product_identity_continuous_test;
+  `uvm_component_utils(thermo5_sku_axil_product_identity_interframe_gap_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function string scenario_pass_message();
+    return "THERMO5_AXIL_PRODUCT_IDENTITY_INTERFRAME_GAP_UVM_PASS: one legal source-clock bubble between two identity frames matched all four planes";
+  endfunction
+endclass
+
+// Start AXI-Stream on the first legal cycle after external source reset, while
+// the DUT's two-flop local reset synchronizer is still releasing. This checks
+// that READY does not acknowledge a beat the FIFO cannot yet store.
+class thermo5_sku_axil_reset_release_source_test extends thermo5_sku_axil_product_identity_test;
+  `uvm_component_utils(thermo5_sku_axil_reset_release_source_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=1;
+    if (cfg.core_words!=56 || cfg.source_beats!=32)
+      `uvm_fatal("RESET_EDGE_WORDS",
+        "Use CORE_WORDS=56 for one legal 32-beat product packet")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    bit [1:0] resp;
+    int unsigned wait_cycles;
+    phase.raise_objection(this);
+    fork
+      begin
+        fork
+          send_source(cfg.source_beats);
+          begin
+            wait(vif.src_rst_n && !vif.core_rst_n);
+            wait(vif.src_valid);
+            if (vif.cdc_source_reset_released !== 1'b0)
+              `uvm_fatal("RESET_EDGE_WINDOW",
+                "Source stimulus did not overlap the CDC local reset-release window")
+            if (vif.src_ready !== 1'b0)
+              `uvm_fatal("RESET_EDGE_READY",
+                "CDC acknowledged AXIS data before its source-domain FIFO reset released")
+            while (!vif.cdc_source_reset_released) begin
+              @(negedge vif.src_clk);
+              if (!vif.cdc_source_reset_released &&
+                  vif.src_valid && vif.src_ready)
+                `uvm_fatal("RESET_EDGE_HANDSHAKE",
+                  "AXIS transfer was acknowledged while the source FIFO remained in reset")
+            end
+            wait(vif.core_rst_n);
+            wait_axil_reset_release();
+            wait(env.source.monitor.accepted_beats>=4);
+            axil_write(8'h00,32'h1,2,0,resp);
+            if (resp!=2'b00) `uvm_fatal("RESET_EDGE_RUN","RUN request failed")
+            wait(env.source.monitor.accepted_beats>=20);
+            axil_write(8'h00,32'd0,0,1,resp);
+            if (resp!=2'b00) `uvm_fatal("RESET_EDGE_STOP","STOP request failed")
+
+            wait_cycles=0;
+            while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
+              @(posedge vif.core_clk);
+              wait_cycles++;
+            end
+            if (env.scoreboard.checked!=cfg.core_words)
+              `uvm_fatal("RESET_EDGE_STREAM_TIMEOUT",
+                $sformatf("reset-window stream checked %0d/%0d words",
+                  env.scoreboard.checked,cfg.core_words))
+            check_full();
+            if (vif.protocol_error || vif.underflow ||
+                env.coverage.cdc_frame_end_events!=1)
+              `uvm_fatal("RESET_EDGE_STATUS",
+                $sformatf("protocol=%b underflow=%b cdc_frame_end=%0d",
+                  vif.protocol_error,vif.underflow,
+                  env.coverage.cdc_frame_end_events))
+            `uvm_info("SKU_PASS",
+              "THERMO5_AXIL_RESET_RELEASE_SOURCE_UVM_PASS: early legal AXIS valid was backpressured through local reset release; 32 beats and all 56 four-plane output words matched",
+              UVM_NONE)
+          end
+        join
+      end
+      begin
+        repeat(18000) @(posedge vif.core_clk);
+        `uvm_fatal("RESET_EDGE_TIMEOUT","Thermo5 reset-release source test timed out")
+      end
+    join_any
+    disable fork;
+    phase.drop_objection(this);
+  endtask
 endclass

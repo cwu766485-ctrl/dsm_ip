@@ -57,6 +57,22 @@ def reason(row):
         return ('OPEN_VENDOR', 'Vendor source is in this denominator. Optional features, '
                 'reset sequencing and FSM transitions have not been individually proven; '
                 'vendor ownership alone is not an exclusion.', [])
+    if row['status'] == 'OPEN_COUNTER_FORMAL_REVIEW':
+        return ('OPEN_COUNTER_FORMAL_REVIEW', 'The raw counter transition is unhit. Related '
+                'bounded evidence must be mapped to this exact bit, source SHA and stimulus; '
+                'it is not a URG hit or an exclusion.', [])
+    if row['status'] == 'OPEN_ARITHMETIC_REVIEW':
+        return ('OPEN_ARITHMETIC_REVIEW', 'An arithmetic argument may help prioritize this '
+                'bin, but its exact elaboration and bin mapping have not been accepted as a '
+                'coverage disposition. The raw bin remains open.', [])
+    if row['status'] == 'OPEN_CONFIGURATION_REVIEW':
+        return ('OPEN_CONFIGURATION_REVIEW', 'This bin may depend on a non-selected '
+                'parameterized alternative. The exact elaborated source and approved SKU '
+                'scope have not been reconciled; the raw bin remains open.', [])
+    if row['status'] == 'OPEN_FORMAL_MAPPING_REVIEW':
+        return ('OPEN_FORMAL_MAPPING_REVIEW', 'Related formal properties may apply, but '
+                'the exact URG source bin, property, assumptions and run manifest have not '
+                'been mapped together. The raw bin remains open.', [])
     if row['status'] == 'OPEN_XPM_PROOF_TRANSFER':
         return ('OPEN_XPM_PROOF_TRANSFER', 'Generic FIFO proof does not establish this XPM '
                 'instance. Requires a real-XPM proof or a separately validated compositional contract.', [])

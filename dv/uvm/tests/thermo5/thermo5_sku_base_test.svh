@@ -40,11 +40,13 @@ class thermo5_sku_base_test extends uvm_test;
     env=thermo5_sku_env::type_id::create("env",this);
   endfunction
 
-  task send_source(int beats, bit illegal=0, int gap_before_beat=-1,
-                   int unsigned gap_cycles=0, int force_early_tlast_beat=-1,
-                   bit force_frame_end=0);
+  virtual task send_source(int beats, bit illegal=0, int gap_before_beat=-1,
+                           int unsigned gap_cycles=0, int force_early_tlast_beat=-1,
+                           bit force_frame_end=0);
     thermo5_source_sequence seq;
     int packet_beats;
+    int selected_gap_beat;
+    int unsigned selected_gap_cycles;
     seq=thermo5_source_sequence::type_id::create("source_sequence");
     seq.cfg=cfg;
     seq.beat_count=beats;
@@ -61,8 +63,14 @@ class thermo5_sku_base_test extends uvm_test;
     packet_beats=0;
     void'($value$plusargs("PACKET_BEATS=%d",packet_beats));
     seq.packet_beats=packet_beats;
-    seq.gap_before_beat=gap_before_beat;
-    seq.gap_cycles=gap_cycles;
+    selected_gap_beat=gap_before_beat;
+    selected_gap_cycles=gap_cycles;
+    if (selected_gap_beat<0) begin
+      void'($value$plusargs("THERMO5_SOURCE_GAP_BEAT=%d",selected_gap_beat));
+      void'($value$plusargs("THERMO5_SOURCE_GAP_CYCLES=%d",selected_gap_cycles));
+    end
+    seq.gap_before_beat=selected_gap_beat;
+    seq.gap_cycles=selected_gap_cycles;
     seq.start(env.source.sequencer);
   endtask
 
@@ -98,5 +106,10 @@ class thermo5_sku_base_test extends uvm_test;
          vif.dpd_saturation_count[lane] !== 0)
         `uvm_fatal("DPD_COUNT",$sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
           lane,vif.dpd_sample_count[lane],expected_dpd_words,vif.dpd_saturation_count[lane]))
+    if (require_signed_extremes &&
+        (env.coverage.signed_min_beats==0 || env.coverage.signed_max_beats==0))
+      `uvm_fatal("SIGNED_EXTREMES",
+        $sformatf("Signed input corners missing: min=%0d max=%0d",
+          env.coverage.signed_min_beats,env.coverage.signed_max_beats))
   endtask
 endclass

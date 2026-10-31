@@ -43,6 +43,8 @@ THERMO5_LONG_VECTORS ?= $(ROOT)/runs/thermo5_axil_tlast_112_vectors
 THERMO5_CENTERED_LP_VECTORS ?= $(ROOT)/runs/thermo5_centered_low_power_vectors
 THERMO5_NONLINEAR_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_short_vectors
 THERMO5_NONLINEAR_LONG_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_long_vectors
+THERMO5_NONLINEAR_TAP4_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_tap4_short_vectors
+THERMO5_NONLINEAR_TAP4_LONG_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_tap4_long_vectors
 THERMO5_STOP_RESTART_VECTORS ?= $(ROOT)/runs/thermo5_centered_stop_restart_vectors
 THERMO5_STOP_RESTART_TIDSM_ORDER ?= 2
 THERMO5_STOP_RESTART_STEP ?= 5120
@@ -55,15 +57,19 @@ THERMO5_CENTERED_CUBIC ?= 1
 THERMO5_LOW_POWER ?= 0
 THERMO5_TIDSM_ORDER ?= 2
 THERMO5_STEP ?= 5120
+THERMO5_DPD_MAX_TAPS ?=
 THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CONTROL,) \
 	$(if $(filter 1,$(THERMO5_CENTERED_CUBIC)),+define+THERMO5_CENTERED_CUBIC,) \
 	$(if $(filter 1,$(THERMO5_LOW_POWER)),+define+THERMO5_LOW_POWER,) \
 	+define+THERMO5_TIDSM_ORDER=$(THERMO5_TIDSM_ORDER) \
 	+define+THERMO5_STEP=$(THERMO5_STEP)
+THERMO5_DPD_ARGS := $(if $(strip $(THERMO5_DPD_MAX_TAPS)),+define+THERMO5_DPD_MAX_TAPS=$(THERMO5_DPD_MAX_TAPS),)
 THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
 THERMO5_COV_ARGS := $(if $(filter 1,$(THERMO5_COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
+THERMO5_COV_HIER ?=
+THERMO5_COV_HIER_ARGS := $(if $(and $(filter 1,$(THERMO5_COVERAGE)),$(strip $(THERMO5_COV_HIER))),-cm_hier $(THERMO5_COV_HIER),)
 GT_PARENT_FAULT_OUT ?= $(ROOT)/runs/thermo5_gt_parent_fault_vcs
 GT_PARENT_FAULT_SRCS := \
 	dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv \
@@ -121,11 +127,15 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
         thermo5-centered-cubic-vcs thermo5-centered-cubic-low-power-vcs \
-thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-ef2-pair-vcs thermo5-ef2-serdes-vcs \
+        thermo5-centered-cubic-ef2-vcs-regression thermo5-ef2-qualification thermo5-axil-ef2-qualification thermo5-ef2-pair-vcs thermo5-ef2-serdes-vcs \
         thermo5-gt-parent-link-fault-vcs \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
+        thermo5-axil-centered-nonlinear-tap4-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
-        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs
+        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs \
+        thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-reset-release-source \
+        thermo5-tx-product-axil-coeff-transport \
+        thermo5-dpd-bittrue-vcs
 
 help:
 	@echo "Primary targets:"
@@ -196,9 +206,9 @@ thermo5-vcs:
 	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 vectors with MATLAB or generate_thermo5_frontend_vectors.py first"; exit 2; }
 	@mkdir -p $(THERMO5_OUT)
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L \
-		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) \
+		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) $(THERMO5_DPD_ARGS) \
 		-top $(THERMO5_TOP) -Mdir=$(THERMO5_OUT)/csrc \
-		$(THERMO5_COV_ARGS) $(THERMO5_DEBUG_ARGS) \
+		$(THERMO5_COV_ARGS) $(THERMO5_COV_HIER_ARGS) $(THERMO5_DEBUG_ARGS) \
 		-o $(THERMO5_OUT)/simv -l $(THERMO5_OUT)/compile.log
 
 thermo5-vcs-run: thermo5-vcs thermo5-vcs-run-only
@@ -242,6 +252,41 @@ thermo5-axil-boundary-phase-vcs-run:
 	@$(MAKE) --no-print-directory thermo5-vcs-run \
 	  THERMO5_USE_AXIL=1 THERMO5_TESTNAME=thermo5_sku_axil_boundary_phase_test
 
+# Product-scoped residual-reset coverage closure. Call with DPD_MAX_TAPS=1,
+# the product coverage hierarchy file, and a dedicated output directory.
+thermo5-tx-product-axil-reset-sweep:
+	@$(MAKE) --no-print-directory thermo5-vcs \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=56
+
+# Legal AXI-Stream startup overlaps the two-flop local source-reset release.
+thermo5-tx-product-axil-reset-release-source:
+	@$(MAKE) --no-print-directory thermo5-vcs \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_reset_release_source_test UVM_SEED=610713 \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_SOURCE_START_AFTER_SRC_RESET'
+
+# Product-scoped legal coefficient transport uses one active identity tap;
+# values in inactive coefficient banks exercise AXI transport only.
+thermo5-tx-product-axil-coeff-transport:
+	@$(MAKE) --no-print-directory thermo5-vcs \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_coeff_transport_test UVM_SEED=610803 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=56
+
 thermo5-vcs-run-only:
 	@test -x $(THERMO5_OUT)/simv || { echo "ERROR: run thermo5-vcs first"; exit 2; }
 	@cd $(ROOT) && $(THERMO5_OUT)/simv \
@@ -280,6 +325,7 @@ thermo5-axil-vcs-negative:
 		-l $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	status=$$?; set -e; \
 	grep -q 'DSM frame_start was not aligned to a 56-sample boundary' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	grep -q 'centered cubic frame-end vector was followed by same-frame data' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'THERMO5_AXIL_ILLEGAL_FRAME_UVM_PASS' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'UVM_WARNING *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
@@ -465,9 +511,34 @@ thermo5-ef2-qualification:
 	  $(THERMO5_EF2_RANDOM_VECTORS) $(THERMO5_EF2_EXTREME_VECTORS)
 	@echo "THERMO5_EF2_QUALIFICATION_PASS report=$(THERMO5_OUT)/ef2_qualification_coverage"
 
+# AXI-Lite wrapper variant of EF2 saturation/state-hold qualification. This
+# uses its public RUN/STOP register rather than the generic core_enable BFM.
+THERMO5_AXIL_EF2_VECTORS ?= $(ROOT)/runs/thermo5_axil_ef2_qualification/extreme_vectors
+thermo5-axil-ef2-qualification:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_AXIL_EF2_VECTORS) --words 2072 --seed 271028 \
+	  --profile ef2_saturation --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+	  --frame-start-words 1,687,1380 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_AXIL_EF2_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_VECTORS=$(THERMO5_AXIL_EF2_VECTORS) \
+	  THERMO5_TESTNAME=thermo5_sku_axil_ef2_corner_test UVM_SEED=271030 \
+	  THERMO5_EXTRA_ARGS=+CORE_WORDS=2072
+	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_ef2_corner_test_seed271030.vdb \
+	  -report $(THERMO5_OUT)/axil_ef2_qualification_coverage -dbname thermo5_axil_ef2_qualification \
+	  > $(THERMO5_OUT)/axil_ef2_qualification_coverage.log 2>&1
+	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/axil_ef2_qualification_coverage.log || \
+	  { echo "ERROR: AXI-Lite EF2 URG merge failed; inspect axil_ef2_qualification_coverage.log"; exit 1; }
+	@grep -Fq 'THERMO5_AXIL_EF2_CORNER_UVM_PASS' \
+	  $(THERMO5_OUT)/thermo5_sku_axil_ef2_corner_test_seed271030.log
+	@echo "THERMO5_AXIL_EF2_QUALIFICATION_PASS report=$(THERMO5_OUT)/axil_ef2_qualification_coverage"
+
 # Exact look-ahead microarchitecture experiment. It is not selected by the
 # product wrappers and must not replace the baseline before routed timing.
 THERMO5_EF2_PAIR_OUT ?= $(ROOT)/runs/thermo5_ef2_pair_lookahead/vcs
+THERMO5_DPD_BITTRUE_OUT ?= $(ROOT)/runs/thermo5_tx_dpd_bittrue
 thermo5-ef2-pair-vcs:
 	@mkdir -p $(THERMO5_EF2_PAIR_OUT)/csrc
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
@@ -482,6 +553,25 @@ thermo5-ef2-pair-vcs:
 	@grep -Fq 'THERMO5_EF2_PAIR_LOOKAHEAD_PASS cycles=4096 seed=20261028' \
 	  $(THERMO5_EF2_PAIR_OUT)/sim.log
 	@echo "THERMO5_EF2_PAIR_LOOKAHEAD_PASS report=$(THERMO5_EF2_PAIR_OUT)/sim.log"
+
+# Candidate-only vector DPD RTL/oracle miter, separate from product coverage.
+thermo5-dpd-bittrue-vcs:
+	@test -n '$(THERMO5_DPD_VECTORS)' || { echo "ERROR: set THERMO5_DPD_VECTORS"; exit 2; }
+	@test -f $(THERMO5_DPD_VECTORS)/manifest.json || { echo "ERROR: missing DPD vector manifest"; exit 2; }
+	@mkdir -p $(THERMO5_DPD_BITTRUE_OUT)/csrc
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -timescale=1ns/1ps \
+	  -top tb_thermo5_fitted_dpd -Mdir=$(THERMO5_DPD_BITTRUE_OUT)/csrc \
+	  -o $(THERMO5_DPD_BITTRUE_OUT)/simv \
+	  rtl/dpd/dpd_poly.v rtl/dpd/dpd_memory_poly.v \
+	  rtl/dpd/dpd_vector16_memory_poly.sv \
+	  dv/verif/block/dpd/tb/tb_thermo5_fitted_dpd.sv \
+	  -l $(THERMO5_DPD_BITTRUE_OUT)/compile.log
+	@cd $(ROOT) && $(THERMO5_DPD_BITTRUE_OUT)/simv \
+	  +VECTOR_DIR=$(THERMO5_DPD_VECTORS) \
+	  +SAMPLES=$$(python3.12 -c 'import json,sys;print(json.load(open(sys.argv[1]))["dpd_samples"])' "$(THERMO5_DPD_VECTORS)/manifest.json") \
+	  +ACTIVE_TAPS=$$(python3.12 -c 'import json,sys;print(json.load(open(sys.argv[1]))["active_taps"])' "$(THERMO5_DPD_VECTORS)/manifest.json") \
+	  -l $(THERMO5_DPD_BITTRUE_OUT)/run.log
+	@grep -q 'THERMO5_FITTED_DPD_RTL_BITTRUE_PASS' $(THERMO5_DPD_BITTRUE_OUT)/run.log
 
 # Main-chain EF2 -> four independent raw64 serializer/deserializer models.
 THERMO5_EF2_SERDES_DIR ?= $(ROOT)/runs/thermo5_ef2_serdes
@@ -555,6 +645,28 @@ thermo5-axil-centered-nonlinear-bittrue-vcs:
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_bittrue_test UVM_SEED=610214 \
 	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_LONG_VECTORS) \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32'
+
+thermo5-axil-centered-nonlinear-tap4-bittrue-vcs:
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_NONLINEAR_TAP4_SHORT_VECTORS) --words 56 --seed 612004 \
+	  --interp-mode centered_cubic --dpd-profile nonlinear_test_4tap \
+	  --frame-start-words 1 --frame-gains 16384 \
+	  --tidsm-order $(THERMO5_TIDSM_ORDER) --step $(THERMO5_STEP)
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_NONLINEAR_TAP4_LONG_VECTORS) --words 112 --seed 612005 \
+	  --interp-mode centered_cubic --dpd-profile nonlinear_test_4tap \
+	  --frame-start-words 1,57 --frame-gains 16384,16384 \
+	  --tidsm-order $(THERMO5_TIDSM_ORDER) --step $(THERMO5_STEP)
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_TAP4_SHORT_VECTORS)
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_tap4_bittrue_test UVM_SEED=612004 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_TAP4_SHORT_VECTORS) \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_tap4_bittrue_test UVM_SEED=612005 \
+	  THERMO5_VECTORS=$(THERMO5_NONLINEAR_TAP4_LONG_VECTORS) \
 	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32'
 
 thermo5-vcs-multiseed: thermo5-vcs

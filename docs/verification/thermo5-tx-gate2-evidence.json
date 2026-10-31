@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "gate": "Thermo5 TX Gate 2 model and candidate evidence",
+  "status": "LINUX_MODEL_CAMPAIGN_COMPLETE_TARGET_UNDEFINED_PHYSICAL_OPEN",
+  "run_date": "2026-10-29",
+  "tested_source": {
+    "run_base_commit": "e5d1951dde51089ae431017aa39ea25af48cf26e",
+    "base_tree_sha256": "7787534834410094a2840c175641fc5cbd3b48c1",
+    "working_tree_was_dirty_for_new_benchmarks": true,
+    "note": "The run-base tree matches remote Gate 1 branch commit 813db9c9a488b033dc4686553cbe3a06856acc0b. Gate 2 scripts and their unit tests were untracked/modified working-tree inputs at run time; source hashes are listed below. Unrelated EF2 saturation-vector and coverage edits were present but are outside the model benchmark path."
+  },
+  "tool_versions": {
+    "python": "3.12",
+    "vcs": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2"
+  },
+  "checks": [
+    {
+      "name": "EF2 STEP/input/PAPR/backoff/state-width staged QAM256 held-out campaign",
+      "status": "PASS_MODEL_RUN_TARGET_UNDEFINED",
+      "command": "python3.12 dv/uvm/refmodel/python/benchmark_thermo5_ef2_robust.py --dev-seeds 271001,271003,271005,271007 --heldout-seeds 281001,281003,281005,281007 --symbols 12 --steps 4864,4992,5120,5248,5376 --rms-levels 0.06,0.08,0.10 --state-widths 18,19,20 --jobs 4 --rx-fir-taps 4097 --json runs/thermo5_tx_gate2_e5d1951/tx_worst_case.json",
+      "result": "108 staged development records; four disjoint held-out seeds; selected held-out point RMS=0.10, STEP=5120, 20-bit state, 0-dB backoff, no clipping; 21/224256 digital errors, EVM=2.4640%, SNDR=32.1675 dB; nominal modeled BER=1.4269e-4; stress modeled BER=7.7144e-4. No product communication target is defined.",
+      "json": "runs/thermo5_tx_gate2_e5d1951/tx_worst_case.json",
+      "json_sha256": "ad30a560ba38827f24c16ed4118702a9249486b1f6779feb8755e9445ed4bfd2",
+      "console_log": "runs/thermo5_tx_gate2_e5d1951/tx_worst_case.log",
+      "console_log_sha256": "aa657bc332c98d794625929beab31911592de44eedfbcb256f656c8ca0f6bd1ec"
+    },
+    {
+      "name": "Held-out identity versus fixed 2/4-tap non-identity DPD images",
+      "status": "PASS_MODEL_RUN_CANDIDATE_IMAGES_REJECTED",
+      "command": "python3.12 dv/uvm/refmodel/python/benchmark_thermo5_tx_dpd_ab.py --seeds 281001,281003,281005,281007 --symbols 9 --rms-drive 0.10 --step 5120 --fir-taps 4097 --jobs 4 --json runs/thermo5_tx_linux_closure_wip/final_replay/dpd_ab.json",
+      "result": "Identity: 7/168192 errors, BER=4.1619e-5, EVM=2.4651%; fixed 2-tap image: 126/168192, EVM=3.0433%; fixed 4-tap image: 1125/168192, EVM=4.0508%. Reject these images only; they are not fitted predistorters.",
+      "json": "runs/thermo5_tx_linux_closure_wip/final_replay/dpd_ab.json",
+      "json_sha256": "e3ffbd9d5c6ea81ee2a8bdcc6399861dd5cd43c4a084b85a4665c8ca3c58e1f3",
+      "console_log": "runs/thermo5_tx_linux_closure_wip/final_replay/dpd_ab.log",
+      "console_log_sha256": "88777e6a115edb12bb7b2901032b202c482fa221158ec628a957c2aa0966f783"
+    },
+    {
+      "name": "Four-plane gain/skew/fault sensitivity campaign",
+      "status": "PASS_MODEL_RUN_SENSITIVITY_ONLY",
+      "command": "python3.12 dv/uvm/refmodel/python/benchmark_thermo5_tx_branch_sensitivity.py --seeds 281001,281003,281005,281007 --symbols 12 --rms-drive 0.10 --step 5120 --state-width 20 --fir-taps 4097 --jobs 4 --json runs/thermo5_tx_linux_closure_wip/final_replay/branch_sensitivity.json",
+      "result": "13 scenarios and 52 seed-scenario records. Baseline 21/224256 errors, EVM=2.4640%; 2–20 ps skew and 0.2–1 dB peak-to-peak gain mismatch stayed close to baseline in this finite set. Four branch-dropout fault cases were recorded separately.",
+      "json": "runs/thermo5_tx_linux_closure_wip/final_replay/branch_sensitivity.json",
+      "json_sha256": "478f5080f1d411cf843382cc8af229a9447fd8b55103b90ed900dce3636181da",
+      "console_log": "runs/thermo5_tx_linux_closure_wip/final_replay/branch_sensitivity.log",
+      "console_log_sha256": "ee7a11c3dbd4cbf0b8be0fa5e41a45e0c751ff524f2a121bb477de1bb2579599"
+    },
+    {
+      "name": "EF2 pair-look-ahead bit-true miter and scoped VC Formal",
+      "status": "PASS_EQUIVALENCE_ONLY_IMPLEMENTATION_PPA_OPEN",
+      "source_commit": "dfb15a278657e4417b545fc138df0f0dd0399ac4",
+      "evidence": "docs/verification/thermo5-tx-gate1-evidence.json",
+      "result": "4096-cycle VCS miter passed; VC Formal proved 7/7 assertions and covered 4/4 covers with zero black boxes. FPGA Fmax/LUT/FF/DSP/routed comparison was not run; PAIR_LOOKAHEAD remains disabled in the product."
+    },
+    {
+      "name": "Python link-model/reference unit suite",
+      "status": "PASS",
+      "command": "cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+      "result": "39 tests passed; includes zero-skew identity and branch-reconstruction equivalence checks."
+    }
+  ],
+  "source_sha256": {
+    "dv/uvm/refmodel/python/benchmark_thermo5_tx_dpd_ab.py": "fd6edd51def232f502b32d4a821731907182a635f563da293892be2c3c7a9133",
+    "dv/uvm/refmodel/python/benchmark_thermo5_tx_branch_sensitivity.py": "c3659c90f36336b95656aa0a1ea958f313cad1208313185dee3ac402dd733009",
+    "dv/uvm/refmodel/python/tests/test_link_models.py": "72ccd5c11bca0a36c7544a879ec8584be26f137101198e4f623e6ee24c5eeed7"
+  },
+  "limits": [
+    "No BER/BLER/EVM/ACLR/output-power product threshold was supplied; status remains TARGET_UNDEFINED.",
+    "Behavioral DPA, output network, signal power, thermal noise and noise figure are illustrative and uncalibrated.",
+    "No physical RF BER, standards-compliant ACLR, calibrated EVM/output power, or FEC result is claimed.",
+    "No FPGA synthesis/routed timing/resource/power comparison was run in this Linux campaign.",
+    "Non-identity DPD coefficient images are not fitted to the PA; this result does not reject all possible non-identity DPD designs."
+  ]
+}

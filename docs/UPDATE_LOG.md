@@ -1,4 +1,697 @@
+## 2026-10-31 16:27 SGT - Close Centered-Cubic pop/push Raw Branches
+
+- Replayed the legal frame-replacement UVM test with public source-valid gaps
+  of 1 through 11 cycles using the exact product VCS binary and seed 610901.
+  Gap 11 reached the single-entry pop/push Branch in both centered stages.
+  All 11 runs passed the independent four-plane bit-true checker for 112
+  output words; UVM errors/fatals and protocol errors were zero.
+- Merged only these directed VDBs with the retained exact-source 13-test Raw
+  product VDB set. Coverage delta: +2 Branch, +2 Condition, +14 Line, +0
+  Toggle. Raw is now 522/637 Branch, 603/849 Condition, 3348/3796 Line, and
+  83575/104480 Toggle. No denominator or source was edited.
+- Refreshed the current source-linked ledger and reapplied the existing
+  Formal/static review: 21,714 rows, 372 `PROVEN_UNREACHABLE`, and 21,342
+  `OPEN` across 452 tasks. Legal Functional Coverage remains 210/210;
+  waivers/exclusions remain zero; gate remains `RAW_100_OPEN`.
+- Added a separate machine-readable Raw refresh summary while preserving the
+  SHA-bound 13-test Formal witness unchanged.
+- The target run recorded 50 total underflow cycles and zero before the final
+  source beat. Since the monitor does not phase-classify those 50 cycles, the
+  source-gap/service-rate contract remains OPEN. The existing 16-cycle case
+  remains a checker failure. See
+  `docs/verification/thermo5-tx-centered-pop-push-coverage.md` and the current
+  evidence paths in the coverage closure index.
+- Checks: VCS directed gap sweep 11/11 PASS; fresh URG merge PASS; Raw
+  denominator inventory and fail-closed gate PASS (`RAW_100_OPEN`); source
+  ledger exact Branch/Condition/Line mapping PASS; current Formal/static
+  disposition updater PASS with 372 reviewed records and zero exclusions.
+  Product RTL and algorithm were unchanged.
+
+## 2026-10-31 15:25 SGT - Publish EF2 product-path audit as draft PR #19
+
+- Published the verified audit tree as draft PR #19, stacked on the still-open
+  PR #18 branch `codex/thermo5-frame-tail-closure-r2`. PR #19 is open,
+  unmerged, and GitHub reports it mergeable.
+- Remote publication commit: `140f99ac9ec653291ec6304613bd713d92525688`; tree
+  `7082a4032cb51fd9b3a9f6433de8b0d3a7d44433`, identical to the local verified
+  tree. The local branch is synchronized with the published branch.
+- No PR was merged. The exact evidence and current review state are in the
+  [PR #19](https://github.com/cwu766485-ctrl/dsm_ip/pull/19).
+
+## 2026-10-31 15:20 SGT - Audit EF2 PAIR_LOOKAHEAD product elaboration closure
+
+- Rebuilt the tracked 77-entry product compile manifest from the exact 13-test
+  VCS compile transcript and captured parent manifest; all source/control
+  hashes match the saved VCS replay. This repairs stale source hashes in the
+  previously tracked manifest without rerunning the complete regression.
+- Added a fail-closed static product parameter-chain audit for the EF2
+  PAIR_LOOKAHEAD helper. It verifies the exact top/configuration, seven source
+  hashes, the order-2 hierarchy, default-disabled parameter and guarded call
+  sites, and exactly 344 ledger Bin IDs (84 Branch, 108 Condition, 152 Line).
+  The tautological Formal goals remain rejected and are not used as proof.
+- Updated 344 audit rows to `PROVEN_UNREACHABLE` while retaining them in Raw.
+  The complete 21,732-row ledger now has 353 proven-unreachable and 21,379
+  OPEN records across 470 tasks (95 dispositioned, 375 OPEN). Raw coverage,
+  denominators, waivers and exclusions are unchanged (0/0); gate remains
+  `RAW_100_OPEN`.
+- Updated the focused closure report, final-signoff snapshot, integration
+  review, execution frontier, and evidence index.
+- Checks: compile-manifest generator PASS (75 parsed files, 77 entries); exact
+  elaboration/source validator PASS; 15 hardware-audit unit tests PASS; Python
+  byte-compile PASS; disposition updater PASS. Re-ran the zero-waiver coverage
+  gate against the refreshed tracked manifest: `RAW_100_OPEN`, with Raw equal
+  to Adjusted and all prior code metrics unchanged. Full URG and 13-test VCS
+  regression reused from the already recorded exact-source evidence.
+- Remaining: 21,379 OPEN bins, DPD identity Formal, source-gap contract, true
+  XPM/GT Wizard, FPGA PPA, and physical QAM256 BER.
+
+## 2026-10-31 15:01 SGT - Close exact Centered-Cubic tail Branch reachability bins
+
+- Matched the Formal harness to the frozen product interpolator geometry:
+  stage 1 W=16/LANES=8/APPEND_TAIL_VECTOR=1 with `in_tail=0`, stage 2
+  W=16/LANES=16/APPEND_TAIL_VECTOR=0. Tightened the stage-2 append-arm Cover
+  to include the full `pop_head && !q0_tail` branch prefix and removed the
+  tautological parameter assertion in favor of a state invariant.
+- VC Formal V-2023.12-SP2 passed 6/6 assertions and reached 5/9 Covers; the
+  four exact tail-only Covers were uncoverable. The legal source-stability
+  assumption was non-vacuous, setup violations=0, black boxes=0, and no
+  tautological target goals were reported. Four source-bound frame-tail Raw
+  Branch records are now `PROVEN_UNREACHABLE`; all 21,732 Raw misses remain in
+  the audit ledger, with 21,723 OPEN. Raw URG metrics and denominators are
+  unchanged; approved waivers/exclusions remain zero.
+- Rechecked the legal frame-replacement test result (seed 610900): its
+  four-plane scoreboard passed for 112 outputs/two frames, but the test added
+  no code-coverage hits. Its VDB remains outside the product Raw union.
+- Updated the source-bound Formal review, root-cause ledger/task statuses,
+  closure index, signoff snapshot, integration review, and execution frontier.
+  Formal run evidence is under ignored
+  `runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/`; exact report and
+  source hashes are recorded in the tracked evidence index.
+- Checks: focused Formal command recorded in the closure report; disposition
+  updater revalidated the existing 13-test Raw refresh and returned 9 proven,
+  21,723 OPEN, 0 exclusions. Coverage utility tests pass 13/13; Python
+  byte-compile and `git diff --check` pass; all 43 closure-index artifact
+  hashes/sizes match. Full product Raw metrics remain Branch 520/637,
+  Condition 601/849, Line 3334/3796, Toggle 83575/104480. DPD identity Formal,
+  the line-255 product pop/push bins, source-gap contract, remaining reachable
+  code bins, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain OPEN.
+
+## 2026-10-31 14:38 SGT - Audit Thermo5 TX integration branch and replay Linux evidence
+
+- Created `codex/thermo5-integration-review` from exact PR #16 head
+  `eddddd650a2853a05deab0bdb7a2272fdb647d18`; confirmed it is 44 commits ahead
+  and zero behind `thermo5`. GitHub PRs #2–#16 are open, unmerged, and form a
+  continuous base/head chain. No PR was merged and no branch was deleted.
+- Audited the cumulative 125-file diff: only
+  `rtl/axis/dsm_axis14_to_core8_cdc.sv` is synthesizable RTL; no RX/AI-DPD,
+  TX algorithm/default, generated logs/VDBs, or restricted collateral changed.
+- Verified 39/39 PR #16 evidence artifact hashes/sizes and 77/77 current
+  compile-input hashes. Reused the exact-source 13-test product VCS replay and
+  Raw URG rather than repeating that full run.
+- Python reference tests: 44/44 PASS. Coverage/formal-disposition audit tests:
+  13/13 PASS. Fresh VCS V-2023.12-SP1 compile PASS; reset-release source test
+  seed 610713 PASS with 56 four-plane words and zero UVM warning/error/fatal.
+  The current-source expected-negative frame test seed 420102 observed both
+  expected assertions and passed sticky-error/reset recovery; its VDB remains
+  separate from legal product Raw. An initial reset-release invocation used a
+  multi-frame vector set and failed its frame-event checker; the test's
+  one-frame vector contract was then applied and the rerun passed.
+- Raw coverage and ledger remain unchanged: legal Functional Coverage 210/210;
+  Raw Branch 520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480;
+  5 exact Formal-proven-unreachable records remain in Raw, 21727 records stay
+  OPEN, zero approved waivers, zero active `.el` exclusions, gate
+  `RAW_100_OPEN`.
+- Added the branch audit and machine-readable evidence report. Checks:
+  `git diff --check`, 44 Python reference tests, 13 coverage-audit tests,
+  fresh VCS compile/reset-release/negative-frame runs, and evidence hash checks.
+  Formal identity-DPD, remaining code coverage, 16-cycle source-gap contract,
+  real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain OPEN.
+
+## 2026-10-31 12:23 SGT - Rebuild current-source focused TX coverage closure
+
+- Recompiled the fixed AXI-Lite TX product at source SHA
+  `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea` with VCS V-2023.12-SP1 and the
+  product coverage hierarchy. Twelve focused legal UVM tests passed; the
+  expected-negative early-TLAST test and the failing 16-cycle source-gap test
+  were kept out of product Raw.
+- Generated a focused 12-test Raw URG report and source-linked Functional
+  Coverage bin export. Raw code metrics: line 3190/3796, condition 585/849,
+  branch 440/637, toggle 82921/104480, FSM states 13/13 and transitions
+  22/22. Functional Coverage is 210/214 scoreable rows; all 210 legal-positive
+  bins hit. The four zero-hit records are the two illegal-only bins duplicated
+  in type/instance views. Waivers=0; `.el` exclusions=0; status
+  `RAW_100_OPEN`.
+- Refreshed the 22,626-bin current-source focused gap ledger and 493 exact
+  source-position closure tasks. Every current bin remains OPEN; older-source
+  Formal dispositions were not transferred. The fail-closed coverage gate
+  checked the exact source manifest, current Raw and Group Report, empty waiver
+  CSV and comment-only `.el`; it returned `RAW_100_OPEN`, zero waivers and
+  zero exclusions. Raw data and denominator were not changed by analysis.
+- Clean SHA-bound CDC Formal proves 5/5 assertions; 5/7 Covers hit, with the
+  two exact false-arm Covers uncoverable, no assumptions and zero black boxes.
+  The five-minute DPD identity Formal attempt proved 1/5 assertions and left
+  four inconclusive; a same-harness extended effort run is in progress.
+- Updated the functional-bin exporter to require the actual 40-character
+  product SHA instead of silently stamping a historical SHA. Updated the
+  root-cause audit to reconcile metric gaps against the input Raw report rather
+  than a hard-coded prior-source denominator.
+- Checks: Python 3.12 `py_compile`; focused VCS positive tests and separate
+  negative checker; URG generation; raw denominator extraction; root-cause
+  analysis; gzip integrity and 22,626-row ledger parse. Full accepted product
+  regression, current-source full-suite Raw, DPD identity proof, mutation,
+  16-cycle service-rate contract, real XPM/GT Wizard, FPGA PPA, and physical
+  QAM256 BER remain open.
+
+## 2026-10-31 12:03 SGT - Gate CDC source ready through local reset release
+
+- Legal-startup Formal stimulus reached the previously uncovered 14:8 end-
+  residual branch together with a protocol error: FIFO ready was exposed
+  while the CDC source reset synchronizer remained active.
+- Gated public `s_axis_tready` with the synchronized source reset release for
+  both Generic and XPM generate branches. Added a legal AXI-Stream startup
+  option to the UVM driver and a directed AXI-Lite test with an independent
+  56-word/four-plane bit-true checker. Updated the Formal harness and runner
+  to cover TVALID during local reset and assert READY low.
+- VCS V-2023.12-SP1 directed run PASS at seed 610713: 32 accepted beats,
+  56 checked words, one frame end, zero underflow/protocol error, and zero
+  UVM warnings/errors/fatals. VC Formal V-2023.12-SP2 diagnostic run PASS:
+  5/5 assertions proven, 5/7 Covers hit, both target false-arm Covers
+  uncoverable, local-reset/valid Cover hit, no SVA assumptions, zero black
+  boxes, and no tautology warning. Repeat Formal at the clean commit SHA.
+- Existing Raw URG and the 18,593-row source ledger remain unchanged and tied
+  to pre-fix RTL SHA `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`; no old-source
+  bin is reclassified using modified RTL. Current-source Raw/Adjusted coverage
+  must be regenerated from matching-source VDBs. No waivers/exclusions or
+  denominator changes.
+- Checks: targeted AXI-Lite UVM reset-release test PASS; targeted product-bound
+  VC Formal PASS; `git diff --check` PASS. Full product regression and fresh
+  current-source URG were not run in this step.
+- Remaining: clean-SHA Formal rerun, current-source Raw URG/root-cause ledger,
+  DPD identity Formal, 16-cycle source-gap contract, XPM/GT Wizard, FPGA PPA,
+  and physical QAM256 BER remain open. No RX, AI-DPD, or TX algorithm changes.
+
+## 2026-10-31 11:18 SGT - Prove the 14:8 CDC outer default-path bin unreachable
+
+- Added an isolated product-bound VC Formal harness and runner for Raw Branch
+  `TXB-f787ff8f614d2d391c4c`: production 14:8 gearbox, Generic FIFO, explicit
+  16-bit/depth-16 configuration, legal aligned 32-beat packets, and 14:8 clocks.
+- The clean-source VC Formal V-2023.12-SP2 run at
+  `eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7` passed 2/2 assertions. The exact
+  `advance && outer-case-default` Cover is uncoverable; normal advance and a
+  complete legal frame are covered. No assumptions, setup violations, black
+  boxes, or tautological goals were reported.
+- The source-bound updater moved exactly one ledger row to
+  `PROVEN_UNREACHABLE`; 8 rows are now proven unreachable and 18,585/18,593
+  remain OPEN. Raw URG, all code denominators/counters, and VDBs are unchanged;
+  waivers and `.el` exclusions remain zero.
+- The initial isolated Tcl run failed the fail-closed setup gate because it
+  omitted the established reset-check configuration. That setup was aligned
+  with the existing flow and a new clean-source run passed; the failed run is
+  not counted as evidence.
+- Checks: `py_compile` for the Formal runner; source-bound disposition
+  reconciliation; Python Formal-disposition unit tests; `git diff --check`;
+  Raw ledger/denominator/hash audit. VCS full regression was not repeated
+  because no DUT RTL or VCS compile input changed. VCS license is available.
+- Publication: draft [PR #15](https://github.com/cwu766485-ctrl/dsm_ip/pull/15)
+  is open, stacked on PR #14; neither PR was merged.
+- Remaining: 18,585 code-gap rows OPEN; Raw 100% is not claimed; legal
+  Functional Coverage is 210/210 applicable positive bins; source-manifest
+  mismatch, outstanding-word/DPD Formal gaps, and vendor/physical signoff stay
+  open.
+
+## 2026-10-31 11:06 SGT - Prove the fixed 14:8 CDC frame-end arm unreachable
+
+- Added a product-bound VC Formal harness using the production 14:8 CDC
+  gearbox and Generic FIFO, a deterministic legal 32-beat AXIS source, and no
+  environment assumptions. The true arm of the immediate frame-end branch at
+  `dsm_axis14_to_core8_cdc.sv:210` is proven unreachable; the enclosing frame
+  context and a completed legal frame are both covered.
+- Kept the new proof in a dedicated Tcl flow so previously accepted Formal
+  dispositions that hash the shared Tcl source remain source-valid.
+- The source-bound disposition utility classified exactly
+  `TXB-222f90478aca6253d9a5` as `PROVEN_UNREACHABLE`. The Raw URG bin,
+  denominator, VDBs, and coverage counters were not modified. The ledger now
+  records seven proven-unreachable rows and 18,586 OPEN rows out of 18,593;
+  waivers and `.el` exclusions remain zero.
+- Checks: clean-source VC Formal V-2023.12-SP2 PASS at commit
+  `bcf1f9a10b7a203e13cefb6fa64efcff0e588815` (1/1 assertion proven
+  non-vacuously, 2/3 Covers reached, exact target Cover uncoverable, zero
+  assumptions/setup violations/black boxes); disposition reconciliation and
+  raw-preservation check PASS. No DUT RTL or VCS compile input changed, so the
+  existing VCS PASS results were retained without repeating the full UVM run.
+- Publication: independent draft [PR #14](https://github.com/cwu766485-ctrl/dsm_ip/pull/14),
+  stacked on PR #13, remote head `060b1531ebdb746bbb53732265be80911d3d066d`
+  and tree `a9cbb49688c12d4be66fbe3634b22eb279df5dd5`; not merged.
+- Remaining: 18,586 code-gap rows OPEN, including reachable Branch/Condition
+  work; product-bound outstanding-word and DPD identity Formal remain
+  inconclusive; source-gap underflow contract, exact-current-worktree Raw
+  compile identity, and vendor/physical signoff remain open.
+
+## 2026-10-31 00:31 SGT - Classify and reproduce TX product cadence review
+
+- Added read-only centered-cubic queue event probes and a two-packet AXI-Lite
+  product UVM test. The same fixed waveform seed was exercised at nine legal
+  source-start phases and seventeen RUN-start phases; all 112 four-plane
+  outputs and DPD counters matched in every run.
+- Each interpolation instance reached and popped `q_count==1 && q0_end`, but
+  no same-edge `push_input` occurred. The two exact line-255 Branch bins remain
+  OPEN; no Formal disposition, waiver, exclusion, or denominator change was
+  made.
+- Merged one passing phase VDB into a diagnostic URG report and ran the
+  fail-closed gate. Raw code metrics were unchanged (line 3190/3796, condition
+  583/846, branch 440/637, toggle 86951/104478); zero waivers/exclusions and
+  `RAW_100_OPEN` remain.
+- Classified the two exact bins as product-cadence alignment tasks (not
+  structurally unreachable), bound diagnostic-only testbench changes to
+  source hashes, and added all 26 run-log hashes plus exact VCS/URG commands to
+  `docs/verification/data/thermo5-tx-frame-replacement-coverage-review.json`.
+- Checks: current VCS compile PASS; 26/26 phase UVM runs PASS with 0 errors
+  and 0 fatals; diagnostic URG PASS; coverage gate PASS (`RAW_100_OPEN`); raw
+  coverage delta 0; no full regression or TX RTL change.
+- Remaining: product-bound Formal/causality review for the missing two
+  pop/push Branch events; 18,588 code-gap rows remain OPEN.
+
+## 2026-10-31 00:10 SGT - Re-audit TX Formal dispositions and reject tautologies
+
+- Reran the AXI-Lite configuration proof on current harness/DUT hashes with
+  VC Formal V-2023.12-SP2. Clean run: 4/4 assertions proven, one legal read
+  transaction Cover hit, three exact paths uncoverable, zero assumptions,
+  zero black boxes, zero setup violations, three non-vacuous assertions, and
+  no tautological goals. The write-address `default` Raw bin at line 246 now has
+  exact current-source assertion/Cover evidence.
+- Re-audited prior exact-bin dispositions. Removed two candidates whose exact
+  assertions had VC Formal tautology warnings: the constant `MAX_TAPS=1` guard
+  and an interpolator append-arm property. Both are restored to OPEN and remain
+  in Raw; no waiver or exclusion was applied. Five valid exact dispositions
+  remain and 18,588 of 18,593 code-gap rows are OPEN.
+- Hardened the Formal runner/disposition utility to reject exact tautological
+  goals, track reviewed OPEN candidates, and refresh counts without mutating
+  Raw URG. Updated the formal ledger, root-cause report, signoff snapshot, and
+  execution frontier.
+- Checks: focused VC Formal run PASS; Formal disposition reconciliation PASS
+  (5 `PROVEN_UNREACHABLE`, 18,588 OPEN, zero exclusions); root-cause and
+  Formal utility tests PASS; Python compilation and `git diff --check` PASS.
+- Limits unchanged: Raw DUT code coverage remains 84.0358% line, 68.9125%
+  condition, 69.0738% branch, 83.2242% toggle; legal positive Functional
+  Coverage is 210/210. DPD Identity remains inconclusive; source-gap underflow
+  remains unresolved; actual XPM, GT Wizard, FPGA PPA/timing, and physical
+  QAM256 BER remain outside Linux signoff.
+
+## 2026-10-31 00:01 SGT - Refresh licensed TX Raw URG and source-bound closure
+
+- Resumed the fixed Centered-Cubic / EF2 / identity-DPD product compile after
+  VCS license recovery. Two focused AXI-Lite UVM tests passed (reset sweep and
+  register access); merged their VDBs with 27 retained exact-source test VDBs
+  and the compile VDB. The complete regression was not rerun.
+- Refreshed Raw URG and the fail-closed gate. Raw and Adjusted remain identical
+  with zero waivers/exclusions; all code metrics are unchanged. Functional
+  coverage remains 210/214 scoreable records and 210/210 legal positive bins.
+- Bound nested URG Branch predicates to exact RTL source lines, correcting the
+  DPD saturation location mapping. The source-linked ledger remains 18,593
+  records / 492 tasks, with six exact Formal-proven unreachable rows retained
+  in Raw and 18,587 OPEN.
+- Added a VCS refresh evidence JSON with exact commands, versions, log/report
+  hashes, VDB reuse counts, coverage denominators and gate state. Updated the
+  final signoff, root-cause closure, execution frontier and checked-in audit
+  artifacts. No TX RTL, algorithm, RX, or AI-DPD source changed.
+- Checks: VCS compile PASS; reset-sweep UVM PASS; register-access UVM PASS;
+  URG merge PASS; Raw coverage gate PASS (`RAW_100_OPEN`); Python compile PASS;
+  7 focused audit-tool unit tests PASS; exact report, summary, gate and
+  root-cause inputs SHA-validated.
+- Remaining: no code-coverage increase from the two new tests; 18,587 rows
+  remain OPEN, DPD Identity Formal remains inconclusive, and the 16-cycle
+  source-gap underflow contract remains unresolved. Real XPM, GT Wizard,
+  FPGA PPA/timing and physical QAM256 BER remain outside Linux signoff.
+
+## 2026-10-30 22:34 SGT - Reconcile TX product source scope and Raw gate
+
+- Added a deterministic product compile-source manifest derived from the saved
+  VCS transcript. It covers 73 local parsed sources plus the filelist and
+  coverage hierarchy; all 75 hashes match the captured source manifest and
+  current checkout. Fourteen unrelated broad-manifest entries are disclosed
+  as not parsed by this product compile.
+- Re-ran the zero-waiver coverage gate against the fixed Raw product URG data.
+  Gate audit passed and reported `RAW_100_OPEN`; Raw and Adjusted remain
+  identical with zero waivers/exclusions. The full functional audit remains
+  210/210 legally applicable bins, with four negative-only Raw zero-hit rows.
+- Checks: source-manifest derivation PASS; coverage gate audit PASS; the
+  `--require-closed`, nonempty-waiver, active-`.el`, and stale-source probes
+  all failed closed as expected. Replayed the Formal disposition updater on
+  temporary copies: 18,593 rows reconciled, six exact proofs retained, 18,587
+  OPEN. Python compilation, JSON/gzip integrity, bin/hash reconciliation, and
+  `git diff --check` PASS.
+- Limits: fresh VCS/URG remains blocked by WSL kernel support. Nonempty
+  approved CSV → `.el` → adjusted URG is not exercised. 18,587 code gaps remain
+  OPEN; Identity DPD is Formal-inconclusive; targeted product pop/push coverage
+  remains unhit; source-gap underflow and real XPM/GT/PPA/physical QAM256 BER
+  remain unresolved.
+
+## 2026-10-30 22:21 SGT - Complete TX functional-bin audit and signoff correction
+
+- Added a deterministic URG HTML exporter that inventories every current
+  product Functional Coverage coverpoint and generated cross bin in both
+  covergroup-type and monitor-instance views, with count, applicability,
+  existing URG status, and source-page SHA.
+- Full report audit: 226 rows total, 214 denominator-eligible records, 210
+  hits, four negative-only misses, and 12 bins already marked Illegal/Excluded
+  by the original URG model. The previous 170/174 tally omitted 40 generated
+  EF2 cross-bin records. Corrected current reports to 210/214 and 210/210 legal
+  positive records; no URG database, denominator, or exclusion was changed.
+- Refreshed the deterministic root-cause audit summary and manifest, then
+  reapplied the six exact source-bound `PROVEN_UNREACHABLE` dispositions.
+  Raw code coverage remains unchanged: 18,593 gaps, 18,587 OPEN, six proven
+  unreachable but retained in Raw; zero approved waivers/exclusions.
+- Updated the final signoff, current coverage closure, baseline, checklist,
+  command index, and execution frontier. No TX RTL or algorithm changed.
+- Checks: Python 3.12 compilation PASS; full functional report parser PASS
+  (all eight groups reconcile to 214 scoreable rows and the four exact misses);
+  root-cause extractor PASS; Formal disposition validator PASS; JSON/gzip
+  integrity and `git diff --check` PASS. No new VCS/URG regression was run:
+  the installed VCS location check rejects the WSL kernel, so existing Raw URG
+  is explicitly reused.
+- Remaining: two targeted legal UVM packetizations still miss interpolator
+  single-entry pop/push, and their test source is absent from the tracked tree;
+  DPD Identity remains Formal-inconclusive; 18,587 code
+  gaps remain OPEN; adjusted URG/wavier validation, source-gap contract, real
+  XPM/GT, FPGA PPA, and physical link signoff remain OPEN.
+
+## 2026-10-30 21:18 SGT - Audit TX functional bins and code-gap root causes
+
+- Added a deterministic Linux/Python audit for the latest product-only
+  VCS/URG evidence. It reports the four exact 170/174 Functional Coverage
+  records, resolves them to two illegal-frame-only semantic bins, and confirms
+  all 170 legal positive semantic bins are hit. Raw remains 170/174; no bin,
+  group, or denominator was changed.
+- Preserved and enriched all 18,593 Raw code-gap rows (197 Branch, 263
+  Condition, 606 Line, 17,527 Toggle) into 492 location-rooted closure tasks.
+  All rows remain OPEN; zero waivers/exclusions are applied. Raw and Adjusted
+  coverage remain identical.
+- Audited 17 duplicate historical Condition bin IDs. Each collision joins
+  full-expression and subexpression bins on the same source line. Recovered
+  expression identity from raw URG module pages and emitted unique semantic
+  IDs without dropping rows or changing denominator.
+- Recorded one source-manifest mismatch in the later AXI-Lite Formal harness.
+  Product RTL/UVM simulation compile inputs match the recorded Raw evidence;
+  Formal results from the changed harness are not represented as current and
+  must be rerun in the final fixed-SHA package.
+- Added the root-cause report, row/task CSVs, functional-bin audit, summary,
+  input/output SHA manifest, execution command, and reproducibility section in
+  docs/ai-native/commands.md. Updated the active execution frontier.
+- Checks: Python 3.12 py_compile PASS; audit script PASS; consistency checks
+  confirm 18,593 unique row IDs and expression-aware semantic IDs, 492 unique
+  task IDs with 18,593 assigned bins, exactly four functional audit rows, and
+  only OPEN code-gap dispositions. No VCS or Formal regression was rerun;
+  existing fixed-source URG evidence was reused.
+- Remaining: targeted legal Branch/Condition closure (Step 3 onward), Formal
+  reachability and Identity-DPD resolution, source-gap contract disposition,
+  waiver/exclusion gate validation, and fixed-SHA final signoff remain OPEN.
+
+## 2026-10-30 17:02 SGT - Publish Phase 0/1 TX closure PR #8
+
+- Opened draft PR #8, `Thermo5 TX: Phase 0/1 Linux design and verification
+  closure`, stacked on PR #7; it remains open and unmerged.
+- The locally tested implementation commit is
+  `99c852dc46cbb9091c6099267535465acfac2d47`; the initial GitHub PR head was
+  `3da1ab21142218ce795252bd62d8865176a9ffe5`. Their complete tree SHA matched
+  at publication (`20a10962b1979349b15fcbf9a9b4807f78f26786`).
+- Updated the active execution frontier to reflect the published PR and its
+  review as the next action. No RTL, verification behavior, product coverage,
+  or benchmark result changed in this publication bookkeeping. A docs-only
+  follow-up commit synchronized the frontier on the PR branch.
+- Checks: clean source state before this note; PR metadata confirms open,
+  draft, unmerged, with PR #7 as base; updated documentation passed
+  `git diff --check`.
+
+## 2026-10-30 16:54 SGT - Complete TX Phase 0/1 Linux closure studies
+
+- Reconciled PR #2–#7 ancestry and the current PR #7 base; recorded the frozen
+  GT-parent product configuration, exact product-source identities, historical
+  PR #5 manifest discrepancy, and reusable current coverage evidence.
+- Added the four-cell QAM256 architecture A/B benchmark with shared stimulus,
+  receiver, nominal/stress behavioral output assumptions, per-seed CSV/JSON,
+  held-out spectrum and constellation figures. Kept first-order STEP=7168 as a
+  separate sensitivity point.
+- Added nominal behavioral-DPA ILA fitting for two-/four-tap signed Q2.14 DPD,
+  held-out evaluation with BER confidence intervals, and PA/output-chain
+  PAPR, compression count, modeled power, and adjacent-band proxy metrics.
+  Both fitted DPD images passed standalone 93,184-sample VCS bit-true miters;
+  neither was promoted over identity.
+- Extended the PAIR_LOOKAHEAD equivalence test with an exact final-pair
+  quantizer tie, both clamp polarities, output stalls, input bubbles, and a
+  drained midstream reset. The 4,096-cycle VCS comparison passed for handshake,
+  output data, and all four EF2 state registers.
+- Added compact review artifacts and a SHA-256 evidence packager under
+  `docs/verification/data/` and updated the architecture report, baseline,
+  signoff checklist, command index, and execution frontier. Product RTL,
+  defaults, coverage denominator, and product VDB merge are unchanged.
+- Checks: Python 3.12 compile plus 44/44 unit tests PASS; fitted 2-tap and
+  4-tap VCS bit-true miters PASS (93,184 I/Q samples each); PAIR_LOOKAHEAD VCS
+  miter PASS (4,096 cycles; 103 negative ties, 408 positive clamps, 409
+  negative clamps, 817 stall cycles, 616 input bubbles, one reset epoch);
+  architecture and DPD held-out benchmarks PASS; evidence packager PASS with
+  all referenced local run artifacts present. Product coverage is reused,
+  not rerun: Raw 81.99%, functional 170/174 raw and 170/170 applicable
+  positive, `RAW_100_OPEN`.
+- Remaining: no approved BER/BLER/EVM/ACLR/power limits; model profiles are not
+  calibrated; no measured pair-lookahead timing/PPA; raw DUT code coverage and
+  DPD identity Formal remain open. XPM/GT Wizard, Vivado routed PPA, and
+  physical QAM256 BER are NOT_RUN. Independent PR is pending; it is not merged.
+
+## 2026-10-30 14:18 SGT - Prove AXI-Lite product tap guard reachability
+
+- Extended the focused AXI-Lite Formal harness for the exact product
+  `MAX_TAPS=1` setting. VC Formal V-2023.12-SP2 reported 5/5 assertions
+  proven and 1/2 covers hit; the invalid-parameter guard cover is
+  `uncoverable`. The new parameter assertion/cover are static tautologies,
+  explicitly recorded as elaboration evidence rather than temporal proof.
+- Setup reported zero clock, glitch, combinational-loop, oscillation, and
+  multidriver violations; zero black boxes. The guard Raw bin at
+  `thermo5_dpd_axi_lite_cfg.sv:348` remains in the denominator and has no
+  waiver/exclusion.
+- Added the exact command, console, property/setup report, source manifest,
+  run tree hash, and source SHA/tree to the Linux closure evidence.
+- Checks: VC Formal PASS; source SHA `36d88f41de20202bd42d98fa9b510cb8dc1bf0f7`
+  was clean; evidence artifacts parsed and hashes validated; `git diff
+  --check` PASS. No VCS Raw merge or full regression was repeated.
+- Raw remains unchanged at 81.99%, with 170/174 raw functional bins and
+  170/170 applicable positive bins. `RAW_100_OPEN` remains.
+- Remaining: Task 4/5/6 are partial; identity-DPD Formal remains
+  inconclusive; actual XPM/GT Wizard, routed FPGA PPA, product BER/BLER target,
+  and physical QAM256 BER remain open.
+
+## 2026-10-30 14:12 SGT - Prove EF2 product parameter reachability
+
+- Added a focused VC Formal harness for the exact product EF2 parameters
+  (`W=16`, `CHANNELS=32`, default `PAIR_LOOKAHEAD=0`) and invalid-parameter
+  guard. The clean-source run at `f6956b9` proves 2/2 static assertions and
+  confirms both corresponding covers are `uncoverable`; no black boxes or
+  setup violations. These results are parameter reachability evidence, not
+  URG hits or waivers.
+- Ran the exact-product mailbox corruption fault test at seed 420103. VCS
+  observed the expected `$error`, the test released the injection and checked
+  public-reset recovery, and UVM warnings/errors/fatals were zero. Its VDB is
+  reported only in the expected-negative URG report.
+- Confirmed the legal AXI-Lite register-access test passes; its same-seed
+  stimulus was already present in the positive product VDB set, so the
+  diagnostic rerun is not added to the merge.
+- Product Raw coverage did not change: 3,190/3,796 lines, 583/846 conditions,
+  440/637 branches, 86,951/104,478 toggles, 13/13 FSM states, 22/22 FSM
+  transitions, and 170/174 raw functional bins (170/170 applicable positive).
+  Raw equals adjusted; zero waivers/exclusions; gate remains `RAW_100_OPEN`.
+- Evidence commands, logs, VDB/report/formal hashes and the exact Formal source
+  commit are indexed in `thermo5-tx-linux-coverage-closure-evidence.json`.
+- Checks: focused VC Formal PASS; mailbox expected-negative check PASS;
+  `python3.12 -m py_compile`, Formal runner `--help`, `git diff --check`, and
+  evidence JSON/hash validation PASS. No VCS product Raw merge or full
+  Gate 0–3 regression was repeated.
+- Remaining: Task 4–6 remain partial; DPD identity Formal is inconclusive;
+  Raw 100%, actual XPM/GT Wizard, routed FPGA PPA, product BER/BLER target and
+  physical QAM256 BER remain open.
+
+## 2026-10-30 13:44 SGT - Resume product coverage closure with restored licenses
+
+- Recompiled the exact TX product VCS configuration at source commit
+  `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`; VCS completed all 20 modules.
+  Simulation inputs remain the product filelist at `913be930`; the changed
+  AXI-Lite Formal harness is not included in that simulation filelist.
+- Ran a targeted two-frame source-gap sweep at 2/4/8/16 cycles (seeds
+  610834–610837). Gaps 2/4/8 passed the independent four-plane checker with
+  112/112 outputs and no early underflow or UVM errors/fatals. Gap 16 failed
+  the stream-contract check with 54 underflow events despite 112/112 outputs,
+  2/2 TLASTs, and zero protocol errors. The UVM_FATAL is the failure oracle
+  (VCS exits 0 after `$finish`); its VDB was excluded from the positive merge.
+  The four sample points do not define an exact starvation threshold.
+- Refreshed product URG from 29 product-scoped simulation VDBs plus the compile
+  VDB. Coverage numerators/denominators did not change: aggregate 81.99%, line
+  3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478, FSM
+  13/13 states and 22/22 transitions. Functional coverage is 170/174 raw bins,
+  all 170 legal positive bins hit. Raw equals adjusted; zero waivers/exclusions;
+  gate `RAW_100_OPEN`. The 18,593-row source-linked ledger remains open/review.
+- Updated the Formal harness instance to `MAX_TAPS=1` and added a targeted
+  coefficient-read default reachability assertion plus a legal-read cover.
+  VC Formal PASS: 4/4 assertions, 1/1 cover, target non-vacuous, zero setup
+  violations, and two vacuous reset assumptions. The raw branch bin remains
+  included and no waiver is applied.
+- A bounded identity-DPD helper-constraint Formal attempt completed in 131.33
+  seconds with 1/13 assertions proven, 12/13 inconclusive, 4/4 covers hit, zero
+  black boxes, and no counterexample. Identity payload and no-saturation remain
+  OPEN; the harness and RTL were unchanged for this attempt.
+- Refreshed the closure report, machine-readable evidence (including artifact
+  hashes), Gate 3 coverage landing note, final signoff landing note, execution frontier, and this update log.
+- Checks: product VCS compile PASS; three source-gap tests PASS and one FAIL as
+  reported; exact-product AXI-Lite read-default Formal PASS; product URG/gate/
+  ledger refresh PASS with `RAW_100_OPEN`; evidence JSON and tracked artifact
+  hashes revalidated; `git diff --check` PASS; JSON parsing and selected current artifact hashes PASS; coverage gate re-evaluation matches the stored `RAW_100_OPEN` result.
+- Remaining: Task 4–5 remain partial, Raw 100% remains open, identity DPD
+  Formal and frame-tail reachability remain open. Real XPM, GT Wizard, FPGA
+  PPA/routed timing, and physical QAM256 BER remain outside Linux signoff.
+
+## 2026-10-30 13:32 SGT - Verify zero-gap continuous product frames
+
+- Ran the two-frame one-tap identity product test with no source-clock bubble
+  between frames, using the product-filtered simulator at seed 610823. The
+  independent checker matched 112 words on all four planes, two TLASTs and
+  114 DPD samples per lane; UVM warnings/errors/fatals were zero. The direct
+  Generic wrapper's 71 post-source finite-tail diagnostic cycles and
+  `early_underflow=0` are both recorded.
+- Merged the scoped zero-gap VDB with the prior product VDB set and regenerated
+  URG, Raw summary, gate, and source-linked ledger. Raw totals did not change:
+  81.99% aggregate, 583/846 conditions, 440/637 branches, and 26 simulation
+  VDBs plus the compile VDB. The ledger remains 18,593 open/review records;
+  no waiver or exclusion was added.
+- The exact command, logs, VDB/URG trees, and SHA-256 values are indexed in the
+  closure evidence JSON. `git diff --check`, JSON validation, source manifest
+  checks, coverage gate and artifact-hash checks pass. No full regression was
+  rerun and no RTL/algorithm was changed.
+- Remaining coverage, formal, vendor-XPM/GT, FPGA PPA, and physical QAM256
+  limits are unchanged from the current closure report.
+
+## 2026-10-30 13:26 SGT - Continue licensed TX Linux coverage closure
+
+- Added a product-configured legal two-frame identity test with one source
+  clock bubble at the frame boundary, plus a targeted 64-cycle all-plane PA
+  backpressure run. RTL, RX, AI-DPD, and frozen TX algorithms are unchanged.
+  Local source SHA `913be930bfcbbad0f78dbc90e06299db3d1bb337` was uploaded to
+  PR #7 as equivalent tree/commit `09c2e082876801d79946787d71f78082c4983f62`
+  (`7bbee88ea7d6fbd3e0db1a61c1106cde1753c9d5`).
+- The two-frame VCS run passed at seed 610824: 64 source beats, two TLASTs,
+  112 output words on all four planes, 114 identity-DPD samples per lane,
+  zero DPD saturation and zero UVM warning/error/fatal. `early_underflow=0`;
+  the direct Generic wrapper's post-source finite-tail diagnostic (71 cycles)
+  remains reported. The scoped PA-stall run passed seed 610825 with 56
+  four-plane words, 65 observed PA stall cycles, zero UVM warning/error/fatal,
+  and no Raw code-coverage delta.
+- Rebuilt URG from 25 product-hierarchy-scoped simulation VDBs plus the
+  product compile VDB. Raw/Adjusted is 81.99% aggregate; line 3190/3796,
+  condition 583/846, branch 440/637, toggle 86951/104478, FSM 13/13 states
+  and 22/22 transitions. The gap ledger has 18,593 open/review records.
+  Waivers and exclusions remain zero; gate remains `RAW_100_OPEN`.
+- Re-ran the fail-closed coverage gate against the updated source manifest.
+  Regenerated the source-linked gap ledger. VC Formal on the actual AXI-Lite
+  configuration block proved 3/3 assertions, including non-vacuous proof that
+  the legal write response cannot reach the `case default` at line 282; zero
+  clock/glitch/loop/multidriver setup violations. The corresponding Raw bin
+  remains included pending independent waiver review.
+- Exact logs, commands, VDB/URG/formal tree hashes, source manifest, test counts,
+  and remaining limits are recorded in `thermo5-tx-linux-coverage-closure.md`
+  and its evidence JSON. `git diff --check`, JSON parse and coverage gate pass.
+  Full Gate 0–3 regression was not rerun.
+- Remaining: 606 lines, 263 condition vectors, 197 branches, 17,527 directional
+  toggles and 2 uncovered/2 unattempted DUT assertions; 37 branch arms remain
+  in general review. DPD identity arithmetic Formal remains inconclusive.
+  Actual XPM/GT Wizard, Vivado FPGA PPA, physical QAM256 BER and product
+  BER/BLER acceptance target remain open. No claim of Raw 100% is made.
+
 # Update Log
+
+## 2026-10-29 - Complete Linux TX Gate 2 model campaign
+
+- Added reproducible held-out EF2/STEP/input-level/backoff/PAPR/state-width,
+  fixed-image DPD A/B, and four-plane gain/skew/fault sensitivity campaigns.
+  The campaigns use deterministic Python models and leave the product RTL and
+  default configuration unchanged.
+- Gate 2 selected the finite-set RMS 0.10 / STEP 5120 / 20-bit / no-clip
+  point: 21/224,256 digital errors (BER 9.3643e-5), mean EVM 2.4640%, and
+  SNDR 32.1675 dB. The modeled nominal/stress BERs are 1.4269e-4 / 7.7144e-4.
+  No product communication target or calibrated RF model is available, so
+  this is not a stable-link or physical BER signoff.
+- The tested fixed 2/4-tap DPD images regress versus identity; the result
+  rejects those images only. Pair-look-ahead remains an equivalence-proven
+  experiment with no FPGA PPA and is not enabled in the product hierarchy.
+- Exact commands, seeds, JSON/log SHA-256 values, assumptions, and limits are
+  in `docs/verification/thermo5-tx-worst-case.md` and
+  `docs/verification/thermo5-tx-gate2-evidence.json`. Python unit tests passed
+  39/39. Full logs and JSON outputs remain under ignored `runs/`.
+- Gate 2 model work is complete for the Linux scope; acceptance against a
+  product BER/BLER/EVM/ACLR target and hardware PPA remain open. No RX or
+  AI-DPD source changed.
+
+## 2026-10-29 - Complete Linux TX Gate 3 coverage audit checkpoint
+
+- Strengthened EF2 positive/negative saturation and stall checks on every
+  thermometric branch; added an AXI-Lite EF2 qualification target, signed input
+  endpoint checking, and a legal digital corner-vector generator. Corrected
+  TLAST/backpressure coverage to correlate accepted packet output targets,
+  rather than using cumulative TLAST counts.
+- Re-ran the current Linux Generic and AXI-Lite VCS/UVM regressions, EF2
+  saturation/rail/stall/reset qualifications, STOP/drain/restart, digital
+  corner tests, scoped EF2 and pair-look-ahead VC Formal, and a negative
+  one-LSB oracle mutation. Then reran current-source non-identity 2-tap and
+  4-tap DPD bit-true cases for one and two packets; all four cases matched
+  every output plane with zero UVM errors/fatals. Python tests passed 39/39.
+- Applicable functional covergroups are 4/4 Generic and 8/8 AXI-Lite at
+  100%. Raw project RTL URG remains 80.81% Generic and 84.59% AXI-Lite; AXI-Lite
+  toggle coverage rose to 96.63% after the DPD VDB merge. The refreshed
+  22,720-row source-mapped ledger preserves every miss as OPEN.
+  No exclusions or denominator edits were made, and no adjusted score is
+  claimed. Gate 3 code coverage is therefore not signed off at 100%.
+- The coverage report records exact test commands, raw metric counts,
+  assertions, limitations, and hashes. The complete CSV is tracked as a
+  reproducible gzip artifact with its uncompressed SHA-256 in
+  `docs/verification/thermo5-tx-gate3-evidence.json`.
+- Linux environment audit found VCS and VC Formal installed but no Vivado,
+  XSim, Yosys, Verilator, or real XPM source. Current GT Wizard/XPM
+  simulation, VCU118/ZCU111 Vivado PPA, and physical QAM256 BER remain open.
+  A tracked-RTL cross-reference inventory found no module with zero textual
+  references; no source was removed or archived without a safe candidate.
+  No RX or AI-DPD source changed.
+- Published as Gate 3 PR #5 at code commit
+  `459c69094f3353558321075305808d9712e6f335`, stacked on Gate 2 PR #4 at
+  `d65ac3762d344c1001552890ae81cd9d243a4910`. The consolidated Gate 0–4
+  status is in `docs/verification/thermo5-tx-final-signoff.md`.
+
+## 2026-10-29 20:38 SGT - Complete Linux TX Gate 1 functional A/B evidence
+
+- Added a four-tap non-identity DPD fixed-point coefficient image, Python vector profile, and AXI-Lite UVM bit-true case. Re-ran two-tap and four-tap centered-cubic + EF2 streams at `STEP=5120`: each passed one-frame (56-word) and two-frame (112-word) comparisons on all four output planes with zero UVM errors/fatals.
+- Re-ran the EF2 pair-lookahead miter (4,096 cycles, 2,662 accepts, both clamp signs, stalls and bubbles); VC Formal passed 7/7 assertions and 4/4 covers with zero black boxes. Python reference suite passed 37/37.
+- Merged the four exploratory DPD VCS VDBs with URG. Raw AXI-Lite hierarchy: line 3320/4241 (78.28%), condition 596/1183 (50.38%), toggle 96408/125344 (76.91%), FSM 15/22 (68.18%), branch 410/841 (48.75%), assertion 11/17 (64.71%), group 59.7958%. No exclusions or denominator changes. This exploratory run does not replace Gate 0 baseline URG.
+- Report and evidence manifest: `docs/verification/thermo5-tx-algorithm-ab.md` and `thermo5-tx-gate1-evidence.json`. Source commit `dfb15a278657e4417b545fc138df0f0dd0399ac4`; logs/VDB/formal artifacts and SHA-256 values are under ignored `runs/thermo5_tx_gate1_dfb15a2/`.
+- Gate 1 Linux functional/equivalence evidence passes. DPD QAM256 benefit from calibrated coefficients and FPGA LUT/FF/DSP/Fmax remain open; no candidate was promoted into the product GT parent. No RX or AI-DPD source changed. Next: Gate 2 worst-case TX model, then Gate 3 coverage closure.
+
+## 2026-10-29 20:22 SGT - Complete Linux TX-only Gate 0 verification
+
+- Re-ran the Gate 0 suite at clean verification source SHA `04550289e1ecb5fa0e38168869d4f2539929cb80`. The first VCS checkout was blocked before compile; after license access recovered, Generic VCS, full AXI-Lite VCS, STOP/drain/restart, 2,072-word EF2 qualification, and Generic/AXI-Lite URG merges all passed. Python unit tests passed 36/36; EF2 scoped VC Formal proved 6 assertions and covered 3 properties with zero black boxes.
+- Fresh Generic raw URG is 76.12% (line 2969/3593, condition 594/949, toggle 81740/102612, FSM 22/22, branch 336/540, assertion 13/17, group 69.2592%). The 784-row ledger now links to this exact run. No denominator changes or exclusions were applied. One expected illegal-frame assertion failure and three unattempted assertions remain explicitly open.
+- Updated the Gate 0 baseline, feature/testpoint matrix, execution frontier, closure plan, coverage entry points, and evidence manifest. Full outputs remain under ignored `runs/thermo5_tx_gate0_0455028_recheck/`; generated logs, VDBs, and tool caches are not committed.
+- Gate 0 is accepted for Linux Generic/behavioral scope. Real XPM, XSim/Vivado, current GT Wizard simulation, routed FPGA PPA, and physical QAM256 BER remain unavailable or out of scope. No RX/AI-DPD/RTL behavior or main-chain configuration changed.
+- Next: run Gates 1/2/3 as separate reviewable stages; keep the verified baseline frozen until independent candidate evidence supports promotion.
+
+## 2026-10-29 20:22 SGT - Complete Linux TX-only Gate 0 verification
+
+- Re-ran the Gate 0 suite at clean verification source SHA `04550289e1ecb5fa0e38168869d4f2539929cb80`. The first VCS checkout was blocked before compile; after license access recovered, Generic VCS, full AXI-Lite VCS, STOP/drain/restart, 2,072-word EF2 qualification, and Generic/AXI-Lite URG merges all passed. Python unit tests passed 36/36; EF2 scoped VC Formal proved 6 assertions and covered 3 properties with zero black boxes.
+- Fresh Generic raw URG is 76.12% (line 2969/3593, condition 594/949, toggle 81740/102612, FSM 22/22, branch 336/540, assertion 13/17, group 69.2592%). The 784-row ledger now links to this exact run. No denominator changes or exclusions were applied. One expected illegal-frame assertion failure and three unattempted assertions remain explicitly open.
+- Updated the Gate 0 baseline, feature/testpoint matrix, execution frontier, closure plan, coverage entry points, and evidence manifest. Full outputs remain under ignored `runs/thermo5_tx_gate0_0455028_recheck/`; generated logs, VDBs, and tool caches are not committed.
+- Gate 0 is accepted for Linux Generic/behavioral scope. Real XPM, XSim/Vivado, current GT Wizard simulation, routed FPGA PPA, and physical QAM256 BER remain unavailable or out of scope. No RX/AI-DPD/RTL behavior or main-chain configuration changed.
+- Next: run Gates 1/2/3 as separate reviewable stages; keep the verified baseline frozen until independent candidate evidence supports promotion.
+
+## 2026-10-29 18:17 SGT - Thermo5 TX-only Gate 0 baseline audit
+
+- Audited exact `thermo5` source HEAD `eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`, active ZU15EG TX parent parameters, UVM top/filelist, reference model, and Linux tool availability. Compared with plan checkpoint `759fc8e77446046cb942e7939c53ca49d3bde882`; the intervening source change is documentation-only and does not alter RTL, DV, constraints, or build inputs.
+- Added a TX baseline report, feature/testpoint/coverage matrix, evidence metadata, and the full 784-record source-linked raw URG inventory. Corrected unsupported 79.86% “current” statements: the latest traceable Generic raw URG is 76.12% (line 2969/3593, condition 594/949, toggle 81740/102612, FSM 22/22, branch 336/540, assertion 13/17, functional group 69.26%). The inventory contains 100 uncovered source lines, 214 condition vectors, 108 branch vectors, 292 signal-direction toggle records, three unattempted assertions, and one assertion failure requiring review. No DUT-only denominator adjustment was made.
+- Current checks: Python reference suite PASS (36/36); 56-word centered-cubic/EF2 identity oracle-vector generation PASS. Generic VCS full regression and scoped EF2 VC Formal were attempted at current HEAD but blocked before compile/proof by Synopsys license-server connectivity. AXI-Lite STOP/restart and 2,072-word qualification were not rerun for the same reason. Vivado/XSim/MATLAB/real XPM remain unavailable on this Linux host.
+- No RTL, RX, AI-DPD, architecture, or coverage denominator changes. Gate 0 remains PARTIAL / ACCEPTANCE OPEN until exact-HEAD licensed VCS/URG and VC Formal runs are completed. The one raw assertion failure from the intentionally malformed-frame negative test remains visible and requires explicit review.
+- Files: `docs/exec-plans/active/thermo5-tx-only-closure-codex.md`, `docs/verification/thermo5-tx-baseline.md`, `docs/verification/thermo5-tx-feature-matrix.md`, `docs/verification/thermo5-tx-gate0-evidence.json`, `docs/verification/thermo5-tx-coverage-ledger.csv`, `docs/verification/thermo5-dv-portfolio.md`, `docs/verification/thermo5-uvm-coverage.md`, `docs/exec-plans/active/execution-frontier.md`, and this log.
+- Remaining limitations: exact-HEAD licensed reruns, real XPM/vendor GT model, routed FPGA timing/resources, and physical RF/QAM256 BER. No Gate 1/2/3 work started.
 
 ## 2026-10-28 23:40 SGT - Publish and verify EF2 Linux signoff
 
@@ -4140,3 +4833,453 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   have no I/O delays. It does not include placement/routing, VCU118 board I/O,
   or the ZU15EG-specific GT parent. The memory-inference and DPD set/reset
   warnings need review before promoting the mapping.
+
+## 2026-10-30 00:23 SGT - Establish product-scoped Thermo5 TX coverage baseline
+
+- Audited the stacked PR #2 → #3 → #4 → #5 dependency chain and the Gate 3
+  source/artifact manifest. All 84 source hashes and 22 individually hashed
+  artifacts match their PR #5 contents. Five of 12 historical directory-tree
+  hashes do not reproduce; exact observed digests and limits are documented
+  in `thermo5-tx-coverage-closure.md` and its evidence JSON.
+- Scoped VCS coverage to `thermo5_sku_uvm_tb.dut`; added a test-only
+  `DPD_MAX_TAPS` override and a one-tap identity configuration check matching
+  the actual GT-parent settings. The RTL algorithm and RX/AI-DPD were not
+  changed. Candidate 2/4-tap DPD and PAIR_LOOKAHEAD remain separate reports.
+- Checks: five selected AXI-Lite product-config VCS tests PASS with zero UVM
+  errors/fatals; VCS V-2023.12-SP1 / URG generated raw product coverage.
+  Product raw score is 75.96% (line 3190/3796, condition 579/846, branch
+  440/637, toggle 82919/104478, FSM 13/13 states and 15/22 transitions,
+  assertion score 86.67%). Eight functional groups score 97.97%; no waiver
+  or exclusion is applied. Python coverage-gate syntax and source-hash audit
+  pass; strict mode correctly remains open (`RAW_100_OPEN`) and rejects an
+  active exclusion directive.
+- Evidence and commands: `docs/verification/thermo5-tx-coverage-closure.md`,
+  `docs/verification/thermo5-tx-product-coverage-evidence.json`,
+  `runs/thermo5_tx_product_axil_cov_20261030/` (ignored local VDB/log/report),
+  and the separate candidate report under
+  `runs/thermo5_tx_candidate_cov_20261030/`.
+- Remaining: complete Functional Coverage and eligible code closure in Tasks
+  4–6; audit the five historical directory digest mismatches without rerunning
+  full regressions; real XPM, GT Wizard/raw64, and physical FPGA evidence are
+  unavailable in this Linux baseline.
+
+## 2026-10-30 12:22 SGT - Continue Thermo5 TX Linux coverage closure Tasks 4-6
+
+- Added a legal AXI-Lite reset sweep that hits all five previously missing
+  Generic CDC residual FSM transitions, with five public reset epochs and a
+  post-reset four-plane identity replay. Added the test to the UVM package and
+  Linux Make targets; RTL and frozen TX algorithms are unchanged.
+- Reused the five selected product VDBs from PR #6 and merged the reset-sweep
+  and one-tap coefficient-transport runs only. Product Raw URG is 81.95%
+  aggregate; FSM is 13/13 states and 22/22 transitions. Functional URG is
+  170/174 raw bins (97.97% average group score); adjusted code coverage equals
+  raw, with zero approved waivers and exclusions. The fail-closed gate returns
+  `RAW_100_OPEN`.
+- Added a separate expected-negative AXI-Lite assertion report, EF2 Formal
+  evidence, retained Generic CDC Formal evidence, and a PA0 bit-true scoreboard
+  mutation run. DPD identity Formal and dedicated frame-tail reachability remain
+  open; fresh CDC rerun was blocked by the license server. Candidate DPD and
+  PAIR_LOOKAHEAD remain separate from the product coverage merge.
+- Updated `thermo5-tx-linux-coverage-closure.md` and its evidence JSON,
+  linked the current product result from the historical coverage signoff,
+  refreshed the execution frontier, and recorded exact artifact hashes.
+- Checks: reset-sweep UVM PASS (seed 610802; five resets, 56 post-reset
+  four-plane words); one-tap coefficient transport UVM PASS (seed 610803; 56
+  four-plane words); illegal-frame expected assertions observed separately
+  (seed 610804); PA0 checker mutation caught (seed 610805); EF2 VC Formal PASS
+  (6/6 assertions, 3/3 covers); prior exact Generic CDC proof retained (7/7,
+  9/9); coverage gate `RAW_100_OPEN`; JSON parse and evidence-consistency checks pass,
+  as do the fail-closed gate re-evaluation and `git diff --check`.
+- Limits: line/branch/condition/toggle closure remains open; DPD identity
+  arithmetic proof remains inconclusive; fresh CDC Formal rerun could not
+  reach setup; real XPM/GT Wizard, routed FPGA PPA, and physical QAM256 BER are
+  unavailable. The Python worst-case campaign is a model screen without a
+  defined product BER/BLER acceptance target.
+
+## 2026-10-30 12:29 SGT - Record blocked boundary-phase coverage attempt
+
+- Attempted the legal AXI-Lite boundary-phase test at seed 610806 to continue
+  Task 4 branch closure after opening PR #7.
+- VCS exited 255 before UVM started because the license server could not be
+  reached. No coverage result was produced and the attempt VDB was not merged.
+- Preserved the invocation, simulator output, and exit status under the ignored
+  `runs/thermo5_tx_product_axil_reset_cov_20261030/boundary_phase/` directory;
+  indexed the log hashes in the machine-readable evidence.
+- The product Raw coverage remains unchanged at 81.95% aggregate and the gate
+  remains `RAW_100_OPEN`. Further VCS branch/condition/line/toggle closure
+  requires a working license service.
+
+## 2026-10-30 13:01 SGT - Resume licensed TX coverage closure
+
+- After VCS/VC Formal license recovery, reran the blocked AXI-Lite boundary
+  phase at seed 610806 and exercised offsets 1/2/4/8/16/32, RUN+COMMIT with
+  AW/W skew, source gaps before beats 8 and 20, and six RUN-relative COMMIT
+  delays. All 16 legal cases passed the four-plane bit-true checker with zero
+  UVM errors/fatals. No RTL, RX, AI-DPD, or frozen TX algorithm changed.
+- Added the six RUN-relative COMMIT VDBs to the positive product Raw merge
+  and regenerated URG, the exact raw denominator/gate, and source-linked gap
+  ledger. The merge contains 23 positive simulation VDBs plus the compile
+  VDB. One condition bin was newly hit by RUN+COMMIT overlap; the later delay
+  sweep did not change aggregate code counters. Current Raw is 81.97%:
+  line 3,190/3,796, condition 582/846, branch 440/637, toggle
+  86,951/104,478, FSM states 13/13 and transitions 22/22. Functional raw
+  coverage remains 170/174 bins, with 170/170 applicable positive bins hit.
+  Raw equals adjusted; zero approved waivers and exclusions; gate
+  `RAW_100_OPEN`.
+- Audited the EF2 `PAIR_LOOKAHEAD` branch against the actual GT-parent
+  parameter chain. The four product instances inherit the module default 0;
+  their unhit line-231 true-arm bins remain in the denominator as
+  `OPEN_CONFIGURATION_REVIEW`. No exclusion or waiver was applied, and the
+  candidate branch remains separately reported.
+- Fresh Generic CDC VC Formal passes 7/7 assertions and 9/9 covers with zero
+  black boxes in 56.67 seconds. Identity DPD Formal completed but remains
+  inconclusive: 1/5 assertions proven, 4/5 inconclusive, 4/4 covers hit,
+  zero black boxes. A second run with 2-minute per-property and 6-minute
+  total effort limits reached max effort after 367.39 seconds with the same
+  four assertions inconclusive and no counterexample. Identity remains OPEN;
+  no DPD bins are waived.
+- Refreshed `thermo5-tx-linux-coverage-closure.md` and its evidence JSON,
+  updated the historical coverage-signoff landing note and execution frontier.
+  Evidence hashes cover the latest URG report, gate, gap ledger, VDBs, and
+  fresh formal reports.
+- Checks: 16/16 boundary/traffic UVM tests PASS; refreshed URG/denominator and
+  gap-ledger generation PASS; coverage gate reports `RAW_100_OPEN`; fresh CDC
+  Formal PASS; identity Formal signoff gate fails to converge and remains
+  explicitly OPEN; boundary/coverage/formal evidence consistency checks,
+  JSON parse, and `git diff --check` PASS.
+- Limits: line/branch/condition/toggle closure remains incomplete; identity
+  arithmetic and frame-tail reachability remain open. Real XPM, GT Wizard,
+  FPGA PPA/routed timing, and physical QAM256 BER remain outside Linux scope.
+
+## 2026-10-30 13:09 SGT - Extend product PA backpressure stress
+
+- Added a bounded `AXIL_PA_STALL_CYCLES` override to the existing AXI-Lite
+  config test; its default remains the prior four-cycle stall. The test rejects
+  values outside 4..4096 cycles.
+- Recompiled the unchanged product configuration and ran seed 610822 with all
+  four PA ready signals held low for 64 core cycles after output-valid. The
+  56-word four-plane identity stream passed the independent bit-true checker;
+  UVM warnings/errors/fatals were all zero.
+- Merged that positive product VDB into the Raw URG report (24 simulation
+  VDBs plus compile VDB). Code metrics, functional group scores, and the 18,594
+  open/review ledger rows did not change. No waiver, exclusion, denominator,
+  or DUT algorithm change was made.
+- Checks: licensed VCS compile and targeted product run PASS; URG merge,
+  denominator extraction, gap-ledger extraction, and coverage gate PASS with
+  `RAW_100_OPEN`; source manifest and evidence hashes refreshed; JSON parse
+  and `git diff --check` PASS.
+- Limits: the longer PA hold did not hit additional DUT code bins. Coverage
+  convergence, identity DPD proof, frame-tail formal reachability, vendor
+  XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open.
+
+## 2026-10-30 13:59 SGT - Prove centered frame-tail parameter reachability
+
+- Added a scoped VC Formal harness for the centered interpolator's two
+  frontend parameter settings (`APPEND_TAIL_VECTOR=1` and `0`, W=16,
+  LANES=8). Added the corresponding scoped Formal runner job and recorded the
+  exact result in the TX closure evidence and signoff notes.
+- VC Formal V-2023.12-SP2: 3/3 assertions proven; all three legal covers hit;
+  the append-disabled tail cover is expected `uncoverable`; zero black boxes
+  and zero clock/glitch/loop/multidriver setup violations. The source-stability
+  assumption is non-vacuous. Repeated the proof from clean source SHA
+  `23214fbe4b7a06bcf489e39ec9110d76885eda9e`; the manifest hashes the
+  production interpolator RTL and reports a clean worktree.
+- The proof is module-level parameter reachability, not end-to-end composition
+  of the cascaded interpolators. It does not add URG hits, alter the coverage
+  denominator, or approve a waiver.
+- Rechecked the existing product Raw gate without rerunning VCS/URG:
+  `RAW_100_OPEN`, Raw equals Adjusted, zero waivers/exclusions; line
+  3,190/3,796, condition 583/846, branch 440/637, toggle 86,951/104,478,
+  FSM states 13/13 and transitions 22/22.
+- Checks: Formal proof PASS; coverage gate recheck PASS with `RAW_100_OPEN`;
+  evidence JSON parses; `git diff --check` PASS.
+- Remaining: product Raw code coverage and DPD identity arithmetic Formal
+  remain open. The module-level proof does not qualify full-chain frame-tail
+  composition. Real XPM, GT Wizard, FPGA PPA, and physical QAM256 BER remain
+  outside this Linux signoff.
+## 2026-10-30 22:04 SGT - Formal reachability closure for TX coverage bins
+
+- Added exact product-configuration Formal Covers/assertions for the two
+  centered-interpolator stage settings and AXI-Lite default/parameter paths.
+  Removed two reset-coupling assumptions from the AXI-Lite harness after VC
+  Formal reported them vacuous; the accepted harness run has no environment
+  assumptions.
+- Added a fail-closed AXI-Lite Formal runner and a formal-bin disposition
+  updater. The updater validates exact semantic Bin IDs, instances, source
+  positions and source-file hashes against the raw ledger, plus proof/Cover
+  status, setup report, black-box count and non-vacuous assumptions. It changes
+  ledger status only and cannot edit URG denominators or `.el` exclusions.
+- Applied six exact `PROVEN_UNREACHABLE` dispositions: three interpolator
+  product-parameter bins and three AXI-Lite default/parameter bins. Raw URG
+  denominator and counters remain unchanged; 18,587 of 18,593 code-gap rows
+  remain OPEN. No waiver or exclusion was approved.
+- Added `thermo5-tx-coverage-final-signoff.md`, refreshed the root-cause
+  closure report, evidence manifest, task table and execution frontier.
+- Checks: VC Formal frame-tail 6/6 assertions, 5/9 Covers reached and 4/9
+  uncoverable; AXI-Lite 5/5 assertions with exact three unreachable Covers,
+  0 assumptions, 0 setup violations and 0 black boxes; EF2 6/6 assertions and
+  3/3 Covers; product EF2 parameter 2/2 assertions and 2/2 expected
+  uncoverable Covers; bounded counter 3/3 assertions and 4/4 Covers; unbounded
+  counter 35/35 bit-transition assertions and 4/4 shallow Covers. Formal
+  disposition script validated all six exact ledger mappings. JSON, gzip
+  integrity and `git diff --check` were also checked.
+- Limits: Identity DPD remains inconclusive (direct 5/18 proven, staged
+  auto-lemma 1/13 proven). The 2,072-sample counter proof budget is not a
+  product traffic contract. Targeted product UVM did not hit the interpolator
+  pop/push branch and was not merged into URG. Fresh VCS/URG is blocked by the
+  installed VCS platform check rejecting WSL kernel
+  `6.6.87.2-microsoft-standard-WSL2`; product Raw remains reused, Adjusted is
+  identical with zero waivers, and `RAW_100_OPEN` remains. The observed
+  16-cycle source-gap underflow remains an interface/service-rate risk.
+- 2026-10-30: Reconciled the active execution-frontier branch name with draft
+  PR #10 (`codex/thermo5-tx-final-signoff`). No RTL, evidence database, coverage
+  denominator, or verification result changed; `RAW_100_OPEN` remains.
+
+
+## 2026-10-31 10:22 SGT - AXI-Lite coefficient-read Branch Formal closure
+
+- Re-ran the committed AXI-Lite configuration Formal harness with VC Formal V-2023.12-SP2 after VCS license recovery. The exact current-source run passed 4/4 assertions; the legal coefficient-read Cover was hit; the exact default-arm Cover was uncoverable; assumptions=0, non-vacuous assertions=3, black boxes=0, setup violations=0.
+- Added the exact coefficient-read `case (addr & 8'hf8)` default Branch bin `TXB-65f3dfeee7bc0b854f52` to the fail-closed Formal dispositions, bound to instance, line 135, RTL source SHA, Formal result hashes, and existing current Raw evidence. Corrected its root-cause note from write-address decode to coefficient-read decode. Raw URG and denominator are untouched.
+- Updated the coverage closure/signoff and execution frontier. The audit now contains six `PROVEN_UNREACHABLE` bins and 18,587 OPEN rows; Raw code metrics are unchanged at line 3190/3796, condition 583/846, branch 440/637, toggle 86951/104478. Waivers=0, `.el` exclusions=0, `RAW_100_OPEN`.
+- Checks: Formal runner PASS; Formal disposition updater PASS with the existing VCS/URG refresh evidence; focused VCS AXI-Lite config test seed 610931 PASS (0 UVM warnings/errors/fatals); no full regression or URG remerge was needed because product sources and Raw inputs did not change.
+- Limitations: a temporary mailbox Formal check was inconclusive; its selected-property trace did not execute the AW/W assumptions and is not accepted as legal-protocol evidence. The focused VCS case does not resolve that gap. DPD Identity Formal and the 16-cycle source-gap underflow contract remain OPEN. No RTL or product algorithm changed.
+
+- Current-worktree coverage-gate recheck returned exit 3, `FAIL_CLOSED_SOURCE_HASH_MISMATCH`. The baseline compile manifest is pinned to `913be930bfcbbad0f78dbc90e06299db3d1bb337`; exactly three compiled UVM files differ in the current tree. All product RTL hashes match. The Raw URG and denominator were not edited, and no full regression/remerge was run to paper over the source mismatch. The exact invocation, hashes, and log are captured under the local ignored `runs/thermo5_tx_final_closure_20261031/` evidence directory and summarized in the tracked audit JSON.
+
+## 2026-10-31 10:31 SGT - Negative-only AXI-Lite assertion and Branch check
+
+- With the restored VCS license, compiled and ran the current-source negative-only early-TLAST test (seed 420102) and generated a separate URG report. The independent UVM checker saw both expected protocol assertions, sticky error state, and reset recovery; UVM warning/error/fatal counts were 0/0/0. The separate URG report hit Branch `TXB-646dd03c99766d877d30` at RTL line 141.
+- Kept the negative VDB separate from product Raw. Its legal-product Raw ledger row remains OPEN; no product Raw metric, denominator, waiver, or exclusion changed. The complete command, source/log/URG/VDB hashes, and observed outcomes are in `docs/verification/data/thermo5-tx-negative-assertion-evidence.json`.
+- Remaining: current-worktree Raw source-manifest mismatch, legal-product pop/push cadence bins, mailbox-stability Formal, DPD Identity Formal, and source-gap service contract remain unresolved. The negative-only Branch hit is not positive-product coverage closure.
+
+## 2026-10-31 10:47 SGT - Product-bound outstanding counter Formal attempt
+
+- Added an exact-product Formal harness for the two outstanding-word guard Branches at RTL lines 203–204 (`TXB-e99262dd92665c3b9ea8`, `TXB-c16debdf7d9cbab220ac`). It uses the frozen Centered-Cubic/EF2/identity-DPD/Generic-FIFO configuration, legal 32-beat AXIS and AXI-Lite RUN sequencers, arbitrary PA backpressure, and exact scaled clock periods 35/28/16.
+- VC Formal V-2023.12-SP2 ran 489.77 seconds with no external SVA assumptions, two non-vacuous assertions, source/core/output Covers reached, and zero clock/glitch/loop/multidriver setup issues. Saturation assertion/Cover were INCONCLUSIVE at depths 142/141; underflow assertion/Cover were INCONCLUSIVE at depths 102/103. There was no counterexample, but no proof; both ledger rows remain OPEN and no disposition was added.
+- Saved the machine-readable status and hashes in `docs/verification/data/thermo5-tx-outstanding-counter-formal-evidence.json`; full local logs/properties/setup are in ignored `runs/thermo5_axil_outstanding_formal_20261031_retry/`. The fail-closed runner now classifies depth-limited outcomes as `INCONCLUSIVE` rather than a generic fail.
+- Checks: formal result/source/log hashes cross-check; Python `py_compile` and JSON/ledger validation; `git diff --check`. Raw URG, denominator and product RTL are unchanged.
+
+## 2026-10-31 10:54 SGT - Centered-Cubic test-scope audit
+
+- Confirmed VCS V-2023.12-SP1 license recovery by compiling the fixed TX product profile: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, one-tap identity DPD, AXI-Lite parent and Generic FIFO.
+- Ran `thermo5_sku_interp1_empty_blocked_test` at seed 620131 as a targeted coverage experiment. Compilation passed; the UVM run timed out at 10,000 core cycles with one fatal before its independent bit-true checker/pass marker. Root cause: the test waits for the causal-FIR-only `interp1_stall_window`, which the Centered-Cubic top explicitly ties to zero. Its stage-1 hit probe is also tied low under that product define.
+- Kept the failed-test VDB separate; no URG merge, Raw coverage claim, denominator, waiver, or exclusion changed. Added machine-readable hashes and exact command in `docs/verification/data/thermo5-tx-centered-test-scope-evidence.json`; corrected the full-IP test README and execution frontier to state this scope boundary.
+- Next: use only Centered-Cubic-specific legal events/checkers or non-vacuous product-bound Formal for product coverage. The earlier 26-phase product cadence sweep remains zero-delta; do not repeat causal tests or blind phase/seed sweeps.
+
+## 2026-10-31 12:28 SGT - Audit current-source CDC Branch and preserve report history
+
+- Reviewed exact Product Raw Branch `TXB-85afd49f35a994cc290c` at
+  `rtl/axis/dsm_axis14_to_core8_cdc.sv:146` against clean-source VC Formal
+  `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`. Assertion proven, matching false-arm
+  Cover uncoverable, legal end-arm and completed-frame Covers reached, no SVA
+  assumptions, zero black boxes, zero selected setup violations. Scope is the
+  14:8 Generic-FIFO harness and documented 32-beat packet contract.
+- Updated only the exact audit status: 1 of 22,626 focused Raw gaps is
+  `PROVEN_UNREACHABLE`, 22,625 remain OPEN. Raw URG and denominator are intact;
+  waivers and exclusions remain zero.
+- Fixed the Formal disposition reporter so a current-source update appends a
+  source-SHA-qualified section and does not overwrite historical coverage
+  counts. Added a unit test for preservation of prior source sections.
+- Restored the original SHA `c1fa9f3` count table and Formal dispositions in
+  the report, then added the complete focused `19d2953` snapshot. Refreshed
+  evidence hashes and added a root-cause-manifest checksum sidecar.
+- Checks: Formal disposition updater; Python unit tests 4/4 (Formal) and 8/8
+  (root-cause); Python byte-compile; exact ledger ID/source/instance audit.
+  Extended DPD identity Formal remains running; full product Raw and mutation
+  have not been rerun.
+
+## 2026-10-31 12:39 SGT - Add TX-only actual GT Parent VCS/URG evidence
+
+- After VCS license recovery, compiled and ran the actual
+  `thermo5_qsfp_gt14_parent` testbench at fixed source SHA
+  `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`, using centered-cubic, EF2
+  ORDER=2/STEP=5120, one-tap identity DPD, and Generic FIFO. The link-fault
+  test passed immediate PA blanking, sticky fault, and reset-recovery checks.
+- The first parent subtree report included two testbench model modules. Rebuilt
+  the coverage hierarchy to exclude only the behavioral `IBUFDS_GTE4` and
+  `thermo5_qsfp_gt14_probe` module definitions, then reran the same test. The
+  accepted TX-only Raw URG ratios are line 3119/3868, condition 435/889,
+  toggle 59820/107486, FSM 14/22, branch 351/671, and assertion 14/19. The
+  compile-time scope exclusions are source-audited testbench replacements, not
+  DUT-bin waivers. This one parent test does not bit-true check TX payload;
+  its behavioral GT replacement keeps RX inactive. Its Raw is not merged with
+  the separate 12-test AXI-Lite frontend Raw.
+- Added the source/configuration/command/hash manifest
+  `thermo5-tx-gt-parent-linux-coverage.json` and clarified report/frontier scope.
+- Checks: VCS V-2023.12-SP1 compile and test PASS; URG V-2023.12-SP1 report
+  PASS; `-show ratios` counts checked against hierarchy scope; evidence JSON
+  hashes recorded. Extended DPD identity Formal remains running; no full
+  product regression or final signoff was run.
+
+## 2026-10-31 12:41 SGT - Audit DPD identity Formal and current-source closure queue
+
+- The 16-minute VC Formal effort completed at source SHA
+  `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`: 4/5 assertions proven, one
+  non-vacuous `a_identity_payload` inconclusive at depth 252, and 4/4 Covers
+  reached. No-saturation I/Q, saturation-count-zero, and valid-latency are
+  proven. Setup reports zero selected violations and the design has zero black
+  boxes. DPD identity remains OPEN; no saturation Bin disposition was applied.
+- Reconciled current-source closure-task counts against the gzip ledger:
+  22,626 unhit Raw bins grouped into 493 tasks (197 Branch, 264 Condition,
+  606 Line, 21,559 Toggle); 1 exact CDC Branch is `PROVEN_UNREACHABLE`,
+  22,625 bins / 492 tasks remain OPEN. Raw counters and denominators are
+  unchanged. The four zero-hit Functional Coverage rows are exact type and
+  monitor-instance views of two illegal-only bins; applicable legal coverage
+  remains 210/210.
+- Checks: Formal property and setup reports reviewed; evidence hashes added;
+  parent TX-only URG hierarchy excludes only source-audited behavioral
+  testbench models; JSON parses and evidence/VDB/source hashes reconcile.
+  Complete parent bit-true checking, payload Formal, current-source full Raw,
+  mutation, and final signoff remain OPEN.
+
+## 2026-10-31 13:14 SGT - Refresh TX coverage closure at 13 tests; bind current Formal dispositions
+
+- Recompiled the frozen TX product profile with VCS V-2023.12-SP1 and replayed 13 focused positive tests. The additional AXI-Lite one-tap DPD saturation test used a legal non-identity coefficient image and independent four-plane Python bit-true checking; 56 words and one TLAST matched, with I/Q positive/negative clamp events on all 16 DPD lanes. No product algorithm, RX, or AI-DPD RTL changed.
+- Fresh same-compile URG Raw is Branch 520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480; FSM 13/13 states and 22/22 transitions. The 12-to-13 test delta is +80 Branch, +16 Condition, +144 Line, +654 Toggle. Legal Functional Coverage is 210/210; four illegal-only zero-hit records remain in Raw and the separate negative test hits them. Twelve existing URG-model Illegal/Excluded records remain visible.
+- Rebuilt the source-linked closure queue: 21732 Raw miss records in 470 grouped tasks. Five exact current-source records are `PROVEN_UNREACHABLE` and remain in Raw (two CDC branches; AXI-Lite write-case default branch; coefficient-read default branch and its matching line); 21727 records across 465 tasks remain OPEN. Raw equals Adjusted; there are zero waivers and zero `.el` exclusions; gate status remains `RAW_100_OPEN`.
+- Reused AXI-Lite Formal results only after checking the current DUT/config/harness/Tcl source hashes. The non-vacuous write/read default properties and matching Covers close three exact source records. The AXI-Lite tuple condition property is proven but not non-vacuous, so it remains OPEN. A fresh current-19d CDC outer-case default Formal run passed 2/2 assertions, reached legal advance/frame Covers, and proved the exact default path uncoverable; no assumptions, setup violations, black boxes, or tautological goals.
+- DPD identity-only saturation Formal proves 4/4 no-clamp assertions, but its clamp Covers are uncoverable only for the reset unity coefficient. Legal runtime AXI-Lite coefficient writes make that proof inapplicable to product clamp reachability; the new legal UVM stress test hits those branches. The DPD identity payload proof remains INCONCLUSIVE at depth 252. EF2 PAIR_LOOKAHEAD product parameter goals are tautological and remain OPEN.
+- Mutation run passed its baseline and detected both `late_gain` and `plane_swap` faults through the independent `[BITTRUE]` scoreboard. The 16-cycle source-gap test still fails its independent checker with 54 underflows and remains an OPEN service-rate contract.
+- Updated `thermo5-tx-coverage-root-cause-closure.md`, `thermo5-tx-coverage-final-signoff.md`, the execution frontier, and the machine-readable closure index. Run products, commands, source/log/report hashes, exact Formal disposition map, and mutation evidence are linked through `docs/verification/data/thermo5-tx-coverage-closure-index.json`.
+- Checks: current-source root-cause auditor PASS; fail-closed Formal disposition updater PASS; focused VCS/UVM 13/13 PASS; URG and coverage gate PASS with `RAW_100_OPEN`; CDC Formal runner PASS; AXI-Lite Formal source-hash/property review PASS; mutation runner PASS. Final validation on 2026-10-31 13:16 SGT: 13 focused Python unit tests PASS, Python byte-compile PASS, `git diff --check` PASS, all 39 closure-index artifact hashes match, gzip ledger integrity PASS (21,732 records: 21,727 OPEN and 5 `PROVEN_UNREACHABLE`).
+- Remaining: reachable/applicable code bins remain OPEN; DPD payload Formal, 16-cycle gap contract, full GT Parent payload check, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain unclosed. No final signoff or 100% code-coverage claim is made.
+
+## 2026-10-31 15:34 SGT - Prove consecutive product-frame CDC alignment
+
+- Added a standalone VC Formal harness for two consecutive legal 32-beat packets through the production 14:8 CDC and Generic FIFO. The non-vacuous frame-start alignment and protocol-clean assertions are proven; first/second frame-start, second frame-end, and output-frame-end Covers are reached; the exact misaligned-start Cover is uncoverable. VC Formal V-2023.12-SP2 reports no SVA assumptions, selected setup violations, black boxes, or tautology warnings.
+- The first harness attempt failed because a 6-bit accepted-beat counter could not represent the 64-beat stop value. It produced no traffic; the runner recorded INCONCLUSIVE_OR_FAIL. The counter was widened to 7 bits and the exact proof rerun successfully. The failed attempt is retained and explicitly excluded from disposition.
+- Classified only Raw semantic Branch `TXB-158c42868bfe37061f07` at `rtl/axis/dsm_axis14_to_core8_cdc.sv:224` as `PROVEN_UNREACHABLE`. Raw URG/VDB, denominator, and gate inputs remain unchanged: Branch 520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480; legal Functional Coverage 210/210; ledger 354 proven-unreachable and 21,378 OPEN records. Waivers=0; `.el` exclusions=0; gate remains `RAW_100_OPEN`.
+- Updated the source-bound Formal review, gap ledger/task table/summary, root-cause closure and final signoff snapshots, Formal README, execution frontier, and coverage evidence index. The index now includes the exact successful and failed run artifact hashes.
+- Checks: VC Formal runner PASS; `python3.12 -m unittest discover -s tools/hw/tests -v` 15/15 PASS; Python byte-compile PASS; fail-closed Formal disposition updater PASS; static coverage-gate recheck `RAW_100_OPEN` with Raw=Adjusted and zero waiver/exclusion; ledger/source/bin and evidence-index hash audits PASS; `git diff --check` PASS. No product RTL, VCS compile input, RX, AI-DPD, algorithm, or Raw coverage data changed; full VCS product regression was not repeated.
+- Remaining: 21,378 OPEN Raw code bins, DPD identity payload Formal inconclusive, source-gap/service-rate contract, full GT Parent payload checking, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open. No final signoff or 100% code-coverage claim is made.
+
+## 2026-10-31 15:41 SGT - Publish the CDC alignment Formal increment as PR #20
+
+- Published draft PR #20, stacked on PR #19; initial remote HEAD was
+  `a2b0bf55c177e2804e2d6ef237e916229e729647`. Its tree
+  `6563fc936668b7fdef9bd0a37a7f49d2810abcaa` matches the reviewed local tree.
+- Confirmed PR #17 → #18 → #19 → #20 base/head dependencies via live GitHub
+  metadata. All four PRs are open and unmerged; no branch was deleted.
+- Updated the branch integration review and execution frontier with this
+  current dependency chain. The PR remains a single-bin Formal increment, not
+  a final coverage signoff; `RAW_100_OPEN` and all remaining OPEN bins persist.
+- Checks: local tree SHA matched the published tree; the 15-file change set
+  passed `git diff --check`; exact-source Formal and static coverage evidence
+  are recorded in the PR #20 evidence index. `git push` was unavailable because
+  this shell has no GitHub credential; publication used the connected GitHub
+  integration after verifying every uploaded blob and the resulting tree SHA.
+
+## 2026-10-31 15:50 SGT - Prove the product 14:8 CDC final-word threshold
+
+- Added an independent source-hashed Formal harness for the exact product
+  `SRC_LANES=14` / `CORE_LANES=8` CDC and Generic FIFO. Two legal consecutive
+  32-beat packets reach the final frame-end pop. The first run exposed an
+  ignored immediate assertion in the harness, so it was removed and the
+  runner was made fail-closed on ignored assertions. The clean VC Formal
+  V-2023.12-SP2 rerun proves 3/3 assertions, reaches 4/6 Covers including
+  frame end at depth 119, and reports the exact short-final-word branch target
+  Cover uncoverable. There are no SVA environment assumptions, selected setup
+  violations, black boxes, tautology warnings, or ignored assertions.
+- The source-bound updater classified only Bin
+  `TXB-7ea7a7506f13f31ca4a9` at `dsm_axis14_to_core8_cdc.sv:215` as
+  `PROVEN_UNREACHABLE`; Raw URG/VDB and denominator are unchanged. The ledger
+  now has 355 proven-unreachable and 21,377 OPEN records; waivers=0,
+  exclusions=0, and the gate remains `RAW_100_OPEN`.
+- The static gate recheck reproduces Raw=Adjusted Branch 520/637, Condition
+  601/849, Line 3334/3796, Toggle 83575/104480; legal Functional Coverage
+  remains 210/210. Full VCS/URG was not rerun because product RTL, compile
+  inputs, and the Raw VDB are unchanged.
+- Checks: Python hardware utility tests 15/15 PASS, runner byte-compile PASS,
+  Formal disposition updater PASS, static coverage gate PASS with
+  `RAW_100_OPEN`, and `git diff --check` PASS. Complete reports and hashes are
+  recorded under `runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/`;
+  the superseded first Formal run remains under `..._retry2/` for traceability.
+- Remaining: 21,377 OPEN Raw bins, DPD identity payload Formal, the 16-cycle
+  source-gap/service-rate contract, XPM/GT Wizard, FPGA PPA, and physical
+  QAM256 BER remain open. Published as [Draft PR #21](https://github.com/cwu766485-ctrl/dsm_ip/pull/21),
+  stacked on PR #20; initial remote commit `8fc3cf519ee100b681edb751c38d2a8a9b536523`
+  has the same tree as local submission `e2d3d171aa982ad5dc1a7fd62300061bc64eca87`.
+  The PR remains unmerged.
+
+## 2026-10-31 - Audit fixed-product parameter Branch reachability
+
+- Added a fail-closed source-chain audit for 17 exact unhit product Branch bins:
+  frame-gain and centered-interpolator Hold parameters, centered Lane/Q14 guards,
+  EF2 shape guards, AXI-Lite DPD tap guards, and the four-plane GT bridge width
+  guard. Every Bin ID is bound to the exact Raw source position, expression,
+  decision path, normalized instance, and source SHA; the ten-file product
+  parameter chain is cross-checked against the exact product compile manifest
+  and active 13-test positive VCS witness.
+- The first updater attempt correctly rejected an overlap with a previous OPEN
+  candidate based on tautological Formal evidence. The candidate is now
+  dispositioned only by the separate exact static-parameter review; no
+  tautological property is accepted as proof. The initial rejection is retained
+  in the ignored audit run directory.
+- Ledger status changed only for the 17 reviewed bins: 372 total
+  `PROVEN_UNREACHABLE` (11 Formal + 344 EF2 pair-lookahead static + 17 fixed
+  parameter) and 21,360 OPEN across 470 tasks (108 fully dispositioned, 362
+  OPEN). Raw URG/VDB and denominators remain unchanged; Raw Branch 520/637,
+  Condition 601/849, Line 3334/3796, Toggle 83575/104480; legal Functional
+  Coverage 210/210; zero waivers/exclusions; gate remains `RAW_100_OPEN`.
+- Updated final signoff, current-source closure report, formal review,
+  root-cause summary/manifest, source-bound ledger/task table, execution
+  frontier, and the dedicated fixed-parameter Branch audit report.
+- Checks: `python3.12 -m unittest discover -s tools/hw/tests -v` 17/17 PASS;
+  Python byte-compile PASS; disposition updater PASS; fail-closed Raw/Adjusted
+  coverage gate PASS with `RAW_100_OPEN`; `git diff --check` PASS. Product VCS/
+  URG was not rerun because no product RTL, compile inputs, or Raw VDB changed.
+- Remaining: all other reachable/applicable code bins stay OPEN; DPD payload
+  Formal and the source-gap/service-rate contract remain OPEN; real XPM/GT
+  Wizard, FPGA PPA, and physical QAM256 BER remain outside Linux signoff. The
+  Published as [Draft PR #22](https://github.com/cwu766485-ctrl/dsm_ip/pull/22), stacked on PR #21. The GitHub publication commit is `9bcbe5c829c4bd8d957949865da1009073fc7da6` (tree `0af067229fa54f6ce2e3ab887e05bcb50afb170f`), matching local submission commit `90be89937ca4110385c3d37d6e592ea45ddb6449` by tree. PR #22 is open and mergeable; no PR is merged and no branch is deleted.
+
+## 2026-10-31 17:05 SGT - Refresh current TX code-union signoff and Linux checks
+
+- Reconciled the current Product code-coverage union and replaced stale Step 1/2
+  snapshot counts. The exact current Product SHA remains
+  `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`; legal Functional Coverage is
+  210/210. Raw code coverage is Branch 524/637, Condition 610/849, Line
+  3350/3796, Toggle 83587/104480, FSM states 13/13 and transitions 22/22.
+- Refreshed the ledger summary in the evidence index: 21,691 Raw misses, 371
+  `PROVEN_UNREACHABLE` records retained in Raw, and 21,320 OPEN across 429
+  tasks. Waivers=0, active `.el` exclusions=0, Adjusted=Raw, gate
+  `RAW_100_OPEN`. Four illegal-only Functional rows remain visible in the
+  scoreable union report and are separated from legal positive Functional
+  scoring.
+- Added saved Linux check logs under ignored
+  `runs/thermo5_tx_final_closure_20261031/checks/`. Hardware tool tests
+  passed 19/19; Python reference-model tests passed 44/44; Python byte-compile
+  passed. A fresh static gate recheck returned `RAW_100_OPEN` with the above
+  counters. No full VCS regression was rerun because Product RTL, compile
+  inputs, and the exact-source VDB set were unchanged; 13/13 legal Product VCS
+  results and targeted source-gap/negative runs remain source-linked evidence.
+- Updated the current closure and final signoff snapshots, branch-consolidation
+  audit, machine-readable final evidence, expected-negative evidence, evidence
+  index, and execution frontier. The
+  early-TLAST legal Formal run remains INCONCLUSIVE and does not disposition a
+  bin. No TX algorithm, RX, or AI-DPD RTL changed.
+- Remaining: 21,320 Raw misses are OPEN; DPD Identity and outstanding-word
+  Formal, the 16-cycle source-gap contract, real XPM/GT Wizard, FPGA PPA, and
+  physical QAM256 BER remain unclosed. The independent Integration PR is still
+  to be published from the current PR #22 tree; no PR was merged or branch
+  deleted.
+
+## 2026-10-31 17:13 SGT - Publish the TX Linux closure Integration Review
+
+- Published the reviewed 27-file Linux closure package as Draft PR #23 targeting
+  `thermo5`, based on the exact PR #22 tree. GitHub reports the PR open, draft,
+  mergeable, and unmerged. No PR was merged and no branch was deleted.
+- Local reviewed commit `66676223e098b7eef258a681ea3e53fa2710f351` and initial
+  GitHub publication commit `ad6a4016baea9f0abdaa5736067cd1aed007b6d5` have
+  identical tree `2960653d7caab56de4f15bbcf3adf663d2930e9d`. The cumulative PR
+  diff is 145 files (+68,521 / -1,323 lines).
+- GitHub branch/PR audit after publication found 27 branches and 22 open PRs
+  (#2-#23). The earlier PR chain remains intact.
+- Updated the branch consolidation audit, execution frontier, final evidence,
+  and closure index with the PR URL, refs, and current review status.
+- Checks remain: hardware utility tests 19/19 PASS; reference-model tests
+  44/44 PASS; Python byte-compile PASS; final coverage gate `RAW_100_OPEN`;
+  evidence index SHA/size audit PASS. Current Product Raw metrics and OPEN bins
+  are unchanged from the frozen Linux package.
+- Remaining: 21,320 Raw code bins OPEN; physical/vendor XPM/GT Wizard, FPGA
+  PPA, and QAM256 BER remain outside this Linux signoff.
