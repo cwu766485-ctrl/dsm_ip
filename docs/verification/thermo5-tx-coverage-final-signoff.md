@@ -154,6 +154,7 @@ retains exact semantic IDs and separate negative-test hits.
 |---|---|---|
 | Centered interpolator product parameters | VC Formal reports 6/6 assertions proven and 5/9 Covers hit, 4/9 uncoverable; one assertion is explicitly tautological; one source-stability assumption is non-vacuous | Two exact frame-tail dispositions are retained; the tautological append-arm candidate remains OPEN. Single-entry pop/push is formally reachable but still missed by targeted product UVM. |
 | AXI-Lite configuration and address decode | 4/4 assertions proven; one legal coefficient-read Cover hit; three exact path Covers uncoverable; zero environment assumptions, setup violations, or black boxes; no tautological goals | Four exact Raw bins across Branch/Condition/Line are proven unreachable, including the read default Branch at line 135; mailbox stability and `MAX_TAPS=1` guard remain OPEN |
+| AXI-Lite outstanding-word guards | Product-bound proof used legal source/AXI-Lite sequencers, arbitrary PA backpressure and no external assumptions; source/core/output Covers hit, both assertions non-vacuous | Both line-203 saturation and line-204 underflow assertions and exact guard Covers were INCONCLUSIVE (depths 142/102 and 141/103); both Raw Branch bins remain OPEN |
 | EF2 arithmetic/state | 6/6 assertions proven; 3/3 Covers hit; zero setup violations and black boxes | Does not increase URG hits |
 | Product EF2 parameter guards | The parameter guard assertion is proven and invalid-parameter Cover is uncoverable; pair-look-ahead-disabled assertion/Cover were reported as tautological | No ledger closure is credited from the tautological pair-look-ahead properties; parameter evidence remains configuration-bound |
 | DPD counter | bounded: 3/3 assertions and 4/4 Covers; unbounded: 35/35 bit-transition assertions and 4/4 Covers | The 2,072-acceptance bound is not a declared product lifetime contract; high-bit Toggle bins remain OPEN |
@@ -172,6 +173,11 @@ Formal V-2023.12-SP2. Setup reports show no clock,
 loop, glitch, or multidriver errors and all relevant Formal models have zero
 black boxes. AXI-Lite reset assumptions that were previously vacuous were
 removed before the accepted run.
+
+The separate product-bound counter-guard attempt remains Inconclusive. It did
+reach the legal source/core/output Covers and both assertions were non-vacuous,
+but the saturation and underflow properties did not converge within the run
+budget. See [`thermo5-tx-outstanding-counter-formal-evidence.json`](data/thermo5-tx-outstanding-counter-formal-evidence.json).
 
 ## Verification disposition summary
 

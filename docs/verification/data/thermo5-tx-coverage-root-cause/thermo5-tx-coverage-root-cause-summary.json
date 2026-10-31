@@ -213,6 +213,18 @@
   },
   "interpretation": "6 exact bins are Formal-proven unreachable; 18587 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
   "negative_report": "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report",
+  "outstanding_counter_formal_attempt": {
+    "evidence_file": "docs/verification/data/thermo5-tx-outstanding-counter-formal-evidence.json",
+    "evidence_sha256": "69cc6049a3de4cb313c5074e33c30108ed379d00a7250b897950ed93e7c0ac1f",
+    "exclusions": 0,
+    "raw_coverage_modified": false,
+    "status": "INCONCLUSIVE_OPEN",
+    "target_bins": [
+      "TXB-e99262dd92665c3b9ea8",
+      "TXB-c16debdf7d9cbab220ac"
+    ],
+    "waivers": 0
+  },
   "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
   "raw_bin_id_collision_extra_rows": 17,
   "raw_bin_id_collision_groups": 17,

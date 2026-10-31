@@ -83,12 +83,19 @@
     "source_manifest": "3e875543c44f93c4d418f73eea76f17a898205239ae937d2f60df7ccba2340eb"
   },
   "output_sha256": {
-    "docs/verification/thermo5-tx-coverage-root-cause-closure.md": "1e0c516bd5865ebc18d76daea6898cd31a718e04dfe3f3cff540ffbc3e6c6994",
-    "thermo5-tx-coverage-open-bins.csv.gz": "d9cd0521ac1055e8dd644f28c4e3be75a4b6800b3fa32170f35fdbf8bd820d96",
-    "thermo5-tx-coverage-root-cause-summary.json": "4633eb43970ff2b8f4e9050ae427ff15d76a64063f450ee1ddbd83f8d2f64940",
-    "thermo5-tx-coverage-root-cause-tasks.csv": "06a5d5ba7e5e7ae16d45bdb8200b2652ce59c99b7741ae47e1c3990291505fbc",
+    "docs/verification/thermo5-tx-coverage-root-cause-closure.md": "c41579d94d1c831417449a4f1d2de84bfa19fe4f2533c647ce92242f3dcfc1e3",
+    "thermo5-tx-coverage-open-bins.csv.gz": "904eb8bd51a2c88c836926dbc40a33707d58e4e0dc8c670d9b6c0bd39b05fa4b",
+    "thermo5-tx-coverage-root-cause-summary.json": "bab30e0bc3de9fe96a877e10efb9cb8b58590f7f01d879b182dcbd49c7f7ebf3",
+    "thermo5-tx-coverage-root-cause-tasks.csv": "c8a016d933c2cc666d9b017229f5b55f49f72f466b4f02a51d61844da29de5b5",
     "thermo5-tx-functional-bin-audit.csv": "96c7806a3ad056d6ab21e926829b61da5e08d773618f2cdeb8228f098a8cd7df",
     "thermo5-tx-functional-bin-detail.csv": "0106a4a89595004d95a17b5b04c5e4176fd8e6748939b6324dae83525b5520bf"
+  },
+  "outstanding_counter_formal_attempt": {
+    "evidence_file": "docs/verification/data/thermo5-tx-outstanding-counter-formal-evidence.json",
+    "evidence_sha256": "69cc6049a3de4cb313c5074e33c30108ed379d00a7250b897950ed93e7c0ac1f",
+    "formal_manifest_sha256": "fab9f0f01761745fd211eee590514986eb8970292abf940ca0bf4c8b56c4ecaa",
+    "raw_modified": false,
+    "status": "INCONCLUSIVE_OPEN"
   },
   "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
   "python": "3.12.13",
@@ -105,7 +112,9 @@
     "separate_from_raw": true
   },
   "tracked_review_documents": {
-    "docs/verification/thermo5-tx-coverage-final-signoff.md": "56be20986c5a9cab52ba47e6cba2d2b971960d906b6be811ebf0ffaef683032e"
+    "docs/exec-plans/active/execution-frontier.md": "56a81d8819bdff4eccdd485a57e1e7abfd2e42824aec6555eedc4f837194c300",
+    "docs/verification/thermo5-tx-coverage-final-signoff.md": "b58ad5acb71734eff8a05ec607fd643de5ad781bda04d6c027cab0543e264892",
+    "docs/verification/thermo5-tx-coverage-root-cause-closure.md": "c41579d94d1c831417449a4f1d2de84bfa19fe4f2533c647ce92242f3dcfc1e3"
   },
   "waivers": 0
 }
