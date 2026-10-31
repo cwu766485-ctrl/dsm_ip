@@ -2,7 +2,7 @@
 
 ## Current execution state: Linux TX coverage closure remains open (2026-10-31)
 
-The product remains frozen at RTL source SHA `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, one-tap identity DPD, AXI-Lite parent, and Generic FIFO for Linux. The previous CDC end-arm result is draft PR #14, stacked on PR #13 and not merged. This follow-up is in progress on local verification SHA `eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7` and will be published as a separate stacked review.
+The product remains frozen at RTL source SHA `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, one-tap identity DPD, AXI-Lite parent, and Generic FIFO for Linux. The previous CDC end-arm result is draft PR #14, stacked on PR #13 and not merged. This outer-case default-path follow-up is draft [PR #15](https://github.com/cwu766485-ctrl/dsm_ip/pull/15), stacked on PR #14 and also not merged. Its exact Formal run is tied to clean verification SHA `eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7`.
 
 VC Formal V-2023.12-SP2 passed the exact 14:8 CDC outer `case (rem_count_q)` default-path proof: 2/2 assertions proven, target Cover uncoverable, legal-advance and complete-frame Covers reached at depths 2 and 63, no environment assumptions, no setup violations, zero black boxes, no tautological goals. The exact Raw row `TXB-f787ff8f614d2d391c4c` is now `PROVEN_UNREACHABLE` in the audit ledger and remains in Raw URG. Eight rows are Formal-proven unreachable and 18,585 remain OPEN out of 18,593.
 
@@ -12,7 +12,7 @@ VCS V-2023.12-SP1 is available. This follow-up adds only Formal/DV and report fi
 
 The retained Raw compile manifest still fails closed against the current worktree on three UVM compile-input hashes; all product RTL hashes match. The Raw report remains valid only for its recorded baseline compile. The two centered-cubic product pop/push Branch bins remain OPEN after 26 legal timing placements produced zero Raw delta. Product-bound outstanding-word Formal remains INCONCLUSIVE; DPD identity Formal and the 16-cycle source-gap underflow contract remain unresolved.
 
-**Next:** publish this exact proof and ledger update as a draft PR stacked on PR #14. Then select the next high-value Branch/Condition from the source-linked ledger only when a legal stimulus predicts a specific Raw hit and an independent checker can validate it. Stop seed/phase sweeps with zero Raw delta. Keep Formal Inconclusive OPEN. Real XPM, GT Wizard, FPGA PPA/timing, and physical QAM256 BER remain outside Linux signoff.
+**Next:** review draft PR #15, then select the next high-value Branch/Condition from the source-linked ledger only when a legal stimulus predicts a specific Raw hit and an independent checker can validate it. Stop seed/phase sweeps with zero Raw delta. Keep Formal Inconclusive OPEN. Real XPM, GT Wizard, FPGA PPA/timing, and physical QAM256 BER remain outside Linux signoff.
 
 ## Previous execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
 

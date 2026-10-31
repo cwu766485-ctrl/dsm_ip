@@ -20,8 +20,8 @@
   reconciliation; Python Formal-disposition unit tests; `git diff --check`;
   Raw ledger/denominator/hash audit. VCS full regression was not repeated
   because no DUT RTL or VCS compile input changed. VCS license is available.
-- Publication: separate draft PR stacked on PR #14 is being prepared; no PR
-  was merged.
+- Publication: draft [PR #15](https://github.com/cwu766485-ctrl/dsm_ip/pull/15)
+  is open, stacked on PR #14; neither PR was merged.
 - Remaining: 18,585 code-gap rows OPEN; Raw 100% is not claimed; legal
   Functional Coverage is 210/210 applicable positive bins; source-manifest
   mismatch, outstanding-word/DPD Formal gaps, and vendor/physical signoff stay
