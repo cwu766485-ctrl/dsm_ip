@@ -115,6 +115,12 @@ The same waveform seed (610901) was run across nine source-start and seventeen R
 
 Exact VCS and URG command lines, source hashes, all 26 log hashes, VDB tree hash, URG report hash, coverage gate, target Bin IDs, and per-instance event counts are recorded in [`thermo5-tx-frame-replacement-coverage-review.json`](data/thermo5-tx-frame-replacement-coverage-review.json). The next action is a product-bound reachability/root-cause analysis of the 14-to-8 ingress cadence and frame-tail timing. Do not repeat random seeds or convert this miss into a Formal disposition without a non-vacuous product-bound proof.
 
+## Causal interpolation test scope check (2026-10-31)
+
+After VCS license recovery, the existing `thermo5_sku_interp1_empty_blocked_test` was compiled with the fixed Centered-Cubic product profile (AXI-Lite, EF2 ORDER=2/STEP=5120, one-tap identity DPD, Generic FIFO) and run at seed 620131. Compilation passed, but the UVM test timed out after 10,000 core cycles with one fatal; its bit-true completion checker and pass marker were not reached. The test waits for `vif.interp1_stall_window`, while the `THERMO5_CENTERED_CUBIC` branch of the UVM top assigns that causal-FIR probe to constant zero (`dv/uvm/tb/thermo5_sku_uvm_tb.sv:217`). Its `interp1_stage1_empty_blocked` hit counter is also tied low in that branch (`:216`). This is a test/configuration scope mismatch, not evidence of a DUT failure.
+
+The failed run's VDB remains separate and was not merged into product Raw; no coverage delta is claimed. The run command, current source hashes, compile/run log hashes, VDB tree hash and exact cause are captured in [`thermo5-tx-centered-test-scope-evidence.json`](data/thermo5-tx-centered-test-scope-evidence.json). The test README now labels the scenario causal-FIR-only. Product closure still requires a Centered-Cubic-specific legal stimulus/checker or audited Formal result; do not rerun this causal-stage test under the Centered-Cubic product defines.
+
 ## Evidence inputs
 
 - Raw Group Report: runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access
