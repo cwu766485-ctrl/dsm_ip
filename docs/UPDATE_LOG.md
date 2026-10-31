@@ -5139,3 +5139,33 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   are recorded in the PR #20 evidence index. `git push` was unavailable because
   this shell has no GitHub credential; publication used the connected GitHub
   integration after verifying every uploaded blob and the resulting tree SHA.
+
+## 2026-10-31 15:50 SGT - Prove the product 14:8 CDC final-word threshold
+
+- Added an independent source-hashed Formal harness for the exact product
+  `SRC_LANES=14` / `CORE_LANES=8` CDC and Generic FIFO. Two legal consecutive
+  32-beat packets reach the final frame-end pop. The first run exposed an
+  ignored immediate assertion in the harness, so it was removed and the
+  runner was made fail-closed on ignored assertions. The clean VC Formal
+  V-2023.12-SP2 rerun proves 3/3 assertions, reaches 4/6 Covers including
+  frame end at depth 119, and reports the exact short-final-word branch target
+  Cover uncoverable. There are no SVA environment assumptions, selected setup
+  violations, black boxes, tautology warnings, or ignored assertions.
+- The source-bound updater classified only Bin
+  `TXB-7ea7a7506f13f31ca4a9` at `dsm_axis14_to_core8_cdc.sv:215` as
+  `PROVEN_UNREACHABLE`; Raw URG/VDB and denominator are unchanged. The ledger
+  now has 355 proven-unreachable and 21,377 OPEN records; waivers=0,
+  exclusions=0, and the gate remains `RAW_100_OPEN`.
+- The static gate recheck reproduces Raw=Adjusted Branch 520/637, Condition
+  601/849, Line 3334/3796, Toggle 83575/104480; legal Functional Coverage
+  remains 210/210. Full VCS/URG was not rerun because product RTL, compile
+  inputs, and the Raw VDB are unchanged.
+- Checks: Python hardware utility tests 15/15 PASS, runner byte-compile PASS,
+  Formal disposition updater PASS, static coverage gate PASS with
+  `RAW_100_OPEN`, and `git diff --check` PASS. Complete reports and hashes are
+  recorded under `runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/`;
+  the superseded first Formal run remains under `..._retry2/` for traceability.
+- Remaining: 21,377 OPEN Raw bins, DPD identity payload Formal, the 16-cycle
+  source-gap/service-rate contract, XPM/GT Wizard, FPGA PPA, and physical
+  QAM256 BER remain open. No PR #21 has been published yet; this work is on a
+  separate local branch based on PR #20.

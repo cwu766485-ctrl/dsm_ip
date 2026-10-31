@@ -77,7 +77,7 @@ This source-linked audit uses the fresh licensed VCS/URG report recorded in `run
 
 ## Current-source Formal disposition update — `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`
 
-The source-bound review closed 354 exact bins as PROVEN_UNREACHABLE; 21378 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+The source-bound review closed 355 exact bins as PROVEN_UNREACHABLE; 21377 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
 | Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
@@ -88,6 +88,7 @@ The source-bound review closed 354 exact bins as PROVEN_UNREACHABLE; 21378 remai
 | `TXB-603e97cceda8c0d4d0ed` | `thermo5_frame_tail_harness.a_plain_tail_fire_disabled` | `thermo5_frame_tail_harness.c_plain_tail_fire_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-65f3dfeee7bc0b854f52` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-74a3bacf0956921ac9bf` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-7ea7a7506f13f31ca4a9` | `thermo5_cdc_frame_end_threshold_harness.a_frame_end_requires_tail_drain` | `thermo5_cdc_frame_end_threshold_harness.c_short_final_word_branch_target` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-85afd49f35a994cc290c` | `thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable` | `thermo5_cdc_end_remaining_harness.c_target_false_arm` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-c79cdf2b9f5b4620688e` | `thermo5_frame_tail_harness.a_plain_tail_pending_never_set` | `thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-ef2fb170941b345476dc` | `thermo5_frame_tail_harness.a_plain_tail_disabled` | `thermo5_frame_tail_harness.c_plain_tail_unreachable` | PROVEN_UNREACHABLE; retained in Raw |

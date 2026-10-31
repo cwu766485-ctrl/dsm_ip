@@ -21,8 +21,8 @@
     "toggle:IDENTITY_DPD_ARITHMETIC": 3792
   },
   "closure_status_counts": {
-    "OPEN": 21378,
-    "PROVEN_UNREACHABLE": 354
+    "OPEN": 21377,
+    "PROVEN_UNREACHABLE": 355
   },
   "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
   "diagnostic_product_branch_review": null,
@@ -7386,6 +7386,26 @@
       },
       "status": "PROVEN_UNREACHABLE"
     },
+    "TXB-7ea7a7506f13f31ca4a9": {
+      "assertion": "thermo5_cdc_frame_end_threshold_harness.a_frame_end_requires_tail_drain",
+      "assumptions": [],
+      "cover": "thermo5_cdc_frame_end_threshold_harness.c_short_final_word_branch_target",
+      "evidence_sha256": {
+        "console": "6963cb3346c0c1851d6c81c4a1d7c6a6092921ba211b48377d003b882ff71c20",
+        "properties": "72843f5fc08d62ddc4d21e6a83c977d09eee88a7e0fab0b5b4c5c92786954f09",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/cdc_frame_end_threshold",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_frame_end_threshold_fpv.py": "9b080072ccc1373e9aadd6cf0a7b89ef35e4cb00eb72a1d8524c70474bba09e3",
+        "dv/uvm/formal/run_thermo5_cdc_frame_end_threshold_fpv.tcl": "b5bbda1391a8ad1597a65cf76484393a1d979be4d91dcfb9a6104f528f53b7c7",
+        "dv/uvm/formal/thermo5_cdc_frame_end_threshold_harness.sv": "028716d858b7bb15557ec42f610d761cd02db256114169f0962ef9c0b5882209",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
     "TXB-85afd49f35a994cc290c": {
       "assertion": "thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable",
       "assumptions": [],
@@ -7467,7 +7487,7 @@
     "uncovered_records": 4,
     "urg_model_excluded_rows": 12
   },
-  "interpretation": "10 exact bins are Formal-proven unreachable and 344 are unreachable by exact product static-parameter elaboration; 21378 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "interpretation": "11 exact bins are Formal-proven unreachable and 344 are unreachable by exact product static-parameter elaboration; 21377 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
   "negative_report": "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame",
   "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
   "raw_bin_id_collision_extra_rows": 17,

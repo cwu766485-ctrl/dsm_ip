@@ -20,6 +20,7 @@ for that job:
 | Product 14:8 CDC frame-end branch | `thermo5_cdc_end_branch_harness.sv` | `thermo5_cdc_end_branch_harness` |
 | Product 14:8 CDC outer-case default | `thermo5_cdc_default_branch_harness.sv` | `thermo5_cdc_default_branch_harness` |
 | Product consecutive-frame start alignment | `thermo5_cdc_frame_start_alignment_harness.sv` | `thermo5_cdc_frame_start_alignment_harness` |
+| Product 14:8 CDC final-word threshold | `thermo5_cdc_frame_end_threshold_harness.sv` | `thermo5_cdc_frame_end_threshold_harness` |
 | Identity DPD payload/latency | `thermo5_dpd_identity_harness.sv` | `thermo5_identity_harness` |
 | Identity DPD intermediate lemmas | `thermo5_dpd_identity_lemmas_harness.sv` | `thermo5_identity_lemmas_harness` |
 | Interpolator bounds | `thermo5_interp_bounds_harness.sv` | `thermo5_interp_bounds_harness` |
@@ -58,6 +59,9 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.py \
   runs/thermo5_cdc_frame_start_alignment_review
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_cdc_frame_end_threshold_fpv.py \
+  runs/thermo5_cdc_frame_end_threshold_review
 ```
 
 The CDC outer-case proof binds the Generic FIFO and 14:8 product gearbox to a
@@ -68,6 +72,13 @@ a completed frame must be reached. The flow uses no environment assumptions
 and fails on Formal setup violations, black boxes, or tautological goals. Its
 Raw URG bin remains in the denominator; Formal reachability is audit evidence,
 not a simulator coverage hit.
+
+The 14:8 final-word threshold job uses explicit `SRC_LANES=14` and
+`CORE_LANES=8` on the production CDC/Generic FIFO. It requires a non-vacuous
+frame-end witness and proves the exact short-final-word branch target
+uncoverable while the legal tail-drain assertion passes. Its source-bound Raw
+bin remains in the denominator; this proof does not change simulator
+coverage.
 
 The EF2 assertions cover all 32 chronological lanes in I and Q. They prove
 the 22-bit RTL arithmetic agrees with its one-bit-wider signed recomputation,

@@ -4,9 +4,9 @@
 
 The latest exact-source audit retains all **21,732** unhit Raw URG records and
 does not apply waivers or `.el` exclusions. The audit disposition ledger now
-contains **354 `PROVEN_UNREACHABLE`** records and **21,378 `OPEN`** records
-across 470 grouped tasks (96 fully dispositioned tasks, 374 open tasks). The
-354 are ten source-bound Formal bins plus 344 EF2 PAIR_LOOKAHEAD bins whose
+contains **355 `PROVEN_UNREACHABLE`** records and **21,377 `OPEN`** records
+across 470 grouped tasks (97 fully dispositioned tasks, 373 open tasks). The
+355 are eleven source-bound Formal bins plus 344 EF2 PAIR_LOOKAHEAD bins whose
 product elaboration is disabled by the exact parameter chain. The separate
 PAIR_LOOKAHEAD SVA run remains rejected as tautological and is not used as
 reachability evidence.
@@ -46,11 +46,33 @@ a failed run and is not evidence. The corrected 7-bit harness passed. Exact
 commands, source hashes, and report hashes are bound in the current Formal
 review JSON; the full reports remain under the ignored `runs/` directory.
 
-This closes exactly one audit-ledger record as `PROVEN_UNREACHABLE`; the Raw
-bin and denominator are retained. Raw coverage did not change: Branch
-520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480. The current
-ledger has 354 proven-unreachable records and 21,378 OPEN records. Waivers and
-active `.el` exclusions remain zero; the gate remains `RAW_100_OPEN`.
+At the PR #20 checkpoint this closed exactly one audit-ledger record as
+`PROVEN_UNREACHABLE`; the Raw bin and denominator were retained. Raw coverage
+did not change: Branch 520/637, Condition 601/849, Line 3334/3796, Toggle
+83575/104480. At that checkpoint the ledger had 354 proven-unreachable
+records and 21,378 OPEN records. Waivers and active `.el` exclusions were
+zero; the gate remained `RAW_100_OPEN`.
+
+## Product CDC frame-end threshold — 2026-10-31
+
+The exact Raw Branch `TXB-7ea7a7506f13f31ca4a9` is the true arm of
+`if (rem_count_q + SRC_LANES <= CORE_LANES)` at
+`rtl/axis/dsm_axis14_to_core8_cdc.sv:215`, instance
+`thermo5_sku_uvm_tb.dut.u_cdc`. A separate Formal harness explicitly ties
+`SRC_LANES=14`, `CORE_LANES=8`, uses the production CDC and Generic FIFO, and
+sends two legal consecutive 32-beat packets. VC Formal V-2023.12-SP2
+non-vacuously proves `frame_end_pop |=> end_pending_q`; the second frame-end
+pop is covered at depth 119, and the exact short-final-word target Cover is
+uncoverable. There are no SVA environment assumptions, setup violations,
+black boxes, or tautology warnings.
+
+The source-bound updater closed exactly this semantic Bin as
+`PROVEN_UNREACHABLE`. Raw URG/VDB and denominators are unchanged. Raw remains
+Branch 520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480;
+legal Functional Coverage remains 210/210. The ledger now has 355 proven
+unreachable records and 21,377 OPEN records across 470 tasks; waivers and
+active exclusions remain zero. The gate remains `RAW_100_OPEN`. No product
+VCS/URG rerun was needed because no DUT or product compile input changed.
 
 ## Latest Centered-Cubic frame-tail Formal follow-up — 2026-10-31
 
