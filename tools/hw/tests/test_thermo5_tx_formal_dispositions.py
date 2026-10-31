@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from tools.hw.thermo5_tx_formal_dispositions import (
+    append_current_source_formal_section,
     tautological_property_names,
     validate_refresh_evidence,
 )
@@ -30,6 +31,17 @@ Info: SIMON completed
             tautological_property_names(console),
             {"a_constant_parameter_check"},
         )
+
+    def test_current_source_update_preserves_historical_sections(self):
+        closure = "# Report\n\n## Formal disposition update\n\nOld SHA: 8/10 proven.\n"
+        updated = append_current_source_formal_section(
+            closure,
+            "a" * 40,
+            ["New SHA: 1/22,626 proven."],
+        )
+        self.assertIn("Old SHA: 8/10 proven.", updated)
+        self.assertIn("## Current-source Formal disposition update — `" + "a" * 40 + "`", updated)
+        self.assertIn("New SHA: 1/22,626 proven.", updated)
 
 
 class RefreshEvidenceTests(unittest.TestCase):

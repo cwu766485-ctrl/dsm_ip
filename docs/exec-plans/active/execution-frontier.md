@@ -1,18 +1,33 @@
 # Execution frontier
 
-## Current execution state: Linux TX coverage closure remains open (2026-10-31)
+## Current execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 
-The product remains frozen at RTL source SHA `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, one-tap identity DPD, AXI-Lite parent, and Generic FIFO for Linux. The previous CDC end-arm result is draft PR #14, stacked on PR #13 and not merged. This outer-case default-path follow-up is draft [PR #15](https://github.com/cwu766485-ctrl/dsm_ip/pull/15), stacked on PR #14 and also not merged. Its exact Formal run is tied to clean verification SHA `eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7`.
+The frozen product RTL is at SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, DPD_MAX_TAPS=1, identity reset image, AXI-Lite product frontend, and Generic FIFO for Linux. No product algorithm, RX, or AI-DPD RTL changed. Verification files and documentation are worktree changes; their exact compile inputs are hash-bound in the current VCS source manifest.
 
-VC Formal V-2023.12-SP2 passed the exact 14:8 CDC outer `case (rem_count_q)` default-path proof: 2/2 assertions proven, target Cover uncoverable, legal-advance and complete-frame Covers reached at depths 2 and 63, no environment assumptions, no setup violations, zero black boxes, no tautological goals. The exact Raw row `TXB-f787ff8f614d2d391c4c` is now `PROVEN_UNREACHABLE` in the audit ledger and remains in Raw URG. Eight rows are Formal-proven unreachable and 18,585 remain OPEN out of 18,593.
+A fresh VCS V-2023.12-SP1 compile and 13 focused positive UVM tests passed, including the new legal AXI-Lite one-tap DPD saturation test (seed 620131). The test writes a legal non-identity coefficient image, checks all four output planes against generated Python bit-true vectors, observes 56 words/one TLAST, and exercises I/Q positive and negative saturation on all 16 DPD lanes (873 saturated samples in the model). Existing 12 tests were replayed on the same fresh compile. Their merge-to-13 delta is +80 Branch, +16 Condition, +144 Line, +654 Toggle. Full UVM regression was not repeated.
 
-Raw code coverage is unchanged: line 3,190/3,796 (84.0358%), condition 583/846 (68.9125%), branch 440/637 (69.0738%), toggle 86,951/104,478 (83.2242%), FSM states 13/13 and transitions 22/22. Raw equals Adjusted; approved waivers and `.el` exclusions are zero; status remains `RAW_100_OPEN`. Functional coverage remains 210/214 Raw records, with all 210 legally applicable positive records hit; four misses are duplicated illegal-frame-only bins with separate negative-test hits.
+The current AXI-Lite frontend Raw URG has 210/214 scoreable functional records covered; all 210 legal positive records are hit. Four zero-hit Raw records are two illegal-only bins duplicated in type/monitor views; the separate negative regression hits them (49 bad-frame and 1 malformed-early hit). Twelve pre-existing URG-model Illegal/Excluded records remain visible. No functional bin or denominator was removed.
 
-VCS V-2023.12-SP1 is available. This follow-up adds only Formal/DV and report files; no product RTL or VCS compile input changed, so the current product UVM regression was not repeated. Prior VCS PASS evidence is retained. The first isolated Formal attempt failed closed on a reset-setup configuration mismatch; after aligning its Tcl with the established flow, the clean rerun passed. The failed attempt is retained locally and is not accepted evidence.
+Raw DUT code coverage and adjusted coverage are identical, with zero approved waivers and zero active `.el` exclusions. The fail-closed gate is `RAW_100_OPEN`:
 
-The retained Raw compile manifest still fails closed against the current worktree on three UVM compile-input hashes; all product RTL hashes match. The Raw report remains valid only for its recorded baseline compile. The two centered-cubic product pop/push Branch bins remain OPEN after 26 legal timing placements produced zero Raw delta. Product-bound outstanding-word Formal remains INCONCLUSIVE; DPD identity Formal and the 16-cycle source-gap underflow contract remain unresolved.
+| Metric | Raw covered / total | Unhit |
+|---|---:|---:|
+| Branch | 520/637 (81.6327%) | 117 |
+| Condition | 601/849 (70.7892%) | 248 |
+| Line | 3,334/3,796 (87.8293%) | 462 |
+| Toggle | 83,575/104,480 (79.9914%) | 20,905 |
+| FSM states / transitions | 13/13; 22/22 | 0 |
+| DUT assertions | 13 success / 15 attempted | 2 uncovered; 2 without attempts |
 
-**Next:** review draft PR #15, then select the next high-value Branch/Condition from the source-linked ledger only when a legal stimulus predicts a specific Raw hit and an independent checker can validate it. Stop seed/phase sweeps with zero Raw delta. Keep Formal Inconclusive OPEN. Real XPM, GT Wizard, FPGA PPA/timing, and physical QAM256 BER remain outside Linux signoff.
+The current-source ledger retains all 21,732 unhit Raw records in 470 grouped tasks: 48 Branch, 107 Condition, 114 Line, 201 Toggle. Five exact records are `PROVEN_UNREACHABLE` under their reviewed source-bound Formal evidence; all remain in Raw. They are the aligned 32-beat CDC end false arm, CDC outer-case default, AXI-Lite write-case default Branch, coefficient-read default Branch, and the matching default Line. The other 21,727 records and 465 tasks remain OPEN. Root-cause labels are triage only. Current review artifacts and checksums are linked from `docs/verification/data/thermo5-tx-coverage-closure-index.json`.
+
+Formal status is deliberately limited. The full identity-DPD payload equivalence property remains INCONCLUSIVE at depth 252. A new identity-only DPD saturation harness proves four no-clamp assertions and finds the four clamp Covers uncoverable under the reset-loaded unity coefficient, but AXI-Lite permits runtime coefficient writes; therefore this result does not disposition product Raw bins. The legal AXI-Lite stress test now hits those clamp paths. The PAIR_LOOKAHEAD exact-parameter run reported two proven assertions and two uncoverable Covers, but VC Formal explicitly marked both goals tautological; all four corresponding Raw branch bins remain OPEN. The source-bound Formal review closes five exact records; the AXI-Lite tuple condition assertion lacks a non-vacuous witness and stays OPEN.
+
+Mutation verification passed at VCS V-2023.12-SP1: baseline bit-true test PASS; `late_gain` and EF2 `plane_swap` mutants were both detected by the independent `[BITTRUE]` scoreboard. This demonstrates those checker paths only, not all fault classes. A 16-cycle AXI source gap still fails the independent checker with 54 underflows (112 output words, no protocol errors); the interface has no maximum-gap contract, so this remains OPEN.
+
+Scope remains focused frontend coverage, not full-system TX signoff. The separate one-test behavioral GT Parent report has no payload checker. Real XPM and GT Wizard simulation, full parent TX payload checking, EF2 identity Formal convergence, remaining reachable Branch/Condition/Line/Toggle closure, FPGA PPA, and physical QAM256 BER remain OPEN. Do not claim final signoff or 100% Raw/adjusted code coverage.
+
+**Next:** use the source-position task table to target the highest-value legal Branch/Condition gap with an independent checker and DUT event. If a round produces no new valid Raw hits, stop seed sweeping and investigate reachability or monitor/bin mapping. Keep all candidate branches OPEN until exact evidence closes them.
 
 ## Previous execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
 

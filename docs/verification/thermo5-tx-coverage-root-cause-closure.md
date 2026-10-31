@@ -1,5 +1,65 @@
 # Thermo5 TX Coverage Root-Cause Closure — Step 1/2
 
+## Latest 13-test current-source audit — product RTL SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea` (2026-10-31)
+
+This section supersedes the focused 12-test current-source snapshot later in this document. The product configuration remains Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, DPD_MAX_TAPS=1 identity reset image, AXI-Lite frontend, and Generic FIFO. The Raw coverage hierarchy contains only elaborated product DUT RTL. Candidate 2/4-tap DPD and PAIR_LOOKAHEAD VDBs, the negative-only test, and the failing source-gap test are separate. No DUT algorithm, denominator, URG database, or active exclusion was edited.
+
+A fresh VCS V-2023.12-SP1 compile replayed 13 directed positive tests with independent data/bit-true checks. The additional legal AXI-Lite DPD saturation test uses a one-tap non-identity Q2.14 image; its 56-word/four-plane output matches generated Python vectors, it produces one TLAST, and each of the 16 DPD lanes observes I/Q positive and negative saturation. The same-compile 12-to-13 test delta is +80 Branch, +16 Condition, +144 Line, and +654 Toggle.
+
+### Functional coverage
+
+The full URG Group Report has 226 records, 214 scoreable records, 210 covered records, and four zero-hit Raw records. All 210 legally applicable positive records are covered. The four zero-hit records are two illegal-only bins duplicated across type and monitor-instance views:
+
+| Exact bin | Product Raw hits | Separate negative hits | Classification |
+|---|---:|---:|---|
+| `source_cg.cp_packet_quanta.malformed_early` (type and instance views) | 0 | 1 | Illegal-test-only; excluded from legal-positive target, retained in Raw |
+| `core_cg.cp_illegal.bad_frame` (type and instance views) | 0 | 49 | Illegal-test-only; excluded from legal-positive target, retained in Raw |
+
+The separate negative run is not merged into positive Raw. Twelve further URG-model Illegal/Excluded records remain reported as produced by URG; no new exclusion is applied. Functional groups: `core_cg` 7/8; `ef2_cg` 34/34; `plane_atomic_cg` 8/8; `read_cg` 11/11; `reset_cg` 2/2; `source_cg` 19/20; `stop_restart_cg` 6/6; `write_cg` 18/18 per type view, with the corresponding monitor view also present. This is 210/210 legal positives across both report scopes.
+
+### Raw DUT code coverage and root-cause inventory
+
+| Metric | Raw covered / total | Raw unhit |
+|---|---:|---:|
+| Branch | 520/637 (81.6327%) | 117 |
+| Condition | 601/849 (70.7892%) | 248 |
+| Line | 3,334/3,796 (87.8293%) | 462 |
+| Toggle | 83,575/104,480 (79.9914%) | 20,905 |
+| FSM state / transitions | 13/13; 22/22 | 0 |
+| DUT assertions | 13 SUCCESS / 15 attempted (86.67%) | 2 UNCOVERED; 2 WITHOUT_ATTEMPTS |
+
+Raw and Adjusted are identical. The fail-closed gate returns `RAW_100_OPEN`, with zero approved waivers and zero active `.el` exclusions. The 21,732 unhit records are grouped into 470 exact source/instance/root-cause tasks: 48 Branch, 107 Condition, 114 Line, and 201 Toggle tasks. Five exact records are `PROVEN_UNREACHABLE` and remain in Raw: the CDC end false-arm Branch and outer-case default Branch under the aligned-frame Generic-FIFO contract, the AXI-Lite write-case default Branch, the coefficient-read default Branch, and the coefficient-read default Line. The remaining 21,727 records across 465 tasks are OPEN. The task ledger uses HIT/PROVEN_UNREACHABLE/WAIVER_CANDIDATE/OPEN vocabulary; there are no approved waivers or applied exclusions.
+
+The one added saturation test increased the same-compile Raw by 80 Branch, 16 Condition, 144 Line, and 654 Toggle bins. Sixty-four Branch hits are the four clamp directions across 16 DPD lanes; 16 are per-lane saturation counters. No new seed or VDB is included without an exact-source compile link and positive checker result.
+
+
+| Semantic Bin ID | Raw target | Formal result | Raw treatment |
+|---|---|---|---|
+| `TXB-85afd49f35a994cc290c` | CDC end false-arm Branch at `dsm_axis14_to_core8_cdc.sv:146` | Matching assertion proven; exact false-arm Cover uncoverable under aligned 32-beat Generic-FIFO contract | Retained in Raw; PROVEN_UNREACHABLE |
+| `TXB-0260d31bb5bee4f1a4c6` | CDC outer-case default Branch at `dsm_axis14_to_core8_cdc.sv:141` (nested default at line 154) | Residual-legal and exact-default-path assertions proven; exact-default Cover uncoverable; legal advance/frame Covers reached | Retained in Raw; PROVEN_UNREACHABLE |
+| `TXB-3df5f13a8d51ee9bdea5` | AXI-Lite write-case default Branch at `thermo5_dpd_axi_lite_cfg.sv:246` | `a_write_case_default_unreachable` non-vacuously proven; matching Cover uncoverable | Retained in Raw; PROVEN_UNREACHABLE |
+| `TXB-65f3dfeee7bc0b854f52` | Coefficient-read default Branch at `thermo5_dpd_axi_lite_cfg.sv:135` | `a_coeff_read_default_unreachable` non-vacuously proven; matching Cover uncoverable | Retained in Raw; PROVEN_UNREACHABLE |
+| `TXB-74a3bacf0956921ac9bf` | Matching default Line at `thermo5_dpd_axi_lite_cfg.sv:142` | Same exact coefficient-read default property/Cover pair | Retained in Raw; PROVEN_UNREACHABLE |
+
+The condition tuple `TXB-872eb98e51c3229e4c86` remains OPEN: its assertion is proven but not reported non-vacuous. No conclusion is inferred from that result.
+
+### Formal, mutation, and open interface risk
+
+The DPD identity-only saturation harness proves 4/4 no-clamp assertions and reaches input/output Covers; its four clamp Covers are uncoverable only for the fixed unity coefficient image. The AXI-Lite product allows coefficients to be written at runtime, and the legal UVM stress test hits all clamp directions, so no product Raw bin is dispositioned from that restricted proof. The general DPD identity payload-equivalence assertion remains INCONCLUSIVE at depth 252 and OPEN.
+
+The EF2 exact-parameter PAIR_LOOKAHEAD run reports 2 assertions proven and 2 Covers uncoverable, but VC Formal marks both exact goals tautological (`SVAC-TAUT-PROPERTY` and `SVAC-TAUT-COVER`). Four product branch records therefore remain OPEN and in Raw. The five `PROVEN_UNREACHABLE` records are source-bound. The CDC disposition is contract-scoped and does not justify unrelated FIFO/XPM paths. The AXI-Lite tuple condition assertion is not non-vacuous, so that condition remains OPEN.
+
+Mutation run seed 1 passed the baseline; both `late_gain` and EF2 `plane_swap` mutants were caught by the independent `[BITTRUE]` scoreboard. The earlier failed mutation-runner invocations are retained as failed setup attempts and not counted as mutation PASS.
+
+The legal-frame 16-cycle source-gap case produces all 112 expected output words but reports 54 underflows and fails the independent checker. AXI-Stream currently defines no maximum legal source gap; do not classify this as an illegal environment or waive it without a service-rate contract.
+
+The executable evidence index is [`thermo5-tx-coverage-closure-index.json`](data/thermo5-tx-coverage-closure-index.json). It binds the product SHA, compile manifest, Raw URG, gate, functional detail, closure artifacts, Formal reports, mutation manifest, commands, and hashes. VCS/URG results are focused AXI-Lite frontend scope. The separate behavioral GT Parent test is not bit-true on payload. Real XPM/GT Wizard, full parent payload checking, complete reachable code closure, DPD identity Formal convergence, FPGA timing/PPA, and physical QAM256 BER remain OPEN. No final signoff or 100% code coverage is claimed.
+
+---
+
+
+> **Source-scope notice (2026-10-31):** The 18,593-row inventory and formal dispositions described below were generated for the earlier source SHA `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`. A reset-ready RTL fix is now committed at `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`. The focused 12-test Raw report and newly generated current-source gap ledger are recorded in the final section. Do not treat the old-source counters or dispositions as current-source full-suite coverage.
+
 - Raw VCS/URG product source SHA: c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b; the baseline Raw report remains bound to its original compile source manifest.
 - The Raw compile source manifest is pinned to base commit `913be930bfcbbad0f78dbc90e06299db3d1bb337`. Current-tree audit differences are listed in the machine-readable summary: the AXI-Lite interface adds read-only frame probes, the UVM package includes an additive diagnostic test, and the UVM top assigns those probes. Their separate diagnostic VDB was not merged into baseline Raw. All product `rtl/` source hashes and the coverage hierarchy match the baseline; the AXI-Lite Formal harness is outside the product VCS compile.
 - Source gap inventory: 18,593 rows; original ledger SHA-256 e586d27684fffe4e98b1d4c4bd43b22839c349ef31c07b1779d4a69c4ce45222. Current disposition-ledger SHA-256 540e71bac7f07361578cf04e53e5d9b6766ede48354234fa3f4d2db8de9034bb.
@@ -8,7 +68,7 @@
 - All code gaps start OPEN. Root-cause labels are review hypotheses, not approved exclusions.
 - Raw equals Adjusted; approved waivers 0; exclusions 0.
 
-## Functional Group Report audit
+## Functional Group Report audit — original source SHA `c1fa9f3`
 
 The complete product Group Report contains 210/214 denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.
 
@@ -34,7 +94,7 @@ The complete bin CSV has 226 rows: 214 scoreable Raw records and 12 bins already
 
 Legally applicable positive bins are 210/210. The four Raw zero-hit report rows remain visible in the denominator.
 
-## Code coverage and root-cause task inventory
+## Code coverage and root-cause task inventory — original source SHA `c1fa9f3`
 
 | Metric | Raw covered / total | Raw missing | Closure tasks |
 |---|---:|---:|---:|
@@ -43,7 +103,7 @@ Legally applicable positive bins are 210/210. The four Raw zero-hit report rows 
 | line | 3,190/3,796 (84.0358%) | 606 | 123 |
 | toggle | 86,951/104,478 (83.2242%) | 17,527 | 209 |
 
-The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. After exact Formal review, 8 rows are PROVEN_UNREACHABLE and 18585 remain OPEN; Raw URG is unchanged.
+The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. For this original source SHA, 8 rows are PROVEN_UNREACHABLE and 18,585 remain OPEN; Raw URG is unchanged.
 
 | Metric / root-cause hypothesis | Raw gap rows |
 |---|---:|
@@ -170,6 +230,16 @@ No URG/VDB, denominator, DUT RTL, waiver, or exclusion changed. Code coverage
 remains `RAW_100_OPEN`; eight exact rows are proven unreachable and 18,585
 remain OPEN out of 18,593.
 
+## CDC source-reset handshake defect found during end-residual closure (2026-10-31)
+
+Legal-startup Formal review changed the disposition of the 14:8 end-residual Branch investigation. The source holds `TVALID=0` through the first source-clock edge after external reset release, then may assert it while the CDC two-flop source reset synchronizer is still active. On the pre-fix RTL, VC Formal reached the exact `end_remaining_q <= CORE_LANES` false arm together with a product protocol error; the public FIFO ready was not gated by the synchronized local reset. This was a reachable behavior defect, not a configuration-only dead path.
+
+The RTL now routes FIFO readiness through a private `fifo_wr_ready` signal and assigns public `s_axis_tready = s_rst_n && fifo_wr_ready` for both Generic and XPM generate branches. The UVM driver holds `TVALID` low for the first source cycle after external reset release. A directed AXI-Lite product test then starts a legal source stream while the core domain remains reset, checks that the source is backpressured until local reset release, and uses the independent four-plane scoreboard on all 56 output words. VCS V-2023.12-SP1 run seed 610713 passed: 32 beats accepted, 56 words checked, one frame end, zero underflow/protocol error, zero UVM warnings/errors/fatals. Its local run log is `runs/thermo5_cdc_resetready_repro_20261031/vcs_after_gate/thermo5_sku_axil_reset_release_source_test_seed610713.log`.
+
+The clean-source VC Formal repeat at `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea` proves 5/5 CDC assertions; 5/7 Covers are hit, including legal end/frame completion and TVALID during internal reset. The two exact false-arm Covers are uncoverable; the audited Branch mapping and limits are recorded in the current-source snapshot below.
+
+The historical Raw URG and 18,593-row ledger remain bound to pre-fix RTL SHA `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b` and remain unchanged. The focused 12-test Raw report and 22,626-row ledger below are separately bound to `19d2953`; the old-source disposition counts are not transferred. No waiver, exclusion, or denominator change is applied.
+
 ## Evidence inputs
 
 - Raw Group Report: runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access
@@ -199,3 +269,92 @@ Reviewed candidates with tautological or otherwise invalid Formal evidence remai
 |---|---|---|
 | `TXB-054d97a87a8d74c36c8b` | OPEN | Not accepted as a Formal disposition: VC Formal reports the MAX_TAPS assertion/Cover as tautological for compile-time MAX_TAPS=1. Retain Raw bin and OPEN status pending separately audited static configuration evidence. |
 | `TXB-c79cdf2b9f5b4620688e` | OPEN | Not accepted as a Formal disposition: the assertion a_plain_append_arm_disabled is explicitly reported tautological by VC Formal. Retain Raw bin and OPEN status; no waiver or exclusion. |
+
+## Current-source focused AXI-Lite frontend snapshot at `19d2953` — 2026-10-31
+
+This snapshot uses product source SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`, Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, `DPD_MAX_TAPS=1` identity, AXI-Lite frontend, and Generic FIFO. The 12-test UVM top instantiates the frontend directly with parameters matching the actual GT Parent, but it does not elaborate the GT Parent, `u_continuous`, GT bridge, or parent clock/reset logic. It is a focused positive VCS subset, not the complete accepted product regression. Separate expected-negative and failing 16-cycle-gap VDBs are not merged.
+
+### Functional coverage
+
+The full Group Report export contains 226 rows, 214 scoreable rows, 210 hits, and four zero-hit rows. The four records are two illegal-only bins duplicated across type and instance views:
+
+| Exact bin | Product Raw hits | Separate negative hits | Classification |
+|---|---:|---:|---|
+| `thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg.cp_illegal.bad_frame` | 0 | 49 | Illegal-test-only; not applicable to legal product coverage |
+| `thermo5_sku_uvm_tb.me.obj.core_cg.cp_illegal.bad_frame` | 0 | 49 | Same semantic illegal bin in monitor-instance view; not applicable to legal product coverage |
+| `thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg.cp_packet_quanta.malformed_early` | 0 | 1 | Illegal-test-only; not applicable to legal product coverage |
+| `thermo5_sku_uvm_tb.me.obj.source_cg.cp_packet_quanta.malformed_early` | 0 | 1 | Same semantic illegal bin in monitor-instance view; not applicable to legal product coverage |
+
+All 210 legally applicable positive bins hit. Group counts are `core_cg` 14/16, `ef2_cg` 68/68, `plane_atomic_cg` 16/16, `read_cg` 22/22, `reset_cg` 4/4, `source_cg` 38/40, `stop_restart_cg` 12/12, and `write_cg` 36/36. The four uncovered rows are the illegal-only records above; no functional exclusion was added. Exact report rows and provenance are in [`thermo5-tx-product-19d2953-functional-bins.csv`](data/thermo5-tx-product-19d2953-functional-bins.csv).
+
+### Focused Raw DUT code coverage
+
+| Metric | Raw covered / total | Raw missing |
+|---|---:|---:|
+| Branch | 440/637 (69.0738%) | 197 |
+| Condition | 585/849 (68.9046%) | 264 |
+| Line | 3,190/3,796 (84.0358%) | 606 |
+| Toggle | 82,921/104,480 (79.3654%) | 21,559 |
+| FSM states | 13/13 | 0 |
+| FSM transitions | 22/22 | 0 |
+| DUT assertions | 13/15 attempted (86.67%) | 2 uncovered; 2 not attempted |
+
+The fail-closed gate returned `RAW_100_OPEN`: zero approved waivers, zero active `.el` exclusions, and Adjusted equal to Raw. It did not alter URG data or denominators.
+
+The current-source ledger has 22,626 unhit records grouped into 493 source/instance/location/root-cause tasks. The table distinguishes Raw missing bins from grouped tasks; the CDC Formal disposition does not remove its Raw bin or denominator. Root-cause labels are triage hypotheses, not waivers.
+
+| Priority / metric | Raw missing bins | Grouped tasks | OPEN tasks | PROVEN_UNREACHABLE tasks |
+|---|---:|---:|---:|---:|
+| P0 Branch | 197 | 53 | 52 | 1 |
+| P0 Condition | 264 | 108 | 108 | 0 |
+| P1 Line | 606 | 123 | 123 | 0 |
+| P2 Toggle | 21,559 | 209 | 209 | 0 |
+| **Total** | **22,626** | **493** | **492** | **1** |
+
+Each grouped task has an exact source position, instance, parameter profile, Raw bin IDs, root-cause hypothesis, next action, and current disposition in [`thermo5-tx-focused-product-closure-tasks.csv`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure-tasks.csv). The gzip ledger preserves each of the 22,626 individual Raw records. `HIT` records are represented by the separate complete Raw URG inventory; this ledger is specifically the unhit-bin closure queue and therefore contains only `OPEN` and the single Formal-reviewed disposition.
+
+### VCS and Formal evidence
+
+VCS V-2023.12-SP1 compiled the exact frontend parameter profile and passed twelve directed positive runs with independent bit-true/data checkers and zero UVM warnings/errors/fatals. These cover reset release/replay, one- and two-frame streams, 1- and 8-cycle gaps, EF2 positive/negative clamp corners, AXI-Lite access, STOP/drain/restart, CDC residual handling, and boundary commit. The separate expected-negative early-TLAST test passed its assertions but was not merged into positive Raw.
+
+VC Formal V-2023.12-SP2 at this clean SHA proves all 5 CDC assertions; 5/7 Covers are reached, including legal frame completion and TVALID during internal source reset. The exact false-arm Cover for `end_remaining_q > CORE_LANES` is `uncoverable`, while the legal end-arm Cover is reached. The resulting one-bin disposition is limited to the fixed 14:8 Generic-FIFO harness, aligned frame starts, and positive multiples of 32 accepted source beats per frame. It does not prove XPM behavior or arbitrary malformed AXI traffic. Proof used no SVA assumptions, zero black boxes, and no selected setup violations. Machine review and evidence hashes are in [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json); full local Formal artifacts remain under ignored `runs/thermo5_cdc_resetready_repro_20261031/`.
+
+The extended 16-minute DPD Identity proof improved from 1/5 to 4/5 assertions proven. Both no-saturation assertions, saturation-count-zero, and valid-latency are proven; all four endpoint/stall/recovery Covers are reached. The payload equivalence assertion remains non-vacuous but `INCONCLUSIVE` at depth 252. The valid-hold assumption is non-vacuous; reset is modeled through `sim_save_reset` and released to `rst_n==1`; setup reports zero selected violations and the design has zero black boxes. Therefore the DPD payload proof remains `OPEN`, and no DPD Raw bin is dispositioned from this run. Full property, engine, setup, command, and hash evidence is recorded in the CDC reset-ready evidence JSON. This proof does establish the exact no-saturation fact needed to review the identity-image clamp branches; branch dispositions still require explicit source/bin mapping and an exact unreachable Cover result.
+
+The 8-cycle source-gap test passed without adding code-coverage hits. The 16-cycle source-gap test failed its independent stream checker with 54 underflows (64 accepted inputs, two frames, 112 expected output words, no protocol errors); this interface service-rate contract remains `OPEN`, and that VDB is separate. The extended DPD identity Formal is non-vacuous for the payload checker and remains `OPEN` because payload equivalence is inconclusive at depth 252.
+
+See [`thermo5-tx-cdc-resetready-evidence.json`](data/thermo5-tx-cdc-resetready-evidence.json), the current-source focused gap ledger, closure-task CSV, summary, and root-cause manifest under [`data/thermo5-tx-current-source-gaps/`](data/thermo5-tx-current-source-gaps/). This is not final signoff: complete current-source Raw coverage, reachable-bin closure, mutation testing, and DPD Formal remain open. Real XPM/GT Wizard, FPGA timing/PPA, and physical QAM256 BER remain outside this Linux evidence set.
+
+### Actual GT Parent Linux coverage — separate report
+
+After VCS license recovery, a separate run elaborated the real `thermo5_qsfp_gt14_parent` at the same current source SHA. The parent defaults select `INTERP_CENTERED_CUBIC=1`, `TIDSM_ORDER=2`, and `STEP=5120`; the instance overrides `DPD_MAX_TAPS=1`, `INTERP_TAPS=2`, `BYPASS_DPD=0`, and `FPGA_USE_XPM_FIFO=0`. Reset initializes the one-tap DPD image to identity (`c1_re=0x4000` in Q2.14, all other coefficients zero). The Linux testbench replaces board clock/GT vendor models behaviorally, with RX inactive.
+
+The dedicated link-fault test passed its existing PA immediate-blank, sticky-fault, and reset-recovery checks. It accepted 54 TX input beats and observed 24 PA words, but has no bit-true sample-payload checker. Therefore this result establishes only that this targeted parent-level behavioral test passed; it does not extend the frontend UVM checkers or constitute full-chain functional signoff. The TX-only compile hierarchy excludes the two testbench behavioral module definitions `IBUFDS_GTE4` (TB lines 11–20) and `thermo5_qsfp_gt14_probe` (TB lines 22–78); both remain elaborated as stimulus/clock/GT replacements, but their model code is outside the project DUT coverage denominator. Parent Raw is reported separately and has not been merged with frontend UVM Raw:
+
+| Metric | Parent Raw covered / total | Missing | Percent |
+|---|---:|---:|---:|
+| Line | 3,119/3,868 | 749 | 80.64% |
+| Condition | 435/889 | 454 | 48.93% |
+| Toggle | 59,820/107,486 | 47,666 | 55.65% |
+| FSM | 14/22 | 8 | 63.64% |
+| Branch | 351/671 | 320 | 52.31% |
+| Assertion | 14/19 | 5 | 73.68% |
+
+Parent URG has no Functional Coverage groups. No waiver, `.el` exclusion, or Adjusted score was applied; the two compile-time module scope exclusions identify testbench models, not uncovered DUT bins. Full commands, configuration, source hashes, VCS/URG versions, VDB tree hashes, and report/log hashes are recorded in [`thermo5-tx-gt-parent-linux-coverage.json`](data/thermo5-tx-gt-parent-linux-coverage.json); raw reports and logs remain in ignored `runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/`.
+
+The actual GT Parent's AXI-Lite coefficient bank is writable: reset selects one-tap unity, but software may commit another legal one-tap coefficient image at a frame boundary. Therefore an identity-only Formal harness is scoped to the reset-default image. It cannot by itself classify clamp branches unreachable for every legal runtime configuration; keep those Raw bins OPEN unless the product contract forbids coefficient writes or an additional legal one-tap configuration is formally/tested.
+
+## Current-source Formal disposition update — `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`
+
+The source-bound review closed 1 exact bins as PROVEN_UNREACHABLE; 22625 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+
+| Semantic Bin ID | Assertion | Cover | Disposition |
+|---|---|---|---|
+| `TXB-85afd49f35a994cc290c` | `thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable` | `thermo5_cdc_end_remaining_harness.c_target_false_arm` | PROVEN_UNREACHABLE; retained in Raw |
+
+Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
+
+| Semantic Bin ID | Status | Reason |
+|---|---|---|
+| `TXB-054d97a87a8d74c36c8b` | OPEN | MAX_TAPS=1 assertion/Cover is tautological at compile time; no unreachable disposition accepted. |
+| `TXB-c79cdf2b9f5b4620688e` | OPEN | a_plain_append_arm_disabled is reported tautological; no unreachable disposition accepted. |

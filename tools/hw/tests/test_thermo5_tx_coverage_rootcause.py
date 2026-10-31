@@ -84,6 +84,23 @@ class BranchPathContextTests(unittest.TestCase):
         self.assertIn("LANES < 2", context["branch_target_expression"])
         self.assertEqual(category, "FIXED_PRODUCT_CONFIGURATION")
 
+    def test_data_dependent_ef2_branch_is_not_misclassified_as_parameter(self):
+        row = {
+            "metric": "branch",
+            "bin": "144:0/1",
+            "source_files": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+            "evidence_hint": "OPEN_FIXED_PRODUCT_CONFIGURATION",
+            "reason": "Needs legal stimulus/checker/URG hit or specific proof; do not exclude.",
+        }
+        branch = {
+            "branch_target_expression": "result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) : result.e0_negative;"
+        }
+
+        category, _, action = root_cause_for_row(row, branch)
+
+        self.assertEqual(category, "LEGAL_STIMULUS_OR_CHECKER_REVIEW")
+        self.assertIn("Drive legal stimulus", action)
+
     def test_centered_interpolator_single_entry_pop_push_stays_product_open(self):
         row = {
             "metric": "branch",
@@ -108,21 +125,25 @@ class BranchPathContextTests(unittest.TestCase):
         self.assertIn("end-to-end Formal cover witness", action)
         self.assertIn("Keep the Raw bin OPEN", action)
 
-    def test_diagnostic_instrumentation_requires_exact_product_and_source_hashes(self):
+    def test_diagnostic_instrumentation_rejects_stale_sources_and_other_product(self):
         evidence_path = ROOT / "docs/verification/data/thermo5-tx-frame-replacement-coverage-review.json"
         evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
 
-        accepted = validate_diagnostic_instrumentation(
-            evidence_path, evidence["product_source_sha"]
-        )
-        self.assertEqual(accepted["review"], "Centered-Cubic product frame-boundary pop/push Branch stimulus review")
+        # This diagnostic was generated at an earlier product source SHA. The
+        # reset-ready DV update changed the checked interface/package/top
+        # hashes, so accepting it at the current tree would bind stale events
+        # to the new Raw report.
+        with self.assertRaisesRegex(ValueError, "diagnostic testbench source differs from its evidence hash"):
+            validate_diagnostic_instrumentation(
+                evidence_path, evidence["product_source_sha"]
+            )
 
         evidence["product_source_sha"] = "0" * 40
         with tempfile.TemporaryDirectory() as temp_dir:
             stale_path = Path(temp_dir) / "stale.json"
             stale_path.write_text(json.dumps(evidence), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "different product RTL SHA"):
-                validate_diagnostic_instrumentation(stale_path, "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b")
+                validate_diagnostic_instrumentation(stale_path, "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea")
 
     def test_branch_source_position_uses_terminal_predicate_line(self):
         row = {

@@ -50,7 +50,7 @@ module dsm_axis14_to_core8_cdc #(
 
   logic s_rst_n, c_rst_n;
   logic [FIFO_W-1:0] fifo_wr_data, fifo_rd_data;
-  logic fifo_rd_valid, fifo_rd_ready, fifo_rd_empty;
+  logic fifo_wr_ready, fifo_rd_valid, fifo_rd_ready, fifo_rd_empty;
   logic signed [SRC_LANES*W-1:0] fifo_i, fifo_q;
   logic fifo_frame_start, fifo_frame_end;
   logic signed [GAIN_W-1:0] fifo_frame_gain;
@@ -66,6 +66,11 @@ module dsm_axis14_to_core8_cdc #(
   dsm_reset_sync u_s_reset (.clk(s_axis_aclk), .arst_n(s_axis_aresetn), .srst_n(s_rst_n));
   dsm_reset_sync u_c_reset (.clk(core_clk), .arst_n(core_aresetn), .srst_n(c_rst_n));
 
+  // Do not expose the FIFO's optimistic ready value while its source-domain
+  // reset synchronizer is still active. This prevents a legal AXI-stream
+  // transfer from being acknowledged and then discarded by the FIFO reset.
+  assign s_axis_tready = s_rst_n && fifo_wr_ready;
+
   assign fifo_wr_data = {s_axis_tuser_frame_gain, s_axis_tuser_frame_start, s_axis_tlast,
                          s_axis_q_vec, s_axis_i_vec};
   assign {fifo_frame_gain, fifo_frame_start, fifo_frame_end, fifo_q, fifo_i} = fifo_rd_data;
@@ -78,14 +83,14 @@ module dsm_axis14_to_core8_cdc #(
       // remains gated by its own local reset.
       dsm_xpm_async_fifo #(.DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W)) u_async_fifo (
         .wr_clk(s_axis_aclk), .wr_rst_n(s_axis_aresetn), .wr_data_vec(fifo_wr_data),
-        .wr_valid(s_axis_tvalid), .wr_ready(s_axis_tready), .wr_full(s_axis_fifo_full),
+        .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
         .rd_clk(core_clk), .rd_rst_n(core_aresetn), .rd_data(fifo_rd_data),
         .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
       );
     end else begin : g_generic_fifo
       dsm_async_fifo #(.DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W)) u_async_fifo (
         .wr_clk(s_axis_aclk), .wr_rst_n(s_rst_n), .wr_data(fifo_wr_data),
-        .wr_valid(s_axis_tvalid), .wr_ready(s_axis_tready), .wr_full(s_axis_fifo_full),
+        .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
         .rd_clk(core_clk), .rd_rst_n(c_rst_n), .rd_data(fifo_rd_data),
         .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
       );

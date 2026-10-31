@@ -1,0 +1,167 @@
+{
+  "commands": {
+    "compile": "vcs -full64 -sverilog -timescale=1ns/1ps -cm line+cond+fsm+tgl+branch+assert \\\n-cm_hier runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/coverage_tx_only.hier \\\n-top tb_thermo5_gt_parent_link_fault -Mdir=runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/csrc_tx \\\n-o runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/simv_tx dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv \\\nrtl/axis/dsm_reset_sync.sv rtl/axis/dsm_frame_power_ctrl.sv rtl/axis/dsm_async_fifo.sv \\\nrtl/axis/dsm_axis14_to_core8_cdc.sv rtl/frontend/dsm_frame_gain_vector.sv rtl/dpd/dpd_poly.v \\\nrtl/dpd/dpd_memory_poly.v rtl/dpd/dpd_vector16_memory_poly.sv rtl/dpd/dpd_vector_elastic_buffer.sv \\\nrtl/interp/dsm_interp_x2_centered_cubic_vector.sv rtl/interp/dsm_interp_x2_polyphase_vector.sv \\\nrtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv \\\nrtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv rtl/gt/gt_tx_user_bridge.sv rtl/gt/gt_tx_raw64_boundary.sv \\\nrtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv \\\nrtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv \\\nrtl/gt/thermo5_raw64_continuous_tx.sv fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv \\\n-l runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/compile_tx_only.log \\",
+    "simulate": "cd runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage && ./simv_tx -no_save -cm line+cond+fsm+tgl+branch+assert -cm_dir gt_parent_link_fault_tx_only.vdb -l run_tx_only.log",
+    "urg": "cd runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage && VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 /opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -full64 -dir simv_tx.vdb gt_parent_link_fault_tx_only.vdb -show ratios -format both -report urg_tx_only -log urg_tx_only.log"
+  },
+  "coverage_scope": {
+    "adjusted_coverage": "not generated; Raw retained without waivers or exclusions",
+    "functional_coverage": "not collected",
+    "hierarchy_file": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/coverage_tx_only.hier",
+    "hierarchy_sha256": "f34d553d08e426b9079271865be9e55b83bb69daffc80c9a98f68144bdc158c5",
+    "included_tree": "tb_thermo5_gt_parent_link_fault.dut, excluding behavioral vendor-replacement module definitions",
+    "metrics": {
+      "assertion": {
+        "covered": 14,
+        "missing": 5,
+        "percent": 73.68,
+        "total": 19
+      },
+      "branch": {
+        "covered": 351,
+        "missing": 320,
+        "percent": 52.31,
+        "total": 671
+      },
+      "condition": {
+        "covered": 435,
+        "missing": 454,
+        "percent": 48.93,
+        "total": 889
+      },
+      "fsm": {
+        "covered": 14,
+        "missing": 8,
+        "percent": 63.64,
+        "total": 22
+      },
+      "line": {
+        "covered": 3119,
+        "missing": 749,
+        "percent": 80.64,
+        "total": 3868
+      },
+      "toggle": {
+        "covered": 59820,
+        "missing": 47666,
+        "percent": 55.65,
+        "total": 107486
+      }
+    },
+    "raw_report": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/urg_tx_only",
+    "raw_scope": "Actual parent module plus its elaborated project TX RTL subhierarchy (u_continuous, u_frontend, CDC/Generic FIFO, DPD, interpolation, TIDSM, GT TX raw64 boundary/bridge and reset synchronizers). Coverage excludes the testbench behavioral IBUFDS_GTE4 and thermo5_qsfp_gt14_probe module definitions. The actual behavioral probe remains elaborated to drive the parent. Separate from the AXI-Lite frontend 12-test Raw report.",
+    "scope_exclusions": [
+      {
+        "module": "IBUFDS_GTE4",
+        "reason": "Behavioral replacement for board-only GT reference-clock input buffer; testbench model is not project DUT RTL.",
+        "source": "dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv:11-20"
+      },
+      {
+        "module": "thermo5_qsfp_gt14_probe",
+        "reason": "Behavioral GT Wizard replacement; testbench model is not project DUT RTL. RX outputs are tied inactive.",
+        "source": "dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv:22-78"
+      }
+    ]
+  },
+  "evidence": {
+    "all_compiled_source_sha256": {
+      "dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv": "87cd452f6a4a188d63ecfeb3f03b9d017e8622488ee7a62bded890bc2c2563d3",
+      "fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv": "ea92cf734754c150232f98c3cf6b903c172d9e297f0c71e5c2da9902d25683e8",
+      "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+      "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+      "rtl/axis/dsm_frame_power_ctrl.sv": "52704291f8653e42fdb541df2017043618901137d86f53ba6a892623fad13fd7",
+      "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+      "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+      "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+      "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+      "rtl/dpd/dpd_vector_elastic_buffer.sv": "f125e11aaa97b0ac52e5d013948dec32eb6587aaee883ec011bcb5544ea0d38d",
+      "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+      "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+      "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+      "rtl/gt/thermo5_raw64_continuous_tx.sv": "c61dbddd070404a173744fbcce8d7cf1be5beac68695dcc897d9ca68025460fc",
+      "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+      "rtl/interp/dsm_interp_x2_polyphase_vector.sv": "74dac42f69e8c8e5e859d3afddf9facaa66439398967984f1bc3001588977309",
+      "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+      "rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv": "0ff8b1f6ddc0285bb61c068088b79dea3c0045402a7c0b451b78e9ea84cc19cf",
+      "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+      "rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv": "9141a1510ea9527f4b0a20c4347f925892c8d52baf389810af5bc57753118c2a",
+      "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+      "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+    },
+    "compile_log": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/compile_tx_only.log",
+      "sha256": "d598074297d5ca87f36ca6fabfca991a657bb3b3e77251b2b3e8ee5eb2555a9e"
+    },
+    "compile_vdb": {
+      "file_count": 24,
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/simv_tx.vdb",
+      "tree_sha256": "8d30f9e6d6d4a9222d9008907383d12fa536cb5788b8252b1a3ab2a288733cdc"
+    },
+    "compiled_source_file_count": 23,
+    "coverage_hierarchy": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/coverage_tx_only.hier",
+      "sha256": "f34d553d08e426b9079271865be9e55b83bb69daffc80c9a98f68144bdc158c5"
+    },
+    "runtime_vdb": {
+      "file_count": 11,
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/gt_parent_link_fault_tx_only.vdb",
+      "tree_sha256": "c940c267dfcf5ea001c79c52f2c823d1222a61be6096bc40ee28c26f33a8501d"
+    },
+    "simulation_log": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/run_tx_only.log",
+      "sha256": "fb4fa558f24bd288c9c56af6821d128579d383efc7d89323febe6a80b4ec618d"
+    },
+    "source_sha256": {
+      "dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv": "87cd452f6a4a188d63ecfeb3f03b9d017e8622488ee7a62bded890bc2c2563d3",
+      "fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv": "ea92cf734754c150232f98c3cf6b903c172d9e297f0c71e5c2da9902d25683e8",
+      "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+    },
+    "urg_dashboard": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/urg_tx_only/dashboard.txt",
+      "sha256": "6618c324b38d82897ffa9f2d2682d98f77be6b33f526820b5b53ddc530810d4d"
+    },
+    "urg_hierarchy": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/urg_tx_only/hierarchy.txt",
+      "sha256": "e2ec2dc68866a5aceff223df68a8bf835aa35da275b584a9774f57600be15caa"
+    },
+    "urg_log": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage/urg_tx_only.log",
+      "sha256": "7cebe642bcaf15a0ff001afc75c29ab1b0c044c6ca259259b7d41101d3c73549"
+    }
+  },
+  "product_configuration": {
+    "dpd_bypass": false,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "one-tap identity: c1_re=0x00004000 (Q2.14), c1_im=c3_re=c3_im=c5_re=c5_im=0",
+    "fifo": "Generic FIFO (FPGA_USE_XPM_FIFO=0)",
+    "interpolator": "Centered-Cubic x2+x2",
+    "parent_parameters": {
+      "ENABLE_INTERNAL_PMA_LOOPBACK": 0,
+      "INTERP_CENTERED_CUBIC": 1,
+      "STEP": 5120,
+      "TIDSM_ORDER": 2
+    },
+    "step": 5120,
+    "tidsm_order": 2,
+    "top": "thermo5_qsfp_gt14_parent"
+  },
+  "run_date": "2026-10-31",
+  "run_dir": "runs/thermo5_cdc_resetready_repro_20261031/gt_parent_tx_coverage",
+  "schema_version": 1,
+  "signoff_status": "TX_ONLY_PARENT_BEHAVIORAL_TEST_PASS; PRODUCT_RAW_CLOSURE_OPEN",
+  "source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+  "test": {
+    "checker_scope": "Checks PA immediate blanking, sticky fault, reset recovery and accepted/PA-word counts. It does not bit-true check the transmitted sample payload.",
+    "formal": "not run by this test",
+    "name": "tb_thermo5_gt_parent_link_fault",
+    "pass_marker": "THERMO5_GT_PARENT_LINK_FAULT_PASS pa_immediate_blank=1 fault_sticky=1 reset_recovery=1 accepted=54 pa_words=24",
+    "rx_scope": "RX inactive in the behavioral GT replacement; no RX stimulus or RX verification was run.",
+    "status": "PASS",
+    "vendor_ip_scope": "No XPM, GT Wizard, or vendor board model was used."
+  },
+  "tool_versions": {
+    "urg": "V-2023.12-SP1",
+    "vcs": "V-2023.12-SP1_Full64"
+  }
+}

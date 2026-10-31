@@ -1,8 +1,52 @@
 # Thermo5 TX Coverage Closure — Linux Signoff Snapshot
 
+
+## Latest fixed-product Linux evidence — SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea` (2026-10-31)
+
+**Disposition:** `LINUX_CLOSURE_OPEN; RAW_100_OPEN`. Product RTL configuration: Centered-Cubic x2+x2; EF2 ORDER=2/STEP=5120; 20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 with identity reset image; AXI-Lite product frontend and Generic FIFO. No algorithm/RX/AI-DPD RTL changed.
+
+### Results
+
+| Area | Result | Acceptance |
+|---|---|---|
+| Legal Functional Coverage | 210/210 applicable positive records; 4 illegal-only zero-hit Raw records retained; 12 additional URG-model Illegal/Excluded records reported | Legal-positive goal PASS for this focused Raw |
+| Raw DUT Branch | 520/637 = 81.6327%; 117 unhit | OPEN |
+| Raw DUT Condition | 601/849 = 70.7892%; 248 unhit | OPEN |
+| Raw DUT Line | 3,334/3,796 = 87.8293%; 462 unhit | OPEN |
+| Raw DUT Toggle | 83,575/104,480 = 79.9914%; 20,905 unhit | OPEN |
+| FSM | 13/13 states; 22/22 transitions | PASS for exercised frontend hierarchy |
+| DUT Assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | Partial |
+| Waivers / `.el` exclusions | 0 / 0; Adjusted equals Raw | PASS, no adjustment applied |
+| Fail-closed code gate | `RAW_100_OPEN` | OPEN; no 100% claim |
+| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 5 `PROVEN_UNREACHABLE` retained in Raw; 21,727 OPEN across 465 tasks | OPEN |
+| VCS/UVM | Fresh exact-profile compile and 13/13 focused positive tests PASS | Focused frontend scope only |
+| Formal | Five exact source-bound records proven unreachable and retained in Raw; DPD payload equivalence INCONCLUSIVE at depth 252; PAIR_LOOKAHEAD property rejected as tautological | Partial; all other bins remain OPEN |
+| Mutation | Baseline PASS; `late_gain` and `plane_swap` mutants detected by `[BITTRUE]` scoreboard | PASS for these two mutations only |
+| TX source-gap test | 16-cycle gap has 54 underflows; checker fails although 112 output words are present | OPEN service-rate contract |
+| Real XPM / GT Wizard | Not run in this Linux flow | OPEN |
+| FPGA PPA / physical QAM256 BER | Not run | OPEN |
+
+The five source-bound Formal records are the aligned 32-beat CDC end false arm and outer-case default, AXI-Lite write-case default Branch, coefficient-read default Branch, and matching coefficient-read default Line. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN.
+
+The additional DPD saturation test wrote a legal non-identity one-tap Q2.14 image over AXI-Lite. Python-generated vectors and the independent UVM checker matched all four output planes for 56 output words; the run covered I/Q positive and negative saturation on each of 16 DPD lanes. It increased same-compile Raw by +80 Branch, +16 Condition, +144 Line, and +654 Toggle. The product Raw remains unadjusted.
+
+### Exact evidence and commands
+
+- Product VCS compile manifest: `runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/product-source-manifest.json`.
+- 13-test replay results and logs: `runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/`.
+- Raw URG: `runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/`; denominator summary and branch-arm export are in the sibling `_denominator/` directory.
+- Fail-closed gate: `runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate.json`.
+- Closure ledger, grouped task table, functional audit, formal review, tool/log hashes, and commands: [`thermo5-tx-coverage-closure-index.json`](data/thermo5-tx-coverage-closure-index.json) and [`thermo5-tx-coverage-root-cause-closure.md`](thermo5-tx-coverage-root-cause-closure.md).
+- VCS mutation manifest and logs: `runs/thermo5_cdc_resetready_repro_20261031/mutation_13tests_final/`.
+
+The earlier source snapshots below are retained as history and are not the current metrics. Current evidence is not full product or physical signoff. Remaining Linux work includes reachable Branch/Condition/Line/Toggle closure, DPD identity Formal convergence, and resolving the legal-source gap/service-rate contract. Real XPM/GT Wizard, complete GT Parent payload checking, FPGA PPA, and physical QAM256 BER remain outside this Linux run.
+
+
+**Historical snapshot below:** all prior SHA-specific reports are retained for traceability; use the latest section above for current status.
+
 **Disposition:** `LINUX_CLOSURE_OPEN; RAW_100_OPEN`
 
-**Audited product source SHA:** `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`
+**Historical audited product source SHA:** `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`
 
 **Product configuration:** Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120,
 20-bit state; 32 chronological lanes; `DPD_MAX_TAPS=1` identity; AXI-Lite

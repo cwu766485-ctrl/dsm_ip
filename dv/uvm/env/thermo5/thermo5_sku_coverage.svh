@@ -18,7 +18,10 @@ class thermo5_sku_coverage extends uvm_component;
   int commit_pending_while_stopped_cycles, reset_nonzero_ef2_state_events;
   int ef2_positive_clamp_branch[0:3], ef2_negative_clamp_branch[0:3];
   int unsigned accepted_source_beats_epoch, accepted_output_words_epoch;
+  int unsigned accepted_cdc_output_words_epoch, cdc_frame_end_events;
+  int unsigned cdc_end_remaining_false_arm_events;
   int unsigned pending_tlast_output_targets[$];
+  int unsigned pending_tlast_cdc_output_targets[$];
   bit seen_src_release, last_src_rst_n, ef2_state_nonzero_seen;
 
   covergroup source_cg with function sample(bit full, bit stalled, bit start,
@@ -155,12 +158,16 @@ class thermo5_sku_coverage extends uvm_component;
         if (!vif.src_rst_n) begin
           accepted_source_beats_epoch=0;
           pending_tlast_output_targets.delete();
+          pending_tlast_cdc_output_targets.delete();
         end
         else if (vif.src_valid && vif.src_ready) begin
           accepted_source_beats_epoch++;
-          if (accepted_last && sampled_packet_quanta!=0)
+          if (accepted_last && sampled_packet_quanta!=0) begin
             pending_tlast_output_targets.push_back(
               (accepted_source_beats_epoch*7)/4);
+            pending_tlast_cdc_output_targets.push_back(
+              (accepted_source_beats_epoch*7)/4);
+          end
           packet_beats_since_boundary++;
           if (vif.src_last && packet_beats_since_boundary%32==0)
             packet_beats_since_boundary=0;
@@ -187,6 +194,30 @@ class thermo5_sku_coverage extends uvm_component;
                        vif.pa_valid==4'hf && vif.pa_ready!=4'hf,
                        vif.pa_valid==4'hf && vif.pa_ready==4'hf);
         if (vif.core_rst_n) begin
+          if (!cfg.illegal_frame) begin
+            if (vif.cdc_end_false_arm)
+              cdc_end_remaining_false_arm_events++;
+            if (vif.cdc_core_valid && vif.cdc_core_ready) begin
+              int unsigned next_cdc_output_word;
+              bit expected_cdc_frame_end;
+              next_cdc_output_word=accepted_cdc_output_words_epoch+1;
+              expected_cdc_frame_end=0;
+              if (pending_tlast_cdc_output_targets.size()!=0 &&
+                  next_cdc_output_word==pending_tlast_cdc_output_targets[0])
+                expected_cdc_frame_end=1;
+              if (vif.cdc_frame_end !== expected_cdc_frame_end)
+                `uvm_error("CDC_FRAME_END",
+                  $sformatf("CDC word=%0d frame_end=%b expected=%b pending_target=%0d",
+                    next_cdc_output_word,vif.cdc_frame_end,expected_cdc_frame_end,
+                    pending_tlast_cdc_output_targets.size()!=0 ?
+                      pending_tlast_cdc_output_targets[0] : 0))
+              if (expected_cdc_frame_end) begin
+                cdc_frame_end_events++;
+                void'(pending_tlast_cdc_output_targets.pop_front());
+              end
+              accepted_cdc_output_words_epoch=next_cdc_output_word;
+            end
+          end
           if (cfg.axil_control && vif.cfg_pending_valid && !vif.core_run_request)
             commit_pending_while_stopped_cycles++;
           if (cfg.axil_control && !vif.core_run_request && vif.core_tx_active &&
@@ -233,6 +264,8 @@ class thermo5_sku_coverage extends uvm_component;
         @(negedge vif.core_rst_n);
         accepted_output_words_epoch=0;
         pending_tlast_output_targets.delete();
+        accepted_cdc_output_words_epoch=0;
+        pending_tlast_cdc_output_targets.delete();
         if (ef2_state_nonzero_seen && vif.ef2_order2_enabled)
           reset_nonzero_ef2_state_events++;
         ef2_state_nonzero_seen=1'b0;
@@ -241,8 +274,10 @@ class thermo5_sku_coverage extends uvm_component;
   endtask
 
   function void report_phase(uvm_phase phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
+      accepted_cdc_output_words_epoch,cdc_frame_end_events,
+      cdc_end_remaining_false_arm_events,
       tlast_pa_stall_cycles,stop_partial_pa_stall_cycles,
       commit_pending_while_stopped_cycles,reset_nonzero_ef2_state_events,reset_reassertions,
       underflow_cycles,underflow_before_last_source,protocol_error_cycles,pa_stall_cycles,

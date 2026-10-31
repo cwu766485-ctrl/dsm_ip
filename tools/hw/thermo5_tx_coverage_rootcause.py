@@ -16,7 +16,6 @@ from collections import Counter, defaultdict, deque
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-EXPECTED_METRICS = {"branch": 197, "cond": 263, "line": 606, "toggle": 17527}
 ALLOWED_STATUSES = {"HIT", "PROVEN_UNREACHABLE", "WAIVER_CANDIDATE", "OPEN"}
 PRODUCT_CONFIG = (
     "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; "
@@ -248,11 +247,22 @@ def root_cause_for_row(row: dict[str, object], branch: dict[str, str] | None) ->
                 "The uncovered path is nested under the AXI-Lite write-address default decode; confirm which public addresses legally reach its response branch.",
                 "Check the exact address mask and response guard against elaborated RTL, then use a legal AXI-Lite access and independent response checker or an exact non-vacuous proof.",
             )
-        if any(token in predicate for token in (
-            "pair_lookahead", "max_taps", "channels <", "channels %", "parallel_w !=",
-            "hold_state_on_disable", "coeff_frac", "lanes <", "append_tail_vector",
-            "tail_output", "src_lanes", "core_lanes", "dpd_max_taps",
-        )):
+        # Only classify a branch as fixed by configuration when its terminal
+        # predicate is itself a pure parameter guard. Module ownership or a
+        # nearby parameter name is insufficient: data-path ternaries such as
+        # q0_positive and state predicates such as tail_output are reachable
+        # decisions that require legal stimulus/checkers.
+        parameter_only_guards = (
+            "if (pair_lookahead)",
+            "if (w < 2 || channels < 2 || (channels % 2) != 0)",
+            "if (!hold_state_on_disable)",
+            "if (lanes < 2)",
+            "if (coeff_frac != 14)",
+            "if (dpd_max_taps < 1 || dpd_max_taps > 4)",
+            "if (max_taps < 1 || max_taps > 4)",
+            "if (parallel_w != gt_user_w)",
+        )
+        if any(predicate.startswith(guard) for guard in parameter_only_guards):
             return (
                 "FIXED_PRODUCT_CONFIGURATION",
                 "The uncovered path is controlled by a parameter or fixed product configuration; this label is a review lead, not proof.",
@@ -264,6 +274,12 @@ def root_cause_for_row(row: dict[str, object], branch: dict[str, str] | None) ->
                 "The coefficient-read default arm is selected only through a guarded address decode; verify the exact guard-to-case implication.",
                 "Prove the address decode implication against the elaborated RTL and cover a legal coefficient-read witness; retain Raw coverage and do not apply an exclusion without approval.",
             )
+    if metric == "branch" and branch:
+        return (
+            "LEGAL_STIMULUS_OR_CHECKER_REVIEW",
+            "The exact terminal decision is data- or state-dependent; product-module ownership does not make it configuration-inaccessible.",
+            "Drive legal stimulus to the exact decision, require an independent checker and a DUT event, or provide an exact non-vacuous Formal witness/proof. Keep the Raw bin OPEN until reviewed.",
+        )
     return root_cause(str(row["evidence_hint"]), str(row["reason"]), metric)
 
 
@@ -361,6 +377,7 @@ def main() -> int:
 
     sys.path.insert(0, str(ROOT / "tools" / "hw"))
     import thermo5_audit_reports as audit
+    from thermo5_coverage_denominator import inventory
 
     evidence = json.loads(args.evidence.read_text(encoding="utf-8"))
     product_sha = evidence["code_coverage"]["gap_ledger"]["generated_source_sha"]
@@ -370,8 +387,28 @@ def main() -> int:
     if len(original_rows) != expected_rows:
         raise ValueError(f"ledger has {len(original_rows)} records, evidence says {expected_rows}")
     metric_counts = Counter(row["metric"] for row in original_rows)
-    if dict(metric_counts) != EXPECTED_METRICS:
-        raise ValueError(f"metric counts differ from exact Raw denominator gaps: {metric_counts}")
+    raw_totals, raw_lines, raw_branches = inventory(args.raw_report)
+    raw_conditions, raw_toggles, _, _ = audit.condition_rows(args.raw_report)
+    expected_metric_counts = {
+        "branch": sum(row["ownership"] == "PROJECT_RTL" for row in raw_branches),
+        "cond": sum(row["status"] == "Not Covered" and row["ownership"] == "PROJECT_RTL"
+                    for row in raw_conditions),
+        "line": sum(row["missing"] for row in raw_lines if row["ownership"] == "PROJECT_RTL"),
+        "toggle": 0,
+    }
+    for row in raw_toggles:
+        if row["ownership"] != "PROJECT_RTL":
+            continue
+        packed = re.fullmatch(r"(.*)\[(\d+):(\d+)\]", row["signal"])
+        bit_count = abs(int(packed[2]) - int(packed[3])) + 1 if packed else 1
+        expected_metric_counts["toggle"] += bit_count * sum(
+            row[name] == "No" for name in ("one_to_zero", "zero_to_one")
+        )
+    if dict(metric_counts) != expected_metric_counts:
+        raise ValueError(
+            "ledger metric counts do not match the exact current Raw URG gaps: "
+            f"ledger={dict(metric_counts)} Raw={expected_metric_counts}"
+        )
     if {row["configuration"] for row in original_rows} != {"axil"}:
         raise ValueError("ledger is not the frozen AXI-Lite product hierarchy")
 
@@ -621,6 +658,7 @@ def main() -> int:
         "--raw-report", str(args.raw_report),
         "--negative-audit", str(args.output_dir / "thermo5-tx-functional-bin-audit.csv"),
         "--out", str(functional_detail_path),
+        "--product-source-sha", product_sha,
     ], check=True)
     with functional_detail_path.open(encoding="utf-8", newline="") as stream:
         functional_detail_rows = list(csv.DictReader(stream))
@@ -720,7 +758,7 @@ def main() -> int:
     lines = [
         "# Thermo5 TX Coverage Root-Cause Closure — Step 1/2",
         "",
-        f"- Raw VCS/URG product source SHA: {product_sha}; the baseline Raw report remains bound to its original compile source manifest.",
+        f"- Raw VCS/URG product source SHA: {product_sha}; the Raw report and source ledger are bound to this source manifest.",
         f"- Current-tree source manifest mismatches: {len(mismatches)} ({', '.join(mismatches) if mismatches else 'none'}). Only the three hash-bound diagnostic testbench files are accepted as separate read-only instrumentation; their VDB is not merged into baseline Raw. DUT RTL and the coverage model are unchanged.",
         f"- Raw gap ledger: {len(original_rows):,} rows; SHA-256 {sha256_file(args.ledger)}.",
         f"- Expression-aware semantic IDs: {len(set(semantic_ids)):,}; old ID collisions: {summary['raw_bin_id_collision_groups']} groups, {collision_extra_rows} extra rows.",
@@ -730,7 +768,7 @@ def main() -> int:
         "",
         "## Functional Group Report audit",
         "",
-        f"The complete product Group Report contains {len(functional_covered)}/{len(functional_scoreable)} denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.",
+        f"The provided product Group Report contains {len(functional_covered)}/{len(functional_scoreable)} denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.",
         "",
         "| Group | Raw bin hits / denominator | Uncovered |",
         "|---|---:|---:|",

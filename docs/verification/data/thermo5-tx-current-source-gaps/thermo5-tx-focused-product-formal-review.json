@@ -1,0 +1,265 @@
+{
+  "bins": [
+    {
+      "assertion": "thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable",
+      "assumptions": [],
+      "bin": "122:0/-/1/-/-/default/-/-/-/-/-/-",
+      "configuration": "axil",
+      "console_file": "console.log",
+      "console_sha256": "e1feed8512ecb2298bfc25a9944b47311b28c7f5a51753785872637d0591f465",
+      "cover": "thermo5_cdc_default_branch_harness.c_exact_default_path",
+      "evidence_note": "Exact current 19d2953 source files; Generic FIFO, 14:8 CDC, legal aligned 32-beat packets, exact 14:8 clocks, no environment assumptions, no tautological goals. Legal advance and completed-frame Covers are reached.",
+      "formal_run": "runs/thermo5_cdc_resetready_repro_20261031/formal_cdc_default_19d2953_retry/cdc_default_branch",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "branch",
+      "properties_file": "properties.txt",
+      "properties_sha256": "1c7a3934adbfdff27778d6a139fdf9cfed72a89d0c25f1408e102426eae92fa9",
+      "semantic_bin_id": "TXB-0260d31bb5bee4f1a4c6",
+      "setup_file": "setup.txt",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:141",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py": "43f829273111832476ff90dd2595686241a6109fcf5724f8e423fe6153619097",
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.tcl": "41d8c6b4ce408de553dafdb6fde8a785850e49adf332025f9105266f49b8c332",
+        "dv/uvm/formal/thermo5_cdc_default_branch_harness.sv": "1f24962d7d98c5b52505445d415c54c208d5290cfa40b810ea3a2f73ad7373e1",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      }
+    },
+    {
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable",
+      "assumptions": [],
+      "bin": "190:0/-/-/-/-/1/0/-/default/-/-/-/-/-/-/-/-/-",
+      "configuration": "axil",
+      "console_file": "console.log",
+      "console_sha256": "15684b383dc4fd5c9f3046498508725cc04baae0ca39cd4641764955b3fc39b4",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable",
+      "formal_run": "runs/thermo5_axil_cfg_final_closure_20261031",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "metric": "branch",
+      "properties_file": "properties.txt",
+      "properties_sha256": "efe5aac2ad720dc99962185a9b51ed330005489984b34f23d186c3b3095f4aae",
+      "semantic_bin_id": "TXB-3df5f13a8d51ee9bdea5",
+      "setup_file": "setup.txt",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      }
+    },
+    {
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable",
+      "assumptions": [],
+      "bin": "135:default",
+      "configuration": "axil",
+      "console_file": "console.log",
+      "console_sha256": "15684b383dc4fd5c9f3046498508725cc04baae0ca39cd4641764955b3fc39b4",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable",
+      "formal_run": "runs/thermo5_axil_cfg_final_closure_20261031",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "metric": "branch",
+      "properties_file": "properties.txt",
+      "properties_sha256": "efe5aac2ad720dc99962185a9b51ed330005489984b34f23d186c3b3095f4aae",
+      "semantic_bin_id": "TXB-65f3dfeee7bc0b854f52",
+      "setup_file": "setup.txt",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:135",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      }
+    },
+    {
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable",
+      "assumptions": [],
+      "bin": "142:0",
+      "configuration": "axil",
+      "console_file": "console.log",
+      "console_sha256": "15684b383dc4fd5c9f3046498508725cc04baae0ca39cd4641764955b3fc39b4",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable",
+      "formal_run": "runs/thermo5_axil_cfg_final_closure_20261031",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "metric": "line",
+      "properties_file": "properties.txt",
+      "properties_sha256": "efe5aac2ad720dc99962185a9b51ed330005489984b34f23d186c3b3095f4aae",
+      "semantic_bin_id": "TXB-74a3bacf0956921ac9bf",
+      "setup_file": "setup.txt",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:142",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      }
+    },
+    {
+      "assertion": "thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable",
+      "assumptions": [],
+      "bin": "122:0/-/1/1/0/-/-/-/-/-/-/-",
+      "configuration": "axil",
+      "console_file": "console.log",
+      "console_sha256": "a0f8acc247918be691ff676a2f33a652b2a20769dee891f5cd0bbdd474522fae",
+      "cover": "thermo5_cdc_end_remaining_harness.c_target_false_arm",
+      "formal_run": "runs/thermo5_cdc_resetready_repro_20261031/formal_clean_19d2953/cdc_end_remaining",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "branch",
+      "properties_file": "properties.txt",
+      "properties_sha256": "7fcc3cffea55d85c933347daf7814e292932716e62ea6ed1955323f24edd58c3",
+      "semantic_bin_id": "TXB-85afd49f35a994cc290c",
+      "setup_file": "setup.txt",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:146",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_end_remaining_fpv.py": "24dc5171c6bda8dd1538c73c8326326438374cacf666d5c4803de1fe68c7f0a8",
+        "dv/uvm/formal/run_thermo5_cdc_end_remaining_fpv.tcl": "bafbbd40b48f44dd10d1e64317543f0eb05b80db5bcbfa6886a902de58f5af4f",
+        "dv/uvm/formal/thermo5_cdc_end_remaining_harness.sv": "164c51fe09afbaf09e97a5717880c09289658893b5ecfb95f93d7ac03a0f5075",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      }
+    }
+  ],
+  "disposition": "PROVEN_UNREACHABLE",
+  "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+  "review_scope": "All five exact source-bound reachability dispositions are checked against frozen product RTL SHA 19d2953 and the fresh 13-test Raw ledger. The CDC proofs use Generic FIFO and the recorded aligned 32-beat source contract; the AXI-Lite defaults use byte-identical DUT/config harness/Tcl files and MAX_TAPS=1. Raw bins and denominators are retained.",
+  "reviewed_candidates": [
+    {
+      "reason": "PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review.",
+      "semantic_bin_id": "TXB-04e9d574fb6ea4ead927",
+      "status": "OPEN"
+    },
+    {
+      "reason": "MAX_TAPS=1 assertion/Cover is tautological at compile time; no unreachable disposition accepted.",
+      "semantic_bin_id": "TXB-054d97a87a8d74c36c8b",
+      "status": "OPEN"
+    },
+    {
+      "reason": "PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review.",
+      "semantic_bin_id": "TXB-1d51526aa2408931cc40",
+      "status": "OPEN"
+    },
+    {
+      "reason": "PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review.",
+      "semantic_bin_id": "TXB-58579fd96d9947af37f8",
+      "status": "OPEN"
+    },
+    {
+      "reason": "PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review.",
+      "semantic_bin_id": "TXB-c318c70882fc01f2dc58",
+      "status": "OPEN"
+    },
+    {
+      "reason": "a_plain_append_arm_disabled is reported tautological; no unreachable disposition accepted.",
+      "semantic_bin_id": "TXB-c79cdf2b9f5b4620688e",
+      "status": "OPEN"
+    }
+  ],
+  "supplemental_formal_runs": [
+    {
+      "assertions": {
+        "proven": 4,
+        "total": 4
+      },
+      "black_box_instances": 0,
+      "console_sha256": "6da0e752e056c0b5187ee7b361809f3733526233808e4539aae7fb56624a8c48",
+      "covers": {
+        "covered": 2,
+        "total": 6,
+        "uncoverable": 4
+      },
+      "disposition": "NONE: AXI-Lite runtime coefficient writes make identity-only clamp unreachability inapplicable to the writable product. The legal one-tap UVM stress test hits all I/Q positive/negative clamp arms.",
+      "formal_run": "runs/thermo5_cdc_resetready_repro_20261031/dpd_identity_formal_retry/saturation_branches_16m",
+      "name": "dpd_identity_saturation_bounds",
+      "properties_sha256": "a7b6cd0b5a40ce4269ef5cf1d640f3faa4b0915fa866d2fb6575f3c7bacc3e81",
+      "scope": "Direct dpd_memory_poly MAX_TAPS=1 with reset-loaded unity coefficient and arbitrary signed samples; rst_n constrained high after reset.",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "setup_violations": 0,
+      "status": "ASSERTIONS_PROVEN_COVERS_PARTIAL_IDENTITY_ONLY"
+    },
+    {
+      "assertions_reported_proven": 2,
+      "console_sha256": "4ea756ee9b996ab78a0e2cfcc43b04ac7c37196ae9d1a779455e030e525a042",
+      "covers_reported_uncoverable": 2,
+      "disposition": "NONE: tool explicitly marked both SVA goals tautological; all four PAIR_LOOKAHEAD branch bins remain OPEN and in Raw.",
+      "formal_run": "runs/thermo5_cdc_resetready_repro_20261031/formal_product_params_13tests/ef2_product_params",
+      "name": "ef2_exact_product_parameter_review",
+      "properties_sha256": "605e2b05f9d5e0b8e928fe9d7d824b6a1e47feb8f9d18e08a65499060fe1605b",
+      "semantic_bin_ids": [
+        "TXB-04e9d574fb6ea4ead927",
+        "TXB-58579fd96d9947af37f8",
+        "TXB-1d51526aa2408931cc40",
+        "TXB-c318c70882fc01f2dc58"
+      ],
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "status": "REJECTED_TAUTOLOGY_OPEN",
+      "tautological_properties": [
+        "a_product_pair_lookahead_disabled",
+        "c_pair_lookahead_arm_enabled"
+      ]
+    },
+    {
+      "assertions_proven": "4/4",
+      "assumptions": [],
+      "black_box_instances": 0,
+      "configuration": "AXI-Lite enabled; MAX_TAPS=1",
+      "console_sha256": "15684b383dc4fd5c9f3046498508725cc04baae0ca39cd4641764955b3fc39b4",
+      "covers": {
+        "covered": 1,
+        "uncoverable": 3
+      },
+      "disposition": "Three exact current-Raw records are dispositioned: write case default Branch, coefficient read default Branch, and its matching default Line. Raw bins remain included.",
+      "formal_run": "runs/thermo5_axil_cfg_final_closure_20261031",
+      "name": "axil_default_decode_current_source_hash_match",
+      "non_vacuous_assertions": 3,
+      "properties_sha256": "efe5aac2ad720dc99962185a9b51ed330005489984b34f23d186c3b3095f4aae",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "setup_violations": 0,
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      },
+      "status": "PASS_NON_VACUOUS_EXACT_SOURCE_FILES",
+      "targeted_assertions": [
+        "a_write_case_default_unreachable",
+        "a_coeff_read_default_unreachable"
+      ]
+    },
+    {
+      "assertions_proven": "2/2",
+      "assumptions": [],
+      "black_box_instances": 0,
+      "configuration": "14:8 CDC, Generic FIFO, 16-bit lanes, FIFO depth 16",
+      "console_sha256": "e1feed8512ecb2298bfc25a9944b47311b28c7f5a51753785872637d0591f465",
+      "covers": {
+        "completed_legal_frame": "covered",
+        "exact_default_path": "uncoverable",
+        "product_advance": "covered"
+      },
+      "disposition": "Exact bin TXB-0260d31bb5bee4f1a4c6 is PROVEN_UNREACHABLE under the legal aligned 32-beat packet contract. Raw is unchanged.",
+      "formal_run": "runs/thermo5_cdc_resetready_repro_20261031/formal_cdc_default_19d2953_retry",
+      "name": "cdc_outer_case_default_exact_current_source",
+      "properties_sha256": "1c7a3934adbfdff27778d6a139fdf9cfed72a89d0c25f1408e102426eae92fa9",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "setup_violations": 0,
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py": "43f829273111832476ff90dd2595686241a6109fcf5724f8e423fe6153619097",
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.tcl": "41d8c6b4ce408de553dafdb6fde8a785850e49adf332025f9105266f49b8c332",
+        "dv/uvm/formal/thermo5_cdc_default_branch_harness.sv": "1f24962d7d98c5b52505445d415c54c208d5290cfa40b810ea3a2f73ad7373e1",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PASS_PROVEN_UNREACHABLE"
+    }
+  ]
+}

@@ -18,7 +18,6 @@ import re
 from pathlib import Path
 
 
-PRODUCT_SHA = "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b"
 GROUP_LINK = re.compile(
     r'href=["\'](grp\d+\.html)["\'][^>]*>\s*([^<]+)', re.IGNORECASE
 )
@@ -78,7 +77,8 @@ def parse_group_summaries(source: str, path: Path) -> dict[str, tuple[int, int, 
     return summaries
 
 
-def parse_group_page(path: Path, type_scope: str, negative: dict[str, int]) -> list[dict[str, str]]:
+def parse_group_page(path: Path, type_scope: str, negative: dict[str, int],
+                     product_sha: str) -> list[dict[str, str]]:
     source = path.read_text(encoding="utf-8", errors="replace")
     sections = list(NAMED_SECTION.finditer(source))
     if not sections:
@@ -125,7 +125,7 @@ def parse_group_page(path: Path, type_scope: str, negative: dict[str, int]) -> l
                     else:
                         legal = "LEGAL_PRODUCT"
                     row = {
-                        "product_source_sha": PRODUCT_SHA,
+                        "product_source_sha": product_sha,
                         "urg_report_group": path.name,
                         "urg_report_group_sha256": digest,
                         "report_scope": "covergroup_type" if scope == type_scope else "monitor_instance",
@@ -164,7 +164,11 @@ def main() -> int:
     parser.add_argument("--raw-report", type=Path, required=True)
     parser.add_argument("--negative-audit", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--product-source-sha", required=True,
+                        help="full Git SHA of the product RTL/DV inputs used for the VCS database")
     args = parser.parse_args()
+    if not re.fullmatch(r"[0-9a-fA-F]{40}", args.product_source_sha):
+        parser.error("--product-source-sha must be a full 40-character Git SHA")
     raw = args.raw_report.resolve()
     if not (raw / "groups.html").is_file():
         parser.error("--raw-report must point at a URG report containing groups.html")
@@ -180,7 +184,8 @@ def main() -> int:
         raise ValueError(f"expected eight product functional groups, found {len(group_links)}")
     all_rows: list[dict[str, str]] = []
     for filename, type_scope in group_links:
-        all_rows.extend(parse_group_page(raw / filename, type_scope.strip(), negative))
+        all_rows.extend(parse_group_page(raw / filename, type_scope.strip(), negative,
+                                         args.product_source_sha.lower()))
 
     scoreable = [row for row in all_rows if row["raw_denominator_applicable"] == "true"]
     hit = [row for row in scoreable if row["raw_status"] == "COVERED"]

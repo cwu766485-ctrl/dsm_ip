@@ -460,6 +460,159 @@ class thermo5_sku_axil_product_identity_continuous_test extends thermo5_sku_axil
   endtask
 endclass
 
+// Start the product core while a legal packet is still being accepted. This
+// avoids full-FIFO prefill and checks frame-tail timing during live ingress.
+class thermo5_sku_axil_cdc_end_remaining_test extends thermo5_sku_axil_product_identity_test;
+  `uvm_component_utils(thermo5_sku_axil_cdc_end_remaining_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=1;
+    if (cfg.core_words!=56 || cfg.source_beats!=32)
+      `uvm_fatal("CDC_END_WORDS",
+        "Use CORE_WORDS=56 for one legal 32-beat product packet")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    bit [1:0] resp;
+    int unsigned wait_cycles;
+    phase.raise_objection(this);
+    fork
+      begin
+        fork
+          send_source(cfg.source_beats);
+          begin
+            wait(vif.src_rst_n && vif.core_rst_n);
+            wait_axil_reset_release();
+            if (vif.dpd_active_taps!==3'd1 ||
+                vif.cfg_active_payload!==
+                  {3'd1,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0})
+              `uvm_fatal("CDC_END_PRODUCT_DEFAULT",
+                "AXI-Lite reset did not select the one-tap identity product image")
+            wait(env.source.monitor.accepted_beats>=4);
+            axil_write(8'h00,32'h1,2,0,resp);
+            if (resp!=2'b00) `uvm_fatal("CDC_END_RUN","RUN request failed")
+            wait(env.source.monitor.accepted_beats>=20);
+            axil_write(8'h00,32'd0,0,1,resp);
+            if (resp!=2'b00) `uvm_fatal("CDC_END_STOP","STOP request failed during the open packet")
+
+            wait_cycles=0;
+            while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
+              @(posedge vif.core_clk);
+              wait_cycles++;
+            end
+            if (env.scoreboard.checked!=cfg.core_words)
+              `uvm_fatal("CDC_END_STREAM_TIMEOUT",
+                $sformatf("continuous product stream checked %0d/%0d output words",
+                  env.scoreboard.checked,cfg.core_words))
+            check_full();
+            if (vif.underflow || vif.protocol_error)
+              `uvm_fatal("CDC_END_STREAM_STATUS",
+                $sformatf("drained packet reported underflow=%b protocol_error=%b",
+                  vif.underflow,vif.protocol_error))
+            if (env.coverage.cdc_frame_end_events!=1)
+              `uvm_fatal("CDC_END_FRAME_CHECK",
+                $sformatf("independent CDC checker observed %0d frame ends, expected 1",
+                  env.coverage.cdc_frame_end_events))
+            if ($test$plusargs("REQUIRE_CDC_END_FALSE_ARM") &&
+                env.coverage.cdc_end_remaining_false_arm_events==0)
+              `uvm_fatal("CDC_END_FALSE_ARM_MISS",
+                "required legal end_remaining false-arm event was not observed")
+            `uvm_info("SKU_CDC_END",
+              $sformatf("single-packet product stream passed; cdc_frame_end=%0d false_arm=%0d",
+                env.coverage.cdc_frame_end_events,
+                env.coverage.cdc_end_remaining_false_arm_events),UVM_NONE)
+            `uvm_info("SKU_PASS",
+              "THERMO5_AXIL_CDC_END_REMAINING_UVM_PASS: STOP/drain preserved the continuous one-tap product packet; all four planes and CDC frame-end checker matched",
+              UVM_NONE)
+          end
+        join
+      end
+      begin
+        repeat(18000) @(posedge vif.core_clk);
+        `uvm_fatal("CDC_END_TIMEOUT","Thermo5 CDC end-remaining test timed out")
+      end
+    join_any
+    disable fork;
+    phase.drop_objection(this);
+  endtask
+endclass
+
+// Generic-FIFO full-IP control variant for comparison against the CDC proof.
+// This does not contribute to AXI-Lite product Raw coverage; it checks the
+// wrapper's RUN/prefill scheduling with the same packet and bit-true oracle.
+class thermo5_sku_cdc_end_remaining_generic_test extends thermo5_sku_bittrue_test;
+  `uvm_component_utils(thermo5_sku_cdc_end_remaining_generic_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=1;
+    if (cfg.core_words!=56 || cfg.source_beats!=32)
+      `uvm_fatal("CDC_END_WORDS",
+        "Use CORE_WORDS=56 for one legal 32-beat product packet")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    int unsigned wait_cycles;
+    phase.raise_objection(this);
+    fork
+      begin
+        fork
+          send_source(cfg.source_beats);
+          begin
+            wait(vif.src_rst_n && vif.core_rst_n);
+            wait(env.source.monitor.accepted_beats>=4);
+            env.control.core_on();
+            wait_cycles=0;
+            while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
+              @(posedge vif.core_clk);
+              wait_cycles++;
+            end
+            if (env.scoreboard.checked!=cfg.core_words)
+              `uvm_fatal("CDC_END_STREAM_TIMEOUT",
+                $sformatf("continuous Generic-FIFO stream checked %0d/%0d output words",
+                  env.scoreboard.checked,cfg.core_words))
+            env.control.core_off();
+            check_full();
+            if (env.coverage.cdc_frame_end_events!=1)
+              `uvm_fatal("CDC_END_FRAME_CHECK",
+                $sformatf("independent CDC checker observed %0d frame ends, expected 1",
+                  env.coverage.cdc_frame_end_events))
+            if (vif.protocol_error)
+              `uvm_fatal("CDC_END_STREAM_STATUS",
+                "stream reported a CDC protocol error")
+            if ($test$plusargs("REQUIRE_CDC_END_FALSE_ARM") &&
+                env.coverage.cdc_end_remaining_false_arm_events==0)
+              `uvm_fatal("CDC_END_FALSE_ARM_MISS",
+                "required legal end_remaining false-arm event was not observed")
+            `uvm_info("SKU_CDC_END",
+              $sformatf("Generic-FIFO product stream passed; cdc_frame_end=%0d false_arm=%0d",
+                env.coverage.cdc_frame_end_events,
+                env.coverage.cdc_end_remaining_false_arm_events),UVM_NONE)
+            `uvm_info("SKU_PASS",
+              "THERMO5_GENERIC_CDC_END_REMAINING_UVM_PASS: one-tap product packet matched all four planes and CDC frame-end checker",
+              UVM_NONE)
+          end
+        join
+      end
+      begin
+        repeat(18000) @(posedge vif.core_clk);
+        `uvm_fatal("CDC_END_TIMEOUT","Thermo5 Generic-FIFO end-remaining test timed out")
+      end
+    join_any
+    disable fork;
+    phase.drop_objection(this);
+  endtask
+endclass
+
 class thermo5_sku_axil_product_identity_interframe_gap_test extends thermo5_sku_axil_product_identity_continuous_test;
   `uvm_component_utils(thermo5_sku_axil_product_identity_interframe_gap_test)
 
@@ -470,4 +623,87 @@ class thermo5_sku_axil_product_identity_interframe_gap_test extends thermo5_sku_
   virtual function string scenario_pass_message();
     return "THERMO5_AXIL_PRODUCT_IDENTITY_INTERFRAME_GAP_UVM_PASS: one legal source-clock bubble between two identity frames matched all four planes";
   endfunction
+endclass
+
+// Start AXI-Stream on the first legal cycle after external source reset, while
+// the DUT's two-flop local reset synchronizer is still releasing. This checks
+// that READY does not acknowledge a beat the FIFO cannot yet store.
+class thermo5_sku_axil_reset_release_source_test extends thermo5_sku_axil_product_identity_test;
+  `uvm_component_utils(thermo5_sku_axil_reset_release_source_test)
+
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
+  endfunction
+
+  virtual function void configure_case();
+    super.configure_case();
+    cfg.frame_starts=1;
+    if (cfg.core_words!=56 || cfg.source_beats!=32)
+      `uvm_fatal("RESET_EDGE_WORDS",
+        "Use CORE_WORDS=56 for one legal 32-beat product packet")
+  endfunction
+
+  virtual task run_phase(uvm_phase phase);
+    bit [1:0] resp;
+    int unsigned wait_cycles;
+    phase.raise_objection(this);
+    fork
+      begin
+        fork
+          send_source(cfg.source_beats);
+          begin
+            wait(vif.src_rst_n && !vif.core_rst_n);
+            wait(vif.src_valid);
+            if (vif.cdc_source_reset_released !== 1'b0)
+              `uvm_fatal("RESET_EDGE_WINDOW",
+                "Source stimulus did not overlap the CDC local reset-release window")
+            if (vif.src_ready !== 1'b0)
+              `uvm_fatal("RESET_EDGE_READY",
+                "CDC acknowledged AXIS data before its source-domain FIFO reset released")
+            while (!vif.cdc_source_reset_released) begin
+              @(negedge vif.src_clk);
+              if (!vif.cdc_source_reset_released &&
+                  vif.src_valid && vif.src_ready)
+                `uvm_fatal("RESET_EDGE_HANDSHAKE",
+                  "AXIS transfer was acknowledged while the source FIFO remained in reset")
+            end
+            wait(vif.core_rst_n);
+            wait_axil_reset_release();
+            wait(env.source.monitor.accepted_beats>=4);
+            axil_write(8'h00,32'h1,2,0,resp);
+            if (resp!=2'b00) `uvm_fatal("RESET_EDGE_RUN","RUN request failed")
+            wait(env.source.monitor.accepted_beats>=20);
+            axil_write(8'h00,32'd0,0,1,resp);
+            if (resp!=2'b00) `uvm_fatal("RESET_EDGE_STOP","STOP request failed")
+
+            wait_cycles=0;
+            while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
+              @(posedge vif.core_clk);
+              wait_cycles++;
+            end
+            if (env.scoreboard.checked!=cfg.core_words)
+              `uvm_fatal("RESET_EDGE_STREAM_TIMEOUT",
+                $sformatf("reset-window stream checked %0d/%0d words",
+                  env.scoreboard.checked,cfg.core_words))
+            check_full();
+            if (vif.protocol_error || vif.underflow ||
+                env.coverage.cdc_frame_end_events!=1)
+              `uvm_fatal("RESET_EDGE_STATUS",
+                $sformatf("protocol=%b underflow=%b cdc_frame_end=%0d",
+                  vif.protocol_error,vif.underflow,
+                  env.coverage.cdc_frame_end_events))
+            `uvm_info("SKU_PASS",
+              "THERMO5_AXIL_RESET_RELEASE_SOURCE_UVM_PASS: early legal AXIS valid was backpressured through local reset release; 32 beats and all 56 four-plane output words matched",
+              UVM_NONE)
+          end
+        join
+      end
+      begin
+        repeat(18000) @(posedge vif.core_clk);
+        `uvm_fatal("RESET_EDGE_TIMEOUT","Thermo5 reset-release source test timed out")
+      end
+    join_any
+    disable fork;
+    phase.drop_objection(this);
+  endtask
 endclass

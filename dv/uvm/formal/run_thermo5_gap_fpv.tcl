@@ -23,6 +23,11 @@ switch -- $top {
       [file join $repo rtl dpd dpd_memory_poly.v] \
       [file join $repo dv uvm formal thermo5_dpd_identity_harness.sv]]
   }
+  thermo5_identity_saturation_harness {
+    set sources [list [file join $repo rtl dpd dpd_poly.v] \
+      [file join $repo rtl dpd dpd_memory_poly.v] \
+      [file join $repo dv uvm formal thermo5_dpd_identity_saturation_harness.sv]]
+  }
   thermo5_cdc_residual_harness {
     set sources [list [file join $repo rtl axis dsm_reset_sync.sv] \
       [file join $repo rtl axis dsm_async_fifo.sv] \

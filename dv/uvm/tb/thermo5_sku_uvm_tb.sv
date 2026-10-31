@@ -202,6 +202,16 @@ module thermo5_sku_uvm_tb;
     assign bus.dpd_saturation_count[lane]=dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[lane].u_dpd.saturation_count;
   end
   assign bus.cdc_residual = dut.u_cdc.rem_count_q;
+  assign bus.cdc_core_valid = dut.core_valid;
+  assign bus.cdc_core_ready = dut.core_ready;
+  assign bus.cdc_frame_start = dut.core_frame_start;
+  assign bus.cdc_frame_end = dut.core_frame_end;
+  assign bus.cdc_end_pending = dut.u_cdc.end_pending_q;
+  assign bus.cdc_end_remaining = dut.u_cdc.end_remaining_q;
+  assign bus.cdc_source_reset_released = dut.u_cdc.s_rst_n;
+  assign bus.cdc_end_false_arm = dut.u_cdc.advance &&
+    (dut.u_cdc.rem_count_q >= 8) && dut.u_cdc.end_pending_q &&
+    (dut.u_cdc.end_remaining_q > 8);
 `ifdef THERMO5_XPM_FIFO
   // Monitor only: expose the exact XPM FWFT state and synchronous read reset.
   assign bus.xpm_fwft_state = dut.u_cdc.g_xpm_fifo.u_async_fifo.u_xpm_fifo_async.gnuram_async_fifo.xpm_fifo_base_inst.curr_fwft_state;

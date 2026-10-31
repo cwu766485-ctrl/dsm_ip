@@ -133,7 +133,8 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-centered-nonlinear-tap4-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs \
-        thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-coeff-transport \
+        thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-reset-release-source \
+        thermo5-tx-product-axil-coeff-transport \
         thermo5-dpd-bittrue-vcs
 
 help:
@@ -262,6 +263,17 @@ thermo5-tx-product-axil-reset-sweep:
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 \
 	  THERMO5_EXTRA_ARGS=+CORE_WORDS=56
+
+# Legal AXI-Stream startup overlaps the two-flop local source-reset release.
+thermo5-tx-product-axil-reset-release-source:
+	@$(MAKE) --no-print-directory thermo5-vcs \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_reset_release_source_test UVM_SEED=610713 \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_SOURCE_START_AFTER_SRC_RESET'
 
 # Product-scoped legal coefficient transport uses one active identity tap;
 # values in inactive coefficient banks exercise AXI transport only.

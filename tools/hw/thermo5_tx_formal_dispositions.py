@@ -157,6 +157,16 @@ def verify_review(review: dict) -> list[dict]:
     return dispositions
 
 
+def append_current_source_formal_section(
+    closure: str, product_source_sha: str, formal_lines: list[str]
+) -> str:
+    """Replace only this product SHA's generated section; preserve history."""
+    marker = f"## Current-source Formal disposition update — `{product_source_sha}`"
+    if marker in closure:
+        closure = closure[:closure.index(marker)].rstrip()
+    return closure.rstrip() + "\n\n" + "\n".join([marker, "", *formal_lines]).rstrip() + "\n"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ledger", type=Path, required=True)
@@ -274,23 +284,7 @@ def main() -> int:
     args.summary.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     closure = args.closure_report.read_text(encoding="utf-8")
-    closure = closure.replace(
-        "Every row is OPEN at this audit stage.",
-        f"After exact Formal review, {counts.get('PROVEN_UNREACHABLE', 0)} rows are "
-        f"PROVEN_UNREACHABLE and {counts.get('OPEN', 0)} remain OPEN; Raw URG is unchanged.",
-    )
-    closure = re.sub(
-        r"After exact Formal review, [^.]*; Raw URG is unchanged\.",
-        f"After exact Formal review, {counts.get('PROVEN_UNREACHABLE', 0)} rows are "
-        f"PROVEN_UNREACHABLE and {counts.get('OPEN', 0)} remain OPEN; Raw URG is unchanged.",
-        closure,
-    )
-    marker = "## Formal disposition update"
-    if marker in closure:
-        closure = closure[:closure.index(marker)].rstrip() + "\n"
     formal_lines = [
-        marker,
-        "",
         f"The source-bound review closed {counts.get('PROVEN_UNREACHABLE', 0)} exact bins as "
         f"PROVEN_UNREACHABLE; {counts.get('OPEN', 0)} remain OPEN. Formal Inconclusive is not "
         "a closure. Raw URG and its denominator are unchanged; approved waivers and active "
@@ -316,7 +310,9 @@ def main() -> int:
             f"| `{item['semantic_bin_id']}` | OPEN | {item['reason']} |"
         )
     formal_lines.append("")
-    closure = closure.rstrip() + "\n\n" + "\n".join(formal_lines)
+    closure = append_current_source_formal_section(
+        closure, summary["source_product_sha"], formal_lines
+    )
     args.closure_report.write_text(closure, encoding="utf-8")
 
     manifest["followup"] = {
