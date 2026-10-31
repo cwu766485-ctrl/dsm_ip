@@ -4785,3 +4785,20 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - 2026-10-30: Reconciled the active execution-frontier branch name with draft
   PR #10 (`codex/thermo5-tx-final-signoff`). No RTL, evidence database, coverage
   denominator, or verification result changed; `RAW_100_OPEN` remains.
+
+
+## 2026-10-31 10:22 SGT - AXI-Lite coefficient-read Branch Formal closure
+
+- Re-ran the committed AXI-Lite configuration Formal harness with VC Formal V-2023.12-SP2 after VCS license recovery. The exact current-source run passed 4/4 assertions; the legal coefficient-read Cover was hit; the exact default-arm Cover was uncoverable; assumptions=0, non-vacuous assertions=3, black boxes=0, setup violations=0.
+- Added the exact coefficient-read `case (addr & 8'hf8)` default Branch bin `TXB-65f3dfeee7bc0b854f52` to the fail-closed Formal dispositions, bound to instance, line 135, RTL source SHA, Formal result hashes, and existing current Raw evidence. Corrected its root-cause note from write-address decode to coefficient-read decode. Raw URG and denominator are untouched.
+- Updated the coverage closure/signoff and execution frontier. The audit now contains six `PROVEN_UNREACHABLE` bins and 18,587 OPEN rows; Raw code metrics are unchanged at line 3190/3796, condition 583/846, branch 440/637, toggle 86951/104478. Waivers=0, `.el` exclusions=0, `RAW_100_OPEN`.
+- Checks: Formal runner PASS; Formal disposition updater PASS with the existing VCS/URG refresh evidence; focused VCS AXI-Lite config test seed 610931 PASS (0 UVM warnings/errors/fatals); no full regression or URG remerge was needed because product sources and Raw inputs did not change.
+- Limitations: a temporary mailbox Formal check was inconclusive; its selected-property trace did not execute the AW/W assumptions and is not accepted as legal-protocol evidence. The focused VCS case does not resolve that gap. DPD Identity Formal and the 16-cycle source-gap underflow contract remain OPEN. No RTL or product algorithm changed.
+
+- Current-worktree coverage-gate recheck returned exit 3, `FAIL_CLOSED_SOURCE_HASH_MISMATCH`. The baseline compile manifest is pinned to `913be930bfcbbad0f78dbc90e06299db3d1bb337`; exactly three compiled UVM files differ in the current tree. All product RTL hashes match. The Raw URG and denominator were not edited, and no full regression/remerge was run to paper over the source mismatch. The exact invocation, hashes, and log are captured under the local ignored `runs/thermo5_tx_final_closure_20261031/` evidence directory and summarized in the tracked audit JSON.
+
+## 2026-10-31 10:31 SGT - Negative-only AXI-Lite assertion and Branch check
+
+- With the restored VCS license, compiled and ran the current-source negative-only early-TLAST test (seed 420102) and generated a separate URG report. The independent UVM checker saw both expected protocol assertions, sticky error state, and reset recovery; UVM warning/error/fatal counts were 0/0/0. The separate URG report hit Branch `TXB-646dd03c99766d877d30` at RTL line 141.
+- Kept the negative VDB separate from product Raw. Its legal-product Raw ledger row remains OPEN; no product Raw metric, denominator, waiver, or exclusion changed. The complete command, source/log/URG/VDB hashes, and observed outcomes are in `docs/verification/data/thermo5-tx-negative-assertion-evidence.json`.
+- Remaining: current-worktree Raw source-manifest mismatch, legal-product pop/push cadence bins, mailbox-stability Formal, DPD Identity Formal, and source-gap service contract remain unresolved. The negative-only Branch hit is not positive-product coverage closure.

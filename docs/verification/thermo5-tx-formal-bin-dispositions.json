@@ -828,6 +828,28 @@
       "status": "PROVEN_UNREACHABLE"
     },
     {
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable",
+      "assumptions": [],
+      "bin": "190:0/-/-/-/-/1/0/-/default/-/-/-/-/-/-/-/-/-",
+      "configuration": "axil",
+      "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable",
+      "evidence_note": "Re-proven in the clean current-source AXI-Lite run; no tautological properties or environment assumptions.",
+      "formal_run": "runs/thermo5_axil_cfg_coverage_clean_default_20261031",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "metric": "branch",
+      "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
+      "semantic_bin_id": "TXB-3df5f13a8d51ee9bdea5",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      }
+    },
+    {
       "assertion": "thermo5_frame_tail_harness.a_plain_tail_fire_disabled",
       "assumptions": [
         "thermo5_frame_tail_harness.asm_source_stable"
@@ -852,21 +874,20 @@
       "status": "PROVEN_UNREACHABLE"
     },
     {
-      "assertion": "thermo5_axil_cfg_coverage_harness.a_line88_tuple_unreachable",
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable",
       "assumptions": [],
-      "bin": "93:0/1/1",
+      "bin": "135:default",
       "configuration": "axil",
-      "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
-      "cover": "thermo5_axil_cfg_coverage_harness.c_line88_tuple_unreachable",
-      "evidence_note": "Re-proven in the clean current-source AXI-Lite run; no tautological properties or environment assumptions.",
-      "formal_run": "runs/thermo5_axil_cfg_coverage_clean_default_20261031",
+      "console_sha256": "15684b383dc4fd5c9f3046498508725cc04baae0ca39cd4641764955b3fc39b4",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable",
+      "formal_run": "runs/thermo5_axil_cfg_final_closure_20261031",
       "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
-      "metric": "cond",
-      "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
-      "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
+      "metric": "branch",
+      "properties_sha256": "efe5aac2ad720dc99962185a9b51ed330005489984b34f23d186c3b3095f4aae",
+      "semantic_bin_id": "TXB-65f3dfeee7bc0b854f52",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
-      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:135",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
         "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
@@ -898,26 +919,27 @@
       "status": "PROVEN_UNREACHABLE"
     },
     {
-      "assertion": "thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable",
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_line88_tuple_unreachable",
       "assumptions": [],
-      "bin": "190:0/-/-/-/-/1/0/-/default/-/-/-/-/-/-/-/-/-",
+      "bin": "93:0/1/1",
       "configuration": "axil",
       "console_sha256": "f1e95ea48cc0c8d4e10b57bec2b5b2d2c110aea3a51ac2067207a0d91b8b77d1",
-      "cover": "thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable",
+      "cover": "thermo5_axil_cfg_coverage_harness.c_line88_tuple_unreachable",
       "evidence_note": "Re-proven in the clean current-source AXI-Lite run; no tautological properties or environment assumptions.",
       "formal_run": "runs/thermo5_axil_cfg_coverage_clean_default_20261031",
       "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
-      "metric": "branch",
+      "metric": "cond",
       "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
-      "semantic_bin_id": "TXB-3df5f13a8d51ee9bdea5",
+      "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
-      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246",
+      "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
       "source_sha256": {
         "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
         "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
         "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
-      }
+      },
+      "status": "PROVEN_UNREACHABLE"
     }
   ],
   "disposition": "PROVEN_UNREACHABLE",

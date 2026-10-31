@@ -1,0 +1,80 @@
+{
+  "checked_out_commit": "bae5ec7c72bdeda26103218883ef4502dc13271a",
+  "commands": {
+    "compile": "make -C dv/uvm/sim thermo5-vcs PYTHON=python3.12 VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_FIFO_IMPL=generic THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_final_closure_20261031/negative/vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_tx_final_closure_20261031/negative\" THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\"",
+    "simulation": "make -C dv/uvm/sim thermo5-axil-vcs-negative VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_FIFO_IMPL=generic THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_final_closure_20261031/negative/vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_tx_final_closure_20261031/negative\" THERMO5_COV_HIER=\"$PWD/dv/uvm/sim/thermo5_tx_product_coverage.hier\"",
+    "urg": "urg -full64 -dir runs/thermo5_tx_final_closure_20261031/negative/simv.vdb runs/thermo5_tx_final_closure_20261031/negative/cov_axil_illegal_frame_seed420102.vdb -report runs/thermo5_tx_final_closure_20261031/negative/urg_negative_report -dbname thermo5_axil_illegal_negative",
+    "vectors": "python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/thermo5_tx_final_closure_20261031/negative/vectors --words 56 --seed 610932 --interp-mode centered_cubic --tidsm-order 2 --step 5120"
+  },
+  "configuration": {
+    "axil": true,
+    "dpd": "identity",
+    "dpd_max_taps": 1,
+    "fifo": "generic",
+    "interp": "centered_cubic",
+    "state_bits": 20,
+    "step": 5120,
+    "tidsm_order": 2
+  },
+  "coverage": {
+    "groups_html_sha256": "5af2f3fd4fb60ea917e5c22ab0ce0596e24077312fb72d53d93e888c7660b8ac",
+    "instance": "thermo5_sku_uvm_tb.dut",
+    "negative_report_hit": true,
+    "raw_product_report_merged": false,
+    "raw_product_report_modified": false,
+    "report_scope": "separate expected-negative URG report; not merged into product Raw",
+    "semantic_bin_id": "TXB-646dd03c99766d877d30",
+    "source_expression": "if (s_axis_tlast && source_phase_q != SOURCE_BEATS_PER_QUANTUM-1)",
+    "source_page": "runs/thermo5_tx_final_closure_20261031/negative/urg_negative_report/mod23.html",
+    "source_page_sha256": "50e154f5e889848f0cfba3d37060c0b3c60ea94fe552699200b70a9149110cb8",
+    "source_position": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:141",
+    "urg_report": "runs/thermo5_tx_final_closure_20261031/negative/urg_negative_report",
+    "vdb": "runs/thermo5_tx_final_closure_20261031/negative/cov_axil_illegal_frame_seed420102.vdb",
+    "vdb_tree_sha256": "73ae0d595406e5c53d20249ea25dcbeea0bc514e07f970a11959a4eb6766dd89"
+  },
+  "logs": {
+    "runs/thermo5_tx_final_closure_20261031/negative/axil_illegal_frame_seed420102.log": "a6334a392dab6b32693df8278145f76e29debcf6245b13fc0aedcbd500de4d20",
+    "runs/thermo5_tx_final_closure_20261031/negative/compile.log": "1f638725b49662641ef1a4eca9c33d40d25215bfa7f6d73caa447ea203f0c7a3",
+    "runs/thermo5_tx_final_closure_20261031/negative/urg_negative.log": "d9c5809888eef72fd9b6a88188da2bc617a636dff51c796a0d11cd3d56e9b80b"
+  },
+  "product_source_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
+  "schema_version": 1,
+  "source_sha256": {
+    "dv/uvm/agent/interfaces/thermo5_sku_if.sv": "4a56ea6e1fe111390f48efedd66950dd0c8327ecd08944e2684952cd444c25a3",
+    "dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv": "ffe215a3673ad9fe2e1ba76388c3fdc4389b50b4f94ebfd6e7cdb6c4e6c48e7b",
+    "dv/uvm/sim/thermo5_sku_filelist.f": "cc24e2fb0cdfcc132458134c454d41e45eecefae63d13f7df84e0a00a9b97808",
+    "dv/uvm/sim/thermo5_tx_product_coverage.hier": "1b01e3c9a7c86a189660dcb0529369dc8ef4d1ff535ebbdb619e5d7c5651c5fa",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "71ebe6a90aaf2ecc936030d6ef47662b1f4f91f91e0f8eeb439bb0d176a3b492",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_illegal_frame_test.svh": "14c69ec72f031373e93613e2da0055e5bcec1e4119a4e1efdb3597da6732048b",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7"
+  },
+  "status": "PASS_EXPECTED_NEGATIVE_ASSERTIONS_AND_SEPARATE_DUT_BRANCH_HIT",
+  "test": {
+    "expected_assertion_messages": [
+      "DSM frame_start was not aligned to a 56-sample boundary",
+      "centered cubic frame-end vector was followed by same-frame data"
+    ],
+    "generated_vector_seed": 610932,
+    "independent_checker": "UVM test requires protocol_error and protocol_error_cycles, then verifies public reset clears the sticky error.",
+    "name": "thermo5_sku_axil_illegal_frame_test",
+    "observed_expected_messages": {
+      "DSM frame_start was not aligned to a 56-sample boundary": true,
+      "THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED early_tlast=1": true,
+      "THERMO5_AXIL_ILLEGAL_FRAME_UVM_PASS": true,
+      "centered cubic frame-end vector was followed by same-frame data": true
+    },
+    "seed": 420102,
+    "simulator_exit_code": 0,
+    "stimulus": "one accepted early TLAST at source beat 15 within a 32-beat legal quantum, then the stream completes and reset clears the sticky protocol error",
+    "uvm_counts": {
+      "ERROR": 0,
+      "FATAL": 0,
+      "INFO": 6,
+      "WARNING": 0
+    }
+  },
+  "tool_versions": {
+    "urg": "URG Version V-2023.12-SP1                       Copyright (c) 1991 -  Synopsys, Inc.",
+    "vcs": "V-2023.12-SP1"
+  }
+}

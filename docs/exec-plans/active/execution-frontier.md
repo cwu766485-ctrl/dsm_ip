@@ -1,80 +1,18 @@
 # Execution frontier
 
-## Current execution state: licensed VCS refresh; coverage closure open (2026-10-31)
+## Current execution state: AXI-Lite read-default proof; final closure remains open (2026-10-31)
 
-The active branch is `codex/thermo5-tx-final-signoff`, stacked on draft PR #10
-and PR #9. This tranche began from checkout
-`41691b675d4be63221f046e007aa9a37cb156e1e`; do not merge historical PRs as
-part of this closure.
+The current follow-up branch is `codex/thermo5-tx-axil-mailbox-formal`, based on draft PR #10 head `bae5ec7c72bdeda26103218883ef4502dc13271a`. PR #10 and its ancestors remain unmerged. The audited product RTL SHA remains `c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`; product configuration is unchanged: Centered-Cubic x2+x2, EF2 ORDER=2 STEP=5120, 20-bit state, 32 chronological lanes, `DPD_MAX_TAPS=1` identity, AXI-Lite parent and Generic FIFO. No TX algorithm, RX, AI-DPD, Raw URG, or denominator changes were made.
 
-The audited product source identity is
-`c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b`. Configuration is unchanged:
-Centered-Cubic x2+x2, EF2 ORDER=2 STEP=5120, 20-bit state, 32 chronological
-lanes, `DPD_MAX_TAPS=1` identity, AXI-Lite parent, Generic FIFO. No TX
-algorithm, RX, or AI-DPD changes were made.
+A fresh VC Formal V-2023.12-SP2 run passed the committed AXI-Lite configuration harness at `runs/thermo5_axil_cfg_final_closure_20261031/`. It proved 4/4 assertions, reached the legal coefficient-read Cover, marked three exact path Covers uncoverable, used zero assumptions, reported three non-vacuous assertions, zero black boxes, and zero setup violations. The fail-closed disposition updater validates the current RTL/DV hashes and Raw evidence, closing `TXB-65f3dfeee7bc0b854f52` (coefficient-read function default Branch at line 135). The same exact predicate supports the existing line-142 default Line bin. Both stay in Raw. Six exact bins are now `PROVEN_UNREACHABLE`; 18,587 of 18,593 code-gap rows remain OPEN. Raw remains line 3,190/3,796 (84.0358%), condition 583/846 (68.9125%), branch 440/637 (69.0738%), toggle 86,951/104,478 (83.2242%), FSM state/transition 13/13 and 22/22. Approved waivers and active `.el` exclusions are zero; status remains `RAW_100_OPEN`. A current-worktree recheck of the retained Raw source manifest failed closed (exit 3) on exactly three UVM compile-input hash differences; all product RTL hashes match. It is not an exact-current-worktree compile PASS, and the retained Raw report was not altered.
 
-VCS/URG licenses are available. A fresh VCS product compile passed, followed
-by two focused PASS tests with zero UVM errors/fatals: reset sweep seed 610802
-(five legal residual resets and four-plane bit-true replay), and AXI-Lite
-register access seed 610830 (ID/status/taps/coefficient map, AW/W skew, WSTRB,
-DECERR and response backpressure). URG merged 29 product test VDBs: 2 fresh and
-27 retained exact-source VDBs, plus the compile VDB. The full regression was
-not rerun. Exact commands, tool versions, log and report hashes are in
-`docs/verification/data/thermo5-tx-final-vcs-refresh.json`.
+After VCS license recovery, a current-source negative-only AXI-Lite early-TLAST test passed at seed 420102: both expected protocol assertion messages were observed, the independent checker saw the sticky error, and public reset cleared it (UVM warning/error/fatal counts 0/0/0). A separate URG report hit the RTL line-141 Branch `TXB-646dd03c99766d877d30`. Its VDB is not merged into legal-product Raw; that Raw ledger row stays OPEN, with no denominator or metric change. Full evidence is in `docs/verification/data/thermo5-tx-negative-assertion-evidence.json`.
 
-The refreshed Raw report matches the initial fresh merge byte-for-byte, so
-neither focused test changed code coverage. Raw is line 3,190/3,796 (84.0358%),
-condition 583/846 (68.9125%), branch 440/637 (69.0738%), toggle
-86,951/104,478 (83.2242%); FSM states 13/13 and transitions 22/22. DUT
-assertions: 13 successful, 2 uncovered, 2 without attempts. Raw equals
-Adjusted; approved waivers 0; `.el` exclusions 0; status is `RAW_100_OPEN`.
+Functional Coverage remains 210/214 scoreable records hit; the four zero-hit records are two negative-only illegal-frame bins duplicated across URG views. All 210/210 legal applicable positive records are hit. No Group Report, VDB, or denominator was altered in this follow-up.
 
-Functional URG has 214 scoreable records across type and monitor-instance
-views, 210 hit and four zero-hit. Those four rows are the two illegal-frame
-negative-only bins repeated in both views; separate negative URG evidence hits
-them. All 210/210 legally applicable positive records are hit. There are 12
-additional records already labelled Illegal/Excluded by the URG model; no new
-waiver or exclusion was applied.
+The VCS license was restored. A focused AXI-Lite configuration UVM run (seed 610931) passed with zero warnings, errors, or fatals and checked a legal identity-equivalent two-tap commit at a DPD frame boundary. A separate experimental mailbox-stability Formal property remained inconclusive. Its selected-property depth-4 trace did not run the AW/W stability assumptions, so it is not accepted as legal-protocol evidence. The temporary harness edits were reverted; mailbox stability remains OPEN and no disposition was added. Local diagnostics are under `runs/thermo5_axil_cfg_mailbox_formal_20261031/`, `runs/thermo5_axil_cfg_mailbox_trace_20261031/`, and `runs/thermo5_axil_mailbox_vcs_20261031/`.
 
-The source-linked root-cause ledger retains 18,593 code-gap rows in 492 tasks:
-197 Branch, 263 Condition, 606 Line and 17,527 Toggle. Exact URG Branch paths
-now bind to source lines, correcting the 16 DPD nested paths formerly anchored
-to the enclosing reset line; 80 DPD saturation Branch records remain OPEN
-because Identity-DPD Formal is inconclusive. Current Branch root-cause bins:
-CDC/residual 3, fixed product configuration 105, guarded address decode 2,
-Identity-DPD arithmetic 80, product cadence alignment 2, legal
-stimulus/checker review 5. Five exact bins have source-bound
-`PROVEN_UNREACHABLE` proofs; they remain in Raw. The other
-18,588 rows remain OPEN. The clean AXI-Lite VC Formal refresh re-proved the
-write-address `default` branch at `thermo5_dpd_axi_lite_cfg.sv:246` unreachable
-for an OKAY response, with no assumptions, no black boxes, three non-vacuous
-assertions, and no tautological goals. Two older candidates (the `MAX_TAPS=1`
-guard and an interpolator append-arm property) were removed from the accepted
-disposition count after VC Formal identified their properties as tautological;
-both Raw candidates remain OPEN.
-
-The reproducible two-frame AXI-Lite test checks 112 output words against the
-four-plane oracle and directly observes both centered-cubic product instances.
-Nine source-start and seventeen RUN-start phase placements pass; each instance
-reaches `q_count==1 && q0_end && pop_head` without same-edge `push_input`. The
-two line-255 Branch bins are explicitly grouped as
-`PRODUCT_CADENCE_ALIGNMENT` and stay OPEN. A separate diagnostic URG merge
-shows zero Raw code-coverage delta; its testbench-only source differences are
-bound to diagnostic evidence hashes and are not mixed into baseline Raw.
-Standalone stage Formal proves the pop/push event possible; end-to-end product
-reachability remains OPEN. Do not repeat these phase sweeps. Next, derive the
-14-to-8 ingress/two-stage cadence and use a legal product schedule or a
-non-vacuous end-to-end Formal Cover before changing either bin's status. The
-16-cycle source gap observed 54 underflow events with RUN asserted; the
-interface/service-rate contract remains unresolved. DPD Identity remains
-Formal-inconclusive.
-
-Next: root-cause the remaining legal Branch paths and add a directed test only
-when it predicts an exact Raw bin delta, with an independent checker; then
-continue Condition, Line and Toggle closure. Keep illegal-only stimuli
-separate from positive product coverage. Do not alter the frozen TX algorithm,
-Raw URG, or denominators. Real XPM, GT Wizard, FPGA PPA/timing, and physical
-QAM256 BER remain outside Linux signoff.
+Identity-DPD arithmetic Formal remains inconclusive. The 16-cycle source-gap case still reports 54 underflows with RUN asserted; its legal interface/service-rate contract is unresolved. The two centered-cubic product pop/push Branch bins remain OPEN after the fixed 26-phase legal sweep, which had zero Raw coverage delta. Next: inspect remaining legal Branch tasks and add a directed test only where a predicted Raw bin delta and independent checker exist; separately audit the mailbox trace assumptions, DPD identity proof, and source-gap contract. Then continue Condition, Line, and Toggle closure. Do not repeat prior phase sweeps or alter frozen algorithms. Real XPM, GT Wizard, FPGA PPA/timing, and physical QAM256 BER remain outside Linux signoff.
 
 ## Previous execution state: Phase 0 and Phase 1 Linux complete (2026-10-30)
 

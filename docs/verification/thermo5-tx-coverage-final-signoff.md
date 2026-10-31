@@ -8,7 +8,7 @@
 20-bit state; 32 chronological lanes; `DPD_MAX_TAPS=1` identity; AXI-Lite
 product parent and Generic FIFO model.
 
-## Latest licensed Linux refresh (2026-10-30)
+## Latest licensed Linux refresh and source audit (2026-10-31)
 
 VCS and URG are available again. A fresh product compile passed for checkout
 `41691b675d4be63221f046e007aa9a37cb156e1e`; the product RTL/UVM source identity
@@ -38,16 +38,41 @@ The current AXI-Lite coverage harness was rerun with VC Formal V-2023.12-SP2.
 It passed with 4/4 assertions proven, one legal coefficient-read Cover hit,
 and three exact path Covers uncoverable; it used no environment assumptions,
 reported no setup violations or black boxes, and had three non-vacuous
-assertions. The runner now rejects tautological goals. This provides current
-source evidence for the write-address default bin at
-`thermo5_dpd_axi_lite_cfg.sv:246` and revalidates the two existing AXI-Lite
-dispositions.
+assertions. A fresh current-source rerun also validates the coefficient-read
+function default Branch at line 135 (and its line-142 default Line bin) using
+the same exact non-vacuous assertion/Cover pair. The runner rejects
+Tautological goals. The four AXI-Lite semantic bins now include the guarded
+read default Branch, the corresponding default Line, the read-address tuple
+Condition, and the write-address default Branch. All remain in Raw. The fresh
+reproof is recorded under
+`runs/thermo5_axil_cfg_final_closure_20261031/`; its manifest binds the clean
+source SHA, Formal property/setup/console hashes, exact command, and tool
+version.
 
 The separate `MAX_TAPS=1` initialization-guard property and one interpolator
 append-arm property were identified as tautologies and removed from the
 accepted Formal disposition set. Both Raw code bins remain OPEN and in the
-unmodified Raw denominator. The accepted ledger now has five exact proven
-bins and 18,588 OPEN records.
+unmodified Raw denominator. The accepted ledger now has six exact proven
+bins and 18,587 OPEN records.
+
+An exploratory mailbox-stability assertion remains OPEN. Its full Formal run
+was inconclusive; a selected-property trace attempt marked the AW/W stability
+assumptions `not_run`, so that witness is not valid evidence under legal AXI
+traffic. The temporary harness edits were reverted. A focused VCS config test
+(seed 610931) passed with zero UVM warnings, errors, or fatals, but does not
+resolve the Formal gap. No waiver or coverage disposition was applied.
+
+The current-worktree coverage gate was also rerun against the retained Raw
+summary and Group Report. It returned exit code 3,
+`FAIL_CLOSED_SOURCE_HASH_MISMATCH`: the recorded compile manifest is pinned to
+base commit `913be930bfcbbad0f78dbc90e06299db3d1bb337`, while three UVM compile
+inputs have since changed for the separate frame diagnostic test. All product
+RTL hashes and the coverage hierarchy match; the changed files are the SKU
+interface, UVM package, and UVM top. The prior Raw report was not modified and
+remains tied to its recorded baseline compile. This follow-up therefore does
+not claim an exact-current-worktree Raw compile signoff. Exact expected/current
+hashes, command, and failure log SHA are recorded in the root-cause audit
+manifest and summary.
 
 ## Centered-Cubic frame-boundary Branch review (2026-10-31)
 
@@ -77,8 +102,8 @@ product-bound cadence still needs analysis. See the
 | DUT assertion status | 13/15 attempted (86.67%) | unchanged | 2 uncovered and 2 without attempts are retained in the URG status table |
 
 There are no approved waivers and no active URG exclusions. Adjusted therefore
-equals Raw. Five exact bins have a Formal `PROVEN_UNREACHABLE` disposition; they
-remain visible in the Raw URG denominators. The ledger contains 18,588 OPEN
+equals Raw. Six exact bins have a Formal `PROVEN_UNREACHABLE` disposition; they
+remain visible in the Raw URG denominators. The ledger contains 18,587 OPEN
 records out of 18,593. No adjusted score is used to claim closure.
 
 The complete product URG Group Report has 214 denominator-eligible bin records
@@ -128,7 +153,7 @@ retains exact semantic IDs and separate negative-test hits.
 | Scope | Result | Limits |
 |---|---|---|
 | Centered interpolator product parameters | VC Formal reports 6/6 assertions proven and 5/9 Covers hit, 4/9 uncoverable; one assertion is explicitly tautological; one source-stability assumption is non-vacuous | Two exact frame-tail dispositions are retained; the tautological append-arm candidate remains OPEN. Single-entry pop/push is formally reachable but still missed by targeted product UVM. |
-| AXI-Lite configuration and address decode | 4/4 assertions proven; one legal coefficient-read Cover hit; three exact path Covers uncoverable; zero environment assumptions, setup violations, or black boxes; no tautological goals | Closes only the three AXI-Lite Bin IDs listed in the disposition JSON; the `MAX_TAPS=1` guard candidate remains OPEN |
+| AXI-Lite configuration and address decode | 4/4 assertions proven; one legal coefficient-read Cover hit; three exact path Covers uncoverable; zero environment assumptions, setup violations, or black boxes; no tautological goals | Four exact Raw bins across Branch/Condition/Line are proven unreachable, including the read default Branch at line 135; mailbox stability and `MAX_TAPS=1` guard remain OPEN |
 | EF2 arithmetic/state | 6/6 assertions proven; 3/3 Covers hit; zero setup violations and black boxes | Does not increase URG hits |
 | Product EF2 parameter guards | The parameter guard assertion is proven and invalid-parameter Cover is uncoverable; pair-look-ahead-disabled assertion/Cover were reported as tautological | No ledger closure is credited from the tautological pair-look-ahead properties; parameter evidence remains configuration-bound |
 | DPD counter | bounded: 3/3 assertions and 4/4 Covers; unbounded: 35/35 bit-transition assertions and 4/4 Covers | The 2,072-acceptance bound is not a declared product lifetime contract; high-bit Toggle bins remain OPEN |
@@ -155,7 +180,7 @@ removed before the accepted run.
 | Product VCS compile and targeted UVM | `PASS_TARGETED_REFRESH` | Two fresh tests pass with zero UVM errors/fatals; 27 exact-source VDBs were reused. This is not a full regression rerun. |
 | Product Raw URG and fail-closed gate | `PASS_AUDIT; RAW_100_OPEN` | 29 product simulation VDBs plus the compile VDB; Raw report and Raw summary match the first fresh merge byte-for-byte. |
 | Centered-Cubic product frame-replacement phase sweep | `PASS_STREAM; TARGET_BRANCH_OPEN` | Nine fixed-seed legal source-start phases pass the 112-word four-plane oracle; each instance observes one single-entry frame-end pop and zero same-edge pushes. One VDB was added to a diagnostic URG merge; Raw code counters and target-bin status are unchanged. |
-| Expected-negative malformed-frame UVM | `PASS_NEGATIVE_CHECKER` | The separate test observes the expected protocol assertions and checker outcome; its VDB is not mixed into positive Raw. |
+| Expected-negative malformed-frame UVM | `PASS_NEGATIVE_CHECKER` | Current-source VCS test seed 420102 observes the early-TLAST assertions, sticky error and reset recovery; its separate URG hit on Branch `TXB-646dd03c99766d877d30` is not merged into positive Raw. |
 | Scoped Formal jobs | `PASS_FOR_SCOPED_PROPERTIES` | Exact assertion/Cover counts and assumptions are in the Formal table above; they do not count as URG hits. |
 | Identity-DPD Formal | `OPEN_INCONCLUSIVE` | Direct 5/18 proven, 13 inconclusive; auto-lemma 1/13 proven, 12 inconclusive. No counterexample is not a proof. |
 | Checker mutation | `PASS_MUTATION_CAUGHT` | One-bit PA0 oracle corruption was detected at epoch 0 / word 0 / plane 0. Other checker mutation classes remain untested. |
@@ -172,10 +197,14 @@ missing pop/push event. The test log and a diagnostic URG merge are hashed in
 the linked review JSON. The module-only depth-2 Formal witness remains a
 module-level result, not a product integration witness.
 
-The separate illegal-frame assertion test has two expected assertion
-failures, passes its UVM expected-negative checker, and is not merged into the
-positive product coverage database. Product URG reports 13 DUT assertion
-successes, 2 uncovered, and 2 without attempts; those statuses are preserved.
+The separate current-source illegal-frame assertion test has two expected
+assertion failures, passes its UVM expected-negative checker, and is not merged
+into the positive product coverage database. Its separate URG report hits the
+early-TLAST RTL Branch at line 141; the corresponding product Raw ledger row
+remains OPEN because the legal-product VDB is unchanged. Product Raw URG
+reports 13 DUT assertion successes, 2 uncovered, and 2 without attempts; those
+statuses are preserved. Full commands and SHA-256 evidence are in
+[`thermo5-tx-negative-assertion-evidence.json`](data/thermo5-tx-negative-assertion-evidence.json).
 
 The observed 16-source-cycle pause while RUN remained active caused 54
 underflow events across two 32-beat packets. All expected 112 output words
@@ -257,7 +286,7 @@ synthetic or unreviewed exclusion was installed.
 ## Acceptance status and remaining work
 
 - **Legal functional coverage:** 210/210 applicable scoreable records; negative-only bins reported separately. The complete report lists 214 scoreable records and 12 pre-existing URG model Illegal/Excluded records.
-- **Reachable/applicable DUT code coverage:** not closed; 18,588 rows remain OPEN.
+- **Reachable/applicable DUT code coverage:** not closed; 18,587 rows remain OPEN.
 - **Raw 100% code coverage:** `RAW_100_OPEN`; not claimed.
 - **Identity DPD Formal:** OPEN / inconclusive.
 - **TX worst-case benchmark:** model-only evidence exists; product BER/BLER acceptance threshold is undefined, so product communication acceptance remains OPEN.

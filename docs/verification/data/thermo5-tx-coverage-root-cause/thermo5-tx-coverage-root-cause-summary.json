@@ -23,10 +23,39 @@
     "toggle:IDENTITY_DPD_ARITHMETIC": 4320
   },
   "closure_status_counts": {
-    "OPEN": 18588,
-    "PROVEN_UNREACHABLE": 5
+    "OPEN": 18587,
+    "PROVEN_UNREACHABLE": 6
   },
   "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
+  "current_worktree_coverage_gate_recheck": {
+    "baseline_compile_commit": "913be930bfcbbad0f78dbc90e06299db3d1bb337",
+    "compile_input_differences": [
+      {
+        "baseline_sha256": "2e4d08eae61f7a2875286d289e37f9e70db9d89d07b10feb16ec57684ca6cbed",
+        "current_sha256": "4a56ea6e1fe111390f48efedd66950dd0c8327ecd08944e2684952cd444c25a3",
+        "path": "dv/uvm/agent/interfaces/thermo5_sku_if.sv"
+      },
+      {
+        "baseline_sha256": "0a495e43c1edb0e9b111c2c43c5a61e8a52b7461b283e51a23436e928c19baaf",
+        "current_sha256": "ffe215a3673ad9fe2e1ba76388c3fdc4389b50b4f94ebfd6e7cdb6c4e6c48e7b",
+        "path": "dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv"
+      },
+      {
+        "baseline_sha256": "724fdc07729abc657d646abc86ba2f01c064c26c4ce20fc3f5fcb0d909eeaec6",
+        "current_sha256": "71ebe6a90aaf2ecc936030d6ef47662b1f4f91f91e0f8eeb439bb0d176a3b492",
+        "path": "dv/uvm/tb/thermo5_sku_uvm_tb.sv"
+      }
+    ],
+    "denominator_changed": false,
+    "exit_code": 3,
+    "gate_log": "runs/thermo5_tx_final_closure_20261031/coverage_gate_recheck.log",
+    "gate_log_sha256": "86986f2c00980865a88dc07c8dbbb66e16ac0feb04ea281b552a7467c098a438",
+    "gate_script_sha256": "da4c91dacfe4646ea551a1d2e0ebb0fdb635f965a050d1e21f9bc2ac15093152",
+    "product_rtl_manifest_mismatches": [],
+    "raw_report_modified": false,
+    "source_manifest_sha256": "c1b4ec0219d5fbfe0d50c5a44b5332b06665cfd7521e8af6b1cdd115be07bc3c",
+    "status": "FAIL_CLOSED_SOURCE_HASH_MISMATCH"
+  },
   "diagnostic_product_branch_review": {
     "all_stream_checks_pass": true,
     "disposition": "OPEN",
@@ -110,6 +139,23 @@
       },
       "status": "PROVEN_UNREACHABLE"
     },
+    "TXB-65f3dfeee7bc0b854f52": {
+      "assertion": "thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable",
+      "assumptions": [],
+      "cover": "thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable",
+      "evidence_sha256": {
+        "console": "15684b383dc4fd5c9f3046498508725cc04baae0ca39cd4641764955b3fc39b4",
+        "properties": "efe5aac2ad720dc99962185a9b51ed330005489984b34f23d186c3b3095f4aae",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_axil_cfg_final_closure_20261031",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
     "TXB-74a3bacf0956921ac9bf": {
       "assertion": "thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable",
       "assumptions": [],
@@ -165,7 +211,7 @@
     "uncovered_records": 4,
     "urg_model_excluded_rows": 12
   },
-  "interpretation": "5 exact bins are Formal-proven unreachable; 18588 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "interpretation": "6 exact bins are Formal-proven unreachable; 18587 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
   "negative_report": "runs/thermo5_tx_product_axil_register_access_20261030/negative_expected_assertions/report",
   "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
   "raw_bin_id_collision_extra_rows": 17,
@@ -263,6 +309,16 @@
   "source_manifest_sha256": "3e875543c44f93c4d418f73eea76f17a898205239ae937d2f60df7ccba2340eb",
   "source_manifest_sha_matches_current_tree": false,
   "source_product_sha": "c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b",
+  "supplemental_negative_code_coverage": {
+    "evidence_file": "docs/verification/data/thermo5-tx-negative-assertion-evidence.json",
+    "evidence_sha256": "80d23df25a8fe407484132bcc4b3a7d383e7c206605c1c83139e4a1a3e8b7ce1",
+    "positive_raw_ledger_status": "OPEN",
+    "raw_denominator_changed": false,
+    "raw_report_modified": false,
+    "semantic_bin_id": "TXB-646dd03c99766d877d30",
+    "source_position": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:141",
+    "status": "NEGATIVE_ONLY_BRANCH_HIT; NOT_MERGED_INTO_PRODUCT_RAW"
+  },
   "task_count_by_metric": {
     "branch": 53,
     "cond": 107,

@@ -1,7 +1,7 @@
 # Thermo5 TX Coverage Root-Cause Closure — Step 1/2
 
 - Raw VCS/URG product source SHA: c1fa9f3e7ca5ac4756f7da3245b71727ac71bb4b; the baseline Raw report remains bound to its original compile source manifest.
-- Current-tree source-manifest differences are listed in the machine-readable summary. Three testbench-only files contain read-only diagnostic probes and are pinned to the separate frame-review evidence; that diagnostic VDB is not merged into baseline Raw. DUT RTL and the coverage model are unchanged. The separate AXI-Lite Formal harness change is outside the product VCS compile.
+- The Raw compile source manifest is pinned to base commit `913be930bfcbbad0f78dbc90e06299db3d1bb337`. Current-tree audit differences are listed in the machine-readable summary: the AXI-Lite interface adds read-only frame probes, the UVM package includes an additive diagnostic test, and the UVM top assigns those probes. Their separate diagnostic VDB was not merged into baseline Raw. All product `rtl/` source hashes and the coverage hierarchy match the baseline; the AXI-Lite Formal harness is outside the product VCS compile.
 - Raw gap ledger: 18,593 rows; SHA-256 e586d27684fffe4e98b1d4c4bd43b22839c349ef31c07b1779d4a69c4ce45222.
 - Expression-aware semantic IDs: 18,593; old ID collisions: 17 groups, 17 extra rows.
 - Product: Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, 20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite wrapper and Generic FIFO.
@@ -43,7 +43,7 @@ Legally applicable positive bins are 210/210. The four Raw zero-hit report rows 
 | line | 3,190/3,796 (84.0358%) | 606 | 123 |
 | toggle | 86,951/104,478 (83.2242%) | 17,527 | 209 |
 
-The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. After exact Formal review, 5 rows are PROVEN_UNREACHABLE and 18588 remain OPEN; Raw URG is unchanged.
+The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. After exact Formal review, 6 rows are PROVEN_UNREACHABLE and 18587 remain OPEN; Raw URG is unchanged.
 
 | Metric / root-cause hypothesis | Raw gap rows |
 |---|---:|
@@ -73,9 +73,33 @@ This source-linked audit uses the fresh licensed VCS/URG report recorded in `doc
 
 VC Formal V-2023.12-SP2 reran the AXI-Lite configuration harness against its current source and the unchanged DUT. The run passed with 4/4 assertions proven, one legal coefficient-read Cover hit, and three exact path Covers reported uncoverable. It used zero environment assumptions, had zero black-box instances and zero setup violations, and reported three non-vacuous assertions. The runner now fails if VC Formal marks any goal as tautological.
 
-This refresh supplies current-source proof evidence for the AXI-Lite bins listed below, including the branch at `rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246`: `write_fire` with `write_resp==OKAY` cannot select the write-address `default` arm. The exact Raw bin remains present in the Raw denominator; Formal disposition does not remove it.
+This refresh supplies current-source proof evidence for the write-address default branch at `rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:246`. A separate fresh run also closes the coefficient-read function default Branch at line 135: `coeff_read_word` is called only after the address guard accepts a coefficient register, and the masked address is one of six defined words. Its exact line-142 default Line bin is linked to the same assertion/Cover pair. The accepted read transaction Cover is hit; the default-arm Cover is uncoverable. Both Raw bins remain in the denominator.
+
+## Current-worktree Raw source audit (2026-10-31)
+
+The fail-closed coverage gate was rerun against the recorded Raw summary and Group Report using `docs/verification/data/thermo5-tx-product-compile-manifest.json`. It returned exit code 3, `FAIL_CLOSED_SOURCE_HASH_MISMATCH`, because the current worktree differs from the baseline compile manifest in the three UVM files listed above. All product RTL hashes in that manifest match; this is a compile-input identity gap, not evidence of a DUT RTL change. The exact command, expected/observed hashes, return code, and log SHA are recorded in the machine-readable root-cause summary and manifest. The prior Raw report remains unchanged and valid for its recorded baseline compile; it is not promoted as an exact-current-worktree compile signoff. No VDB, denominator, waiver, or exclusion was changed to bypass the gate.
 
 The `MAX_TAPS=1` initialization-guard candidate and one interpolator append-arm candidate were removed from the accepted Formal disposition set after their exact properties were identified as tautologies. Both candidates remain OPEN for separately audited evidence; neither has a waiver or exclusion.
+
+## Coefficient-read default Branch closure (2026-10-31)
+
+The source-linked task `TXC-9617be8f4050d3cd1751` was initially mislabeled in its root-cause note as a write-address path. The exact Raw bin `TXB-65f3dfeee7bc0b854f52` is the `default` arm of `coeff_read_word` at `thermo5_dpd_axi_lite_cfg.sv:135`, instance `thermo5_sku_uvm_tb.dut.u_cfg`. The function call is guarded by `coeff_word_addr`, whose accepted aligned addresses mask to `8'h10`, `18`, `20`, `28`, `30`, or `38`.
+
+Fresh VC Formal V-2023.12-SP2 run `runs/thermo5_axil_cfg_final_closure_20261031` used the committed baseline harness and no environment assumptions. All 4 assertions passed, the legal coefficient-read Cover was reached, and the exact default-arm Cover was reported uncoverable. The run reported 3 non-vacuous assertions, zero black boxes, and zero setup violations. The fail-closed disposition updater matched the semantic Bin ID, instance, branch record (`135:default`), RTL SHA-256, property/Cover result, and unchanged Raw report. The line-142 default Line bin is independently source-mapped to the same predicate and remains a separate Raw metric bin.
+
+Disposition: both exact bins are `PROVEN_UNREACHABLE` for this product configuration and remain in Raw. No `.el`, waiver, or denominator change was applied. Coverage values are unchanged.
+
+## AXI-Lite mailbox stability diagnostic remains OPEN (2026-10-31)
+
+An exploratory Formal property was added temporarily to check the simulation-only mailbox stability guard. A full AXI-Lite Formal run left the new assertion inconclusive and reached the mailbox-change Cover. A selected-property trace job produced a depth-4 witness, but its property report shows the AXI AW/W stability assumptions as `not_run`; that witness is unconstrained and cannot establish a legal-protocol defect or an unreachable bin. The temporary harness edits were reverted and are not part of the accepted Formal runner or any disposition.
+
+The focused VCS `thermo5_sku_axil_config_test` run at seed 610931 passed with zero UVM warnings, errors, or fatals and checked a legal identity-equivalent two-tap commit at a DPD frame boundary. This single test does not resolve the Formal inconclusive result. Keep the mailbox stability checker path OPEN pending a reproducible, assumption-audited proof and matching directed simulation. No RTL was changed and no coverage credit or waiver was applied. Local diagnostic artifacts are under `runs/thermo5_axil_cfg_mailbox_formal_20261031/`, `runs/thermo5_axil_cfg_mailbox_trace_20261031/`, and `runs/thermo5_axil_mailbox_vcs_20261031/`.
+
+## Separate early-TLAST negative regression (2026-10-31)
+
+After VCS license recovery, the current-source `thermo5_sku_axil_illegal_frame_test` compiled and passed at seed 420102. The stimulus asserted TLAST at source beat 15 inside the 32-beat product quantum. The test observed both expected RTL protocol assertions, checked `protocol_error` and its cycle count, then verified public reset clears the sticky error. UVM reported 0 warnings, 0 errors, and 0 fatals.
+
+A separate URG report hit the exact early-TLAST Branch `TXB-646dd03c99766d877d30` at `tid32_thermo5_axi_lite_axis_frontend_tx.sv:141`, instance `thermo5_sku_uvm_tb.dut`. This is negative-only evidence: its VDB/report was not merged into legal-product Raw, and the Raw bin remains OPEN in the product-only ledger. No denominator, waiver, or exclusion changed. The command lines, source hashes, log hashes, URG page hash, VDB tree hash, observed messages, and result are recorded in [`thermo5-tx-negative-assertion-evidence.json`](data/thermo5-tx-negative-assertion-evidence.json).
 
 ## Centered-Cubic product cadence review for two missing pop/push branches (2026-10-31)
 
@@ -95,13 +119,14 @@ Exact VCS and URG command lines, source hashes, all 26 log hashes, VDB tree hash
 
 ## Formal disposition update
 
-The source-bound review closed 5 exact bins as PROVEN_UNREACHABLE; 18588 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+The source-bound review closed 6 exact bins as PROVEN_UNREACHABLE; 18587 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
 | Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
 | `TXB-39a0a549d32bc9ef1e01` | `thermo5_frame_tail_harness.a_append_no_input_tail` | `thermo5_frame_tail_harness.c_append_tail_head_drop_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-3df5f13a8d51ee9bdea5` | `thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-603e97cceda8c0d4d0ed` | `thermo5_frame_tail_harness.a_plain_tail_fire_disabled` | `thermo5_frame_tail_harness.c_plain_tail_fire_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-65f3dfeee7bc0b854f52` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-74a3bacf0956921ac9bf` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-872eb98e51c3229e4c86` | `thermo5_axil_cfg_coverage_harness.a_line88_tuple_unreachable` | `thermo5_axil_cfg_coverage_harness.c_line88_tuple_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 
