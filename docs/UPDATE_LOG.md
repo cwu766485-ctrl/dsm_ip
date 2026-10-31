@@ -1,3 +1,34 @@
+## 2026-10-31 14:38 SGT - Audit Thermo5 TX integration branch and replay Linux evidence
+
+- Created `codex/thermo5-integration-review` from exact PR #16 head
+  `eddddd650a2853a05deab0bdb7a2272fdb647d18`; confirmed it is 44 commits ahead
+  and zero behind `thermo5`. GitHub PRs #2–#16 are open, unmerged, and form a
+  continuous base/head chain. No PR was merged and no branch was deleted.
+- Audited the cumulative 125-file diff: only
+  `rtl/axis/dsm_axis14_to_core8_cdc.sv` is synthesizable RTL; no RX/AI-DPD,
+  TX algorithm/default, generated logs/VDBs, or restricted collateral changed.
+- Verified 39/39 PR #16 evidence artifact hashes/sizes and 77/77 current
+  compile-input hashes. Reused the exact-source 13-test product VCS replay and
+  Raw URG rather than repeating that full run.
+- Python reference tests: 44/44 PASS. Coverage/formal-disposition audit tests:
+  13/13 PASS. Fresh VCS V-2023.12-SP1 compile PASS; reset-release source test
+  seed 610713 PASS with 56 four-plane words and zero UVM warning/error/fatal.
+  The current-source expected-negative frame test seed 420102 observed both
+  expected assertions and passed sticky-error/reset recovery; its VDB remains
+  separate from legal product Raw. An initial reset-release invocation used a
+  multi-frame vector set and failed its frame-event checker; the test's
+  one-frame vector contract was then applied and the rerun passed.
+- Raw coverage and ledger remain unchanged: legal Functional Coverage 210/210;
+  Raw Branch 520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480;
+  5 exact Formal-proven-unreachable records remain in Raw, 21727 records stay
+  OPEN, zero approved waivers, zero active `.el` exclusions, gate
+  `RAW_100_OPEN`.
+- Added the branch audit and machine-readable evidence report. Checks:
+  `git diff --check`, 44 Python reference tests, 13 coverage-audit tests,
+  fresh VCS compile/reset-release/negative-frame runs, and evidence hash checks.
+  Formal identity-DPD, remaining code coverage, 16-cycle source-gap contract,
+  real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain OPEN.
+
 ## 2026-10-31 12:23 SGT - Rebuild current-source focused TX coverage closure
 
 - Recompiled the fixed AXI-Lite TX product at source SHA

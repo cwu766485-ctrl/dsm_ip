@@ -1,6 +1,46 @@
 # Execution frontier
 
-## Current execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
+## Current execution state: TX branch integration review (2026-10-31)
+
+The local integration branch `codex/thermo5-integration-review` starts at exact
+PR #16 head `eddddd650a2853a05deab0bdb7a2272fdb647d18`, tree
+`d4d5ee1c04299c8273f1b702d21160c5b1c01aae`. It is 44 commits ahead and zero
+behind `thermo5` (`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`). PRs #2–#16 are
+all open, unmerged, and form a continuous chain. A draft Integration Review PR
+to `thermo5` is the next publication step; do not merge or delete refs.
+
+The cumulative PR #16 comparison has 125 files and only one synthesizable RTL
+path, the reset-release `TREADY` fix in `rtl/axis/dsm_axis14_to_core8_cdc.sv`.
+It changes no TX algorithm/default and touches no RX or AI-DPD. No generated
+logs/VDBs or restricted files are tracked. The branch/evidence review is
+documented in `docs/verification/thermo5-tx-branch-integration-review.md` and
+`docs/verification/data/thermo5-tx-integration-review.json`.
+
+The PR #16 evidence index checks 39/39 artifact hashes/sizes and the exact
+product VCS manifest checks 77/77 compile-input hashes. Python reference tests
+pass 44/44; coverage/formal-disposition audit tests pass 13/13. A fresh VCS
+V-2023.12-SP1 compile on this worktree and the correctly configured reset-
+release test pass; the current-source intentional illegal-frame test passes
+its expected assertion and recovery checker separately. PR #16's exact-source
+13-test product replay and Raw URG are reused, not merged with candidate or
+negative VDBs.
+
+The frozen product Raw status is unchanged: legal functional 210/210; Branch
+520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480; FSM 13/13
+states and 22/22 transitions. The ledger has 21732 misses in 470 tasks; five
+exact bins are Formal-proven unreachable and retained in Raw; 21727 records
+in 465 tasks remain OPEN. Waivers/exclusions are zero and the gate remains
+`RAW_100_OPEN`. DPD identity Formal, the source-gap contract, all remaining
+code coverage, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain
+open. Do not claim final signoff.
+
+**Next:** publish the reviewed integration branch as a draft PR to `thermo5`.
+Then continue with the highest-value reachable Branch/Condition root cause;
+require legal stimulus, independent checker, and exact DUT event, or a
+non-vacuous source-bound Formal disposition. Preserve Raw and stop seed sweeps
+when a round adds no valid hit.
+
+## Previous execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 
 The frozen product RTL is at SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, DPD_MAX_TAPS=1, identity reset image, AXI-Lite product frontend, and Generic FIFO for Linux. No product algorithm, RX, or AI-DPD RTL changed. Verification files and documentation are worktree changes; their exact compile inputs are hash-bound in the current VCS source manifest.
 

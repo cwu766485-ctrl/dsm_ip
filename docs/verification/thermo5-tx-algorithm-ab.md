@@ -2,8 +2,9 @@
 
 **Status:** `PASS_LINUX_FUNCTIONAL_EQUIVALENCE; PERFORMANCE_OPEN`
 
-**Source commit:** `dfb15a278657e4417b545fc138df0f0dd0399ac4`  
-**Source tree:** `ef075943be1b6fe3c9570d3bd8c54324240c0a1f`  
+**Source commit:** `dfb15a278657e4417b545fc138df0f0dd0399ac4`
+
+**Source tree:** `ef075943be1b6fe3c9570d3bd8c54324240c0a1f`
 **Date:** 2026-10-29 (Asia/Singapore)
 
 This stage adds a full-chain, non-identity four-tap DPD oracle case and reruns
