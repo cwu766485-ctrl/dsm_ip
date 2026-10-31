@@ -16,14 +16,14 @@
     "exclusions_applied": 0,
     "formal_disposition_script_sha256": "bac5845a7e66773964abd552aa4644a3a118e3079be39faf2400e5bbd2782c59",
     "formal_review_json": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
-    "formal_review_sha256": "5c4236bd9e3d787e85a498336fd53731ee072d4aa34c04c7a002240901887ce4",
+    "formal_review_sha256": "dfc79f8fa2693055711c42cd25cf8e612e277f8f71562fc1481af2a647ad8028",
     "formal_status": "PASS_FOR_EXACT_REACHABILITY_DISPOSITIONS; DPD_IDENTITY_OPEN",
     "product_urg_refresh_evidence": "runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-refresh-evidence.json",
     "product_urg_refresh_evidence_sha256": "939484662700d58d60c31fb97cd0748b680a6a66671b0be4113e9698eadf0ae6",
     "product_urg_refreshed": true,
-    "proven_unreachable_bin_count": 5,
+    "proven_unreachable_bin_count": 9,
     "raw_coverage_edited": false,
-    "reviewed_open_candidate_count": 6
+    "reviewed_open_candidate_count": 5
   },
   "functional_bin_detail_script_sha256": "9f2660ee0575f0c69e8fbd8b747792a97ae9968420ff604e18a65d384c9bcce6",
   "input_sha256": {
@@ -75,6 +75,10 @@
     "thermo5-tx-coverage-root-cause-closure.md": "c1699e27421817f877cd1171ecd5b11a7daba665884a77b70b6289c02fb4307c",
     "thermo5-tx-coverage-root-cause-summary.json": "56a829a1f5f73d6b0c19bcbcf8758ebdddcf34af00845210cf47386714c61427",
     "thermo5-tx-coverage-root-cause-tasks.csv": "779229b52baf819434433c1a15a2bfc55063fcbec8dde95f2d107e22d0cf94ba",
+    "thermo5-tx-focused-product-closure-tasks.csv": "e442f844c38fdad09aef6c97ed7081a1242d5e7da5e65d7ea5aa5f08c8353d1d",
+    "thermo5-tx-focused-product-closure.md": "9b8f437c33116bb1036d1260b7091bd51da298c636310e3922bb83d3af5e99d0",
+    "thermo5-tx-focused-product-gap-ledger.csv.gz": "25ab883dc4308c8be4a17c910891b3844f248812d13d1b691b230cbc4b0352dd",
+    "thermo5-tx-focused-product-gap-summary.json": "f400ebebff5e21d19d05ff44ff7adbc48abf87dda1f6d3555b56131335b0c6a5",
     "thermo5-tx-functional-bin-audit.csv": "1f89d5d94b89e7c42041d2f17b262c117adeda141ac0da0fb7e172742b893984",
     "thermo5-tx-functional-bin-detail.csv": "36faaba41497966e96215d599b6cdc6595673aca7917abad0c61c80e221e0378"
   },

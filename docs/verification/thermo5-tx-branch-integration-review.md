@@ -58,7 +58,7 @@ The PR #16 evidence index has 39 artifact entries; all 39 path, size, and SHA-25
 | Reset-release source test, seed 610713 | PASS; one legal 32-beat packet, 56 four-plane words bit-true, zero UVM warning/error/fatal |
 | Intentional illegal-frame test, seed 420102 | Expected assertions observed; sticky error/reset checker PASS; zero UVM warning/error/fatal. Kept separate from the legal product Raw VDB set. |
 | PR #16 exact-source positive replay | 13/13 focused product tests PASS; exact compile inputs and per-test logs/VDBs are retained in the 39-entry evidence index. Reused rather than repeated wholesale. |
-| Formal evidence | Five exact source-bound bins proven unreachable and retained in Raw; DPD identity payload remains INCONCLUSIVE; pair-lookahead tautological goals remain OPEN. |
+| Formal evidence | Nine exact source-bound bins proven unreachable and retained in Raw; DPD identity payload remains INCONCLUSIVE; pair-lookahead tautological goals remain OPEN. |
 | Mutation evidence | Baseline PASS; `late_gain` and EF2 `plane_swap` detected by the independent bit-true checker. |
 
 The first local reset-release invocation used a multi-frame vector set although that test requires one frame. Its frame-event checker failed before acceptance. The invocation was corrected to a one-frame, 56-word vector and passed; both logs remain under the ignored run directory. The fresh standalone compile/test VDBs are functional evidence only and were not merged into the DUT-only Raw report.
@@ -76,7 +76,23 @@ The first local reset-release invocation used a multi-frame vector set although 
 | FSM states / transitions | 13/13; 22/22 | PASS for the measured product hierarchy |
 | DUT assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | OPEN |
 
-The source-linked ledger has 21,732 Raw-miss records in 470 grouped tasks: 5 exact records are `PROVEN_UNREACHABLE` and remain in Raw; 21,727 records across 465 tasks remain `OPEN`. There are zero approved waivers and zero active `.el` exclusions, so Adjusted equals Raw and the fail-closed gate remains `RAW_100_OPEN`. No denominator, VDB, or DUT behavior was altered to raise a percentage.
+The source-linked ledger has 21,732 Raw-miss records in 470 grouped tasks: 9 exact records are `PROVEN_UNREACHABLE` and remain in Raw; 21,723 records across 461 tasks remain `OPEN`. There are zero approved waivers and zero active `.el` exclusions, so Adjusted equals Raw and the fail-closed gate remains `RAW_100_OPEN`. No denominator, VDB, or DUT behavior was altered to raise a percentage.
+
+## Frame-tail coverage follow-up
+
+After opening the integration review, the product-parameter frame-tail harness
+was corrected to match both stages (W=16, stage 1 LANES=8/append=1, stage 2
+LANES=16/append=0). VC Formal V-2023.12-SP2 passed 6/6 assertions; 5/9 Covers
+were reached and four exact tail-only Covers were reported uncoverable. The
+non-vacuous source-stability assumption was active; setup violations and black
+boxes were zero. Four Centered-Cubic Branch records were classified
+`PROVEN_UNREACHABLE` in the audit ledger while remaining in Raw. The line-255
+single-entry pop/push paths were formally reachable in the module harness but
+the legal frame-replacement product test did not hit them and added no Raw
+coverage. Raw percentages, waiver count, exclusions, and product RTL are
+unchanged. Exact property/source/report hashes and the run command are recorded
+in the [coverage closure index](data/thermo5-tx-coverage-closure-index.json)
+and [source-bound Formal review](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json).
 
 The 16-cycle source-gap test still reports 54 underflows for 112 expected output words. The AXI-stream source-gap contract is unspecified, so this remains OPEN. The UVM top models the product frontend parameters but does not elaborate the complete GT Parent; its separate behavioral GT Parent run lacks a payload checker. Real XPM/GT Wizard, FPGA PPA/timing, and physical QAM256 BER remain hardware signoff gates.
 

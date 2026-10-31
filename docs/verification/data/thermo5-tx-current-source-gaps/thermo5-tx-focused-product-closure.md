@@ -77,15 +77,19 @@ This source-linked audit uses the fresh licensed VCS/URG report recorded in `run
 
 ## Current-source Formal disposition update — `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`
 
-The source-bound review closed 5 exact bins as PROVEN_UNREACHABLE; 21727 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+The source-bound review closed 9 exact bins as PROVEN_UNREACHABLE; 21723 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
 | Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
 | `TXB-0260d31bb5bee4f1a4c6` | `thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable` | `thermo5_cdc_default_branch_harness.c_exact_default_path` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-39a0a549d32bc9ef1e01` | `thermo5_frame_tail_harness.a_append_no_input_tail` | `thermo5_frame_tail_harness.c_append_tail_head_drop_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-3df5f13a8d51ee9bdea5` | `thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-603e97cceda8c0d4d0ed` | `thermo5_frame_tail_harness.a_plain_tail_fire_disabled` | `thermo5_frame_tail_harness.c_plain_tail_fire_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-65f3dfeee7bc0b854f52` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-74a3bacf0956921ac9bf` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-85afd49f35a994cc290c` | `thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable` | `thermo5_cdc_end_remaining_harness.c_target_false_arm` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-c79cdf2b9f5b4620688e` | `thermo5_frame_tail_harness.a_plain_tail_pending_never_set` | `thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-ef2fb170941b345476dc` | `thermo5_frame_tail_harness.a_plain_tail_disabled` | `thermo5_frame_tail_harness.c_plain_tail_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 
 Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
 
@@ -96,4 +100,3 @@ Reviewed candidates with tautological or otherwise invalid Formal evidence remai
 | `TXB-1d51526aa2408931cc40` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |
 | `TXB-58579fd96d9947af37f8` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |
 | `TXB-c318c70882fc01f2dc58` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |
-| `TXB-c79cdf2b9f5b4620688e` | OPEN | a_plain_append_arm_disabled is reported tautological; no unreachable disposition accepted. |

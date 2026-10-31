@@ -1,13 +1,16 @@
 # Execution frontier
 
-## Current execution state: TX branch integration review (2026-10-31)
+## Current execution state: TX integration review and frame-tail Formal update (2026-10-31)
 
-The local integration branch `codex/thermo5-integration-review` starts at exact
-PR #16 head `eddddd650a2853a05deab0bdb7a2272fdb647d18`, tree
-`d4d5ee1c04299c8273f1b702d21160c5b1c01aae`. It is 44 commits ahead and zero
+Draft PR #17 (`Thermo5 TX: integration review and Linux evidence audit`) is
+open against `thermo5` and unmerged. Its remote head is
+`e26d5d20e26ede307f9ce6699241dbe4ea76fa30`; local commit `19592eb` has the
+same tree. It descends from exact PR #16 head
+`eddddd650a2853a05deab0bdb7a2272fdb647d18`, tree
+`d4d5ee1c04299c8273f1b702d21160c5b1c01aae`, and is 44 commits ahead and zero
 behind `thermo5` (`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`). PRs #2–#16 are
-all open, unmerged, and form a continuous chain. A draft Integration Review PR
-to `thermo5` is the next publication step; do not merge or delete refs.
+all open and unmerged. The current local follow-up is intended for a separate
+draft PR stacked on PR #17. Do not merge PRs or delete refs.
 
 The cumulative PR #16 comparison has 125 files and only one synthesizable RTL
 path, the reset-release `TREADY` fix in `rtl/axis/dsm_axis14_to_core8_cdc.sv`.
@@ -27,18 +30,32 @@ negative VDBs.
 
 The frozen product Raw status is unchanged: legal functional 210/210; Branch
 520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480; FSM 13/13
-states and 22/22 transitions. The ledger has 21732 misses in 470 tasks; five
-exact bins are Formal-proven unreachable and retained in Raw; 21727 records
-in 465 tasks remain OPEN. Waivers/exclusions are zero and the gate remains
-`RAW_100_OPEN`. DPD identity Formal, the source-gap contract, all remaining
-code coverage, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain
-open. Do not claim final signoff.
+states and 22/22 transitions. The source-linked ledger has 21732 Raw misses in
+470 tasks; nine exact bins are Formal-proven unreachable and retained in Raw;
+21723 records across 461 tasks remain OPEN. Waivers/exclusions are zero and
+the gate remains `RAW_100_OPEN`.
 
-**Next:** publish the reviewed integration branch as a draft PR to `thermo5`.
-Then continue with the highest-value reachable Branch/Condition root cause;
-require legal stimulus, independent checker, and exact DUT event, or a
-non-vacuous source-bound Formal disposition. Preserve Raw and stop seed sweeps
-when a round adds no valid hit.
+A current-source frame-tail VC Formal run passed at tool V-2023.12-SP2. The
+harness now matches the product stage geometry (W16; stage 1 LANES8/append=1,
+stage 2 LANES16/append=0) and the stage-2 Cover includes the full branch
+prefix. Six assertions passed, five Covers were reached, and four exact
+tail-only Covers were uncoverable; source-stability was non-vacuous, setup
+violations=0, black boxes=0, and no tautology warning was reported. Four
+Centered-Cubic tail Branch rows moved from OPEN to PROVEN_UNREACHABLE in the
+audit ledger. Raw URG bins and denominators are unchanged. The separate legal
+frame-replacement test passed its checker but added no code coverage, so its
+VDB is not merged. Exact hashes and the rerun command are in the current
+Formal review JSON and coverage closure index.
+
+DPD identity Formal, the source-gap contract, all remaining code coverage,
+real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open. Do not claim
+final signoff.
+
+**Next:** publish this frame-tail audit as a separate draft PR based on PR #17,
+without merging either PR. Then continue with the highest-value reachable
+Branch/Condition root cause. Require legal stimulus, an independent checker,
+and an exact DUT event, or a non-vacuous source-bound Formal disposition.
+Preserve Raw and stop seed sweeps when a round adds no valid hit.
 
 ## Previous execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 

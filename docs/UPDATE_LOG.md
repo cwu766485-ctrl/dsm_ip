@@ -1,3 +1,34 @@
+## 2026-10-31 15:01 SGT - Close exact Centered-Cubic tail Branch reachability bins
+
+- Matched the Formal harness to the frozen product interpolator geometry:
+  stage 1 W=16/LANES=8/APPEND_TAIL_VECTOR=1 with `in_tail=0`, stage 2
+  W=16/LANES=16/APPEND_TAIL_VECTOR=0. Tightened the stage-2 append-arm Cover
+  to include the full `pop_head && !q0_tail` branch prefix and removed the
+  tautological parameter assertion in favor of a state invariant.
+- VC Formal V-2023.12-SP2 passed 6/6 assertions and reached 5/9 Covers; the
+  four exact tail-only Covers were uncoverable. The legal source-stability
+  assumption was non-vacuous, setup violations=0, black boxes=0, and no
+  tautological target goals were reported. Four source-bound frame-tail Raw
+  Branch records are now `PROVEN_UNREACHABLE`; all 21,732 Raw misses remain in
+  the audit ledger, with 21,723 OPEN. Raw URG metrics and denominators are
+  unchanged; approved waivers/exclusions remain zero.
+- Rechecked the legal frame-replacement test result (seed 610900): its
+  four-plane scoreboard passed for 112 outputs/two frames, but the test added
+  no code-coverage hits. Its VDB remains outside the product Raw union.
+- Updated the source-bound Formal review, root-cause ledger/task statuses,
+  closure index, signoff snapshot, integration review, and execution frontier.
+  Formal run evidence is under ignored
+  `runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/`; exact report and
+  source hashes are recorded in the tracked evidence index.
+- Checks: focused Formal command recorded in the closure report; disposition
+  updater revalidated the existing 13-test Raw refresh and returned 9 proven,
+  21,723 OPEN, 0 exclusions. Coverage utility tests pass 13/13; Python
+  byte-compile and `git diff --check` pass; all 43 closure-index artifact
+  hashes/sizes match. Full product Raw metrics remain Branch 520/637,
+  Condition 601/849, Line 3334/3796, Toggle 83575/104480. DPD identity Formal,
+  the line-255 product pop/push bins, source-gap contract, remaining reachable
+  code bins, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain OPEN.
+
 ## 2026-10-31 14:38 SGT - Audit Thermo5 TX integration branch and replay Linux evidence
 
 - Created `codex/thermo5-integration-review` from exact PR #16 head

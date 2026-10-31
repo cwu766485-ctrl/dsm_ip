@@ -74,7 +74,7 @@ def main():
     if args.jobs and 'cdc_end_branch' in args.jobs:
         result['scope']['cdc_end_branch']='Exact product 14:8 CDC gearbox and Generic FIFO; legal 32-beat AXIS packets; prove line-210 immediate frame-end arm unreachable and require legal frame-end context Cover'
     if args.jobs and 'frame_tail' in args.jobs:
-        result['scope']['frame_tail']='Exact W=16, LANES=8 centered-cubic stage parameters; stage-1 input tail tied low as in the product, stage-2 APPEND_TAIL_VECTOR=0; prove single-entry pop/push reachable and exact tail-only paths uncoverable'
+        result['scope']['frame_tail']='Exact product centered-cubic stage geometry: W=16/LANES=8/APPEND_TAIL_VECTOR=1 at stage 1, W=16/LANES=16/APPEND_TAIL_VECTOR=0 at stage 2; stage-1 input tail tied low as in the product; prove legal single-entry pop/push reachable and exact tail-only paths uncoverable'
     if any(kind in kinds for kind in ('ef2','ef2_pair')):
         result['configuration']={'proof_core':'thermo5_ef2',
             'input_width_bits':16,'state_width_bits':20,

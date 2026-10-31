@@ -1,30 +1,32 @@
 `timescale 1ns/1ps
-// Module-level reachability check for the parameter split used by the two
-// centered-cubic stages. This proves tail-append reachability at each selected
-// parameter value; it does not prove end-to-end composition between stages.
+// Module-level reachability check for the product parameter split used by the
+// two centered-cubic stages: stage 1 is W=16/LANES=8 with tail append enabled;
+// stage 2 is W=16/LANES=16 with tail append disabled. This does not prove
+// end-to-end composition between stages.
 module thermo5_frame_tail_harness (
   input logic clk, rst_n, enable,
   input logic in_valid, in_frame_start, in_frame_end, in_tail,
-  input logic signed [127:0] in_i_vec, in_q_vec,
+  input logic signed [255:0] in_i_vec, in_q_vec,
   input logic out_ready
 );
   wire append_ready, append_valid, append_start, append_end, append_tail;
   wire signed [255:0] append_i, append_q;
   wire plain_ready, plain_valid, plain_start, plain_end, plain_tail;
-  wire signed [255:0] plain_i, plain_q;
+  wire signed [511:0] plain_i, plain_q;
 
   dsm_interp_x2_centered_cubic_vector #(
     .W(16), .LANES(8), .APPEND_TAIL_VECTOR(1'b1)
   ) append_stage (
     .clk, .rst_n, .enable, .in_valid, .in_ready(append_ready),
-    .in_frame_start, .in_frame_end, .in_tail(1'b0), .in_i_vec, .in_q_vec,
+    .in_frame_start, .in_frame_end, .in_tail(1'b0),
+    .in_i_vec(in_i_vec[127:0]), .in_q_vec(in_q_vec[127:0]),
     .out_valid(append_valid), .out_frame_start(append_start),
     .out_frame_end(append_end), .out_tail(append_tail), .out_ready,
     .out_i_vec(append_i), .out_q_vec(append_q)
   );
 
   dsm_interp_x2_centered_cubic_vector #(
-    .W(16), .LANES(8), .APPEND_TAIL_VECTOR(1'b0)
+    .W(16), .LANES(16), .APPEND_TAIL_VECTOR(1'b0)
   ) plain_stage (
     .clk, .rst_n, .enable, .in_valid, .in_ready(plain_ready),
     .in_frame_start, .in_frame_end, .in_tail, .in_i_vec, .in_q_vec,
@@ -68,12 +70,15 @@ module thermo5_frame_tail_harness (
     !append_stage.q0_tail);
   a_plain_tail_fire_disabled: assert property (disable iff (!rst_n)
     !plain_stage.tail_fire);
-  a_plain_append_arm_disabled: assert property (disable iff (!rst_n)
-    !plain_stage.APPEND_TAIL_VECTOR);
+  // Check the sequential consequence of APPEND_TAIL_VECTOR=0 instead of
+  // asserting the constant parameter itself (which Formal reports as tautology).
+  a_plain_tail_pending_never_set: assert property (disable iff (!rst_n)
+    !plain_stage.tail_pending_q);
   c_append_tail_head_drop_unreachable: cover property (disable iff (!rst_n)
     append_stage.pop_head && append_stage.q0_tail);
   c_plain_tail_fire_unreachable: cover property (disable iff (!rst_n)
     plain_stage.tail_fire);
   c_plain_append_tail_arm_unreachable: cover property (disable iff (!rst_n)
+    plain_stage.pop_head && !plain_stage.q0_tail &&
     plain_stage.APPEND_TAIL_VECTOR && plain_stage.head_final);
 endmodule

@@ -18,15 +18,17 @@
 | DUT Assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | Partial |
 | Waivers / `.el` exclusions | 0 / 0; Adjusted equals Raw | PASS, no adjustment applied |
 | Fail-closed code gate | `RAW_100_OPEN` | OPEN; no 100% claim |
-| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 5 `PROVEN_UNREACHABLE` retained in Raw; 21,727 OPEN across 465 tasks | OPEN |
+| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 9 `PROVEN_UNREACHABLE` retained in Raw; 21,723 OPEN across 461 tasks | OPEN |
 | VCS/UVM | Fresh exact-profile compile and 13/13 focused positive tests PASS | Focused frontend scope only |
-| Formal | Five exact source-bound records proven unreachable and retained in Raw; DPD payload equivalence INCONCLUSIVE at depth 252; PAIR_LOOKAHEAD property rejected as tautological | Partial; all other bins remain OPEN |
+| Formal | Nine exact source-bound records proven unreachable and retained in Raw; DPD payload equivalence INCONCLUSIVE at depth 252; PAIR_LOOKAHEAD property rejected as tautological | Partial; all other bins remain OPEN |
 | Mutation | Baseline PASS; `late_gain` and `plane_swap` mutants detected by `[BITTRUE]` scoreboard | PASS for these two mutations only |
 | TX source-gap test | 16-cycle gap has 54 underflows; checker fails although 112 output words are present | OPEN service-rate contract |
 | Real XPM / GT Wizard | Not run in this Linux flow | OPEN |
 | FPGA PPA / physical QAM256 BER | Not run | OPEN |
 
-The five source-bound Formal records are the aligned 32-beat CDC end false arm and outer-case default, AXI-Lite write-case default Branch, coefficient-read default Branch, and matching coefficient-read default Line. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN.
+The nine source-bound Formal records are the two aligned-frame CDC branches, three AXI-Lite default Branch/Line bins, and four Centered-Cubic tail-only branches at `u_interp_1`/`u_interp_2`. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN. The frame-tail proof uses W=16, stage 1 LANES=8/append=1, and stage 2 LANES=16/append=0; it proves local module reachability under product parameters, not full two-stage composition. Formal passed 6/6 assertions and 5/9 Covers, with the exact four tail-only Covers uncoverable, one non-vacuous source-stability assumption, zero setup violations, and zero black boxes.
+
+The legal frame-replacement UVM run (seed 610900) passed its four-plane bit-true checker for 112 outputs over two frames, but its product URG union added no code hits. The two line-255 pop/push bins remain OPEN. The refreshed formal review and source-bound ledger are in [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json) and [`thermo5-tx-focused-product-closure.md`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md).
 
 The additional DPD saturation test wrote a legal non-identity one-tap Q2.14 image over AXI-Lite. Python-generated vectors and the independent UVM checker matched all four output planes for 56 output words; the run covered I/Q positive and negative saturation on each of 16 DPD lanes. It increased same-compile Raw by +80 Branch, +16 Condition, +144 Line, and +654 Toggle. The product Raw remains unadjusted.
 

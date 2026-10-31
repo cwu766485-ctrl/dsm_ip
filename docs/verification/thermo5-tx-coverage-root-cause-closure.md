@@ -1,5 +1,52 @@
 # Thermo5 TX Coverage Root-Cause Closure — Step 1/2
 
+## Latest Centered-Cubic frame-tail Formal follow-up — 2026-10-31
+
+VC Formal V-2023.12-SP2 was rerun after matching both interpolator lane counts
+to the product: stage 1 is W=16/LANES=8/APPEND_TAIL_VECTOR=1 with its input
+tail tied low; stage 2 is W=16/LANES=16/APPEND_TAIL_VECTOR=0. The stage-2
+append-arm Cover includes the full branch prefix (`pop_head && !q0_tail`)
+before the source condition. The former constant-parameter assertion was
+removed; a state invariant replaced it. This is module-level reachability
+under exact product parameters, not a proof of complete two-stage composition.
+
+The final run passed 6/6 assertions and reached 5/9 Covers; the four exact
+tail-only Covers were `uncoverable`. The legal `asm_source_stable` input
+assumption was reported non-vacuous; setup violations=0, black boxes=0, and no
+tautology warnings were reported. The four source-bound Raw Branch records
+are now `PROVEN_UNREACHABLE`, but remain in the unchanged Raw denominator:
+
+| Semantic Bin ID | Product instance / source | Exact Formal pair |
+|---|---|---|
+| `TXB-39a0a549d32bc9ef1e01` | `u_interp_1`, `dsm_interp_x2_centered_cubic_vector.sv:229` | `a_append_no_input_tail` proven; `c_append_tail_head_drop_unreachable` uncoverable |
+| `TXB-ef2fb170941b345476dc` | `u_interp_2`, `dsm_interp_x2_centered_cubic_vector.sv:129` | `a_plain_tail_disabled` proven; `c_plain_tail_unreachable` uncoverable |
+| `TXB-603e97cceda8c0d4d0ed` | `u_interp_2`, `dsm_interp_x2_centered_cubic_vector.sv:217` | `a_plain_tail_fire_disabled` proven; `c_plain_tail_fire_unreachable` uncoverable |
+| `TXB-c79cdf2b9f5b4620688e` | `u_interp_2`, `dsm_interp_x2_centered_cubic_vector.sv:223` | `a_plain_tail_pending_never_set` proven; exact-prefix `c_plain_append_tail_arm_unreachable` uncoverable |
+
+Raw code coverage did not change: Branch 520/637, Condition 601/849, Line
+3334/3796, Toggle 83575/104480. The current ledger retains all 21,732 Raw
+misses: 9 are formally classified `PROVEN_UNREACHABLE` and 21,723 remain
+`OPEN` across 461 open tasks. Waivers=0, exclusions=0, and the gate remains
+`RAW_100_OPEN`.
+
+The legal frame-replacement UVM test (seed 610900, 112 output words, two
+frames) passed its four-plane bit-true checker, but added no Raw code hits and
+is not merged into the product baseline. Do not repeat phase/seed sweeps for
+these two line-255 pop/push bins without a new product-timing hypothesis.
+
+Reproduction command:
+
+```bash
+export PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:/opt/Synopsys/vcs/V-2023.12-SP1/bin:$PATH
+export SNPSLMD_LICENSE_FILE=27000@localhost
+export VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1
+python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs frame_tail --out-dir runs/thermo5_tx_branch_closure_frame_tail_20261031_r5
+```
+
+The review JSON binds the exact DUT/harness/Tcl hashes and `properties.txt`,
+`setup.txt`, and console hashes. The full local run is under the ignored
+`runs/` directory; generated logs and Formal databases are not committed.
+
 ## Latest 13-test current-source audit — product RTL SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea` (2026-10-31)
 
 This section supersedes the focused 12-test current-source snapshot later in this document. The product configuration remains Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120, 20-bit state, 32 chronological lanes, DPD_MAX_TAPS=1 identity reset image, AXI-Lite frontend, and Generic FIFO. The Raw coverage hierarchy contains only elaborated product DUT RTL. Candidate 2/4-tap DPD and PAIR_LOOKAHEAD VDBs, the negative-only test, and the failing source-gap test are separate. No DUT algorithm, denominator, URG database, or active exclusion was edited.
@@ -28,7 +75,7 @@ The separate negative run is not merged into positive Raw. Twelve further URG-mo
 | FSM state / transitions | 13/13; 22/22 | 0 |
 | DUT assertions | 13 SUCCESS / 15 attempted (86.67%) | 2 UNCOVERED; 2 WITHOUT_ATTEMPTS |
 
-Raw and Adjusted are identical. The fail-closed gate returns `RAW_100_OPEN`, with zero approved waivers and zero active `.el` exclusions. The 21,732 unhit records are grouped into 470 exact source/instance/root-cause tasks: 48 Branch, 107 Condition, 114 Line, and 201 Toggle tasks. Five exact records are `PROVEN_UNREACHABLE` and remain in Raw: the CDC end false-arm Branch and outer-case default Branch under the aligned-frame Generic-FIFO contract, the AXI-Lite write-case default Branch, the coefficient-read default Branch, and the coefficient-read default Line. The remaining 21,727 records across 465 tasks are OPEN. The task ledger uses HIT/PROVEN_UNREACHABLE/WAIVER_CANDIDATE/OPEN vocabulary; there are no approved waivers or applied exclusions.
+Raw and Adjusted are identical. The fail-closed gate returns `RAW_100_OPEN`, with zero approved waivers and zero active `.el` exclusions. The 21,732 unhit records are grouped into 470 exact source/instance/root-cause tasks: 48 Branch, 107 Condition, 114 Line, and 201 Toggle tasks. Nine exact records are `PROVEN_UNREACHABLE` and remain in Raw: the two CDC branches, three AXI-Lite defaults, and four Centered-Cubic frame-tail branches. The remaining 21,723 records across 461 tasks are OPEN. The task ledger uses HIT/PROVEN_UNREACHABLE/WAIVER_CANDIDATE/OPEN vocabulary; there are no approved waivers or applied exclusions.
 
 The one added saturation test increased the same-compile Raw by 80 Branch, 16 Condition, 144 Line, and 654 Toggle bins. Sixty-four Branch hits are the four clamp directions across 16 DPD lanes; 16 are per-lane saturation counters. No new seed or VDB is included without an exact-source compile link and positive checker result.
 
@@ -47,7 +94,7 @@ The condition tuple `TXB-872eb98e51c3229e4c86` remains OPEN: its assertion is pr
 
 The DPD identity-only saturation harness proves 4/4 no-clamp assertions and reaches input/output Covers; its four clamp Covers are uncoverable only for the fixed unity coefficient image. The AXI-Lite product allows coefficients to be written at runtime, and the legal UVM stress test hits all clamp directions, so no product Raw bin is dispositioned from that restricted proof. The general DPD identity payload-equivalence assertion remains INCONCLUSIVE at depth 252 and OPEN.
 
-The EF2 exact-parameter PAIR_LOOKAHEAD run reports 2 assertions proven and 2 Covers uncoverable, but VC Formal marks both exact goals tautological (`SVAC-TAUT-PROPERTY` and `SVAC-TAUT-COVER`). Four product branch records therefore remain OPEN and in Raw. The five `PROVEN_UNREACHABLE` records are source-bound. The CDC disposition is contract-scoped and does not justify unrelated FIFO/XPM paths. The AXI-Lite tuple condition assertion is not non-vacuous, so that condition remains OPEN.
+The EF2 exact-parameter PAIR_LOOKAHEAD run reports 2 assertions proven and 2 Covers uncoverable, but VC Formal marks both exact goals tautological (`SVAC-TAUT-PROPERTY` and `SVAC-TAUT-COVER`). Four product branch records therefore remain OPEN and in Raw. The nine `PROVEN_UNREACHABLE` records are source-bound. The CDC disposition is contract-scoped and does not justify unrelated FIFO/XPM paths. The AXI-Lite tuple condition assertion is not non-vacuous, so that condition remains OPEN.
 
 Mutation run seed 1 passed the baseline; both `late_gain` and EF2 `plane_swap` mutants were caught by the independent `[BITTRUE]` scoreboard. The earlier failed mutation-runner invocations are retained as failed setup attempts and not counted as mutation PASS.
 

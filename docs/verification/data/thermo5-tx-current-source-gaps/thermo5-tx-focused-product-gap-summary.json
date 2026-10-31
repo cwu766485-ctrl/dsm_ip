@@ -21,8 +21,8 @@
     "toggle:IDENTITY_DPD_ARITHMETIC": 3792
   },
   "closure_status_counts": {
-    "OPEN": 21727,
-    "PROVEN_UNREACHABLE": 5
+    "OPEN": 21723,
+    "PROVEN_UNREACHABLE": 9
   },
   "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
   "diagnostic_product_branch_review": null,
@@ -49,6 +49,26 @@
       },
       "status": "PROVEN_UNREACHABLE"
     },
+    "TXB-39a0a549d32bc9ef1e01": {
+      "assertion": "thermo5_frame_tail_harness.a_append_no_input_tail",
+      "assumptions": [
+        "thermo5_frame_tail_harness.asm_source_stable"
+      ],
+      "cover": "thermo5_frame_tail_harness.c_append_tail_head_drop_unreachable",
+      "evidence_sha256": {
+        "console": "1d4b2b1f67dc653d5db67a573317473625836aa85aeb7680c8f7c879cf2ad1bc",
+        "properties": "8f8ce1d2438a2e6bdcf1ae21bbb6b36f79144b43296d0c428a96fe53c4013e83",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/frame_tail",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "706b9e1d295a25ff78698d0b99d0a6f319655335b7c55563c5fde0cb00f2d53f",
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "a8092f1117e32cf0dfcd5803d3d2e433e2078454d0904a0fd96c761d913c032c",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "608d2521c2d4262e87235e9dbdab881382137a01d0a7b81cd84789d857315e8c",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
     "TXB-3df5f13a8d51ee9bdea5": {
       "assertion": "thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable",
       "assumptions": [],
@@ -63,6 +83,26 @@
         "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
         "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
         "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-603e97cceda8c0d4d0ed": {
+      "assertion": "thermo5_frame_tail_harness.a_plain_tail_fire_disabled",
+      "assumptions": [
+        "thermo5_frame_tail_harness.asm_source_stable"
+      ],
+      "cover": "thermo5_frame_tail_harness.c_plain_tail_fire_unreachable",
+      "evidence_sha256": {
+        "console": "1d4b2b1f67dc653d5db67a573317473625836aa85aeb7680c8f7c879cf2ad1bc",
+        "properties": "8f8ce1d2438a2e6bdcf1ae21bbb6b36f79144b43296d0c428a96fe53c4013e83",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/frame_tail",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "706b9e1d295a25ff78698d0b99d0a6f319655335b7c55563c5fde0cb00f2d53f",
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "a8092f1117e32cf0dfcd5803d3d2e433e2078454d0904a0fd96c761d913c032c",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "608d2521c2d4262e87235e9dbdab881382137a01d0a7b81cd84789d857315e8c",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
       },
       "status": "PROVEN_UNREACHABLE"
     },
@@ -119,6 +159,46 @@
         "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
       },
       "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-c79cdf2b9f5b4620688e": {
+      "assertion": "thermo5_frame_tail_harness.a_plain_tail_pending_never_set",
+      "assumptions": [
+        "thermo5_frame_tail_harness.asm_source_stable"
+      ],
+      "cover": "thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable",
+      "evidence_sha256": {
+        "console": "1d4b2b1f67dc653d5db67a573317473625836aa85aeb7680c8f7c879cf2ad1bc",
+        "properties": "8f8ce1d2438a2e6bdcf1ae21bbb6b36f79144b43296d0c428a96fe53c4013e83",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/frame_tail",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "706b9e1d295a25ff78698d0b99d0a6f319655335b7c55563c5fde0cb00f2d53f",
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "a8092f1117e32cf0dfcd5803d3d2e433e2078454d0904a0fd96c761d913c032c",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "608d2521c2d4262e87235e9dbdab881382137a01d0a7b81cd84789d857315e8c",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-ef2fb170941b345476dc": {
+      "assertion": "thermo5_frame_tail_harness.a_plain_tail_disabled",
+      "assumptions": [
+        "thermo5_frame_tail_harness.asm_source_stable"
+      ],
+      "cover": "thermo5_frame_tail_harness.c_plain_tail_unreachable",
+      "evidence_sha256": {
+        "console": "1d4b2b1f67dc653d5db67a573317473625836aa85aeb7680c8f7c879cf2ad1bc",
+        "properties": "8f8ce1d2438a2e6bdcf1ae21bbb6b36f79144b43296d0c428a96fe53c4013e83",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/frame_tail",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "706b9e1d295a25ff78698d0b99d0a6f319655335b7c55563c5fde0cb00f2d53f",
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "a8092f1117e32cf0dfcd5803d3d2e433e2078454d0904a0fd96c761d913c032c",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "608d2521c2d4262e87235e9dbdab881382137a01d0a7b81cd84789d857315e8c",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
+      },
+      "status": "PROVEN_UNREACHABLE"
     }
   },
   "functional_bin_detail_report": {
@@ -141,7 +221,7 @@
     "uncovered_records": 4,
     "urg_model_excluded_rows": 12
   },
-  "interpretation": "5 exact bins are Formal-proven unreachable; 21727 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "interpretation": "9 exact bins are Formal-proven unreachable; 21723 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
   "negative_report": "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame",
   "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
   "raw_bin_id_collision_extra_rows": 17,
@@ -226,11 +306,6 @@
     {
       "reason": "PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review.",
       "semantic_bin_id": "TXB-c318c70882fc01f2dc58",
-      "status": "OPEN"
-    },
-    {
-      "reason": "a_plain_append_arm_disabled is reported tautological; no unreachable disposition accepted.",
-      "semantic_bin_id": "TXB-c79cdf2b9f5b4620688e",
       "status": "OPEN"
     }
   ],
