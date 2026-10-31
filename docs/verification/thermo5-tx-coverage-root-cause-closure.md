@@ -4,9 +4,9 @@
 
 The latest exact-source audit retains all **21,732** unhit Raw URG records and
 does not apply waivers or `.el` exclusions. The audit disposition ledger now
-contains **353 `PROVEN_UNREACHABLE`** records and **21,379 `OPEN`** records
-across 470 grouped tasks (95 fully dispositioned tasks, 375 open tasks). The
-353 are nine source-bound Formal bins plus 344 EF2 PAIR_LOOKAHEAD bins whose
+contains **354 `PROVEN_UNREACHABLE`** records and **21,378 `OPEN`** records
+across 470 grouped tasks (96 fully dispositioned tasks, 374 open tasks). The
+354 are ten source-bound Formal bins plus 344 EF2 PAIR_LOOKAHEAD bins whose
 product elaboration is disabled by the exact parameter chain. The separate
 PAIR_LOOKAHEAD SVA run remains rejected as tautological and is not used as
 reachability evidence.
@@ -26,6 +26,31 @@ manifest; the generator reports 75 compiled local source files and all 77
 source/control entries match. Raw coverage remains Branch 520/637, Condition
 601/849, Line 3334/3796, Toggle 83575/104480; `RAW_100_OPEN` remains the
 acceptance result. No RTL or product behavior changed.
+
+## Product CDC frame-start alignment — 2026-10-31
+
+The exact Raw Branch `TXB-158c42868bfe37061f07` at
+`rtl/axis/dsm_axis14_to_core8_cdc.sv:224` is the `fifo_frame_start &&
+(rem_count_q != 0)` protocol-error arm. A new VC Formal V-2023.12-SP2 harness
+uses the production 14:8 CDC and Generic FIFO with two consecutive legal
+32-beat AXIS packets. It proves every popped frame-start is aligned with zero
+residual count and reaches Covers for the first and second frame starts, the
+second frame-end pop, and the second output frame end. The exact misaligned
+frame-start target Cover is `uncoverable`.
+
+The run has no SVA environment assumptions, zero selected setup violations,
+zero black boxes, and no tautology warnings. An initial harness attempt had a
+6-bit accepted-beat counter that could not represent its 64-beat stop value;
+all Covers were uncoverable and the runner failed. That attempt is retained as
+a failed run and is not evidence. The corrected 7-bit harness passed. Exact
+commands, source hashes, and report hashes are bound in the current Formal
+review JSON; the full reports remain under the ignored `runs/` directory.
+
+This closes exactly one audit-ledger record as `PROVEN_UNREACHABLE`; the Raw
+bin and denominator are retained. Raw coverage did not change: Branch
+520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480. The current
+ledger has 354 proven-unreachable records and 21,378 OPEN records. Waivers and
+active `.el` exclusions remain zero; the gate remains `RAW_100_OPEN`.
 
 ## Latest Centered-Cubic frame-tail Formal follow-up — 2026-10-31
 

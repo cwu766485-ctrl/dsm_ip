@@ -1,16 +1,23 @@
 # Execution frontier
 
-## Current execution state: EF2 PAIR_LOOKAHEAD product-path audit (2026-10-31)
+## Current execution state: CDC frame-start alignment reachability (2026-10-31)
 
 PR #17 remains open and unmerged at `e26d5d20e26ede307f9ce6699241dbe4ea76fa30`. PR #18 remains open and unmerged on `codex/thermo5-frame-tail-closure-r2`, at `b93bde394373c1a1ba7dec54c56b99373e7d8760` (tree `672b628b237ab15a78fe8279006d1769c90d038f`). Draft PR #19 ([EF2 PAIR_LOOKAHEAD product-path audit](https://github.com/cwu766485-ctrl/dsm_ip/pull/19)) is open, unmerged, and stacked on PR #18. The active local branch `codex/thermo5-pair-lookahead-product-audit` is synchronized with that PR. Its initial remote publication commit was `140f99ac9ec653291ec6304613bd713d92525688`, with tree `7082a4032cb51fd9b3a9f6433de8b0d3a7d44433`, matching the verified local tree. Do not merge PRs or delete refs.
 
+PR17 is the Integration Review from PR16; PR18 and PR19 remain open, draft, and unmerged. The current local follow-up branch `codex/thermo5-cdc-frame-start-alignment` is based on PR19 HEAD `0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77`. No PR20 has been published yet. No merge or ref deletion is authorized by this plan.
+
 The tracked VCS product compile manifest was stale. It has been regenerated from the saved 13-test VCS compile log and captured parent manifest; 75 parsed HDL/UVM files and all 77 source/control entries match the exact run. Current product configuration remains Centered-Cubic, EF2 ORDER=2/STEP=5120, DPD_MAX_TAPS=1, AXI-Lite, and Generic FIFO. No RTL, product algorithm, RX, or AI-DPD changed; no full regression was repeated.
 
-The unchanged Raw code misses are Branch 117, Condition 248, Line 462, and Toggle 20,905. The 21,732-row ledger now has 353 `PROVEN_UNREACHABLE` records (9 exact Formal + 344 exact static product-parameter-chain bins) and 21,379 `OPEN` records across 375 of 470 tasks. The 344 comprise 84 Branch, 108 Condition, and 152 Line records in the EF2 PAIR_LOOKAHEAD helper/selector. The exact PAIR_LOOKAHEAD SVA goals remain rejected as tautological; this separate source-bound static disposition does not cite those goals. Raw IDs and denominators are unchanged, waivers/exclusions remain zero, and the gate is `RAW_100_OPEN`.
 
-Checks for this step: exact product/source-chain validator PASS; focused disposition unit tests 6/6 PASS; Python byte-compile PASS; the fail-closed updater reports 9 Formal and 344 static bins, Raw unchanged, 0 exclusions. Existing 13/13 product VCS evidence and current URG refresh were reused, not rerun. PR #17/#18 and final TX signoff remain open.
+The unchanged Raw code misses are Branch 117, Condition 248, Line 462, and Toggle 20,905. The 21,732-row ledger now has 354 `PROVEN_UNREACHABLE` records (10 exact Formal + 344 exact static product-parameter-chain bins) and 21,378 `OPEN` records across 374 of 470 tasks. The 344 comprise 84 Branch, 108 Condition, and 152 Line records in the EF2 PAIR_LOOKAHEAD helper/selector. The exact PAIR_LOOKAHEAD SVA goals remain rejected as tautological; this separate source-bound static disposition does not cite those goals. Raw IDs and denominators are unchanged, waivers/exclusions remain zero, and the gate is `RAW_100_OPEN`.
 
-**Next:** resolve the highest-value reachable Branch/Condition task with legal stimulus, an independent checker, and exact DUT event capture. If a round yields no new Raw hits, stop seed expansion and revisit reachability or monitor/bin mapping. Continue DPD identity Formal and the source-gap contract separately; keep all Raw bins and denominators intact.
+Checks for the prior PR19 step: exact product/source-chain validator PASS; focused disposition unit tests 6/6 PASS; Python byte-compile PASS; the fail-closed updater reported 9 Formal and 344 static bins, Raw unchanged, 0 exclusions. Existing 13/13 product VCS evidence and current URG refresh were reused, not rerun.
+
+The new two-frame Formal run uses production 14:8 CDC + Generic FIFO and two consecutive legal 32-beat packets. VC Formal V-2023.12-SP2 proves `a_frame_start_pop_aligned` and `a_no_product_protocol_error`; Covers reach the first and second frame starts, the second frame end, and output frame end. The exact misaligned frame-start Cover is uncoverable. SVA assumptions=0, selected setup violations=0, black boxes=0, no tautology warnings. The initial 6-bit-counter harness attempt failed with all Covers uncoverable and remains recorded as a failed attempt; the corrected 7-bit run passes at `runs/thermo5_tx_cdc_frame_start_alignment_20261031_pr20_retry2/`.
+
+The source-bound review now has 10 Formal records and 344 static parameter-chain records proven unreachable. Exactly one additional ledger row is dispositioned: `TXB-158c42868bfe37061f07` at `rtl/axis/dsm_axis14_to_core8_cdc.sv:224`. Raw URG and denominator are unchanged. No new VCS/URG replay was necessary because product RTL, VCS compile inputs, and product VDB are unchanged.
+
+**Next:** review the new PR20 branch audit, then target the highest-value reachable Branch/Condition task with legal stimulus, an independent checker, and exact DUT event capture. The outstanding-counter Formal remains inconclusive and OPEN; do not convert it to a waiver. If a round yields no new Raw hits, stop seed expansion and revisit reachability or monitor/bin mapping. Continue DPD identity Formal and the source-gap contract separately; keep all Raw bins and denominators intact.
 
 ## Previous execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 

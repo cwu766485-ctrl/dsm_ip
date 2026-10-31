@@ -18,9 +18,9 @@
 | DUT Assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | Partial |
 | Waivers / `.el` exclusions | 0 / 0; Adjusted equals Raw | PASS, no adjustment applied |
 | Fail-closed code gate | `RAW_100_OPEN` | OPEN; no 100% claim |
-| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 353 `PROVEN_UNREACHABLE` retained in Raw (9 Formal + 344 exact static product elaboration); 21,379 OPEN across 375 tasks | OPEN |
+| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 354 `PROVEN_UNREACHABLE` retained in Raw (10 Formal + 344 exact static product elaboration); 21,378 OPEN across 374 tasks | OPEN |
 | VCS/UVM | Fresh exact-profile compile and 13/13 focused positive tests PASS | Focused frontend scope only |
-| Formal / reachability audit | Nine exact Formal records proven unreachable and retained in Raw; 344 EF2 PAIR_LOOKAHEAD bins separately proven disabled by exact product parameter elaboration; DPD payload equivalence INCONCLUSIVE at depth 252; tautological PAIR_LOOKAHEAD SVA rejected | Partial; remaining bins stay OPEN |
+| Formal / reachability audit | Ten exact Formal records proven unreachable and retained in Raw; 344 EF2 PAIR_LOOKAHEAD bins separately proven disabled by exact product parameter elaboration; DPD payload equivalence INCONCLUSIVE at depth 252; tautological PAIR_LOOKAHEAD SVA rejected | Partial; remaining bins stay OPEN |
 | Mutation | Baseline PASS; `late_gain` and `plane_swap` mutants detected by `[BITTRUE]` scoreboard | PASS for these two mutations only |
 | TX source-gap test | 16-cycle gap has 54 underflows; checker fails although 112 output words are present | OPEN service-rate contract |
 | Real XPM / GT Wizard | Not run in this Linux flow | OPEN |
@@ -33,7 +33,21 @@ product compile manifest was rebuilt from the saved exact 13-test VCS compile
 log and parent source manifest (75 parsed HDL/UVM files; 77/77 source/control
 entries match). No product RTL or Raw VDB changed in this audit step.
 
-The nine source-bound Formal records are the two aligned-frame CDC branches, three AXI-Lite default Branch/Line bins, and four Centered-Cubic tail-only branches at `u_interp_1`/`u_interp_2`. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN. The frame-tail proof uses W=16, stage 1 LANES=8/append=1, and stage 2 LANES=16/append=0; it proves local module reachability under product parameters, not full two-stage composition. Formal passed 6/6 assertions and 5/9 Covers, with the exact four tail-only Covers uncoverable, one non-vacuous source-stability assumption, zero setup violations, and zero black boxes.
+### Incremental two-frame CDC alignment Formal — 2026-10-31
+
+VC Formal V-2023.12-SP2 proved that frame-start FIFO pops have zero residual
+count for two consecutive legal 32-beat packets through the production 14:8
+CDC and Generic FIFO. First/second frame-start, second frame-end, and second
+output-frame-end Covers were reached; the exact misaligned-start target Cover
+was uncoverable. There were no SVA environment assumptions, setup violations,
+black boxes, or tautology warnings. The exact semantic Raw Bin
+`TXB-158c42868bfe37061f07` at `dsm_axis14_to_core8_cdc.sv:224` is now
+`PROVEN_UNREACHABLE` in the audit ledger and remains in Raw. The failed initial
+6-bit harness attempt is preserved separately and not counted as evidence.
+Raw coverage and denominator are unchanged; current ledger status is 354
+proven-unreachable and 21,378 OPEN, with zero waivers and exclusions.
+
+The ten source-bound Formal records are the three reviewed CDC branches, three AXI-Lite default Branch/Line bins, and four Centered-Cubic tail-only branches at `u_interp_1`/`u_interp_2`. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN. The frame-tail proof uses W=16, stage 1 LANES=8/append=1, and stage 2 LANES=16/append=0; it proves local module reachability under product parameters, not full two-stage composition. Formal passed 6/6 assertions and 5/9 Covers, with the exact four tail-only Covers uncoverable, one non-vacuous source-stability assumption, zero setup violations, and zero black boxes.
 
 The legal frame-replacement UVM run (seed 610900) passed its four-plane bit-true checker for 112 outputs over two frames, but its product URG union added no code hits. The two line-255 pop/push bins remain OPEN. The refreshed formal review and source-bound ledger are in [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json) and [`thermo5-tx-focused-product-closure.md`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md).
 
