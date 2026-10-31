@@ -18,6 +18,362 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
+FIXED_PARAMETER_BRANCH_SPECS = {
+    "TXB-91d5b4a40917c980da7a": (
+        "rtl/frontend/dsm_frame_gain_vector.sv",
+        "rtl/frontend/dsm_frame_gain_vector.sv:97",
+        "if (!HOLD_STATE_ON_DISABLE) begin",
+        "0/1/0/-/-/-/-/-/-/-/-",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_frame_gain",
+    ),
+    "TXB-6dcbab82b9fdc86cecc5": (
+        "rtl/gt/gt_tx_user_bridge.sv", "rtl/gt/gt_tx_user_bridge.sv:20",
+        "if (PARALLEL_W != GT_USER_W)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid.u_raw_boundary.u_bridge",
+    ),
+    "TXB-2df3affe59cb2ae409d4": (
+        "rtl/gt/gt_tx_user_bridge.sv", "rtl/gt/gt_tx_user_bridge.sv:20",
+        "if (PARALLEL_W != GT_USER_W)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid.u_raw_boundary.u_bridge",
+    ),
+    "TXB-2d576118dd5c1a6784cd": (
+        "rtl/gt/gt_tx_user_bridge.sv", "rtl/gt/gt_tx_user_bridge.sv:20",
+        "if (PARALLEL_W != GT_USER_W)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid.u_raw_boundary.u_bridge",
+    ),
+    "TXB-cd475fde35a66be60e79": (
+        "rtl/gt/gt_tx_user_bridge.sv", "rtl/gt/gt_tx_user_bridge.sv:20",
+        "if (PARALLEL_W != GT_USER_W)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid.u_raw_boundary.u_bridge",
+    ),
+    "TXB-054d97a87a8d74c36c8b": (
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:348",
+        "if (MAX_TAPS < 1 || MAX_TAPS > 4)", "1",
+        "thermo5_sku_uvm_tb.dut.u_cfg",
+    ),
+    "TXB-32b923f55e34401249a8": (
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:210",
+        "if (!HOLD_STATE_ON_DISABLE) begin", "0/1/0/-/-/-/-/-/-/-/-/-/-",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    ),
+    "TXB-e381d5af8a96457cab44": (
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:294",
+        'if (LANES < 2) $error("centered cubic interpolator requires LANES >= 2");', "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    ),
+    "TXB-063113e1e4634f39c014": (
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:295",
+        'if (COEFF_FRAC != 14) $error("centered cubic coefficients require Q14");', "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    ),
+    "TXB-e8358208ee175c15bb7d": (
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:210",
+        "if (!HOLD_STATE_ON_DISABLE) begin", "0/1/0/-/-/-/-/-/-/-/-/-/-",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    ),
+    "TXB-e27080825871240f6ec3": (
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:294",
+        'if (LANES < 2) $error("centered cubic interpolator requires LANES >= 2");', "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    ),
+    "TXB-0fe97016b03e97cafb72": (
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:295",
+        'if (COEFF_FRAC != 14) $error("centered cubic coefficients require Q14");', "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    ),
+    "TXB-84be21fab6f11958312f": (
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:96",
+        "if (W < 2 || CHANNELS < 2 || (CHANNELS % 2) != 0)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid",
+    ),
+    "TXB-fa074bca34512589b54d": (
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:96",
+        "if (W < 2 || CHANNELS < 2 || (CHANNELS % 2) != 0)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid",
+    ),
+    "TXB-9fd36ae54068498e255f": (
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:96",
+        "if (W < 2 || CHANNELS < 2 || (CHANNELS % 2) != 0)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid",
+    ),
+    "TXB-70fb16ddca930f3fdb87": (
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:96",
+        "if (W < 2 || CHANNELS < 2 || (CHANNELS % 2) != 0)", "1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[*].g_order2.u_tid",
+    ),
+    "TXB-32e3753ea6b78b647658": (
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:274",
+        "if (DPD_MAX_TAPS < 1 || DPD_MAX_TAPS > 4)", "1",
+        "thermo5_sku_uvm_tb.dut",
+    ),
+}
+
+FIXED_PARAMETER_SOURCE_FILES = {
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv",
+    "rtl/frontend/dsm_frame_gain_vector.sv",
+    "rtl/gt/gt_tx_raw64_boundary.sv",
+    "rtl/gt/gt_tx_user_bridge.sv",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+    "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+    "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv",
+    "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv",
+}
+
+
+def validate_fixed_parameter_source_chain(source_texts: dict[str, str]) -> None:
+    """Check the frozen AXI-Lite product's exact constant parameter chain."""
+    def parameter_body(text: str, module: str, instance: str) -> str:
+        declarations = list(re.finditer(rf"\b{re.escape(module)}\s*#\s*\(", text))
+        if not declarations:
+            fail(f"missing parameterized instance {module} {instance}")
+        for declaration in declarations:
+            open_paren = text.find("(", declaration.start())
+            depth = 0
+            for index in range(open_paren, len(text)):
+                if text[index] == "(":
+                    depth += 1
+                elif text[index] == ")":
+                    depth -= 1
+                    if depth == 0:
+                        tail = text[index + 1:index + 1 + len(instance) + 8]
+                        if re.match(rf"\s*{re.escape(instance)}\b", tail):
+                            return text[open_paren + 1:index]
+                        break
+        fail(f"could not parse parameter list for {module} {instance}")
+
+    required = {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv",
+        "rtl/frontend/dsm_frame_gain_vector.sv",
+        "rtl/gt/gt_tx_raw64_boundary.sv",
+        "rtl/gt/gt_tx_user_bridge.sv",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv",
+    }
+    if set(source_texts) != required:
+        fail("fixed-parameter review does not contain the exact ten-source chain")
+    top = source_texts["dv/uvm/tb/thermo5_sku_uvm_tb.sv"]
+    frame_gain = source_texts["rtl/frontend/dsm_frame_gain_vector.sv"]
+    boundary = source_texts["rtl/gt/gt_tx_raw64_boundary.sv"]
+    bridge = source_texts["rtl/gt/gt_tx_user_bridge.sv"]
+    interp = source_texts["rtl/interp/dsm_interp_x2_centered_cubic_vector.sv"]
+    cfg = source_texts["rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv"]
+    ef2 = source_texts["rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv"]
+    axil = source_texts["rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv"]
+    frontend = source_texts["rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv"]
+    multipa = source_texts["rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv"]
+
+    checks = (
+        (top, r"`ifdef\s+THERMO5_CENTERED_CUBIC\s+localparam\s+bit\s+USE_CENTERED_CUBIC\s*=\s*1'b1"),
+        (top, r"`ifdef\s+THERMO5_TIDSM_ORDER\s+localparam\s+int\s+USE_TIDSM_ORDER\s*=\s*`THERMO5_TIDSM_ORDER"),
+        (top, r"`ifdef\s+THERMO5_STEP\s+localparam\s+int\s+USE_STEP\s*=\s*`THERMO5_STEP"),
+        (top, r"`ifdef\s+THERMO5_DPD_MAX_TAPS\s+localparam\s+int\s+USE_DPD_MAX_TAPS\s*=\s*`THERMO5_DPD_MAX_TAPS"),
+        (top, r"`ifdef\s+THERMO5_AXIL_CONTROL(?:(?!`else).)*?\.INTERP_CENTERED_CUBIC\(USE_CENTERED_CUBIC\)(?:(?!`else).)*?\.DPD_MAX_TAPS\(USE_DPD_MAX_TAPS\)"),
+        (axil, r"parameter\s+int\s+W\s*=\s*16\b"),
+        (axil, r"thermo5_dpd_axi_lite_cfg\s*#\s*\(\s*\.MAX_TAPS\(DPD_MAX_TAPS\)\s*\)\s+u_cfg"),
+        (axil, r"if\s*\(DPD_MAX_TAPS\s*<\s*1\s*\|\|\s*DPD_MAX_TAPS\s*>\s*4\)"),
+        (cfg, r"if\s*\(MAX_TAPS\s*<\s*1\s*\|\|\s*MAX_TAPS\s*>\s*4\)"),
+        (frontend, r"parameter\s+bit\s+HOLD_STATE_ON_DISABLE\s*=\s*1'b0"),
+        (interp, r"parameter\s+int\s+COEFF_FRAC\s*=\s*14\b"),
+        (interp, r"if\s*\(LANES\s*<\s*2\)\s*\$error\(\"centered cubic interpolator requires LANES >= 2\"\)"),
+        (interp, r"if\s*\(COEFF_FRAC\s*!=\s*14\)\s*\$error\(\"centered cubic coefficients require Q14\"\)"),
+        (frontend, r"tid32_thermo5_fs4_multipa_tx\s*#\s*\(\s*\.W\(W\),\s*\.CHANNELS\(2\*DPD_LANES\),\s*\.STEP\(STEP\),\s*\.TIDSM_ORDER\(TIDSM_ORDER\)\s*\)\s*u_tid"),
+        (ef2, r"if\s*\(W\s*<\s*2\s*\|\|\s*CHANNELS\s*<\s*2\s*\|\|\s*\(CHANNELS\s*%\s*2\)\s*!=\s*0\)"),
+        (ef2, r"gt_tx_raw64_boundary\s*#\s*\(\.DATA_W\(2\*CHANNELS\)\)\s+u_raw_boundary"),
+        (boundary, r"gt_tx_user_bridge\s*#\s*\(\s*\.PARALLEL_W\(DATA_W\),\s*\.GT_USER_W\(DATA_W\)\s*\)\s+u_bridge"),
+        (bridge, r"if\s*\(PARALLEL_W\s*!=\s*GT_USER_W\)"),
+    )
+    for text, pattern in checks:
+        if not re.search(pattern, text, re.S):
+            fail("fixed product parameter chain changed; missing reviewed source relation: " + pattern)
+
+    axil_frontend_params = parameter_body(axil, "tid32_thermo5_frontend_tx", "u_frontend")
+    for pattern in (
+        r"\.W\(W\)", r"\.IN_LANES\(8\)", r"\.DPD_LANES\(16\)",
+        r"\.STEP\(STEP\)", r"\.TIDSM_ORDER\(TIDSM_ORDER\)",
+        r"\.MAX_TAPS\(DPD_MAX_TAPS\)",
+        r"\.INTERP_CENTERED_CUBIC\(INTERP_CENTERED_CUBIC\)",
+    ):
+        if not re.search(pattern, axil_frontend_params):
+            fail("AXI-Lite frontend parameter pass-through changed: " + pattern)
+    frame_gain_params = parameter_body(frontend, "dsm_frame_gain_vector", "u_frame_gain")
+    if not re.search(r"\.HOLD_STATE_ON_DISABLE\(HOLD_STATE_ON_DISABLE\)", frame_gain_params):
+        fail("frame-gain HOLD_STATE_ON_DISABLE pass-through changed")
+    centered_1 = parameter_body(frontend, "dsm_interp_x2_centered_cubic_vector", "u_interp_1")
+    centered_2 = parameter_body(frontend, "dsm_interp_x2_centered_cubic_vector", "u_interp_2")
+    for body, lanes, tail, label in (
+        (centered_1, "IN_LANES", "1'b1", "stage 1"),
+        (centered_2, "DPD_LANES", "1'b0", "stage 2"),
+    ):
+        for pattern in (
+            rf"\.W\(W\)", rf"\.LANES\({lanes}\)",
+            rf"\.APPEND_TAIL_VECTOR\({re.escape(tail)}\)",
+            r"\.HOLD_STATE_ON_DISABLE\(HOLD_STATE_ON_DISABLE\)",
+        ):
+            if not re.search(pattern, body):
+                fail(f"centered interpolator {label} parameter pass-through changed: {pattern}")
+        if re.search(r"\.COEFF_FRAC\s*\(", body):
+            fail(f"centered interpolator {label} overrides reviewed Q14 default")
+    if "HOLD_STATE_ON_DISABLE" in axil:
+        fail("AXI-Lite product unexpectedly exposes a HOLD_STATE_ON_DISABLE override")
+    order2_branch = re.search(
+        r"(?:end\s+)?else\s+if\s*\(TIDSM_ORDER\s*==\s*2\)\s*begin\s*:\s*g_order2",
+        multipa,
+    )
+    ef2_instance = re.search(r"\btid32_cartesian_ef2_fs4_gt_tx\s*#", multipa)
+    if order2_branch is None or ef2_instance is None or ef2_instance.start() < order2_branch.end():
+        fail("four-plane parent no longer instantiates EF2 under the ORDER=2 generate arm")
+    ef2_params = parameter_body(multipa, "tid32_cartesian_ef2_fs4_gt_tx", "u_tid")
+    if not re.search(r"\.W\(W\)", ef2_params) or not re.search(
+        r"\.CHANNELS\(CHANNELS\)", ef2_params
+    ):
+        fail("EF2 product W/CHANNELS parameter pass-through changed")
+
+
+def verify_fixed_parameter_dispositions(
+    review: dict, ledger_rows: list[dict[str, str]], product_source_sha: str
+) -> list[dict]:
+    """Validate exact Raw Branch IDs and source-bound fixed product parameters."""
+    dispositions = review.get("fixed_parameter_dispositions", [])
+    if not isinstance(dispositions, list):
+        fail("fixed_parameter_dispositions must be an array")
+    if not dispositions:
+        return []
+    if len(dispositions) != 1:
+        fail("this closure increment requires one grouped fixed-parameter review")
+    item = dispositions[0]
+    if item.get("method") != "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN":
+        fail("unsupported fixed-parameter disposition method")
+    if item.get("review_id") != "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS":
+        fail("fixed-parameter review ID mismatch")
+    if item.get("status") != "PROVEN_UNREACHABLE":
+        fail("fixed-parameter disposition must be PROVEN_UNREACHABLE")
+    if item.get("product_source_sha") != product_source_sha:
+        fail("fixed-parameter disposition and Raw ledger product SHAs differ")
+
+    compile_manifest_path = ROOT / item["product_compile_manifest"]
+    if not compile_manifest_path.is_file() or sha256(compile_manifest_path) != item.get(
+        "product_compile_manifest_sha256"
+    ):
+        fail("missing or stale exact-product compile manifest for fixed-parameter audit")
+    compile_manifest = json.loads(compile_manifest_path.read_text(encoding="utf-8"))
+    provenance = compile_manifest.get("compile_provenance", {})
+    expected_defines = {
+        "+define+THERMO5_AXIL_CONTROL",
+        "+define+THERMO5_CENTERED_CUBIC",
+        "+define+THERMO5_TIDSM_ORDER=2",
+        "+define+THERMO5_STEP=5120",
+        "+define+THERMO5_DPD_MAX_TAPS=1",
+    }
+    if not expected_defines.issubset(set(provenance.get("configuration_defines", []))):
+        fail("product compile manifest does not bind the frozen AXI-Lite/centered/EF2/1-tap product")
+    if provenance.get("top") != "thermo5_sku_uvm_tb":
+        fail("product compile manifest has the wrong fixed-product top")
+    if compile_manifest.get("base_commit") != product_source_sha:
+        fail("product compile manifest is not bound to the Raw product source SHA")
+    if len(compile_manifest.get("source_file_sha256", {})) != 77:
+        fail("product compile manifest does not contain the reviewed 77 source/control entries")
+
+    witness_path = ROOT / item["active_product_witness"]
+    if not witness_path.is_file() or sha256(witness_path) != item.get(
+        "active_product_witness_sha256"
+    ):
+        fail("missing or stale exact-product positive VCS witness")
+    witness = json.loads(witness_path.read_text(encoding="utf-8"))
+    if (witness.get("product_source_sha") != product_source_sha
+            or witness.get("git_head_at_compile") != product_source_sha
+            or witness.get("positive_tests", {}).get("all_pass") is not True
+            or witness.get("positive_tests", {}).get("count") != 13):
+        fail("active witness is not the exact 13-test product-source PASS")
+    command = witness.get("compile", {}).get("command", "")
+    for token in (
+        "-top thermo5_sku_uvm_tb",
+        "+define+THERMO5_AXIL_CONTROL",
+        "+define+THERMO5_CENTERED_CUBIC",
+        "+define+THERMO5_TIDSM_ORDER=2",
+        "+define+THERMO5_STEP=5120",
+        "+define+THERMO5_DPD_MAX_TAPS=1",
+    ):
+        if token not in command:
+            fail("active product witness compile command lacks " + token)
+
+    source_hashes = item.get("source_sha256")
+    if not isinstance(source_hashes, dict) or set(source_hashes) != FIXED_PARAMETER_SOURCE_FILES:
+        fail("fixed-parameter review must hash the exact ten-file elaboration chain")
+    compile_hashes = compile_manifest.get("source_file_sha256", {})
+    witness_hashes = witness.get("compile", {}).get("parsed_project_source_sha256", {})
+    source_texts = {}
+    for relative, expected in source_hashes.items():
+        path = (ROOT / relative).resolve()
+        if not path.is_relative_to(ROOT.resolve()) or not path.is_file() or sha256(path) != expected:
+            fail("fixed product source changed since review: " + relative)
+        if compile_hashes.get(relative) != expected or witness_hashes.get(relative) != expected:
+            fail("compile or positive witness does not bind fixed product source: " + relative)
+        source_texts[relative] = path.read_text(encoding="utf-8")
+    validate_fixed_parameter_source_chain(source_texts)
+
+    ledger_by_id = {row["semantic_bin_id"]: row for row in ledger_rows}
+    if len(ledger_by_id) != len(ledger_rows):
+        fail("semantic Bin IDs are not unique in the fixed-parameter Raw ledger")
+    reviewed_ids = item.get("semantic_bin_ids", [])
+    if set(reviewed_ids) != set(FIXED_PARAMETER_BRANCH_SPECS) or len(reviewed_ids) != len(FIXED_PARAMETER_BRANCH_SPECS):
+        fail("fixed-parameter Bin ID set differs from the exact 17 reviewed Raw bins")
+    for bin_id, (source, position, expression, decision_path, instance) in FIXED_PARAMETER_BRANCH_SPECS.items():
+        row = ledger_by_id.get(bin_id)
+        if row is None:
+            fail("fixed-parameter semantic Bin is absent from Raw ledger: " + bin_id)
+        expected = {
+            "configuration": "axil",
+            "metric": "branch",
+            "source_files": source,
+            "source_position": position,
+            "branch_target_line": position.rsplit(":", 1)[1],
+            "branch_target_position": position,
+            "branch_target_expression": expression,
+            "branch_decision_path": decision_path,
+            "normalized_instance": instance,
+            "product_source_sha": product_source_sha,
+        }
+        for key, value in expected.items():
+            if row.get(key) != value:
+                fail(f"{bin_id}: Raw {key} mismatch (expected {value!r}, got {row.get(key)!r})")
+        if row.get("closure_status") not in {"OPEN", "PROVEN_UNREACHABLE"}:
+            fail(f"{bin_id}: refusing to overwrite an unexpected Raw closure status")
+        source_line_number = int(position.rsplit(":", 1)[1])
+        source_line = source_texts[source].splitlines()[source_line_number - 1].strip()
+        if source_line != expression:
+            fail(f"{bin_id}: exact source line no longer matches the audited Branch expression")
+        try:
+            row_source_hashes = dict(
+                part.split("=", 1) for part in row["source_file_sha256"].split(";") if "=" in part
+            )
+        except ValueError as error:
+            raise ValueError(f"{bin_id}: malformed Raw source hash field") from error
+        if row_source_hashes.get(source) != source_hashes.get(source):
+            fail(f"{bin_id}: Source SHA differs from its exact Raw URG record")
+    item["validated_bin_count"] = len(reviewed_ids)
+    item["source_chain_sha256"] = {key: sha256(ROOT / key) for key in source_hashes}
+    item["compile_manifest_sha256"] = sha256(compile_manifest_path)
+    item["active_product_witness_sha256"] = sha256(witness_path)
+    return dispositions
+
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -425,6 +781,9 @@ def main() -> int:
     elaboration_dispositions = verify_elaboration_dispositions(
         review, ledger_rows, summary["source_product_sha"]
     )
+    fixed_parameter_dispositions = verify_fixed_parameter_dispositions(
+        review, ledger_rows, summary["source_product_sha"]
+    )
     reviewed_open = review.get("reviewed_candidates", [])
     if not isinstance(reviewed_open, list):
         fail("reviewed_candidates must be an array")
@@ -435,9 +794,12 @@ def main() -> int:
     elaboration_ids = {
         bin_id for item in elaboration_dispositions for bin_id in item["semantic_bin_ids"]
     }
-    if disposition_ids & elaboration_ids:
-        fail("a semantic Bin ID cannot have both Formal and elaboration dispositions")
-    disposition_ids |= elaboration_ids
+    fixed_parameter_ids = {
+        bin_id for item in fixed_parameter_dispositions for bin_id in item["semantic_bin_ids"]
+    }
+    if disposition_ids & elaboration_ids or disposition_ids & fixed_parameter_ids or elaboration_ids & fixed_parameter_ids:
+        fail("a semantic Bin ID cannot have conflicting Formal/static dispositions")
+    disposition_ids |= elaboration_ids | fixed_parameter_ids
     for candidate in reviewed_open:
         bin_id = candidate.get("semantic_bin_id", "")
         if not bin_id or bin_id in disposition_ids:
@@ -491,6 +853,23 @@ def main() -> int:
             row["root_cause_hypothesis"] = item["reason"]
             row["next_action"] = "Retain the bin in Raw; exact product parameter chain is reviewed; no exclusion is approved."
 
+    for item in fixed_parameter_dispositions:
+        for bin_id in item["semantic_bin_ids"]:
+            row = by_id[bin_id]
+            row["closure_status"] = "PROVEN_UNREACHABLE"
+            row["status"] = "PROVEN_UNREACHABLE"
+            row["reason"] = item["reason"]
+            row["evidence_hint"] = (
+                "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN; "
+                + item["product_compile_manifest"]
+                + "; active 13-test product VCS witness; source hashes in review JSON"
+            )
+            row["root_cause_hypothesis"] = item["reason"]
+            row["next_action"] = (
+                "Retain the bin in Raw; reopen if the product parameters or source chain change; "
+                "no exclusion is approved."
+            )
+
     for task in tasks:
         ids = set(filter(None, task["semantic_bin_ids"].split(";")))
         closed = ids and all(by_id[bin_id]["closure_status"] == "PROVEN_UNREACHABLE" for bin_id in ids)
@@ -541,12 +920,27 @@ def main() -> int:
                 "active_product_witness": item["active_product_witness"],
                 "reason": item["reason"],
             }
+    fixed_parameter_map = summary.setdefault("fixed_parameter_dispositions", {})
+    for item in fixed_parameter_dispositions:
+        for bin_id in item["semantic_bin_ids"]:
+            fixed_parameter_map[bin_id] = {
+                "status": "PROVEN_UNREACHABLE",
+                "method": item["method"],
+                "review_id": item["review_id"],
+                "source_sha256": item["source_sha256"],
+                "compile_manifest": item["product_compile_manifest"],
+                "compile_manifest_sha256": item["compile_manifest_sha256"],
+                "active_product_witness": item["active_product_witness"],
+                "active_product_witness_sha256": item["active_product_witness_sha256"],
+                "reason": item["reason"],
+            }
     summary["approved_waivers"] = 0
     summary["exclusions_applied"] = 0
     summary["reviewed_formal_open_candidates"] = reviewed_open
     summary["interpretation"] = (
         f"{len(dispositions)} exact bins are Formal-proven unreachable and "
-        f"{len(elaboration_ids)} are unreachable by exact product static-parameter elaboration; "
+        f"{len(elaboration_ids | fixed_parameter_ids)} are unreachable by exact product static-parameter elaboration "
+        f"({len(elaboration_ids)} EF2 pair-look-ahead and {len(fixed_parameter_ids)} fixed-parameter guard bins); "
         f"{counts.get('OPEN', 0)} code gaps remain OPEN. Raw URG bins and denominators are unchanged; "
         "no waiver or exclusion is applied."
     )
@@ -581,6 +975,13 @@ def main() -> int:
             f"{item['source_line_range'][0]}-{item['source_line_range'][1]}` "
             f"and `PAIR_LOOKAHEAD` guard | exact static product parameter chain |"
         )
+    for item in fixed_parameter_dispositions:
+        formal_lines.append(
+            f"| `{item.get('review_id', '')}` | {len(item['semantic_bin_ids'])} | "
+            "17 exact Branch bins across frame gain, centered interpolators, EF2, AXI-Lite DPD guard, "
+            "and GT width guard | exact product parameter chain with compile manifest, active VCS witness, "
+            "and source hashes |"
+        )
     formal_lines.extend([
         "",
         "Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:",
@@ -606,6 +1007,7 @@ def main() -> int:
         "formal_status": "PASS_FOR_EXACT_REACHABILITY_DISPOSITIONS; DPD_IDENTITY_OPEN",
         "proven_unreachable_bin_count": counts.get("PROVEN_UNREACHABLE", 0),
         "static_elaboration_bin_count": len(elaboration_ids),
+        "static_fixed_parameter_branch_bin_count": len(fixed_parameter_ids),
         "reviewed_open_candidate_count": len(reviewed_open),
         "raw_coverage_edited": False,
         "product_urg_refreshed": refresh_evidence is not None,
@@ -625,6 +1027,7 @@ def main() -> int:
     print(json.dumps({"ledger_rows": len(ledger_rows), "closure_status_counts": dict(counts),
                       "formal_disposition_bins": len(dispositions),
                       "static_elaboration_disposition_bins": len(elaboration_ids),
+                      "static_fixed_parameter_branch_bins": len(fixed_parameter_ids),
                       "raw_coverage_edited": False, "exclusions_applied": 0}, sort_keys=True))
     return 0
 

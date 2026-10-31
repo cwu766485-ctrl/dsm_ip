@@ -21,8 +21,8 @@
     "toggle:IDENTITY_DPD_ARITHMETIC": 3792
   },
   "closure_status_counts": {
-    "OPEN": 21377,
-    "PROVEN_UNREACHABLE": 355
+    "OPEN": 21360,
+    "PROVEN_UNREACHABLE": 372
   },
   "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
   "diagnostic_product_branch_review": null,
@@ -7254,6 +7254,382 @@
     }
   },
   "exclusions_applied": 0,
+  "fixed_parameter_dispositions": {
+    "TXB-054d97a87a8d74c36c8b": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-063113e1e4634f39c014": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-0fe97016b03e97cafb72": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-2d576118dd5c1a6784cd": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-2df3affe59cb2ae409d4": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-32b923f55e34401249a8": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-32e3753ea6b78b647658": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-6dcbab82b9fdc86cecc5": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-70fb16ddca930f3fdb87": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-84be21fab6f11958312f": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-91d5b4a40917c980da7a": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-9fd36ae54068498e255f": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-cd475fde35a66be60e79": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-e27080825871240f6ec3": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-e381d5af8a96457cab44": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-e8358208ee175c15bb7d": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    },
+    "TXB-fa074bca34512589b54d": {
+      "active_product_witness": "docs/verification/data/thermo5-tx-cdc-resetready-evidence.json",
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "reason": "The exact AXI-Lite product compile is bound to Centered-Cubic, EF2 ORDER=2, STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO. Its current source chain passes HOLD_STATE_ON_DISABLE=0 to the frame-gain and centered interpolation instances; fixes centered interpolation lanes at 8 and 16 with the interpolator default COEFF_FRAC=14; passes W=16 and CHANNELS=32 into EF2; passes DPD_MAX_TAPS=1 to both the AXI-Lite DPD configuration and frontend guards; and ties both GT bridge widths to DATA_W. Therefore the specified alternate parameter arms cannot elaborate in this product. This is an exact source/parameter elaboration audit, not a Formal proof or waiver. All 17 Raw URG bins remain in the original denominator and no exclusion is applied.",
+      "review_id": "THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS",
+      "source_sha256": {
+        "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "b5c16a9bb4a450522af064cbe3a0c8dc1371edd50e600c3c763f8d1959658aea",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    }
+  },
   "formal_dispositions": {
     "TXB-0260d31bb5bee4f1a4c6": {
       "assertion": "thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable",
@@ -7487,7 +7863,7 @@
     "uncovered_records": 4,
     "urg_model_excluded_rows": 12
   },
-  "interpretation": "11 exact bins are Formal-proven unreachable and 344 are unreachable by exact product static-parameter elaboration; 21377 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "interpretation": "11 exact bins are Formal-proven unreachable and 361 are unreachable by exact product static-parameter elaboration (344 EF2 pair-look-ahead and 17 fixed-parameter guard bins); 21360 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
   "negative_report": "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame",
   "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
   "raw_bin_id_collision_extra_rows": 17,
@@ -7548,13 +7924,7 @@
     "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame/grp7.html": "21d48efd77d9b3325718294970e871fb0fc5f079af95ea517a7ab40bf8baa1d9"
   },
   "raw_simulation_source_mismatches": [],
-  "reviewed_formal_open_candidates": [
-    {
-      "reason": "MAX_TAPS=1 assertion/Cover is tautological at compile time; no unreachable disposition accepted.",
-      "semantic_bin_id": "TXB-054d97a87a8d74c36c8b",
-      "status": "OPEN"
-    }
-  ],
+  "reviewed_formal_open_candidates": [],
   "root_cause_task_count": 470,
   "schema_version": 2,
   "separately_hash_bound_diagnostic_testbench_mismatches": [],

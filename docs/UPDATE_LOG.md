@@ -5171,3 +5171,36 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   stacked on PR #20; initial remote commit `8fc3cf519ee100b681edb751c38d2a8a9b536523`
   has the same tree as local submission `e2d3d171aa982ad5dc1a7fd62300061bc64eca87`.
   The PR remains unmerged.
+
+## 2026-10-31 - Audit fixed-product parameter Branch reachability
+
+- Added a fail-closed source-chain audit for 17 exact unhit product Branch bins:
+  frame-gain and centered-interpolator Hold parameters, centered Lane/Q14 guards,
+  EF2 shape guards, AXI-Lite DPD tap guards, and the four-plane GT bridge width
+  guard. Every Bin ID is bound to the exact Raw source position, expression,
+  decision path, normalized instance, and source SHA; the ten-file product
+  parameter chain is cross-checked against the exact product compile manifest
+  and active 13-test positive VCS witness.
+- The first updater attempt correctly rejected an overlap with a previous OPEN
+  candidate based on tautological Formal evidence. The candidate is now
+  dispositioned only by the separate exact static-parameter review; no
+  tautological property is accepted as proof. The initial rejection is retained
+  in the ignored audit run directory.
+- Ledger status changed only for the 17 reviewed bins: 372 total
+  `PROVEN_UNREACHABLE` (11 Formal + 344 EF2 pair-lookahead static + 17 fixed
+  parameter) and 21,360 OPEN across 470 tasks (108 fully dispositioned, 362
+  OPEN). Raw URG/VDB and denominators remain unchanged; Raw Branch 520/637,
+  Condition 601/849, Line 3334/3796, Toggle 83575/104480; legal Functional
+  Coverage 210/210; zero waivers/exclusions; gate remains `RAW_100_OPEN`.
+- Updated final signoff, current-source closure report, formal review,
+  root-cause summary/manifest, source-bound ledger/task table, execution
+  frontier, and the dedicated fixed-parameter Branch audit report.
+- Checks: `python3.12 -m unittest discover -s tools/hw/tests -v` 17/17 PASS;
+  Python byte-compile PASS; disposition updater PASS; fail-closed Raw/Adjusted
+  coverage gate PASS with `RAW_100_OPEN`; `git diff --check` PASS. Product VCS/
+  URG was not rerun because no product RTL, compile inputs, or Raw VDB changed.
+- Remaining: all other reachable/applicable code bins stay OPEN; DPD payload
+  Formal and the source-gap/service-rate contract remain OPEN; real XPM/GT
+  Wizard, FPGA PPA, and physical QAM256 BER remain outside Linux signoff. The
+  increment is prepared for an independent draft PR stacked on PR #21; no PR
+  is merged and no branch is deleted.

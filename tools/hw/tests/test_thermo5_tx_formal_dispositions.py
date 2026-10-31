@@ -5,11 +5,16 @@ import unittest
 from pathlib import Path
 
 from tools.hw.thermo5_tx_formal_dispositions import (
+    FIXED_PARAMETER_BRANCH_SPECS,
+    FIXED_PARAMETER_SOURCE_FILES,
     append_current_source_formal_section,
     exact_pairlookahead_bin_ids,
     tautological_property_names,
     validate_refresh_evidence,
     validate_pairlookahead_source_chain,
+    validate_fixed_parameter_source_chain,
+    verify_fixed_parameter_dispositions,
+    read_csv,
 )
 
 
@@ -97,6 +102,39 @@ class ProductElaborationAuditTests(unittest.TestCase):
                 multipa,
                 boundary,
                 bridge,
+            )
+
+    def test_fixed_parameter_chain_is_exact_and_fail_closed(self):
+        texts = {
+            path: (ROOT / path).read_text(encoding="utf-8")
+            for path in FIXED_PARAMETER_SOURCE_FILES
+        }
+        validate_fixed_parameter_source_chain(texts)
+        changed = dict(texts)
+        source_path = "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv"
+        changed[source_path] = changed[source_path].replace(
+            ".DPD_LANES(16)", ".DPD_LANES(8)", 1
+        )
+        with self.assertRaisesRegex(ValueError, "DPD_LANES"):
+            validate_fixed_parameter_source_chain(changed)
+
+    def test_fixed_parameter_dispositions_bind_exact_raw_bins_and_evidence(self):
+        data_dir = ROOT / "docs/verification/data/thermo5-tx-current-source-gaps"
+        review = json.loads((data_dir / "thermo5-tx-focused-product-formal-review.json").read_text())
+        summary = json.loads((data_dir / "thermo5-tx-focused-product-gap-summary.json").read_text())
+        _, ledger = read_csv(data_dir / "thermo5-tx-focused-product-gap-ledger.csv.gz", compressed=True)
+        validated = verify_fixed_parameter_dispositions(
+            review, ledger, summary["source_product_sha"]
+        )
+        self.assertEqual(validated[0]["validated_bin_count"], 17)
+        self.assertEqual(set(validated[0]["semantic_bin_ids"]), set(FIXED_PARAMETER_BRANCH_SPECS))
+
+        changed_rows = [dict(row) for row in ledger]
+        changed_rows_by_id = {row["semantic_bin_id"]: row for row in changed_rows}
+        changed_rows_by_id["TXB-054d97a87a8d74c36c8b"]["branch_decision_path"] = "0"
+        with self.assertRaisesRegex(ValueError, "branch_decision_path mismatch"):
+            verify_fixed_parameter_dispositions(
+                review, changed_rows, summary["source_product_sha"]
             )
 
 

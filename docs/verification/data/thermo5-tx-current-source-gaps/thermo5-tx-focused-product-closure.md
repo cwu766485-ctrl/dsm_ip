@@ -77,7 +77,7 @@ This source-linked audit uses the fresh licensed VCS/URG report recorded in `run
 
 ## Current-source Formal disposition update — `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`
 
-The source-bound review closed 355 exact bins as PROVEN_UNREACHABLE; 21377 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+The source-bound review closed 372 exact bins as PROVEN_UNREACHABLE; 21360 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
 | Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
@@ -98,9 +98,9 @@ The following candidate-only source paths are statically unreachable in the exac
 | Review ID | Exact bin count | Source span / guard | Method |
 |---|---:|---|---|
 | `EF2_PAIR_HELPER_DISABLED_IN_PRODUCT` | 344 | `rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:117-191` and `PAIR_LOOKAHEAD` guard | exact static product parameter chain |
+| `THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS` | 17 | 17 exact Branch bins across frame gain, centered interpolators, EF2, AXI-Lite DPD guard, and GT width guard | exact product parameter chain with compile manifest, active VCS witness, and source hashes |
 
 Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
 
 | Semantic Bin ID | Status | Reason |
 |---|---|---|
-| `TXB-054d97a87a8d74c36c8b` | OPEN | MAX_TAPS=1 assertion/Cover is tautological at compile time; no unreachable disposition accepted. |
