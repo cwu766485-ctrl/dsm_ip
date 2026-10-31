@@ -107,6 +107,26 @@ dispositions are 353, with 21,379 OPEN across 375 tasks; zero waivers and zero
 active exclusions. The tracked 77-entry compile manifest was refreshed from
 the exact 13-test VCS compile log and matches its captured source manifest.
 
+## Follow-up PR chain through PR #20 — 2026-10-31
+
+The current Linux closure work is a stack on the Integration Review; it has
+not been merged into `thermo5`. The live GitHub PR metadata confirms this
+dependency chain:
+
+| PR | Base | Head / initially audited HEAD SHA | State |
+|---:|---|---|---|
+| #17 | `thermo5` | `codex/thermo5-integration-review` / `e26d5d20e26ede307f9ce6699241dbe4ea76fa30` | Open, draft, unmerged |
+| #18 | `codex/thermo5-integration-review` | `codex/thermo5-frame-tail-closure-r2` / `b93bde394373c1a1ba7dec54c56b99373e7d8760` | Open, draft, unmerged |
+| #19 | `codex/thermo5-frame-tail-closure-r2` | `codex/thermo5-pair-lookahead-product-audit` / `0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77` | Open, draft, unmerged |
+| #20 | `codex/thermo5-pair-lookahead-product-audit` | `codex/thermo5-cdc-frame-start-alignment` / `a2b0bf55c177e2804e2d6ef237e916229e729647` | Open, draft, unmerged |
+
+PR #20 adds one product-bound CDC frame-start Formal disposition. It does not
+alter RTL or the Raw URG/VDB. The published tree is
+`6563fc936668b7fdef9bd0a37a7f49d2810abcaa`, matching the independently
+constructed local commit tree. No PR was merged and no remote branch was
+deleted. Branches remain intact pending an explicit integration review and
+approval.
+
 ## Integration decision
 
 The branch ancestry and existing evidence are internally consistent enough to open a draft Integration Review PR against `thermo5`. This is not final TX signoff: code coverage, two assertion bins, Formal identity-DPD equivalence, source-gap contract, and hardware gates remain open. Do not merge the Integration PR or delete PR #2–#16 branches without explicit review/approval.

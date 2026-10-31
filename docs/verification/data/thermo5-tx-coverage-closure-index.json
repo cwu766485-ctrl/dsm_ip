@@ -22,8 +22,8 @@
     },
     "branch_integration_review_document": {
       "path": "docs/verification/thermo5-tx-branch-integration-review.md",
-      "sha256": "7e74f112fc8ca932e36946a8ea99c2d4686a473c1b87849bd5ea41bb7697bc7a",
-      "size_bytes": 10060
+      "sha256": "60b609b41de11f8d4cacc9ea779cc76b11bdd228deaead35263eaf8d5946ecdf",
+      "size_bytes": 11332
     },
     "cdc_default_formal_console": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/formal_cdc_default_19d2953_retry/cdc_default_branch/console.log",
@@ -172,13 +172,13 @@
     },
     "current_execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "0635656d84d8a3cffa104d99b6e8d29092ba343f5cd32f34de66b9addc2847fc",
-      "size_bytes": 24275
+      "sha256": "b5859ac3a6460ac935cf4d230c7e8687273d49cc5b60e8744150024c89293978",
+      "size_bytes": 24429
     },
     "current_final_signoff_snapshot": {
       "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
-      "sha256": "96051badacd457b4a1fcd10287dfff2d280468da3b96e5ef46539544c58c84cf",
-      "size_bytes": 30082
+      "sha256": "65d21786cf483d7445fb659b82f493bf18523995056c222c77f3cf66f8ebcdc0",
+      "size_bytes": 30078
     },
     "current_root_cause_closure_document": {
       "path": "docs/verification/thermo5-tx-coverage-root-cause-closure.md",
@@ -187,8 +187,8 @@
     },
     "current_update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "c191dc325a9507c3c7a13fba8344f9ac39934673ae60b69d73ff232eb66cedbd",
-      "size_bytes": 372185
+      "sha256": "71aef71715c197908004bb9798cc020d9554fdbc60fdb2646d9d5a00f71e6af6",
+      "size_bytes": 373241
     },
     "dpd_identity_formal_summary": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/dpd_identity_formal_retry/formal_summary.json",
@@ -237,8 +237,8 @@
     },
     "execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "0635656d84d8a3cffa104d99b6e8d29092ba343f5cd32f34de66b9addc2847fc",
-      "size_bytes": 24275
+      "sha256": "b5859ac3a6460ac935cf4d230c7e8687273d49cc5b60e8744150024c89293978",
+      "size_bytes": 24429
     },
     "formal_readme": {
       "path": "dv/uvm/formal/README.md",
@@ -287,8 +287,8 @@
     },
     "linux_signoff_snapshot": {
       "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
-      "sha256": "96051badacd457b4a1fcd10287dfff2d280468da3b96e5ef46539544c58c84cf",
-      "size_bytes": 30082
+      "sha256": "65d21786cf483d7445fb659b82f493bf18523995056c222c77f3cf66f8ebcdc0",
+      "size_bytes": 30078
     },
     "mutation_manifest": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/mutation_13tests_final/manifest.json",
@@ -357,8 +357,8 @@
     },
     "update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "c191dc325a9507c3c7a13fba8344f9ac39934673ae60b69d73ff232eb66cedbd",
-      "size_bytes": 372185
+      "sha256": "71aef71715c197908004bb9798cc020d9554fdbc60fdb2646d9d5a00f71e6af6",
+      "size_bytes": 373241
     },
     "vcs_replay_results": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/focused_replay_results.json",

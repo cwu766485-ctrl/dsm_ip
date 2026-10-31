@@ -5123,3 +5123,19 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Updated the source-bound Formal review, gap ledger/task table/summary, root-cause closure and final signoff snapshots, Formal README, execution frontier, and coverage evidence index. The index now includes the exact successful and failed run artifact hashes.
 - Checks: VC Formal runner PASS; `python3.12 -m unittest discover -s tools/hw/tests -v` 15/15 PASS; Python byte-compile PASS; fail-closed Formal disposition updater PASS; static coverage-gate recheck `RAW_100_OPEN` with Raw=Adjusted and zero waiver/exclusion; ledger/source/bin and evidence-index hash audits PASS; `git diff --check` PASS. No product RTL, VCS compile input, RX, AI-DPD, algorithm, or Raw coverage data changed; full VCS product regression was not repeated.
 - Remaining: 21,378 OPEN Raw code bins, DPD identity payload Formal inconclusive, source-gap/service-rate contract, full GT Parent payload checking, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open. No final signoff or 100% code-coverage claim is made.
+
+## 2026-10-31 15:41 SGT - Publish the CDC alignment Formal increment as PR #20
+
+- Published draft PR #20, stacked on PR #19; initial remote HEAD was
+  `a2b0bf55c177e2804e2d6ef237e916229e729647`. Its tree
+  `6563fc936668b7fdef9bd0a37a7f49d2810abcaa` matches the reviewed local tree.
+- Confirmed PR #17 → #18 → #19 → #20 base/head dependencies via live GitHub
+  metadata. All four PRs are open and unmerged; no branch was deleted.
+- Updated the branch integration review and execution frontier with this
+  current dependency chain. The PR remains a single-bin Formal increment, not
+  a final coverage signoff; `RAW_100_OPEN` and all remaining OPEN bins persist.
+- Checks: local tree SHA matched the published tree; the 15-file change set
+  passed `git diff --check`; exact-source Formal and static coverage evidence
+  are recorded in the PR #20 evidence index. `git push` was unavailable because
+  this shell has no GitHub credential; publication used the connected GitHub
+  integration after verifying every uploaded blob and the resulting tree SHA.
