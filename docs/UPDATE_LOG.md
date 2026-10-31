@@ -5202,5 +5202,4 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Remaining: all other reachable/applicable code bins stay OPEN; DPD payload
   Formal and the source-gap/service-rate contract remain OPEN; real XPM/GT
   Wizard, FPGA PPA, and physical QAM256 BER remain outside Linux signoff. The
-  increment is prepared for an independent draft PR stacked on PR #21; no PR
-  is merged and no branch is deleted.
+  Published as [Draft PR #22](https://github.com/cwu766485-ctrl/dsm_ip/pull/22), stacked on PR #21. The GitHub publication commit is `9bcbe5c829c4bd8d957949865da1009073fc7da6` (tree `0af067229fa54f6ce2e3ab887e05bcb50afb170f`), matching local submission commit `90be89937ca4110385c3d37d6e592ea45ddb6449` by tree. PR #22 is open and mergeable; no PR is merged and no branch is deleted.

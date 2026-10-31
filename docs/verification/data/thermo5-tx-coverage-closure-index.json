@@ -172,8 +172,8 @@
     },
     "current_execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "13f39ce1ddf2d47f25eb8e730e50b3d8f0a75f9a810bfeef7dd1877fb3df1420",
-      "size_bytes": 23669
+      "sha256": "404d25fb2120559caed8c537bdec6ab3c0c0b6fbe02ccc739b0ee1d7b1e79a64",
+      "size_bytes": 23777
     },
     "current_final_signoff_snapshot": {
       "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
@@ -187,8 +187,8 @@
     },
     "current_update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "e5a79845f400bedeef11561e0c510b003e2663445693b0656762cda88ea95692",
-      "size_bytes": 377647
+      "sha256": "d6c1144a34432271fb50be01d4856beb0c637ba84923d80758bf3d9a40ec4bcf",
+      "size_bytes": 377916
     },
     "dpd_identity_formal_summary": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/dpd_identity_formal_retry/formal_summary.json",
@@ -237,8 +237,8 @@
     },
     "execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "13f39ce1ddf2d47f25eb8e730e50b3d8f0a75f9a810bfeef7dd1877fb3df1420",
-      "size_bytes": 23669
+      "sha256": "404d25fb2120559caed8c537bdec6ab3c0c0b6fbe02ccc739b0ee1d7b1e79a64",
+      "size_bytes": 23777
     },
     "formal_readme": {
       "path": "dv/uvm/formal/README.md",
@@ -357,8 +357,8 @@
     },
     "update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "e5a79845f400bedeef11561e0c510b003e2663445693b0656762cda88ea95692",
-      "size_bytes": 377647
+      "sha256": "d6c1144a34432271fb50be01d4856beb0c637ba84923d80758bf3d9a40ec4bcf",
+      "size_bytes": 377916
     },
     "vcs_replay_results": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/focused_replay_results.json",
@@ -539,6 +539,11 @@
       "path": "runs/thermo5_tx_fixed_parameter_branch_audit_20261031_pr22/evidence-index-audit.log",
       "sha256": "c06c15e3d74eb33188ab2782967dcba9aac6b729cddb64acfaed2a99bf89b1f0",
       "size_bytes": 44
+    },
+    "fixed_parameter_audit_published_pr22_index_audit": {
+      "path": "runs/thermo5_tx_fixed_parameter_branch_audit_20261031_pr22/published-pr22-index-audit.log",
+      "sha256": "5c5de0d280ebabffad7be4b3ec159a99415dcc35c5868c771099d7651c4b4a4b",
+      "size_bytes": 143
     }
   },
   "commands": {
@@ -1719,6 +1724,72 @@
         "base_sha": "cc32661a576d30634375f61552621e49f351c541",
         "head": "codex/thermo5-cdc-frame-end-threshold-formal",
         "head_sha": "5657e6629ebd28762160210ce3d15dc0a648beb3",
+        "state": "OPEN_DRAFT_UNMERGED"
+      }
+    ],
+    "published_pr22": {
+      "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/22",
+      "state": "OPEN_DRAFT_UNMERGED",
+      "mergeable": true,
+      "base_branch": "codex/thermo5-cdc-frame-end-threshold-formal",
+      "base_sha": "5657e6629ebd28762160210ce3d15dc0a648beb3",
+      "head_branch": "codex/thermo5-fixed-parameter-branch-audit",
+      "initial_remote_commit": "9bcbe5c829c4bd8d957949865da1009073fc7da6",
+      "initial_remote_tree": "0af067229fa54f6ce2e3ab887e05bcb50afb170f",
+      "local_submission_commit": "90be89937ca4110385c3d37d6e592ea45ddb6449",
+      "local_submission_tree": "0af067229fa54f6ce2e3ab887e05bcb50afb170f",
+      "tree_match_verified": true,
+      "changed_files": 14,
+      "additions": 1331,
+      "deletions": 92
+    },
+    "verified_pr_chain_17_22": [
+      {
+        "number": 17,
+        "base": "thermo5",
+        "base_sha": "eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e",
+        "head": "codex/thermo5-integration-review",
+        "head_sha": "e26d5d20e26ede307f9ce6699241dbe4ea76fa30",
+        "state": "OPEN_DRAFT_UNMERGED"
+      },
+      {
+        "number": 18,
+        "base": "codex/thermo5-integration-review",
+        "base_sha": "e26d5d20e26ede307f9ce6699241dbe4ea76fa30",
+        "head": "codex/thermo5-frame-tail-closure-r2",
+        "head_sha": "b93bde394373c1a1ba7dec54c56b99373e7d8760",
+        "state": "OPEN_DRAFT_UNMERGED"
+      },
+      {
+        "number": 19,
+        "base": "codex/thermo5-frame-tail-closure-r2",
+        "base_sha": "b93bde394373c1a1ba7dec54c56b99373e7d8760",
+        "head": "codex/thermo5-pair-lookahead-product-audit",
+        "head_sha": "0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77",
+        "state": "OPEN_DRAFT_UNMERGED"
+      },
+      {
+        "number": 20,
+        "base": "codex/thermo5-pair-lookahead-product-audit",
+        "base_sha": "0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77",
+        "head": "codex/thermo5-cdc-frame-start-alignment",
+        "head_sha": "cc32661a576d30634375f61552621e49f351c541",
+        "state": "OPEN_DRAFT_UNMERGED"
+      },
+      {
+        "number": 21,
+        "base": "codex/thermo5-cdc-frame-start-alignment",
+        "base_sha": "cc32661a576d30634375f61552621e49f351c541",
+        "head": "codex/thermo5-cdc-frame-end-threshold-formal",
+        "head_sha": "5657e6629ebd28762160210ce3d15dc0a648beb3",
+        "state": "OPEN_DRAFT_UNMERGED"
+      },
+      {
+        "number": 22,
+        "base": "codex/thermo5-cdc-frame-end-threshold-formal",
+        "base_sha": "5657e6629ebd28762160210ce3d15dc0a648beb3",
+        "head": "codex/thermo5-fixed-parameter-branch-audit",
+        "head_sha": "9bcbe5c829c4bd8d957949865da1009073fc7da6",
         "state": "OPEN_DRAFT_UNMERGED"
       }
     ]
