@@ -67,8 +67,8 @@
     },
     "current_closure_report": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md",
-      "sha256": "9b8f437c33116bb1036d1260b7091bd51da298c636310e3922bb83d3af5e99d0",
-      "size_bytes": 8978
+      "sha256": "e4349e76e0c1b69881086c06d14c01f630893cd2c44dab94cec8f5160c343f27",
+      "size_bytes": 8390
     },
     "dpd_identity_formal_summary": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/dpd_identity_formal_retry/formal_summary.json",
@@ -117,8 +117,8 @@
     },
     "formal_review": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
-      "sha256": "dfc79f8fa2693055711c42cd25cf8e612e277f8f71562fc1481af2a647ad8028",
-      "size_bytes": 29029
+      "sha256": "8ced9294106251246551ba8be9b87b3f3879ce89710d5c8d2e90ddbf42bae3d9",
+      "size_bytes": 42246
     },
     "frame_tail_formal_console": {
       "path": "runs/thermo5_tx_branch_closure_frame_tail_20261031_r5/frame_tail/console.log",
@@ -157,8 +157,8 @@
     },
     "raw_gap_ledger": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-ledger.csv.gz",
-      "sha256": "25ab883dc4308c8be4a17c910891b3844f248812d13d1b691b230cbc4b0352dd",
-      "size_bytes": 1270755
+      "sha256": "1d4cb1954071bf470c9f6f98e27ffa06847a1d158a5f71423fb31e8751a4af48",
+      "size_bytes": 1278398
     },
     "raw_urg_denominator": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests_denominator/summary.json",
@@ -172,23 +172,23 @@
     },
     "root_cause_manifest": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-rootcause-manifest.json",
-      "sha256": "1558af0bd0d562008ee2332f4cf36d074f4f45b2bf690418fb3247a501a09076",
-      "size_bytes": 9911
+      "sha256": "0a64c3d4218534f254205e009332a5115b90eecd5432013336e86728f53238aa",
+      "size_bytes": 9954
     },
     "root_cause_manifest_sha256_sidecar": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-rootcause-manifest.sha256",
-      "sha256": "a8211250b0bb62258e7dba443981b4c2771a0e7ea1413b130dd82dd18441e6b3",
+      "sha256": "e56cce54b3dfb1bc625c65465e62c382a64a007204092327f3e6484329730f24",
       "size_bytes": 117
     },
     "root_cause_summary": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-summary.json",
-      "sha256": "f400ebebff5e21d19d05ff44ff7adbc48abf87dda1f6d3555b56131335b0c6a5",
-      "size_bytes": 21205
+      "sha256": "a88d4b010be90c28bcf6500d72a62f03455b2344302cf72c0e526e68e5f9fff6",
+      "size_bytes": 661533
     },
     "root_cause_task_table": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure-tasks.csv",
-      "sha256": "e442f844c38fdad09aef6c97ed7081a1242d5e7da5e65d7ea5aa5f08c8353d1d",
-      "size_bytes": 990522
+      "sha256": "cb8670ef308f9646f220c874f17ec223cf37c1a3b41c536bbe573935ffbbf16d",
+      "size_bytes": 990517
     },
     "same_compile_12_test_denominator": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_12tests_same_compile_denominator/summary.json",
@@ -214,6 +214,46 @@
       "path": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/product-source-manifest.json",
       "sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
       "size_bytes": 12049
+    },
+    "tracked_product_compile_manifest": {
+      "path": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+      "sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "size_bytes": 12049
+    },
+    "root_cause_closure_document": {
+      "path": "docs/verification/thermo5-tx-coverage-root-cause-closure.md",
+      "sha256": "6a77a5e912aaf13ecad65043c8b804b582ba4394d58d81548fd0121fce12d975",
+      "size_bytes": 47000
+    },
+    "linux_signoff_snapshot": {
+      "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
+      "sha256": "12f57742ca04c4e38e2768cd36e4d79db1a0ded163c07d97db7caa1c0446274e",
+      "size_bytes": 29201
+    },
+    "branch_integration_review_document": {
+      "path": "docs/verification/thermo5-tx-branch-integration-review.md",
+      "sha256": "7e74f112fc8ca932e36946a8ea99c2d4686a473c1b87849bd5ea41bb7697bc7a",
+      "size_bytes": 10060
+    },
+    "integration_review_json": {
+      "path": "docs/verification/data/thermo5-tx-integration-review.json",
+      "sha256": "ca056e21d4923dc8253bd160a0a2f1a28707728b44caa4db2c4c0ae4aa74e30e",
+      "size_bytes": 9153
+    },
+    "execution_frontier": {
+      "path": "docs/exec-plans/active/execution-frontier.md",
+      "sha256": "11e5d3ecd5a79af84b15e53a0f72b1b4f463f907f7aeec827c58ad622489208f",
+      "size_bytes": 22536
+    },
+    "update_log": {
+      "path": "docs/UPDATE_LOG.md",
+      "sha256": "ca2839d7ca7fc3fa22f8f42d6a67e1f5ccbe6b758051f1a7227ab5e5a5de4b93",
+      "size_bytes": 369268
+    },
+    "coverage_gate_static_recheck": {
+      "path": "runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate-static-audit-recheck.json",
+      "sha256": "dad170f48a68158d45498d6ba65621abed6b83b53885ccc0fa3e006fe0daf680",
+      "size_bytes": 3903
     }
   },
   "commands": {
@@ -227,9 +267,11 @@
     "python_saturation_vectors": "python3.12 dv/uvm/refmodel/python/generate_thermo5_dpd_saturation_vectors.py --output-dir runs/thermo5_cdc_resetready_repro_20261031/dpd_saturation_vectors --seed 620131",
     "urg_merge": "urg -full64 -dir /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/simv.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_boundary_phase_test_seed610817.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_cdc_end_remaining_test_seed610811.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_dpd_saturation_bittrue_test_seed620131.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_ef2_corner_test_seed610818.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_graceful_stop_test_seed610815.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_continuous_test_seed610809.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_continuous_test_seed610819.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_interframe_gap_test_seed610810.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_test_seed610808.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_register_access_test_seed610812.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_reset_release_source_test_seed610713.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_reset_sweep_test_seed610802.vdb /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_stop_restart_test_seed610816.vdb -format both -show ratios -report /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests -dbname thermo5_tx_product_13tests -log /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests.log",
     "vcs_compile": "vcs -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps -f  /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL  +define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120  +define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/csrc  -cm line+cond+fsm+tgl+branch+assert -cm_hier /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_tx_product_coverage.hier  -debug_access+all -o /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/simv  -l /home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/compile.log \\",
-    "vcs_test_replay": "The 13 per-test simv commands, test names, seeds, exits, VDB paths and logs are recorded in runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/focused_replay_results.json; all use the exact-source compile manifest."
+    "vcs_test_replay": "The 13 per-test simv commands, test names, seeds, exits, VDB paths and logs are recorded in runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/focused_replay_results.json; all use the exact-source compile manifest.",
+    "product_compile_manifest_refresh": "python3.12 tools/hw/thermo5_tx_product_compile_manifest.py --compile-log runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/compile.log --source-manifest runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/compile-source-parent.json --product-filelist dv/uvm/sim/thermo5_sku_filelist.f --coverage-hierarchy dv/uvm/sim/thermo5_tx_product_coverage.hier --output docs/verification/data/thermo5-tx-product-compile-manifest.json",
+    "coverage_gate_static_recheck": "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests_denominator/summary.json --groups-html runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/groups.html --waivers-csv runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate/waivers.csv --el-file runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate/thermo5_tx_main.el --source-manifest docs/verification/data/thermo5-tx-product-compile-manifest.json --output runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate-static-audit-recheck.json"
   },
-  "created_local": "2026-10-31",
+  "created_local": "2026-10-31 15:20 SGT",
   "disposition": "LINUX_CLOSURE_OPEN; RAW_100_OPEN",
   "limitations": [
     "Current frontend VCS run is a 13-test directed subset, not full regression or full GT Parent bit-true verification.",
@@ -1146,10 +1188,50 @@
       "all_pass": true,
       "count": 13,
       "test_manifest_sha256": "e579cc310fd0425c024dd486d2ef73a8b59dc72d84bd9df00405aa2b2055d941"
+    },
+    "raw_miss_ledger": {
+      "records": 21732,
+      "grouped_tasks": 470,
+      "proven_unreachable_records_retained_in_raw": 353,
+      "formal_proven_unreachable_records": 9,
+      "static_product_elaboration_records": 344,
+      "open_records": 21379,
+      "open_tasks": 375,
+      "dispositioned_tasks": 95,
+      "raw_coverage_or_denominators_changed": false
+    },
+    "static_product_elaboration": {
+      "review_id": "EF2_PAIR_HELPER_DISABLED_IN_PRODUCT",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "status": "PROVEN_UNREACHABLE; retained in Raw",
+      "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+      "semantic_bins": 344,
+      "metric_bins": {
+        "branch": 84,
+        "condition": 108,
+        "line": 152
+      },
+      "source_span": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:117-191; selector Branch at line 231",
+      "compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+      "compile_source_entries_verified": 77,
+      "active_product_witness_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
+      "raw_coverage_changed": false,
+      "tautological_formal_goals_used": false
+    },
+    "coverage_gate_recheck": {
+      "status": "RAW_100_OPEN",
+      "approved_waivers": 0,
+      "active_el_exclusions": 0,
+      "adjusted_equals_raw": true,
+      "branch": "520/637",
+      "condition": "601/849",
+      "line": "3334/3796",
+      "toggle": "83575/104480",
+      "gate_report": "runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate-static-audit-recheck.json"
     }
   },
   "rootcause_manifest_bound_evidence_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",
-  "rootcause_manifest_bound_formal_review_sha256": "dfc79f8fa2693055711c42cd25cf8e612e277f8f71562fc1481af2a647ad8028",
+  "rootcause_manifest_bound_formal_review_sha256": "8ced9294106251246551ba8be9b87b3f3879ce89710d5c8d2e90ddbf42bae3d9",
   "schema_version": 1,
   "scope": "TX-only Linux coverage and Formal audit; AXI-Lite focused frontend plus a separate behavioral GT Parent report. RX, AI-DPD, Vivado physical implementation, and algorithm changes excluded.",
   "tools": {

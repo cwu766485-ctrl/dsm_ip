@@ -76,7 +76,7 @@ The first local reset-release invocation used a multi-frame vector set although 
 | FSM states / transitions | 13/13; 22/22 | PASS for the measured product hierarchy |
 | DUT assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | OPEN |
 
-The source-linked ledger has 21,732 Raw-miss records in 470 grouped tasks: 9 exact records are `PROVEN_UNREACHABLE` and remain in Raw; 21,723 records across 461 tasks remain `OPEN`. There are zero approved waivers and zero active `.el` exclusions, so Adjusted equals Raw and the fail-closed gate remains `RAW_100_OPEN`. No denominator, VDB, or DUT behavior was altered to raise a percentage.
+The source-linked ledger has 21,732 Raw-miss records in 470 grouped tasks: 353 records are `PROVEN_UNREACHABLE` and remain in Raw (9 exact Formal records plus 344 exact static product-elaboration records); 21,379 records across 375 tasks remain `OPEN`. There are zero approved waivers and zero active `.el` exclusions, so Adjusted equals Raw and the fail-closed gate remains `RAW_100_OPEN`. No denominator, VDB, or DUT behavior was altered to raise a percentage.
 
 ## Frame-tail coverage follow-up
 
@@ -95,6 +95,17 @@ in the [coverage closure index](data/thermo5-tx-coverage-closure-index.json)
 and [source-bound Formal review](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json).
 
 The 16-cycle source-gap test still reports 54 underflows for 112 expected output words. The AXI-stream source-gap contract is unspecified, so this remains OPEN. The UVM top models the product frontend parameters but does not elaborate the complete GT Parent; its separate behavioral GT Parent run lacks a payload checker. Real XPM/GT Wizard, FPGA PPA/timing, and physical QAM256 BER remain hardware signoff gates.
+
+## Current-source EF2 PAIR_LOOKAHEAD elaboration audit — 2026-10-31
+
+The current-source review now marks 344 EF2 helper/selector code bins as
+`PROVEN_UNREACHABLE` under the exact product parameter chain. This is a
+source-bound static elaboration disposition; the separate PAIR_LOOKAHEAD
+VC Formal goals were reported tautological and remain rejected. The Raw URG
+still contains all 21,732 misses with unchanged denominators. Total reviewed
+dispositions are 353, with 21,379 OPEN across 375 tasks; zero waivers and zero
+active exclusions. The tracked 77-entry compile manifest was refreshed from
+the exact 13-test VCS compile log and matches its captured source manifest.
 
 ## Integration decision
 

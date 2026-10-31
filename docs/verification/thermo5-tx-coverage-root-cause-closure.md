@@ -1,5 +1,32 @@
 # Thermo5 TX Coverage Root-Cause Closure — Step 1/2
 
+## Current-source static EF2 product-path closure — 2026-10-31
+
+The latest exact-source audit retains all **21,732** unhit Raw URG records and
+does not apply waivers or `.el` exclusions. The audit disposition ledger now
+contains **353 `PROVEN_UNREACHABLE`** records and **21,379 `OPEN`** records
+across 470 grouped tasks (95 fully dispositioned tasks, 375 open tasks). The
+353 are nine source-bound Formal bins plus 344 EF2 PAIR_LOOKAHEAD bins whose
+product elaboration is disabled by the exact parameter chain. The separate
+PAIR_LOOKAHEAD SVA run remains rejected as tautological and is not used as
+reachability evidence.
+
+The 344 static product-path records comprise 84 Branch, 108 Condition, and
+152 Line bins in the EF2 helper and its selector Branch. The product top is
+the exact VCS `thermo5_sku_uvm_tb` compile with AXI-Lite, Centered-Cubic,
+EF2 ORDER=2, STEP=5120, and DPD_MAX_TAPS=1. The four-plane parent selects
+`g_order2.u_tid` without overriding `PAIR_LOOKAHEAD`, whose RTL default is
+zero; the helper's only call sites are under its true arm. The source hashes,
+compile command, and 13/13 positive VCS replay witness are checked by the
+fail-closed disposition updater. All Raw IDs and denominators remain intact.
+
+The tracked product compile manifest had stale source hashes. It was rebuilt
+from the saved exact 13-test VCS compile log and captured parent source
+manifest; the generator reports 75 compiled local source files and all 77
+source/control entries match. Raw coverage remains Branch 520/637, Condition
+601/849, Line 3334/3796, Toggle 83575/104480; `RAW_100_OPEN` remains the
+acceptance result. No RTL or product behavior changed.
+
 ## Latest Centered-Cubic frame-tail Formal follow-up — 2026-10-31
 
 VC Formal V-2023.12-SP2 was rerun after matching both interpolator lane counts
@@ -94,7 +121,7 @@ The condition tuple `TXB-872eb98e51c3229e4c86` remains OPEN: its assertion is pr
 
 The DPD identity-only saturation harness proves 4/4 no-clamp assertions and reaches input/output Covers; its four clamp Covers are uncoverable only for the fixed unity coefficient image. The AXI-Lite product allows coefficients to be written at runtime, and the legal UVM stress test hits all clamp directions, so no product Raw bin is dispositioned from that restricted proof. The general DPD identity payload-equivalence assertion remains INCONCLUSIVE at depth 252 and OPEN.
 
-The EF2 exact-parameter PAIR_LOOKAHEAD run reports 2 assertions proven and 2 Covers uncoverable, but VC Formal marks both exact goals tautological (`SVAC-TAUT-PROPERTY` and `SVAC-TAUT-COVER`). Four product branch records therefore remain OPEN and in Raw. The nine `PROVEN_UNREACHABLE` records are source-bound. The CDC disposition is contract-scoped and does not justify unrelated FIFO/XPM paths. The AXI-Lite tuple condition assertion is not non-vacuous, so that condition remains OPEN.
+The EF2 exact-parameter PAIR_LOOKAHEAD run reports 2 assertions proven and 2 Covers uncoverable, but VC Formal marks both exact goals tautological (`SVAC-TAUT-PROPERTY` and `SVAC-TAUT-COVER`); these goals are rejected as reachability evidence. A later exact-source static parameter-chain audit separately classifies the 344 helper/selector bins as unreachable in the current product elaboration, including its four selector Branch records. The nine Formal dispositions remain source-bound. The CDC disposition is contract-scoped and does not justify unrelated FIFO/XPM paths. The AXI-Lite tuple condition assertion is not non-vacuous, so that condition remains OPEN.
 
 Mutation run seed 1 passed the baseline; both `late_gain` and EF2 `plane_swap` mutants were caught by the independent `[BITTRUE]` scoreboard. The earlier failed mutation-runner invocations are retained as failed setup attempts and not counted as mutation PASS.
 

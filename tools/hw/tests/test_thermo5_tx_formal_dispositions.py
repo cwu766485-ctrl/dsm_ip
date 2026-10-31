@@ -6,8 +6,10 @@ from pathlib import Path
 
 from tools.hw.thermo5_tx_formal_dispositions import (
     append_current_source_formal_section,
+    exact_pairlookahead_bin_ids,
     tautological_property_names,
     validate_refresh_evidence,
+    validate_pairlookahead_source_chain,
 )
 
 
@@ -42,6 +44,60 @@ Info: SIMON completed
         self.assertIn("Old SHA: 8/10 proven.", updated)
         self.assertIn("## Current-source Formal disposition update — `" + "a" * 40 + "`", updated)
         self.assertIn("New SHA: 1/22,626 proven.", updated)
+
+
+class ProductElaborationAuditTests(unittest.TestCase):
+    def test_exact_pair_bin_selector_keeps_only_helper_and_selector_branch(self):
+        rows = [
+            {"source_files": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+             "source_position": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:117",
+             "metric": "line", "semantic_bin_id": "helper_start"},
+            {"source_files": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+             "source_position": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:231",
+             "metric": "branch", "branch_target_expression": "if (PAIR_LOOKAHEAD) begin",
+             "semantic_bin_id": "selector"},
+            {"source_files": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+             "source_position": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:231",
+             "metric": "cond", "branch_target_expression": "if (PAIR_LOOKAHEAD) begin",
+             "semantic_bin_id": "not_selector_branch"},
+            {"source_files": "rtl/other.sv", "source_position": "rtl/other.sv:150",
+             "metric": "line", "semantic_bin_id": "other_source"},
+        ]
+        self.assertEqual(
+            exact_pairlookahead_bin_ids(
+                rows, "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv"
+            ),
+            {"helper_start", "selector"},
+        )
+
+    def test_exact_product_parameter_chain_is_present_and_fail_closed(self):
+        source = lambda path: (ROOT / path).read_text(encoding="utf-8")
+        ef2 = source("rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv")
+        multipa = source("rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv")
+        boundary = source("rtl/gt/gt_tx_raw64_boundary.sv")
+        bridge = source("rtl/gt/gt_tx_user_bridge.sv")
+        validate_pairlookahead_source_chain(ef2, multipa, boundary, bridge)
+        with self.assertRaisesRegex(ValueError, "overrides or obscures"):
+            validate_pairlookahead_source_chain(
+                ef2,
+                multipa.replace(".CHANNELS(CHANNELS)", ".CHANNELS(CHANNELS), .PAIR_LOOKAHEAD(1'b1)"),
+                boundary,
+                bridge,
+            )
+        with self.assertRaisesRegex(ValueError, "overrides or obscures"):
+            validate_pairlookahead_source_chain(
+                ef2,
+                multipa.replace("TIDSM_ORDER == 2", "TIDSM_ORDER == 1", 1),
+                boundary,
+                bridge,
+            )
+        with self.assertRaisesRegex(ValueError, "unreviewed declaration or call site"):
+            validate_pairlookahead_source_chain(
+                ef2 + "\n// ef2_pair_lookahead( unexpected extra call site\n",
+                multipa,
+                boundary,
+                bridge,
+            )
 
 
 class RefreshEvidenceTests(unittest.TestCase):

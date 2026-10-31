@@ -1,68 +1,16 @@
-Warning: truncated output (original token count: 26636)
-Total output lines: 1572
-
 # Execution frontier
 
-## Current execution state: TX integration review and frame-tail Formal update (2026-10-31)
+## Current execution state: EF2 PAIR_LOOKAHEAD product-path audit (2026-10-31)
 
-Draft PR #17 (`Thermo5 TX: integration review and Linux evidence audit`) is
-open against `thermo5` and unmerged. Its remote head is
-`e26d5d20e26ede307f9ce6699241dbe4ea76fa30`; local commit `19592eb` has the
-same tree. Draft PR #18 is open against PR #17's branch, with remote head
-`f50b9a02cd77e399ac0cdff3ff02f055e06b15fa` and tree
-`bf1612fdc6e2ac0cd7a9dff32c1d2e9175914a40`. It contains only the current
-frame-tail Formal/coverage-audit update. PR #18 is unmerged. PR #17 descends from exact PR #16 head
-`eddddd650a2853a05deab0bdb7a2272fdb647d18`, tree
-`d4d5ee1c04299c8273f1b702d21160c5b1c01aae`, and is 44 commits ahead and zero
-behind `thermo5` (`eb1081bc7607ba2e9825d9e9fb32bcfa1c6a270e`). PRs #2–#16 are
-all open and unmerged. The current local follow-up is intended for a separate
-draft PR stacked on PR #17. Do not merge PRs or delete refs.
+PR #17 remains open and unmerged at `e26d5d20e26ede307f9ce6699241dbe4ea76fa30`. PR #18 remains open and unmerged on `codex/thermo5-frame-tail-closure-r2`, now at `b93bde394373c1a1ba7dec54c56b99373e7d8760` (tree `672b628b237ab15a78fe8279006d1769c90d038f`). The active local branch is `codex/thermo5-pair-lookahead-product-audit`, based on PR #18; prepare it as a separate draft PR after checks. Do not merge PRs or delete refs.
 
-The cumulative PR #16 comparison has 125 files and only one synthesizable RTL
-path, the reset-release `TREADY` fix in `rtl/axis/dsm_axis14_to_core8_cdc.sv`.
-It changes no TX algorithm/default and touches no RX or AI-DPD. No generated
-logs/VDBs or restricted files are tracked. The branch/evidence review is
-documented in `docs/verification/thermo5-tx-branch-integration-review.md` and
-`docs/verification/data/thermo5-tx-integration-review.json`.
+The tracked VCS product compile manifest was stale. It has been regenerated from the saved 13-test VCS compile log and captured parent manifest; 75 parsed HDL/UVM files and all 77 source/control entries match the exact run. Current product configuration remains Centered-Cubic, EF2 ORDER=2/STEP=5120, DPD_MAX_TAPS=1, AXI-Lite, and Generic FIFO. No RTL, product algorithm, RX, or AI-DPD changed; no full regression was repeated.
 
-The PR #16 evidence index checks 39/39 artifact hashes/sizes and the exact
-product VCS manifest checks 77/77 compile-input hashes. Python reference tests
-pass 44/44; coverage/formal-disposition audit tests pass 13/13. A fresh VCS
-V-2023.12-SP1 compile on this worktree and the correctly configured reset-
-release test pass; the current-source intentional illegal-frame test passes
-its expected assertion and recovery checker separately. PR #16's exact-source
-13-test product replay and Raw URG are reused, not merged with candidate or
-negative VDBs.
+The unchanged Raw code misses are Branch 117, Condition 248, Line 462, and Toggle 20,905. The 21,732-row ledger now has 353 `PROVEN_UNREACHABLE` records (9 exact Formal + 344 exact static product-parameter-chain bins) and 21,379 `OPEN` records across 375 of 470 tasks. The 344 comprise 84 Branch, 108 Condition, and 152 Line records in the EF2 PAIR_LOOKAHEAD helper/selector. The exact PAIR_LOOKAHEAD SVA goals remain rejected as tautological; this separate source-bound static disposition does not cite those goals. Raw IDs and denominators are unchanged, waivers/exclusions remain zero, and the gate is `RAW_100_OPEN`.
 
-The frozen product Raw status is unchanged: legal functional 210/210; Branch
-520/637, Condition 601/849, Line 3334/3796, Toggle 83575/104480; FSM 13/13
-states and 22/22 transitions. The source-linked ledger has 21732 Raw misses in
-470 tasks; nine exact bins are Formal-proven unreachable and retained in Raw;
-21723 records across 461 tasks remain OPEN. Waivers/exclusions are zero and
-the gate remains `RAW_100_OPEN`.
+Checks for this step: exact product/source-chain validator PASS; focused disposition unit tests 6/6 PASS; Python byte-compile PASS; the fail-closed updater reports 9 Formal and 344 static bins, Raw unchanged, 0 exclusions. Existing 13/13 product VCS evidence and current URG refresh were reused, not rerun. PR #17/#18 and final TX signoff remain open.
 
-A current-source frame-tail VC Formal run passed at tool V-2023.12-SP2. The
-harness now matches the product stage geometry (W16; stage 1 LANES8/append=1,
-stage 2 LANES16/append=0) and the stage-2 Cover includes the full branch
-prefix. Six assertions passed, five Covers were reached, and four exact
-tail-only Covers were uncoverable; source-stability was non-vacuous, setup
-violations=0, black boxes=0, and no tautology warning was reported. Four
-Centered-Cubic tail Branch rows moved from OPEN to PROVEN_UNREACHABLE in the
-audit ledger. Raw URG bins and denominators are unchanged. The separate legal
-frame-replacement test passed its checker but added no code coverage, so its
-VDB is not merged. Exact hashes and the rerun command are in the current
-Formal review JSON and coverage closure index.
-
-DPD identity Formal, the source-gap contract, all remaining code coverage,
-real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER remain open. Do not claim
-final signoff.
-
-**Next:** continue the highest-value reachable Branch/Condition root cause on
-a new branch stacked on PR #18. First review exact product elaboration for
-fixed-parameter candidate paths; use legal stimulus plus an independent
-checker and exact DUT event for reachable paths. Keep Raw coverage unchanged
-unless URG is rerun on the exact product VDB, and stop seed sweeps when a round
-adds no valid hit. Do not merge PR #17 or #18.
+**Next:** resolve the highest-value reachable Branch/Condition task with legal stimulus, an independent checker, and exact DUT event capture. If a round yields no new Raw hits, stop seed expansion and revisit reachability or monitor/bin mapping. Continue DPD identity Formal and the source-gap contract separately; keep all Raw bins and denominators intact.
 
 ## Previous execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 

@@ -43,7 +43,7 @@ Legally applicable positive bins are 210/210. The four Raw zero-hit report rows 
 | line | 3,334/3,796 (87.8293%) | 462 | 114 |
 | toggle | 83,575/104,480 (79.9914%) | 20,905 | 201 |
 
-The task CSV has 470 source/instance/location-rooted tasks. The compressed bin ledger preserves all 21,732 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. Every row is OPEN at this audit stage.
+The task CSV has 470 source/instance/location-rooted tasks. The compressed bin ledger preserves all 21,732 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. The current-source disposition pass marks 353 rows `PROVEN_UNREACHABLE` (9 exact Formal bins and 344 bins from the audited static product parameter chain); the other 21,379 rows remain `OPEN`. Every row remains in Raw.
 
 | Metric / root-cause hypothesis | Raw gap rows |
 |---|---:|
@@ -65,7 +65,7 @@ The task CSV has 470 source/instance/location-rooted tasks. The compressed bin l
 | toggle / FIXED_PRODUCT_CONFIGURATION | 1,889 |
 | toggle / IDENTITY_DPD_ARITHMETIC | 3,792 |
 
-This source-linked audit uses the fresh licensed VCS/URG report recorded in `runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-refresh-evidence.json`. The Raw report was regenerated from two fresh targeted product tests plus retained exact-source VDBs; no full regression was rerun. No Raw/Adjusted denominator changed.
+This source-linked audit uses the fresh licensed VCS/URG report recorded in `runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-refresh-evidence.json`. The Raw report was regenerated from two fresh targeted product tests plus retained exact-source VDBs; no full regression was rerun. No Raw/Adjusted denominator changed. The tracked product compile manifest was rebuilt from the exact 13-test VCS compile transcript and its captured parent source manifest; all 77 source/control entries match that run.
 
 ## Evidence inputs
 
@@ -77,7 +77,7 @@ This source-linked audit uses the fresh licensed VCS/URG report recorded in `run
 
 ## Current-source Formal disposition update — `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`
 
-The source-bound review closed 9 exact bins as PROVEN_UNREACHABLE; 21723 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+The source-bound review closed 353 exact bins as PROVEN_UNREACHABLE; 21379 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
 | Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
@@ -91,12 +91,14 @@ The source-bound review closed 9 exact bins as PROVEN_UNREACHABLE; 21723 remain 
 | `TXB-c79cdf2b9f5b4620688e` | `thermo5_frame_tail_harness.a_plain_tail_pending_never_set` | `thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-ef2fb170941b345476dc` | `thermo5_frame_tail_harness.a_plain_tail_disabled` | `thermo5_frame_tail_harness.c_plain_tail_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 
+The following candidate-only source paths are statically unreachable in the exact product elaboration. This is not based on the rejected tautological parameter SVA goals and does not alter Raw URG:
+
+| Review ID | Exact bin count | Source span / guard | Method |
+|---|---:|---|---|
+| `EF2_PAIR_HELPER_DISABLED_IN_PRODUCT` | 344 | `rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:117-191` and `PAIR_LOOKAHEAD` guard | exact static product parameter chain |
+
 Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
 
 | Semantic Bin ID | Status | Reason |
 |---|---|---|
-| `TXB-04e9d574fb6ea4ead927` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |
 | `TXB-054d97a87a8d74c36c8b` | OPEN | MAX_TAPS=1 assertion/Cover is tautological at compile time; no unreachable disposition accepted. |
-| `TXB-1d51526aa2408931cc40` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |
-| `TXB-58579fd96d9947af37f8` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |
-| `TXB-c318c70882fc01f2dc58` | OPEN | PAIR_LOOKAHEAD parameter assertions/covers in the exact-product VC Formal run were marked SVAC-TAUT-PROPERTY/SVAC-TAUT-COVER. Their proven/uncoverable labels are tool tautology outcomes, not a non-vacuous reachability proof; retain the Raw branch bin pending a non-tautological proof or exact elaboration review. |

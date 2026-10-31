@@ -18,13 +18,20 @@
 | DUT Assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | Partial |
 | Waivers / `.el` exclusions | 0 / 0; Adjusted equals Raw | PASS, no adjustment applied |
 | Fail-closed code gate | `RAW_100_OPEN` | OPEN; no 100% claim |
-| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 9 `PROVEN_UNREACHABLE` retained in Raw; 21,723 OPEN across 461 tasks | OPEN |
+| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 353 `PROVEN_UNREACHABLE` retained in Raw (9 Formal + 344 exact static product elaboration); 21,379 OPEN across 375 tasks | OPEN |
 | VCS/UVM | Fresh exact-profile compile and 13/13 focused positive tests PASS | Focused frontend scope only |
-| Formal | Nine exact source-bound records proven unreachable and retained in Raw; DPD payload equivalence INCONCLUSIVE at depth 252; PAIR_LOOKAHEAD property rejected as tautological | Partial; all other bins remain OPEN |
+| Formal / reachability audit | Nine exact Formal records proven unreachable and retained in Raw; 344 EF2 PAIR_LOOKAHEAD bins separately proven disabled by exact product parameter elaboration; DPD payload equivalence INCONCLUSIVE at depth 252; tautological PAIR_LOOKAHEAD SVA rejected | Partial; remaining bins stay OPEN |
 | Mutation | Baseline PASS; `late_gain` and `plane_swap` mutants detected by `[BITTRUE]` scoreboard | PASS for these two mutations only |
 | TX source-gap test | 16-cycle gap has 54 underflows; checker fails although 112 output words are present | OPEN service-rate contract |
 | Real XPM / GT Wizard | Not run in this Linux flow | OPEN |
 | FPGA PPA / physical QAM256 BER | Not run | OPEN |
+
+The 344-bin EF2 disposition is a source-bound static elaboration result, not a
+claim that the rejected PAIR_LOOKAHEAD SVA goals passed. It covers 84 Branch,
+108 Condition, and 152 Line records; all remain present in Raw. The tracked
+product compile manifest was rebuilt from the saved exact 13-test VCS compile
+log and parent source manifest (75 parsed HDL/UVM files; 77/77 source/control
+entries match). No product RTL or Raw VDB changed in this audit step.
 
 The nine source-bound Formal records are the two aligned-frame CDC branches, three AXI-Lite default Branch/Line bins, and four Centered-Cubic tail-only branches at `u_interp_1`/`u_interp_2`. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN. The frame-tail proof uses W=16, stage 1 LANES=8/append=1, and stage 2 LANES=16/append=0; it proves local module reachability under product parameters, not full two-stage composition. Formal passed 6/6 assertions and 5/9 Covers, with the exact four tail-only Covers uncoverable, one non-vacuous source-stability assumption, zero setup violations, and zero black boxes.
 

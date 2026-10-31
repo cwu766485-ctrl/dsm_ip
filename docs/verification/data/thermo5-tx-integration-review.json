@@ -40,7 +40,10 @@
     "artifact_hashes_and_sizes_verified": 39,
     "vcs_source_manifest": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/product-source-manifest.json",
     "vcs_source_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
-    "compile_input_hashes_verified": 77
+    "compile_input_hashes_verified": 77,
+    "tracked_product_compile_manifest": "docs/verification/data/thermo5-tx-product-compile-manifest.json",
+    "tracked_product_compile_manifest_sha256": "5bcc01108ef09cd350321a17d0a8b3f5fde58164ffb0d31d49bb07f93e7445b8",
+    "current_compile_source_entries_verified": 77
   },
   "checks": {
     "python_reference": {
@@ -147,9 +150,13 @@
     "raw_miss_ledger": {
       "records": 21732,
       "grouped_tasks": 470,
-      "proven_unreachable_records_retained_in_raw": 9,
-      "open_records": 21723,
-      "open_tasks": 461
+      "proven_unreachable_records_retained_in_raw": 353,
+      "open_records": 21379,
+      "open_tasks": 375,
+      "formal_proven_unreachable_records": 9,
+      "static_product_elaboration_records": 344,
+      "dispositioned_tasks": 95,
+      "raw_bins_or_denominators_changed": false
     },
     "approved_waivers": 0,
     "active_el_exclusions": 0,
@@ -208,7 +215,27 @@
       "PROVEN_UNREACHABLE": 9
     },
     "approved_waivers": 0,
-    "active_el_exclusions": 0
+    "active_el_exclusions": 0,
+    "pair_lookahead_product_static_audit": {
+      "review_id": "EF2_PAIR_HELPER_DISABLED_IN_PRODUCT",
+      "method": "EXACT_PRODUCT_STATIC_PARAMETER_CHAIN",
+      "status": "PROVEN_UNREACHABLE; retained in Raw",
+      "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+      "semantic_bins": 344,
+      "metric_bins": {
+        "branch": 84,
+        "condition": 108,
+        "line": 152
+      },
+      "source_line_range": [
+        117,
+        191
+      ],
+      "selector_branch_line": 231,
+      "raw_coverage_changed": false,
+      "rejected_tautological_sva_used_as_evidence": false,
+      "review_json": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json"
+    }
   },
   "mutation": {
     "baseline": "PASS",
