@@ -61,7 +61,7 @@
   "evidence": {
     "branch_consolidation_audit": {
       "path": "docs/verification/thermo5-tx-branch-consolidation-audit.md",
-      "sha256": "4b0994b4d7e6a810fec8f81d580c5ced289e18233722e8c0aed24380be65683d"
+      "sha256": "7a7a8ea1f3c655a752879fd71e0c25c7467baca25d768978b12b7191b1a01c13"
     },
     "code_audit_manifest": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-code-audit-manifest.json",
@@ -84,6 +84,14 @@
     "current_closure_report": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md",
       "sha256": "0505f8596adc44d393a018381ad844e6ad80c0194e157b2eaf4313d68ba6eb29"
+    },
+    "current_execution_frontier": {
+      "path": "docs/exec-plans/active/execution-frontier.md",
+      "sha256": "f3539aee57f809d01610693543e3db98c9820dd5e3f76753abc2a3f42ec8600b"
+    },
+    "current_update_log": {
+      "path": "docs/UPDATE_LOG.md",
+      "sha256": "81445b8b38a52c7389abe301c6758c9e6804defea7dee35e84f1336da4e91278"
     },
     "expected_negative_evidence": {
       "path": "docs/verification/data/thermo5-tx-expected-negative-coverage-evidence.json",
@@ -163,7 +171,20 @@
     "static_fixed_parameter_branch_bins": 17,
     "static_pair_lookahead_bins": 344
   },
-  "generated_at": "2026-10-31T17:05:00+08:00",
+  "generated_at": "2026-10-31T17:13:00+08:00",
+  "integration_pr": {
+    "base": "thermo5",
+    "head_branch": "codex/thermo5-tx-integration-final",
+    "initial_github_commit": "ad6a4016baea9f0abdaa5736067cd1aed007b6d5",
+    "initial_tree_sha": "2960653d7caab56de4f15bbcf3adf663d2930e9d",
+    "matching_local_commit": "66676223e098b7eef258a681ea3e53fa2710f351",
+    "merge_performed": false,
+    "number": 23,
+    "open_prs_after_publication": 22,
+    "remote_branches_after_publication": 27,
+    "state": "OPEN_DRAFT_MERGEABLE_UNMERGED",
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/23"
+  },
   "latest_pr22_head": "01d331295b6d8dfc1161cbd8526e7d237c82200d",
   "legal_assertions": {
     "SUCCESS": 13,

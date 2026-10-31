@@ -5263,3 +5263,23 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   physical QAM256 BER remain unclosed. The independent Integration PR is still
   to be published from the current PR #22 tree; no PR was merged or branch
   deleted.
+
+## 2026-10-31 17:13 SGT - Publish the TX Linux closure Integration Review
+
+- Published the reviewed 27-file Linux closure package as Draft PR #23 targeting
+  `thermo5`, based on the exact PR #22 tree. GitHub reports the PR open, draft,
+  mergeable, and unmerged. No PR was merged and no branch was deleted.
+- Local reviewed commit `66676223e098b7eef258a681ea3e53fa2710f351` and initial
+  GitHub publication commit `ad6a4016baea9f0abdaa5736067cd1aed007b6d5` have
+  identical tree `2960653d7caab56de4f15bbcf3adf663d2930e9d`. The cumulative PR
+  diff is 145 files (+68,521 / -1,323 lines).
+- GitHub branch/PR audit after publication found 27 branches and 22 open PRs
+  (#2-#23). The earlier PR chain remains intact.
+- Updated the branch consolidation audit, execution frontier, final evidence,
+  and closure index with the PR URL, refs, and current review status.
+- Checks remain: hardware utility tests 19/19 PASS; reference-model tests
+  44/44 PASS; Python byte-compile PASS; final coverage gate `RAW_100_OPEN`;
+  evidence index SHA/size audit PASS. Current Product Raw metrics and OPEN bins
+  are unchanged from the frozen Linux package.
+- Remaining: 21,320 Raw code bins OPEN; physical/vendor XPM/GT Wizard, FPGA
+  PPA, and QAM256 BER remain outside this Linux signoff.

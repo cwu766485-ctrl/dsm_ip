@@ -172,8 +172,8 @@
     },
     "current_execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "26d810ec7036bc5ae3bbf022b30815daaeeb82879b5003bf36a279b0a87804bc",
-      "size_bytes": 24513
+      "sha256": "f3539aee57f809d01610693543e3db98c9820dd5e3f76753abc2a3f42ec8600b",
+      "size_bytes": 24575
     },
     "current_final_signoff_snapshot": {
       "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
@@ -187,8 +187,8 @@
     },
     "current_update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "a5f14ee27f3d0d059cc9330db5398f0be33949e18804f8572f9924c0e4bf2b59",
-      "size_bytes": 381740
+      "sha256": "81445b8b38a52c7389abe301c6758c9e6804defea7dee35e84f1336da4e91278",
+      "size_bytes": 383012
     },
     "dpd_identity_formal_summary": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/dpd_identity_formal_retry/formal_summary.json",
@@ -237,8 +237,8 @@
     },
     "execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "26d810ec7036bc5ae3bbf022b30815daaeeb82879b5003bf36a279b0a87804bc",
-      "size_bytes": 24513
+      "sha256": "f3539aee57f809d01610693543e3db98c9820dd5e3f76753abc2a3f42ec8600b",
+      "size_bytes": 24575
     },
     "formal_readme": {
       "path": "dv/uvm/formal/README.md",
@@ -357,8 +357,8 @@
     },
     "update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "a5f14ee27f3d0d059cc9330db5398f0be33949e18804f8572f9924c0e4bf2b59",
-      "size_bytes": 381740
+      "sha256": "81445b8b38a52c7389abe301c6758c9e6804defea7dee35e84f1336da4e91278",
+      "size_bytes": 383012
     },
     "vcs_replay_results": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/focused_replay_results.json",
@@ -547,8 +547,8 @@
     },
     "branch_consolidation_audit_document": {
       "path": "docs/verification/thermo5-tx-branch-consolidation-audit.md",
-      "sha256": "4b0994b4d7e6a810fec8f81d580c5ced289e18233722e8c0aed24380be65683d",
-      "size_bytes": 4984
+      "sha256": "7a7a8ea1f3c655a752879fd71e0c25c7467baca25d768978b12b7191b1a01c13",
+      "size_bytes": 5378
     },
     "centered_pop_push_coverage_gate": {
       "path": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/coverage-gate.json",
@@ -787,8 +787,8 @@
     },
     "current_final_coverage_evidence": {
       "path": "docs/verification/data/thermo5-tx-final-coverage-evidence.json",
-      "sha256": "3dbddebf3eaccbb6d130f24b27a836020e98c61599688ec829e5ec2fa3bfb161",
-      "size_bytes": 10745
+      "sha256": "ad48140fde3f7da5a42c28aaacd9b193852fb2311517201071c7d042c9d06c0f",
+      "size_bytes": 11647
     },
     "current_formal_review": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
@@ -954,7 +954,7 @@
       "/home/ray/workspace/dsm_ip/dv/uvm/formal/run_thermo5_source_frame_contract_fpv.tcl"
     ]
   },
-  "created_local": "2026-10-31 17:05 +08",
+  "created_local": "2026-10-31 17:13 +08",
   "disposition": "LINUX_CLOSURE_OPEN; RAW_100_OPEN",
   "limitations": [
     "Current frontend VCS run is a 13-test directed subset, not full regression or full GT Parent bit-true verification.",
@@ -2267,7 +2267,7 @@
       "adjusted_equals_raw": true,
       "evidence_manifest": {
         "path": "docs/verification/data/thermo5-tx-final-coverage-evidence.json",
-        "sha256": "3dbddebf3eaccbb6d130f24b27a836020e98c61599688ec829e5ec2fa3bfb161"
+        "sha256": "ad48140fde3f7da5a42c28aaacd9b193852fb2311517201071c7d042c9d06c0f"
       },
       "expected_negative": {
         "checker": "PASS",
@@ -2333,7 +2333,12 @@
       "head_branch": "codex/thermo5-tx-integration-final",
       "merged": false,
       "parent_pr22_head": "01d331295b6d8dfc1161cbd8526e7d237c82200d",
-      "status": "PENDING_PUBLICATION"
+      "status": "OPEN_DRAFT_MERGEABLE_UNMERGED",
+      "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/23",
+      "initial_github_head": "ad6a4016baea9f0abdaa5736067cd1aed007b6d5",
+      "initial_tree_sha": "2960653d7caab56de4f15bbcf3adf663d2930e9d",
+      "merge_performed": false,
+      "branch_delete_performed": false
     },
     "linux_checks": {
       "coverage_gate": {
@@ -2382,7 +2387,7 @@
       "target_cover": "INCONCLUSIVE at depth 342"
     }
   },
-  "rootcause_manifest_bound_evidence_sha256": "3dbddebf3eaccbb6d130f24b27a836020e98c61599688ec829e5ec2fa3bfb161",
+  "rootcause_manifest_bound_evidence_sha256": "ad48140fde3f7da5a42c28aaacd9b193852fb2311517201071c7d042c9d06c0f",
   "rootcause_manifest_bound_formal_review_sha256": "3e41d5999a401094ea40363cb688c7afe5ec9ba1f2b21bb882f9ee0a8b21405c",
   "schema_version": 1,
   "scope": "TX-only Linux coverage and Formal audit; AXI-Lite focused frontend plus a separate behavioral GT Parent report. RX, AI-DPD, Vivado physical implementation, and algorithm changes excluded.",

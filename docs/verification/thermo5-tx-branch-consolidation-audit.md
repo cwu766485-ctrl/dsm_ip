@@ -2,7 +2,7 @@
 
 ## Repository and PR state
 
-A fresh `git fetch origin --prune` and live GitHub branch/PR query found 26 remote branches and 21 open, unmerged PRs (#2–#22). The five non-PR branches are `main`, `thermo5`, `dsm`, `thermo3`, and `dv-de-portfolio-20261006`. No remote branch or PR was deleted or merged.
+A fresh GitHub branch/PR query found 27 remote branches and 22 open, unmerged PRs (#2–#23). The five non-PR branches are `main`, `thermo5`, `dsm`, `thermo3`, and `dv-de-portfolio-20261006`. No remote branch or PR was deleted or merged.
 
 The stacked TX chain is:
 
@@ -13,6 +13,7 @@ thermo5
 
 thermo5 <- #17 (integration review of the cumulative #16 state)
              -> #18 -> #19 -> #20 -> #21 -> #22
+thermo5 <- #23 (current cumulative Integration Review through #22 + closure refresh)
 ```
 
 PR #17 is open but stale as an integration review because it stops at PR #16. PR #18–#22 add later frame-tail, pair-lookahead, CDC, and fixed-parameter audits. PR #22 is the current cumulative head:
@@ -22,11 +23,11 @@ PR #17 is open but stale as an integration review because it stops at PR #16. PR
 - Ahead/behind `thermo5`: 55 / 0 commits.
 - GitHub state: open, draft, unmerged.
 
-The current follow-up is based on PR #22's exact tree and retains the entire reviewable history. A new draft Integration PR targets `thermo5`; it is not an instruction to merge PRs #2–#22 individually. No PR will be merged without explicit user approval.
+PR #23 is the current Integration Review, based on PR #22's exact tree and preserving the entire reviewable history. It is open, draft, mergeable, and targets `thermo5`; it is not an instruction to merge PRs #2–#22 individually. The initial GitHub commit is `ad6a4016baea9f0abdaa5736067cd1aed007b6d5`, with tree `2960653d7caab56de4f15bbcf3adf663d2930e9d`, identical to the locally reviewed commit `66676223e098b7eef258a681ea3e53fa2710f351` tree. No PR will be merged without explicit user approval.
 
 ## Cumulative diff review
 
-PR #22's cumulative diff against `thermo5` contains 134 files (+66,278 / −1,326 lines). The only RTL path changed is `rtl/axis/dsm_axis14_to_core8_cdc.sv`. That change gates source `TREADY` with the synchronized source reset state and routes the FIFO's raw write-ready signal through an internal wire. The purpose is to avoid acknowledging an AXI-stream beat that the FIFO discards during source-domain reset release. The change affects the shared CDC used by both FIFO branches and is covered by the exact-source Product replay and reset-release test evidence.
+PR #22's cumulative diff against `thermo5` contains 134 files (+66,278 / −1,326 lines). The current PR #23 diff contains 145 files (+68,521 / −1,323 lines), including this Linux closure refresh. The only RTL path changed is `rtl/axis/dsm_axis14_to_core8_cdc.sv`. That change gates source `TREADY` with the synchronized source reset state and routes the FIFO's raw write-ready signal through an internal wire. The purpose is to avoid acknowledging an AXI-stream beat that the FIFO discards during source-domain reset release. The change affects the shared CDC used by both FIFO branches and is covered by the exact-source Product replay and reset-release test evidence.
 
 The cumulative path audit found no RX or AI-DPD paths. No tracked `.vdb`, simulator log, waveform, or tool-cache artifact is present in the PR diff. Verification reports, source manifests, compact benchmark data, and harnesses are tracked as project evidence; generated VCS/URG/VC Formal work directories remain in ignored local `runs/`.
 
@@ -52,7 +53,7 @@ The integration branch does not claim final coverage signoff or 100% Raw/Adjuste
 |---|---|
 | Keep `main` and `thermo5` | Done |
 | Keep `dsm`, `thermo3`, and `dv-de-portfolio-20261006` for independent review/archive | Pending review; branches preserved |
-| Review the cumulative Integration PR and rerun/accept the exact-source Linux package on its frozen SHA | Pending |
+| Review Draft PR #23 and accept the exact-source Linux package on its frozen Product SHA | Pending review |
 | Obtain explicit approval before any merge into `thermo5` | Required; no merge performed |
 | Preserve relevant SHAs, evidence manifests, and tags before deleting any superseded refs | Pending; no branch deletion performed |
 

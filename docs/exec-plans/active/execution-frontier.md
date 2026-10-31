@@ -2,7 +2,7 @@
 
 ## Current execution state: TX code-union coverage and branch consolidation (2026-10-31)
 
-PRs #2–#22 are open and unmerged. PR #17 is the earlier integration review through #16; PR #18–#22 form the later stacked audit chain. A fresh fetch found 26 remote branches and 21 open PRs. PR #22 head is `01d331295b6d8dfc1161cbd8526e7d237c82200d`, 55 commits ahead / 0 behind `thermo5`. No refs were deleted. A new independent draft Integration PR targeting `thermo5` is being prepared from the PR #22 tree; do not merge without explicit approval.
+PRs #2–#23 are open and unmerged. PR #17 is the earlier integration review through #16; PR #18–#22 form the stacked audit chain; PR #23 is the current cumulative Integration Review. GitHub reports 27 remote branches and 22 open PRs. PR #22 head is `01d331295b6d8dfc1161cbd8526e7d237c82200d`; PR #23 targets `thermo5`, is draft and mergeable, and has initial head `ad6a4016baea9f0abdaa5736067cd1aed007b6d5` (tree `2960653d7caab56de4f15bbcf3adf663d2930e9d`). No refs were deleted or merged.
 
 Product RTL SHA is `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`: Centered-Cubic x2+x2; EF2 ORDER=2/STEP=5120/20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 Identity DPD; AXI-Lite frontend; Generic FIFO. The only RTL delta across the cumulative PR #22 diff is the CDC reset-ready gate in `rtl/axis/dsm_axis14_to_core8_cdc.sv`. RX, AI-DPD, Product algorithm, and Vivado implementation are out of scope.
 
@@ -18,7 +18,7 @@ The exact current-source positive 13-test VCS/UVM evidence and 11 legal gap chec
 
 **Linux checks completed:** Python hardware-utility tests 19/19 PASS, Python reference-model tests 44/44 PASS, changed Python sources byte-compile, and the final fail-closed coverage gate reproduces `RAW_100_OPEN`. Existing exact-source VCS/UVM results were reused; no full regression was rerun because RTL/compile inputs were unchanged. Current evidence is indexed with SHA-256 and local run paths.
 
-**Next:** commit and publish the independent draft Integration PR to `thermo5`, based on PR #22. Do not merge it. For further code closure, target the three remaining OPEN Branch task groups (AXI-Lite outstanding saturation/underflow and DPD mailbox stability) with legal public stimulus and an independent checker. Stop any sweep without a new exact Raw hit. Keep DPD Identity, 16-cycle source-gap, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER OPEN.
+**Next:** review Draft PR #23 and the 145-file cumulative diff before any merge decision. Do not merge it or delete historical branches. For further code closure, target the three remaining OPEN Branch task groups (AXI-Lite outstanding saturation/underflow and DPD mailbox stability) with legal public stimulus and an independent checker. Stop any sweep without a new exact Raw hit. Keep DPD Identity, 16-cycle source-gap, real XPM/GT Wizard, FPGA PPA, and physical QAM256 BER OPEN.
 
 ## Previous execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 
