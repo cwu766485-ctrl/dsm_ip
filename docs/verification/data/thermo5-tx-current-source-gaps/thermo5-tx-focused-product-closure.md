@@ -1,106 +1,56 @@
-# Thermo5 TX Coverage Root-Cause Closure — Step 1/2
+# Thermo5 TX Coverage Closure — Current Linux Snapshot
 
-- Raw VCS/URG product source SHA: 19d295360aa6438f4af20e7a6ab44bfebf2fc1ea; the Raw report and source ledger are bound to this source manifest.
-- Current-tree source manifest mismatches: 0 (none). Only the three hash-bound diagnostic testbench files are accepted as separate read-only instrumentation; their VDB is not merged into baseline Raw. DUT RTL and the coverage model are unchanged.
-- Raw gap ledger: 21,732 rows; SHA-256 4211ad741bd3be0aecc5b9a07d91c3f704304cbc23514a42eeae3d9f14943c78.
-- Expression-aware semantic IDs: 21,732; old ID collisions: 17 groups, 17 extra rows.
-- Product: Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, 20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite wrapper and Generic FIFO.
-- All code gaps start OPEN. Root-cause labels are review hypotheses, not approved exclusions.
-- Raw equals Adjusted; approved waivers 0; exclusions 0.
+**Status: `LINUX_CLOSURE_OPEN; RAW_100_OPEN`.** This report is bound to Product RTL SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`. Product configuration: Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, STATE_BITS=20; 32 chronological lanes; `DPD_MAX_TAPS=1` identity DPD; AXI-Lite product frontend; Generic FIFO for Linux. No algorithm, RX, or AI-DPD RTL was changed.
 
-## Functional Group Report audit
+The raw code report is the union of 13 legal Product VDBs, 11 legal source-gap VDBs, and one independently checked expected-negative malformed-frame VDB. Legal Functional and Assertion Coverage use the positive-only report. The source-bound audit has zero current product-source manifest mismatches. Raw URG/VDB denominators are unchanged; approved waivers=0 and active `.el` exclusions=0.
 
-The provided product Group Report contains 210/214 denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.
+## Functional coverage
 
-| Group | Raw bin hits / denominator | Uncovered |
-|---|---:|---:|
-| core_cg | 14/16 | 2 |
-| ef2_cg | 68/68 | 0 |
-| plane_atomic_cg | 16/16 | 0 |
-| read_cg | 22/22 | 0 |
-| reset_cg | 4/4 | 0 |
-| source_cg | 38/40 | 2 |
-| stop_restart_cg | 12/12 | 0 |
-| write_cg | 36/36 | 0 |
+| Scope | Covered / total | Status |
+|---|---:|---|
+| Legal applicable positive Product bins | 210/210 | PASS |
+| Raw scoreable union records | 214/214 | Includes 4 negative-only illegal semantics; not legal positive bins |
+| Existing URG-model Illegal/Excluded rows | 12 | Reported separately; no new exclusion directive |
 
-The complete bin CSV has 226 rows: 214 scoreable Raw records and 12 bins already marked Illegal/Excluded by the URG model. These model statuses are listed transparently; no URG exclusion directive or waiver was added. See `thermo5-tx-functional-bin-detail.csv` for every group, coverpoint/cross, bin, count, report view, and source-page SHA.
+The 214 scoreable records include report-type and monitor-instance views. The four negative-only records are two semantic bins duplicated across those views (`bad_frame`, 49 hits, and `malformed_early`, 1 hit). The full 226-row detail is in `thermo5-tx-focused-product-functional-bin-detail.csv`.
 
-| Exact URG scope | Raw product hits | Separate negative hits | Classification |
-|---|---:|---:|---|
-| thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg.cp_packet_quanta.malformed_early | 0 | 1 | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |
-| thermo5_sku_uvm_tb.me.obj.source_cg.cp_packet_quanta.malformed_early | 0 | 1 | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |
-| thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg.cp_illegal.bad_frame | 0 | 49 | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |
-| thermo5_sku_uvm_tb.me.obj.core_cg.cp_illegal.bad_frame | 0 | 49 | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |
+## Raw code coverage and root-cause ledger
 
-Legally applicable positive bins are 210/210. The four Raw zero-hit report rows remain visible in the denominator.
-
-## Code coverage and root-cause task inventory
-
-| Metric | Raw covered / total | Raw missing | Closure tasks |
+| Metric | Raw covered / total | Raw missing | Percent |
 |---|---:|---:|---:|
-| branch | 520/637 (81.6327%) | 117 | 48 |
-| condition | 601/849 (70.7892%) | 248 | 107 |
-| line | 3,334/3,796 (87.8293%) | 462 | 114 |
-| toggle | 83,575/104,480 (79.9914%) | 20,905 | 201 |
+| Branch | 524/637 | 113 | 82.2606% |
+| Condition | 610/849 | 239 | 71.8492% |
+| Line | 3,350/3,796 | 446 | 88.2508% |
+| Toggle (both directions) | 83,587/104,480 | 20,893 | 80.0029% |
+| FSM states | 13/13 | 0 | 100% |
+| FSM transitions | 22/22 | 0 | 100% |
 
-The task CSV has 470 source/instance/location-rooted tasks. The compressed bin ledger preserves all 21,732 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. The current-source disposition pass marks 353 rows `PROVEN_UNREACHABLE` (9 exact Formal bins and 344 bins from the audited static product parameter chain); the other 21,379 rows remain `OPEN`. Every row remains in Raw.
+The source-linked ledger has 21,691 Raw miss records grouped into 429 tasks: 371 `PROVEN_UNREACHABLE` records and 21,320 `OPEN` records. The proven records are retained in Raw and comprise 10 exact current-source Formal bins, 344 EF2 `PAIR_LOOKAHEAD` static-product-configuration bins, and 17 fixed-parameter Branch bins. No waiver or exclusion was used to reduce the denominator.
 
-| Metric / root-cause hypothesis | Raw gap rows |
-|---|---:|
-| branch / CDC_OR_RESIDUAL_STATE | 1 |
-| branch / FIXED_PRODUCT_CONFIGURATION | 21 |
-| branch / GUARDED_ADDRESS_DECODE | 2 |
-| branch / LEGAL_STIMULUS_OR_CHECKER_REVIEW | 91 |
-| branch / PRODUCT_CADENCE_ALIGNMENT | 2 |
-| cond / INTERPOLATOR_EMPTY_OR_BLOCKED | 4 |
-| cond / RESET_RELEASE_OR_STATE_HOLD | 244 |
-| line / CDC_OR_RESIDUAL_STATE | 7 |
-| line / DPD_TAP_HISTORY_CONFIGURATION | 176 |
-| line / FIXED_PRODUCT_CONFIGURATION | 244 |
-| line / LEGAL_STIMULUS_OR_CHECKER_REVIEW | 35 |
-| toggle / CDC_OR_RESIDUAL_STATE | 130 |
-| toggle / COUNTER_HIGH_BITS | 640 |
-| toggle / DATA_VALUE_OR_TOGGLE_STIMULUS | 6,262 |
-| toggle / DPD_TAP_HISTORY_CONFIGURATION | 8,192 |
-| toggle / FIXED_PRODUCT_CONFIGURATION | 1,889 |
-| toggle / IDENTITY_DPD_ARITHMETIC | 3,792 |
+| Metric | Tasks | Proven/dispositioned | Open |
+|---|---:|---:|---:|
+| Branch | 44 | 41 | 3 |
+| Condition | 98 | 27 | 71 |
+| Line | 98 | 39 | 59 |
+| Toggle | 189 | 0 | 189 |
+| **Total** | **429** | **107** | **322** |
 
-This source-linked audit uses the fresh licensed VCS/URG report recorded in `runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-refresh-evidence.json`. The Raw report was regenerated from two fresh targeted product tests plus retained exact-source VDBs; no full regression was rerun. No Raw/Adjusted denominator changed. The tracked product compile manifest was rebuilt from the exact 13-test VCS compile transcript and its captured parent source manifest; all 77 source/control entries match that run.
+The exact ledger is `thermo5-tx-focused-product-gap-ledger.csv.gz` (SHA-256 `4da683c08f8b58614de1b7e5018d39d077bf99b3af768b9a6ccbd4aaf41a8064`); task dispositions are in `thermo5-tx-focused-product-closure-tasks.csv`. Raw equals Adjusted. The gate is `RAW_100_OPEN`, not signed off.
 
-## Evidence inputs
+## Regression, assertions, Formal, and mutation
 
-- Raw Group Report: runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests
-- Separate expected-negative Group Report: runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame
-- Source-linked gap ledger: runs/thermo5_cdc_resetready_repro_20261031/gap_ledger_13tests/out/thermo5-tx-gate3-coverage-ledger.csv
-- Source manifest: runs/thermo5_cdc_resetready_repro_20261031/gap_ledger_13tests/out/axil_gap_ledger.json
-- Closure evidence JSON: docs/verification/data/thermo5-tx-cdc-resetready-evidence.json
+- VCS V-2023.12-SP1: exact-source positive Product replay 13/13 PASS. The 11-case legal source-gap sweep passed its independent four-plane checker. These unchanged VDBs were reused for the current URG union rather than rerunning the full suite.
+- Expected-negative malformed-frame regression, seed 420102: independent sticky-error/reset-recovery checker PASS with zero UVM warnings/errors/fatals. Two expected RTL assertion failures are reported separately from legal assertions.
+- Legal assertion summary: 13 successes / 15 attempted; 2 uncovered, 2 without attempts, 0 failures.
+- Mutation: baseline PASS; `late_gain` and `plane_swap` mutations detected by the bit-true scoreboard. No broader mutation claim is made.
+- VC Formal V-2023.12-SP2: the legal early-TLAST harness reached legal packet-end Cover at depth 59, but the no-early-TLAST assertion was INCONCLUSIVE at depth 312 and the target Cover INCONCLUSIVE at depth 342 (0 environment assumptions, 0 selected setup violations, 0 black boxes). It creates no disposition. DPD Identity and outstanding-word counter saturation/underflow proofs also remain INCONCLUSIVE.
+- The 16-cycle source-gap case fails its independent underflow checker and remains OPEN as a service-rate/environment contract question.
 
-## Current-source Formal disposition update — `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`
+## Current evidence and limitations
 
-The source-bound review closed 372 exact bins as PROVEN_UNREACHABLE; 21360 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+- Combined code URG report: `runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code`.
+- Coverage gate JSON: `runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative/combined_coverage-gate.json`.
+- Source-frame Formal manifest: `runs/thermo5_tx_early_tlast_legal_formal_20261031/formal_manifest.json`.
+- Machine-readable current summary: `../thermo5-tx-final-coverage-evidence.json`.
 
-| Semantic Bin ID | Assertion | Cover | Disposition |
-|---|---|---|---|
-| `TXB-0260d31bb5bee4f1a4c6` | `thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable` | `thermo5_cdc_default_branch_harness.c_exact_default_path` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-158c42868bfe37061f07` | `thermo5_cdc_frame_start_alignment_harness.a_frame_start_pop_aligned` | `thermo5_cdc_frame_start_alignment_harness.c_misaligned_frame_start_target` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-39a0a549d32bc9ef1e01` | `thermo5_frame_tail_harness.a_append_no_input_tail` | `thermo5_frame_tail_harness.c_append_tail_head_drop_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-3df5f13a8d51ee9bdea5` | `thermo5_axil_cfg_coverage_harness.a_write_case_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_write_case_default_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-603e97cceda8c0d4d0ed` | `thermo5_frame_tail_harness.a_plain_tail_fire_disabled` | `thermo5_frame_tail_harness.c_plain_tail_fire_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-65f3dfeee7bc0b854f52` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-74a3bacf0956921ac9bf` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-7ea7a7506f13f31ca4a9` | `thermo5_cdc_frame_end_threshold_harness.a_frame_end_requires_tail_drain` | `thermo5_cdc_frame_end_threshold_harness.c_short_final_word_branch_target` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-85afd49f35a994cc290c` | `thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable` | `thermo5_cdc_end_remaining_harness.c_target_false_arm` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-c79cdf2b9f5b4620688e` | `thermo5_frame_tail_harness.a_plain_tail_pending_never_set` | `thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-| `TXB-ef2fb170941b345476dc` | `thermo5_frame_tail_harness.a_plain_tail_disabled` | `thermo5_frame_tail_harness.c_plain_tail_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
-
-The following candidate-only source paths are statically unreachable in the exact product elaboration. This is not based on the rejected tautological parameter SVA goals and does not alter Raw URG:
-
-| Review ID | Exact bin count | Source span / guard | Method |
-|---|---:|---|---|
-| `EF2_PAIR_HELPER_DISABLED_IN_PRODUCT` | 344 | `rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv:117-191` and `PAIR_LOOKAHEAD` guard | exact static product parameter chain |
-| `THERMO5_FIXED_PRODUCT_PARAMETER_GUARDS` | 17 | 17 exact Branch bins across frame gain, centered interpolators, EF2, AXI-Lite DPD guard, and GT width guard | exact product parameter chain with compile manifest, active VCS witness, and source hashes |
-
-Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
-
-| Semantic Bin ID | Status | Reason |
-|---|---|---|
+Real XPM and GT Wizard/TXP payload simulation, FPGA PPA/timing, and physical QAM256 BER remain outside Linux signoff. All remaining reachable/applicable DUT bins stay OPEN until hit with legal stimulus and an independent checker, or individually reviewed with valid non-vacuous Formal evidence.

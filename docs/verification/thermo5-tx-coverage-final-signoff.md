@@ -1,52 +1,109 @@
 # Thermo5 TX Coverage Closure — Linux Signoff Snapshot
 
+## Current closure state — 2026-10-31
 
-## Latest fixed-product Linux evidence — SHA `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea` (2026-10-31)
+**Disposition: `LINUX_CLOSURE_OPEN; RAW_100_OPEN`.** Product source SHA is
+`19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`. The frozen product is
+Centered-Cubic x2+x2; EF2 ORDER=2 / STEP=5120 / 20-bit state; 32 chronological
+lanes; DPD_MAX_TAPS=1 identity DPD; AXI-Lite product frontend; Generic FIFO.
+No TX algorithm, RX, or AI-DPD RTL changed in this closure increment.
 
-**Disposition:** `LINUX_CLOSURE_OPEN; RAW_100_OPEN`. Product RTL configuration: Centered-Cubic x2+x2; EF2 ORDER=2/STEP=5120; 20-bit state; 32 chronological lanes; DPD_MAX_TAPS=1 with identity reset image; AXI-Lite product frontend and Generic FIFO. No algorithm/RX/AI-DPD RTL changed.
+The code Raw URG report is the transparent union of 13 legal Product VDBs, 11
+legal source-gap VDBs, and one separately checked expected-negative malformed
+frame VDB. Legal Functional and legal Assertion totals are scored from their
+positive-only reports. Expected-negative assertion failures are recorded in a
+separate section and are not counted as legal-run failures.
 
-### Results
+| Metric | Raw covered / total | Unhit | Adjusted | Status |
+|---|---:|---:|---:|---|
+| Branch | 524/637 (82.2606%) | 113 | 524/637 | OPEN |
+| Condition | 610/849 (71.8492%) | 239 | 610/849 | OPEN |
+| Line | 3,350/3,796 (88.2508%) | 446 | 3,350/3,796 | OPEN |
+| Toggle, both directions | 83,587/104,480 (80.0029%) | 20,893 | 83,587/104,480 | OPEN |
+| FSM states / transitions | 13/13; 22/22 | 0 | Same as Raw | PASS for elaborated frontend hierarchy |
+| Legal applicable Functional | 210/210 (100%) | 0 | Same as Raw | PASS |
+| Waivers / active `.el` exclusions | 0 / 0 | — | Raw = Adjusted | PASS, no adjustment |
 
-| Area | Result | Acceptance |
-|---|---|---|
-| Legal Functional Coverage | 210/210 applicable positive records; 4 illegal-only zero-hit Raw records retained; 12 additional URG-model Illegal/Excluded records reported | Legal-positive goal PASS for this focused Raw |
-| Raw DUT Branch | 520/637 = 81.6327%; 117 unhit | OPEN |
-| Raw DUT Condition | 601/849 = 70.7892%; 248 unhit | OPEN |
-| Raw DUT Line | 3,334/3,796 = 87.8293%; 462 unhit | OPEN |
-| Raw DUT Toggle | 83,575/104,480 = 79.9914%; 20,905 unhit | OPEN |
-| FSM | 13/13 states; 22/22 transitions | PASS for exercised frontend hierarchy |
-| DUT Assertions | 13 success / 15 attempted; 2 uncovered; 2 without attempts | Partial |
-| Waivers / `.el` exclusions | 0 / 0; Adjusted equals Raw | PASS, no adjustment applied |
-| Fail-closed code gate | `RAW_100_OPEN` | OPEN; no 100% claim |
-| Current-source gap ledger | 21,732 raw miss records grouped into 470 tasks; 372 `PROVEN_UNREACHABLE` retained in Raw (11 Formal + 344 EF2 pair-lookahead + 17 fixed-parameter Branches); 21,360 OPEN across 362 tasks | OPEN |
-| VCS/UVM | Fresh exact-profile compile and 13/13 focused positive tests PASS | Focused frontend scope only |
-| Formal / reachability audit | Eleven exact Formal records proven unreachable and retained in Raw; 344 EF2 PAIR_LOOKAHEAD bins and 17 fixed-parameter Branch bins separately classified by exact product elaboration; DPD payload equivalence INCONCLUSIVE at depth 252; tautological parameter SVA is not accepted as proof | Partial; remaining bins stay OPEN |
-| Mutation | Baseline PASS; `late_gain` and `plane_swap` mutants detected by `[BITTRUE]` scoreboard | PASS for these two mutations only |
-| TX source-gap test | 16-cycle gap has 54 underflows; checker fails although 112 output words are present | OPEN service-rate contract |
-| Real XPM / GT Wizard | Not run in this Linux flow | OPEN |
-| FPGA PPA / physical QAM256 BER | Not run | OPEN |
+The union functional report is 214/214 scoreable records. The four illegal-only
+rows are two semantics repeated in the covergroup-type and monitor-instance
+views; they remain in the denominator. The negative run hits both semantics.
+Twelve records already marked Illegal/Excluded by the URG model are reported
+separately and were not added or removed by this work. The fail-closed gate
+uses the bin-level detail to score only `LEGAL_PRODUCT` records and remains
+`RAW_100_OPEN` because DUT Code and Assertion coverage are not closed.
 
-The 344-bin EF2 disposition is a source-bound static elaboration result, not a
-claim that the rejected PAIR_LOOKAHEAD SVA goals passed. It covers 84 Branch,
-108 Condition, and 152 Line records; all remain present in Raw. The tracked
-product compile manifest was rebuilt from the saved exact 13-test VCS compile
-log and parent source manifest (75 parsed HDL/UVM files; 77/77 source/control
-entries match). No product RTL or Raw VDB changed in this audit step.
+### Root-cause ledger and closure dispositions
 
-The next audit classified 17 additional unhit Branch bins as
-`PROVEN_UNREACHABLE` under the same frozen product elaboration: frame-gain and
-two centered-interpolator `HOLD_STATE_ON_DISABLE` alternatives; both
-interpolator lane/Q14 guards; the EF2 shape guard; AXI-Lite DPD tap guards; and
-the four-plane GT width-mismatch guard. The review checks every semantic Bin
-ID against its exact Raw source position, branch expression, decision path,
-normalized instance, and source hash, then verifies the ten-file parameter
-chain against the exact product compile manifest and the 13-test active VCS
-witness. This is a static elaboration audit, not a Formal proof and not an
-Exclusion. All 17 remain in the Raw denominator. The ledger now has 372
-proven-unreachable and 21,360 OPEN rows; 108 of 470 grouped tasks are fully
-closed and 362 remain OPEN. Branch/Condition/Line/Toggle Raw coverage and the
-210/210 legal Functional Coverage are unchanged. Details are in
-[`thermo5-tx-fixed-parameter-branch-audit.md`](thermo5-tx-fixed-parameter-branch-audit.md).
+The complete current-source miss ledger contains 21,691 Raw records grouped
+into 429 tasks. 371 records are `PROVEN_UNREACHABLE` under reviewed exact
+Formal or static product-configuration evidence; those records remain in Raw.
+The other 21,320 records across 322 tasks remain `OPEN`. By metric, the task
+table contains 44 Branch, 98 Condition, 98 Line, and 189 Toggle groups; 107
+tasks are dispositioned and 322 remain OPEN. There are no approved waivers
+and no URG exclusions. This is not 100% audited reachable Code coverage.
+
+The expected-negative malformed-frame stimulus adds two Branch, seven
+Condition, two Line, and twelve Toggle hits versus the legal 13-test plus
+11-gap report. The exact new union hits include `TXB-646dd03c99766d877d30` at
+`tid32_thermo5_axi_lite_axis_frontend_tx.sv:141` (early TLAST guard) and
+`TXB-158c42868bfe37061f07` at `dsm_axis14_to_core8_cdc.sv:224` (misaligned
+frame-start/residual path). The latter remains proven unreachable for the
+reviewed legal frame contract; the malformed frame reaches it in the union
+report. No denominator was changed.
+
+### Regression, Assertion, Formal, and Mutation
+
+- VCS V-2023.12-SP1: the exact-source 13/13 legal Product UVM replay passed.
+  The 11-case legal gap sweep also passed its independent stream checks; the
+  targeted 11-cycle gap produced 112 bit-true outputs, two TLASTs, and no
+  protocol errors. Existing VDBs were reused where compile inputs were
+  unchanged; no redundant full regression was run.
+- Legal assertions: 13 successes / 15 attempted, 2 uncovered, 2 without
+  attempts, and 0 failures. Thus the legal run has no unexpected assertion
+  failure, but assertion coverage is incomplete.
+- Expected-negative regression: seed 420102 passed its sticky-error and
+  public-reset recovery checker with 0 UVM warnings/errors/fatals. It reports
+  two expected RTL assertion failures (CDC line 262 and interpolator line
+  310), kept separate from the legal totals.
+- VC Formal V-2023.12-SP2: 10 exact current-source miss bins remain proven
+  unreachable; 344 EF2 PAIR_LOOKAHEAD code bins and 17 fixed-parameter Branch
+  bins have separate exact static-elaboration dispositions. No waiver or
+  `.el` exclusion was generated.
+- A new source-frame Formal job is **INCONCLUSIVE**. It reaches the legal
+  packet-end Cover at depth 59 with no environment assumptions, zero selected
+  setup violations, and zero black boxes. The no-early-TLAST assertion is
+  inconclusive at depth 312 and the malformed-target Cover is inconclusive at
+  depth 342; neither is used to close a bin.
+- DPD Identity payload and outstanding-word saturation/underflow Formal remain
+  INCONCLUSIVE. The 16-cycle source-gap run still fails its independent
+  underflow checker; source-gap/service-rate behavior remains OPEN.
+- Mutation baseline passed and the `late_gain` and `plane_swap` mutants were
+  detected by the independent bit-true scoreboard. This is evidence for those
+  two mutations only.
+- Current Linux audit checks: hardware coverage utilities 19/19 tests PASS;
+  Python reference model 44/44 PASS; changed Python sources byte-compile;
+  evidence index 183/183 artifact hashes and sizes match. The final fail-closed
+  gate reproduces `RAW_100_OPEN` with Raw=Adjusted and zero waivers/exclusions.
+
+### Remaining signoff items
+
+Reachable/applicable DUT code gaps remain open, so the TX Linux coverage
+closure is not signed off. The QAM256 behavioral benchmark is not rerun in
+this coverage-only increment and does not substitute for a product BER/BLER
+acceptance target. Real XPM and GT Wizard/TXP payload simulation, FPGA
+PPA/timing, and physical QAM256 BER remain separate hardware signoff gates.
+
+Exact counts, evidence paths, commands, tool versions, and SHA-256 values are
+in [`thermo5-tx-final-coverage-evidence.json`](data/thermo5-tx-final-coverage-evidence.json),
+[`thermo5-tx-coverage-root-cause-closure.md`](thermo5-tx-coverage-root-cause-closure.md),
+and the [coverage closure index](data/thermo5-tx-coverage-closure-index.json).
+The source-linked miss ledger, grouped tasks, functional detail, Formal review,
+and audit source manifest are under
+[`data/thermo5-tx-current-source-gaps/`](data/thermo5-tx-current-source-gaps/).
+
+**Historical incremental snapshots follow.** They are retained for traceability;
+the current metrics and status above supersede earlier checkpoint counts.
+
 
 ### Incremental two-frame CDC alignment Formal — PR #20 checkpoint, 2026-10-31
 
@@ -93,7 +150,7 @@ waiver, or exclusion. Its coverage gate remains `RAW_100_OPEN`.
 
 The eleven source-bound Formal records comprise four CDC Branch bins, three AXI-Lite default Branch/Line bins, and four Centered-Cubic tail-only branches at `u_interp_1`/`u_interp_2`. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN. The frame-tail proof uses W=16, stage 1 LANES=8/append=1, and stage 2 LANES=16/append=0; it proves local module reachability under product parameters, not full two-stage composition. Formal passed 6/6 assertions and 5/9 Covers, with the exact four tail-only Covers uncoverable, one non-vacuous source-stability assumption, zero setup violations, and zero black boxes.
 
-The legal frame-replacement UVM run (seed 610900) passed its four-plane bit-true checker for 112 outputs over two frames, but its product URG union added no code hits. The two line-255 pop/push bins remain OPEN. The refreshed formal review and source-bound ledger are in [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json) and [`thermo5-tx-focused-product-closure.md`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md).
+An earlier frame-replacement run (seed 610900) passed its four-plane bit-true checker but did not hit the two line-255 pop/push bins. The later seed-610901 source-gap sweep closed those two Raw Branch bins; the current source-bound ledger and report are linked above.
 
 The additional DPD saturation test wrote a legal non-identity one-tap Q2.14 image over AXI-Lite. Python-generated vectors and the independent UVM checker matched all four output planes for 56 output words; the run covered I/Q positive and negative saturation on each of 16 DPD lanes. It increased same-compile Raw by +80 Branch, +16 Condition, +144 Line, and +654 Toggle. The product Raw remains unadjusted.
 
@@ -104,7 +161,8 @@ The additional DPD saturation test wrote a legal non-identity one-tap Q2.14 imag
 - Raw URG: `runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/`; denominator summary and branch-arm export are in the sibling `_denominator/` directory.
 - Fail-closed gate: `runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate.json`.
 - Closure ledger, grouped task table, functional audit, formal review, tool/log hashes, and commands: [`thermo5-tx-coverage-closure-index.json`](data/thermo5-tx-coverage-closure-index.json) and [`thermo5-tx-coverage-root-cause-closure.md`](thermo5-tx-coverage-root-cause-closure.md).
-- Current source-bound Formal/static review, updated 21,732-row ledger, and audit run/check logs: [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json), [`thermo5-tx-focused-product-gap-ledger.csv.gz`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-ledger.csv.gz), and `runs/thermo5_tx_fixed_parameter_branch_audit_20261031_pr22/`.
+- Current source-bound Formal/static review, refreshed 21,714-row ledger, and audit run/check logs: [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json), [`thermo5-tx-focused-product-gap-ledger.csv.gz`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-ledger.csv.gz), and `runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/`.
+- Current centered pop/push Raw refresh machine record: [`thermo5-tx-centered-pop-push-evidence.json`](data/thermo5-tx-centered-pop-push-evidence.json); the frozen 13-test Formal witness remains unchanged.
 - VCS mutation manifest and logs: `runs/thermo5_cdc_resetready_repro_20261031/mutation_13tests_final/`.
 
 The earlier source snapshots below are retained as history and are not the current metrics. Current evidence is not full product or physical signoff. Remaining Linux work includes reachable Branch/Condition/Line/Toggle closure, DPD identity Formal convergence, and resolving the legal-source gap/service-rate contract. Real XPM/GT Wizard, complete GT Parent payload checking, FPGA PPA, and physical QAM256 BER remain outside this Linux run.

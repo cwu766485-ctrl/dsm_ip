@@ -294,40 +294,6 @@
       "status": "PROVEN_UNREACHABLE"
     },
     {
-      "assertion": "thermo5_cdc_frame_start_alignment_harness.a_frame_start_pop_aligned",
-      "assumptions": [],
-      "bin": "122:0/-/1/-/-/0 2 4 6/1/-/-/-/1/-",
-      "configuration": "axil",
-      "console_file": "console.log",
-      "console_sha256": "1fb4ccd4de7e0dcfc52566c291781b091c6816688d5e2dc82566e4e8644b5d92",
-      "cover": "thermo5_cdc_frame_start_alignment_harness.c_misaligned_frame_start_target",
-      "evidence_note": "The exact misaligned frame-start target cover is uncoverable. The non-vacuous alignment assertion is proven while first and second frame-start pops, the second frame-end pop, and the second output frame-end are all covered through production 14:8 CDC and Generic FIFO. Two consecutive legal 32-beat packets; no SVA environment assumptions; setup violations=0; black boxes=0; no tautology warnings.",
-      "evidence_sha256": {
-        "console": "1fb4ccd4de7e0dcfc52566c291781b091c6816688d5e2dc82566e4e8644b5d92",
-        "properties": "234b5edbef4ae8446dfc12e11746ab5ccc89d5615cbd1aa79ff6529947220a85",
-        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
-      },
-      "formal_run": "runs/thermo5_tx_cdc_frame_start_alignment_20261031_pr20_retry2/cdc_frame_start_alignment",
-      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
-      "metric": "branch",
-      "properties_file": "properties.txt",
-      "properties_sha256": "234b5edbef4ae8446dfc12e11746ab5ccc89d5615cbd1aa79ff6529947220a85",
-      "semantic_bin_id": "TXB-158c42868bfe37061f07",
-      "setup_file": "setup.txt",
-      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
-      "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
-      "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:224",
-      "source_sha256": {
-        "dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.py": "e9622c99c3c5e0bf5437139af9b9420562c072e42e5c26fa381b1467f559b88b",
-        "dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.tcl": "39ed13752987d60c5475d43c49975542a424341ae49de8584799bb5a599d7fd1",
-        "dv/uvm/formal/thermo5_cdc_frame_start_alignment_harness.sv": "bb2b092170ed0803232a5a12cf6192a9951a6c685f6b97afbbdbc171cdbffdfc",
-        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
-        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
-        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
-      },
-      "status": "PROVEN_UNREACHABLE"
-    },
-    {
       "assertion": "thermo5_cdc_frame_end_threshold_harness.a_frame_end_requires_tail_drain",
       "assumptions": [],
       "bin": "122:0/-/1/-/-/0 2 4 6/1/-/1/1/-/-",
@@ -917,6 +883,44 @@
   "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
   "review_scope": "Eleven exact bins retain current-source VC Formal dispositions. An additional 344 EF2 pair-helper/selector bins are reviewed by exact static product elaboration; this separate review does not rely on rejected tautological PAIR_LOOKAHEAD SVA goals and does not change Raw URG. Seventeen additional exact Raw Branch bins are classified by a source-bound fixed-product parameter-chain audit (HOLD, centered interpolation guards, EF2 shape guard, DPD tap guards, and GT bridge width guard); these remain in Raw and are not exclusions. The previous tautological MAX_TAPS SVA candidate remains rejected as Formal evidence; its Raw branch is now classified only by the separate exact static-parameter source-chain review.",
   "reviewed_candidates": [],
+  "superseded_by_current_raw_hits": [
+    {
+      "assertion": "thermo5_cdc_frame_start_alignment_harness.a_frame_start_pop_aligned",
+      "assumptions": [],
+      "bin": "122:0/-/1/-/-/0 2 4 6/1/-/-/-/1/-",
+      "configuration": "axil",
+      "console_file": "console.log",
+      "console_sha256": "1fb4ccd4de7e0dcfc52566c291781b091c6816688d5e2dc82566e4e8644b5d92",
+      "cover": "thermo5_cdc_frame_start_alignment_harness.c_misaligned_frame_start_target",
+      "evidence_note": "Semantic ID absent from complete current-source gap ledger; Raw denominator unchanged. This exact bin is therefore no longer an uncovered Formal disposition target.",
+      "evidence_report": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code",
+      "evidence_sha256": {
+        "console": "1fb4ccd4de7e0dcfc52566c291781b091c6816688d5e2dc82566e4e8644b5d92",
+        "properties": "234b5edbef4ae8446dfc12e11746ab5ccc89d5615cbd1aa79ff6529947220a85",
+        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "formal_run": "runs/thermo5_tx_cdc_frame_start_alignment_20261031_pr20_retry2/cdc_frame_start_alignment",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "branch",
+      "new_status": "HIT",
+      "properties_file": "properties.txt",
+      "properties_sha256": "234b5edbef4ae8446dfc12e11746ab5ccc89d5615cbd1aa79ff6529947220a85",
+      "semantic_bin_id": "TXB-158c42868bfe37061f07",
+      "setup_file": "setup.txt",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:224",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.py": "e9622c99c3c5e0bf5437139af9b9420562c072e42e5c26fa381b1467f559b88b",
+        "dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.tcl": "39ed13752987d60c5475d43c49975542a424341ae49de8584799bb5a599d7fd1",
+        "dv/uvm/formal/thermo5_cdc_frame_start_alignment_harness.sv": "bb2b092170ed0803232a5a12cf6192a9951a6c685f6b97afbbdbc171cdbffdfc",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PROVEN_UNREACHABLE"
+    }
+  ],
   "supplemental_formal_runs": [
     {
       "assertions": {
@@ -1061,6 +1065,31 @@
       "run": "runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/formal_summary.json",
       "sha256": "4d631ce273a8a5ea29d408e608ef47af223cbc2546df4394622fefdfb8b2b315",
       "status": "PASS_FRAME_END_THRESHOLD"
+    },
+    {
+      "assertions": {
+        "a_no_early_tlast": "inconclusive"
+      },
+      "black_box_instances": 0,
+      "console_sha256": "7335e8fb8f22ad2ab9c9338e3228d93275b9de8b381e8733bc443402bf544705",
+      "covers": {
+        "c_early_tlast_target": "inconclusive",
+        "c_legal_packet_end": "covered",
+        "c_source_accept": "covered"
+      },
+      "disposition": "OPEN; exact target not closed",
+      "formal_run": "runs/thermo5_tx_early_tlast_legal_formal_20261031",
+      "name": "legal_early_tlast_source_frame_contract",
+      "properties_sha256": "dbfe5503da822b9270444915c8f5ac62ef16288280abc258825913fe40d8c96c",
+      "scope": {
+        "environment_assumptions": 0,
+        "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+        "source": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:141",
+        "target_bin": "TXB-646dd03c99766d877d30"
+      },
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "setup_violations": 0,
+      "status": "INCONCLUSIVE"
     }
   ]
 }

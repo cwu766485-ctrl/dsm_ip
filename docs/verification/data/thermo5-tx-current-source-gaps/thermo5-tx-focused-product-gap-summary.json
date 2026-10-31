@@ -5,24 +5,23 @@
     "branch:CDC_OR_RESIDUAL_STATE": 1,
     "branch:FIXED_PRODUCT_CONFIGURATION": 21,
     "branch:GUARDED_ADDRESS_DECODE": 2,
-    "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 91,
-    "branch:PRODUCT_CADENCE_ALIGNMENT": 2,
+    "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 89,
     "cond:INTERPOLATOR_EMPTY_OR_BLOCKED": 4,
-    "cond:RESET_RELEASE_OR_STATE_HOLD": 244,
-    "line:CDC_OR_RESIDUAL_STATE": 7,
+    "cond:RESET_RELEASE_OR_STATE_HOLD": 235,
+    "line:CDC_OR_RESIDUAL_STATE": 6,
     "line:DPD_TAP_HISTORY_CONFIGURATION": 176,
     "line:FIXED_PRODUCT_CONFIGURATION": 244,
-    "line:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 35,
+    "line:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 20,
     "toggle:CDC_OR_RESIDUAL_STATE": 130,
     "toggle:COUNTER_HIGH_BITS": 640,
-    "toggle:DATA_VALUE_OR_TOGGLE_STIMULUS": 6262,
+    "toggle:DATA_VALUE_OR_TOGGLE_STIMULUS": 6250,
     "toggle:DPD_TAP_HISTORY_CONFIGURATION": 8192,
     "toggle:FIXED_PRODUCT_CONFIGURATION": 1889,
     "toggle:IDENTITY_DPD_ARITHMETIC": 3792
   },
   "closure_status_counts": {
-    "OPEN": 21360,
-    "PROVEN_UNREACHABLE": 372
+    "OPEN": 21320,
+    "PROVEN_UNREACHABLE": 371
   },
   "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
   "diagnostic_product_branch_review": null,
@@ -7651,26 +7650,6 @@
       },
       "status": "PROVEN_UNREACHABLE"
     },
-    "TXB-158c42868bfe37061f07": {
-      "assertion": "thermo5_cdc_frame_start_alignment_harness.a_frame_start_pop_aligned",
-      "assumptions": [],
-      "cover": "thermo5_cdc_frame_start_alignment_harness.c_misaligned_frame_start_target",
-      "evidence_sha256": {
-        "console": "1fb4ccd4de7e0dcfc52566c291781b091c6816688d5e2dc82566e4e8644b5d92",
-        "properties": "234b5edbef4ae8446dfc12e11746ab5ccc89d5615cbd1aa79ff6529947220a85",
-        "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
-      },
-      "formal_run": "runs/thermo5_tx_cdc_frame_start_alignment_20261031_pr20_retry2/cdc_frame_start_alignment",
-      "source_sha256": {
-        "dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.py": "e9622c99c3c5e0bf5437139af9b9420562c072e42e5c26fa381b1467f559b88b",
-        "dv/uvm/formal/run_thermo5_cdc_frame_start_alignment_fpv.tcl": "39ed13752987d60c5475d43c49975542a424341ae49de8584799bb5a599d7fd1",
-        "dv/uvm/formal/thermo5_cdc_frame_start_alignment_harness.sv": "bb2b092170ed0803232a5a12cf6192a9951a6c685f6b97afbbdbc171cdbffdfc",
-        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
-        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
-        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
-      },
-      "status": "PROVEN_UNREACHABLE"
-    },
     "TXB-39a0a549d32bc9ef1e01": {
       "assertion": "thermo5_frame_tail_harness.a_append_no_input_tail",
       "assumptions": [
@@ -7848,7 +7827,7 @@
     "groups_html_sha256": "f4bc3691ff0d013380180809ed9ad096fbada60e9016731fe93a46ffcb03f1c7",
     "rows_including_existing_urg_model_exclusions": 226,
     "scoreable_rows": 214,
-    "sha256": "36faaba41497966e96215d599b6cdc6595673aca7917abad0c61c80e221e0378"
+    "sha256": "bd3c94b95875b3d08afcf777bc8894bdbf29f6be6e32b23e65da9094b7975e96"
   },
   "functional_legally_applicable_positive_bins": {
     "covered": 210,
@@ -7863,89 +7842,93 @@
     "uncovered_records": 4,
     "urg_model_excluded_rows": 12
   },
-  "interpretation": "11 exact bins are Formal-proven unreachable and 361 are unreachable by exact product static-parameter elaboration (344 EF2 pair-look-ahead and 17 fixed-parameter guard bins); 21360 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "interpretation": "10 exact bins are Formal-proven unreachable and 361 are unreachable by exact product static-parameter elaboration (344 EF2 pair-look-ahead and 17 fixed-parameter guard bins); 21320 code gaps remain OPEN. Raw URG bins and denominators are unchanged; no waiver or exclusion is applied.",
+  "legal_functional_report": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/merged_raw",
   "negative_report": "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame",
   "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
   "raw_bin_id_collision_extra_rows": 17,
   "raw_bin_id_collision_groups": 17,
   "raw_dut_coverage": {
     "branch": {
-      "covered": 520,
-      "missing": 117,
-      "percent": 81.6327,
+      "covered": 524,
+      "missing": 113,
+      "percent": 82.2606,
       "total": 637
     },
     "cond": {
-      "covered": 601,
-      "missing": 248,
-      "percent": 70.7892,
+      "covered": 610,
+      "missing": 239,
+      "percent": 71.8492,
       "total": 849
     },
     "line": {
-      "covered": 3334,
-      "missing": 462,
-      "percent": 87.8293,
+      "covered": 3350,
+      "missing": 446,
+      "percent": 88.2508,
       "total": 3796
     },
     "toggle": {
-      "covered": 83575,
-      "missing": 20905,
-      "percent": 79.9914,
+      "covered": 83587,
+      "missing": 20893,
+      "percent": 80.0029,
       "total": 104480
     }
   },
-  "raw_report": "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests",
+  "raw_report": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code",
   "raw_report_sha256": {
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/groups.html": "f4bc3691ff0d013380180809ed9ad096fbada60e9016731fe93a46ffcb03f1c7",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/grp6.html": "dce4df83227ea6d139daacc9b55d7b50cb55aff648323db1cfaa3ad1f82164c6",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/grp7.html": "a397554396f462578969ceb13634f1cbbaf0361d40092d3e4ab22401e2be69ad",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod1.html": "485f4e5a6ff430a20057627c5b8a929169adf8c973a3040a1a1852ffddec19da",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod10.html": "0f634ff2b15f39fff20ad5c4685cf27409b5da71755e53b17f8f47d8d95c3c3d",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod12.html": "1dd426de2cf745b6d37743a6e5b397ac3be5e4cbe28e132c2f8a77e0534d6da1",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod13.html": "ae60eaeae6966f00f4ba1a9a55f4f99dcb3d7a239e510e4f8f258e7ad75bf9d9",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod15.html": "5c8a03cdce2a6fd4bf215e06b22c4f27e7ab5b73d8a6e39da6fc858c5dc37ea0",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod16.html": "1ea3d9ed82422731a10d13fcbd75f041816264400cd0a4ff836ba82c2674ecdb",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod18.html": "d095ac8418ed2fe9213671994575c859c7510887370501e95bdeea6dc8509ad6",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod18_0.html": "2d2277819bf946539c6f57a2fab93183888abd6c8ef606f3f0c93391696d2d1e",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod2.html": "ae0d994fc5452706753030c31c3061413dd69a31c69388c40a0e16bddf03c239",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod20.html": "79815084708a401546e670826ff4a355be14713e5321cdb4cf6f788b693429d5",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod21.html": "bc12059a58b7365667a8ab86b2137da728b607e9c4d913abf3e0a572dd515f98",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod22.html": "995d37c0c5a2d4645a6390f450f829284d319c9dcf1768f46e4ec2144709efcf",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod23.html": "2f3ffe161cc5522b9fa93f69d61e4c5d1cd8d2a2435031a179bd87fbda93f6f4",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod3.html": "366540e4a78bb83fb84a19af71d4c4843b05e75cb0f18aa59895cbe807bbc731",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod4.html": "ef25ce12be633bcfc85ac5b2fb53c8507661ad620ec6b385a9f65274b0c056a7",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod6.html": "dcaa512c7b367fddbc820ff2fde52b0d0498bc536aa81f4c58e102267c1a4b27",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod7.html": "ea2d37d77526a4f2f0981b0d03cd06d07a169c7ae0500751c677511c2249db4e",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod8.html": "df2c793e1e660699b78b13735f748b634ac56855482a9456a84fba800475e3c1",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/mod9.html": "f69c754d5b1d2c6ae1ee182e14a005b4429798fd1caa43c9d24c1f790ae59944",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/modlist.html": "3c09e402717a8a26e7ee943430f0bfbcea786d153807d575c0e1c799d64c052b",
     "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame/groups.html": "5af2f3fd4fb60ea917e5c22ab0ce0596e24077312fb72d53d93e888c7660b8ac",
     "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame/grp6.html": "b2530402ec2da7a6edc4b6e69654b453c7a50bf370351714956d0e2b7a2535e7",
-    "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame/grp7.html": "21d48efd77d9b3325718294970e871fb0fc5f079af95ea517a7ab40bf8baa1d9"
+    "runs/thermo5_cdc_resetready_repro_20261031/product_negative_urg_illegal_frame/grp7.html": "21d48efd77d9b3325718294970e871fb0fc5f079af95ea517a7ab40bf8baa1d9",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/merged_raw/groups.html": "f4bc3691ff0d013380180809ed9ad096fbada60e9016731fe93a46ffcb03f1c7",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/merged_raw/grp6.html": "8d3a9a54e4df2d4da67665d86d0b143251b323674f333b482e09710b1a5802e7",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/merged_raw/grp7.html": "1ea9060a6b86599d1d6dd309408e4f3857d4d89ba7b666cb7a0aff0d4ca841ce",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/groups.html": "3f203e07437858f91ffeccf33698eda451eda783142d1a604f5284e3bedd1172",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/grp6.html": "38fad22150fa4a1dbc0f804bafcb3dd831d7bc7abe8af6926098bf5d1221f7fa",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/grp7.html": "dc8ff662d0870c0c1473edf97551a161af7458994175662771dcd12c698e23f8",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod1.html": "317b4c2e64008a3d8c16e7908df675dbea99a7b62e083c0127ada23437edba86",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod10.html": "0f634ff2b15f39fff20ad5c4685cf27409b5da71755e53b17f8f47d8d95c3c3d",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod12.html": "fec93fd27db22345aa5c5d85df436c5589253b208edd35f682a34f6b6f71297c",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod13.html": "ae60eaeae6966f00f4ba1a9a55f4f99dcb3d7a239e510e4f8f258e7ad75bf9d9",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod15.html": "5c8a03cdce2a6fd4bf215e06b22c4f27e7ab5b73d8a6e39da6fc858c5dc37ea0",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod16.html": "50c5781ec7f50e7ea548f1050c453be183ef36c8a34c377fd0f36d737b5c837e",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod18.html": "d095ac8418ed2fe9213671994575c859c7510887370501e95bdeea6dc8509ad6",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod18_0.html": "2d2277819bf946539c6f57a2fab93183888abd6c8ef606f3f0c93391696d2d1e",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod2.html": "d93889c33676d1aa239dc7334f2b87327f8a2982e113dc00b301e9eda9591f1a",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod20.html": "08b5a8822b061b89ad712301011d14405cbf9137165a2f9c19937000fbeb9f09",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod21.html": "c255530e0de17db4cf352a752531983434e1c7f9dee5a00edffde4d228a69ba7",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod22.html": "995d37c0c5a2d4645a6390f450f829284d319c9dcf1768f46e4ec2144709efcf",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod23.html": "41375a71dab532c0be60f531bf825a219bac68e17df81ae56714c2b352e3ef28",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod3.html": "366540e4a78bb83fb84a19af71d4c4843b05e75cb0f18aa59895cbe807bbc731",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod4.html": "ef25ce12be633bcfc85ac5b2fb53c8507661ad620ec6b385a9f65274b0c056a7",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod6.html": "3f4fb047627425d78b18bc3f26e482e8c78fc53e3d29b1f22ed3bed1b7b103cc",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod7.html": "27f4f9982e1ce15fc6f97fc21b5af9ef55f981b81211c218c8891a5e2f3f1491",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod8.html": "df2c793e1e660699b78b13735f748b634ac56855482a9456a84fba800475e3c1",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/mod9.html": "f69c754d5b1d2c6ae1ee182e14a005b4429798fd1caa43c9d24c1f790ae59944",
+    "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative_combined_code/modlist.html": "dc3d796965e0f49a617ca63345393214b67e42f07fc936c430729d77289ba972"
   },
   "raw_simulation_source_mismatches": [],
   "reviewed_formal_open_candidates": [],
-  "root_cause_task_count": 470,
+  "root_cause_task_count": 429,
   "schema_version": 2,
   "separately_hash_bound_diagnostic_testbench_mismatches": [],
-  "source_ledger": "runs/thermo5_cdc_resetready_repro_20261031/gap_ledger_13tests/out/thermo5-tx-gate3-coverage-ledger.csv",
+  "source_ledger": "runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/negative/combined_union_ledger/thermo5-tx-gate3-coverage-ledger.csv",
   "source_ledger_metric_counts": {
-    "branch": 117,
-    "cond": 248,
-    "line": 462,
-    "toggle": 20905
+    "branch": 113,
+    "cond": 239,
+    "line": 446,
+    "toggle": 20893
   },
-  "source_ledger_rows": 21732,
-  "source_ledger_sha256": "4211ad741bd3be0aecc5b9a07d91c3f704304cbc23514a42eeae3d9f14943c78",
+  "source_ledger_rows": 21691,
+  "source_ledger_sha256": "f7cfd04f1bca05d115b8cf16fc58e9faeffd0a3387a9de6a63c1d4b7dd5ae0c1",
   "source_manifest_mismatches": [],
-  "source_manifest_sha256": "56af07e9a1a969c2f39880741792dd7d57cba5ddd38bd40f10be0c6a6bd97a2a",
+  "source_manifest_sha256": "11f92bc7e0c0e7c116b838b4acaccf7cad7d696596441a521ebdabd0594743f8",
   "source_manifest_sha_matches_current_tree": true,
   "source_product_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
   "task_count_by_metric": {
-    "branch": 48,
-    "cond": 107,
-    "line": 114,
-    "toggle": 201
+    "branch": 44,
+    "cond": 98,
+    "line": 98,
+    "toggle": 189
   },
-  "unique_expression_aware_semantic_bin_ids": 21732
+  "unique_expression_aware_semantic_bin_ids": 21691
 }

@@ -102,6 +102,39 @@ def _functional_groups(path: Path) -> dict[str, float]:
     return groups
 
 
+def _applicable_functional_bins(path: Path) -> tuple[dict[str, float], dict[str, int], str]:
+    """Score only explicitly applicable product bins from the source-linked bin audit."""
+    by_group: dict[str, list[dict[str, str]]] = {}
+    product_shas: set[str] = set()
+    with path.open(newline="", encoding="utf-8") as stream:
+        reader = csv.DictReader(stream)
+        required = {"product_source_sha", "group", "raw_status",
+                    "raw_denominator_applicable", "legal_applicability"}
+        if not required.issubset(reader.fieldnames or ()):
+            raise AuditError("functional-bin detail CSV lacks required applicability fields")
+        for row in reader:
+            product_shas.add(row["product_source_sha"])
+            if row["raw_denominator_applicable"] == "true" and row["legal_applicability"] == "LEGAL_PRODUCT":
+                by_group.setdefault(row["group"], []).append(row)
+    if len(product_shas) != 1 or not next(iter(product_shas), ""):
+        raise AuditError("functional-bin detail must bind every row to one product source SHA")
+    if not by_group:
+        raise AuditError("functional-bin detail contains no legally applicable product bins")
+    scores: dict[str, float] = {}
+    counts = {"covered": 0, "total": 0, "uncovered": 0}
+    for group, rows in sorted(by_group.items()):
+        covered = sum(row["raw_status"] == "COVERED" for row in rows)
+        uncovered = sum(row["raw_status"] == "UNCOVERED" for row in rows)
+        if covered + uncovered != len(rows):
+            raise AuditError(f"unexpected legal functional status in group {group}")
+        scores[group] = round(100.0 * covered / len(rows), 4)
+        counts["covered"] += covered
+        counts["total"] += len(rows)
+        counts["uncovered"] += uncovered
+    counts["percent"] = round(100.0 * counts["covered"] / counts["total"], 4)
+    return scores, counts, next(iter(product_shas))
+
+
 def _project_metrics(summary: dict) -> dict[str, dict[str, int | float]]:
     found = {
         row["metric"]: row
@@ -206,8 +239,23 @@ def audit(args: argparse.Namespace) -> dict:
 
     code = _project_metrics(summary)
     fsm = _fsm_metrics(summary)
-    groups = _functional_groups(args.groups_html)
-    assertion = summary.get("dut_assertion_status_counts")
+    raw_groups = _functional_groups(args.groups_html)
+    functional_bins = None
+    functional_product_sha = None
+    if args.functional_bin_detail:
+        groups, functional_bins, functional_product_sha = _applicable_functional_bins(
+            args.functional_bin_detail
+        )
+        expected_product_sha = summary.get("product_source_sha") or source_manifest.get("base_commit")
+        if expected_product_sha and functional_product_sha != expected_product_sha:
+            raise AuditError(
+                "functional bin detail product SHA does not match the Raw source manifest"
+            )
+    else:
+        groups = raw_groups
+    assertion_summary_path = args.assertion_summary or args.raw_summary
+    assertion_summary = json.loads(assertion_summary_path.read_text(encoding="utf-8"))
+    assertion = assertion_summary.get("dut_assertion_status_counts")
     if not isinstance(assertion, dict):
         raise AuditError("raw URG summary lacks DUT assertion status counts")
     assertion_counts = {key: int(value) for key, value in assertion.items()}
@@ -241,7 +289,10 @@ def audit(args: argparse.Namespace) -> dict:
         "raw_project_rtl": code,
         "raw_fsm": fsm,
         "raw_dut_assertions": assertion_result,
+        "raw_functional_groups": raw_groups,
         "functional_groups": groups,
+        "legally_applicable_functional_bins": functional_bins,
+        "functional_product_source_sha": functional_product_sha,
         "adjusted_project_rtl": code,
         "adjusted_fsm": fsm,
         "adjusted_dut_assertions": assertion_result,
@@ -249,7 +300,9 @@ def audit(args: argparse.Namespace) -> dict:
         "functional_group_count": len(groups),
         "inputs": {
             "raw_summary": str(args.raw_summary),
+            "assertion_summary": str(assertion_summary_path),
             "groups_html": str(args.groups_html),
+            "functional_bin_detail": str(args.functional_bin_detail) if args.functional_bin_detail else None,
             "waivers_csv": str(args.waivers_csv),
             "el_file": str(args.el_file),
         },
@@ -259,7 +312,11 @@ def audit(args: argparse.Namespace) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--raw-summary", required=True, type=Path)
+    parser.add_argument("--assertion-summary", type=Path,
+                        help="separate assertion inventory, such as the legal-only test report")
     parser.add_argument("--groups-html", required=True, type=Path)
+    parser.add_argument("--functional-bin-detail", type=Path,
+                        help="source-linked bin audit; only LEGAL_PRODUCT rows are gated")
     parser.add_argument("--waivers-csv", required=True, type=Path)
     parser.add_argument("--el-file", required=True, type=Path)
     parser.add_argument("--source-manifest", required=True, type=Path)

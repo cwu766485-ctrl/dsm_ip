@@ -63,6 +63,8 @@ def main():
     ap.add_argument('closure',type=Path);ap.add_argument('out',type=Path)
     ap.add_argument('--report-layout',choices=('nested','flat'),default='nested',
                     help='flat reads <fifo>_coverage_after from a reused-baseline closure')
+    ap.add_argument('--product-source-sha',
+                    help='bind the ledger to the frozen simulation-product SHA when the analysis tree has documentation-only edits')
     ap.add_argument('--variants',nargs='+',choices=('generic','axil','xpm'),
                     default=('generic','xpm'),
                     help='Configurations to inventory; AXI-Lite is distinct from the Generic FIFO SKU')
@@ -113,14 +115,16 @@ def main():
             assert not extraction_gaps, (variant, extraction_gaps)
         else:
             assert all(audit.ownership(r['instance'])=='VENDOR_XPM' for r in extraction_gaps)
-        git_sha=subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,check=True,capture_output=True,text=True).stdout.strip()
+        analysis_git_sha=subprocess.run(['git','rev-parse','HEAD'],cwd=ROOT,check=True,capture_output=True,text=True).stdout.strip()
+        product_git_sha=args.product_source_sha or analysis_git_sha
         worktree_dirty=bool(subprocess.run(['git','status','--porcelain','--untracked-files=all'],
             cwd=ROOT,check=True,capture_output=True,text=True).stdout.strip())
         source_roots=(ROOT/'rtl',ROOT/'dv'/'uvm')
         source_hashes={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
             for root in source_roots for p in root.rglob('*') if p.is_file() and p.suffix in ('.v','.sv','.svh')}
         payload={'configuration':variant,'exclusions_applied':False,
-                 'source_git_sha':git_sha,'worktree_dirty':worktree_dirty,
+                 'source_git_sha':product_git_sha,'analysis_git_sha':analysis_git_sha,
+                 'worktree_dirty':worktree_dirty,
                  'report_path':str(report.resolve()),
                  'status_counts':dict(Counter(r['status'] for r in records)),
                  'source_file_map_entries':len(instance_sources),

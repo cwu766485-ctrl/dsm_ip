@@ -364,6 +364,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ledger", required=True, type=Path)
     ap.add_argument("--raw-report", required=True, type=Path)
+    ap.add_argument("--legal-functional-report", type=Path,
+                    help="separate positive-only URG report used for legal functional-bin scoring")
     ap.add_argument("--branch-arms", required=True, type=Path,
                     help="Exact URG branch-arm CSV exported from the same Raw report")
     ap.add_argument("--negative-report", required=True, type=Path)
@@ -374,6 +376,7 @@ def main() -> int:
                     help="Hash-bound evidence for separate read-only testbench probes; these are not merged into baseline Raw.")
     ap.add_argument("--output-dir", required=True, type=Path)
     args = ap.parse_args()
+    legal_functional_report = args.legal_functional_report or args.raw_report
 
     sys.path.insert(0, str(ROOT / "tools" / "hw"))
     import thermo5_audit_reports as audit
@@ -603,7 +606,7 @@ def main() -> int:
     ]
     functional_rows: list[dict[str, object]] = []
     report_hashes: dict[str, str] = {}
-    for report in [args.raw_report, args.negative_report]:
+    for report in sorted({args.raw_report, legal_functional_report, args.negative_report}):
         for candidate in [report / "groups.html", report / "grp6.html", report / "grp7.html"]:
             if candidate.exists():
                 report_hashes[str(candidate)] = sha256_file(candidate)
@@ -615,10 +618,13 @@ def main() -> int:
         refresh_evidence = validate_refresh_record(args.refresh_evidence, product_sha, args.raw_report)
     for group, point, bin_name, negative_expected, meaning in functional_specs:
         for view in ["package", "instance"]:
-            raw_count, raw_page = read_urg_bin(args.raw_report, group, point, bin_name, view)
+            legal_count, legal_page = read_urg_bin(legal_functional_report, group, point, bin_name, view)
+            union_count, union_page = read_urg_bin(args.raw_report, group, point, bin_name, view)
             negative_count, negative_page = read_urg_bin(args.negative_report, group, point, bin_name, view)
-            if raw_count != 0 or negative_count != negative_expected:
-                raise ValueError(f"unexpected {group}.{point}.{bin_name} {view} counts: raw={raw_count}, negative={negative_count}")
+            if legal_count != 0 or negative_count != negative_expected:
+                raise ValueError(f"unexpected {group}.{point}.{bin_name} {view} counts: legal={legal_count}, negative={negative_count}")
+            if union_count != negative_expected:
+                raise ValueError(f"unexpected union {group}.{point}.{bin_name} {view} count: union={union_count}, expected={negative_expected}")
             scope = (f"thermo5_sku_uvm_pkg::thermo5_sku_coverage::{group}.{point}.{bin_name}"
                      if view == "package" else f"thermo5_sku_uvm_tb.me.obj.{group}.{point}.{bin_name}")
             functional_rows.append({
@@ -628,13 +634,16 @@ def main() -> int:
                 "coverpoint": point,
                 "bin": bin_name,
                 "meaning": meaning,
-                "raw_product_hits": raw_count,
+                "raw_product_hits": union_count,
+                "legal_product_hits": legal_count,
+                "code_union_hits": union_count,
                 "negative_report_hits": negative_count,
                 "classification": "ILLEGAL_TEST_ONLY",
                 "legal_applicability": "NOT_APPLICABLE",
                 "raw_denominator_action": "RETAIN; no denominator change or waiver",
                 "negative_checker": "thermo5_sku_axil_illegal_frame_test; public protocol_error and reset recovery",
-                "raw_urg_page_sha256": sha256_file(raw_page),
+                "raw_urg_page_sha256": sha256_file(union_page),
+                "legal_urg_page_sha256": sha256_file(legal_page),
                 "negative_urg_page_sha256": sha256_file(negative_page),
                 "product_source_sha": product_sha,
             })
@@ -655,7 +664,7 @@ def main() -> int:
     functional_detail_script = ROOT / "tools" / "hw" / "thermo5_tx_functional_bin_detail.py"
     subprocess.run([
         sys.executable, str(functional_detail_script),
-        "--raw-report", str(args.raw_report),
+        "--raw-report", str(legal_functional_report),
         "--negative-audit", str(args.output_dir / "thermo5-tx-functional-bin-audit.csv"),
         "--out", str(functional_detail_path),
         "--product-source-sha", product_sha,
@@ -679,6 +688,7 @@ def main() -> int:
         "source_product_sha": product_sha,
         "product_configuration": PRODUCT_CONFIG,
         "raw_report": str(args.raw_report),
+        "legal_functional_report": str(legal_functional_report),
         "raw_report_sha256": report_hashes,
         "negative_report": str(args.negative_report),
         "source_ledger": str(args.ledger),
@@ -719,7 +729,7 @@ def main() -> int:
         "functional_bin_detail_report": {
             "file": functional_detail_path.name,
             "sha256": sha256_file(functional_detail_path),
-            "groups_html_sha256": sha256_file(args.raw_report / "groups.html"),
+            "groups_html_sha256": sha256_file(legal_functional_report / "groups.html"),
             "scoreable_rows": len(functional_scoreable),
             "rows_including_existing_urg_model_exclusions": len(functional_detail_rows),
         },
@@ -768,7 +778,7 @@ def main() -> int:
         "",
         "## Functional Group Report audit",
         "",
-        f"The provided product Group Report contains {len(functional_covered)}/{len(functional_scoreable)} denominator-eligible bin records across covergroup-type and monitor-instance views. This includes generated cross bins; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four zero-hit records are two semantic illegal-frame bins repeated in the two report views. Separate negative URG evidence hits them; the Raw records remain in the denominator and are not legal positive-product stimulus.",
+        f"The code Raw Group Report is the union of 13 legal Product VDBs, 11 legal source-gap VDBs, and one separately checked expected-negative malformed-frame VDB. The positive-only Group Report contains {len(functional_covered)}/{len(functional_scoreable)} denominator-eligible functional records across covergroup-type and monitor-instance views; the earlier 170/174 tally omitted 40 EF2 cross-bin records and is superseded. Four illegal-only rows remain visible and are reported separately from legal positive coverage.",
         "",
         "| Group | Raw bin hits / denominator | Uncovered |",
         "|---|---:|---:|",
@@ -784,14 +794,14 @@ def main() -> int:
         "",
         f"The complete bin CSV has {len(functional_detail_rows)} rows: {len(functional_scoreable)} scoreable Raw records and {len(functional_excluded)} bins already marked Illegal/Excluded by the URG model. These model statuses are listed transparently; no URG exclusion directive or waiver was added. See `thermo5-tx-functional-bin-detail.csv` for every group, coverpoint/cross, bin, count, report view, and source-page SHA.",
         "",
-        "| Exact URG scope | Raw product hits | Separate negative hits | Classification |",
-        "|---|---:|---:|---|",
+        "| Exact URG scope | Legal hits | Code-union Raw hits | Negative report hits | Classification |",
+        "|---|---:|---:|---:|---|",
     ]
     for row in functional_rows:
-        lines.append(f"| {row['urg_scope']} | {row['raw_product_hits']} | {row['negative_report_hits']} | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |")
+        lines.append(f"| {row['urg_scope']} | {row['legal_product_hits']} | {row['code_union_hits']} | {row['negative_report_hits']} | ILLEGAL_TEST_ONLY; NOT_APPLICABLE |")
     lines += [
         "",
-        f"Legally applicable positive bins are {summary['functional_legally_applicable_positive_bins']['covered']}/{summary['functional_legally_applicable_positive_bins']['expected']}. The four Raw zero-hit report rows remain visible in the denominator.",
+        f"Legally applicable positive bins are {summary['functional_legally_applicable_positive_bins']['covered']}/{summary['functional_legally_applicable_positive_bins']['expected']}. The four illegal-only rows remain in the positive-only functional inventory; the union code Raw report records their expected-negative hits.",
         "",
         "## Code coverage and root-cause task inventory",
         "",
@@ -821,7 +831,8 @@ def main() -> int:
         "",
         "## Evidence inputs",
         "",
-        f"- Raw Group Report: {args.raw_report}",
+        f"- Code-union Raw Group Report: {args.raw_report}",
+        f"- Positive-only legal-functional Group Report: {legal_functional_report}",
         f"- Separate expected-negative Group Report: {args.negative_report}",
         f"- Source-linked gap ledger: {args.ledger}",
         f"- Source manifest: {source_manifest_path}",
@@ -871,6 +882,8 @@ def main() -> int:
         f"--branch-arms {args.branch_arms} "
         f"--negative-report {args.negative_report} --evidence {args.evidence} "
     )
+    if args.legal_functional_report:
+        command += f"--legal-functional-report {args.legal_functional_report} "
     if args.refresh_evidence:
         command += f"--refresh-evidence {args.refresh_evidence} "
     if args.diagnostic_instrumentation_evidence:
@@ -887,6 +900,10 @@ def main() -> int:
         "input_sha256": {
             "ledger": sha256_file(args.ledger),
             "raw_groups_html": report_hashes,
+            "legal_functional_groups_html": {
+                str(legal_functional_report / "groups.html"):
+                sha256_file(legal_functional_report / "groups.html")
+            },
             "raw_branch_arms_csv": sha256_file(args.branch_arms),
             "negative_urg_groups_html": {
                 str(path): sha256_file(path)

@@ -1,3 +1,32 @@
+## 2026-10-31 16:27 SGT - Close Centered-Cubic pop/push Raw Branches
+
+- Replayed the legal frame-replacement UVM test with public source-valid gaps
+  of 1 through 11 cycles using the exact product VCS binary and seed 610901.
+  Gap 11 reached the single-entry pop/push Branch in both centered stages.
+  All 11 runs passed the independent four-plane bit-true checker for 112
+  output words; UVM errors/fatals and protocol errors were zero.
+- Merged only these directed VDBs with the retained exact-source 13-test Raw
+  product VDB set. Coverage delta: +2 Branch, +2 Condition, +14 Line, +0
+  Toggle. Raw is now 522/637 Branch, 603/849 Condition, 3348/3796 Line, and
+  83575/104480 Toggle. No denominator or source was edited.
+- Refreshed the current source-linked ledger and reapplied the existing
+  Formal/static review: 21,714 rows, 372 `PROVEN_UNREACHABLE`, and 21,342
+  `OPEN` across 452 tasks. Legal Functional Coverage remains 210/210;
+  waivers/exclusions remain zero; gate remains `RAW_100_OPEN`.
+- Added a separate machine-readable Raw refresh summary while preserving the
+  SHA-bound 13-test Formal witness unchanged.
+- The target run recorded 50 total underflow cycles and zero before the final
+  source beat. Since the monitor does not phase-classify those 50 cycles, the
+  source-gap/service-rate contract remains OPEN. The existing 16-cycle case
+  remains a checker failure. See
+  `docs/verification/thermo5-tx-centered-pop-push-coverage.md` and the current
+  evidence paths in the coverage closure index.
+- Checks: VCS directed gap sweep 11/11 PASS; fresh URG merge PASS; Raw
+  denominator inventory and fail-closed gate PASS (`RAW_100_OPEN`); source
+  ledger exact Branch/Condition/Line mapping PASS; current Formal/static
+  disposition updater PASS with 372 reviewed records and zero exclusions.
+  Product RTL and algorithm were unchanged.
+
 ## 2026-10-31 15:25 SGT - Publish EF2 product-path audit as draft PR #19
 
 - Published the verified audit tree as draft PR #19, stacked on the still-open
@@ -5203,3 +5232,34 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   Formal and the source-gap/service-rate contract remain OPEN; real XPM/GT
   Wizard, FPGA PPA, and physical QAM256 BER remain outside Linux signoff. The
   Published as [Draft PR #22](https://github.com/cwu766485-ctrl/dsm_ip/pull/22), stacked on PR #21. The GitHub publication commit is `9bcbe5c829c4bd8d957949865da1009073fc7da6` (tree `0af067229fa54f6ce2e3ab887e05bcb50afb170f`), matching local submission commit `90be89937ca4110385c3d37d6e592ea45ddb6449` by tree. PR #22 is open and mergeable; no PR is merged and no branch is deleted.
+
+## 2026-10-31 17:05 SGT - Refresh current TX code-union signoff and Linux checks
+
+- Reconciled the current Product code-coverage union and replaced stale Step 1/2
+  snapshot counts. The exact current Product SHA remains
+  `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`; legal Functional Coverage is
+  210/210. Raw code coverage is Branch 524/637, Condition 610/849, Line
+  3350/3796, Toggle 83587/104480, FSM states 13/13 and transitions 22/22.
+- Refreshed the ledger summary in the evidence index: 21,691 Raw misses, 371
+  `PROVEN_UNREACHABLE` records retained in Raw, and 21,320 OPEN across 429
+  tasks. Waivers=0, active `.el` exclusions=0, Adjusted=Raw, gate
+  `RAW_100_OPEN`. Four illegal-only Functional rows remain visible in the
+  scoreable union report and are separated from legal positive Functional
+  scoring.
+- Added saved Linux check logs under ignored
+  `runs/thermo5_tx_final_closure_20261031/checks/`. Hardware tool tests
+  passed 19/19; Python reference-model tests passed 44/44; Python byte-compile
+  passed. A fresh static gate recheck returned `RAW_100_OPEN` with the above
+  counters. No full VCS regression was rerun because Product RTL, compile
+  inputs, and the exact-source VDB set were unchanged; 13/13 legal Product VCS
+  results and targeted source-gap/negative runs remain source-linked evidence.
+- Updated the current closure and final signoff snapshots, branch-consolidation
+  audit, machine-readable final evidence, expected-negative evidence, evidence
+  index, and execution frontier. The
+  early-TLAST legal Formal run remains INCONCLUSIVE and does not disposition a
+  bin. No TX algorithm, RX, or AI-DPD RTL changed.
+- Remaining: 21,320 Raw misses are OPEN; DPD Identity and outstanding-word
+  Formal, the 16-cycle source-gap contract, real XPM/GT Wizard, FPGA PPA, and
+  physical QAM256 BER remain unclosed. The independent Integration PR is still
+  to be published from the current PR #22 tree; no PR was merged or branch
+  deleted.

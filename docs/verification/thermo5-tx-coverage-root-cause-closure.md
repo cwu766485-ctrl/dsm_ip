@@ -1,4 +1,148 @@
+# Thermo5 TX Coverage Root-Cause Closure — current code-union audit (2026-10-31)
+
+## Current product Raw and legal Functional coverage
+
+Product source SHA: `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`. Configuration:
+Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state, 32 chronological
+lanes, one-tap identity DPD, AXI-Lite product frontend, and Generic FIFO.
+
+The code Raw URG report combines the 13-test legal Product baseline, 11 legal
+Centered-Cubic source-gap VDBs, and one separate expected-negative malformed-
+frame VDB. Positive Functional Coverage and legal assertion results use the
+positive-only URG report. No VDB, denominator, DUT, or coverage model was
+edited to alter scoreability.
+
+| Coverage | Raw covered / total | Missing | Percent |
+|---|---:|---:|---:|
+| Branch | 524/637 | 113 | 82.2606% |
+| Condition | 610/849 | 239 | 71.8492% |
+| Line | 3,350/3,796 | 446 | 88.2508% |
+| Toggle, both directions | 83,587/104,480 | 20,893 | 80.0029% |
+| FSM states | 13/13 | 0 | 100% |
+| FSM transitions | 22/22 | 0 | 100% |
+
+Adjusted coverage equals Raw. Approved waivers=0 and active `.el` exclusions=0;
+the fail-closed gate remains `RAW_100_OPEN`.
+
+The positive-only functional detail contains 214 scoreable records: 210 legal
+product bins are covered and four rows are two illegal-only semantics repeated
+in covergroup-type and monitor-instance views. Legal applicable Functional
+Coverage is 210/210. The combined code/functional report records all four
+illegal-only rows through the expected-negative VDB (49 `bad_frame` and one
+`malformed_early` event per report view); those records remain present. Twelve
+URG-model Illegal/Excluded rows are listed separately.
+
+## Current source-linked miss ledger
+
+The exact miss ledger contains 21,691 Raw records in 429 source/instance/root-
+cause tasks:
+
+| Status | Bin records | Tasks | Meaning |
+|---|---:|---:|---|
+| `PROVEN_UNREACHABLE` | 371 | 107 | Exact Formal or reviewed static product-elaboration evidence; retained in Raw |
+| `OPEN` | 21,320 | 322 | Needs legal hit, exact non-vacuous proof, or further applicability review |
+
+The 371 records comprise ten current-source Formal bins, 344 EF2
+`PAIR_LOOKAHEAD` static-configuration bins, and 17 fixed-parameter Branch bins.
+There are no active `HIT` rows in the miss ledger because only current Raw
+misses are inventoried; newly hit source rows are listed below and are absent
+from the miss denominator. There are no `WAIVER_CANDIDATE` rows approved as
+waivers. The task breakdown is 44 Branch, 98 Condition, 98 Line, and 189
+Toggle tasks. Of those, 41 Branch, 27 Condition, and 39 Line tasks are
+source-dispositioned; 3 Branch, 71 Condition, 59 Line, and all 189 Toggle
+tasks remain OPEN.
+
+The expected-negative VDB adds +2 Branch, +7 Condition, +2 Line, and +12
+Toggle hits over the positive legal code report. The two formerly missing
+Branch bins are:
+
+| Semantic Bin ID | Exact source point | Classification in union |
+|---|---|---|
+| `TXB-646dd03c99766d877d30` | `rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:141` | Hit by intentionally malformed early TLAST; excluded from legal Functional applicability, not from Raw code inventory |
+| `TXB-158c42868bfe37061f07` | `rtl/axis/dsm_axis14_to_core8_cdc.sv:224` | Hit by malformed frame-start/residual stimulus; the earlier Formal proof remains scoped to the legal frame contract |
+
+The Raw denominator remains 637 Branch, 849 Condition, 3,796 Line, and 104,480
+Toggle bins. This is not a reduction of the denominator.
+
+## Assertion and Formal status
+
+The positive legal report records 13 assertion successes, 15 attempted
+assertions, two uncovered properties, two without attempts, and zero failures.
+The expected-negative test at seed 420102 passes its UVM sticky-error and
+public-reset recovery checker with zero UVM warnings/errors/fatals; two RTL
+assertion failures are expected and are reported only in the negative section.
+
+A fresh legal-source early-TLAST Formal harness reaches the legal 32-beat
+packet-end Cover at depth 59. VC Formal V-2023.12-SP2 reports the exact assertion
+inconclusive at depth 312 and the malformed-target Cover inconclusive at depth
+342. Environment assumptions=0, selected setup violations=0, black boxes=0.
+Both inconclusive results remain OPEN and create no disposition.
+
+The full Identity-DPD payload proof and AXI-Lite outstanding-word saturation /
+underflow proof are also INCONCLUSIVE. The separate 16-cycle source-gap run
+fails its independent underflow checker; the service-rate/gap contract remains
+OPEN. Mutation checking passed for the baseline and detected the `late_gain`
+and `plane_swap` mutants only.
+
+## Signoff decision and next action
+
+Legal applicable Functional Coverage is 100%. DUT Code Coverage and Assertion
+Coverage are not closed: 21,320 code bins remain OPEN, 2 legal assertions are
+uncovered, and 2 have no attempts. Raw 100% and the target of 100% audited
+reachable/applicable code coverage are therefore **not achieved**. No waiver or
+exclusion was used to claim closure.
+
+The next Linux action is to target the three remaining OPEN Branch task groups
+with a legal public stimulus and independent checker, starting with the
+AXI-Lite outstanding-word guards and DPD mailbox stability guard. Stop seed
+sweeps without a new exact Raw hit and return to reachability / coverage-model
+review. Keep DPD Identity, source-gap contract, real XPM/GT Wizard, FPGA PPA,
+and physical QAM256 BER as explicitly open items.
+
+For the complete exact-bin table, see
+[`thermo5-tx-focused-product-gap-ledger.csv.gz`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-ledger.csv.gz)
+and the grouped [closure task table](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure-tasks.csv).
+The current [Formal review](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json),
+[functional detail](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-functional-bin-detail.csv),
+[gate source manifest](data/thermo5-tx-current-source-gaps/thermo5-tx-code-audit-manifest.json),
+and [final evidence package](data/thermo5-tx-final-coverage-evidence.json) bind the exact source, configuration, and report hashes.
+
+---
+
+## Previous source-specific checkpoints
+
 # Thermo5 TX Coverage Root-Cause Closure — Step 1/2
+
+## Latest targeted Raw refresh — 2026-10-31
+
+The fixed product SHA remains `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`.
+A legal frame-replacement source-gap sweep reached both Centered-Cubic
+single-entry pop/push Branches at RTL line 255. The test accepted 64 source
+beats, two TLASTs, and 112 four-plane bit-true output words with zero UVM
+errors/fatals or protocol errors. Gap 11 was the first tested gap to hit both
+stage instances.
+
+The fresh Raw URG union added +2 Branch, +2 Condition, +14 Line, and no Toggle
+bins. Current coverage is Branch 522/637, Condition 603/849, Line 3348/3796,
+and Toggle 83575/104480. Legal Functional Coverage remains 210/210. The
+source-linked miss ledger now contains 21,714 records in 452 tasks: 372
+`PROVEN_UNREACHABLE` and 21,342 `OPEN`. The 372 dispositions are the existing
+11 Formal records plus 344 EF2 static elaboration records and 17 fixed
+parameter Branch records. All remain in Raw. Waivers and active `.el`
+exclusions are zero; Raw equals Adjusted and the gate remains
+`RAW_100_OPEN`.
+
+The sweep's 11-cycle target run reported 50 total underflow cycles but zero
+before the final source beat was accepted. Its monitor does not partition
+total underflows by packet phase, so the legal source-gap/service-rate
+contract remains OPEN. The 16-cycle gap result is still a checker failure
+with 54 underflows. Exact target-bin IDs, per-run commands, URG delta, and
+limits are documented in
+[`thermo5-tx-centered-pop-push-coverage.md`](thermo5-tx-centered-pop-push-coverage.md).
+
+This Raw refresh supersedes the coverage percentages and 21,732-row ledger
+count in the earlier dated checkpoints below. Their Formal and static
+disposition conclusions remain unchanged.
 
 ## Current-source static EF2 product-path closure — 2026-10-31
 
