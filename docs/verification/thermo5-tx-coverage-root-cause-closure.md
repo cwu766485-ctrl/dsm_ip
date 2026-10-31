@@ -43,7 +43,7 @@ Legally applicable positive bins are 210/210. The four Raw zero-hit report rows 
 | line | 3,190/3,796 (84.0358%) | 606 | 123 |
 | toggle | 86,951/104,478 (83.2242%) | 17,527 | 209 |
 
-The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. After exact Formal review, 7 rows are PROVEN_UNREACHABLE and 18586 remain OPEN; Raw URG is unchanged.
+The task CSV has 492 source/instance/location-rooted tasks. The compressed bin ledger preserves all 18,593 source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. After exact Formal review, 8 rows are PROVEN_UNREACHABLE and 18585 remain OPEN; Raw URG is unchanged.
 
 | Metric / root-cause hypothesis | Raw gap rows |
 |---|---:|
@@ -147,6 +147,29 @@ audit now contains seven such records and 18,586 OPEN rows out of 18,593.
 Code coverage percentages do not change. No waiver, exclusion, VDB merge, or
 RTL change was made.
 
+## Product 14:8 CDC outer-case default Branch (2026-10-31)
+
+The exact Raw bin `TXB-f787ff8f614d2d391c4c` maps to the `advance` path at
+`rtl/axis/dsm_axis14_to_core8_cdc.sv:136` followed by the outer
+`case (rem_count_q)` default at line 149, instance
+`thermo5_sku_uvm_tb.dut.u_cdc`. The product-bound harness explicitly
+elaborates `SRC_LANES=14`, `CORE_LANES=8`, `W=16`, FIFO depth 16, and the
+Generic FIFO. A deterministic legal source sends aligned 32-beat packets with
+the exact 14:8 clock ratio; no environment assumptions are used.
+
+VC Formal V-2023.12-SP2 passed at clean verification SHA
+`eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7`: both the residual-set invariant
+and exact default-path assertion are proven. The path Cover is uncoverable;
+legal advancement and a completed legal frame are covered at depths 2 and 63.
+The setup report has zero violations and the model has zero black boxes. The
+fail-closed runner and complete local evidence are under
+`runs/thermo5_cdc_default_branch_20261031_eff0c41/`.
+
+The exact source-bound audit row is now `PROVEN_UNREACHABLE` but stays in Raw.
+No URG/VDB, denominator, DUT RTL, waiver, or exclusion changed. Code coverage
+remains `RAW_100_OPEN`; eight exact rows are proven unreachable and 18,585
+remain OPEN out of 18,593.
+
 ## Evidence inputs
 
 - Raw Group Report: runs/thermo5_tx_final_vcs_resume_20261030_41691/product_raw_after_register_access
@@ -157,7 +180,7 @@ RTL change was made.
 
 ## Formal disposition update
 
-The source-bound review closed 7 exact bins as PROVEN_UNREACHABLE; 18586 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
+The source-bound review closed 8 exact bins as PROVEN_UNREACHABLE; 18585 remain OPEN. Formal Inconclusive is not a closure. Raw URG and its denominator are unchanged; approved waivers and active .el exclusions are both zero.
 
 | Semantic Bin ID | Assertion | Cover | Disposition |
 |---|---|---|---|
@@ -168,6 +191,7 @@ The source-bound review closed 7 exact bins as PROVEN_UNREACHABLE; 18586 remain 
 | `TXB-65f3dfeee7bc0b854f52` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-74a3bacf0956921ac9bf` | `thermo5_axil_cfg_coverage_harness.a_coeff_read_default_unreachable` | `thermo5_axil_cfg_coverage_harness.c_coeff_read_default_arm_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
 | `TXB-872eb98e51c3229e4c86` | `thermo5_axil_cfg_coverage_harness.a_line88_tuple_unreachable` | `thermo5_axil_cfg_coverage_harness.c_line88_tuple_unreachable` | PROVEN_UNREACHABLE; retained in Raw |
+| `TXB-f787ff8f614d2d391c4c` | `thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable` | `thermo5_cdc_default_branch_harness.c_exact_default_path` | PROVEN_UNREACHABLE; retained in Raw |
 
 Reviewed candidates with tautological or otherwise invalid Formal evidence remain OPEN:
 

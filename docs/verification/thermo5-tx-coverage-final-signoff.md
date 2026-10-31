@@ -75,6 +75,31 @@ toggle 86,951/104,478, FSM state 13/13 and transition 22/22. The ledger now
 contains seven proven-unreachable rows and 18,586 OPEN rows out of 18,593.
 Waivers and active `.el` exclusions remain zero.
 
+## Product 14:8 CDC outer-case default Branch (2026-10-31)
+
+The exact Raw bin `TXB-f787ff8f614d2d391c4c` maps to the `advance` path at
+`dsm_axis14_to_core8_cdc.sv:136` followed by the outer `case (rem_count_q)`
+default at line 149, in `thermo5_sku_uvm_tb.dut.u_cdc`. A product-bound VC
+Formal harness uses the actual 14:8 gearbox and Generic FIFO with explicit
+16-bit samples, FIFO depth 16, a deterministic legal aligned 32-beat source,
+and the 14:8 clock ratio. It asserts the exact path is unreachable and that
+the residual remains in `{0,2,4,6,8,10,12}`.
+
+VC Formal V-2023.12-SP2 passed at clean verification SHA
+`eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7`: 2/2 assertions proven; the exact
+default-path Cover is uncoverable; normal advancement and a completed legal
+frame Covers are reached (depths 2 and 63). There are no environment
+assumptions, setup violations, black boxes, or tautological goals. The exact
+command, properties, setup, console, source hashes, and manifest are under
+`runs/thermo5_cdc_default_branch_20261031_eff0c41/`.
+
+The source-bound ledger now classifies this one bin as
+`PROVEN_UNREACHABLE`; the Raw URG bin and denominator are retained. There are
+eight such audit rows and 18,585 OPEN rows out of 18,593. Raw code counters are
+unchanged; no VDB merge, waiver, `.el`, denominator edit, or DUT RTL change was
+made. A full VCS regression was not repeated because no VCS compile input or
+product RTL changed.
+
 An exploratory mailbox-stability assertion remains OPEN. Its full Formal run
 was inconclusive; a selected-property trace attempt marked the AW/W stability
 assumptions `not_run`, so that witness is not valid evidence under legal AXI
@@ -122,8 +147,8 @@ product-bound cadence still needs analysis. See the
 | DUT assertion status | 13/15 attempted (86.67%) | unchanged | 2 uncovered and 2 without attempts are retained in the URG status table |
 
 There are no approved waivers and no active URG exclusions. Adjusted therefore
-equals Raw. Seven exact bins have a Formal `PROVEN_UNREACHABLE` disposition;
-they remain visible in the Raw URG denominators. The ledger contains 18,586
+equals Raw. Eight exact bins have a Formal `PROVEN_UNREACHABLE` disposition;
+they remain visible in the Raw URG denominators. The ledger contains 18,585
 OPEN records out of 18,593. No adjusted score is used to claim closure.
 
 The complete product URG Group Report has 214 denominator-eligible bin records
@@ -174,6 +199,7 @@ retains exact semantic IDs and separate negative-test hits.
 |---|---|---|
 | Centered interpolator product parameters | VC Formal reports 6/6 assertions proven and 5/9 Covers hit, 4/9 uncoverable; one assertion is explicitly tautological; one source-stability assumption is non-vacuous | Two exact frame-tail dispositions are retained; the tautological append-arm candidate remains OPEN. Single-entry pop/push is formally reachable but still missed by targeted product UVM. |
 | AXI-Lite configuration and address decode | 4/4 assertions proven; one legal coefficient-read Cover hit; three exact path Covers uncoverable; zero environment assumptions, setup violations, or black boxes; no tautological goals | Four exact Raw bins across Branch/Condition/Line are proven unreachable, including the read default Branch at line 135; mailbox stability and `MAX_TAPS=1` guard remain OPEN |
+| Product 14:8 CDC outer-case default | 2/2 assertions proven; exact `advance && case-default` Cover uncoverable; normal advancement and completed-frame Covers hit; zero assumptions/setup violations/black boxes | Exact `TXB-f787ff8f614d2d391c4c` remains in Raw and is classified `PROVEN_UNREACHABLE`; denominator unchanged |
 | AXI-Lite outstanding-word guards | Product-bound proof used legal source/AXI-Lite sequencers, arbitrary PA backpressure and no external assumptions; source/core/output Covers hit, both assertions non-vacuous | Both line-203 saturation and line-204 underflow assertions and exact guard Covers were INCONCLUSIVE (depths 142/102 and 141/103); both Raw Branch bins remain OPEN |
 | EF2 arithmetic/state | 6/6 assertions proven; 3/3 Covers hit; zero setup violations and black boxes | Does not increase URG hits |
 | Product EF2 parameter guards | The parameter guard assertion is proven and invalid-parameter Cover is uncoverable; pair-look-ahead-disabled assertion/Cover were reported as tautological | No ledger closure is credited from the tautological pair-look-ahead properties; parameter evidence remains configuration-bound |
@@ -312,7 +338,7 @@ synthetic or unreviewed exclusion was installed.
 ## Acceptance status and remaining work
 
 - **Legal functional coverage:** 210/210 applicable scoreable records; negative-only bins reported separately. The complete report lists 214 scoreable records and 12 pre-existing URG model Illegal/Excluded records.
-- **Reachable/applicable DUT code coverage:** not closed; 18,586 rows remain OPEN after seven exact Formal-proven-unreachable dispositions.
+- **Reachable/applicable DUT code coverage:** not closed; 18,585 rows remain OPEN after eight exact Formal-proven-unreachable dispositions.
 - **Raw 100% code coverage:** `RAW_100_OPEN`; not claimed.
 - **Identity DPD Formal:** OPEN / inconclusive.
 - **TX worst-case benchmark:** model-only evidence exists; product BER/BLER acceptance threshold is undefined, so product communication acceptance remains OPEN.

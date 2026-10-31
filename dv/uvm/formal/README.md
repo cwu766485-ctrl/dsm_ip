@@ -18,6 +18,7 @@ for that job:
 | DPD sample counter | `thermo5_dpd_counter_harness.sv` | bounded and unbounded counter tops |
 | Generic FIFO CDC / 14:8 residual | `thermo5_generic_cdc_harness.sv` | `thermo5_cdc_residual_harness` |
 | Product 14:8 CDC frame-end branch | `thermo5_cdc_end_branch_harness.sv` | `thermo5_cdc_end_branch_harness` |
+| Product 14:8 CDC outer-case default | `thermo5_cdc_default_branch_harness.sv` | `thermo5_cdc_default_branch_harness` |
 | Identity DPD payload/latency | `thermo5_dpd_identity_harness.sv` | `thermo5_identity_harness` |
 | Identity DPD intermediate lemmas | `thermo5_dpd_identity_lemmas_harness.sv` | `thermo5_identity_lemmas_harness` |
 | Interpolator bounds | `thermo5_interp_bounds_harness.sv` | `thermo5_interp_bounds_harness` |
@@ -50,7 +51,19 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs cdc_end_branch --out-dir runs/thermo5_cdc_end_branch_review
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py \
+  runs/thermo5_cdc_default_branch_review
 ```
+
+The CDC outer-case proof binds the Generic FIFO and 14:8 product gearbox to a
+legal aligned 32-beat packet source. It proves the residual count remains in
+`{0,2,4,6,8,10,12}` and the exact `advance && case-default` path is unreachable.
+The matching Cover must be uncoverable while Covers for normal advancement and
+a completed frame must be reached. The flow uses no environment assumptions
+and fails on Formal setup violations, black boxes, or tautological goals. Its
+Raw URG bin remains in the denominator; Formal reachability is audit evidence,
+not a simulator coverage hit.
 
 The EF2 assertions cover all 32 chronological lanes in I and Q. They prove
 the 22-bit RTL arithmetic agrees with its one-bit-wider signed recomputation,

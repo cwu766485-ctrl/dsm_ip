@@ -44,6 +44,9 @@ make -C dv/uvm/sim thermo5-gt-parent-link-fault-vcs \
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs ef2 ef2_pair --out-dir runs/thermo5_ef2_signoff_REVISION/formal
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py \
+  runs/thermo5_cdc_default_branch_review
 ```
 
 `package_thermo5_linux_signoff.py` cross-checks that the current Git SHA,

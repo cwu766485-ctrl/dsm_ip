@@ -800,6 +800,64 @@
       "sources_unchanged": true,
       "status": "INCONCLUSIVE",
       "tool": "VC Formal V-2023.12-SP2"
+    },
+    {
+      "assertion_summary": {
+        "found": 2,
+        "proven": 2
+      },
+      "assertions": [
+        [
+          "proven",
+          "thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_default_branch_harness.a_product_residual_legal"
+        ]
+      ],
+      "assumption_count": 0,
+      "assumptions": [],
+      "black_box_instances": [
+        "0"
+      ],
+      "console_sha256": "0c92594662b9cdb2920dbcd80584d3f65d17ad68c6c518d80b8012abe3c835d4",
+      "cover_summary": {
+        "covered": 2,
+        "found": 3,
+        "uncoverable": 1
+      },
+      "covers": [
+        [
+          "covered",
+          "thermo5_cdc_default_branch_harness.c_completed_legal_frame"
+        ],
+        [
+          "uncoverable",
+          "thermo5_cdc_default_branch_harness.c_exact_default_path"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_default_branch_harness.c_product_advance"
+        ]
+      ],
+      "directory": "runs/thermo5_cdc_default_branch_20261031_eff0c41",
+      "exit_code": 0,
+      "formal_manifest_sha256": "8baeec8c31776a884fc9b77127e1b791b959cb809fbdd2f9e4e84afb4f9bb30c",
+      "name": "cdc_default_branch",
+      "properties_sha256": "d5b61e60e9075f9bcfce8fff10d3a3bfb388ad4676bac0280a52f8d3f0f043ba",
+      "reported_status": "PASS",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py": "43f829273111832476ff90dd2595686241a6109fcf5724f8e423fe6153619097",
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.tcl": "41d8c6b4ce408de553dafdb6fde8a785850e49adf332025f9105266f49b8c332",
+        "dv/uvm/formal/thermo5_cdc_default_branch_harness.sv": "1f24962d7d98c5b52505445d415c54c208d5290cfa40b810ea3a2f73ad7373e1",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "2236280d63824491f59e1b9becb5a0f634ebfcb3b6f9a5282048a4f990673555",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PASS",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
     }
   ],
   "bins": [
@@ -942,29 +1000,55 @@
       "status": "PROVEN_UNREACHABLE"
     },
     {
-      "semantic_bin_id": "TXB-222f90478aca6253d9a5",
       "assertion": "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable",
-      "cover": "thermo5_cdc_end_branch_harness.c_immediate_end_arm",
-      "formal_run": "runs/thermo5_cdc_end_branch_20261031_bcf1f9a/cdc_end_branch",
+      "assumptions": [],
+      "bin": "117:0/-/1/-/-/0 2 4 6/1/-/1/1/-/-",
       "configuration": "axil",
+      "console_sha256": "60fdeaba9fa80fdbce87fee0f83cce16476db9a9ce234803867ad47ecb1d8000",
+      "cover": "thermo5_cdc_end_branch_harness.c_immediate_end_arm",
+      "evidence_note": "Exact 14:8 product CDC with Generic FIFO; deterministic legal full-rate source; product frame-end context and completed-frame covers reached; target arm uncoverable.",
+      "formal_run": "runs/thermo5_cdc_end_branch_20261031_bcf1f9a/cdc_end_branch",
       "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
       "metric": "branch",
-      "bin": "117:0/-/1/-/-/0 2 4 6/1/-/1/1/-/-",
+      "properties_sha256": "c42a8079a7dc75cc95f1f169f2bd9f8db39dd2507a4dc112f34f6c3222b872d2",
+      "semantic_bin_id": "TXB-222f90478aca6253d9a5",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
       "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:210",
-      "assumptions": [],
-      "evidence_note": "Exact 14:8 product CDC with Generic FIFO; deterministic legal full-rate source; product frame-end context and completed-frame covers reached; target arm uncoverable.",
-      "properties_sha256": "c42a8079a7dc75cc95f1f169f2bd9f8db39dd2507a4dc112f34f6c3222b872d2",
-      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
-      "console_sha256": "60fdeaba9fa80fdbce87fee0f83cce16476db9a9ce234803867ad47ecb1d8000",
       "source_sha256": {
-        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "2236280d63824491f59e1b9becb5a0f634ebfcb3b6f9a5282048a4f990673555",
-        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
-        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
-        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
         "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
-        "dv/uvm/formal/run_thermo5_scoped_formal.py": "1c1fe6f08c4b1edc672233f2ac4b1432a047172b73993c90097609103a0fa196"
+        "dv/uvm/formal/run_thermo5_scoped_formal.py": "1c1fe6f08c4b1edc672233f2ac4b1432a047172b73993c90097609103a0fa196",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "2236280d63824491f59e1b9becb5a0f634ebfcb3b6f9a5282048a4f990673555",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
       }
+    },
+    {
+      "assertion": "thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable",
+      "assumptions": [],
+      "bin": "117:0/-/1/-/-/default/-/-/-/-/-/-",
+      "configuration": "axil",
+      "console_sha256": "0c92594662b9cdb2920dbcd80584d3f65d17ad68c6c518d80b8012abe3c835d4",
+      "cover": "thermo5_cdc_default_branch_harness.c_exact_default_path",
+      "evidence_note": "Exact product 14:8 CDC with Generic FIFO; deterministic aligned 32-beat packet source; no environment assumptions; residual-legal and exact default-path assertions proven; legal advance/frame Covers reached; matching default-path Cover uncoverable.",
+      "formal_run": "runs/thermo5_cdc_default_branch_20261031_eff0c41/cdc_default_branch",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "branch",
+      "properties_sha256": "d5b61e60e9075f9bcfce8fff10d3a3bfb388ad4676bac0280a52f8d3f0f043ba",
+      "semantic_bin_id": "TXB-f787ff8f614d2d391c4c",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "source_position": "rtl/axis/dsm_axis14_to_core8_cdc.sv:136",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py": "43f829273111832476ff90dd2595686241a6109fcf5724f8e423fe6153619097",
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.tcl": "41d8c6b4ce408de553dafdb6fde8a785850e49adf332025f9105266f49b8c332",
+        "dv/uvm/formal/thermo5_cdc_default_branch_harness.sv": "1f24962d7d98c5b52505445d415c54c208d5290cfa40b810ea3a2f73ad7373e1",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "2236280d63824491f59e1b9becb5a0f634ebfcb3b6f9a5282048a4f990673555",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PROVEN_UNREACHABLE"
     }
   ],
   "disposition": "PROVEN_UNREACHABLE",

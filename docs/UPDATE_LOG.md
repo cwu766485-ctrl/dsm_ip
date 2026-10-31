@@ -1,3 +1,32 @@
+## 2026-10-31 11:18 SGT - Prove the 14:8 CDC outer default-path bin unreachable
+
+- Added an isolated product-bound VC Formal harness and runner for Raw Branch
+  `TXB-f787ff8f614d2d391c4c`: production 14:8 gearbox, Generic FIFO, explicit
+  16-bit/depth-16 configuration, legal aligned 32-beat packets, and 14:8 clocks.
+- The clean-source VC Formal V-2023.12-SP2 run at
+  `eff0c4169d40320ad8bb08e0fb78bc8ce72b2ed7` passed 2/2 assertions. The exact
+  `advance && outer-case-default` Cover is uncoverable; normal advance and a
+  complete legal frame are covered. No assumptions, setup violations, black
+  boxes, or tautological goals were reported.
+- The source-bound updater moved exactly one ledger row to
+  `PROVEN_UNREACHABLE`; 8 rows are now proven unreachable and 18,585/18,593
+  remain OPEN. Raw URG, all code denominators/counters, and VDBs are unchanged;
+  waivers and `.el` exclusions remain zero.
+- The initial isolated Tcl run failed the fail-closed setup gate because it
+  omitted the established reset-check configuration. That setup was aligned
+  with the existing flow and a new clean-source run passed; the failed run is
+  not counted as evidence.
+- Checks: `py_compile` for the Formal runner; source-bound disposition
+  reconciliation; Python Formal-disposition unit tests; `git diff --check`;
+  Raw ledger/denominator/hash audit. VCS full regression was not repeated
+  because no DUT RTL or VCS compile input changed. VCS license is available.
+- Publication: separate draft PR stacked on PR #14 is being prepared; no PR
+  was merged.
+- Remaining: 18,585 code-gap rows OPEN; Raw 100% is not claimed; legal
+  Functional Coverage is 210/210 applicable positive bins; source-manifest
+  mismatch, outstanding-word/DPD Formal gaps, and vendor/physical signoff stay
+  open.
+
 ## 2026-10-31 11:06 SGT - Prove the fixed 14:8 CDC frame-end arm unreachable
 
 - Added a product-bound VC Formal harness using the production 14:8 CDC
