@@ -242,13 +242,13 @@
     },
     "execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "11e5d3ecd5a79af84b15e53a0f72b1b4f463f907f7aeec827c58ad622489208f",
-      "size_bytes": 22536
+      "sha256": "2e3044332d6ffaf7076cb0baf4d565456a69495c9f154872c1d630ff54d67b63",
+      "size_bytes": 22814
     },
     "update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "ca2839d7ca7fc3fa22f8f42d6a67e1f5ccbe6b758051f1a7227ab5e5a5de4b93",
-      "size_bytes": 369268
+      "sha256": "46da9b281b717234731108ea97b4d25dd3399c127d19aeea13e8251d3081fc7a",
+      "size_bytes": 369899
     },
     "coverage_gate_static_recheck": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate-static-audit-recheck.json",
@@ -271,7 +271,7 @@
     "product_compile_manifest_refresh": "python3.12 tools/hw/thermo5_tx_product_compile_manifest.py --compile-log runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/compile.log --source-manifest runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/compile-source-parent.json --product-filelist dv/uvm/sim/thermo5_sku_filelist.f --coverage-hierarchy dv/uvm/sim/thermo5_tx_product_coverage.hier --output docs/verification/data/thermo5-tx-product-compile-manifest.json",
     "coverage_gate_static_recheck": "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests_denominator/summary.json --groups-html runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/groups.html --waivers-csv runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate/waivers.csv --el-file runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate/thermo5_tx_main.el --source-manifest docs/verification/data/thermo5-tx-product-compile-manifest.json --output runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate-static-audit-recheck.json"
   },
-  "created_local": "2026-10-31 15:20 SGT",
+  "created_local": "2026-10-31 15:25 SGT",
   "disposition": "LINUX_CLOSURE_OPEN; RAW_100_OPEN",
   "limitations": [
     "Current frontend VCS run is a 13-test directed subset, not full regression or full GT Parent bit-true verification.",
@@ -1228,6 +1228,15 @@
       "line": "3334/3796",
       "toggle": "83575/104480",
       "gate_report": "runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate_13tests/coverage-gate-static-audit-recheck.json"
+    },
+    "published_pr19": {
+      "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/19",
+      "state": "OPEN_DRAFT_UNMERGED",
+      "mergeable": true,
+      "base_branch": "codex/thermo5-frame-tail-closure-r2",
+      "base_sha": "b93bde394373c1a1ba7dec54c56b99373e7d8760",
+      "initial_publication_commit": "140f99ac9ec653291ec6304613bd713d92525688",
+      "tree_sha": "7082a4032cb51fd9b3a9f6433de8b0d3a7d44433"
     }
   },
   "rootcause_manifest_bound_evidence_sha256": "bea7625ba6046efa3bcc126c40ce4badf22dc2cf47425b4b656de30a25c8dc79",

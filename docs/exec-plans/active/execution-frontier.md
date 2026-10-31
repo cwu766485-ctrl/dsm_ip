@@ -2,7 +2,7 @@
 
 ## Current execution state: EF2 PAIR_LOOKAHEAD product-path audit (2026-10-31)
 
-PR #17 remains open and unmerged at `e26d5d20e26ede307f9ce6699241dbe4ea76fa30`. PR #18 remains open and unmerged on `codex/thermo5-frame-tail-closure-r2`, now at `b93bde394373c1a1ba7dec54c56b99373e7d8760` (tree `672b628b237ab15a78fe8279006d1769c90d038f`). The active local branch is `codex/thermo5-pair-lookahead-product-audit`, based on PR #18; prepare it as a separate draft PR after checks. Do not merge PRs or delete refs.
+PR #17 remains open and unmerged at `e26d5d20e26ede307f9ce6699241dbe4ea76fa30`. PR #18 remains open and unmerged on `codex/thermo5-frame-tail-closure-r2`, at `b93bde394373c1a1ba7dec54c56b99373e7d8760` (tree `672b628b237ab15a78fe8279006d1769c90d038f`). Draft PR #19 ([EF2 PAIR_LOOKAHEAD product-path audit](https://github.com/cwu766485-ctrl/dsm_ip/pull/19)) is open, unmerged, and stacked on PR #18. The active local branch `codex/thermo5-pair-lookahead-product-audit` is synchronized with that PR. Its initial remote publication commit was `140f99ac9ec653291ec6304613bd713d92525688`, with tree `7082a4032cb51fd9b3a9f6433de8b0d3a7d44433`, matching the verified local tree. Do not merge PRs or delete refs.
 
 The tracked VCS product compile manifest was stale. It has been regenerated from the saved 13-test VCS compile log and captured parent manifest; 75 parsed HDL/UVM files and all 77 source/control entries match the exact run. Current product configuration remains Centered-Cubic, EF2 ORDER=2/STEP=5120, DPD_MAX_TAPS=1, AXI-Lite, and Generic FIFO. No RTL, product algorithm, RX, or AI-DPD changed; no full regression was repeated.
 

@@ -1,3 +1,14 @@
+## 2026-10-31 15:25 SGT - Publish EF2 product-path audit as draft PR #19
+
+- Published the verified audit tree as draft PR #19, stacked on the still-open
+  PR #18 branch `codex/thermo5-frame-tail-closure-r2`. PR #19 is open,
+  unmerged, and GitHub reports it mergeable.
+- Remote publication commit: `140f99ac9ec653291ec6304613bd713d92525688`; tree
+  `7082a4032cb51fd9b3a9f6433de8b0d3a7d44433`, identical to the local verified
+  tree. The local branch is synchronized with the published branch.
+- No PR was merged. The exact evidence and current review state are in the
+  [PR #19](https://github.com/cwu766485-ctrl/dsm_ip/pull/19).
+
 ## 2026-10-31 15:20 SGT - Audit EF2 PAIR_LOOKAHEAD product elaboration closure
 
 - Rebuilt the tracked 77-entry product compile manifest from the exact 13-test
