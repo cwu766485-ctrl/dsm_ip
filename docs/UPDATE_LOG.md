@@ -18,6 +18,9 @@
   assumptions/setup violations/black boxes); disposition reconciliation and
   raw-preservation check PASS. No DUT RTL or VCS compile input changed, so the
   existing VCS PASS results were retained without repeating the full UVM run.
+- Publication: independent draft [PR #14](https://github.com/cwu766485-ctrl/dsm_ip/pull/14),
+  stacked on PR #13, remote head `060b1531ebdb746bbb53732265be80911d3d066d`
+  and tree `a9cbb49688c12d4be66fbe3634b22eb279df5dd5`; not merged.
 - Remaining: 18,586 code-gap rows OPEN, including reachable Branch/Condition
   work; product-bound outstanding-word and DPD identity Formal remain
   inconclusive; source-gap underflow contract, exact-current-worktree Raw
