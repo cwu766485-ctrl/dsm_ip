@@ -5167,5 +5167,7 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   the superseded first Formal run remains under `..._retry2/` for traceability.
 - Remaining: 21,377 OPEN Raw bins, DPD identity payload Formal, the 16-cycle
   source-gap/service-rate contract, XPM/GT Wizard, FPGA PPA, and physical
-  QAM256 BER remain open. No PR #21 has been published yet; this work is on a
-  separate local branch based on PR #20.
+  QAM256 BER remain open. Published as [Draft PR #21](https://github.com/cwu766485-ctrl/dsm_ip/pull/21),
+  stacked on PR #20; initial remote commit `8fc3cf519ee100b681edb751c38d2a8a9b536523`
+  has the same tree as local submission `e2d3d171aa982ad5dc1a7fd62300061bc64eca87`.
+  The PR remains unmerged.

@@ -172,23 +172,23 @@
     },
     "current_execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "d9b0e1d743ebec26452b2f22337f613f04cd4ca7d48dbbe1a92846b0e4c137e4",
-      "size_bytes": 23193
+      "sha256": "a3c5a256ec8edb6bf4890d9a06c227deef003b8779ae14aa58255bdadbf91334",
+      "size_bytes": 23344
     },
     "current_final_signoff_snapshot": {
       "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
-      "sha256": "de9d46b4a5e6f0798e216cd72c584c2541b3deb8afef5bed223a0e9a67906fd4",
-      "size_bytes": 31370
+      "sha256": "cac1cba08df78455f5d30f54a3314a423befb259b9cd68311cff6fb2322a89e5",
+      "size_bytes": 31515
     },
     "current_root_cause_closure_document": {
       "path": "docs/verification/thermo5-tx-coverage-root-cause-closure.md",
-      "sha256": "41051fdf77191756551317653701253f0b6c4e0bd4e5ab224c23ab44b4477368",
-      "size_bytes": 49758
+      "sha256": "416fcc15c0ebe14067ac63239baf2008412f58c5748afa1f9ae5d101bc285d74",
+      "size_bytes": 49895
     },
     "current_update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "46c3991673b070c9ccafd3eeb1a013aa32e3ba049c475a217fb48c0cf565ce7f",
-      "size_bytes": 375225
+      "sha256": "e09bf24ad836b1ac5c27fa4147ec27dc8991a38e046a14770519d17cea920628",
+      "size_bytes": 375408
     },
     "dpd_identity_formal_summary": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/dpd_identity_formal_retry/formal_summary.json",
@@ -237,8 +237,8 @@
     },
     "execution_frontier": {
       "path": "docs/exec-plans/active/execution-frontier.md",
-      "sha256": "d9b0e1d743ebec26452b2f22337f613f04cd4ca7d48dbbe1a92846b0e4c137e4",
-      "size_bytes": 23193
+      "sha256": "a3c5a256ec8edb6bf4890d9a06c227deef003b8779ae14aa58255bdadbf91334",
+      "size_bytes": 23344
     },
     "formal_readme": {
       "path": "dv/uvm/formal/README.md",
@@ -287,8 +287,8 @@
     },
     "linux_signoff_snapshot": {
       "path": "docs/verification/thermo5-tx-coverage-final-signoff.md",
-      "sha256": "de9d46b4a5e6f0798e216cd72c584c2541b3deb8afef5bed223a0e9a67906fd4",
-      "size_bytes": 31370
+      "sha256": "cac1cba08df78455f5d30f54a3314a423befb259b9cd68311cff6fb2322a89e5",
+      "size_bytes": 31515
     },
     "mutation_manifest": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/mutation_13tests_final/manifest.json",
@@ -312,8 +312,8 @@
     },
     "root_cause_closure_document": {
       "path": "docs/verification/thermo5-tx-coverage-root-cause-closure.md",
-      "sha256": "41051fdf77191756551317653701253f0b6c4e0bd4e5ab224c23ab44b4477368",
-      "size_bytes": 49758
+      "sha256": "416fcc15c0ebe14067ac63239baf2008412f58c5748afa1f9ae5d101bc285d74",
+      "size_bytes": 49895
     },
     "root_cause_manifest": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-rootcause-manifest.json",
@@ -357,8 +357,8 @@
     },
     "update_log": {
       "path": "docs/UPDATE_LOG.md",
-      "sha256": "46c3991673b070c9ccafd3eeb1a013aa32e3ba049c475a217fb48c0cf565ce7f",
-      "size_bytes": 375225
+      "sha256": "e09bf24ad836b1ac5c27fa4147ec27dc8991a38e046a14770519d17cea920628",
+      "size_bytes": 375408
     },
     "vcs_replay_results": {
       "path": "runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/focused_replay_results.json",
@@ -427,8 +427,8 @@
     },
     "cdc_frame_end_threshold_check_manifest": {
       "path": "runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/checks/check_manifest.json",
-      "sha256": "8527154a8c442ba68906a22631131a2019dd4c44ad17d1d148033e8c48e58d71",
-      "size_bytes": 6359
+      "sha256": "540aa339f496cfeceb658394d277161d8b548d358039fd18521cab7cebd4a90a",
+      "size_bytes": 7016
     },
     "cdc_frame_end_threshold_formal_disposition_log": {
       "path": "runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/checks/formal-disposition-updater.log",
@@ -472,8 +472,8 @@
     },
     "cdc_frame_end_threshold_closure_evidence_audit": {
       "path": "runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/checks/closure-evidence-audit.json",
-      "sha256": "70fda08113290740d26497cc55fa2ef0633725f87a806458fcf7621e630de3c8",
-      "size_bytes": 904
+      "sha256": "5c71b3e32352ed81316fd8a332cb697a84dadfd439c6aeeb9f14f3801f0c2b26",
+      "size_bytes": 1080
     }
   },
   "commands": {
@@ -497,7 +497,7 @@
     "formal_dispositions_pr21": "python3.12 tools/hw/thermo5_tx_formal_dispositions.py --ledger docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-ledger.csv.gz --tasks docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure-tasks.csv --summary docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-gap-summary.json --manifest docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-rootcause-manifest.json --closure-report docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md --review docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
     "coverage_gate_static_recheck_pr21": "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests_denominator/summary.json --groups-html runs/thermo5_cdc_resetready_repro_20261031/product_focused_urg_product_13tests/groups.html --waivers-csv runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate/waivers.csv --el-file runs/thermo5_cdc_resetready_repro_20261031/current_coverage_gate/thermo5_tx_main.el --source-manifest docs/verification/data/thermo5-tx-product-compile-manifest.json --output runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/checks/coverage-gate-static.json"
   },
-  "created_local": "2026-10-31 15:50 +08",
+  "created_local": "2026-10-31 15:52 +08",
   "disposition": "LINUX_CLOSURE_OPEN; RAW_100_OPEN",
   "limitations": [
     "Current frontend VCS run is a 13-test directed subset, not full regression or full GT Parent bit-true verification.",
@@ -1566,6 +1566,28 @@
       "target_disposition": "PROVEN_UNREACHABLE; Raw retained; no coverage hit",
       "raw_coverage_changed": false,
       "ignored_assertion_warning": "None in final run; runner rejects ignored immediate assertions."
+    },
+    "published_pr20": {
+      "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/20",
+      "state": "OPEN_DRAFT_UNMERGED",
+      "base_branch": "codex/thermo5-pair-lookahead-product-audit",
+      "base_sha": "0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77",
+      "head_branch": "codex/thermo5-cdc-frame-start-alignment",
+      "head_sha": "cc32661a576d30634375f61552621e49f351c541",
+      "mergeable": true
+    },
+    "published_pr21": {
+      "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/21",
+      "state": "OPEN_DRAFT_UNMERGED",
+      "base_branch": "codex/thermo5-cdc-frame-start-alignment",
+      "base_sha": "cc32661a576d30634375f61552621e49f351c541",
+      "head_branch": "codex/thermo5-cdc-frame-end-threshold-formal",
+      "initial_remote_commit": "8fc3cf519ee100b681edb751c38d2a8a9b536523",
+      "initial_remote_tree": "e2d3d171aa982ad5dc1a7fd62300061bc64eca87",
+      "local_submission_commit": "d85634695e657f921a8f339b26ca19394bb3828f",
+      "local_submission_tree": "e2d3d171aa982ad5dc1a7fd62300061bc64eca87",
+      "tree_match_verified": true,
+      "mergeable": true
     }
   },
   "rootcause_manifest_bound_evidence_sha256": "939484662700d58d60c31fb97cd0748b680a6a66671b0be4113e9698eadf0ae6",

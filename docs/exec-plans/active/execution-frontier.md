@@ -2,7 +2,7 @@
 
 ## Current execution state: CDC frame-end threshold reachability (2026-10-31)
 
-PR #17 is the Integration Review from PR #16; PRs #17–#20 remain open and unmerged. PR #20 is open/draft on `codex/thermo5-cdc-frame-start-alignment`, stacked on PR #19 at `cc32661a576d30634375f61552621e49f351c541`. The active local branch `codex/thermo5-cdc-frame-end-threshold-formal` is based on that exact PR #20 head. No PR #21 has been published yet. Do not merge PRs or delete refs.
+PRs #17–#21 are open, draft, and unmerged. PR #20 is on `codex/thermo5-cdc-frame-start-alignment`, stacked on PR #19 at `cc32661a576d30634375f61552621e49f351c541`. Draft PR #21 ([CDC final-word threshold Formal](https://github.com/cwu766485-ctrl/dsm_ip/pull/21)) is stacked on PR #20. Its verified initial publication commit is `8fc3cf519ee100b681edb751c38d2a8a9b536523`, with tree `e2d3d171aa982ad5dc1a7fd62300061bc64eca87`, matching the local submitted tree. The active branch is `codex/thermo5-cdc-frame-end-threshold-formal`. Do not merge PRs or delete refs.
 
 The new standalone VC Formal V-2023.12-SP2 job instantiates the production CDC and Generic FIFO with explicit `SRC_LANES=14`, `CORE_LANES=8` and sends two legal consecutive 32-beat packets. Three assertions are proven; the frame-end tail-drain property is non-vacuous. Four of six Covers are reached, including the second frame-end pop at depth 119; the exact short-final-word Branch target and misaligned-frame-start target Covers are uncoverable. The final run is `runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/`; an ignored initial assertion from the superseded first attempt was removed, and the runner now rejects ignored assertions. SVA environment assumptions=0, selected setup violations=0, black boxes=0, no tautology warnings or ignored assertions.
 
@@ -12,7 +12,7 @@ Checks: VC Formal targeted run PASS; hardware utility unit tests 15/15 PASS; new
 
 The tracked product compile manifest still binds 75 parsed HDL/UVM files and 77 source/control entries to the existing 13-test product compile. Product configuration remains Centered-Cubic, EF2 ORDER=2/STEP=5120, DPD_MAX_TAPS=1, AXI-Lite, Generic FIFO. RX, AI-DPD, product algorithms, and physical implementation remain outside this TX-only Linux work.
 
-**Next:** submit this isolated Formal increment as PR #21 stacked on PR #20, then close the highest-value legally reachable Branch/Condition using legal stimulus, an independent checker, and a DUT event. The outstanding-counter Formal, DPD identity Formal, and source-gap/service-rate contract remain OPEN. If a round produces no valid Raw hit, stop seed expansion and revisit reachability or bin mapping. Keep the Raw denominator and all OPEN statuses intact.
+**Next:** close the highest-value legally reachable Branch/Condition using legal stimulus, an independent checker, and a DUT event. PR #21 remains draft and unmerged pending review. The outstanding-counter Formal, DPD identity Formal, and source-gap/service-rate contract remain OPEN. If a round produces no valid Raw hit, stop seed expansion and revisit reachability or bin mapping. Keep the Raw denominator and all OPEN statuses intact.
 
 ## Previous execution state: 13-test TX coverage refresh and audited closure queue (2026-10-31)
 

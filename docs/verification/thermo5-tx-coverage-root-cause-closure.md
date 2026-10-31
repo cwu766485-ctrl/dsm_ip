@@ -73,6 +73,7 @@ legal Functional Coverage remains 210/210. The ledger now has 355 proven
 unreachable records and 21,377 OPEN records across 470 tasks; waivers and
 active exclusions remain zero. The gate remains `RAW_100_OPEN`. No product
 VCS/URG rerun was needed because no DUT or product compile input changed.
+This incremental Formal update is in [Draft PR #21](https://github.com/cwu766485-ctrl/dsm_ip/pull/21), stacked on PR #20 and not merged.
 
 ## Latest Centered-Cubic frame-tail Formal follow-up — 2026-10-31
 

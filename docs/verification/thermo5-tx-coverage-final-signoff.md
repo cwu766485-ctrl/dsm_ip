@@ -69,6 +69,8 @@ proven-unreachable and 21,377 OPEN records across 470 tasks. Waivers and
 VCS/URG was not rerun because the DUT, compile inputs, and Raw VDB are
 unchanged.
 
+This incremental Formal audit is tracked by [Draft PR #21](https://github.com/cwu766485-ctrl/dsm_ip/pull/21), stacked on PR #20 and not merged.
+
 The eleven source-bound Formal records comprise four CDC Branch bins, three AXI-Lite default Branch/Line bins, and four Centered-Cubic tail-only branches at `u_interp_1`/`u_interp_2`. All remain counted in Raw. The AXI-Lite tuple condition has no accepted non-vacuous proof and stays OPEN. The frame-tail proof uses W=16, stage 1 LANES=8/append=1, and stage 2 LANES=16/append=0; it proves local module reachability under product parameters, not full two-stage composition. Formal passed 6/6 assertions and 5/9 Covers, with the exact four tail-only Covers uncoverable, one non-vacuous source-stability assumption, zero setup violations, and zero black boxes.
 
 The legal frame-replacement UVM run (seed 610900) passed its four-plane bit-true checker for 112 outputs over two frames, but its product URG union added no code hits. The two line-255 pop/push bins remain OPEN. The refreshed formal review and source-bound ledger are in [`thermo5-tx-focused-product-formal-review.json`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json) and [`thermo5-tx-focused-product-closure.md`](data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-closure.md).
