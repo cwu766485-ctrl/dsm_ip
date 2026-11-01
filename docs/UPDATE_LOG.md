@@ -1,3 +1,22 @@
+## 2026-11-02 00:38 SGT - Validate reset-ended trace epochs against real VCS
+
+- Extended the monitor-trace oracle to accept reset-terminated incomplete
+  packets, pad only the offline model's incomplete frame, compare the PA prefix
+  actually accepted before reset, and report the remaining model suffix as
+  reset-discarded work. Normal epochs still require complete packet/frame
+  boundaries and exact output count.
+- Ran the existing product AXI-Lite residual reset sweep: five legal residual
+  resets followed by a complete replay, zero underflow, zero UVM errors/fatals,
+  and zero predictor mismatches. The real JSONL trace compared six epochs with
+  9/7/5/8/6/56 PA words (91 total); reset suffix counts were 33/35/37/34/36.
+- Added positive and corrupted-prefix Python tests. The full Python suite now
+  passes 51/51; `compileall` passes. The reset VCS log, trace, and replay log
+  hashes are indexed in `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`.
+- Remaining: resets that interrupt a partially assembled DSP frame, timed
+  source-gap behavior, Python STOP/Drain state assertions, independent core
+  STATUS prediction, Formal/Mutation of the new checker, and DUT code coverage.
+  No DUT RTL or algorithm changed.
+
 ## 2026-11-02 00:32 SGT - Publish Thermo5 TX System UVM Phase 0–2 Draft PR
 
 - Published `codex/thermo5-system-uvm-phase0-2` as Draft PR #25 targeting the

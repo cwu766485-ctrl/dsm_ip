@@ -91,6 +91,41 @@
       ]
     },
     {
+      "name": "product_residual_reset_sweep_trace",
+      "status": "PASS",
+      "vector_command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/vectors_reset_sweep --words 56 --seed 610802 --interp-mode centered_cubic --frame-start-words 1,15,36 --frame-gains 16384,14336,12288",
+      "command": "make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=/tmp/dsm_ip_system_uvm_phase0_2/runs/vcs_register_control_read THERMO5_VECTORS=/tmp/dsm_ip_system_uvm_phase0_2/runs/vectors_reset_sweep THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_COVERAGE=0 THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_TRACE_JSONL=/tmp/dsm_ip_system_uvm_phase0_2/runs/reset_sweep_trace.jsonl'",
+      "trace_command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 dv/uvm/refmodel/python/check_thermo5_monitor_trace.py runs/reset_sweep_trace.jsonl --step 5120 --tidsm-order 2 --max-taps 1",
+      "metrics": {
+        "legal_residual_reset_epochs": 5,
+        "trace_epochs_compared_words": [9, 7, 5, 8, 6, 56],
+        "trace_words_compared": 91,
+        "model_words_discarded_on_reset": [33, 35, 37, 34, 36],
+        "underflow_events": 0,
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "predictor_mismatches": 0
+      },
+      "artifacts": [
+        {
+          "path": "runs/vcs_register_control_read/compile.log",
+          "sha256": "5b3522bb1dc79992af1e97bf61c2092c284545c18c4aecc59a8eb52a52b8f1e5"
+        },
+        {
+          "path": "runs/vcs_register_control_read/thermo5_sku_axil_reset_sweep_test_seed610802.log",
+          "sha256": "aa25615ede71cee609ed6c04a0e326289dbcd73d3573f78476eff7284a7a125a"
+        },
+        {
+          "path": "runs/reset_sweep_trace.jsonl",
+          "sha256": "207de28afafcafa847e3345cc187d09a00de51ed15dd0580cd81f8c61c4ecdc4"
+        },
+        {
+          "path": "runs/system_uvm_phase0_2/checks/trace_reset_sweep.log",
+          "sha256": "de507c8eb9886c197b9b51fdfedcff0828756622da68c2dcd7d94079e8462085"
+        }
+      ]
+    },
+    {
       "name": "candidate_four_tap_config_trace",
       "status": "DATA_MATCH_WITH_UNDERFLOW_SEPARATE_CLASSIFICATION_REQUIRED",
       "configuration": "Test-only DPD_MAX_TAPS=4, two active taps; not the one-tap product SKU.",
@@ -153,13 +188,13 @@
       "status": "PASS",
       "command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
       "metrics": {
-        "tests_passed": 49,
+        "tests_passed": 51,
         "tests_failed": 0
       },
       "artifacts": [
         {
           "path": "runs/system_uvm_phase0_2/checks/python_unittest.log",
-          "sha256": "6d9051cb335668c9b9b3e96b17edf084f7bb062940bb7551ceb8a09c54a8ff85"
+          "sha256": "fc25cb9f77f7fc9d23fe7bfe81d4fb038895c5375297b8c37f342bd6b1f928c0"
         },
         {
           "path": "runs/system_uvm_phase0_2/checks/python_compileall.log",
@@ -179,9 +214,9 @@
     "code_coverage_delta": "NONE"
   },
   "open_items": [
-    "Phase 2 randomized transaction-trace generation and seed replay package.",
     "Timed source-gap model, explicit legal gap bound, and starvation recovery oracle.",
-    "Mid-frame reset truncation and post-reset epoch recovery trace checking.",
+    "Reset that interrupts a partially assembled DSP frame; current real reset sweep covers residual-state resets with incomplete packets and checks accepted PA prefixes.",
+    "Full constrained-random stimulus generation and seed replay package for later system-random phases.",
     "Python-side STOP/Drain/Restart state assertions; current Python oracle checks ordered payload and counts only.",
     "Independent core control-state model for STATUS; current predictor checks the synchronized AXI view from observed core ACK/active/draining signals.",
     "Formal and mutation evidence for the new predictor/oracle paths.",

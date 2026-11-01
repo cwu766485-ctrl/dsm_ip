@@ -138,6 +138,58 @@ class MonitorTraceOracleTests(unittest.TestCase):
         self.assertEqual(data_epoch.compared_words, 56)
         self.assertEqual(empty_epoch.compared_words, 0)
 
+    def test_monitor_trace_checks_accepted_prefix_before_midstream_reset(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=42, seed=610802, frame_start_words=(1, 15, 36),
+            frame_gains=(16384, 14336, 12288))
+        i_samples = [sample for word in i_words for sample in word]
+        q_samples = [sample for word in q_words for sample in word]
+        source = []
+        for beat in range(24):
+            first = beat * 14
+            word = first // 8
+            source.append({
+                "type": "source_beat", "epoch": 0, "seq": beat,
+                "beat_index": beat, "packet_id": 0,
+                "packet_beat_index": beat, "source_frame_id":
+                    sum(starts[index] for index in range(word + 1)) - 1,
+                "i": i_samples[first:first + 14],
+                "q": q_samples[first:first + 14],
+                "frame_start": bool(starts[word]),
+                "frame_gain": gains[word], "tlast": False,
+            })
+        expected = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        events = list(source)
+        events.extend([
+            {"type": "frame_boundary", "epoch": 0, "seq": 24,
+             "frame_id": 0, "config_pending": False},
+            {"type": "frame_boundary", "epoch": 0, "seq": 25,
+             "frame_id": 1, "config_pending": False},
+        ])
+        seq = self._append_pa(events, expected[:9], 26)
+        events.append({"type": "reset", "epoch": 0, "next_epoch": 1, "seq": seq})
+
+        data_epoch, empty_epoch = run_monitor_trace(events)
+        self.assertTrue(data_epoch.passed)
+        self.assertTrue(data_epoch.reset_terminated)
+        self.assertEqual(data_epoch.compared_words, 9)
+        self.assertEqual(data_epoch.discarded_model_words, 33)
+        self.assertEqual(empty_epoch.compared_words, 0)
+
+    def test_monitor_trace_rejects_corrupt_pa_prefix_before_reset(self):
+        i_words, q_words, starts, gains, source = self._source_events(words=56)
+        expected = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        events = []
+        for seq, beat in enumerate(source):
+            beat["seq"] = seq
+            events.append(beat)
+        seq = self._append_pa(events, expected[:3], len(events))
+        events[-1]["planes"][0] = "0x0000000000000000"
+        events.append({"type": "reset", "epoch": 0, "next_epoch": 1,
+                       "seq": seq})
+        with self.assertRaisesRegex(AssertionError, "PA mismatch"):
+            run_monitor_trace(events)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -37,9 +37,14 @@ class EpochResult:
     compared_words: int
     applied_config_frames: tuple
     underflow_events: int
+    reset_terminated: bool = False
+    discarded_model_words: int = 0
 
     @property
     def passed(self):
+        if self.reset_terminated:
+            return (len(self.actual_pa) <= len(self.expected_pa) and
+                    self.expected_pa[:len(self.actual_pa)] == self.actual_pa)
         return (len(self.expected_pa) == len(self.actual_pa) and
                 self.expected_pa == self.actual_pa)
 
@@ -122,7 +127,7 @@ def _read_events(trace):
 
 
 def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
-                 compare=True):
+                 compare=True, reset_terminated=False):
     events.sort(key=lambda item: int(item.get("seq", 0)))
     shadow = _new_shadow()
     taps = 1
@@ -245,8 +250,9 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
 
     if not source_beats and not actual_pa:
         # Reset-only epochs can contain control/status traffic but no payload.
-        return EpochResult(epoch, (), (), 0, (), underflow_events)
-    if packet_beats:
+        return EpochResult(epoch, (), (), 0, (), underflow_events,
+                           reset_terminated, 0)
+    if packet_beats and not reset_terminated:
         raise TraceContractError(
             f"epoch {epoch}: trace ended with {packet_beats} beats after the last TLAST")
     samples_i, samples_q = [], []
@@ -256,7 +262,7 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
         if len(i_values) != 14 or len(q_values) != 14:
             raise TraceContractError("each accepted AXIS beat must contain 14 I and Q samples")
         if bool(beat.get("frame_start", False)):
-            if len(samples_i) % 56:
+    if len(samples_i) % 56:
                 raise TraceContractError(
                     f"frame start at beat {beat_index} is not 56-sample aligned")
             word_index = len(samples_i) // 8
@@ -272,11 +278,24 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
         samples_i.extend(_signed16(value) for value in i_values)
         samples_q.extend(_signed16(value) for value in q_values)
 
-    if len(samples_i) != len(samples_q) or len(samples_i) % 8:
+    if len(samples_i) != len(samples_q):
+        raise TraceContractError("accepted source I/Q sample counts differ")
+    if len(samples_i) % 8:
+        if not reset_terminated:
+            raise TraceContractError("accepted source epoch is not aligned to 8-sample core words")
+        complete_samples = len(samples_i) - (len(samples_i) % 8)
+        del samples_i[complete_samples:]
+        del samples_q[complete_samples:]
+    if len(samples_i) % 8:
         raise TraceContractError("accepted source epoch is not aligned to 8-sample core words")
     if len(samples_i) % 56:
-        raise TraceContractError(
-            "initial trace oracle requires complete 56-sample frames at epoch end")
+        if not reset_terminated:
+            raise TraceContractError(
+                "normal trace epoch requires complete 56-sample frames at its end")
+        padded_samples = ((len(samples_i) + 55) // 56) * 56
+        padding = padded_samples - len(samples_i)
+        samples_i.extend([0] * padding)
+        samples_q.extend([0] * padding)
     words = len(samples_i) // 8
     if len(frame_starts) < words:
         frame_starts.extend([0] * (words - len(frame_starts)))
@@ -288,7 +307,9 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
     if any(frame_starts[index] and index % 7 for index in range(words)):
         raise TraceContractError("DSP frame starts must align to seven 8-sample core words")
     source_frame_count = sum(bool(flag) for flag in frame_starts)
-    if config_by_frame and len(config_by_frame) != source_frame_count:
+    if (config_by_frame and
+            ((not reset_terminated and len(config_by_frame) != source_frame_count) or
+             (reset_terminated and len(config_by_frame) > source_frame_count))):
         raise TraceContractError(
             f"epoch {epoch}: observed {len(config_by_frame)} accepted core frame "
             f"boundaries for {source_frame_count} source frame starts")
@@ -306,31 +327,44 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
         tidsm_order=tidsm_order, dpd_configs_by_frame=dpd_configs)
     expected_pa = tuple(tuple(int(value) for value in word) for word in expected_pa)
     actual_pa_tuple = tuple(actual_pa)
-    if compare and expected_pa != actual_pa_tuple:
+    if reset_terminated:
+        matches = (len(actual_pa_tuple) <= len(expected_pa) and
+                   expected_pa[:len(actual_pa_tuple)] == actual_pa_tuple)
+    else:
+        matches = expected_pa == actual_pa_tuple
+    if compare and not matches:
         mismatch = next((index for index, pair in enumerate(zip(expected_pa, actual_pa_tuple))
                          if pair[0] != pair[1]), min(len(expected_pa), len(actual_pa_tuple)))
         raise AssertionError(
             f"epoch {epoch}: PA mismatch at word {mismatch}; "
             f"expected_count={len(expected_pa)} actual_count={len(actual_pa_tuple)}")
-    return EpochResult(epoch, expected_pa, actual_pa_tuple,
-                       min(len(expected_pa), len(actual_pa_tuple)),
-                       tuple(applied_frames), underflow_events)
+    compared_words = (len(actual_pa_tuple) if reset_terminated else
+                      min(len(expected_pa), len(actual_pa_tuple)))
+    discarded_model_words = (max(0, len(expected_pa) - len(actual_pa_tuple))
+                             if reset_terminated else 0)
+    return EpochResult(epoch, expected_pa, actual_pa_tuple, compared_words,
+                       tuple(applied_frames), underflow_events, reset_terminated,
+                       discarded_model_words)
 
 
 def run_monitor_trace(trace, *, step=5120, tidsm_order=2, max_taps=1,
                       compare=True):
     """Decode monitor JSONL records and compare every accepted PA word.
 
-    Reset records partition the trace into independent epochs. This first
-    version intentionally requires each epoch to end at complete DSP-frame
-    boundaries; it refuses to synthesize missing centered-FIR tails on reset.
+    Reset records partition the trace into independent epochs. A reset-ended
+    epoch may have no TLAST or final FIR drain: incomplete core samples are
+    discarded, the reference is zero-padded only to form a model frame, and
+    comparison is limited to PA words actually accepted before reset. The
+    unaccepted model suffix is reported as reset-discarded work.
     """
     events = _read_events(trace)
     epochs = {}
+    reset_terminated = set()
     current_epoch = 0
     for event in events:
         event_epoch = int(event.get("epoch", current_epoch))
         if event.get("type") == "reset":
+            reset_terminated.add(event_epoch)
             current_epoch = int(event.get("next_epoch", event_epoch + 1))
             epochs.setdefault(current_epoch, [])
             continue
@@ -339,5 +373,6 @@ def run_monitor_trace(trace, *, step=5120, tidsm_order=2, max_taps=1,
         raise TraceContractError("trace contains no events")
     return tuple(_model_epoch(epoch, epoch_events, step=step,
                               tidsm_order=tidsm_order, max_taps=max_taps,
-                              compare=compare)
+                              compare=compare,
+                              reset_terminated=epoch in reset_terminated)
                  for epoch, epoch_events in sorted(epochs.items()))

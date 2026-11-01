@@ -28,6 +28,9 @@ def main():
             result.epoch, "PASS" if result.passed else "FAIL",
             result.compared_words, list(result.applied_config_frames),
             result.underflow_events))
+        if result.reset_terminated:
+            print("epoch=%d reset_terminated=true reset_discarded_model_words=%d" % (
+                result.epoch, result.discarded_model_words))
     print("TRACE_ORACLE=%s total_words=%d underflow_events=%d" % (
         "PASS" if all(result.passed for result in results) else "FAIL",
         total_words, total_underflows))

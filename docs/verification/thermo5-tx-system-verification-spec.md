@@ -108,10 +108,13 @@ transaction order, PA backpressure as accepted output ordering, multi-frame
 packets, and configuration changes applied at observed frame boundaries. It
 compares monitor-recorded PA words and reports underflow events separately so
 normal and expected-fault classifications remain explicit. Reset-only epochs
-are represented without payload comparison. Mid-frame reset truncation,
-cycle-accurate starvation recovery, and independent Python assertions for
-STOP/Drain/Restart behavior remain open extensions; directed UVM assertions
-cover the current STOP/Drain/Restart sequence.
+are represented without payload comparison. A reset-ended, incomplete packet
+compares only the PA prefix actually accepted before reset; queued/pipeline
+suffix words are reported as discarded. Five real residual-state reset epochs
+and the following clean replay pass this path. A reset that truncates a DSP
+frame at a non-frame-aligned source position, cycle-accurate starvation
+recovery, and independent Python assertions for STOP/Drain/Restart remain open;
+directed UVM assertions cover the current STOP/Drain/Restart sequence.
 
 ## Phase 0–2 implementation status
 
@@ -124,12 +127,12 @@ PASS results. The Python oracle checks PA data against monitor transactions;
 the `.mem` vector path remains in use as the existing static baseline.
 
 This is an initial constrained-verification foundation, not completion of the
-entire Phase 0–2 acceptance list. The predictor's source STATUS inputs are
-observed core signals rather than an independent model of the core
-controller. Arbitrary mid-frame reset recovery, timed source-gap behavior,
-STOP/Drain state checking in Python, and dynamic randomized trace generation
-remain open. No Phase 3–6 super-random framework or signoff is claimed. No DUT
-algorithm RTL changed and no DUT code-coverage run was made for these edits.
+entire system-random acceptance list. The predictor's source STATUS inputs are
+observed core signals rather than an independent model of the core controller.
+Timed source-gap behavior and reset inside a partially assembled DSP frame
+remain open. Full constrained-random stimulus generation and seed replay belong
+to later phases; no Phase 3–6 super-random framework or signoff is claimed. No
+DUT algorithm RTL changed and no DUT code-coverage run was made for these edits.
 
 The core clean-trace replay command is:
 

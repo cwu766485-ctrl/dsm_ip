@@ -18,16 +18,20 @@ DPD/FIR/EF2 fixed-point data, and compares all four accepted PA planes. The
 clean product STOP/Drain/Restart trace passes 112/112 words across two packets,
 with zero underflow; the STOP/Restart cross is 100%. Separate candidate
 four-tap and one-tap stress traces also match 56/56 PA words, but each records
-an underflow and is not counted as a clean normal pass. Existing `.mem` vectors
-remain the static reference path. Python reference-model tests pass 49/49 and
+an underflow and is not counted as a clean normal pass. The five residual-state
+reset sweep also passes: the six trace epochs compare 9, 7, 5, 8, 6, and 56
+accepted PA words (91 total), with zero underflow; the Python checker reports
+the unaccepted model suffix as reset-discarded work. Existing `.mem` vectors
+remain the static reference path. Python reference-model tests pass 51/51 and
 byte-compilation passes.
 
 This is **Phase 0 complete, Phase 1 focused implementation PASS, Phase 2 initial
 oracle implemented with directed-trace consistency PASS; overall P0–P2 remains
-PARTIAL**. Dynamic randomized trace generation, timed source-gap behavior,
-mid-frame reset recovery, Python STOP/Drain state assertions, and an independent
-core STATUS predictor remain OPEN. No DUT code coverage, formal, mutation, or
-Verdi GUI run was made. Do not start Phase 3–6 yet. Reproducible commands,
+PARTIAL**. Timed source-gap behavior, reset inside a partially assembled DSP
+frame, Python STOP/Drain state assertions, and an independent core STATUS
+predictor remain OPEN. Full constrained-random stimulus/seed replay is still a
+later Phase 3–5 task. No DUT code coverage, formal, mutation, or Verdi GUI run
+was made. Do not start Phase 3–6 yet. Reproducible commands,
 metrics, and SHA-256 references are in
 `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`; full logs,
 traces, and VDB files remain local under ignored `runs/`.
