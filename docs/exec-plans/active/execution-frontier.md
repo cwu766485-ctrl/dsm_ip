@@ -37,9 +37,11 @@ metrics, and SHA-256 references are in
 traces, and VDB files remain local under ignored `runs/`.
 
 **Publication:** Draft PR [#25](https://github.com/cwu766485-ctrl/dsm_ip/pull/25)
-is open against the PR #24 head. Its initial publication commit is
-`a143b5ca00b14e9109b6080f002715ef20064d94`; GitHub reports one commit ahead,
-zero behind, 17 changed files, and mergeable. PR #24 and #25 are both unmerged.
+is open against the PR #24 head. Its initial publication commit was
+`a143b5ca00b14e9109b6080f002715ef20064d94`; the reset-oracle validation was
+published at `f5b4d4c06fe026842ec8624375467dc87460633f`. After this final
+documentation refresh, GitHub reports four commits, zero behind, 17 changed
+files, and mergeable. PR #24 and #25 are both unmerged.
 
 **Next:** close the listed Phase 2 gaps with directed trace cases and only
 after those pass proceed to the Phase 3 agent coordination work.

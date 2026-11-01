@@ -1,3 +1,14 @@
+## 2026-11-02 00:40 SGT - Refresh final Draft PR #25 status
+
+- Updated the execution frontier after adding reset-ended epoch support. The
+  implementation/evidence commit is `f5b4d4c06fe026842ec8624375467dc87460633f`;
+  the final frontier/update-log refresh is a documentation-only follow-up on
+  Draft PR #25.
+- PR #25 remains open and unmerged, targets PR #24's exact head, and has 17
+  changed files. The GitHub review snapshot after this refresh reports four
+  commits, zero behind, and mergeable. PR #24 also remains open and unmerged.
+- No code or verification result changed in this documentation refresh.
+
 ## 2026-11-02 00:38 SGT - Validate reset-ended trace epochs against real VCS
 
 - Extended the monitor-trace oracle to accept reset-terminated incomplete
