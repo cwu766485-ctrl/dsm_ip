@@ -1,0 +1,164 @@
+{
+  "adjusted_coverage": "SEPARATE_URG_FROM_SAME_RAW_VDB_LIST",
+  "adjusted_dut_assertions": {
+    "attempted_denominator": 15,
+    "failures": 0,
+    "percent_of_attempted": 86.6667,
+    "success": 13,
+    "uncovered": 2,
+    "without_attempts": 2
+  },
+  "adjusted_exclusions_applied": false,
+  "adjusted_fsm": {
+    "states": {
+      "covered": 13,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 13
+    },
+    "transitions": {
+      "covered": 22,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 22
+    }
+  },
+  "adjusted_functional_groups": {
+    "core_cg": 100.0,
+    "ef2_cg": 100.0,
+    "plane_atomic_cg": 100.0,
+    "read_cg": 100.0,
+    "reset_cg": 100.0,
+    "source_cg": 100.0,
+    "stop_restart_cg": 100.0,
+    "write_cg": 100.0
+  },
+  "adjusted_project_rtl": {
+    "branch": {
+      "covered": 525,
+      "missing": 112,
+      "percent": 82.4176,
+      "total": 637
+    },
+    "cond": {
+      "covered": 610,
+      "missing": 239,
+      "percent": 71.8492,
+      "total": 849
+    },
+    "line": {
+      "covered": 3351,
+      "missing": 445,
+      "percent": 88.2771,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 84343,
+      "missing": 20137,
+      "percent": 80.7265,
+      "total": 104480
+    }
+  },
+  "exclusions_applied": false,
+  "functional_group_count": 8,
+  "functional_groups": {
+    "core_cg": 100.0,
+    "ef2_cg": 100.0,
+    "plane_atomic_cg": 100.0,
+    "read_cg": 100.0,
+    "reset_cg": 100.0,
+    "source_cg": 100.0,
+    "stop_restart_cg": 100.0,
+    "write_cg": 100.0
+  },
+  "functional_product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+  "inputs": {
+    "adjusted_report_manifest": "runs/thermo5_coverage_closure_round1/urg_dual_round1_v6/report_manifest.json",
+    "adjusted_summary": "runs/thermo5_coverage_closure_round1/urg_dual_round1_v6/adjusted_inventory/summary.json",
+    "assertion_summary": "runs/thermo5_coverage_closure_round1/assertions_legal_v3/inventory/summary.json",
+    "el_file": "dv/uvm/sim/thermo5_tx_main.el",
+    "functional_bin_detail": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-functional-bin-detail.csv",
+    "groups_html": "runs/thermo5_coverage_closure_round1/urg_dual_round1_v6/raw_urg/groups.html",
+    "raw_summary": "runs/thermo5_coverage_closure_round1/urg_dual_round1_v6/raw_inventory/summary.json",
+    "waiver_audit": "runs/thermo5_coverage_closure_round1/waiver_audit.json",
+    "waivers_csv": "docs/verification/thermo5_tx_waivers.csv"
+  },
+  "legally_applicable_functional_bins": {
+    "covered": 210,
+    "percent": 100.0,
+    "total": 210,
+    "uncovered": 0
+  },
+  "pending_waiver_count": 371,
+  "raw_dut_assertions": {
+    "attempted_denominator": 15,
+    "failures": 0,
+    "percent_of_attempted": 86.6667,
+    "success": 13,
+    "uncovered": 2,
+    "without_attempts": 2
+  },
+  "raw_exclusions_applied": false,
+  "raw_fsm": {
+    "states": {
+      "covered": 13,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 13
+    },
+    "transitions": {
+      "covered": 22,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 22
+    }
+  },
+  "raw_functional_groups": {
+    "thermo5_sku_uvm_pkg::thermo5_axil_monitor::read_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_axil_monitor::reset_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_axil_monitor::write_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg": 100.0
+  },
+  "raw_project_rtl": {
+    "branch": {
+      "covered": 525,
+      "missing": 112,
+      "percent": 82.4176,
+      "total": 637
+    },
+    "cond": {
+      "covered": 610,
+      "missing": 239,
+      "percent": 71.8492,
+      "total": 849
+    },
+    "line": {
+      "covered": 3351,
+      "missing": 445,
+      "percent": 88.2771,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 84343,
+      "missing": 20137,
+      "percent": 80.7265,
+      "total": 104480
+    }
+  },
+  "rejected_waiver_count": 0,
+  "schema_version": 1,
+  "source_manifest": {
+    "audit_tool_count": 4,
+    "base_commit": "88c9682501fd60bb14e6ea9b1f569f8eeb97e708",
+    "path": "docs/verification/data/thermo5-tx-product-compile-manifest-round1.json",
+    "product_source_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+    "sha256": "74e961a4808c808b63ad4f0b51f36cc3be81731b4f257b9a5ab908e9b28c71fa",
+    "source_file_count": 79
+  },
+  "status": "RAW_100_OPEN",
+  "waiver_count": 0
+}

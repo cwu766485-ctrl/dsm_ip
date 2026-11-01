@@ -35,14 +35,20 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def local_repo_path(value: str) -> str | None:
+def local_repo_path(value: str, known_paths: set[str]) -> str | None:
     path = Path(value)
     if not path.is_absolute():
         path = ROOT / path
+    resolved = path.resolve().as_posix()
     try:
-        return path.resolve().relative_to(ROOT).as_posix()
+        return Path(resolved).relative_to(ROOT).as_posix()
     except ValueError:
-        return None
+        # Existing licensed VDBs can be produced in a sibling checkout and
+        # reviewed from an isolated worktree. Map only a suffix already named
+        # in the parent manifest; its content hash is checked below.
+        matches = [relative for relative in known_paths
+                   if resolved.endswith("/" + relative)]
+        return max(matches, key=len) if matches else None
 
 
 def derive(args: argparse.Namespace) -> dict:
@@ -70,14 +76,18 @@ def derive(args: argparse.Namespace) -> dict:
     hierarchy = args.coverage_hierarchy.resolve()
     for flag, expected in (("-f", filelist), ("-cm_hier", hierarchy)):
         found = re.search(rf"(?:^|\s){re.escape(flag)}\s+(\S+)", command)
-        if not found or Path(found.group(1)).resolve() != expected:
+        relative = expected.relative_to(ROOT).as_posix()
+        if not found:
+            raise ManifestError(f"compile command does not use the requested {flag} input")
+        compiled_path = Path(found.group(1)).resolve()
+        if compiled_path != expected and not compiled_path.as_posix().endswith("/" + relative):
             raise ManifestError(f"compile command does not use the requested {flag} input")
 
     compiled_local: set[str] = set()
     for match in re.finditer(
         r"Parsing (?:design|included) file '([^']+)'", compile_text
     ):
-        relative = local_repo_path(match.group(1))
+        relative = local_repo_path(match.group(1), set(source_hashes))
         if relative is not None:
             compiled_local.add(relative)
     if len(compiled_local) < 40:
@@ -110,16 +120,22 @@ def derive(args: argparse.Namespace) -> dict:
             + json.dumps(mismatches, sort_keys=True)
         )
 
-    gate_path = ROOT / "tools/hw/thermo5_tx_coverage_gate.py"
+    audit_tools = (
+        "tools/hw/thermo5_tx_product_compile_manifest.py",
+        "tools/hw/thermo5_tx_coverage_gate.py",
+        "tools/hw/thermo5_tx_waiver_pipeline.py",
+        "tools/hw/run_thermo5_tx_urg_dual_report.py",
+    )
     unused = sorted(set(source_hashes) - selected)
     return {
         "schema_version": 1,
         "scope": "VCS_PRODUCT_COMPILE_INPUTS",
         "base_commit": source_manifest.get("base_commit"),
+        "product_source_sha": source_manifest.get("product_source_sha"),
         "source_file_sha256": {
             relative: source_hashes[relative] for relative in sorted(selected)
         },
-        "audit_tool_sha256": {"tools/hw/thermo5_tx_coverage_gate.py": sha(gate_path)},
+        "audit_tool_sha256": {relative: sha(ROOT / relative) for relative in audit_tools},
         "compile_provenance": {
             "compile_log": str(args.compile_log),
             "compile_log_sha256": sha(args.compile_log),
