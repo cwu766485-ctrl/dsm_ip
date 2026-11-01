@@ -1,3 +1,19 @@
+## 2026-11-02 00:32 SGT - Publish Thermo5 TX System UVM Phase 0–2 Draft PR
+
+- Published `codex/thermo5-system-uvm-phase0-2` as Draft PR #25 targeting the
+  exact PR #24 head `98d4fda026628b1f818c34937b3afd5c93fefa95`. The initial
+  publication commit is `a143b5ca00b14e9109b6080f002715ef20064d94`; GitHub
+  reports one commit ahead, zero behind, 17 files, mergeable, and unmerged.
+- GitHub tree SHA `95655221387a3f7a52ab34f8b6a07be2ccae2b72` was compared with
+  the local reviewed tree and matched exactly. The local Git credential helper
+  could not push from WSL, so the connected GitHub integration published the
+  exact tree. A transfer-size truncation was detected by the tree comparison,
+  corrected before opening the PR, and the final tree matches the reviewed
+  local commit byte-for-byte.
+- PR #24 remains open, draft, mergeable, and unmerged. No PR was merged or
+  branch deleted. The current next action is to close the documented Phase 2
+  gaps before Phase 3.
+
 ## 2026-11-02 00:27 SGT - Thermo5 TX System UVM Phase 0–2 initial implementation
 
 - Added the TX transaction/frame/packet/reset contract, monitor-driven AXI-Lite

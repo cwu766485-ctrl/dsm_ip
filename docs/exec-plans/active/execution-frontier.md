@@ -32,10 +32,13 @@ metrics, and SHA-256 references are in
 `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`; full logs,
 traces, and VDB files remain local under ignored `runs/`.
 
-**Next:** review and publish this as a separate stacked PR targeting the PR #24
-branch, without merging either PR. Then close the listed Phase 2 gaps with
-directed trace cases and only after those pass proceed to the Phase 3 agent
-coordination work.
+**Publication:** Draft PR [#25](https://github.com/cwu766485-ctrl/dsm_ip/pull/25)
+is open against the PR #24 head. Its initial publication commit is
+`a143b5ca00b14e9109b6080f002715ef20064d94`; GitHub reports one commit ahead,
+zero behind, 17 changed files, and mergeable. PR #24 and #25 are both unmerged.
+
+**Next:** close the listed Phase 2 gaps with directed trace cases and only
+after those pass proceed to the Phase 3 agent coordination work.
 
 ## Previous execution state: TX coverage closure Round 1 (2026-11-01)
 
