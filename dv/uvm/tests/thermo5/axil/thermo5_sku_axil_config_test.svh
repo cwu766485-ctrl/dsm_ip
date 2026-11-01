@@ -131,6 +131,12 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
     bit [1:0] resp;
     bit [31:0] rdata;
 
+    // This register-only test leaves the stream inactive, so CONTROL must
+    // read back RUN=0.
+    axil_read(8'h00,rdata,resp);
+    if (resp!=2'b00 || rdata[0]!=1'b0)
+      `uvm_fatal("AXIL_CONTROL_READ",
+        $sformatf("CONTROL read resp=%b data=%08x",resp,rdata))
     axil_read(8'h0c,rdata,resp,1'b1);
     if (resp!=2'b00 || rdata!=32'h5448_3501)
       `uvm_fatal("AXIL_ID",$sformatf("ID read resp=%b data=%08x",resp,rdata))

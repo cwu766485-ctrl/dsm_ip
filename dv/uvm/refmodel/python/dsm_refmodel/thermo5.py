@@ -419,7 +419,8 @@ def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
 
 def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
                                 step=5120, dpd_coefficients=None,
-                                dpd_active_taps=None, tidsm_order=2):
+                                dpd_active_taps=None, tidsm_order=2,
+                                dpd_configs_by_frame=None):
     """Generate four-plane oracle words for the streaming centered-cubic SKU.
 
     Each frame is zero-extended independently for the two centered FIR stages.
@@ -459,7 +460,16 @@ def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
         tail_mid = _centered_cubic_midpoint(source[-1], (0, 0), (0, 0), (0, 0))
         tail = [(0, 0)] * 16
         tail[1] = tail_mid
-        if dpd_coefficients is None:
+        frame_dpd_coefficients = dpd_coefficients
+        frame_dpd_active_taps = dpd_active_taps
+        if dpd_configs_by_frame is not None:
+            if frame_index >= len(dpd_configs_by_frame):
+                raise ValueError("DPD config count must cover every frame")
+            frame_config = dpd_configs_by_frame[frame_index]
+            if frame_config is not None:
+                frame_dpd_coefficients = frame_config["coefficients"]
+                frame_dpd_active_taps = frame_config["active_taps"]
+        if frame_dpd_coefficients is None:
             dpd_frame = stage1_real
             dpd_tail = tail
         else:
@@ -468,8 +478,8 @@ def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
             # and its own memory history before the second interpolator uses
             # the vector to reconstruct the final real samples.
             dpd_frame, dpd_history, _ = apply_memory_polynomial(
-                stage1_real + tail, dpd_coefficients,
-                active_taps=dpd_active_taps, history=dpd_history)
+                stage1_real + tail, frame_dpd_coefficients,
+                active_taps=frame_dpd_active_taps, history=dpd_history)
             dpd_tail = dpd_frame[len(stage1_real):]
             dpd_frame = dpd_frame[:len(stage1_real)]
 

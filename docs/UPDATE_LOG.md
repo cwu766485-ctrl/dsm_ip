@@ -1,3 +1,35 @@
+## 2026-11-02 00:27 SGT - Thermo5 TX System UVM Phase 0–2 initial implementation
+
+- Added the TX transaction/frame/packet/reset contract, monitor-driven AXI-Lite
+  register predictor, JSONL transaction recorder, Python monitor-trace oracle,
+  trace contract tests, and a machine-readable evidence index. Kept changes on
+  a separate branch stacked on PR #24; no PR was merged.
+- Audited STATUS prediction and replaced the stale masked-status description:
+  the predictor compares BUSY, DONE, ERROR, RUN_ACTIVE, and DRAINING at the AR
+  sampling edge. It models the synchronized view from observed core signals;
+  directed STOP/Drain checks remain the independent core-state check.
+- The register-only VCS regression initially reported read functional coverage
+  95.2%. Added CONTROL (0x00) readback and reran the focused VCS compile/test:
+  write/read/reset coverage is 100%/100%/100%, 52 writes and 48 reads checked,
+  zero predictor mismatches, zero pending transactions, and zero UVM errors or
+  fatals. Log SHA-256 values are in
+  `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`.
+- Replayed the clean two-packet product STOP/Drain/Restart trace: 64 accepted
+  source beats, two TLASTs, 112 PA words, 112/112 Python bit-true matches,
+  STOP/Restart cover 100%, and no underflow. Kept the four-tap candidate trace
+  and one-tap saturation/finite-source diagnostic separate: each matches
+  56/56 output words but reports an underflow.
+- Checks: Python reference suite 49/49 PASS; `compileall` PASS; normal trace
+  oracle PASS; candidate and stress traces pass data comparison with explicit
+  underflow classification; `git diff --check` PASS. No DUT code coverage,
+  Formal, Mutation, Verdi GUI, RX, AI-DPD, or Vivado run was made.
+- Status: Phase 0 complete; Phase 1 focused protocol/predictor test PASS; Phase
+  2 initial oracle plus directed-trace consistency PASS, but overall P0–P2 is
+  PARTIAL. Dynamic random transaction generation, timed source-gap behavior,
+  mid-frame reset recovery, Python STOP/Drain assertions, and an independent
+  core STATUS model remain OPEN. The next action is a separate stacked PR, then
+  targeted closure of these Phase 2 gaps before Phase 3.
+
 ## 2026-11-01 19:22 SGT - Thermo5 TX Coverage Closure Round 1 audit
 
 - Added an exact Raw URG audit for the 71 OPEN Condition tasks / 131 bins.

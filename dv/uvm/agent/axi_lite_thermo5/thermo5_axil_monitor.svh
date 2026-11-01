@@ -2,6 +2,9 @@ class thermo5_axil_monitor extends uvm_monitor;
   `uvm_component_utils(thermo5_axil_monitor)
   virtual thermo5_axil_if vif;
   uvm_analysis_port #(thermo5_axil_item) ap;
+  uvm_analysis_port #(thermo5_axil_item) write_fire_ap;
+  uvm_analysis_port #(thermo5_axil_item) read_address_ap;
+  uvm_analysis_port #(thermo5_axil_item) cycle_ap;
   int unsigned writes, reads, decerr_count, slverr_count;
   int unsigned aw_cycle, w_cycle, cycle_count;
   int unsigned b_stall_cycles, r_stall_cycles;
@@ -9,6 +12,8 @@ class thermo5_axil_monitor extends uvm_monitor;
   bit [7:0] awaddr_seen, araddr_seen;
   bit [31:0] wdata_seen;
   bit [3:0] wstrb_seen;
+  bit write_fire_seen;
+  int unsigned next_write_id, next_read_id, active_write_id, active_read_id;
   covergroup write_cg with function sample(bit [3:0] address_kind,
                                             bit [1:0] response,
                                             bit [1:0] strobe_kind,
@@ -59,6 +64,9 @@ class thermo5_axil_monitor extends uvm_monitor;
   function new(string name, uvm_component parent);
     super.new(name, parent);
     ap = new("ap", this);
+    write_fire_ap = new("write_fire_ap", this);
+    read_address_ap = new("read_address_ap", this);
+    cycle_ap = new("cycle_ap", this);
     write_cg = new();
     read_cg = new();
     reset_cg = new();
@@ -104,27 +112,68 @@ class thermo5_axil_monitor extends uvm_monitor;
     thermo5_axil_item tr;
     cycle_count = 0;
     aw_seen = 0; w_seen = 0; read_seen = 0;
+    write_fire_seen = 0;
+    next_write_id = 0; next_read_id = 0;
     b_stall_cycles = 0; r_stall_cycles = 0;
     forever begin
       @(posedge vif.aclk);
       cycle_count++;
       reset_cg.sample(vif.aresetn === 1'b1);
+      begin
+        thermo5_axil_item cycle_event;
+        cycle_event = thermo5_axil_item::type_id::create("cycle_sample", this);
+        cycle_event.is_cycle_sample = 1;
+        cycle_event.reset_n = (vif.aresetn === 1'b1);
+        cycle_event.event_cycle = cycle_count;
+        cycle_ap.write(cycle_event);
+      end
       if (!vif.aresetn) begin
         aw_seen = 0; w_seen = 0; read_seen = 0;
+        write_fire_seen = 0;
         b_stall_cycles = 0; r_stall_cycles = 0;
       end else begin
         if (vif.bvalid && !vif.bready) b_stall_cycles++;
         if (vif.rvalid && !vif.rready) r_stall_cycles++;
+        // The read data/status registers sample the address on this edge.
+        // Publish this event before a same-edge write-fire event so a
+        // predictor models the RTL's pre-NBA read-before-write semantics.
+        if (vif.arvalid && vif.arready) begin
+          thermo5_axil_item address_event;
+          address_event = thermo5_axil_item::type_id::create("read_address", this);
+          address_event.is_write = 0;
+          address_event.is_read_address = 1;
+          address_event.addr = vif.araddr;
+          address_event.txn_id = ++next_read_id;
+          active_read_id = address_event.txn_id;
+          address_event.event_cycle = cycle_count;
+          read_address_ap.write(address_event);
+        end
         if (vif.awvalid && vif.awready) begin
           aw_seen = 1; awaddr_seen = vif.awaddr; aw_cycle = cycle_count;
         end
         if (vif.wvalid && vif.wready) begin
           w_seen = 1; wdata_seen = vif.wdata; wstrb_seen = vif.wstrb; w_cycle = cycle_count;
         end
+        if (!vif.bvalid && !write_fire_seen && aw_seen && w_seen) begin
+          thermo5_axil_item fire_event;
+          fire_event = thermo5_axil_item::type_id::create("write_fire", this);
+          fire_event.is_write = 1;
+          fire_event.is_write_fire = 1;
+          fire_event.addr = awaddr_seen;
+          fire_event.data = wdata_seen;
+          fire_event.strb = wstrb_seen;
+          fire_event.txn_id = ++next_write_id;
+          active_write_id = fire_event.txn_id;
+          fire_event.event_cycle = cycle_count;
+          write_fire_ap.write(fire_event);
+          write_fire_seen = 1;
+        end
         if (vif.bvalid && vif.bready && aw_seen && w_seen) begin
           tr = thermo5_axil_item::type_id::create("observed_write", this);
           tr.is_write = 1; tr.addr = awaddr_seen; tr.data = wdata_seen;
           tr.strb = wstrb_seen; tr.resp = vif.bresp;
+          tr.txn_id = active_write_id;
+          tr.event_cycle = cycle_count;
           if (aw_cycle == w_cycle)
             write_cg.sample(classify_write_address(awaddr_seen), vif.bresp,
                             classify_strobe(wstrb_seen), 2'd0,
@@ -141,7 +190,7 @@ class thermo5_axil_monitor extends uvm_monitor;
           if (vif.bresp == 2'b10) slverr_count++;
           if (vif.bresp == 2'b11) decerr_count++;
           ap.write(tr);
-          aw_seen = 0; w_seen = 0;
+          aw_seen = 0; w_seen = 0; write_fire_seen = 0;
           b_stall_cycles = 0;
         end
         if (vif.arvalid && vif.arready) begin
@@ -150,6 +199,8 @@ class thermo5_axil_monitor extends uvm_monitor;
         if (vif.rvalid && vif.rready && read_seen) begin
           tr = thermo5_axil_item::type_id::create("observed_read", this);
           tr.is_write = 0; tr.addr = araddr_seen; tr.rdata = vif.rdata; tr.resp = vif.rresp;
+          tr.txn_id = active_read_id;
+          tr.event_cycle = cycle_count;
           read_cg.sample(classify_read_address(araddr_seen), vif.rresp,
                          r_stall_cycles != 0);
           reads++;

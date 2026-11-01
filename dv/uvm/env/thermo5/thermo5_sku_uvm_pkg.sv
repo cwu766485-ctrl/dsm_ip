@@ -17,6 +17,15 @@ package thermo5_sku_uvm_pkg;
 
   `uvm_analysis_imp_decl(_src)
   `uvm_analysis_imp_decl(_pa)
+  `uvm_analysis_imp_decl(_axil_fire)
+  `uvm_analysis_imp_decl(_axil_addr)
+  `uvm_analysis_imp_decl(_axil_done)
+  `uvm_analysis_imp_decl(_axil_cycle)
+  `uvm_analysis_imp_decl(_trace_src)
+  `uvm_analysis_imp_decl(_trace_pa)
+  `uvm_analysis_imp_decl(_trace_axil_fire)
+  `uvm_analysis_imp_decl(_trace_axil_addr)
+  `uvm_analysis_imp_decl(_trace_axil_done)
   `include "thermo5_source_sequencer.svh"
   `include "thermo5_source_driver.svh"
   `include "thermo5_source_monitor.svh"
@@ -28,6 +37,8 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_axil_agent.svh"
   `include "thermo5_pa_monitor.svh"
   `include "thermo5_control_bfm.svh"
+  `include "thermo5_axil_register_predictor.svh"
+  `include "thermo5_trace_recorder.svh"
   `include "thermo5_pa_scoreboard.svh"
   `include "thermo5_sku_coverage.svh"
   `include "thermo5_sku_env.svh"
