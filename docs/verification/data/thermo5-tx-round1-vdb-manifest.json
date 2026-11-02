@@ -1,0 +1,2103 @@
+{
+  "design": {
+    "file_count": 24,
+    "files": [
+      {
+        "path": ".cmoptions",
+        "sha256": "7fcc28f34b7757d104f44729739307a71ce27e1a12280f4ae01d169c8ceaa9b4",
+        "size_bytes": 532
+      },
+      {
+        "path": ".mode64",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "path": ".vdb_version",
+        "sha256": "1ae2f1eb6c0fd7f5f825bfd298130d5139f81de177067b491a71a81acf5f849a",
+        "size_bytes": 13
+      },
+      {
+        "path": "snps/coverage/db/auxiliary/dve_debug.xml",
+        "sha256": "eff80b3b697f0a0c0926eb8ba23580e68b8a2a57548d53a13bd030add8cf845b",
+        "size_bytes": 114808
+      },
+      {
+        "path": "snps/coverage/db/auxiliary/vcmArguments.xml",
+        "sha256": "21f8b10ec4e342fa82d82a5a05404194e2a04a71f8ce259bbf01eda6e246dec6",
+        "size_bytes": 307
+      },
+      {
+        "path": "snps/coverage/db/auxiliary/verilog.instance_parameters.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size_bytes": 0
+      },
+      {
+        "path": "snps/coverage/db/auxiliary/verilog.sourceinfo.xml",
+        "sha256": "d7be00d413887cf0d92b8b6620e2cad88d78ab326110192b124a65684518057d",
+        "size_bytes": 27825
+      },
+      {
+        "path": "snps/coverage/db/design/verilog.compact_hier_file.txt",
+        "sha256": "7aaba5e486041b8735b975edb48c6fd478cf48449ad354e05c536e2e41165bbe",
+        "size_bytes": 253
+      },
+      {
+        "path": "snps/coverage/db/design/verilog.design.xml",
+        "sha256": "9c07beae69396675ec5051f6cec636700aadfeb5dfd881135a1399c53198d5f2",
+        "size_bytes": 2088
+      },
+      {
+        "path": "snps/coverage/db/shape/assert.verilog.shape.xml",
+        "sha256": "76f7ca4cfd100bd166fd3d0996c6317b7795d4146ab7e5e68489bfd6c169a966",
+        "size_bytes": 837
+      },
+      {
+        "path": "snps/coverage/db/shape/branch.verilog.exclude.xml",
+        "sha256": "314c5ee9ae037fb0a2bf96ff0d6f68c8cd39aa32e04f36489b25d32ea39ca590",
+        "size_bytes": 47
+      },
+      {
+        "path": "snps/coverage/db/shape/branch.verilog.info.xml",
+        "sha256": "24c75bd84246f1c1ce13a27caa87b97f622c33257e47b77cefd002228228cd9c",
+        "size_bytes": 674
+      },
+      {
+        "path": "snps/coverage/db/shape/branch.verilog.shape.xml",
+        "sha256": "add167fdad5607b2fb3069e1cadab9cad15bf15f33a76800714cb632932f2aba",
+        "size_bytes": 7538
+      },
+      {
+        "path": "snps/coverage/db/shape/cond.verilog.exclude.xml",
+        "sha256": "314c5ee9ae037fb0a2bf96ff0d6f68c8cd39aa32e04f36489b25d32ea39ca590",
+        "size_bytes": 47
+      },
+      {
+        "path": "snps/coverage/db/shape/cond.verilog.info.xml",
+        "sha256": "ec8722cf9b52fd50778f2671506a0ef60388b3997fabdeb7438a1ab932829c19",
+        "size_bytes": 613
+      },
+      {
+        "path": "snps/coverage/db/shape/cond.verilog.shape.xml",
+        "sha256": "b4b4b1305475e6d26d61e93c662733e3623f90551703b9b5ad3d14c229a578d1",
+        "size_bytes": 7547
+      },
+      {
+        "path": "snps/coverage/db/shape/fsm.verilog.exclude.xml",
+        "sha256": "8782366ecc9f298c68a3e1eebc48080583a1068d06181313f4ac56d25fdfa4f2",
+        "size_bytes": 38
+      },
+      {
+        "path": "snps/coverage/db/shape/fsm.verilog.generated_config.txt",
+        "sha256": "8ee156901e69501f6b008ade03fdfd0d3cd9dd0090e021b57a9b9a5489b41de4",
+        "size_bytes": 5363
+      },
+      {
+        "path": "snps/coverage/db/shape/fsm.verilog.shape.xml",
+        "sha256": "93bf6c2e2c601316608c7e398a1f76bb0e63b9873e4141619419a5ad7d1ff221",
+        "size_bytes": 689
+      },
+      {
+        "path": "snps/coverage/db/shape/line.verilog.exclude.xml",
+        "sha256": "314c5ee9ae037fb0a2bf96ff0d6f68c8cd39aa32e04f36489b25d32ea39ca590",
+        "size_bytes": 47
+      },
+      {
+        "path": "snps/coverage/db/shape/line.verilog.info.xml",
+        "sha256": "35f8da721d9c0723f371f54afcd4cead952e9283697583b8d62eb923401b7d9b",
+        "size_bytes": 722
+      },
+      {
+        "path": "snps/coverage/db/shape/line.verilog.shape.xml",
+        "sha256": "7d35bc9ac370fe82abab1e0b8eaf7d523353ebbd74f42e310b00ee712aed73c4",
+        "size_bytes": 22419
+      },
+      {
+        "path": "snps/coverage/db/shape/tgl.verilog.info.xml",
+        "sha256": "7a768ff85f2f115035f41cf003889a4ddc7bfbbbef662501e1f9f58694062035",
+        "size_bytes": 771
+      },
+      {
+        "path": "snps/coverage/db/shape/tgl.verilog.shape.xml",
+        "sha256": "dfe04fd94680ed82b99de6dffc60e489edb105f0c8bf31e8b20a8956a5d2a7e6",
+        "size_bytes": 6988
+      }
+    ],
+    "path": "/tmp/dsm_ip_coverage_round1/runs/thermo5_coverage_closure_round1/vcs_outstanding_v3/simv.vdb",
+    "total_bytes": 200166,
+    "tree_sha256": "3291a89169a65a2bc30602203f08cb41a320035ac3d29d09e326f62e6335d024"
+  },
+  "tests": [
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "3fb7daf9c60a5b8ff78ae73b9da7d38093d703517c9c04355b1241a642a39714",
+          "size_bytes": 366
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "07adf26a26771b2465b56d0883ab3d5faa13679483ab91eb5a5b16936025fd47",
+          "size_bytes": 835
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "c8d29810d8b75aaf30ce8f33a80c2f6ae4177dda5631a56950811b1c94a8a83e",
+          "size_bytes": 808
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "5c5d4f548c37a094a0e5b2fde0fa1f243cd980ae8d3fb6a47dd5d4f7c5ddd0bf",
+          "size_bytes": 863
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "f32668426053e72242fefedd143f8b3f9337b480c40dece560386ebc719328d5",
+          "size_bytes": 485
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "02600c5133c65e1553b256d4b90d1541774d7535b503465bcd2491c3726517cc",
+          "size_bytes": 2550
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "a4533aec1a10c1583d8a42ba4a852a8d16b467840d746ba0ed2105862327905d",
+          "size_bytes": 1670
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "cd0044469d4198ef24d5b39170b8927efaf54d774f8c41a10d4a59400caefeaf",
+          "size_bytes": 1938
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_boundary_phase_test_seed610817.vdb",
+      "total_bytes": 11654,
+      "tree_sha256": "32890681eee2b4c469dcb8c47cedcf8d12bd0952cc0461f141e7494ea50dc825"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "db07179fb2e36d4e1a2a8e9cd1f9b57051ee52a25b9621aedffdb20b3e5689e9",
+          "size_bytes": 359
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "bd0f099ea13fb3e73cf7ba69058a125f7eaf87407b58d70ca5a214ef1f410170",
+          "size_bytes": 848
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "726366c49b2336130efd2f126bec702bdcd0bd65c689de8c32f34b0581847494",
+          "size_bytes": 805
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "f35d29a850c58ca5095aa868bd544beb3611ac6f7d0c9b8014f98b692e43910f",
+          "size_bytes": 879
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "b7226eec529c1a72cb7e069f5908a3164d6693657f64e5f08bcdc0449bf264c8",
+          "size_bytes": 445
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "c9ea1b4030e55cc8d86681f3dd89fca8d6a55a57aeadb6ff7e5cc043df4e36d1",
+          "size_bytes": 2457
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "85b4e97276e3e0bb71245ce3eabd3ab13c83a11c5bbcda6feacef1967a6c01c3",
+          "size_bytes": 1575
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "606ee045982823c84027a159b13a7cce3a3adfda0d96e48227575080108f4c17",
+          "size_bytes": 2052
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_cdc_end_remaining_test_seed610811.vdb",
+      "total_bytes": 11559,
+      "tree_sha256": "7c7df1f84ea0ef8a2d12cc577b98eee335b13b2c26b928e19be13b21e60ac0b1"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "8fd74014cf4bb359105ca1ee7bcda19de82de3c5c28882adea773f88f7299d88",
+          "size_bytes": 361
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "df6a32c3f03d0a52a9607a776361af562e2fe51cd0c9c4b361d73dd8fa3fc96c",
+          "size_bytes": 837
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "dc4cc3d108ad06259dad8605e975b282af41f243675c4884fe8fbc949d99508f",
+          "size_bytes": 806
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "15c6e94e6db381cd48c318e855a63510e90ddb5e6631737b467b4a577340c013",
+          "size_bytes": 858
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "c3171179e64d6b9ef59c335b510e45cf934757b3817e88eebe1bc6d52077549d",
+          "size_bytes": 445
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "d009a24c9820cf3a576b983e7adfaf45a3e6eaf076a0d0c0223cb2e324eefd1b",
+          "size_bytes": 2553
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "8aa977c86d231abf0791be01982d1162c81f7273bfe12d2caa4d9e436dde9d40",
+          "size_bytes": 1663
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "0b3ca330eb8426c5d429f9089a27484671b1f9ba044b422debb660bb7c3c5191",
+          "size_bytes": 2380
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_dpd_saturation_bittrue_test_seed620131.vdb",
+      "total_bytes": 12042,
+      "tree_sha256": "726f7081f3a9f7efcc0a64ee89564ffeb5711fa5546df49baac1a8d35dbd1b71"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "6cb10a648fc6903b571f269a9654d503271eaafa2947f7bba32b829715358b45",
+          "size_bytes": 377
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "e9436f60c368840623b175ff70efb68bac8977d4a0c0693b3af020566c95d1d0",
+          "size_bytes": 837
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "8c5e24fc7a1e9ba4595a06ab83d0df55226a1caaed21fc6e0251d136c5e59896",
+          "size_bytes": 788
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "195a477ac19a4c5fb6e9db388a063aad79ef4da6fa4103305927011bfd159fd0",
+          "size_bytes": 863
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "aaca235a462a0c41f92bba50d872fdff0f925c989e685c655ef1553e009ba577",
+          "size_bytes": 455
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "66625c85c0f73cc66e98d7ad47a16f9001917efd5062a9516db9ce28bf9c3043",
+          "size_bytes": 2609
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "9a2c8eb84e33bfee4692277ffaf96ef24514fa572754802797536f3e743d06b9",
+          "size_bytes": 1749
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "10e1d48f918810631e67ab5de327a9e2f2744542e11cd524291adefc801ab088",
+          "size_bytes": 1824
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_ef2_corner_test_seed610818.vdb",
+      "total_bytes": 11641,
+      "tree_sha256": "e39807f76ceb6cf78d56f6f604eb0b021fb85db74db4f5640228d1fcb552cbfc"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "4dc9dc25a571faecd8787cbe87f3fa6695233e90763e9547f88774e1bc9db47a",
+          "size_bytes": 371
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "fac1035a83eeb1bec33165043261806151ef4b8a9c02c51e420f725abfa3c2ad",
+          "size_bytes": 835
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "1f4a853d7e91603b2f2ccf233f2e8f3ba74f5c7431a3e50f9d65a2e0f9243b92",
+          "size_bytes": 784
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "b615acb4b7fdc567dcc68c514e49ad43d8131b6cdbfb7c41329de2f5f9072c09",
+          "size_bytes": 861
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "dcdb0565ea5a25fc3f2a2d11a9f00c076ea82c97c5f60e54019175d744201018",
+          "size_bytes": 436
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "1412fa662bb706020b92ccbf22fc4c57fc6da114ad2ae1b8e14ecbe13c85f6c2",
+          "size_bytes": 2587
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "b650022d57a368eed51ffddc62aaf145a11f78ea701979f0cdf24290000c8833",
+          "size_bytes": 1717
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "7d9e45d39d6b8605d9fc4c41e50e2d3e285376ba318a7564f177a012033e48c8",
+          "size_bytes": 1854
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_graceful_stop_test_seed610815.vdb",
+      "total_bytes": 11584,
+      "tree_sha256": "529e9739cc6add25faec24b06d63ca06c096937dfbc3c4a6d3abb0718323532d"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "a154ff675b101d32b984aafa1c5580d0dda7ce311c2639b13285f8a10dea3382",
+          "size_bytes": 370
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "3356af6c09841b0b38ea29ccfd3c83cf64755829ac1964100170e26a5abe80d2",
+          "size_bytes": 832
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "c64f78127b5d80612ef0b9d262580cf4971fd7c0bba81b04742851902f780806",
+          "size_bytes": 779
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "341533e030eb68b3489421eb49961c7bb39766324d08f78b101977c4ad729201",
+          "size_bytes": 863
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "0f8b7ea43e7bfa367a2f09b66a49556c95a3062a733eaa016ba22895ea220476",
+          "size_bytes": 455
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "26f6ab8de56eac0bf64c4ed1200f8adfb06af7bf1fd20f20bcc71a592ed24d14",
+          "size_bytes": 2541
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "e10edb93dd15143071fc6b3bde71398e29436a4588022be706005972795dcf9b",
+          "size_bytes": 1671
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "b1226c37aef30541fc901039107516de9a4176392be6907a4c802f4fc95fbef8",
+          "size_bytes": 1923
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_continuous_test_seed610809.vdb",
+      "total_bytes": 11573,
+      "tree_sha256": "f9831a8f5f39cd3a27913b3052b0c678961bfba8ea4bb812fc9902b37ff41258"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "a154ff675b101d32b984aafa1c5580d0dda7ce311c2639b13285f8a10dea3382",
+          "size_bytes": 370
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "3356af6c09841b0b38ea29ccfd3c83cf64755829ac1964100170e26a5abe80d2",
+          "size_bytes": 832
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "c64f78127b5d80612ef0b9d262580cf4971fd7c0bba81b04742851902f780806",
+          "size_bytes": 779
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "341533e030eb68b3489421eb49961c7bb39766324d08f78b101977c4ad729201",
+          "size_bytes": 863
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "6030f59042d56b87cfbad88861fd8a3d3400afacedae07574f88770ba2b8af3c",
+          "size_bytes": 485
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "b35ee48a77b45d61747aa316a5ed6caa64fd45e4b392c82a109e84e35400dd3a",
+          "size_bytes": 2541
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "a3d761fc683455208f00391c66f2a8c1ea12b74b9e2b2b08013d988cfb41b19f",
+          "size_bytes": 1671
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "b1226c37aef30541fc901039107516de9a4176392be6907a4c802f4fc95fbef8",
+          "size_bytes": 1923
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_continuous_test_seed610819.vdb",
+      "total_bytes": 11603,
+      "tree_sha256": "6ba3eb0137a719cd4b84fcb732de0008d270dd7e9015d6dba3eb72920793e5d3"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "a154ff675b101d32b984aafa1c5580d0dda7ce311c2639b13285f8a10dea3382",
+          "size_bytes": 370
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "3356af6c09841b0b38ea29ccfd3c83cf64755829ac1964100170e26a5abe80d2",
+          "size_bytes": 832
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "c64f78127b5d80612ef0b9d262580cf4971fd7c0bba81b04742851902f780806",
+          "size_bytes": 779
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "341533e030eb68b3489421eb49961c7bb39766324d08f78b101977c4ad729201",
+          "size_bytes": 863
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "07c8ac6a116988c67dcc4eb5954d7b7fd0b44dca7fada76dee6a30684c308c64",
+          "size_bytes": 492
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "5888ce00cc5e77c7d3e3ee9313a08e1c1315e360ad46195054ce41113def5189",
+          "size_bytes": 2540
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "8934bbf05da219f689b43d387a11ff3aa287fa55ba463c23a0624f31b86d1ba6",
+          "size_bytes": 1669
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "b1226c37aef30541fc901039107516de9a4176392be6907a4c802f4fc95fbef8",
+          "size_bytes": 1923
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_interframe_gap_test_seed610810.vdb",
+      "total_bytes": 11607,
+      "tree_sha256": "385d9c88f40aed046d213f9b44df62c6ca8f15dddb601006d3cb30b08bc94e94"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "0639c24aa172b59dd6d92bf17a2542e0784b42323e27e9c4658759b4142c317a",
+          "size_bytes": 377
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "7af15065f4a40fed054db6f18b703ac8dc9d84354bc80f3f12f06b61a69e0690",
+          "size_bytes": 829
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "2cf302a357500ee3ce4fa8a7f50ad58554a3650ee27f80ff979c835cfb86d3c4",
+          "size_bytes": 779
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "a7e701754789d7257ee43824a8a8e4eb3a6b840eac3e9702e65cd35e28cbf788",
+          "size_bytes": 860
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "a802eccc84c5817a3f6e1db0cb31dbd558d15f360f25aa42849fed74a59df113",
+          "size_bytes": 469
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "11954eca76440c27765cac80b7106fa0f8705cc78c1c40277f76bbd226771874",
+          "size_bytes": 2632
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "e60715fca52a58a2429cd44048484e4585f7d5abb34c6abf3acfc0395c185575",
+          "size_bytes": 1751
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "ce3fc7670a076d6bf9aaa807063bf8760994889b1a85cf9d36dd2cc6ba4012aa",
+          "size_bytes": 1838
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_product_identity_test_seed610808.vdb",
+      "total_bytes": 11674,
+      "tree_sha256": "aac706f5ded88317d78a4d5b6194e568ef5f1dc743aaccca4b861ba50192e114"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "dfa456e64fcc72470b0da700ffd582fc984b85891da6eb8afcf38721aaef50b8",
+          "size_bytes": 358
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "6da17645792a33736fa758a22df010d7ef859eb0fe6026bba66d06b391a9a9bb",
+          "size_bytes": 833
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "f8faa4cf5ddc99434896e41ee7751bb6af2caed843d9fc803f7f7d64f13698ad",
+          "size_bytes": 773
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "3e52466708de8816c48923dc47dd6c872d9c1d2be0555c072b78e0ce00752c8a",
+          "size_bytes": 342
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "4ec05cade82ce67514a09523c00369e2027ca6db1a12c450b6a0bbdc3cc8ab7e",
+          "size_bytes": 863
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "fa9871b547afef44940d9d1be930c8e01f9372d6220608fe199185b739ce45da",
+          "size_bytes": 437
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "d71d27b2f55704399f878c376df21e562f4092a0d8ae1f7b72db83003b7ef4ba",
+          "size_bytes": 2474
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "2811141aab6cad6401ea003156a9fd85405ae6dfeffac35051315052fc4afaab",
+          "size_bytes": 1592
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "e321cc2f3d97f180ebb631d58803a3bbd3050941036e0876ac0834a9ee9eede3",
+          "size_bytes": 1346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_register_access_test_seed610812.vdb",
+      "total_bytes": 10811,
+      "tree_sha256": "513c81ab65e815fe595b99a976b88b1bdad0a7349e42fa7f851d17c0e91ec064"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "d7fd745605be3a2fab4daecc9d12c625322861db70e9cc1d11ea86c9453227f8",
+          "size_bytes": 359
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "bd0f099ea13fb3e73cf7ba69058a125f7eaf87407b58d70ca5a214ef1f410170",
+          "size_bytes": 848
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "d283fad7a571489d8453ee724ba7377d456ac25d9a86e0589eeb6eb627f91fba",
+          "size_bytes": 806
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "f35d29a850c58ca5095aa868bd544beb3611ac6f7d0c9b8014f98b692e43910f",
+          "size_bytes": 879
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "72d5892ba7ca38cc8a14aacc50741335a0b844ef65e49c32bc1744ea9f05af32",
+          "size_bytes": 483
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "a64d26b0c8e5210ced6e0a389d8fb2d082b8c27450f289e7d8a103d4f5747e83",
+          "size_bytes": 2464
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "86f7952ec9cc60a5ef4725a4c80b39bcc9be2131cab0dd0761d222366c734ee5",
+          "size_bytes": 1570
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "606ee045982823c84027a159b13a7cce3a3adfda0d96e48227575080108f4c17",
+          "size_bytes": 2052
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_reset_release_source_test_seed610713.vdb",
+      "total_bytes": 11600,
+      "tree_sha256": "89c754fc2a255dd23abe07a1bc5b762152568e63c3c4869c13368d4b9ef0b51e"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "b734081159cd112e36be8ad36e7a7ddea8e096bc52e63ec7fad93b35c9517090",
+          "size_bytes": 368
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "36e38a8dac0899b7552b240671d64d569db44648f8e7c2fd9aeedb685f7dafd2",
+          "size_bytes": 845
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "5d11d242a672ca42173a8160aab0c179a1a5e334dbd29e27caeda3039341cb6e",
+          "size_bytes": 808
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "b44cf5a8ed079f132950d6dabe675d50ffc1535d95c33a6375ef9dc23e3e22b7",
+          "size_bytes": 341
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "1838a87d6711b1a499c15e42472ca0c6365e4eca472c1bf08fad88ccdd6e82b9",
+          "size_bytes": 879
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "3d8c9a3417edcff22b13bf76c47bd4ce837bf4c91c7da5df45ef42a5d8adf516",
+          "size_bytes": 446
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "76e07e13e7294bee9a66c5e9b6bf9c290519288136568573f1e89bd5d2e7e7f3",
+          "size_bytes": 2479
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "3cc54d5b1f02121d66e8e458b744d1d1f1da9c63e0d7e81c4e0149ebf5954aeb",
+          "size_bytes": 1591
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "af7de74cde98cdf131c1130bcd6a7951c71559bf551016f316021eec50dec4ef",
+          "size_bytes": 1973
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_reset_sweep_test_seed610802.vdb",
+      "total_bytes": 11523,
+      "tree_sha256": "0d0dbee7f007545ba1de96af715da4dbd304dd52337862515d04cc9847be0e5e"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "ce4b63efb4944dfbd5ebc40a5f28e8b071b79f7e1ec8237dcc99b82f841d6fe8",
+          "size_bytes": 360
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "1da79846114544238fd1f12233e5a09f508b564131d12f934b2919fa6d751377",
+          "size_bytes": 847
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "41df151e26bd70cf304c3961f65abe002463ba2b26e3af795b363e883dd06ec2",
+          "size_bytes": 802
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "57711ab6f735dff124b8c2c6227f120f48b73f07baf01ff8491bf3b219f7e6a3",
+          "size_bytes": 871
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "5f754db8f25d6edd7b8555dd08fb06934336dd0260d9089d645ece9c0c6e8d71",
+          "size_bytes": 449
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "3f9dab47a44790851558a43c247ab20bb1f98ef20eab2e849d097fc298427269",
+          "size_bytes": 2492
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "6dd4b6aa44715ca7db7aa9377191ecc50157bd82577b75708489423727a00fe9",
+          "size_bytes": 1606
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "70b323bdce1d857117e741d9c77506a42b4fd364164a6a34afe821df704d50a5",
+          "size_bytes": 1971
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_cdc_resetready_repro_20261031/vcs_product_replay_13tests/cov_thermo5_sku_axil_stop_restart_test_seed610816.vdb",
+      "total_bytes": 11537,
+      "tree_sha256": "244bdcecd71735344ec681edfc0035348b61266ae6138764e06668c8d972de74"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "ce3dd2aa91ddf7f100d0862684bf98dd34fda4d92430dee902172f3030900c12",
+          "size_bytes": 370
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "5f8fbee9df9111b8028981792d303140ffadcec5d65443cb296d63fa82916d2a",
+          "size_bytes": 848
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "7dcee35154f6a34af261e4e7eba1550ef83e31fe1a49a6d72ce0641ff412d15d",
+          "size_bytes": 809
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "39962f5c789a13023ebbc7bf90cb4bc6d14434c56cdc116f546acc31bba40381",
+          "size_bytes": 349
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "ddeee796a07fa2471e41744935b51d09c6565d4d535768179f8a89dfdd9c87c7",
+          "size_bytes": 874
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "bfdb509b9f75f0a2301c0543bb2fb7e4321bb2e6d30005d9a7317966f3688a71",
+          "size_bytes": 449
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "220fc409bef974b471c54b66e365c8fad8d0960e75048debd6ea1ab5ef39a2ce",
+          "size_bytes": 2458
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "96cec00be9184d014f7d714ae3587ac5eec49bb4e64d4ac970b76c8b93e3f098",
+          "size_bytes": 1575
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "3ec37e6661b2711f655f476f8531cd9db4d816729ac4544738b25ce2f7c4a310",
+          "size_bytes": 1950
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_code_coverage_union_20261031/cov_axil_illegal_frame_seed420102.vdb",
+      "total_bytes": 11475,
+      "tree_sha256": "f828fcce3f1dc3fdcac047f9de83385b0319340c3dfd5e2b0917b47864fdefda"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "76f7ca4cfd100bd166fd3d0996c6317b7795d4146ab7e5e68489bfd6c169a966",
+          "size_bytes": 837
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "5abfd67f224a9e76b788dee6ec7c076800cbc01a7f227b8fe5f50f3dbde474ee",
+          "size_bytes": 383
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "76f7ca4cfd100bd166fd3d0996c6317b7795d4146ab7e5e68489bfd6c169a966",
+          "size_bytes": 837
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "4cbfbdc5aba2d546febffc1b818cba25ad6d4148000b5a98538e1fcb4bca8349",
+          "size_bytes": 834
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "531c0fb799ca52773c513aa238edae8798c81899aa09a3e9c50ce0c9c7408027",
+          "size_bytes": 779
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "3e52466708de8816c48923dc47dd6c872d9c1d2be0555c072b78e0ce00752c8a",
+          "size_bytes": 342
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "96575aa26b2a5ba3b32271b1231be897379bd8fba18613e46e335efbcdefd89c",
+          "size_bytes": 859
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "cfcc6b55ec8c3924c2a616396fb039f063cbf257e288f40fd292a249e83a1fbf",
+          "size_bytes": 428
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "89cd67c98f476fb14368bff187f4a1e5f8e774656a1844382d052a8df3dee4bd",
+          "size_bytes": 2411
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "9e016a95fc62416cb0e43b9a49cd78d1356f6da17e96a953f06d32a1f06d4e22",
+          "size_bytes": 1521
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "e0b929e9771672ab05f308e889a48c8006a910e9972e6aa8af3693060f37887a",
+          "size_bytes": 1366
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "21f8b10ec4e342fa82d82a5a05404194e2a04a71f8ce259bbf01eda6e246dec6",
+          "size_bytes": 307
+        }
+      ],
+      "path": "/tmp/dsm_ip_coverage_round1/runs/thermo5_coverage_closure_round1/vcs_outstanding_v3/cov_axil_mailbox_fault_seed420103.vdb",
+      "total_bytes": 10904,
+      "tree_sha256": "62c2b716bb474e79d2127f485a054a56c0ef16a00a3385262eea4be242ecd325"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "ac5a16d108b5024d7da9e474513f7cf4c31323a8f381c584c62a19a85e0c5b14",
+          "size_bytes": 486
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap1.vdb",
+      "total_bytes": 11535,
+      "tree_sha256": "87c21cd7c4d88afc5bc3ba8829e8467033dbc49ba6384e12397676dba089f5d4"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "6a4068b0ff798db2c907435f5183ffe427ee6aa5971a916b74a5197aeeff57bf",
+          "size_bytes": 491
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap2.vdb",
+      "total_bytes": 11540,
+      "tree_sha256": "f48fc250037723395da22f6ffe9d82abe207b173001c574341030145affa8718"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "662b87192a4d2602a7a903b2e883d94d1430630d2d60b0ec261235bab0752c98",
+          "size_bytes": 491
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap3.vdb",
+      "total_bytes": 11540,
+      "tree_sha256": "7e45c6450d46350ba2222adc344b204ea0c4fa62fad4cd6ec374e11a0e3d88d4"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "7a0a3e78e260c1fab1d545c769a53bbf00ef7748594946cd1955e1274c2f3185",
+          "size_bytes": 492
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap4.vdb",
+      "total_bytes": 11541,
+      "tree_sha256": "e8a596e40d68b53993050fb35f01f9767e00171b06b1d12a3f59041b9b5e5260"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "c07fcdb0ac4658fa69163605a7a05f752fad9752d42766f73f1234fd2f1c482d",
+          "size_bytes": 491
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap5.vdb",
+      "total_bytes": 11540,
+      "tree_sha256": "f98b20694f8cb7c39c5e9019d0620588657d12100571d81bd1fdb50cce45d0e2"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "f133f6b6cefd6c60c50618f3095453cd5beefd3bd9a514a0be09f885d894d9e1",
+          "size_bytes": 492
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap6.vdb",
+      "total_bytes": 11541,
+      "tree_sha256": "cc1cb7ef0167a0b7b240307e358c686e0189195084fc255a03c49f8e8be81610"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "95497d8f18bd719dc2c38db7d8ad2ed711688675c8b2054f23e559188afd218c",
+          "size_bytes": 492
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap7.vdb",
+      "total_bytes": 11541,
+      "tree_sha256": "d2f98b16e9b70b9f0247dcbabdb1f988d7f86e7f1e296c27b786bc5cdff9a5d6"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "331d1b573e04b88daaf740bd2d1459aadcc0e3b5e258aa7eb449d268df37bcf6",
+          "size_bytes": 491
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap8.vdb",
+      "total_bytes": 11540,
+      "tree_sha256": "73634a2692c7e696371e56ff01b473a7b8ef6565fa57480e5b3f8d9a919a4753"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "3cca9f853751b10865380a398702c2ebbf470bfc44ec1cb21be13aee9bb52882",
+          "size_bytes": 490
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap9.vdb",
+      "total_bytes": 11539,
+      "tree_sha256": "2c1efcb72aa5a4c446f6ee9181c090e0356f839970d9deb2ad3a876fa3425da4"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "345bf62da438dd592a18500e2a55bad8c7cb09e4f13f7a7c6e686010971eaf5d",
+          "size_bytes": 363
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "b3af8175aff6c8080853de41bcfa042712baffc499f6e1ac70e60eaabc2e925c",
+          "size_bytes": 841
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "25b10b83e8a97d89e91eed06e28fafbf90c63a3627ea85266bebb4f4b44ed119",
+          "size_bytes": 800
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "0639621cea62b0363cd65a4cc02e760c3f5fad2193ee671ce5fbab1d251d3cdd",
+          "size_bytes": 870
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "c6b7d661f6ca1a7a34936e42db7ca728a02cab19e35099d2730a1d117327541c",
+          "size_bytes": 493
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "0c1d49b028dee8809b8b50bfe6a0b808ae7d86ff30b398ab514ad57d3ef622c7",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "069357eaf889efcdf1f9410903187d56b65c2337bf6a041268066b8734adaad1",
+          "size_bytes": 1593
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "9f4822efe45774f88edc2817a60f5ff6698d67de6ea42b5018c9a06f701b7021",
+          "size_bytes": 1975
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap10.vdb",
+      "total_bytes": 11542,
+      "tree_sha256": "8a194a49f75aa18c0e26e7aa1a157941b0315ab3b7d89f0748055b4eb676bb9a"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "dee06217fa8eb108af52c74a37839e063dc49ee3e12c0bc256bac30e4cc207f6",
+          "size_bytes": 361
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "f6e5e708a19a7f022f3ecf31e3dc4acbe73727cd7f902c2d6ab3f1fc4a13997d",
+          "size_bytes": 734
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "fc19a5670685931370b3cacb892f82c6e14ff0fdca11d7be8a1e413d5321999c",
+          "size_bytes": 846
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "1daa9ccd1e5eb0185a44ea61dcb15a382844d6940ec514cdd94fe10f93bf79ee",
+          "size_bytes": 804
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "8a90f0545e52ddd7465f2a64cb0cd1d8f2e7a919ab888f075b4079eb001b47e3",
+          "size_bytes": 868
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "64077d0bc5351ec6a4b4a3d699336d2f57fb3c18f2ad49c54c60609a24b13936",
+          "size_bytes": 492
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "a5734b152ff9789deb37453d9770bff4b3c61bad5277dc7f79ce6138aea64bc4",
+          "size_bytes": 2468
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "a2b9e79044bc89e6a629fa655f3453443eec1c44ad9545c3c0ba4445020bf2d2",
+          "size_bytes": 1591
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "f23edebfddb91e7b46281fe11f7862f23464c2e4197a1d33e2898be89e0dd655",
+          "size_bytes": 1976
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "7ad49b5fe1b629d83c54010f25f5fc8386b7acf30afc0c7ef0f40c53b93abe02",
+          "size_bytes": 325
+        }
+      ],
+      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_centered_pop_push_gap_closure_20261031_pr22/source_gap11.vdb",
+      "total_bytes": 11545,
+      "tree_sha256": "b2603553dd73570dd603b750616fa39658a2f746ffe7397ff65b47b22eb3876b"
+    },
+    {
+      "file_count": 13,
+      "files": [
+        {
+          "path": ".mode64",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        {
+          "path": "snps/coverage/db/common/assert.verilog.shape.xml",
+          "sha256": "76f7ca4cfd100bd166fd3d0996c6317b7795d4146ab7e5e68489bfd6c169a966",
+          "size_bytes": 837
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.data.xml",
+          "sha256": "3ad97b755859784ba73041ddddda9a18d0775ee02f59b5bd3e53baab0fc5f84c",
+          "size_bytes": 407
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/assert.verilog.shape.xml",
+          "sha256": "76f7ca4cfd100bd166fd3d0996c6317b7795d4146ab7e5e68489bfd6c169a966",
+          "size_bytes": 837
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/branch.verilog.data.xml",
+          "sha256": "94a0eb48bc3f58de9aec560b11efb254d8430efcadfa4685d0c47d2f462a3bf2",
+          "size_bytes": 838
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/cond.verilog.data.xml",
+          "sha256": "d1ceb683ec423938cae7551433d97ac3c3bbb84860e6e93168496747d986bdc7",
+          "size_bytes": 788
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/fsm.verilog.data.xml",
+          "sha256": "af60f902e504e62566c24f0e1d8433bef13133c1f33e4727bd898bec115516de",
+          "size_bytes": 346
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/line.verilog.data.xml",
+          "sha256": "861502513c053c97e0a8e996c6bd2902625aeb25a0aacda994dde055f76ca021",
+          "size_bytes": 866
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/siminfo.xml",
+          "sha256": "7ded866fe03ba1553f9355aab9083bb07fee65f7c32f9f670dcff2b50bef2653",
+          "size_bytes": 420
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.cumulative.xml",
+          "sha256": "2256504fad510e482e56375d2d0dbe22c28a668cbec1ce8b257f0012882e0727",
+          "size_bytes": 2510
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/testbench.inst.xml",
+          "sha256": "255cdf05b5d6e1af903730ae43bb951c6656acf39176783f3a09a9a06f70ea8b",
+          "size_bytes": 1641
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/tgl.verilog.data.xml",
+          "sha256": "409de511afc221eb71117c6fefd44a32a282e4e2d17793ae2c2e272f09419601",
+          "size_bytes": 1922
+        },
+        {
+          "path": "snps/coverage/db/testdata/test/vcmArguments.xml",
+          "sha256": "21f8b10ec4e342fa82d82a5a05404194e2a04a71f8ce259bbf01eda6e246dec6",
+          "size_bytes": 307
+        }
+      ],
+      "path": "/tmp/dsm_ip_coverage_round1/runs/thermo5_coverage_closure_round1/vcs_outstanding_v3/cov_thermo5_sku_axil_outstanding_bounds_test_seed610902.vdb",
+      "total_bytes": 11719,
+      "tree_sha256": "b48a2bc95020d09419a8282b62136b1d3845f02007a45d9443c642df821ed0ca"
+    }
+  ]
+}

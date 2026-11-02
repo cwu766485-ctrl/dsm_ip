@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Audit raw URG coverage for the frozen Thermo5 TX product configuration.
-
-The initial gate intentionally supports zero waivers only. Once a waiver is
-proposed, the raw report remains authoritative and this script fails closed
-until a reviewed, reproducible adjusted-report flow is added separately.
-"""
+"""Audit Raw and adjusted URG coverage for the frozen Thermo5 TX product."""
 
 from __future__ import annotations
 
@@ -135,6 +130,76 @@ def _applicable_functional_bins(path: Path) -> tuple[dict[str, float], dict[str,
     return scores, counts, next(iter(product_shas))
 
 
+def _coverage_fingerprint(summary: dict) -> dict:
+    return {
+        "metrics": {r["metric"]: {"covered": int(r["covered"]), "total": int(r["total"]),
+                                  "missing": int(r["missing"])}
+                    for r in summary.get("metrics", []) if r.get("ownership") == "PROJECT_RTL"},
+        "fsm": [{"metric": r.get("metric"), "covered": int(r.get("covered", 0)),
+                 "total": int(r.get("total", 0))}
+                for r in summary.get("fsm_denominators", []) if r.get("ownership") == "PROJECT_RTL"],
+        "dut_assertions": summary.get("dut_assertion_status_counts", {}),
+    }
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _vdb_tree_fingerprint(path: Path) -> dict:
+    if not path.is_dir():
+        raise AuditError(f"manifest VDB is missing: {path}")
+    files = []
+    total_bytes = 0
+    digest = hashlib.sha256()
+    for child in sorted(item for item in path.rglob("*") if item.is_file()):
+        relative = child.relative_to(path).as_posix()
+        size = child.stat().st_size
+        sha = _sha256_file(child)
+        files.append({"path": relative, "size_bytes": size, "sha256": sha})
+        total_bytes += size
+        digest.update(relative.encode() + b"\0" + str(size).encode() + b"\0" + sha.encode() + b"\n")
+    return {"path": str(path.resolve()), "file_count": len(files),
+            "total_bytes": total_bytes, "tree_sha256": digest.hexdigest(), "files": files}
+
+
+def _verify_dual_report_manifest(report_manifest: dict, raw_summary: dict,
+                                 adjusted_summary: dict, waiver_audit: dict,
+                                 waiver_audit_path: Path) -> None:
+    if report_manifest.get("raw_summary") != _coverage_fingerprint(raw_summary):
+        raise AuditError("Raw summary does not match the dual-report VDB manifest")
+    if report_manifest.get("adjusted_summary") != _coverage_fingerprint(adjusted_summary):
+        raise AuditError("Adjusted summary does not match the dual-report VDB manifest")
+    if report_manifest.get("waiver_audit_sha256") != hashlib.sha256(waiver_audit_path.read_bytes()).hexdigest():
+        raise AuditError("dual-report manifest is bound to a different waiver audit")
+    if report_manifest.get("product_configuration_fingerprint") != waiver_audit.get("product_configuration_fingerprint"):
+        raise AuditError("dual-report manifest product configuration mismatch")
+    vdb_manifest = report_manifest.get("vdb_manifest")
+    if not isinstance(vdb_manifest, dict) or not vdb_manifest.get("design") or not vdb_manifest.get("tests"):
+        raise AuditError("dual-report manifest lacks its complete VDB file inventory")
+    digest = hashlib.sha256(json.dumps(vdb_manifest, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    if digest != report_manifest.get("vdb_manifest_sha256"):
+        raise AuditError("dual-report VDB inventory hash mismatch")
+    if report_manifest.get("post_vdb_manifest_sha256") != digest:
+        raise AuditError("VDB inputs changed while Raw/Adjusted URG reports were generated")
+    current_design = _vdb_tree_fingerprint(Path(vdb_manifest["design"]["path"]))
+    if current_design != vdb_manifest["design"]:
+        raise AuditError("design VDB tree does not match the Raw/Adjusted report manifest")
+    current_tests = [_vdb_tree_fingerprint(Path(item["path"]))
+                     for item in vdb_manifest["tests"]]
+    if current_tests != vdb_manifest["tests"]:
+        raise AuditError("test VDB trees do not match the Raw/Adjusted report manifest")
+    common = report_manifest.get("common_inputs", {})
+    if common.get("design_vdb") != vdb_manifest["design"].get("path"):
+        raise AuditError("dual-report design VDB path does not match the hashed inventory")
+    if common.get("test_vdbs") != [item.get("path") for item in vdb_manifest["tests"]]:
+        raise AuditError("dual-report test VDB list does not match the hashed inventory")
+
+
 def _project_metrics(summary: dict) -> dict[str, dict[str, int | float]]:
     found = {
         row["metric"]: row
@@ -194,6 +259,7 @@ def _verify_source_manifest(path: Path, repo_root: Path) -> dict:
         "source_file_count": checked,
         "audit_tool_count": audit_tool_count,
         "base_commit": manifest.get("base_commit"),
+        "product_source_sha": manifest.get("product_source_sha"),
     }
 
 
@@ -226,16 +292,23 @@ def audit(args: argparse.Namespace) -> dict:
 
     waivers = _read_waivers(args.waivers_csv)
     active_exclusions = _non_comment_el_lines(args.el_file)
-    if waivers:
-        raise AuditError(
-            "this gate version accepts no waiver rows; retain RAW_100_OPEN until "
-            "a reviewed adjusted-report implementation is added"
-        )
-    if active_exclusions:
-        raise AuditError(
-            "active URG exclusion directives are forbidden in the zero-waiver baseline: "
-            + "; ".join(active_exclusions)
-        )
+    waiver_audit = None
+    approved_waivers: list[dict] = []
+    if args.waiver_audit:
+        waiver_audit = json.loads(args.waiver_audit.read_text(encoding="utf-8"))
+        approved_waivers = waiver_audit.get("approved", [])
+        if int(waiver_audit.get("approved_count", -1)) != len(approved_waivers):
+            raise AuditError("waiver audit manifest has an inconsistent approved count")
+        if waiver_audit.get("waiver_csv_sha256") != hashlib.sha256(args.waivers_csv.read_bytes()).hexdigest():
+            raise AuditError("waiver audit manifest is bound to a different CSV")
+        if waiver_audit.get("compile_manifest_sha256") != hashlib.sha256(args.source_manifest.read_bytes()).hexdigest():
+            raise AuditError("waiver audit manifest is bound to a different product source manifest")
+        if waiver_audit.get("generated_el_sha256") != hashlib.sha256(args.el_file.read_bytes()).hexdigest():
+            raise AuditError("generated .el SHA does not match the waiver audit manifest")
+    elif waivers or active_exclusions:
+        raise AuditError("waiver rows or active .el require a validated --waiver-audit manifest")
+    elif active_exclusions:
+        raise AuditError("active URG exclusions are forbidden without an approved waiver manifest")
 
     code = _project_metrics(summary)
     fsm = _fsm_metrics(summary)
@@ -246,7 +319,9 @@ def audit(args: argparse.Namespace) -> dict:
         groups, functional_bins, functional_product_sha = _applicable_functional_bins(
             args.functional_bin_detail
         )
-        expected_product_sha = summary.get("product_source_sha") or source_manifest.get("base_commit")
+        expected_product_sha = (summary.get("product_source_sha")
+                                or source_manifest.get("product_source_sha")
+                                or source_manifest.get("base_commit"))
         if expected_product_sha and functional_product_sha != expected_product_sha:
             raise AuditError(
                 "functional bin detail product SHA does not match the Raw source manifest"
@@ -271,6 +346,42 @@ def audit(args: argparse.Namespace) -> dict:
         ) if attempted else None,
     }
 
+    adjusted_code = code
+    adjusted_fsm = fsm
+    adjusted_exclusions_applied = False
+    if args.adjusted_summary:
+        adjusted_summary = json.loads(args.adjusted_summary.read_text(encoding="utf-8"))
+        expected_exclusions = bool(approved_waivers)
+        if adjusted_summary.get("exclusions_applied") is not expected_exclusions:
+            raise AuditError("adjusted URG summary exclusion marker does not match approved waiver count")
+        adjusted_code = _project_metrics(adjusted_summary)
+        adjusted_fsm = _fsm_metrics(adjusted_summary)
+        approved_per_metric: dict[str, int] = {}
+        for row in approved_waivers:
+            metric = "cond" if row["metric"] in {"cond", "condition"} else row["metric"]
+            approved_per_metric[metric] = approved_per_metric.get(metric, 0) + 1
+        for metric, raw_metric in code.items():
+            adjusted_metric = adjusted_code[metric]
+            denominator_delta = raw_metric["total"] - adjusted_metric["total"]
+            if denominator_delta != approved_per_metric.get(metric, 0):
+                raise AuditError(
+                    f"adjusted {metric} denominator changed by {denominator_delta}; "
+                    f"approved exact bins={approved_per_metric.get(metric, 0)}"
+                )
+        adjusted_exclusions_applied = expected_exclusions
+    elif approved_waivers:
+        raise AuditError("approved waivers require an adjusted URG summary generated from the same VDB")
+    if args.adjusted_report_manifest:
+        report_manifest = json.loads(args.adjusted_report_manifest.read_text(encoding="utf-8"))
+        if report_manifest.get("approved_waiver_count") != len(approved_waivers):
+            raise AuditError("dual-report manifest waiver count mismatch")
+        if report_manifest.get("adjusted_exclusions_applied") is not adjusted_exclusions_applied:
+            raise AuditError("dual-report manifest exclusion status mismatch")
+        if waiver_audit is None:
+            raise AuditError("dual-report manifest requires a validated waiver audit")
+        _verify_dual_report_manifest(report_manifest, summary, adjusted_summary, waiver_audit,
+                                     args.waiver_audit)
+
     raw_closed = (
         all(row["missing"] == 0 for row in code.values())
         and all(row["missing"] == 0 for row in fsm.values())
@@ -283,8 +394,12 @@ def audit(args: argparse.Namespace) -> dict:
         "schema_version": 1,
         "status": "RAW_CLOSED" if raw_closed else "RAW_100_OPEN",
         "exclusions_applied": False,
-        "waiver_count": 0,
-        "adjusted_coverage": "IDENTICAL_TO_RAW_NO_APPROVED_WAIVERS",
+        "raw_exclusions_applied": False,
+        "adjusted_exclusions_applied": adjusted_exclusions_applied,
+        "waiver_count": len(approved_waivers),
+        "pending_waiver_count": int(waiver_audit.get("pending_count", 0)) if waiver_audit else 0,
+        "rejected_waiver_count": int(waiver_audit.get("rejected_count", 0)) if waiver_audit else 0,
+        "adjusted_coverage": "SEPARATE_URG_FROM_SAME_RAW_VDB_LIST",
         "source_manifest": source_manifest,
         "raw_project_rtl": code,
         "raw_fsm": fsm,
@@ -293,8 +408,8 @@ def audit(args: argparse.Namespace) -> dict:
         "functional_groups": groups,
         "legally_applicable_functional_bins": functional_bins,
         "functional_product_source_sha": functional_product_sha,
-        "adjusted_project_rtl": code,
-        "adjusted_fsm": fsm,
+        "adjusted_project_rtl": adjusted_code,
+        "adjusted_fsm": adjusted_fsm,
         "adjusted_dut_assertions": assertion_result,
         "adjusted_functional_groups": groups,
         "functional_group_count": len(groups),
@@ -305,6 +420,9 @@ def audit(args: argparse.Namespace) -> dict:
             "functional_bin_detail": str(args.functional_bin_detail) if args.functional_bin_detail else None,
             "waivers_csv": str(args.waivers_csv),
             "el_file": str(args.el_file),
+            "waiver_audit": str(args.waiver_audit) if args.waiver_audit else None,
+            "adjusted_summary": str(args.adjusted_summary) if args.adjusted_summary else None,
+            "adjusted_report_manifest": str(args.adjusted_report_manifest) if args.adjusted_report_manifest else None,
         },
     }
 
@@ -319,6 +437,12 @@ def main() -> int:
                         help="source-linked bin audit; only LEGAL_PRODUCT rows are gated")
     parser.add_argument("--waivers-csv", required=True, type=Path)
     parser.add_argument("--el-file", required=True, type=Path)
+    parser.add_argument("--waiver-audit", type=Path,
+                        help="source-bound output of thermo5_tx_waiver_pipeline.py")
+    parser.add_argument("--adjusted-summary", type=Path,
+                        help="URG summary from the same Raw VDB list with approved exclusions")
+    parser.add_argument("--adjusted-report-manifest", type=Path,
+                        help="VDB/command manifest from run_thermo5_tx_urg_dual_report.py")
     parser.add_argument("--source-manifest", required=True, type=Path)
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
     parser.add_argument("--output", type=Path)

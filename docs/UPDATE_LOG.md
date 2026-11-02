@@ -1,3 +1,28 @@
+## 2026-11-01 19:22 SGT - Thermo5 TX Coverage Closure Round 1 audit
+
+- Added an exact Raw URG audit for the 71 OPEN Condition tasks / 131 bins.
+  All 131 IDs map to current Not Covered instance/line/class/operand tuples;
+  Condition stayed at 610/849. Added branch-by-branch dispositions for the
+  mailbox stability and outstanding saturation/underflow guards.
+- Added the Round 1 closure report and machine-readable evidence, and updated
+  the execution frontier. Raw and Adjusted remain identical: Branch 525/637,
+  Condition 610/849, Line 3351/3796, Toggle 84343/104480, FSM 13/13 states and
+  22/22 transitions. Legal Functional Coverage remains 210/210.
+- Formal status for outstanding saturation/underflow remains INCONCLUSIVE;
+  the legal test observed a maximum outstanding count of 28 and did not take
+  either guard. The mailbox fault bin is hit only in the separate expected
+  negative test. No waiver was approved: 371 pending, zero active Exclusions.
+- VCS V-2023.12-SP1 compile/test and 27-test-VDB dual Raw/Adjusted URG evidence
+  are indexed with SHA-256. The exact VDB/report manifests, Raw/Adjusted and
+  assertion summaries, waiver audit, and fail-closed gate JSON are committed as
+  evidence snapshots; VCS logs and VDB payloads remain local and hash-indexed.
+  Python hardware utility tests passed 31/31,
+  compileall passed, and the exact condition audit passed. A further VCS compile
+  attempt could not obtain a license and is not counted as PASS.
+- Remaining: two outstanding guard Branch roots and 131 Condition bins stay
+  OPEN. No product RTL, DSM algorithm, RX, AI-DPD or Vivado implementation was
+  changed. See `docs/verification/thermo5_tx_coverage_closure_round1.md`.
+
 ## 2026-10-31 16:27 SGT - Close Centered-Cubic pop/push Raw Branches
 
 - Replayed the legal frame-replacement UVM test with public source-valid gaps
