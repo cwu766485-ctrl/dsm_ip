@@ -90,6 +90,8 @@ module thermo5_sku_uvm_tb;
   assign bus.cfg_mailbox_payload=dut.u_cfg.cfg_mailbox_q;
   assign bus.cfg_pending_payload=dut.u_cfg.cfg_pending_core;
   assign bus.cfg_pending_valid=dut.u_cfg.cfg_pending_valid;
+  assign bus.cfg_ack_core=dut.u_cfg.cfg_ack_core;
+  assign bus.core_draining=dut.core_draining;
   assign bus.cfg_active_payload=dut.u_cfg.cfg_active_core;
 `else
   tid32_thermo5_axis_frontend_tx #(
@@ -119,6 +121,8 @@ module thermo5_sku_uvm_tb;
   assign bus.cfg_pending_payload='0;
   assign bus.cfg_active_payload='0;
   assign bus.cfg_pending_valid=1'b0;
+  assign bus.cfg_ack_core=1'b0;
+  assign bus.core_draining=1'b0;
   assign bus.core_run_request=1'b0;
   assign bus.core_tx_active=1'b0;
 `endif
@@ -292,6 +296,16 @@ module thermo5_sku_uvm_tb;
     uvm_config_db#(virtual thermo5_sku_if)::set(null,"uvm_test_top*","vif",bus);
 `ifdef THERMO5_AXIL_CONTROL
     uvm_config_db#(virtual thermo5_axil_if)::set(null,"uvm_test_top.env.axil.*","vif",axil_bus);
+    uvm_config_db#(virtual thermo5_axil_if)::set(null,
+      "uvm_test_top.env.register_predictor","axil_vif",axil_bus);
+    uvm_config_db#(virtual thermo5_sku_if)::set(null,
+      "uvm_test_top.env.register_predictor","sku_vif",bus);
+    uvm_config_db#(virtual thermo5_sku_if)::set(null,
+      "uvm_test_top.env.trace_recorder","sku_vif",bus);
+    uvm_config_db#(virtual thermo5_axil_if)::set(null,
+      "uvm_test_top.env.trace_recorder","axil_vif",axil_bus);
+    uvm_config_db#(int)::set(null,
+      "uvm_test_top.env.register_predictor","max_taps",USE_DPD_MAX_TAPS);
     // The helper's default arm is defensive: normal register decode must
     // reject these addresses before calling coeff_read_word().  An opt-in
     // unit probe records that arm without corrupting internal mailbox state.

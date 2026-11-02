@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "status": "PARTIAL_PHASE_0_TO_2",
+  "branch": "codex/thermo5-system-uvm-phase0-2",
+  "base_branch": "codex/thermo5-coverage-closure-round1",
+  "base_commit": "98d4fda026628b1f818c34937b3afd5c93fefa95",
+  "pr_24": {
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/24",
+    "state": "OPEN_DRAFT_UNMERGED"
+  },
+  "product_configuration": {
+    "interpolation": "Centered-Cubic x2+x2",
+    "tidsm_order": 2,
+    "step": 5120,
+    "state_width": 20,
+    "dpd_max_taps": 1,
+    "dpd_product_image": "identity",
+    "fifo": "Generic asynchronous FIFO",
+    "dut_rtl_changed": false
+  },
+  "tools": {
+    "vcs": "V-2023.12-SP1_Full64",
+    "python": "3.12.13",
+    "verdi_gui": "NOT_RUN_COMMAND_UNAVAILABLE"
+  },
+  "checks": [
+    {
+      "name": "axil_register_only",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-axil-register-access-vcs-run THERMO5_OUT=/tmp/dsm_ip_system_uvm_phase0_2/runs/vcs_register_control_read THERMO5_VECTORS=/tmp/dsm_ip_system_uvm_phase0_2/runs/vectors THERMO5_DPD_MAX_TAPS=1 THERMO5_COVERAGE=0",
+      "metrics": {
+        "write_functional_coverage_percent": 100.0,
+        "read_functional_coverage_percent": 100.0,
+        "reset_functional_coverage_percent": 100.0,
+        "write_responses_checked": 52,
+        "read_responses_checked": 48,
+        "predictor_mismatches": 0,
+        "pending_reads": 0,
+        "pending_writes": 0,
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "slverr_responses": 2,
+        "decerr_responses": 7
+      },
+      "functional_coverage_delta": "Read coverage rose from 95.2% to 100.0% after adding a CONTROL (0x00) readback check.",
+      "code_coverage": "NOT_COLLECTED_THERMO5_COVERAGE_0",
+      "artifacts": [
+        {
+          "path": "runs/vcs_register_control_read/compile.log",
+          "sha256": "5b3522bb1dc79992af1e97bf61c2092c284545c18c4aecc59a8eb52a52b8f1e5"
+        },
+        {
+          "path": "runs/vcs_register_control_read/thermo5_sku_axil_register_access_test_seed1.log",
+          "sha256": "669078ff6ea095e15b12c3cc35fa24d656faae0953308d6c4e37a78816d03765"
+        }
+      ]
+    },
+    {
+      "name": "product_stop_drain_restart_trace",
+      "status": "PASS",
+      "command": "make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=/tmp/dsm_ip_system_uvm_phase0_2/runs/vcs_stop_restart THERMO5_VECTORS=/tmp/dsm_ip_system_uvm_phase0_2/runs/vectors_stop_restart THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_COVERAGE=0 THERMO5_TESTNAME=thermo5_sku_axil_stop_restart_test UVM_SEED=610215 THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=32 +THERMO5_TRACE_JSONL=/tmp/dsm_ip_system_uvm_phase0_2/runs/stop_restart_trace.jsonl'",
+      "metrics": {
+        "accepted_source_beats": 64,
+        "accepted_tlast": 2,
+        "accepted_pa_words": 112,
+        "stop_restart_functional_cross_percent": 100.0,
+        "underflow_events": 0,
+        "bittrue_trace_words": "112/112",
+        "predictor_mismatches": 0,
+        "uvm_errors": 0,
+        "uvm_fatals": 0
+      },
+      "code_coverage": "NOT_COLLECTED_THERMO5_COVERAGE_0",
+      "artifacts": [
+        {
+          "path": "runs/vcs_stop_restart/compile.log",
+          "sha256": "699dfe9880853d30c4ed93ea8b5e52d0e7d20573e729e169e0c1a0f1ab0e462d"
+        },
+        {
+          "path": "runs/vcs_stop_restart/thermo5_sku_axil_stop_restart_test_seed610215.log",
+          "sha256": "9bd36962b0a8393820c972ea65243f0314d9da36b6013a51287602c6d6fb35bf"
+        },
+        {
+          "path": "runs/stop_restart_trace.jsonl",
+          "sha256": "466694d2b113760c362fc690ada304c9ec4b848643ee06465a9ead014a93ab9e"
+        },
+        {
+          "path": "runs/system_uvm_phase0_2/checks/trace_normal.log",
+          "sha256": "67c00fb57aad23a21cde49680ed10ac7fd30bdf42e27e5e38bf8b7d92586bf5a"
+        }
+      ]
+    },
+    {
+      "name": "product_residual_reset_sweep_trace",
+      "status": "PASS",
+      "vector_command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py --output-dir runs/vectors_reset_sweep --words 56 --seed 610802 --interp-mode centered_cubic --frame-start-words 1,15,36 --frame-gains 16384,14336,12288",
+      "command": "make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=/tmp/dsm_ip_system_uvm_phase0_2/runs/vcs_register_control_read THERMO5_VECTORS=/tmp/dsm_ip_system_uvm_phase0_2/runs/vectors_reset_sweep THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_COVERAGE=0 THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_TRACE_JSONL=/tmp/dsm_ip_system_uvm_phase0_2/runs/reset_sweep_trace.jsonl'",
+      "trace_command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 dv/uvm/refmodel/python/check_thermo5_monitor_trace.py runs/reset_sweep_trace.jsonl --step 5120 --tidsm-order 2 --max-taps 1",
+      "metrics": {
+        "legal_residual_reset_epochs": 5,
+        "trace_epochs_compared_words": [9, 7, 5, 8, 6, 56],
+        "trace_words_compared": 91,
+        "model_words_discarded_on_reset": [33, 35, 37, 34, 36],
+        "underflow_events": 0,
+        "uvm_errors": 0,
+        "uvm_fatals": 0,
+        "predictor_mismatches": 0
+      },
+      "artifacts": [
+        {
+          "path": "runs/vcs_register_control_read/compile.log",
+          "sha256": "5b3522bb1dc79992af1e97bf61c2092c284545c18c4aecc59a8eb52a52b8f1e5"
+        },
+        {
+          "path": "runs/vcs_register_control_read/thermo5_sku_axil_reset_sweep_test_seed610802.log",
+          "sha256": "aa25615ede71cee609ed6c04a0e326289dbcd73d3573f78476eff7284a7a125a"
+        },
+        {
+          "path": "runs/reset_sweep_trace.jsonl",
+          "sha256": "207de28afafcafa847e3345cc187d09a00de51ed15dd0580cd81f8c61c4ecdc4"
+        },
+        {
+          "path": "runs/system_uvm_phase0_2/checks/trace_reset_sweep.log",
+          "sha256": "de507c8eb9886c197b9b51fdfedcff0828756622da68c2dcd7d94079e8462085"
+        }
+      ]
+    },
+    {
+      "name": "candidate_four_tap_config_trace",
+      "status": "DATA_MATCH_WITH_UNDERFLOW_SEPARATE_CLASSIFICATION_REQUIRED",
+      "configuration": "Test-only DPD_MAX_TAPS=4, two active taps; not the one-tap product SKU.",
+      "metrics": {
+        "bittrue_trace_words": "56/56",
+        "applied_config_frames": [0],
+        "underflow_events": 1,
+        "uvm_errors": 0,
+        "uvm_fatals": 0
+      },
+      "artifacts": [
+        {
+          "path": "runs/vcs_config_cyclemodel/compile.log",
+          "sha256": "f50e6a73fff704494820c59073288b5346acae711b0dcd3f3b96413089980d4c"
+        },
+        {
+          "path": "runs/vcs_config_cyclemodel/thermo5_sku_axil_config_test_seed1.log",
+          "sha256": "36a6309e2718e0e2b5df992b591929223c89c1d58121c4fe91eea324b7b42098"
+        },
+        {
+          "path": "runs/config_trace_cyclemodel.jsonl",
+          "sha256": "36322a7825c42ec8ebf82ea53b9fc0180f23bb8f07731dced77d66e72bc4487b"
+        },
+        {
+          "path": "runs/system_uvm_phase0_2/checks/trace_candidate_config.log",
+          "sha256": "60dc8fc8338ddb91aa488697ddd4dbc4f80e56a0793e8b48d830ec3ea9dde981"
+        }
+      ]
+    },
+    {
+      "name": "product_one_tap_saturation_diagnostic",
+      "status": "DATA_MATCH_WITH_EXPECTED_STARVATION_UNDERFLOW",
+      "metrics": {
+        "bittrue_trace_words": "56/56",
+        "dpd_saturated_lanes": "16/16",
+        "underflow_events": 1,
+        "classification": "Finite source ended with RUN high; kept separate from clean normal signoff."
+      },
+      "artifacts": [
+        {
+          "path": "runs/vcs_product_1tap/compile.log",
+          "sha256": "8a7a253301e7c73ecea708f615f9adb9d5a35e02dbb7b072760ee7920420a758"
+        },
+        {
+          "path": "runs/vcs_product_1tap/thermo5_sku_axil_dpd_saturation_bittrue_test_seed620131.log",
+          "sha256": "ac03f48a748aede77e8c0f1f7b96105047d2a4441f1a6495efab01ccf3d2cd13"
+        },
+        {
+          "path": "runs/product_1tap_trace.jsonl",
+          "sha256": "2305edb6e74fe211fd5d5f9a3bf88d60a9e9741668ffcb4b6ced6ed7b5695f27"
+        },
+        {
+          "path": "runs/system_uvm_phase0_2/checks/trace_stress_underflow.log",
+          "sha256": "7aae9d026dcd38f7f064a33fd877b8c01f97ff2a034cd3cd1fd573ee7dc5a4fd"
+        }
+      ]
+    },
+    {
+      "name": "python_reference_tests",
+      "status": "PASS",
+      "command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
+      "metrics": {
+        "tests_passed": 51,
+        "tests_failed": 0
+      },
+      "artifacts": [
+        {
+          "path": "runs/system_uvm_phase0_2/checks/python_unittest.log",
+          "sha256": "6a7dd439679f4aa52429aa6fc9c47f0d975c4649b9fc6283ea2a7897b2296f3f"
+        },
+        {
+          "path": "runs/system_uvm_phase0_2/checks/python_compileall.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "axi_lite_register_functional": {
+      "write": "100%",
+      "read": "100%",
+      "reset": "100%"
+    },
+    "stop_restart_cross": "100% for the directed two-packet scenario",
+    "dut_code_coverage": "NOT_COLLECTED",
+    "code_coverage_delta": "NONE"
+  },
+  "open_items": [
+    "Timed source-gap model, explicit legal gap bound, and starvation recovery oracle.",
+    "Reset that interrupts a partially assembled DSP frame; current real reset sweep covers residual-state resets with incomplete packets and checks accepted PA prefixes.",
+    "Full constrained-random stimulus generation and seed replay package for later system-random phases.",
+    "Python-side STOP/Drain/Restart state assertions; current Python oracle checks ordered payload and counts only.",
+    "Independent core control-state model for STATUS; current predictor checks the synchronized AXI view from observed core ACK/active/draining signals.",
+    "Formal and mutation evidence for the new predictor/oracle paths.",
+    "DUT Raw/Adjusted code coverage was not collected; no URG delta is claimed.",
+    "Real XPM/GT Wizard, FPGA PPA, RF behavior, and physical QAM256 BER remain outside this Linux-only change."
+  ]
+}

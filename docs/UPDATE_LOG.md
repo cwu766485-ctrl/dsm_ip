@@ -1,3 +1,92 @@
+## 2026-11-02 09:03 SGT - Fix PR #25 trace-oracle syntax check
+
+- GitHub Actions reported an `IndentationError` in
+  `dsm_refmodel/monitor_trace.py` at the frame-start alignment guard. Restored
+  the nested guard indentation without changing oracle behavior.
+- Re-ran the full Python reference-model suite: 51/51 PASS; `compileall` and
+  `git diff --check` PASS. Refreshed the test-log SHA-256 in the Phase 0–2
+  evidence index.
+- PR #25 remains stacked on PR #24 until the failing CI check completes on the
+  correction commit. No RTL, algorithm, RX, AI-DPD, or Vivado files changed.
+
+## 2026-11-02 00:40 SGT - Refresh final Draft PR #25 status
+
+- Updated the execution frontier after adding reset-ended epoch support. The
+  implementation/evidence commit is `f5b4d4c06fe026842ec8624375467dc87460633f`;
+  the final frontier/update-log refresh is a documentation-only follow-up on
+  Draft PR #25.
+- PR #25 remains open and unmerged, targets PR #24's exact head, and has 17
+  changed files. The GitHub review snapshot after this refresh reports four
+  commits, zero behind, and mergeable. PR #24 also remains open and unmerged.
+- No code or verification result changed in this documentation refresh.
+
+## 2026-11-02 00:38 SGT - Validate reset-ended trace epochs against real VCS
+
+- Extended the monitor-trace oracle to accept reset-terminated incomplete
+  packets, pad only the offline model's incomplete frame, compare the PA prefix
+  actually accepted before reset, and report the remaining model suffix as
+  reset-discarded work. Normal epochs still require complete packet/frame
+  boundaries and exact output count.
+- Ran the existing product AXI-Lite residual reset sweep: five legal residual
+  resets followed by a complete replay, zero underflow, zero UVM errors/fatals,
+  and zero predictor mismatches. The real JSONL trace compared six epochs with
+  9/7/5/8/6/56 PA words (91 total); reset suffix counts were 33/35/37/34/36.
+- Added positive and corrupted-prefix Python tests. The full Python suite now
+  passes 51/51; `compileall` passes. The reset VCS log, trace, and replay log
+  hashes are indexed in `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`.
+- Remaining: resets that interrupt a partially assembled DSP frame, timed
+  source-gap behavior, Python STOP/Drain state assertions, independent core
+  STATUS prediction, Formal/Mutation of the new checker, and DUT code coverage.
+  No DUT RTL or algorithm changed.
+
+## 2026-11-02 00:32 SGT - Publish Thermo5 TX System UVM Phase 0–2 Draft PR
+
+- Published `codex/thermo5-system-uvm-phase0-2` as Draft PR #25 targeting the
+  exact PR #24 head `98d4fda026628b1f818c34937b3afd5c93fefa95`. The initial
+  publication commit is `a143b5ca00b14e9109b6080f002715ef20064d94`; GitHub
+  reports one commit ahead, zero behind, 17 files, mergeable, and unmerged.
+- GitHub tree SHA `95655221387a3f7a52ab34f8b6a07be2ccae2b72` was compared with
+  the local reviewed tree and matched exactly. The local Git credential helper
+  could not push from WSL, so the connected GitHub integration published the
+  exact tree. A transfer-size truncation was detected by the tree comparison,
+  corrected before opening the PR, and the final tree matches the reviewed
+  local commit byte-for-byte.
+- PR #24 remains open, draft, mergeable, and unmerged. No PR was merged or
+  branch deleted. The current next action is to close the documented Phase 2
+  gaps before Phase 3.
+
+## 2026-11-02 00:27 SGT - Thermo5 TX System UVM Phase 0–2 initial implementation
+
+- Added the TX transaction/frame/packet/reset contract, monitor-driven AXI-Lite
+  register predictor, JSONL transaction recorder, Python monitor-trace oracle,
+  trace contract tests, and a machine-readable evidence index. Kept changes on
+  a separate branch stacked on PR #24; no PR was merged.
+- Audited STATUS prediction and replaced the stale masked-status description:
+  the predictor compares BUSY, DONE, ERROR, RUN_ACTIVE, and DRAINING at the AR
+  sampling edge. It models the synchronized view from observed core signals;
+  directed STOP/Drain checks remain the independent core-state check.
+- The register-only VCS regression initially reported read functional coverage
+  95.2%. Added CONTROL (0x00) readback and reran the focused VCS compile/test:
+  write/read/reset coverage is 100%/100%/100%, 52 writes and 48 reads checked,
+  zero predictor mismatches, zero pending transactions, and zero UVM errors or
+  fatals. Log SHA-256 values are in
+  `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`.
+- Replayed the clean two-packet product STOP/Drain/Restart trace: 64 accepted
+  source beats, two TLASTs, 112 PA words, 112/112 Python bit-true matches,
+  STOP/Restart cover 100%, and no underflow. Kept the four-tap candidate trace
+  and one-tap saturation/finite-source diagnostic separate: each matches
+  56/56 output words but reports an underflow.
+- Checks: Python reference suite 49/49 PASS; `compileall` PASS; normal trace
+  oracle PASS; candidate and stress traces pass data comparison with explicit
+  underflow classification; `git diff --check` PASS. No DUT code coverage,
+  Formal, Mutation, Verdi GUI, RX, AI-DPD, or Vivado run was made.
+- Status: Phase 0 complete; Phase 1 focused protocol/predictor test PASS; Phase
+  2 initial oracle plus directed-trace consistency PASS, but overall P0–P2 is
+  PARTIAL. Dynamic random transaction generation, timed source-gap behavior,
+  mid-frame reset recovery, Python STOP/Drain assertions, and an independent
+  core STATUS model remain OPEN. The next action is a separate stacked PR, then
+  targeted closure of these Phase 2 gaps before Phase 3.
+
 ## 2026-11-01 19:22 SGT - Thermo5 TX Coverage Closure Round 1 audit
 
 - Added an exact Raw URG audit for the 71 OPEN Condition tasks / 131 bins.

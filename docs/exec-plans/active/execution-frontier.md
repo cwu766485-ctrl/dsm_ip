@@ -1,6 +1,57 @@
 # Execution frontier
 
-## Current execution state: TX coverage closure Round 1 (2026-11-01)
+## Current execution state: TX System UVM Phase 0–2 (2026-11-02)
+
+The independent branch `codex/thermo5-system-uvm-phase0-2` is based on open
+PR #24 head `98d4fda026628b1f818c34937b3afd5c93fefa95`; PR #24 remains open,
+draft, mergeable, and unmerged. This branch does not alter the Product TX
+algorithm or RTL. The Phase 0 contract is documented. Phase 1 now has a
+monitor-driven AXI-Lite register predictor and the focused register-only VCS
+test passes with read/write/reset functional coverage 100%, 52 write checks,
+48 read checks, zero predictor mismatches, and zero UVM errors/fatals. The
+missing CONTROL read bin was added after the previous run reported read
+coverage 95.2%; the refreshed run reports 100%.
+
+The initial Phase 2 monitor-trace oracle reconstructs source/packet/frame IDs,
+AXI-Lite writes and responses, CDC pending/ACK, frame-boundary activation,
+DPD/FIR/EF2 fixed-point data, and compares all four accepted PA planes. The
+clean product STOP/Drain/Restart trace passes 112/112 words across two packets,
+with zero underflow; the STOP/Restart cross is 100%. Separate candidate
+four-tap and one-tap stress traces also match 56/56 PA words, but each records
+an underflow and is not counted as a clean normal pass. The five residual-state
+reset sweep also passes: the six trace epochs compare 9, 7, 5, 8, 6, and 56
+accepted PA words (91 total), with zero underflow; the Python checker reports
+the unaccepted model suffix as reset-discarded work. Existing `.mem` vectors
+remain the static reference path. Python reference-model tests pass 51/51 and
+byte-compilation passes.
+
+This is **Phase 0 complete, Phase 1 focused implementation PASS, Phase 2 initial
+oracle implemented with directed-trace consistency PASS; overall P0–P2 remains
+PARTIAL**. Timed source-gap behavior, reset inside a partially assembled DSP
+frame, Python STOP/Drain state assertions, and an independent core STATUS
+predictor remain OPEN. Full constrained-random stimulus/seed replay is still a
+later Phase 3–5 task. No DUT code coverage, formal, mutation, or Verdi GUI run
+was made. Do not start Phase 3–6 yet. Reproducible commands,
+metrics, and SHA-256 references are in
+`docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`; full logs,
+traces, and VDB files remain local under ignored `runs/`.
+
+GitHub Actions on PR #25 caught an indentation error in the frame-start guard
+of `monitor_trace.py`. It is fixed; the full local Python suite passes 51/51,
+and the refreshed test log hash is recorded in the evidence index. Wait for the
+correction commit's CI result before merging.
+
+**Publication:** Draft PR [#25](https://github.com/cwu766485-ctrl/dsm_ip/pull/25)
+is open against the PR #24 head. Its initial publication commit was
+`a143b5ca00b14e9109b6080f002715ef20064d94`; the reset-oracle validation was
+published at `f5b4d4c06fe026842ec8624375467dc87460633f`. After this final
+documentation refresh, GitHub reports four commits, zero behind, 17 changed
+files, and mergeable. PR #24 and #25 are both unmerged.
+
+**Next:** close the listed Phase 2 gaps with directed trace cases and only
+after those pass proceed to the Phase 3 agent coordination work.
+
+## Previous execution state: TX coverage closure Round 1 (2026-11-01)
 
 Round 1 is **PARTIAL / RAW_100_OPEN** on baseline `88c9682501fd60bb14e6ea9b1f569f8eeb97e708`. Product source SHA remains `19d295360aa6438f4af20e7a6ab44bfebf2fc1ea`: Centered-Cubic x2+x2, EF2 ORDER=2/STEP=5120/20-bit state, DPD_MAX_TAPS=1 Identity DPD, Generic FIFO, AXI-Lite TX.
 

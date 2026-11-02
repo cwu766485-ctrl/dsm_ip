@@ -7,6 +7,12 @@ class thermo5_axil_item extends uvm_sequence_item;
   rand int unsigned w_delay;
   rand int unsigned response_delay;
   bit ready_before_response;
+  bit is_write_fire;
+  bit is_read_address;
+  bit is_cycle_sample;
+  bit reset_n;
+  int unsigned txn_id;
+  int unsigned event_cycle;
   bit [31:0] rdata;
   bit [1:0] resp;
 
@@ -25,6 +31,12 @@ class thermo5_axil_item extends uvm_sequence_item;
     `uvm_field_int(w_delay, UVM_DEFAULT)
     `uvm_field_int(response_delay, UVM_DEFAULT)
     `uvm_field_int(ready_before_response, UVM_DEFAULT)
+    `uvm_field_int(is_write_fire, UVM_DEFAULT)
+    `uvm_field_int(is_read_address, UVM_DEFAULT)
+    `uvm_field_int(is_cycle_sample, UVM_DEFAULT)
+    `uvm_field_int(reset_n, UVM_DEFAULT)
+    `uvm_field_int(txn_id, UVM_DEFAULT)
+    `uvm_field_int(event_cycle, UVM_DEFAULT)
     `uvm_field_int(rdata, UVM_DEFAULT)
     `uvm_field_int(resp, UVM_DEFAULT)
   `uvm_object_utils_end
