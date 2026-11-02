@@ -262,7 +262,7 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
         if len(i_values) != 14 or len(q_values) != 14:
             raise TraceContractError("each accepted AXIS beat must contain 14 I and Q samples")
         if bool(beat.get("frame_start", False)):
-    if len(samples_i) % 56:
+            if len(samples_i) % 56:
                 raise TraceContractError(
                     f"frame start at beat {beat_index} is not 56-sample aligned")
             word_index = len(samples_i) // 8

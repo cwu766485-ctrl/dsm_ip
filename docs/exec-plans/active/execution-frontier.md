@@ -36,6 +36,11 @@ metrics, and SHA-256 references are in
 `docs/verification/data/thermo5-system-uvm-phase0-2-evidence.json`; full logs,
 traces, and VDB files remain local under ignored `runs/`.
 
+GitHub Actions on PR #25 caught an indentation error in the frame-start guard
+of `monitor_trace.py`. It is fixed; the full local Python suite passes 51/51,
+and the refreshed test log hash is recorded in the evidence index. Wait for the
+correction commit's CI result before merging.
+
 **Publication:** Draft PR [#25](https://github.com/cwu766485-ctrl/dsm_ip/pull/25)
 is open against the PR #24 head. Its initial publication commit was
 `a143b5ca00b14e9109b6080f002715ef20064d94`; the reset-oracle validation was

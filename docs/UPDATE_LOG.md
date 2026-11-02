@@ -1,3 +1,14 @@
+## 2026-11-02 09:03 SGT - Fix PR #25 trace-oracle syntax check
+
+- GitHub Actions reported an `IndentationError` in
+  `dsm_refmodel/monitor_trace.py` at the frame-start alignment guard. Restored
+  the nested guard indentation without changing oracle behavior.
+- Re-ran the full Python reference-model suite: 51/51 PASS; `compileall` and
+  `git diff --check` PASS. Refreshed the test-log SHA-256 in the Phase 0–2
+  evidence index.
+- PR #25 remains stacked on PR #24 until the failing CI check completes on the
+  correction commit. No RTL, algorithm, RX, AI-DPD, or Vivado files changed.
+
 ## 2026-11-02 00:40 SGT - Refresh final Draft PR #25 status
 
 - Updated the execution frontier after adding reset-ended epoch support. The
