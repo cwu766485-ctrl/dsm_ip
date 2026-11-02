@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "phase": "B",
+  "implementation_commit": "35115626a95c14db76e29ee36bf68f5d80132aba",
+  "parent_phase_a_commit": "52b94f8e7ddce42f1ec890038ed3bc7068e02d26",
+  "product_rtl_base": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b",
+  "tool": {
+    "platform": "Rocky Linux 8.10",
+    "vcs": "V-2023.12-SP1_Full64",
+    "uvm": "1.1d",
+    "fifo": "Generic",
+    "product": {
+      "interpolator": "Centered-Cubic x2+x2",
+      "tidsm_order": 2,
+      "step": 5120,
+      "state_bits": 20,
+      "dpd_max_taps": 1,
+      "dpd_reset_image": "Identity",
+      "control": "AXI-Lite"
+    },
+    "coverage_instrumentation": ["line", "condition", "fsm", "toggle", "branch", "assertion"],
+    "urg_merge": false
+  },
+  "compile_logs": [
+    {
+      "configuration": "AXI-Lite product",
+      "log": "runs/thermo5_tx_phase_b_axil/compile.log",
+      "sha256": "32b04ffb26c55f63d0a3dd2d36bde6bfea7bdb1ffdc1502150b99234ba3ac630"
+    },
+    {
+      "configuration": "Generic direct-core diagnostic",
+      "log": "runs/thermo5_tx_phase_b_core/compile.log",
+      "sha256": "7233fe28136d9ae5bbc5bf0ce51f545b2c902b8901cc8909872fa2ce11026065"
+    }
+  ],
+  "input_vectors": {
+    "path": "runs/thermo5_ef2_qualification/vectors56",
+    "alias": "runs/uvm_thermo5_i2_d1/vectors",
+    "sha256": {
+      "tid32_thermo5_frontend_frame_gain.mem": "023f8010589b9d76003fdac748fb2c12bf7b592fc344e9cc697062c07f901811",
+      "tid32_thermo5_frontend_frame_start.mem": "a544490f60a4807444889abd49ee4f65153775725cc71ea68306e4e9889f4a33",
+      "tid32_thermo5_frontend_i.mem": "54c51b64b2dd811dece2e107e427230787dab6adb1dc19ceeb94b39c6b821a55",
+      "tid32_thermo5_frontend_pa0.mem": "a3cefd89f949f9e534289d71693a9e0853a6301394a23f5dd1c7ac00bd91241f",
+      "tid32_thermo5_frontend_pa1.mem": "b9137606f30fc9e5e06bd5a4e8601d329548e1898311b0b275d5e3feabe0ae97",
+      "tid32_thermo5_frontend_pa2.mem": "508a0e070e11fd71bd850879972386c630acd2d572ba64a7b616c68e934101e8",
+      "tid32_thermo5_frontend_pa3.mem": "bdd270472ddfe6e148dd99c8c75413d2fbdd9cb46edd38af5db92f57c5abad5d",
+      "tid32_thermo5_frontend_q.mem": "2e2a80ed1a45ff16a44d9ccfb56441afc3a3d72b70bf5dcf5e2767eda7f155eb"
+    }
+  },
+  "tests": [
+    {
+      "name": "thermo5_sku_axil_virtual_sequence_smoke_test",
+      "seed": 620301,
+      "status": "PASS",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-tx-agent-vseq-smoke THERMO5_OUT=$PWD/runs/thermo5_tx_phase_b_axil THERMO5_VECTORS=$PWD/runs/uvm_thermo5_i2_d1/vectors",
+      "accepted_axis_beats": 32,
+      "accepted_pa_words": 56,
+      "underflow_cycles": 0,
+      "predictor_mismatches": 0,
+      "uvm_errors": 0,
+      "uvm_fatals": 0,
+      "log": "runs/thermo5_tx_phase_b_axil/thermo5_sku_axil_virtual_sequence_smoke_test_seed620301.log",
+      "log_sha256": "9d93852607993963de01511b275ddc04406e20c9a8b14f6646f5b40f46530f8d"
+    },
+    {
+      "name": "thermo5_sku_axil_graceful_stop_test",
+      "seed": 620304,
+      "status": "PASS",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=$PWD/runs/thermo5_tx_phase_b_axil THERMO5_VECTORS=$PWD/runs/uvm_thermo5_i2_d1/vectors THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_TESTNAME=thermo5_sku_axil_graceful_stop_test UVM_SEED=620304 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'",
+      "accepted_axis_beats": 32,
+      "accepted_pa_words": 56,
+      "partial_ready_stall_cycles": 7,
+      "stable_status_reads": 2,
+      "transition_masked_status_reads": 1,
+      "underflow_cycles": 0,
+      "predictor_mismatches": 0,
+      "uvm_errors": 0,
+      "uvm_fatals": 0,
+      "log": "runs/thermo5_tx_phase_b_axil/thermo5_sku_axil_graceful_stop_test_seed620304.log",
+      "log_sha256": "854c5bc8390ea21ecd3bfec5671fd4382e9eaf896b8e329ae1ade19c3047d902"
+    },
+    {
+      "name": "thermo5_sku_axil_reset_sweep_test",
+      "seed": 620305,
+      "status": "PASS",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=$PWD/runs/thermo5_tx_phase_b_axil THERMO5_VECTORS=$PWD/runs/uvm_thermo5_i2_d1/vectors THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=620305 THERMO5_EXTRA_ARGS='+CORE_WORDS=56'",
+      "partial_dsp_frame_resets": 4,
+      "cdc_residual_resets": 5,
+      "accepted_pa_words_across_epochs": 91,
+      "post_reset_replay_words": 56,
+      "underflow_cycles": 0,
+      "predictor_mismatches": 0,
+      "uvm_errors": 0,
+      "uvm_fatals": 0,
+      "log": "runs/thermo5_tx_phase_b_axil/thermo5_sku_axil_reset_sweep_test_seed620305.log",
+      "log_sha256": "3589febc25e254b5e59a78f321d605b5c990d8d81ffc625806d8fc850ec31e86"
+    },
+    {
+      "name": "thermo5_sku_bubble_backpressure_test",
+      "seed": 620302,
+      "status": "SIMULATION_PASS_NOT_ACCEPTED_AS_LEGAL_STREAM",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-run THERMO5_USE_AXIL=0 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_TESTNAME=thermo5_sku_bubble_backpressure_test UVM_SEED=620302 THERMO5_OUT=$PWD/runs/thermo5_tx_phase_b_core THERMO5_VECTORS=$PWD/runs/uvm_thermo5_i2_d1/vectors",
+      "underflow_cycles": 361,
+      "early_underflow_cycles": 180,
+      "log": "runs/thermo5_tx_phase_b_core/thermo5_sku_bubble_backpressure_test_seed620302.log",
+      "log_sha256": "20d133052b8d217c7742b8b95b7b1a59ba99b838905996f313fc761666391bc8"
+    },
+    {
+      "name": "thermo5_sku_bubble_backpressure_test_one_cycle_gap",
+      "seed": 620303,
+      "status": "SIMULATION_PASS_NOT_ACCEPTED_AS_PRODUCT_PASS",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_OUT=$PWD/runs/thermo5_tx_phase_b_core THERMO5_VECTORS=$PWD/runs/uvm_thermo5_i2_d1/vectors THERMO5_USE_AXIL=0 THERMO5_TESTNAME=thermo5_sku_bubble_backpressure_test UVM_SEED=620303 THERMO5_EXTRA_ARGS='+BUBBLE_GAP_CYCLES=1'",
+      "source_gap_cycles": 1,
+      "underflow_cycles_after_final_source": 100,
+      "early_underflow_cycles": 0,
+      "log": "runs/thermo5_tx_phase_b_core/thermo5_sku_bubble_backpressure_test_seed620303.log",
+      "log_sha256": "0c4a6abf8c73983c00c7845eb8dd0497abadc5b298785d4162bfd1d6aeb5ad09"
+    }
+  ],
+  "aggregate_code_coverage": "NOT_RUN",
+  "formal": "NOT_RUN",
+  "physical_signoff": "NOT_IN_SCOPE"
+}

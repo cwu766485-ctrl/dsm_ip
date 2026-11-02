@@ -25,11 +25,11 @@ class thermo5_sku_interp1_empty_blocked_test extends thermo5_sku_base_test;
             env.control.core_on();
             do @(negedge vif.core_clk);
               while(env.source.monitor.accepted_beats<24 || !vif.interp1_stall_window);
-            vif.pa_ready=4'h0;
+            env.pa_sink.set_ready(4'h0);
             // Bound the legal stall even if this phase does not reach the
             // target; never deadlock the test while waiting for a bin.
             repeat(200) @(negedge vif.core_clk);
-            vif.pa_ready=4'hf;
+            env.pa_sink.set_ready(4'hf);
             wait(env.scoreboard.checked==cfg.core_words);
             env.control.core_off();
             if (exact_hits==0 || vif.protocol_error ||

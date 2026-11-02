@@ -123,6 +123,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
         thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
         thermo5-axil-stop-restart-vcs-run \
+        thermo5-tx-agent-vseq-smoke \
         thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
@@ -263,6 +264,16 @@ thermo5-tx-product-axil-reset-sweep:
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 \
 	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_TRACE_JSONL=$(THERMO5_OUT)/reset_sweep_trace.jsonl'
+
+thermo5-tx-agent-vseq-smoke:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_virtual_sequence_smoke_test \
+	  UVM_SEED=620301 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
 
 # Legal AXI-Stream startup overlaps the two-flop local source-reset release.
 thermo5-tx-product-axil-reset-release-source:

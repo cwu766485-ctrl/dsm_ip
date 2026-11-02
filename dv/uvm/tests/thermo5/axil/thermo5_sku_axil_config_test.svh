@@ -285,7 +285,7 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
         // Hold the PA side, then release it after observing a real four-plane
         // valid. This closes the ready/valid stall bin without changing data.
         @(negedge vif.core_clk);
-        vif.pa_ready=4'h0;
+        env.pa_sink.set_ready(4'h0);
         axil_write(8'h00,32'h1,2,0,resp);
         if (resp!=2'b00) `uvm_fatal("AXIL_RUN","run_request write failed")
 
@@ -303,7 +303,7 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
             `uvm_fatal("AXIL_PA_STALL","PA valid was not held during backpressure")
         end
         @(negedge vif.core_clk);
-        vif.pa_ready=4'hf;
+        env.pa_sink.set_ready(4'hf);
 
         boundary_seen=0;
         for (int cycles=0; cycles<2000 && !boundary_seen; cycles++) begin

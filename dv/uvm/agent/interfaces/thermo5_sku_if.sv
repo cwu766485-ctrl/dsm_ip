@@ -22,7 +22,7 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic [386:0] cfg_mailbox_payload, cfg_pending_payload, cfg_active_payload;
   logic [3:0] pa_valid;
   logic [63:0] pa_data [0:3];
-  logic [3:0] pa_ready = 4'hf;
+  logic [3:0] pa_ready;
   int accepted_beats = 0;
   logic restart_source = 0;
   int restart_epoch = 0;

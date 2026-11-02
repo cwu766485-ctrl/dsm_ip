@@ -13,7 +13,7 @@ class thermo5_sku_sustained_test extends thermo5_sku_bittrue_test;
 
   task run_phase(uvm_phase phase);
     phase.raise_objection(this);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     fork
       begin
         fork

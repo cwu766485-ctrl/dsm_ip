@@ -149,9 +149,21 @@ the frozen static vectors; both traces pass the independent Python oracle with
 zero underflow. The one-cycle gap trace records one gap event / one source
 cycle and zero underflow. Python negative mutations detect a corrupted PA
 word, corrupted STATUS, reordered trace sequence, and Frame Apply before CDC
-Pending. Phase B/C Agent coordination and constrained-random seed replay
-remain open. No DUT algorithm or RTL changed, and no code-coverage or Formal
+Pending. No DUT algorithm or RTL changed, and no code-coverage or Formal
 signoff is claimed.
+
+Phase B adds an active/passive PA sink agent as the sole `PA_READY` owner, a
+Control agent for common reset/direct-core enable, a virtual sequencer, and a
+deterministic AXIL packet RUN/STOP/drain sequence. VCS product tests passed:
+56-word packet smoke (seed 620301), graceful STOP with partial-ready stalls
+(seed 620304), and reset sweep with four partial-DSP-frame plus five CDC
+residual resets (seed 620305). All three had zero PA mismatch, predictor
+mismatch, UVM error/fatal, and underflow. Exact commands and log hashes are in
+[`thermo5-tx-phase-b-evidence.md`](thermo5-tx-phase-b-evidence.md) and its JSON
+manifest. The legacy non-AXIL full-chain bubble test can print PASS while
+counting underflow; its runs are diagnostic only and are not legal product
+regression passes. Phase C constrained-random scheduling, trace persistence,
+and system cross coverage remain open.
 
 The core clean-trace replay command is:
 

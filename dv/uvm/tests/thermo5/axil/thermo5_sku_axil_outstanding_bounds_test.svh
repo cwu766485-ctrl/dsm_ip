@@ -53,7 +53,7 @@ class thermo5_sku_axil_outstanding_bounds_test extends thermo5_sku_axil_base_tes
     fork
       begin : public_traffic
         wait(vif.src_rst_n && vif.core_rst_n);
-        vif.pa_ready=4'h0;
+        env.pa_sink.set_ready(4'h0);
         fork
           send_source(cfg.source_beats);
         join_none
@@ -81,7 +81,7 @@ class thermo5_sku_axil_outstanding_bounds_test extends thermo5_sku_axil_base_tes
         repeat(128) @(posedge vif.core_clk);
         if (read_outstanding_words()==8'hff)
           `uvm_fatal("OUTSTANDING_SATURATION","counter reached the saturation value")
-        vif.pa_ready=4'hf;
+        env.pa_sink.set_ready(4'hf);
         wait_cycles=0;
         while (env.scoreboard.checked<cfg.core_words && wait_cycles<12000) begin
           @(posedge vif.core_clk);

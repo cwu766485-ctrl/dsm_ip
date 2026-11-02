@@ -12,7 +12,7 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
   task run_centered_tail_reset_and_replay();
     bit tail_held;
     env.control.reset_both();
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     fork
       send_source(cfg.source_beats);
       begin
@@ -28,7 +28,7 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
         // Stall the final four-plane output (the centered frame-tail word)
         // by deasserting readiness on one PA plane, then reset while held.
         @(negedge vif.core_clk);
-        vif.pa_ready=4'hd;
+        env.pa_sink.set_ready(4'hd);
         tail_held=0;
         for (int cycles=0; cycles<1000 && !tail_held; cycles++) begin
           @(posedge vif.core_clk);
@@ -52,7 +52,7 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
       end
     join
 
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     fork
       send_source(cfg.source_beats);
       begin

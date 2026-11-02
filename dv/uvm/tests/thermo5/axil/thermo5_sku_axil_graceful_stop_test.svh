@@ -51,7 +51,7 @@ class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
             // Stall one PA plane while STOP is draining. The four planes
             // share one handshake, so partial ready must hold every plane.
             @(negedge vif.core_clk);
-            vif.pa_ready=4'hd;
+            env.pa_sink.set_ready(4'hd);
             partial_stall_seen=0;
             for (int cycles=0; cycles<2000 && !partial_stall_seen; cycles++) begin
               @(posedge vif.core_clk);
@@ -70,7 +70,7 @@ class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
                 `uvm_fatal("AXIL_STOP_PA_STALL","PA planes did not remain valid under partial ready")
             end
             @(negedge vif.core_clk);
-            vif.pa_ready=4'hf;
+            env.pa_sink.set_ready(4'hf);
             repeat (2) @(posedge vif.core_clk);
             if (env.coverage.stop_partial_pa_stall_cycles==0 ||
                 env.coverage.tlast_pa_stall_cycles==0)

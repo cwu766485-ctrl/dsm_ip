@@ -1,36 +1,40 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX System Verification Phase A (2026-11-02)
+## Current execution state: Thermo5 TX System Verification Phase B (2026-11-02)
 
-Work is on `codex/thermo5-tx-dynamic-oracle`, from `thermo5` baseline
-`2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`. Product RTL and frozen algorithm
-are unchanged. Scope is Linux Generic FIFO TX only; no RX, AI-DPD, Vivado,
-Formal, code-coverage closure, or signoff is included in this Phase A change.
+Work is on `codex/thermo5-tx-agent-organization`, based on local Phase A
+implementation commit `52b94f8e7ddce42f1ec890038ed3bc7068e02d26` (PR #27,
+remote API commit `d727bffd2917599b37f08a39702a3d34f80d3cd5`). The product RTL
+and frozen algorithm remain unchanged from `thermo5` baseline
+`2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
 
-Phase A implementation is present in the worktree: reset-truncated DSP frames
-compare only causal PA prefixes; Python trace replay validates sequence/epoch,
-commit/pending/frame-apply/ACK ordering, independent transaction-derived
-STATUS, STOP/Drain/Restart observations, source-gap lengths, and underflow
-classification. The VCS STATUS predictor no longer derives RUN_ACTIVE or
-DRAINING from DUT core status outputs. The source monitor now records idle
-cycles between accepted beats. The reset sweep covers 1/2/3/5-beat partial
-frame resets plus five existing CDC residual resets, then static-Golden replay.
+Phase A is implemented and has an open, unmerged PR #27. It adds partial-frame
+reset-aware Python trace replay, independent STATUS prediction, config epoch
+ordering, source-gap accounting, and trace mutation tests. Its VCS STOP/Drain/
+Restart and reset sweeps plus 57/57 Python tests passed; see the Phase A report.
 
-Evidence (VCS V-2023.12-SP1, Python 3.12.13): STOP/Restart passed with
-112/112 static-Golden PA words, six STATUS reads (four stable, two transition
-masked), zero predictor mismatches, and zero UVM errors/fatals. The one-source-
-clock-cycle-gap variant passed with one recorded gap cycle, zero underflow,
-and the same STATUS results. The reset sweep passed four partial-DSP-frame and
-five CDC-residual resets, then replayed 56/56 post-reset words; all 91 accepted
-PA words in the dynamic trace matched the oracle prefix with zero underflow.
-Python reference tests pass 57/57, including deliberate PA/STATUS/sequence/
-commit-order mutations. No Raw/Adjusted URG metric was generated or signed off for this
-functional-verification change.
+Phase B implementation commit is `35115626a95c14db76e29ee36bf68f5d80132aba`.
+It adds active/passive PA sink ownership (`PA_READY` has one procedural
+writer), wraps Reset/direct-core-enable in a Control agent, adds a virtual
+sequencer and deterministic AXIL packet sequence, and migrates existing PA
+ready writes to the agent API. The outstanding-counter SVA bind is conditional
+on the AXIL configuration where those DUT signals exist.
 
-**Next:** publish PR-A with the command/log hash manifest, without merging.
-Afterward implement minimal PA sink ownership, Control/virtual-sequence
-coordination, and a replayable system-random seed as separate PR-B/PR-C
-changes. Keep Formal and Phase D/E open.
+VCS V-2023.12-SP1 product tests PASS: virtual packet smoke seed 620301,
+graceful STOP/Drain seed 620304, and reset sweep seed 620305. Each accepted
+56 product PA words with zero mismatch, underflow, predictor mismatch, UVM
+error, or UVM fatal. The full-chain non-AXIL bubble test's own PASS marker is
+not accepted as a legal-stream result: seed 620302 counted 361 underflow
+cycles (180 before final source acceptance); the one-cycle-gap diagnostic had
+100 post-source sticky-underflow cycles because that direct-core configuration
+has no AXIL drain contract. These are documented as diagnostic/open, not
+normal product passes. Evidence and log hashes are in the Phase B report.
+
+No aggregate URG merge, Raw/Adjusted code-coverage result, or Formal proof was
+run in Phase B. Clocks remain testbench-generated; dynamic clock fault control
+is open. Phase C packet-level constrained-random, transaction trace/seed
+replay, and required cross coverage are next. Keep PR #27 and the new stacked
+PR-B unmerged; Phase D/E and all FPGA/physical signoff remain open.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 

@@ -5452,3 +5452,35 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - URG aggregation/Raw-Adjusted code-coverage review and VC Formal were not run. No FPGA, XPM/GT
   Wizard, RF, or BER signoff is claimed. Phase B/C random verification,
   Phase D coverage/formal closure, and Phase E benchmark review remain open.
+## 2026-11-02 12:42 SGT - Thermo5 TX Phase B agent organization
+
+- Added an active/passive PA sink agent as the only procedural `PA_READY`
+  writer, an active Control agent for reset/direct-core enable, a virtual
+  sequencer, and an AXIL packet RUN/STOP/drain smoke sequence. Migrated test PA
+  backpressure requests to the PA agent API. Added a configuration guard around
+  the AXIL-only outstanding-counter SVA bind after non-AXIL compile exposed
+  references to signals absent from that DUT.
+- Implementation source commit: `35115626a95c14db76e29ee36bf68f5d80132aba`.
+  Product RTL, TX algorithm, and product defaults are unchanged.
+- VCS V-2023.12-SP1 product tests passed: AXIL virtual-sequence seed 620301,
+  graceful STOP/Drain seed 620304, and reset sweep seed 620305. All had 56
+  post-reset/product PA words as applicable, zero PA/predictor mismatches,
+  zero underflow, and zero UVM errors/fatals. The reset sweep included four
+  partial-DSP-frame resets and five CDC residual resets.
+- The legacy non-AXIL bubble test is retained as diagnostic only: its default
+  80-cycle gap run recorded 361 underflow cycles (180 before final source
+  acceptance) despite printing its existing PASS marker. With a one-cycle gap,
+  early underflow was zero but the direct-core/no-drain test still recorded
+  100 sticky underflow cycles after source completion. Neither run is counted
+  as a legal product regression. Phase C must use the AXIL packet/drain path
+  and reject unexpected underflow.
+- Evidence commands and log SHA-256 values are recorded in
+  `docs/verification/thermo5-tx-phase-b-evidence.md` and
+  `docs/verification/data/thermo5-tx-phase-b-evidence.json`. Per-test coverage
+  instrumentation was enabled, but no URG aggregation or Raw/Adjusted
+  percentage was run. Dynamic clock fault control, Phase C randomization,
+  Phase D Formal/coverage closure, and Phase E benchmarking remain open.
+- Checks: AXIL VCS compile + virtual-sequence smoke, AXIL graceful STOP/Drain,
+  AXIL reset sweep, non-AXIL compile and diagnostic bubble runs, SVA bind
+  configuration check, direct `PA_READY` writer scan, `git diff --check`, and
+  JSON manifest parse. No RTL/XSim, RX, AI-DPD, Vivado, or physical flow ran.

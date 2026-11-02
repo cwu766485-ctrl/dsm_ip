@@ -15,7 +15,7 @@ class thermo5_sku_axil_reset_sweep_test extends thermo5_sku_axil_base_test;
     bit [1:0] resp;
 
     phase.raise_objection(this);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     wait(vif.src_rst_n && vif.core_rst_n);
     if (vif.dpd_active_taps!==3'd1)
       `uvm_fatal("PRODUCT_DPD_CONFIG",
