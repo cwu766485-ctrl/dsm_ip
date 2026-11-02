@@ -262,7 +262,7 @@ thermo5-tx-product-axil-reset-sweep:
 	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 \
-	  THERMO5_EXTRA_ARGS=+CORE_WORDS=56
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_TRACE_JSONL=$(THERMO5_OUT)/reset_sweep_trace.jsonl'
 
 # Legal AXI-Stream startup overlaps the two-flop local source-reset release.
 thermo5-tx-product-axil-reset-release-source:

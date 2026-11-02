@@ -26,6 +26,7 @@ package thermo5_sku_uvm_pkg;
   `uvm_analysis_imp_decl(_trace_axil_fire)
   `uvm_analysis_imp_decl(_trace_axil_addr)
   `uvm_analysis_imp_decl(_trace_axil_done)
+  `uvm_analysis_imp_decl(_trace_axil_cycle)
   `include "thermo5_source_sequencer.svh"
   `include "thermo5_source_driver.svh"
   `include "thermo5_source_monitor.svh"

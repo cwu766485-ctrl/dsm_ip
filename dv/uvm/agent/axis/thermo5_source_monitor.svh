@@ -3,6 +3,8 @@ class thermo5_source_monitor extends uvm_component;
   virtual thermo5_sku_if vif;
   uvm_analysis_port#(thermo5_source_item) ap;
   int accepted_beats, accepted_last_count, stall_cycles;
+  int unsigned valid_gap_cycles;
+  bit valid_gap_tracking;
   bit stalled;
   logic [223:0] held_i, held_q;
   logic held_start, held_last;
@@ -24,7 +26,11 @@ class thermo5_source_monitor extends uvm_component;
         accepted_last_count=0;
         vif.accepted_beats=0;
         stalled=0;
+        valid_gap_cycles=0;
+        valid_gap_tracking=0;
       end else begin
+        if (!vif.src_valid && valid_gap_tracking)
+          valid_gap_cycles++;
         if (stalled && (vif.src_valid !== 1'b1 || vif.src_i !== held_i ||
                         vif.src_q !== held_q || vif.frame_start !== held_start ||
                         vif.frame_gain !== held_gain || vif.src_last !== held_last))
@@ -42,10 +48,13 @@ class thermo5_source_monitor extends uvm_component;
           tr.frame_start=vif.frame_start; tr.frame_gain=vif.frame_gain;
           tr.tlast=vif.src_last;
           tr.beat_index=accepted_beats;
+          tr.valid_gap_cycles=valid_gap_cycles;
           accepted_beats++;
           if (vif.src_last) accepted_last_count++;
           vif.accepted_beats=accepted_beats;
           ap.write(tr);
+          valid_gap_cycles=0;
+          valid_gap_tracking=1;
         end
       end
     end

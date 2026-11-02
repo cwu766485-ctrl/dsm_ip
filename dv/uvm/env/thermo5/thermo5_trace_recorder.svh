@@ -7,12 +7,14 @@ class thermo5_trace_recorder extends uvm_component;
   uvm_analysis_imp_trace_axil_fire#(thermo5_axil_item,thermo5_trace_recorder) axil_fire_imp;
   uvm_analysis_imp_trace_axil_addr#(thermo5_axil_item,thermo5_trace_recorder) axil_addr_imp;
   uvm_analysis_imp_trace_axil_done#(thermo5_axil_item,thermo5_trace_recorder) axil_done_imp;
+  uvm_analysis_imp_trace_axil_cycle#(thermo5_axil_item,thermo5_trace_recorder) axil_cycle_imp;
   virtual thermo5_sku_if sku_vif;
   virtual thermo5_axil_if axil_vif;
   integer fd;
   string path;
   int unsigned sequence_id, epoch, next_commit_id, pending_commit_id, frame_id;
   int unsigned pa_word_index;
+  int unsigned current_axil_cycle;
   int unsigned source_packet_id, source_packet_beat, source_frame_id;
   bit enabled, reset_active, released_once, pending_seen, underflow_seen;
   bit source_frame_seen;
@@ -26,11 +28,13 @@ class thermo5_trace_recorder extends uvm_component;
     axil_fire_imp=new("axil_fire_imp",this);
     axil_addr_imp=new("axil_addr_imp",this);
     axil_done_imp=new("axil_done_imp",this);
+    axil_cycle_imp=new("axil_cycle_imp",this);
     fd=0;
     sequence_id=0;
     epoch=0;
     frame_id=0;
     pa_word_index=0;
+    current_axil_cycle=0;
     source_packet_id=0;
     source_packet_beat=0;
     source_frame_id=0;
@@ -74,9 +78,9 @@ class thermo5_trace_recorder extends uvm_component;
     end
     i_json={i_json,"]"}; q_json={q_json,"]"};
     $fdisplay(fd,
-      "{\"seq\":%0d,\"type\":\"source_beat\",\"epoch\":%0d,\"time_ns\":%0.3f,\"beat_index\":%0d,\"packet_id\":%0d,\"packet_beat_index\":%0d,\"source_frame_id\":%0d,\"i\":%s,\"q\":%s,\"frame_start\":%s,\"frame_gain\":%0d,\"tlast\":%s}",
-      sequence_id++,epoch,$realtime,tr.beat_index,source_packet_id,
-      source_packet_beat,source_frame_id,i_json,q_json,
+      "{\"seq\":%0d,\"type\":\"source_beat\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"beat_index\":%0d,\"packet_id\":%0d,\"packet_beat_index\":%0d,\"source_frame_id\":%0d,\"source_gap_cycles\":%0d,\"i\":%s,\"q\":%s,\"frame_start\":%s,\"frame_gain\":%0d,\"tlast\":%s}",
+      sequence_id++,epoch,current_axil_cycle,$realtime,tr.beat_index,source_packet_id,
+      source_packet_beat,source_frame_id,tr.valid_gap_cycles,i_json,q_json,
       tr.frame_start ? "true" : "false",$signed(tr.frame_gain),
       tr.tlast ? "true" : "false");
     source_packet_beat++;
@@ -89,8 +93,8 @@ class thermo5_trace_recorder extends uvm_component;
   function void write_trace_pa(thermo5_pa_word tr);
     if (!enabled) return;
     $fdisplay(fd,
-      "{\"seq\":%0d,\"type\":\"pa_word\",\"epoch\":%0d,\"time_ns\":%0.3f,\"word_index\":%0d,\"planes\":[\"0x%016h\",\"0x%016h\",\"0x%016h\",\"0x%016h\"]}",
-      sequence_id++,epoch,$realtime,pa_word_index++,
+      "{\"seq\":%0d,\"type\":\"pa_word\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"word_index\":%0d,\"planes\":[\"0x%016h\",\"0x%016h\",\"0x%016h\",\"0x%016h\"]}",
+      sequence_id++,epoch,current_axil_cycle,$realtime,pa_word_index++,
       tr.plane[0],tr.plane[1],tr.plane[2],tr.plane[3]);
   endfunction
 
@@ -101,27 +105,32 @@ class thermo5_trace_recorder extends uvm_component;
       pending_commit_id=next_commit_id;
     end
     $fdisplay(fd,
-      "{\"seq\":%0d,\"type\":\"axil_write_fire\",\"epoch\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\",\"data\":\"0x%08h\",\"strb\":\"0x%01h\"}",
-      sequence_id++,epoch,$realtime,tr.txn_id,tr.addr,tr.data,tr.strb);
+      "{\"seq\":%0d,\"type\":\"axil_write_fire\",\"epoch\":%0d,\"event_cycle\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\",\"data\":\"0x%08h\",\"strb\":\"0x%01h\"}",
+      sequence_id++,epoch,tr.event_cycle,$realtime,tr.txn_id,tr.addr,tr.data,tr.strb);
   endfunction
 
   function void write_trace_axil_addr(thermo5_axil_item tr);
     if (!enabled) return;
     $fdisplay(fd,
-      "{\"seq\":%0d,\"type\":\"axil_read\",\"epoch\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\"}",
-      sequence_id++,epoch,$realtime,tr.txn_id,tr.addr);
+      "{\"seq\":%0d,\"type\":\"axil_read\",\"epoch\":%0d,\"event_cycle\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\"}",
+      sequence_id++,epoch,tr.event_cycle,$realtime,tr.txn_id,tr.addr);
   endfunction
 
   function void write_trace_axil_done(thermo5_axil_item tr);
     if (!enabled) return;
     if (tr.is_write)
       $fdisplay(fd,
-        "{\"seq\":%0d,\"type\":\"axil_write_response\",\"epoch\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\",\"resp\":%0d}",
-        sequence_id++,epoch,$realtime,tr.txn_id,tr.addr,tr.resp);
+        "{\"seq\":%0d,\"type\":\"axil_write_response\",\"epoch\":%0d,\"event_cycle\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\",\"resp\":%0d}",
+        sequence_id++,epoch,tr.event_cycle,$realtime,tr.txn_id,tr.addr,tr.resp);
     else
       $fdisplay(fd,
-        "{\"seq\":%0d,\"type\":\"axil_read_response\",\"epoch\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\",\"rdata\":\"0x%08h\",\"resp\":%0d}",
-        sequence_id++,epoch,$realtime,tr.txn_id,tr.addr,tr.rdata,tr.resp);
+        "{\"seq\":%0d,\"type\":\"axil_read_response\",\"epoch\":%0d,\"event_cycle\":%0d,\"time_ns\":%0.3f,\"txn_id\":%0d,\"addr\":\"0x%02h\",\"rdata\":\"0x%08h\",\"resp\":%0d}",
+        sequence_id++,epoch,tr.event_cycle,$realtime,tr.txn_id,tr.addr,tr.rdata,tr.resp);
+  endfunction
+
+  function void write_trace_axil_cycle(thermo5_axil_item tr);
+    if (!enabled || !tr.reset_n) return;
+    current_axil_cycle=tr.event_cycle;
   endfunction
 
   task run_phase(uvm_phase phase);
@@ -146,8 +155,8 @@ class thermo5_trace_recorder extends uvm_component;
               underflow_seen=0;
               if (enabled)
                 $fdisplay(fd,
-                  "{\"seq\":%0d,\"type\":\"reset\",\"epoch\":%0d,\"next_epoch\":%0d,\"time_ns\":%0.3f}",
-                  sequence_id++,epoch-1,epoch,$realtime);
+                  "{\"seq\":%0d,\"type\":\"reset\",\"epoch\":%0d,\"next_epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f}",
+                  sequence_id++,epoch-1,epoch,current_axil_cycle,$realtime);
             end
             reset_active=1;
             previous_pending=0;
@@ -156,39 +165,39 @@ class thermo5_trace_recorder extends uvm_component;
             released_once=1;
             if (sku_vif.cfg_pending_valid && !previous_pending && enabled) begin
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"config_pending\",\"epoch\":%0d,\"time_ns\":%0.3f,\"commit_id\":%0d}",
-                sequence_id++,epoch,$realtime,pending_commit_id);
+                "{\"seq\":%0d,\"type\":\"config_pending\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"commit_id\":%0d}",
+                sequence_id++,epoch,current_axil_cycle,$realtime,pending_commit_id);
               pending_seen=1;
             end
             previous_pending=sku_vif.cfg_pending_valid;
             if (sku_vif.cfg_ack_core && !previous_ack_core && enabled)
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"config_ack_core\",\"epoch\":%0d,\"time_ns\":%0.3f}",
-                sequence_id++,epoch,$realtime);
+                "{\"seq\":%0d,\"type\":\"config_ack_core\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f}",
+                sequence_id++,epoch,current_axil_cycle,$realtime);
             previous_ack_core=sku_vif.cfg_ack_core;
             if (sku_vif.dpd_config_boundary && enabled) begin
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"frame_boundary\",\"epoch\":%0d,\"time_ns\":%0.3f,\"frame_id\":%0d,\"config_pending\":%s}",
-                sequence_id++,epoch,$realtime,frame_id,
+                "{\"seq\":%0d,\"type\":\"frame_boundary\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"frame_id\":%0d,\"config_pending\":%s}",
+                sequence_id++,epoch,current_axil_cycle,$realtime,frame_id,
                 sku_vif.cfg_pending_valid ? "true" : "false");
               frame_id++;
               pending_seen=0;
             end
             if (sku_vif.underflow && !underflow_seen && enabled) begin
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"underflow\",\"epoch\":%0d,\"time_ns\":%0.3f}",
-                sequence_id++,epoch,$realtime);
+                "{\"seq\":%0d,\"type\":\"underflow\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f}",
+                sequence_id++,epoch,current_axil_cycle,$realtime);
               underflow_seen=1;
             end
             if (sku_vif.pa_valid==4'hf && sku_vif.pa_ready!=4'hf && enabled)
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"pa_stall\",\"epoch\":%0d,\"time_ns\":%0.3f,\"ready\":\"0x%01h\"}",
-                sequence_id++,epoch,$realtime,sku_vif.pa_ready);
+                "{\"seq\":%0d,\"type\":\"pa_stall\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"ready\":\"0x%01h\"}",
+                sequence_id++,epoch,current_axil_cycle,$realtime,sku_vif.pa_ready);
             if ((sku_vif.core_run_request!=last_run_request ||
                  sku_vif.core_tx_active!=last_tx_active) && enabled)
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"stop_state\",\"epoch\":%0d,\"time_ns\":%0.3f,\"run\":%s,\"active\":%s,\"draining\":%s}",
-                sequence_id++,epoch,$realtime,
+                "{\"seq\":%0d,\"type\":\"stop_state\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"run\":%s,\"active\":%s,\"draining\":%s}",
+                sequence_id++,epoch,current_axil_cycle,$realtime,
                 sku_vif.core_run_request ? "true" : "false",
                 sku_vif.core_tx_active ? "true" : "false",
                 (sku_vif.core_tx_active && !sku_vif.core_run_request) ? "true" : "false");
@@ -206,8 +215,8 @@ class thermo5_trace_recorder extends uvm_component;
           end else begin
             if (previous_cfg_busy && !sku_vif.cfg_busy && sku_vif.cfg_done && enabled)
               $fdisplay(fd,
-                "{\"seq\":%0d,\"type\":\"commit_done\",\"epoch\":%0d,\"time_ns\":%0.3f}",
-                sequence_id++,epoch,$realtime);
+                "{\"seq\":%0d,\"type\":\"commit_done\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f}",
+                sequence_id++,epoch,current_axil_cycle,$realtime);
             previous_cfg_busy=sku_vif.cfg_busy;
             previous_cfg_done=sku_vif.cfg_done;
           end

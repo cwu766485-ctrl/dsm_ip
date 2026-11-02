@@ -2,6 +2,8 @@
 // The model advances on monitor write-fire events, not the later B response.
 class thermo5_axil_register_predictor extends uvm_component;
   `uvm_component_utils(thermo5_axil_register_predictor)
+  uvm_analysis_imp_src#(thermo5_source_item,thermo5_axil_register_predictor) source_imp;
+  uvm_analysis_imp_pa#(thermo5_pa_word,thermo5_axil_register_predictor) pa_imp;
   uvm_analysis_imp_axil_fire#(thermo5_axil_item,thermo5_axil_register_predictor) write_fire_imp;
   uvm_analysis_imp_axil_addr#(thermo5_axil_item,thermo5_axil_register_predictor) read_addr_imp;
   uvm_analysis_imp_axil_done#(thermo5_axil_item,thermo5_axil_register_predictor) completion_imp;
@@ -26,20 +28,34 @@ class thermo5_axil_register_predictor extends uvm_component;
   bit [2:0] shadow_taps;
   bit run_request_model, busy_model, done_model, error_model;
   bit cfg_ack_sync1_model, cfg_ack_sync2_model, cfg_seen_ack_model;
-  bit tx_active_sync1_model, tx_active_sync2_model;
-  bit draining_sync1_model, draining_sync2_model;
+  bit ever_run_model, drain_output_complete_model;
+  int unsigned accepted_packet_beats_model, expected_pa_words_model;
+  int unsigned accepted_pa_words_model, prefill_beats_model;
+  int unsigned run_request_cycle_model, stop_request_cycle_model;
+  int unsigned drain_complete_cycle_model, last_axil_cycle_model;
   bit [31:0] sampled_status_model;
   int unsigned sampled_status_cycle;
-  bit sampled_status_valid;
+  bit sampled_status_valid, sampled_lifecycle_stable;
   int unsigned max_taps = 4;
   int unsigned checked_reads, checked_write_responses, mismatches;
+  int unsigned source_gap_events_model, source_gap_cycles_model;
+  int unsigned status_lifecycle_masked, status_lifecycle_checked;
 
   function new(string name, uvm_component parent);
     super.new(name,parent);
+    source_imp = new("source_imp",this);
+    pa_imp = new("pa_imp",this);
     write_fire_imp = new("write_fire_imp",this);
     read_addr_imp = new("read_addr_imp",this);
     completion_imp = new("completion_imp",this);
     cycle_imp = new("cycle_imp",this);
+    checked_reads=0;
+    checked_write_responses=0;
+    mismatches=0;
+    source_gap_events_model=0;
+    source_gap_cycles_model=0;
+    status_lifecycle_masked=0;
+    status_lifecycle_checked=0;
     reset_model();
   endfunction
 
@@ -54,13 +70,20 @@ class thermo5_axil_register_predictor extends uvm_component;
     cfg_ack_sync1_model = 0;
     cfg_ack_sync2_model = 0;
     cfg_seen_ack_model = 0;
-    tx_active_sync1_model = 0;
-    tx_active_sync2_model = 0;
-    draining_sync1_model = 0;
-    draining_sync2_model = 0;
+    ever_run_model = 0;
+    drain_output_complete_model = 0;
+    accepted_packet_beats_model = 0;
+    expected_pa_words_model = 0;
+    accepted_pa_words_model = 0;
+    prefill_beats_model = 0;
+    run_request_cycle_model = 0;
+    stop_request_cycle_model = 0;
+    drain_complete_cycle_model = 0;
+    last_axil_cycle_model = 0;
     sampled_status_model = 0;
     sampled_status_cycle = 0;
     sampled_status_valid = 0;
+    sampled_lifecycle_stable = 0;
     write_expected.delete();
     read_expected.delete();
   endfunction
@@ -128,7 +151,20 @@ class thermo5_axil_register_predictor extends uvm_component;
 
     case (tr.addr)
       8'h00: if (tr.strb[0]) begin
+        bit old_run_request;
+        old_run_request=run_request_model;
         run_request_model=tr.data[0];
+        if (run_request_model) begin
+          ever_run_model=1;
+          if (!old_run_request) run_request_cycle_model=tr.event_cycle;
+        end else if (old_run_request || ever_run_model) begin
+          stop_request_cycle_model=tr.event_cycle;
+          drain_output_complete_model=
+            (accepted_pa_words_model >= expected_pa_words_model) &&
+            (accepted_packet_beats_model == 0);
+          if (drain_output_complete_model)
+            drain_complete_cycle_model=tr.event_cycle;
+        end
         if (tr.data[1]) begin
           busy_model=1;
           done_model=0;
@@ -152,27 +188,83 @@ class thermo5_axil_register_predictor extends uvm_component;
     endcase
   endfunction
 
+  // Independent lifecycle inputs: accepted source packet boundaries and PA
+  // handshakes. The DUT core_tx_active/core_draining pins are not predictors.
+  function void write_src(thermo5_source_item tr);
+    accepted_packet_beats_model++;
+    if (prefill_beats_model < 2) prefill_beats_model++;
+    if (tr.valid_gap_cycles != 0) begin
+      source_gap_events_model++;
+      source_gap_cycles_model += tr.valid_gap_cycles;
+    end
+    if (tr.tlast) begin
+      if ((accepted_packet_beats_model % 32) != 0) begin
+        mismatches++;
+        `uvm_error("AXIL_STATUS_MODEL",
+          $sformatf("accepted TLAST after %0d packet beats; expected a multiple of 32",
+            accepted_packet_beats_model))
+      end
+      expected_pa_words_model += (accepted_packet_beats_model * 14) / 8;
+      accepted_packet_beats_model=0;
+      if (!run_request_model)
+        drain_output_complete_model=
+          (accepted_pa_words_model >= expected_pa_words_model);
+    end
+  endfunction
+
+  function void write_pa(thermo5_pa_word tr);
+    accepted_pa_words_model++;
+    if (!run_request_model && ever_run_model &&
+        accepted_packet_beats_model == 0 &&
+        accepted_pa_words_model >= expected_pa_words_model) begin
+      drain_output_complete_model=1;
+      drain_complete_cycle_model=last_axil_cycle_model;
+    end
+  endfunction
+
+  function automatic bit [1:0] predict_lifecycle_status(
+      input int unsigned cycle, output bit stable);
+    bit active, draining;
+    active=0;
+    draining=0;
+    stable=1;
+    if (run_request_model) begin
+      active=1;
+      stable=(cycle >= run_request_cycle_model + 4);
+    end else if (ever_run_model && !drain_output_complete_model) begin
+      active=1;
+      draining=1;
+      stable=(cycle >= stop_request_cycle_model + 4);
+    end else if (ever_run_model) begin
+      active=0;
+      draining=0;
+      stable=(cycle >= drain_complete_cycle_model + 4);
+    end
+    return {draining,active};
+  endfunction
+
   // Called once per AXI-Lite rising edge before same-edge AR/write events.
   // STATUS read prediction uses the pre-NBA value that the RTL samples on AR.
   function void write_axil_cycle(thermo5_axil_item tr);
     bit old_ack_sync2;
+    bit lifecycle_stable;
+    bit [1:0] lifecycle_status;
     if (!tr.reset_n) begin
       reset_model();
       return;
     end
 
-    sampled_status_model={27'd0,draining_sync2_model,tx_active_sync2_model,
+    last_axil_cycle_model=tr.event_cycle;
+    lifecycle_status=predict_lifecycle_status(tr.event_cycle,lifecycle_stable);
+    sampled_status_model={27'd0,lifecycle_status,
                           error_model,done_model,busy_model};
     sampled_status_cycle=tr.event_cycle;
     sampled_status_valid=1;
+    sampled_lifecycle_stable=lifecycle_stable;
 
     old_ack_sync2=cfg_ack_sync2_model;
     cfg_ack_sync2_model=cfg_ack_sync1_model;
     cfg_ack_sync1_model=sku_vif.cfg_ack_core;
-    tx_active_sync2_model=tx_active_sync1_model;
-    tx_active_sync1_model=sku_vif.core_tx_active;
-    draining_sync2_model=draining_sync1_model;
-    draining_sync1_model=sku_vif.core_draining;
 
     if (busy_model) begin
       if (old_ack_sync2) cfg_seen_ack_model=1;
@@ -199,7 +291,7 @@ class thermo5_axil_register_predictor extends uvm_component;
           `uvm_error("AXIL_STATUS_SAMPLE","STATUS read has no AXI-cycle predictor snapshot")
         end
         value=sampled_status_model;
-        compare_mask=32'h0000_001f;
+        compare_mask=sampled_lifecycle_stable ? 32'h0000_001f : 32'h0000_0007;
       end
       8'h08: value={29'd0,shadow_taps};
       8'h0c: value=32'h5448_3501;
@@ -226,6 +318,10 @@ class thermo5_axil_register_predictor extends uvm_component;
           sampled_status_cycle,tr.event_cycle))
     end
     expected.data=predict_read_data(tr.addr,expected.response,expected.mask);
+    if (tr.addr==8'h04) begin
+      if (sampled_lifecycle_stable) status_lifecycle_checked++;
+      else status_lifecycle_masked++;
+    end
     read_expected.push_back(expected);
   endfunction
 
@@ -264,29 +360,12 @@ class thermo5_axil_register_predictor extends uvm_component;
     end
   endfunction
 
-  task run_phase(uvm_phase phase);
-    fork
-      begin : core_boundary_observer
-        bit was_reset;
-        was_reset=1;
-        forever begin
-          @(posedge sku_vif.core_clk);
-          if (!sku_vif.core_rst_n) begin
-            if (!was_reset) reset_model();
-            was_reset=1;
-          end else begin
-            was_reset=0;
-          end
-        end
-      end
-    join
-  endtask
-
   function void report_phase(uvm_phase phase);
     super.report_phase(phase);
     `uvm_info("AXIL_REGISTER_PREDICTOR",
-      $sformatf("read_checks=%0d write_response_checks=%0d mismatches=%0d pending_reads=%0d pending_writes=%0d",
-        checked_reads,checked_write_responses,mismatches,read_expected.size(),write_expected.size()),
+      $sformatf("read_checks=%0d write_response_checks=%0d mismatches=%0d pending_reads=%0d pending_writes=%0d status_stable=%0d status_masked=%0d source_gaps=%0d gap_cycles=%0d",
+        checked_reads,checked_write_responses,mismatches,read_expected.size(),write_expected.size(),
+        status_lifecycle_checked,status_lifecycle_masked,source_gap_events_model,source_gap_cycles_model),
       UVM_NONE)
   endfunction
 endclass

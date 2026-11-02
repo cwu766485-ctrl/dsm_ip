@@ -92,7 +92,7 @@ class MonitorTraceOracleTests(unittest.TestCase):
                 frame_id = beat["beat_index"] // 4
                 events.append({"type": "frame_boundary", "epoch": 0,
                                "seq": seq, "frame_id": frame_id,
-                               "config_pending": frame_id >= 1})
+                               "config_pending": frame_id == 1})
                 seq += 1
                 if frame_id == 1:
                     events.append({"type": "config_ack_core", "epoch": 0,
@@ -106,6 +106,25 @@ class MonitorTraceOracleTests(unittest.TestCase):
         result, = run_monitor_trace(events)
         self.assertTrue(result.passed)
         self.assertEqual(result.applied_config_frames, (1,))
+
+    def test_trace_mutation_detects_frame_apply_before_cdc_pending(self):
+        events = [
+            {"type": "axil_write_fire", "epoch": 0, "seq": 0,
+             "txn_id": 1, "addr": "0x10", "data": "0x00002000", "strb": "0xf"},
+            {"type": "axil_write_response", "epoch": 0, "seq": 1,
+             "txn_id": 1, "resp": 0},
+            {"type": "axil_write_fire", "epoch": 0, "seq": 2,
+             "txn_id": 2, "addr": "0x00", "data": "0x00000002", "strb": "0xf"},
+            {"type": "axil_write_response", "epoch": 0, "seq": 3,
+             "txn_id": 2, "resp": 0},
+            {"type": "frame_boundary", "epoch": 0, "seq": 4,
+             "frame_id": 0, "config_pending": True},
+            {"type": "config_pending", "epoch": 0, "seq": 5, "commit_id": 1},
+            {"type": "config_ack_core", "epoch": 0, "seq": 6},
+            {"type": "commit_done", "epoch": 0, "seq": 7},
+        ]
+        with self.assertRaisesRegex(ValueError, "precedes recorded CDC pending"):
+            run_monitor_trace(events)
 
     def test_monitor_trace_rejects_early_packet_tlast(self):
         events = [{"type": "source_beat", "epoch": 0, "seq": index,
@@ -188,6 +207,109 @@ class MonitorTraceOracleTests(unittest.TestCase):
         events.append({"type": "reset", "epoch": 0, "next_epoch": 1,
                        "seq": seq})
         with self.assertRaisesRegex(AssertionError, "PA mismatch"):
+            run_monitor_trace(events)
+
+    def test_partial_frame_reset_compares_only_causally_known_output(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=14, seed=88201, frame_start_words=(1, 8),
+            frame_gains=(16384, 16384))
+        i_samples = [sample for word in i_words for sample in word]
+        q_samples = [sample for word in q_words for sample in word]
+        expected = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+
+        for accepted_beats in (1, 2, 3):
+            with self.subTest(accepted_beats=accepted_beats):
+                events = []
+                for beat in range(accepted_beats):
+                    first = beat * 14
+                    events.append({
+                        "type": "source_beat", "epoch": 0, "seq": beat,
+                        "beat_index": beat, "packet_id": 0,
+                        "packet_beat_index": beat, "source_frame_id": 0,
+                        "i": i_samples[first:first + 14],
+                        "q": q_samples[first:first + 14],
+                        "frame_start": beat == 0, "frame_gain": gains[0],
+                        "tlast": False,
+                    })
+                accepted_samples = accepted_beats * 14 // 8 * 8
+                partial_samples = accepted_samples % 56
+                safe_words = min(7, max(0, (partial_samples - 11) // 8 + 1))
+                seq = self._append_pa(events, expected[:safe_words], len(events))
+                events.append({"type": "reset", "epoch": 0,
+                               "next_epoch": 1, "seq": seq})
+
+                data_epoch, empty_epoch = run_monitor_trace(events)
+                self.assertTrue(data_epoch.passed)
+                self.assertEqual(data_epoch.safe_output_words, safe_words)
+                self.assertEqual(data_epoch.compared_words, safe_words)
+                self.assertEqual(empty_epoch.compared_words, 0)
+
+    def test_partial_frame_reset_rejects_output_without_enough_lookahead(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=14, seed=88202, frame_start_words=(1, 8),
+            frame_gains=(16384, 16384))
+        i_samples = [sample for word in i_words for sample in word]
+        q_samples = [sample for word in q_words for sample in word]
+        first_beat = {
+            "type": "source_beat", "epoch": 0, "seq": 0,
+            "beat_index": 0, "packet_id": 0, "packet_beat_index": 0,
+            "source_frame_id": 0, "i": i_samples[:14], "q": q_samples[:14],
+            "frame_start": True, "frame_gain": gains[0], "tlast": False,
+        }
+        expected = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        events = [first_beat]
+        seq = self._append_pa(events, expected[:1], 1)
+        events.append({"type": "reset", "epoch": 0, "next_epoch": 1,
+                       "seq": seq})
+        with self.assertRaisesRegex(ValueError, "only 0 have sufficient"):
+            run_monitor_trace(events)
+
+    def test_trace_records_source_gap_length_and_underflow_separately(self):
+        events = [{"type": "source_beat", "epoch": 0, "seq": 0,
+                   "beat_index": 0, "packet_id": 0, "packet_beat_index": 0,
+                   "source_frame_id": 0, "i": [0] * 14, "q": [0] * 14,
+                   "frame_start": True, "frame_gain": 16384, "tlast": False,
+                   "source_gap_cycles": 16},
+                  {"type": "underflow", "epoch": 0, "seq": 1},
+                  {"type": "reset", "epoch": 0, "next_epoch": 1, "seq": 2}]
+        data_epoch, _ = run_monitor_trace(events)
+        self.assertTrue(data_epoch.passed)
+        self.assertFalse(data_epoch.normal_passed)
+        self.assertEqual(data_epoch.source_gap_events, 1)
+        self.assertEqual(data_epoch.source_gap_cycles, 16)
+        self.assertEqual(data_epoch.underflow_events, 1)
+
+    def test_status_predictor_uses_run_write_not_observed_core_status(self):
+        events = [
+            {"type": "axil_write_fire", "epoch": 0, "seq": 0,
+             "event_cycle": 2, "txn_id": 1, "addr": "0x00",
+             "data": "0x01", "strb": "0xf"},
+            {"type": "axil_write_response", "epoch": 0, "seq": 1,
+             "txn_id": 1, "resp": 0},
+            {"type": "stop_state", "epoch": 0, "seq": 2,
+             "axil_cycle": 8, "run": True, "active": True,
+             "draining": False},
+            {"type": "axil_read", "epoch": 0, "seq": 3,
+             "event_cycle": 9, "txn_id": 2, "addr": "0x04"},
+            {"type": "axil_read_response", "epoch": 0, "seq": 4,
+             "txn_id": 2, "addr": "0x04", "rdata": "0x08", "resp": 0},
+        ]
+        (result,) = run_monitor_trace(events)
+        self.assertEqual(result.status_reads_checked, 1)
+        self.assertEqual(result.status_reads_transition_masked, 0)
+
+        events[-1]["rdata"] = "0x00"
+        with self.assertRaisesRegex(ValueError, "STATUS mismatch"):
+            run_monitor_trace(events)
+
+    def test_trace_sequence_reordering_is_rejected(self):
+        events = [
+            {"type": "source_beat", "epoch": 0, "seq": 2,
+             "i": [0] * 14, "q": [0] * 14, "frame_start": True,
+             "frame_gain": 16384, "tlast": False},
+            {"type": "reset", "epoch": 0, "next_epoch": 1, "seq": 1},
+        ]
+        with self.assertRaisesRegex(ValueError, "trace sequence reordered"):
             run_monitor_trace(events)
 
 

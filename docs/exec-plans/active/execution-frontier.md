@@ -1,5 +1,39 @@
 # Execution frontier
 
+## Current execution state: Thermo5 TX System Verification Phase A (2026-11-02)
+
+Work is on `codex/thermo5-tx-dynamic-oracle`, from `thermo5` baseline
+`2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`. Product RTL and frozen algorithm
+are unchanged. Scope is Linux Generic FIFO TX only; no RX, AI-DPD, Vivado,
+Formal, code-coverage closure, or signoff is included in this Phase A change.
+
+Phase A implementation is present in the worktree: reset-truncated DSP frames
+compare only causal PA prefixes; Python trace replay validates sequence/epoch,
+commit/pending/frame-apply/ACK ordering, independent transaction-derived
+STATUS, STOP/Drain/Restart observations, source-gap lengths, and underflow
+classification. The VCS STATUS predictor no longer derives RUN_ACTIVE or
+DRAINING from DUT core status outputs. The source monitor now records idle
+cycles between accepted beats. The reset sweep covers 1/2/3/5-beat partial
+frame resets plus five existing CDC residual resets, then static-Golden replay.
+
+Evidence (VCS V-2023.12-SP1, Python 3.12.13): STOP/Restart passed with
+112/112 static-Golden PA words, six STATUS reads (four stable, two transition
+masked), zero predictor mismatches, and zero UVM errors/fatals. The one-source-
+clock-cycle-gap variant passed with one recorded gap cycle, zero underflow,
+and the same STATUS results. The reset sweep passed four partial-DSP-frame and
+five CDC-residual resets, then replayed 56/56 post-reset words; all 91 accepted
+PA words in the dynamic trace matched the oracle prefix with zero underflow.
+Python reference tests pass 57/57, including deliberate PA/STATUS/sequence/
+commit-order mutations. No Raw/Adjusted URG metric was generated or signed off for this
+functional-verification change.
+
+**Next:** publish PR-A with the command/log hash manifest, without merging.
+Afterward implement minimal PA sink ownership, Control/virtual-sequence
+coordination, and a replayable system-random seed as separate PR-B/PR-C
+changes. Keep Formal and Phase D/E open.
+
+## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
+
 ## Current execution state: Thermo5 TX branch consolidation and cleanup (2026-11-02)
 
 TX Coverage Closure Round 1 (PR #24) and System UVM Phase 0–2 (PR #25) have

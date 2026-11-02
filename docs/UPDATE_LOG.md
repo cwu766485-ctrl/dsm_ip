@@ -5425,3 +5425,30 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   are unchanged from the frozen Linux package.
 - Remaining: 21,320 Raw code bins OPEN; physical/vendor XPM/GT Wizard, FPGA
   PPA, and QAM256 BER remain outside this Linux signoff.
+
+## 2026-11-02 12:32 SGT - Thermo5 TX Dynamic Oracle Phase A
+
+- Completed PR-A work on `codex/thermo5-tx-dynamic-oracle`, based on
+  `thermo5` SHA `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`. No product RTL or
+  frozen algorithm changed.
+- Extended the independent Python trace oracle for sequence/epoch integrity,
+  partial-frame reset causal prefixes, transaction-derived STATUS, and strict
+  COMMIT/Pending/Frame Apply/ACK/completion order. Added checker mutations for
+  PA data, STATUS, trace order, and commit ordering.
+- Added source-valid gap length recording, replaced the UVM RUN_ACTIVE/DRAINING
+  predictor's use of DUT core status outputs with accepted-transaction-derived
+  lifecycle state, and extended the product reset sweep for partial DSP frames.
+- Evidence report and machine-readable manifest:
+  `docs/verification/thermo5-tx-phase-a-evidence.md` and
+  `docs/verification/data/thermo5-tx-phase-a-evidence.json`. Detailed VCS logs,
+  JSONL traces, Python suite log, and their SHA-256 values are retained under
+  the ignored local `runs/thermo5_tx_system_phase_a/` directory.
+- Checks: Python suite 57/57 PASS; Python byte compilation PASS; VCS
+  V-2023.12-SP1 STOP/Restart seed 610215 PASS (112/112 PA words); one-cycle
+  source-gap seed 610216 PASS (112/112, gap=1, underflow=0); reset sweep seed
+  610802 PASS (4 partial-frame resets, 5 CDC residual resets, 56/56 replay,
+  91 accepted PA words); all three dynamic trace replays PASS; `git diff
+  --check` PASS.
+- URG aggregation/Raw-Adjusted code-coverage review and VC Formal were not run. No FPGA, XPM/GT
+  Wizard, RF, or BER signoff is claimed. Phase B/C random verification,
+  Phase D coverage/formal closure, and Phase E benchmark review remain open.

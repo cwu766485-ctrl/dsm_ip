@@ -36,6 +36,8 @@ class thermo5_sku_env extends uvm_env;
     source.monitor.ap.connect(scoreboard.source_imp);
     monitor.ap.connect(scoreboard.pa_imp);
     if (cfg.axil_control) begin
+      source.monitor.ap.connect(register_predictor.source_imp);
+      monitor.ap.connect(register_predictor.pa_imp);
       axil.monitor.write_fire_ap.connect(register_predictor.write_fire_imp);
       axil.monitor.read_address_ap.connect(register_predictor.read_addr_imp);
       axil.monitor.ap.connect(register_predictor.completion_imp);
@@ -46,6 +48,7 @@ class thermo5_sku_env extends uvm_env;
         axil.monitor.write_fire_ap.connect(trace_recorder.axil_fire_imp);
         axil.monitor.read_address_ap.connect(trace_recorder.axil_addr_imp);
         axil.monitor.ap.connect(trace_recorder.axil_done_imp);
+        axil.monitor.cycle_ap.connect(trace_recorder.axil_cycle_imp);
       end
     end
   endfunction
