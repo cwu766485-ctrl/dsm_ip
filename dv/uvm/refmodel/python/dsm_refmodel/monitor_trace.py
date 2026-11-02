@@ -488,7 +488,7 @@ def _model_epoch(epoch, events, *, step=5120, tidsm_order=2, max_taps=1,
             underflow_events += 1
         elif kind in ("reset", "source_gap", "pa_stall", "axil_read",
                       "axil_read_response", "axil_write_response", "status_sample",
-                      "stop_state"):
+                      "stop_state", "fifo_full"):
             # These events are retained for protocol/status audit. Underflow is
             # reported separately so normal/negative classification remains an
             # explicit caller decision.

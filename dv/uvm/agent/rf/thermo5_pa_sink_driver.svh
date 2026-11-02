@@ -24,6 +24,7 @@ class thermo5_pa_sink_driver extends uvm_component;
   endtask
 
   task run_phase(uvm_phase phase);
+    logic [3:0] random_ready;
     vif.pa_ready=4'hf;
     forever begin
       @(negedge vif.core_clk);
@@ -31,7 +32,12 @@ class thermo5_pa_sink_driver extends uvm_component;
         vif.pa_ready <= requested_ready;
       end else if (cfg.random_pa_ready &&
                    $urandom_range(0,99)<cfg.pa_stall_percent) begin
-        vif.pa_ready <= 4'h0;
+        if (cfg.random_partial_pa_ready) begin
+          random_ready=$urandom_range(0,15);
+          vif.pa_ready <= (random_ready==4'hf) ? 4'h0 : random_ready;
+        end else begin
+          vif.pa_ready <= 4'h0;
+        end
       end else begin
         vif.pa_ready <= 4'hf;
       end

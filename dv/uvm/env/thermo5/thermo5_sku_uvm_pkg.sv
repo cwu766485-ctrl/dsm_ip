@@ -53,6 +53,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_virtual_sequence.svh"
   `include "thermo5_sku_axil_config_test.svh"
   `include "thermo5_sku_axil_virtual_sequence_smoke_test.svh"
+  `include "thermo5_sku_axil_random_packet_test.svh"
   `include "thermo5_sku_axil_graceful_stop_test.svh"
   `include "thermo5_sku_axil_stop_restart_test.svh"
   `include "thermo5_sku_axil_register_access_test.svh"

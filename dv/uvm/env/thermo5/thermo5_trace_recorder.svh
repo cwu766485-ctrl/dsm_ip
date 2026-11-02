@@ -135,6 +135,7 @@ class thermo5_trace_recorder extends uvm_component;
 
   task run_phase(uvm_phase phase);
     bit previous_pending;
+    bit previous_fifo_full;
     fork
       begin : core_event_capture
         forever begin
@@ -203,6 +204,22 @@ class thermo5_trace_recorder extends uvm_component;
                 (sku_vif.core_tx_active && !sku_vif.core_run_request) ? "true" : "false");
             last_run_request=sku_vif.core_run_request;
             last_tx_active=sku_vif.core_tx_active;
+          end
+        end
+      end
+      begin : fifo_full_event_capture
+        previous_fifo_full=0;
+        forever begin
+          @(posedge sku_vif.src_clk);
+          if (!sku_vif.src_rst_n) begin
+            previous_fifo_full=0;
+          end else begin
+            if (enabled && sku_vif.fifo_full!=previous_fifo_full)
+              $fdisplay(fd,
+                "{\"seq\":%0d,\"type\":\"fifo_full\",\"epoch\":%0d,\"axil_cycle\":%0d,\"time_ns\":%0.3f,\"full\":%s}",
+                sequence_id++,epoch,current_axil_cycle,$realtime,
+                sku_vif.fifo_full ? "true" : "false");
+            previous_fifo_full=sku_vif.fifo_full;
           end
         end
       end

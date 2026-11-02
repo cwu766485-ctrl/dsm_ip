@@ -744,8 +744,6 @@
   Actual XPM/GT Wizard, Vivado FPGA PPA, physical QAM256 BER and product
   BER/BLER acceptance target remain open. No claim of Raw 100% is made.
 
-# Update Log
-
 ## 2026-10-29 - Complete Linux TX Gate 2 model campaign
 
 - Added reproducible held-out EF2/STEP/input-level/backoff/PAPR/state-width,
@@ -5484,3 +5482,29 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   AXIL reset sweep, non-AXIL compile and diagnostic bubble runs, SVA bind
   configuration check, direct `PA_READY` writer scan, `git diff --check`, and
   JSON manifest parse. No RTL/XSim, RX, AI-DPD, Vivado, or physical flow ran.
+
+## 2026-11-02 13:01 SGT - Thermo5 TX Phase C minimum random qualification
+
+- Completed the minimum runnable Phase C campaign on implementation source SHA
+  `26a9f0482e952f70ed62c438aa9201e626bd103e`; the frozen product RTL and TX
+  algorithm remain unchanged.
+- Ran 100 56-word packet seeds and 10 112-word long-stream seeds. All 110 VCS
+  UVM tests and 110 independent Python trace-oracle replays passed with exact
+  four-plane PA comparison, zero unexpected underflow, and zero predictor,
+  protocol, transaction-count, UVM error, or fatal failures. URG merge passed.
+- Added the Phase C evidence report and machine-readable evidence/VDB manifests.
+  Independently checked all 110 trace/UVM/oracle log hashes, 111 VDB file
+  counts, byte totals and tree fingerprints, evidence hashes and JSON syntax.
+  The canonical sorted-path/size/file-SHA algorithm is recorded in the VDB
+  manifest.
+- Updated the system-verification specification and execution frontier to
+  distinguish the completed minimum random milestone from remaining Phase C
+  work. The URG percentages are mixed-hierarchy exploratory results, not
+  DUT-only Raw/Adjusted signoff.
+- Checks: Python 3.12.13 reference suite 57/57 PASS; VCS V-2023.12-SP1 and URG
+  campaign 110/110 PASS (run before this documentation-only follow-up); trace
+  and evidence integrity checks PASS; JSON parse PASS; `git diff --check` PASS after documentation edits.
+- Remaining OPEN: non-Identity runtime DPD randomization, randomized COMMIT
+  and reset epochs, exact SV cross closure, Phase D DUT-only Code Coverage /
+  Formal / Waiver signoff, Phase E Linux benchmark review, and separate XPM,
+  GT Wizard, FPGA PPA and physical RF/QAM256 validation.

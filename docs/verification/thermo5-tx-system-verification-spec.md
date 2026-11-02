@@ -162,8 +162,29 @@ mismatch, UVM error/fatal, and underflow. Exact commands and log hashes are in
 [`thermo5-tx-phase-b-evidence.md`](thermo5-tx-phase-b-evidence.md) and its JSON
 manifest. The legacy non-AXIL full-chain bubble test can print PASS while
 counting underflow; its runs are diagnostic only and are not legal product
-regression passes. Phase C constrained-random scheduling, trace persistence,
-and system cross coverage remain open.
+regression passes. The minimum runnable Phase C random milestone is now complete as documented
+in `thermo5-tx-phase-c-evidence.md`; full cross closure and random COMMIT/reset
+coverage remain open.
+
+## Phase C minimum random qualification
+
+The first replayable system-random campaign is implemented on source SHA
+`26a9f0482e952f70ed62c438aa9201e626bd103e`. It ran 100 56-word packet seeds
+and 10 112-word long-stream seeds on the frozen AXI-Lite / Generic FIFO TX
+configuration. All 110 VCS UVM runs and all 110 independent Python accepted-
+transaction trace replays passed with exact four-plane PA comparison, zero
+unexpected underflow, and zero predictor/protocol/transaction-count errors.
+URG merged all campaign VDBs; its mixed-hierarchy percentages are exploratory
+and are not DUT-only Raw/Adjusted coverage. The evidence report and SHA-indexed
+JSON/VDB manifest contain exact commands, seeds, observed event bins, metrics,
+and limitations.
+
+This is a minimum runnable Phase C milestone, not completion of all planned
+random dimensions. DPD stayed at the Identity reset image; runtime coefficient
+randomization, COMMIT timing, reset-under-pending-COMMIT, and exact SV cross-bin
+closure remain OPEN. Source gaps were restricted to the 16-beat prefill before
+RUN; source traffic was continuous while RUN was active. See the evidence
+report for exact observed and deferred cross categories.
 
 The core clean-trace replay command is:
 

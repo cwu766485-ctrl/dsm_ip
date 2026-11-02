@@ -1,40 +1,41 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX System Verification Phase B (2026-11-02)
+## Current execution state: Thermo5 TX System Verification Phase C (2026-11-02)
 
-Work is on `codex/thermo5-tx-agent-organization`, based on local Phase A
-implementation commit `52b94f8e7ddce42f1ec890038ed3bc7068e02d26` (PR #27,
-remote API commit `d727bffd2917599b37f08a39702a3d34f80d3cd5`). The product RTL
-and frozen algorithm remain unchanged from `thermo5` baseline
-`2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
+Work is on `codex/thermo5-tx-system-random`, based on the frozen `thermo5`
+product RTL/configuration at `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
+Implementation source SHA is `26a9f0482e952f70ed62c438aa9201e626bd103e`.
+Product RTL and TX algorithm remain unchanged. PR #27 (Phase A) and PR #28
+(Phase B) are open and unmerged; this Phase C change is stacked on Phase B.
+Scope remains Linux TX only: no RX, AI-DPD, or Vivado physical implementation.
 
-Phase A is implemented and has an open, unmerged PR #27. It adds partial-frame
-reset-aware Python trace replay, independent STATUS prediction, config epoch
-ordering, source-gap accounting, and trace mutation tests. Its VCS STOP/Drain/
-Restart and reset sweeps plus 57/57 Python tests passed; see the Phase A report.
+Phase A dynamic Oracle/independent STATUS prediction and Phase B PA/Control
+agent ownership plus deterministic virtual packet sequencing are implemented;
+see their evidence reports. Phase C minimum runnable system-random qualification
+passed 100 packet seeds (56 PA words each) and 10 long-stream seeds (112 PA
+words each). VCS UVM and independent Python trace Oracle passed 110/110, with
+zero PA mismatches, unexpected underflow, predictor mismatches, protocol
+errors, transaction count errors, UVM errors, or fatals. URG merged the 110
+per-seed VDBs and compile/design VDB. Its percentages are mixed-hierarchy
+exploratory data, not DUT-only Raw/Adjusted coverage. See
+`docs/verification/thermo5-tx-phase-c-evidence.md` and its JSON/VDB manifests.
 
-Phase B implementation commit is `35115626a95c14db76e29ee36bf68f5d80132aba`.
-It adds active/passive PA sink ownership (`PA_READY` has one procedural
-writer), wraps Reset/direct-core-enable in a Control agent, adds a virtual
-sequencer and deterministic AXIL packet sequence, and migrates existing PA
-ready writes to the agent API. The outstanding-counter SVA bind is conditional
-on the AXIL configuration where those DUT signals exist.
+Python reference tests passed 57/57. Retained evidence checks confirmed all
+110 trace/UVM/oracle log SHA-256 values, 111 VDB fingerprints and file/byte
+counts, evidence hashes, and JSON validity. No full VCS campaign was repeated
+after the source SHA; documentation and evidence-manifest checks followed.
 
-VCS V-2023.12-SP1 product tests PASS: virtual packet smoke seed 620301,
-graceful STOP/Drain seed 620304, and reset sweep seed 620305. Each accepted
-56 product PA words with zero mismatch, underflow, predictor mismatch, UVM
-error, or UVM fatal. The full-chain non-AXIL bubble test's own PASS marker is
-not accepted as a legal-stream result: seed 620302 counted 361 underflow
-cycles (180 before final source acceptance); the one-cycle-gap diagnostic had
-100 post-source sticky-underflow cycles because that direct-core configuration
-has no AXIL drain contract. These are documented as diagnostic/open, not
-normal product passes. Evidence and log hashes are in the Phase B report.
+Remaining Phase C OPEN items: runtime legal non-Identity DPD coefficient
+randomization, randomized COMMIT and reset epochs, complete exact SV functional
+cross coverage, and closure of deferred crosses. Phase D DUT-only Raw/Adjusted
+coverage/Formal/Waiver closure and Phase E Linux benchmark review remain OPEN.
+No final Linux system signoff, FPGA/physical signoff, XPM, GT Wizard, or RF/BER
+result is claimed.
 
-No aggregate URG merge, Raw/Adjusted code-coverage result, or Formal proof was
-run in Phase B. Clocks remain testbench-generated; dynamic clock fault control
-is open. Phase C packet-level constrained-random, transaction trace/seed
-replay, and required cross coverage are next. Keep PR #27 and the new stacked
-PR-B unmerged; Phase D/E and all FPGA/physical signoff remain open.
+**Next:** submit the Phase C evidence/code as a separate reviewable PR targeting
+the Phase B branch; do not merge PR #27, #28, or the Phase C PR without the
+user's separate review decision. Continue with exact cross coverage and random
+configuration/reset only after reviewing this minimum qualification.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 

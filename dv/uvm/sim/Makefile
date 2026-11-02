@@ -96,6 +96,10 @@ GT_PARENT_FAULT_SRCS := \
 	rtl/gt/thermo5_raw64_continuous_tx.sv \
 	fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv
 THERMO5_STRESS_SEEDS ?= 11 12 13 14 15 16 17 18 19 20
+THERMO5_RANDOM_SEEDS ?= 100
+THERMO5_LONG_RANDOM_SEEDS ?= 10
+THERMO5_RANDOM_SEED_BASE ?= 720000
+THERMO5_RANDOM_OUT ?= $(ROOT)/runs/thermo5_tx_system_random_phase_c
 THERMO5_URG_EXTRA_VDBS ?=
 
 VCS_COV_COMPILE := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
@@ -124,6 +128,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
         thermo5-axil-stop-restart-vcs-run \
         thermo5-tx-agent-vseq-smoke \
+        thermo5-tx-system-random \
         thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
@@ -148,6 +153,7 @@ help:
 	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
 	@echo "  make thermo5-axil-graceful-stop-vcs-run  Run AXI-Lite mid-frame graceful-stop test"
 	@echo "  make thermo5-axil-stop-restart-vcs-run   Run centered-cubic two-packet STOP/drain/restart test"
+	@echo "  make thermo5-tx-system-random  Run replayable packet and long-stream random tests"
 	@echo "  make thermo5-axil-long-frame-vcs-run  Run 64-beat/two-quantum TLAST and drain test"
 	@echo "  make thermo5-axil-register-access-vcs-run  Run AXI-Lite register/protocol-only test"
 	@echo "  make thermo5-axil-coeff-transport-vcs-run  Run coefficient mailbox transport case"
@@ -274,6 +280,13 @@ thermo5-tx-agent-vseq-smoke:
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_virtual_sequence_smoke_test \
 	  UVM_SEED=620301 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+
+thermo5-tx-system-random:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_system_random.py \
+	  --out $(THERMO5_RANDOM_OUT) \
+	  --random-seeds $(THERMO5_RANDOM_SEEDS) \
+	  --long-seeds $(THERMO5_LONG_RANDOM_SEEDS) \
+	  --seed-base $(THERMO5_RANDOM_SEED_BASE)
 
 # Legal AXI-Stream startup overlaps the two-flop local source-reset release.
 thermo5-tx-product-axil-reset-release-source:
