@@ -5,6 +5,11 @@ Implementation source SHA: `26a9f0482e952f70ed62c438aa9201e626bd103e`
 Product RTL baseline: `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`
 Branch: `codex/thermo5-tx-system-random`
 Predecessors: PR #27 (Phase A) and PR #28 (Phase B); both remain unmerged.
+Review PR: [#29](https://github.com/cwu766485-ctrl/dsm_ip/pull/29), open and
+unmerged, stacked on PR #28. At initial publication, its remote commit was
+`983c1a4ad217d0abf68b2e14a3ccb2d34f79b0b6`, parented on PR #28 head
+`991591dca3bf710405e5cd3a35ea855f23248dfa`; the remote tree matched the
+locally reviewed tree.
 
 ## Scope and result
 

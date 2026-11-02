@@ -5508,3 +5508,15 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   and reset epochs, exact SV cross closure, Phase D DUT-only Code Coverage /
   Formal / Waiver signoff, Phase E Linux benchmark review, and separate XPM,
   GT Wizard, FPGA PPA and physical RF/QAM256 validation.
+
+## 2026-11-02 13:06 SGT - Publish Thermo5 TX Phase C PR #29
+
+- Published `codex/thermo5-tx-system-random` as PR #29 targeting the exact
+  open PR #28 head `991591dca3bf710405e5cd3a35ea855f23248dfa`.
+- GitHub head commit is `983c1a4ad217d0abf68b2e14a3ccb2d34f79b0b6`; its tree
+  `22fa3cd65eec9869ff58f0dd9646104ba6228f74` matches local reviewed tree
+  `22fa3cd65eec9869ff58f0dd9646104ba6228f74`. GitHub reports the PR open,
+  mergeable, 17 files, and unmerged. PR #27 and PR #28 are also unmerged.
+- No product RTL or frozen algorithm changed. Phase C remains a minimum random
+  qualification; deferred DPD/COMMIT/reset dimensions, complete exact cross
+  closure, Phase D/E, and FPGA/physical signoff remain open.

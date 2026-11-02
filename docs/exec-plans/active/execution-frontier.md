@@ -6,7 +6,10 @@ Work is on `codex/thermo5-tx-system-random`, based on the frozen `thermo5`
 product RTL/configuration at `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
 Implementation source SHA is `26a9f0482e952f70ed62c438aa9201e626bd103e`.
 Product RTL and TX algorithm remain unchanged. PR #27 (Phase A) and PR #28
-(Phase B) are open and unmerged; this Phase C change is stacked on Phase B.
+(Phase B) are open and unmerged. Phase C is published as open, unmerged PR #29
+on `codex/thermo5-tx-system-random`, stacked on PR #28. The initial remote
+tree was checked against the local reviewed tree; publication details are in
+the update log.
 Scope remains Linux TX only: no RX, AI-DPD, or Vivado physical implementation.
 
 Phase A dynamic Oracle/independent STATUS prediction and Phase B PA/Control
@@ -32,10 +35,9 @@ coverage/Formal/Waiver closure and Phase E Linux benchmark review remain OPEN.
 No final Linux system signoff, FPGA/physical signoff, XPM, GT Wizard, or RF/BER
 result is claimed.
 
-**Next:** submit the Phase C evidence/code as a separate reviewable PR targeting
-the Phase B branch; do not merge PR #27, #28, or the Phase C PR without the
-user's separate review decision. Continue with exact cross coverage and random
-configuration/reset only after reviewing this minimum qualification.
+**Next:** review PR #29. Continue with exact cross coverage and randomized
+configuration/reset as a separate follow-up; do not merge PR #27, #28, or #29
+without the user's separate review decision.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 
