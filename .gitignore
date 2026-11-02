@@ -74,6 +74,9 @@ fullexclude_module.*
 *.vcd
 *.fst
 *.ghw
+*.fsdb
+*.vpd
+*.wlf
 *.saif
 ucli.key
 *.fsm.sch.verilog.xml
@@ -88,6 +91,12 @@ ip/ip_repo/
 # Synopsys/DC and shell runtime artifacts
 realTime.cmd.*
 realTime.log.*
+novas.conf
+novas.rc
+vcf.log*
+vcst_command.log
+tmp_dir_*_vcs/
+*_learn_dir/
 # Run databases and local experiment outputs stay out of source control; their
 # reviewed summaries and rerun commands belong under docs/ and syn/.
 /runs/

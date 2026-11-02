@@ -119,7 +119,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
             +ntb_random_seed=$(UVM_SEED)
 
 .PHONY: help check-tools formal-check-tools vcs vcs-run vcs-run-only regression coverage-merge \
-        verdi questa questa-run questa-run-only run clean thermo5-vcs thermo5-vcs-run \
+        verdi questa questa-run questa-run-only run clean clean-generated thermo5-vcs thermo5-vcs-run \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
         thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
         thermo5-axil-stop-restart-vcs-run \
@@ -167,7 +167,7 @@ help:
 	@echo "  IP functional closure: ./dv/uvm/sim/run_ip_coverage_linux.sh"
 	@echo "  PowerShell bridge: .\\dv\\uvm\\sim\\run_ip_coverage_bridge.ps1"
 	@echo "  make verdi RUN_TAG=...   Open an FSDB generated with FSDB=1"
-	@echo "Optional targets: questa-run, check-tools, clean"
+	@echo "Optional targets: questa-run, check-tools, clean (also removes ignored VCS/URG/Verdi intermediates)"
 	@echo "Variables: UVM_TESTNAME, UVM_SEED, RUN_TAGS, UVM_VERBOSITY, COVERAGE, FSDB, VERDI_HOME"
 	@echo "Thermo5: UVM_SEED, THERMO5_EXTRA_ARGS=+STRESS_PA_READY, THERMO5_TIDSM_ORDER (1/2), THERMO5_STEP"
 	@echo "Stop/restart default: centered-cubic EF2, THERMO5_STOP_RESTART_TIDSM_ORDER=2 THERMO5_STOP_RESTART_STEP=5120"
@@ -744,4 +744,27 @@ run:
 	else echo "ERROR: SIM must be vcs or questa"; exit 2; fi
 
 clean:
-	@rm -rf $(OUT)
+	@rm -rf -- "$(OUT)"
+	@$(MAKE) --no-print-directory clean-generated
+
+# Remove reproducible tool databases/caches while retaining logs, vectors,
+# manifests, and reports under runs/ for audit and replay.
+clean-generated:
+	@set -eu; \
+	  find "$(ROOT)" -path "$(ROOT)/.git" -prune -o \
+	    \( -name '*.vdb' -o -name '*_learn_dir' -o -name '*.daidir' \
+	       -o -name 'csrc' -o -name '*_csrc' -o -name 'vcst_rtdb*' \
+	       -o -name 'tmp_dir_*_vcs' \) -prune -print -exec rm -rf -- {} +; \
+	  find "$(ROOT)" -mindepth 1 -maxdepth 1 -type f \
+	    \( -name '.vc_env_*.txt' -o -name '.fsm.sch.verilog.xml' \
+	       -o -name 'cm.log' -o -name 'command.log' \
+	       -o -name 'fullexclude.*' -o -name 'fullexclude_module.*' \
+	       -o -name 'novas.conf' -o -name 'novas.rc' \
+	       -o -name 'ucli.key' -o -name 'vcf.log*' -o -name 'vcst_command.log' \) \
+	    -print -delete; \
+	  find "$(ROOT)" -path "$(ROOT)/.git" -prune -o -type f \
+	    \( -name '*.vcd' -o -name '*.fsdb' -o -name '*.vpd' \
+	       -o -name '*.fst' -o -name '*.ghw' -o -name '*.wlf' \) \
+	    -print -exec rm -f -- {} +; \
+	  find "$(ROOT)" -path "$(ROOT)/.git" -prune -o -type f \
+	    \( -name 'simv' -o -name '*_simv' \) -perm /111 -print -exec rm -f -- {} +
