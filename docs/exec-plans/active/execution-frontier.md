@@ -21,8 +21,8 @@ Its product-bound outstanding-counter
 properties and exact saturation/underflow guard Covers remain INCONCLUSIVE;
 the two Raw Branch records remain OPEN and are not waived.
 
-A separate Generic-FIFO `core_data_empty` Condition review is in progress on
-`codex/thermo5-tx-cdc-data-empty-formal`, based on the PR #37 source tree. On
+Draft PR #38, `codex/thermo5-tx-cdc-data-empty-formal`, is stacked on PR #37
+and not merged. On
 clean code SHA `dffcd94f95ed6dd455dd892b49391e102594cb4b`, VC Formal proved the
 exact `0/1/1/1/1` Condition tuple at
 `dsm_axis14_to_core8_cdc.sv:113` unreachable because the production Generic

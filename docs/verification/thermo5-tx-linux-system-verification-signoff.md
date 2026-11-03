@@ -5,7 +5,7 @@ VCS execution branch: `codex/thermo5-tx-system-random`
 Waiver audit branch: `codex/thermo5-tx-waiver-audit-round1` (Draft PR #31, stacked on PR #30)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
-Current Formal increments: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`; scoped DPD output-hold Draft PR #34, `codex/thermo5-tx-dpd-payload-hold-formal`; one-tap Identity under-stall follow-up on `codex/thermo5-tx-dpd-identity-stall-formal`; frame-tail Condition review on `codex/thermo5-tx-frame-tail-condition-formal`; and Generic-FIFO `core_data_empty` Condition review on `codex/thermo5-tx-cdc-data-empty-formal`. These remain unmerged.
+Current Formal increments: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`; scoped DPD output-hold Draft PR #34, `codex/thermo5-tx-dpd-payload-hold-formal`; one-tap Identity under-stall follow-up on `codex/thermo5-tx-dpd-identity-stall-formal`; frame-tail Condition review on `codex/thermo5-tx-frame-tail-condition-formal`; Draft PR #37 frame-tail Condition review on `codex/thermo5-tx-frame-tail-condition-formal`, and Draft PR #38 Generic-FIFO `core_data_empty` Condition review on `codex/thermo5-tx-cdc-data-empty-formal`, stacked on PR #37. None is merged.
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,
 four 64-bit PA planes, `DPD_MAX_TAPS=1`, Identity reset image, AXI-Lite,
 Generic FIFO.
