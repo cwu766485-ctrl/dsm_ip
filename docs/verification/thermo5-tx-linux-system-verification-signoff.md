@@ -2,8 +2,8 @@
 
 Date: 2026-11-03 (Asia/Singapore)  
 Branch: `codex/thermo5-tx-system-random`  
-Product RTL and UVM source revision: `1236d49c72360aa62e316aea147528d93a1b3705`  
-Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`  
+Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
+Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,
 four 64-bit PA planes, `DPD_MAX_TAPS=1`, Identity reset image, AXI-Lite,
 Generic FIFO.
@@ -44,7 +44,53 @@ the UVM package change only registers the added starvation test and the older
 test classes/drivers/checkers are unchanged. Raw and Adjusted URG were rerun
 from the same exact 243-VDB list and current design VDB. This provenance is
 recorded explicitly; it is not represented as 243 fresh simulations from one
-full-tree SHA.
+full-tree SHA. The latest coverage refresh adds one targeted VCS VDB to that
+retained list; the new VDB was compiled from the verification worktree based on
+`ad3211b98677055646975e35924a5809c8d29bac`, with current compile inputs
+hash-bound in its manifest. Product RTL remained unchanged.
+
+## Coverage closure round 2 — AXI-Lite STATUS W1C
+
+The targeted legal one-tap DPD test now checks the externally visible STATUS
+completion lifecycle: COMMIT completes, STATUS reads DONE=`1`, a legal W1C
+write clears DONE, and the next STATUS read returns zero. The AXI-Lite
+register predictor independently checks sampled STATUS and transaction
+responses. A same-cycle `commit_done`/STATUS-read observer-ordering issue in
+the Python trace oracle was corrected and covered by a mutation test that
+rejects a corrupted STATUS value.
+
+The test ran with seed `930000`, `C1_RE_Q14=15000`, `C3_RE_Q14=C5_RE_Q14=0`,
+and 56 input words. VCS reported zero UVM errors/fatals, zero predictor
+mismatches, 17 checked write responses, four STATUS/register reads, and 56
+four-plane words matched against the Python bit-true oracle. Trace replay
+reported zero underflows.
+
+The added VDB closed seven exact Raw DUT bins, with no waiver or denominator
+change:
+
+| Metric | Exact source bin | Result |
+|---|---|---|
+| Branch | `94c317079c444447221e`, `thermo5_sku_uvm_tb.dut.u_cfg`, `thermo5_dpd_axi_lite_cfg.sv:264` | Hit; legal DONE clear through `REG_STATUS` |
+| Line | `51e1eab855e96c50a4fd`, same instance, line 264 | Hit |
+| Condition | `de2c421694e6e9174223`, line 264, operands `1/1` | Hit |
+| Condition | `87c647010ed34a0a7091`, line 265, operands `1/0` | Hit; legal W1C write leaves ERROR bit clear |
+| Toggle | `d209311686c25596f406`, `u_cfg.cfg_done`, `1→0` | Hit |
+| Toggle | `fdf1c5a010c986e614fc`, `u_cfg.cfg_done_q`, `1→0` | Hit |
+| Toggle | `64f234d6e5984d7c570e`, DUT `cfg_done`, `1→0` | Hit |
+
+The aggregate now contains 244 test VDBs; the positive-only assertion and
+functional view contains 242. The 243-test baseline was 522/637 Branch,
+654/849 Condition, 3336/3796 Line, and 84177/104480 Toggle. The refreshed Raw
+and Adjusted reports use the same 244-VDB list and the same DUT hierarchy;
+coverage is now 523/637 Branch, 656/849 Condition, 3337/3796 Line, and
+84180/104480 Toggle. FSM remains 13/13 states and 17/22 transitions. There are
+21,071 uncovered code records across 475 root-cause groups; all remain OPEN.
+The 371 waiver candidates remain pending, with zero approved waivers and zero
+active exclusions. `RAW_100_OPEN` remains the correct gate result.
+
+The latest exact VDB lists, URG reports, gate output, waiver audit, and
+root-cause artifacts are recorded in
+[`thermo5-tx-coverage-w1c-round2-20261103.json`](data/thermo5-tx-coverage-w1c-round2-20261103.json).
 
 ## Functional coverage
 
@@ -66,20 +112,20 @@ results are not counted as legal assertion failures.
 
 ## DUT Raw and Adjusted code coverage
 
-The DUT-only URG hierarchy selects the elaborated TX product path. Both reports
-use the same 243 VDBs; Adjusted applies zero exclusions and therefore exactly
-matches Raw.
+The DUT-only URG hierarchy selects the elaborated TX product path. The latest
+Raw and Adjusted reports use the same 244 VDBs; Adjusted applies zero
+exclusions and therefore exactly matches Raw.
 
 | Metric | Raw | Adjusted | Missing |
 |---|---:|---:|---:|
-| Branch | 522/637 (81.9466%) | 522/637 (81.9466%) | 115 |
-| Condition | 654/849 (77.0318%) | 654/849 (77.0318%) | 195 |
-| Line | 3336/3796 (87.8820%) | 3336/3796 (87.8820%) | 460 |
-| Toggle, both directions | 84177/104480 (80.5676%) | 84177/104480 (80.5676%) | 20303 |
+| Branch | 523/637 (82.1036%) | 523/637 (82.1036%) | 114 |
+| Condition | 656/849 (77.2674%) | 656/849 (77.2674%) | 193 |
+| Line | 3337/3796 (87.9083%) | 3337/3796 (87.9083%) | 459 |
+| Toggle, both directions | 84180/104480 (80.5704%) | 84180/104480 (80.5704%) | 20300 |
 | FSM states | 13/13 (100%) | 13/13 (100%) | 0 |
 | FSM transitions | 17/22 (77.2727%) | 17/22 (77.2727%) | 5 |
 
-There are **21,078 open code records** in 482 root-cause task groups. Every
+There are **21,071 open code records** in 475 root-cause task groups. Every
 record remains `OPEN`; the root-cause classes are triage hypotheses, not
 reachability decisions. Priority gaps include 115 Branches, 195 Conditions,
 and five exact `rem_count_q` transitions at
@@ -120,9 +166,22 @@ the product code denominator.
 
 ## Commands and evidence
 
-The latest report package is under the ignored local directory
-`runs/thermo5_tx_closure_current/source_1236d49/`. Its manifest records exact
-commands, tool versions, VDB fingerprints, and log hashes. Key artifacts:
+The current coverage refresh is under the ignored local directory
+`runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/`. Its manifests
+record exact commands, tool versions, VDB fingerprints, and log hashes. Key
+artifacts:
+
+- `logs/seed_930000.log` and `traces/seed_930000.jsonl` — targeted W1C UVM run and captured monitor trace.
+- `final_dual_urg_bound/report_manifest.json` — 244-VDB same-list Raw/Adjusted URG manifest.
+- `legal_positive_dual_urg_bound/report_manifest.json` — 242-VDB positive-only assertion/functional report.
+- `coverage_gate.json` — `RAW_100_OPEN`, 392/392 legally applicable functional bins.
+- `rootcause/thermo5-tx-coverage-root-cause-summary.json` — 21,071 OPEN records, 475 groups.
+- `waiver_audit.json` and `thermo5_tx_main.el` — 371 pending, zero approved, no active exclusions.
+- `product_compile_manifest.json` — exact 90-file product compile source inventory.
+
+The retained 243-VDB baseline and earlier Phase C artifacts remain under
+`runs/thermo5_tx_closure_current/source_1236d49/` and
+`source_732a64/`; no full regression was repeated.
 
 - `coverage_243/final_dual_urg/report_manifest.json` — same-list Raw/Adjusted URG manifest.
 - `coverage_243/coverage_gate_final.json` — `RAW_100_OPEN` gate output.
@@ -151,14 +210,14 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   --out-dir runs/thermo5_tx_closure_current/source_1236d49/formal/outstanding_replay
 ```
 
-Latest local checks: Python reference suite **58/58 PASS**; hardware utility
-suite **34/34 PASS**; `py_compile` and `git diff --check` PASS; starvation
-directed VCS UVM plus Python oracle PASS; Raw/Adjusted URG and gate generation
-PASS. The counter Formal run is **INCONCLUSIVE**, not PASS.
+Latest checks: Python reference suite **59/59 PASS**; hardware utility suite
+**34/34 PASS**; `py_compile` and `git diff --check` PASS; targeted W1C VCS UVM
+and Python trace oracle PASS; same-list Raw/Adjusted URG and gate generation
+PASS. The prior counter Formal result remains **INCONCLUSIVE**, not PASS.
 
 ## Remaining signoff items
 
-- Close or formally disposition all 21,078 open DUT code records without
+- Close or formally disposition all 21,071 open DUT code records without
   changing the valid denominator; first investigate reachable Branch and
   Condition records, then Lines, Toggle, and the five FSM transitions.
 - Resolve the two interpolator assertions with legal witnesses or exact

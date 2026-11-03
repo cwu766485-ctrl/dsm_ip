@@ -1,0 +1,425 @@
+{
+  "schema_version": 1,
+  "title": "Thermo5 TX coverage closure round 2: legal STATUS DONE W1C",
+  "date": "2026-11-03",
+  "timezone": "Asia/Singapore",
+  "branch": "codex/thermo5-tx-system-random",
+  "base_commit": "ad3211b98677055646975e35924a5809c8d29bac",
+  "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+  "product_configuration": {
+    "interpolation": "Centered-Cubic x2+x2",
+    "ef2_order": 2,
+    "ef2_step": 5120,
+    "state_bits": 20,
+    "pa_planes": 4,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "control": "AXI-Lite",
+    "fifo": "Generic"
+  },
+  "tools": {
+    "vcs": "V-2023.12-SP1_Full64",
+    "urg": "URG Version V-2023.12-SP1                       Copyright (c) 1991 -  Synopsys, Inc.",
+    "python": "3.12.13"
+  },
+  "target_test": {
+    "status": "PASS",
+    "test": "thermo5_sku_axil_random_dpd_bittrue_test",
+    "seed": 930000,
+    "input_words": 56,
+    "dpd_coefficients_q14": {
+      "c1_re": 15000,
+      "c1_im": 0,
+      "c3_re": 0,
+      "c5_re": 0
+    },
+    "product_reset_dpd_image_unchanged": "Identity",
+    "uvm_errors": 0,
+    "uvm_fatals": 0,
+    "predictor": {
+      "read_checks": 4,
+      "write_response_checks": 17,
+      "mismatches": 0,
+      "pending_reads": 0,
+      "pending_writes": 0,
+      "status_stable": 3,
+      "status_masked": 1
+    },
+    "python_trace_oracle": {
+      "status": "PASS",
+      "compared_words": 56,
+      "underflow_events": 0
+    },
+    "mutated_status_trace": "REJECTED by independent STATUS checker",
+    "mutated_status_trace_test": "test_monitor_trace.MonitorTraceOracleTests.test_status_prediction_orders_same_cycle_commit_done_before_ar; included in the 59-test reference suite"
+  },
+  "exact_bins_closed": [
+    {
+      "bin_id": "51e1eab855e96c50a4fd",
+      "metric": "line",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_location": "line:264",
+      "source_bin": "264:0",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "STATUS DONE clear assignment executed",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_code": "if (write_strb[0] && write_data[1]) cfg_done_q <= 1'b0;",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    },
+    {
+      "bin_id": "64f234d6e5984d7c570e",
+      "metric": "toggle",
+      "instance": "thermo5_sku_uvm_tb.dut",
+      "source": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+      "source_location": "signal:cfg_done:1_to_0",
+      "source_bin": "Port Details:cfg_done:1_to_0",
+      "source_sha256": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "top DUT cfg_done 1_to_0",
+      "source_file": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+      "source_code": "",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    },
+    {
+      "bin_id": "87c647010ed34a0a7091",
+      "metric": "condition",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_location": "line:265:expression:1/0",
+      "source_bin": "265:1/0",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "write_strb[0] && write_data[2], operands 1/0",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_code": "if (write_strb[0] && write_data[2]) cfg_error_q <= 1'b0;",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    },
+    {
+      "bin_id": "94c317079c444447221e",
+      "metric": "branch",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_location": "line:264:decision_path:0/-/-/-/-/1/0/-/REG_STATUS/-/-/1/-/-/-/-/-/-",
+      "source_bin": "190:0/-/-/-/-/1/0/-/REG_STATUS/-/-/1/-/-/-/-/-/-",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "REG_STATUS terminal decision hit by legal DONE W1C",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_code": "if (write_strb[0] && write_data[1]) cfg_done_q <= 1'b0;",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    },
+    {
+      "bin_id": "d209311686c25596f406",
+      "metric": "toggle",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_location": "signal:cfg_done:1_to_0",
+      "source_bin": "Port Details:cfg_done:1_to_0",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "u_cfg.cfg_done 1_to_0",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_code": "",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    },
+    {
+      "bin_id": "de2c421694e6e9174223",
+      "metric": "condition",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_location": "line:264:expression:1/1",
+      "source_bin": "264:1/1",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "write_strb[0] && write_data[1], operands 1/1",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_code": "if (write_strb[0] && write_data[1]) cfg_done_q <= 1'b0;",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    },
+    {
+      "bin_id": "fdf1c5a010c986e614fc",
+      "metric": "toggle",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_location": "signal:cfg_done_q:1_to_0",
+      "source_bin": "Signal Details:cfg_done_q:1_to_0",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "disposition": "HIT",
+      "evidence": "u_cfg.cfg_done_q 1_to_0",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_code": "",
+      "product_parameters": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+      "configuration": "axil"
+    }
+  ],
+  "coverage": {
+    "baseline_test_vdb_count": 243,
+    "latest_union_test_vdb_count": 244,
+    "latest_positive_test_vdb_count": 242,
+    "raw_adjusted_same_test_list": true,
+    "raw_adjusted_same_metric_summary": true,
+    "approved_waivers": 0,
+    "pending_waivers": 371,
+    "rejected_waivers": 0,
+    "raw_exclusions_applied": false,
+    "adjusted_exclusions_applied": false,
+    "gate_status": "RAW_100_OPEN",
+    "baseline_raw": {
+      "line": {
+        "covered": 3336,
+        "total": 3796,
+        "missing": 460,
+        "percent": 87.882
+      },
+      "cond": {
+        "covered": 654,
+        "total": 849,
+        "missing": 195,
+        "percent": 77.0318
+      },
+      "toggle": {
+        "covered": 84177,
+        "total": 104480,
+        "missing": 20303,
+        "percent": 80.5676
+      },
+      "branch": {
+        "covered": 522,
+        "total": 637,
+        "missing": 115,
+        "percent": 81.9466
+      }
+    },
+    "current_raw": {
+      "line": {
+        "covered": 3337,
+        "total": 3796,
+        "missing": 459,
+        "percent": 87.9083
+      },
+      "cond": {
+        "covered": 656,
+        "total": 849,
+        "missing": 193,
+        "percent": 77.2674
+      },
+      "toggle": {
+        "covered": 84180,
+        "total": 104480,
+        "missing": 20300,
+        "percent": 80.5704
+      },
+      "branch": {
+        "covered": 523,
+        "total": 637,
+        "missing": 114,
+        "percent": 82.1036
+      }
+    },
+    "current_adjusted": {
+      "line": {
+        "covered": 3337,
+        "total": 3796,
+        "missing": 459,
+        "percent": 87.9083
+      },
+      "cond": {
+        "covered": 656,
+        "total": 849,
+        "missing": 193,
+        "percent": 77.2674
+      },
+      "toggle": {
+        "covered": 84180,
+        "total": 104480,
+        "missing": 20300,
+        "percent": 80.5704
+      },
+      "branch": {
+        "covered": 523,
+        "total": 637,
+        "missing": 114,
+        "percent": 82.1036
+      }
+    },
+    "delta": {
+      "line": 1,
+      "cond": 2,
+      "toggle": 3,
+      "branch": 1
+    },
+    "functional_applicable_bins": {
+      "covered": 392,
+      "percent": 100.0,
+      "total": 392,
+      "uncovered": 0
+    },
+    "functional_group_count": 12,
+    "open_code_records": 21071,
+    "root_cause_tasks": 475,
+    "all_remaining_code_records_open": true,
+    "fsm_states": {
+      "covered": 13,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 13
+    },
+    "fsm_transitions": {
+      "covered": 17,
+      "missing": 5,
+      "percent": 77.2727,
+      "total": 22
+    },
+    "positive_assertions": {
+      "attempted_denominator": 15,
+      "failures": 0,
+      "percent_of_attempted": 86.6667,
+      "success": 13,
+      "uncovered": 2,
+      "without_attempts": 2
+    },
+    "all_test_expected_negative_assertion_failures": 2
+  },
+  "formal": {
+    "new_proof_run_this_round": "NOT_RUN",
+    "outstanding_counter_guard": "INCONCLUSIVE (prior source-bound run)",
+    "dpd_identity_equivalence": "INCONCLUSIVE (prior source-bound run)",
+    "waivers_approved_from_inconclusive": 0
+  },
+  "commands": {
+    "vcs_compile": "vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps \\\n-f /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL \\\n+define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120 \\\n+define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/csrc \\\n-cm line+cond+fsm+tgl+branch+assert -cm_hier /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_product_dut_coverage.hier \\\n-debug_access+all -o /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/simv \\\n-l /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/compile.log \\",
+    "target_uvm_run": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/simv +UVM_TESTNAME=thermo5_sku_axil_random_dpd_bittrue_test +UVM_VERBOSITY=UVM_LOW +VEC_DIR=/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/vectors/seed_930000 +ntb_random_seed=930000 +CORE_WORDS=56 +PACKET_BEATS=32 +THERMO5_EXPECT_FRAME_STARTS=1 +THERMO5_DPD_C1_RE_Q14=15000 +THERMO5_DPD_C1_IM_Q14=0 +THERMO5_DPD_C3_RE_Q14=0 +THERMO5_DPD_C5_RE_Q14=0 +THERMO5_DPD_CLASS_ID=0 +THERMO5_GAIN_CLASS_ID=0 +THERMO5_INPUT_PROFILE_ID=0 +THERMO5_TRACE_JSONL=/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/traces/seed_930000.jsonl -cm line+cond+fsm+tgl+branch+assert -cm_dir /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/vdb/seed_930000.vdb -l /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/logs/seed_930000.log",
+    "trace_oracle": "python3.12 dv/uvm/refmodel/python/check_thermo5_monitor_trace.py /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/traces/seed_930000.jsonl --step 5120 --tidsm-order 2 --max-taps 1",
+    "python_reference": "cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+    "hardware_utilities": "python3.12 -m unittest discover -s tools/hw/tests -v",
+    "urg_raw_adjusted": "Exact commands are recorded in final_dual_urg_bound/report_manifest.json; both reports use the same 244-test-VDB manifest and waiver audit.",
+    "rootcause": "python3.12 tools/hw/thermo5_tx_coverage_rootcause.py --ledger runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/current_gap_ledger/thermo5-tx-gate3-coverage-ledger.csv --raw-report runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/raw_urg --branch-arms runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/raw_inventory/branch_arms.csv --negative-report runs/thermo5_tx_closure_current/source_732a64/coverage_inputs/negative_urg --evidence runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/current_gap_ledger/closure_evidence.json --legal-functional-report runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/legal_positive_dual_urg_bound/raw_urg --refresh-evidence runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_refresh_evidence.json --output-dir runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause"
+  },
+  "artifacts_local_under_ignored_runs": {
+    "build/compile.log": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/compile.log",
+      "sha256": "5639f35f0fb0ba95b31c1a27184e9fe9e30b99fca713c0222386985dc933ff26"
+    },
+    "logs/seed_930000.log": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/logs/seed_930000.log",
+      "sha256": "470b2822e7501e844eac8e6f19ba23c6880ce69edfa4140a2f29b6244fad9b41"
+    },
+    "traces/seed_930000.jsonl": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/traces/seed_930000.jsonl",
+      "sha256": "b71068d10ac83f6933edf9af850eab0d879ea504604ebeaf11b9d64a8c230abf"
+    },
+    "logs/trace_oracle.log": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/logs/trace_oracle.log",
+      "sha256": "909bf79f7cf5112266aaf4538a3be9a13b60ac1975717f2e993e761e02c9ec47"
+    },
+    "logs/python_reference_tests.log": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/logs/python_reference_tests.log",
+      "sha256": "0e806b9321675e2de4e564cc65e85249478e5bb36fb6ffadc935436a20bff8ad"
+    },
+    "logs/hardware_tool_tests.log": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/logs/hardware_tool_tests.log",
+      "sha256": "560363ed34b20f70481482784015f3c91f9c7094e2e3be2e7150af1b7dc1ec34"
+    },
+    "source_manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/source_manifest.json",
+      "sha256": "df857173f3ac62f72f7dfa12cfbcea970af7e43609219abb07a0e26e605a51eb"
+    },
+    "product_compile_manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_compile_manifest.json",
+      "sha256": "2ad13d1d656ae4477032c4582d3afe71486507fe15d03282605fa9eddcc68520"
+    },
+    "coverage_gate.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_gate.json",
+      "sha256": "92487ad406d216f60af692e03d3762858590e4ea9345a3091ba7c24b21153839"
+    },
+    "waiver_audit.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/waiver_audit.json",
+      "sha256": "2e9c2d4718511cc5537abbe17134fe236dce933c37b85c2ff920738f28b95d64"
+    },
+    "final_dual_urg_bound/report_manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/report_manifest.json",
+      "sha256": "1e8cb00be455be5d779cee57844af8f1f8819d6b09f2e68baa62fd953a29a6b2"
+    },
+    "final_dual_urg_bound/vdb_manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/vdb_manifest.json",
+      "sha256": "d01862ed692ba68511d7279c923ea511efa2e3f3cde16dd5664dec45b952fee3"
+    },
+    "final_dual_urg_bound/raw_inventory/summary.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/raw_inventory/summary.json",
+      "sha256": "ee5d62baab83f1585822d0806c6f0b279e60b52baeb565e3fe1f57de7e1d6c58"
+    },
+    "final_dual_urg_bound/adjusted_inventory/summary.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/adjusted_inventory/summary.json",
+      "sha256": "68c5d4b87198b1190ed5adf99fe5b9dbb95a3823548174ac0a0867fc3ed7fa1c"
+    },
+    "legal_positive_dual_urg_bound/report_manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/legal_positive_dual_urg_bound/report_manifest.json",
+      "sha256": "da40e2aca5148ec7af62d87f84aac430368975894a3483708acdd0d8ed402bc5"
+    },
+    "legal_positive_dual_urg_bound/vdb_manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/legal_positive_dual_urg_bound/vdb_manifest.json",
+      "sha256": "bfd526b4025f5711d59be6ba1dce7f74ed9ea1377702f459ab864c0fb7fdf286"
+    },
+    "legal_positive_dual_urg_bound/raw_inventory/summary.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/legal_positive_dual_urg_bound/raw_inventory/summary.json",
+      "sha256": "1baf672ea476000951e51f6b31ca70c4b9378ddb40eaf513dd7fd11b91c0986e"
+    },
+    "rootcause/thermo5-tx-coverage-root-cause-manifest.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-root-cause-manifest.json",
+      "sha256": "ad417827d8dad875b0e22957a5b3adb55ed6ae873430566525b8cf201c8ca052"
+    },
+    "rootcause/thermo5-tx-coverage-root-cause-summary.json": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-root-cause-summary.json",
+      "sha256": "45dd7d8870ae10fad3e3af8eb50f8a111eb82a1c1e7ec9912804320f6543346d"
+    },
+    "rootcause/thermo5-tx-coverage-open-bins.csv.gz": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-open-bins.csv.gz",
+      "sha256": "ae4875c22b7607985c50387622f6c01fd55397cf325d9648dba7a29c4340bdee"
+    },
+    "current_gap_ledger/thermo5-tx-gate3-coverage-ledger.csv": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/current_gap_ledger/thermo5-tx-gate3-coverage-ledger.csv",
+      "sha256": "77d83deb802a30a57aaeebfc06c41217b451eef0c307a96a5e09ab2b76c2a24a"
+    },
+    "vdb/seed_930000.vdb/snps/coverage/db/testdata/test/branch.verilog.data.xml": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/vdb/seed_930000.vdb/snps/coverage/db/testdata/test/branch.verilog.data.xml",
+      "sha256": "333ea6d81dc9bda9e7e19b5a4d8b60c0716ac37b62773d328509f37debc0b835"
+    },
+    "vdb/seed_930000.vdb": {
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/vdb/seed_930000.vdb",
+      "tree_sha256": "88391f2c2c4bbea62890018ba3a330800bbf29b7f902f7035ac59ba4c061818c",
+      "size_bytes": 12981
+    }
+  },
+  "source_and_manifest_sha256": {
+    "source_manifest": "df857173f3ac62f72f7dfa12cfbcea970af7e43609219abb07a0e26e605a51eb",
+    "product_compile_manifest": "2ad13d1d656ae4477032c4582d3afe71486507fe15d03282605fa9eddcc68520",
+    "waiver_audit": "2e9c2d4718511cc5537abbe17134fe236dce933c37b85c2ff920738f28b95d64",
+    "raw_report_manifest": "1e8cb00be455be5d779cee57844af8f1f8819d6b09f2e68baa62fd953a29a6b2",
+    "positive_report_manifest": "da40e2aca5148ec7af62d87f84aac430368975894a3483708acdd0d8ed402bc5",
+    "raw_vdb_manifest": "d01862ed692ba68511d7279c923ea511efa2e3f3cde16dd5664dec45b952fee3",
+    "positive_vdb_manifest": "bfd526b4025f5711d59be6ba1dce7f74ed9ea1377702f459ab864c0fb7fdf286",
+    "rootcause_manifest": "ad417827d8dad875b0e22957a5b3adb55ed6ae873430566525b8cf201c8ca052",
+    "rootcause_summary": "45dd7d8870ae10fad3e3af8eb50f8a111eb82a1c1e7ec9912804320f6543346d"
+  },
+  "scope_and_limits": [
+    "No product RTL or frozen algorithm changed.",
+    "All remaining 21,071 code records remain OPEN; root-cause labels are triage only.",
+    "No formal proof was run in this round; INCONCLUSIVE results remain OPEN.",
+    "No XPM, GT Wizard, Vivado PPA/routed timing, or physical RF/QAM256 BER signoff is claimed."
+  ]
+}

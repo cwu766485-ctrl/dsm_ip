@@ -5,55 +5,59 @@
     "all_open": true,
     "approved_waivers": 0,
     "assertions_positive": {
-      "failures": 0,
       "success": 13,
+      "failures": 0,
       "uncovered": 2,
       "without_attempts": 2
     },
     "branch": {
-      "covered": 522,
-      "missing": 115,
-      "percent": 81.9466,
-      "total": 637
+      "covered": 523,
+      "total": 637,
+      "missing": 114,
+      "percent": 82.1036
     },
     "condition": {
-      "covered": 654,
-      "missing": 195,
-      "percent": 77.0318,
-      "total": 849
+      "covered": 656,
+      "total": 849,
+      "missing": 193,
+      "percent": 77.2674
     },
     "evidence": {
       "coverage_bin_ledger": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/rootcause_final/thermo5-tx-coverage-open-bins.csv.gz",
-        "sha256": "bee96e940c51169a473c500d5b195988f099b2fa0dc66a007c9d2176a0243222"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-open-bins.csv.gz",
+        "sha256": "ae4875c22b7607985c50387622f6c01fd55397cf325d9648dba7a29c4340bdee"
       },
       "coverage_gate": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/coverage_gate_final.json",
-        "sha256": "0d29d03c24bb88f532cb79cc7d42329e7ed39fe714debfa599ed9b8b2ca310b4"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_gate.json",
+        "sha256": "92487ad406d216f60af692e03d3762858590e4ea9345a3091ba7c24b21153839"
       },
       "coverage_raw_adjusted_manifest": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/final_dual_urg/report_manifest.json",
-        "sha256": "5b9772bc250b2419f5a8557871f6a71d369a826894f9b99dffae9df7bb4f8b4b"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/report_manifest.json",
+        "sha256": "1e8cb00be455be5d779cee57844af8f1f8819d6b09f2e68baa62fd953a29a6b2"
       },
       "coverage_rootcause_manifest": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/rootcause_final/thermo5-tx-coverage-root-cause-manifest.json",
-        "sha256": "c4674fb9025185ef5d5dc565b2ca1f644ad2ae81bbefd4948f2dc36d4484ac61"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-root-cause-manifest.json",
+        "sha256": "ad417827d8dad875b0e22957a5b3adb55ed6ae873430566525b8cf201c8ca052"
       },
       "coverage_rootcause_summary": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/rootcause_final/thermo5-tx-coverage-root-cause-summary.json",
-        "sha256": "0a8545a90ab3176d1f86c034fa305c1798268979cb97e07f911f895c9eb3cd09"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-root-cause-summary.json",
+        "sha256": "45dd7d8870ae10fad3e3af8eb50f8a111eb82a1c1e7ec9912804320f6543346d"
       },
       "generated_el": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/thermo5_tx_main.el",
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/thermo5_tx_main.el",
         "sha256": "57d1f80c4862394d1a6e0fb0c12ed1ba57543d3b8e6d1ab8e9dfc452cc78c858"
       },
       "product_compile_manifest": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/starvation/product_compile_manifest_current.json",
-        "sha256": "e23cf9236259e7f2e09a1d94b2e872c465921cfdb6c21fce4f9a6b4a1522f8fc"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_compile_manifest.json",
+        "sha256": "2ad13d1d656ae4477032c4582d3afe71486507fe15d03282605fa9eddcc68520"
       },
       "waiver_audit": {
-        "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/waiver_audit.json",
-        "sha256": "3e4bf3c2e23f3c361b15c1ef1ce960cbbac26587f1ababfb377ea57b8117f2f5"
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/waiver_audit.json",
+        "sha256": "2e9c2d4718511cc5537abbe17134fe236dce933c37b85c2ff920738f28b95d64"
+      },
+      "coverage_round2": {
+        "path": "docs/verification/data/thermo5-tx-coverage-w1c-round2-20261103.json",
+        "sha256": "a92bb4adc529f676aacf7999bebd7d283cb06d7e0d07754d995cf9345e8013a4"
       }
     },
     "expected_negative_failures_in_union": 2,
@@ -72,53 +76,60 @@
       }
     },
     "line": {
-      "covered": 3336,
-      "missing": 460,
-      "percent": 87.882,
-      "total": 3796
+      "covered": 3337,
+      "total": 3796,
+      "missing": 459,
+      "percent": 87.9083
     },
-    "open_code_records": 21078,
+    "open_code_records": 21071,
     "pending_waivers": 371,
     "raw_adjusted_equal": true,
-    "rootcause_task_groups": 482,
+    "rootcause_task_groups": 475,
     "same_vdb_list_for_raw_adjusted": true,
     "status": "RAW_100_OPEN",
-    "test_vdb_count": 243,
+    "test_vdb_count": 244,
     "toggle": {
-      "covered": 84177,
-      "missing": 20303,
-      "percent": 80.5676,
-      "total": 104480
+      "covered": 84180,
+      "total": 104480,
+      "missing": 20300,
+      "percent": 80.5704
+    },
+    "positive_test_vdb_count": 242,
+    "vdb_provenance": {
+      "baseline_test_vdb_count": 243,
+      "latest_union_test_vdb_count": 244,
+      "latest_positive_test_vdb_count": 242,
+      "note": "The prior 243-test VDB list is retained with the same DUT design VDB; the added legal W1C test VDB was compiled from the verification worktree based on ad3211b98677055646975e35924a5809c8d29bac. Older VDB provenance remains mixed across VCS source revisions, with unchanged product RTL. This is an additive coverage refresh, not a fresh 244-test full-tree compile."
     }
   },
   "date": "2026-11-03",
   "evidence": {
     "coverage_bin_ledger": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/rootcause_final/thermo5-tx-coverage-open-bins.csv.gz",
-      "sha256": "bee96e940c51169a473c500d5b195988f099b2fa0dc66a007c9d2176a0243222"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-open-bins.csv.gz",
+      "sha256": "ae4875c22b7607985c50387622f6c01fd55397cf325d9648dba7a29c4340bdee"
     },
     "coverage_gate": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/coverage_gate_final.json",
-      "sha256": "0d29d03c24bb88f532cb79cc7d42329e7ed39fe714debfa599ed9b8b2ca310b4"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_gate.json",
+      "sha256": "92487ad406d216f60af692e03d3762858590e4ea9345a3091ba7c24b21153839"
     },
     "coverage_raw_adjusted_manifest": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/final_dual_urg/report_manifest.json",
-      "sha256": "5b9772bc250b2419f5a8557871f6a71d369a826894f9b99dffae9df7bb4f8b4b"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/final_dual_urg_bound/report_manifest.json",
+      "sha256": "1e8cb00be455be5d779cee57844af8f1f8819d6b09f2e68baa62fd953a29a6b2"
     },
     "coverage_rootcause_manifest": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/rootcause_final/thermo5-tx-coverage-root-cause-manifest.json",
-      "sha256": "c4674fb9025185ef5d5dc565b2ca1f644ad2ae81bbefd4948f2dc36d4484ac61"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-root-cause-manifest.json",
+      "sha256": "ad417827d8dad875b0e22957a5b3adb55ed6ae873430566525b8cf201c8ca052"
     },
     "coverage_rootcause_summary": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/rootcause_final/thermo5-tx-coverage-root-cause-summary.json",
-      "sha256": "0a8545a90ab3176d1f86c034fa305c1798268979cb97e07f911f895c9eb3cd09"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/rootcause/thermo5-tx-coverage-root-cause-summary.json",
+      "sha256": "45dd7d8870ae10fad3e3af8eb50f8a111eb82a1c1e7ec9912804320f6543346d"
     },
     "dpd_identity_formal": {
       "path": "runs/thermo5_tx_closure_current/source_732a64/formal_identity_lemmas/manifest.json",
       "sha256": "70b95d44165c423152b3b517ddd5497f65408e31d49cf3f93c812ef497104619"
     },
     "generated_el": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/thermo5_tx_main.el",
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/thermo5_tx_main.el",
       "sha256": "57d1f80c4862394d1a6e0fb0c12ed1ba57543d3b8e6d1ab8e9dfc452cc78c858"
     },
     "hardware_tool_tests": {
@@ -134,8 +145,8 @@
       "sha256": "697ce304111738e80fc335e2c6a34828bea9cd29b6b13d5d010dfa38c74ce828"
     },
     "product_compile_manifest": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/starvation/product_compile_manifest_current.json",
-      "sha256": "e23cf9236259e7f2e09a1d94b2e872c465921cfdb6c21fce4f9a6b4a1522f8fc"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_compile_manifest.json",
+      "sha256": "2ad13d1d656ae4477032c4582d3afe71486507fe15d03282605fa9eddcc68520"
     },
     "python_reference_tests": {
       "path": "runs/thermo5_tx_closure_current/source_1236d49/verification/python_reference_tests.log",
@@ -162,8 +173,12 @@
       "sha256": "9d73ce0faf9ff8aed66dde39b22297b0a3c883c83e95275f23e5b794a9f2d1c2"
     },
     "waiver_audit": {
-      "path": "runs/thermo5_tx_closure_current/source_1236d49/coverage_243/waiver_audit.json",
-      "sha256": "3e4bf3c2e23f3c361b15c1ef1ce960cbbac26587f1ababfb377ea57b8117f2f5"
+      "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/waiver_audit.json",
+      "sha256": "2e9c2d4718511cc5537abbe17134fe236dce933c37b85c2ff920738f28b95d64"
+    },
+    "coverage_round2": {
+      "path": "docs/verification/data/thermo5-tx-coverage-w1c-round2-20261103.json",
+      "sha256": "a92bb4adc529f676aacf7999bebd7d283cb06d7e0d07754d995cf9345e8013a4"
     }
   },
   "external_signoff_open": [
@@ -333,9 +348,11 @@
     "git_diff_check": "PASS",
     "hardware_utility_tests": "PASS 34/34",
     "py_compile": "PASS",
-    "python_reference": "PASS 58/58",
-    "raw_adjusted_urg": "PASS",
-    "vcs_starvation_uvm_oracle": "PASS"
+    "python_reference": "PASS 59/59",
+    "raw_adjusted_urg": "PASS; same 244-test VDB list; zero exclusions",
+    "vcs_starvation_uvm_oracle": "PASS",
+    "targeted_w1c_uvm": "PASS; seed 930000; 56-word four-plane oracle match",
+    "targeted_trace_oracle": "PASS; 56 words; 0 underflow"
   },
   "vdb_provenance": {
     "note": "240 earlier positive and two earlier expected-negative test VDBs were compiled at 732a64ab...; one additive starvation VDB was compiled at product source 1236d49.... RTL diff is empty, and earlier test drivers/checkers are unchanged. Current design VDB and Raw/Adjusted report use current product compile plus the same exact 243-test VDB list. This is not 243 fresh full-tree runs at one SHA."

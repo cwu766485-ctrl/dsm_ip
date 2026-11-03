@@ -302,6 +302,35 @@ class MonitorTraceOracleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "STATUS mismatch"):
             run_monitor_trace(events)
 
+    def test_status_prediction_orders_same_cycle_commit_done_before_ar(self):
+        events = [
+            {"type": "axil_write_fire", "epoch": 0, "seq": 0,
+             "event_cycle": 1, "txn_id": 1, "addr": "0x00",
+             "data": "0x02", "strb": "0x01"},
+            {"type": "axil_write_response", "epoch": 0, "seq": 1,
+             "txn_id": 1, "resp": 0},
+            {"type": "config_pending", "epoch": 0, "seq": 2,
+             "axil_cycle": 3, "commit_id": 1},
+            {"type": "frame_boundary", "epoch": 0, "seq": 3,
+             "axil_cycle": 4, "frame_id": 0, "config_pending": True},
+            {"type": "config_ack_core", "epoch": 0, "seq": 4,
+             "axil_cycle": 5},
+            # The two observers can publish these same-edge records in either
+            # order. A sampled STATUS must already reflect the DONE transition.
+            {"type": "axil_read", "epoch": 0, "seq": 5,
+             "event_cycle": 7, "txn_id": 2, "addr": "0x04"},
+            {"type": "commit_done", "epoch": 0, "seq": 6,
+             "axil_cycle": 7},
+            {"type": "axil_read_response", "epoch": 0, "seq": 7,
+             "txn_id": 2, "addr": "0x04", "rdata": "0x02", "resp": 0},
+        ]
+        (result,) = run_monitor_trace(events)
+        self.assertEqual(result.status_reads_checked, 1)
+
+        events[-1]["rdata"] = "0x00"
+        with self.assertRaisesRegex(ValueError, "STATUS mismatch"):
+            run_monitor_trace(events)
+
     def test_trace_sequence_reordering_is_rejected(self):
         events = [
             {"type": "source_beat", "epoch": 0, "seq": 2,

@@ -189,9 +189,24 @@ def _model_system_status(epoch, events):
     observed_stop_states = 0
     stable_cycles = 4
     axil_cycle = 0
+    consumed_commit_done = set()
+
+    def apply_commit_done(event):
+        nonlocal busy, done, commit_applied, commit_acked
+        if not commit_applied or not commit_acked or not busy:
+            raise TraceContractError(
+                f"epoch {epoch}: COMMIT done precedes apply/ACK")
+        busy, done = False, True
+        commit_applied = commit_acked = False
+        consumed_commit_done.add(id(event))
 
     def event_cycle(event):
         return int(event.get("event_cycle", event.get("axil_cycle", axil_cycle)))
+
+    commit_done_by_cycle = {}
+    for candidate in events:
+        if candidate.get("type") == "commit_done":
+            commit_done_by_cycle.setdefault(event_cycle(candidate), []).append(candidate)
 
     def status_state_at(cycle):
         if cycle - state_cycle < stable_cycles:
@@ -296,11 +311,8 @@ def _model_system_status(epoch, events):
                     f"epoch {epoch}: config ACK precedes frame-boundary apply")
             commit_acked = True
         elif kind == "commit_done":
-            if not commit_applied or not commit_acked or not busy:
-                raise TraceContractError(
-                    f"epoch {epoch}: COMMIT done precedes apply/ACK")
-            busy, done = False, True
-            commit_applied = commit_acked = False
+            if id(event) not in consumed_commit_done:
+                apply_commit_done(event)
         elif kind == "source_gap":
             duration = int(event.get("duration_src_cycles",
                                      event.get("duration_cycles", 0)))
@@ -324,6 +336,15 @@ def _model_system_status(epoch, events):
                     f"disagrees with transaction model {state}")
         elif kind == "axil_read":
             if _number(event["addr"]) == 0x04:
+                # The monitor emits events from independent AXI and core
+                # observers. When the STATUS AR handshake and the observed
+                # DONE transition share one AXI cycle, their JSON sequence
+                # numbers can be swapped by simulator scheduling. The DUT
+                # STATUS register already reflects DONE at this sampled edge;
+                # account for that same-cycle completion before predicting it.
+                for completion in commit_done_by_cycle.get(axil_cycle, ()):
+                    if id(completion) not in consumed_commit_done:
+                        apply_commit_done(completion)
                 mask = 0x7
                 value = int(busy) | (int(done) << 1) | (int(error) << 2)
                 predicted = status_state_at(axil_cycle)

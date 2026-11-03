@@ -277,6 +277,25 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
               `uvm_fatal("RANDOM_DPD_ACTIVE",
                 "COMMIT was not acknowledged at a DPD boundary with the expected active image")
             commit_apply_seen=1;
+
+            // Exercise the product-reachable DONE W1C path after a legal
+            // one-tap COMMIT. The AXI-Lite predictor independently predicts
+            // the sampled STATUS value from observed transactions and the
+            // request/ack lifecycle; this explicit check also guards the
+            // externally visible register behavior.
+            axil_read(8'h04,rdata,resp);
+            if (resp!=2'b00 || rdata[2:0]!==3'b010)
+              `uvm_fatal("RANDOM_DPD_DONE_STATUS",
+                $sformatf("COMMIT completion STATUS expected DONE only, got %08x/%b",rdata,resp))
+            axil_write(8'h04,32'h2,0,0,resp);
+            if (resp!=2'b00)
+              `uvm_fatal("RANDOM_DPD_DONE_W1C",
+                "Legal STATUS DONE write-one-to-clear was rejected")
+            axil_read(8'h04,rdata,resp);
+            if (resp!=2'b00 || rdata[2:0]!==3'b000)
+              `uvm_fatal("RANDOM_DPD_DONE_CLEAR",
+                $sformatf("STATUS DONE did not clear, got %08x/%b",rdata,resp))
+
             if (require_commit_boundary_stall) begin
               stalled=0;
               for (int cycles=0; cycles<2000 && !stalled; cycles++) begin

@@ -1,3 +1,32 @@
+## 2026-11-03 12:24 SGT - Close legal AXI-Lite STATUS DONE W1C coverage path
+
+- Added a directed STATUS read / DONE W1C / STATUS readback sequence to the
+  legal one-tap DPD UVM test. The independent register predictor checks the
+  sampled register response; the four-plane Python oracle still checks all 56
+  output words. Fixed same-cycle `commit_done`/STATUS-read ordering in the
+  monitor-trace oracle and added a corrupted-STATUS mutation test.
+- A fresh VCS V-2023.12-SP1 compile and seed 930000 test passed with zero UVM
+  errors/fatals, zero predictor mismatches, 17 write-response checks, four
+  reads, 56/56 oracle words, and zero underflows. The added VDB hit seven
+  exact current-product Raw bins: one Branch, one Line, two Conditions and
+  three Toggles in `thermo5_dpd_axi_lite_cfg.sv:264-265` and `cfg_done`.
+- Re-ran same-list Raw/Adjusted URG on 244 test VDBs and the positive-only
+  assertion/functional report on 242 VDBs. Raw equals Adjusted with zero
+  exclusions. Coverage delta from the retained 243-VDB report is +1 Branch,
+  +2 Conditions, +1 Line, +3 Toggles; FSM is unchanged. Legal applicable
+  functional coverage remains 392/392. Remaining 21,071 code records are all
+  OPEN in 475 root-cause groups; 371 waivers remain pending, none approved.
+  Gate remains `RAW_100_OPEN`.
+- Refreshed the Linux signoff report, machine-readable evidence, and execution
+  frontier. Evidence includes VCS/URG commands and versions, exact target bin
+  IDs, source/VDB/report/log hashes, and VDB provenance. Historical VDBs were
+  reused; the full regression was not rerun.
+- Checks: Python reference tests 59/59 PASS; hardware utility tests 34/34
+  PASS; trace oracle 56/56 PASS with zero underflow; VCS compile and targeted
+  UVM PASS; Raw/Adjusted URG and fail-closed coverage gate PASS; no new Formal
+  run. No product RTL/default algorithm, RX, AI-DPD, XPM/GT Wizard, or Vivado
+  implementation changed.
+
 ## 2026-11-02 09:07 SGT - Merge Thermo5 TX closure branches
 
 - Merged PR #24 (`codex/thermo5-coverage-closure-round1`) into `thermo5` at
