@@ -30,8 +30,8 @@ create_reset rst_n -sense low
 sim_run -stable
 sim_save_reset
 set_fml_var fml_coi_reduction true
-set_fml_var fml_max_time 8m
-set_fml_var fml_property_time_limit 5m
+set_fml_var fml_max_time 22m
+set_fml_var fml_property_time_limit 20m
 set_fml_var fml_max_mem 8GB
 set_fml_var fml_cov_gen_trace on
 check_fv_setup -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -block

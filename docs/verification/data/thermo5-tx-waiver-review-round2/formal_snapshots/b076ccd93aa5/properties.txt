@@ -1,0 +1,45 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 3
+     - # proven       : 3
+
+   > Vacuity
+     - # found        : 2
+     - # non_vacuous  : 2
+
+   > Cover
+     - # found        : 6
+     - # covered      : 4
+     - # uncoverable  : 2
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 3
+     [  0] proven                   (non_vacuous)  -  thermo5_cdc_frame_end_threshold_harness.a_frame_end_requires_tail_drain
+     [  1] proven                   (non_vacuous)  -  thermo5_cdc_frame_end_threshold_harness.a_frame_start_pop_aligned
+     [  2] proven                                  -  thermo5_cdc_frame_end_threshold_harness.a_no_product_protocol_error
+
+   > Cover
+     # Cover: 6
+     [  3] covered     (depth=9)                   -  thermo5_cdc_frame_end_threshold_harness.c_first_frame_start_pop
+     [  4] uncoverable                             -  thermo5_cdc_frame_end_threshold_harness.c_misaligned_frame_start_target
+     [  5] covered     (depth=119)                 -  thermo5_cdc_frame_end_threshold_harness.c_second_frame_end_pop
+     [  6] covered     (depth=65)                  -  thermo5_cdc_frame_end_threshold_harness.c_second_frame_output_end
+     [  7] covered     (depth=65)                  -  thermo5_cdc_frame_end_threshold_harness.c_second_frame_start_pop
+     [  8] uncoverable                             -  thermo5_cdc_frame_end_threshold_harness.c_short_final_word_branch_target
+
+   > Constraint
+     # Constraint: 1
+     [  9] constrained                             -  constant_9 - rst_n==1
+
+
+

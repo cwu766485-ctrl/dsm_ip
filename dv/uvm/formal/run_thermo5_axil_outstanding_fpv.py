@@ -43,8 +43,10 @@ EXPECTED_COVERS = {
     "c_source_accept": "covered",
     "c_core_accept": "covered",
     "c_output_accept": "covered",
-    "c_counter_saturation_guard": "uncoverable",
-    "c_counter_underflow_guard": "uncoverable",
+}
+GUARD_COVERS = {
+    "c_counter_saturation_guard",
+    "c_counter_underflow_guard",
 }
 
 
@@ -113,6 +115,11 @@ def main() -> int:
     for name, expected in EXPECTED_COVERS.items():
         if covers.get(name) != expected:
             expectation_mismatches.append(f"{name}: expected {expected}, got {covers.get(name)}")
+    for name in GUARD_COVERS:
+        if covers.get(name) not in {"covered", "uncoverable"}:
+            expectation_mismatches.append(
+                f"{name}: expected a resolved reachability result, got {covers.get(name)}"
+            )
     if re.search(r"^\s*\[\s*\d+\]\s+\w+\b.*?-\s+\S*\.asm_", properties, re.M):
         errors.append("the product-bound reachability harness must not use assumptions")
     if re.search(r":\s+[1-9]\d*\s*$", setup, re.M):

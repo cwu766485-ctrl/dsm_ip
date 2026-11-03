@@ -1,85 +1,83 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Linux signoff closure (2026-11-03)
+## Current execution state: Thermo5 TX Linux coverage/formal closure (2026-11-03)
 
-### Gate 1 waiver audit follow-up (2026-11-03)
+The product remains frozen at RTL source SHA
+1236d49c72360aa62e316aea147528d93a1b3705: Centered-Cubic x2+x2, EF2
+ORDER=2/STEP=5120/20-bit state, DPD_MAX_TAPS=1 with Identity reset image,
+AXI-Lite and Generic FIFO. No RX, AI-DPD, product RTL/algorithm or Vivado
+physical implementation work is in scope.
 
-An independent review branch, `codex/thermo5-tx-waiver-audit-round1`, is being
-prepared on the exact Draft PR #30 head
-`08061386900e5ae2c9f692dcf7e85d849623f818`. It rebinds 371 legacy waiver
-candidates to the current product compile, exact Raw bins, and existing
-same-list Raw/Adjusted URG/VDB evidence. Current classification is 361
-`CONFIG_UNREACHABLE` candidates and 10 `FORMAL_UNREACHABLE` candidates; every
-CSV row remains `PENDING`, with zero approvals and zero active exclusions.
-Raw bins and denominators are unchanged. The review report and machine-readable
-audit are in `docs/verification/thermo5-tx-waiver-review-round1.md` and its
-evidence directory. The hardware utility suite passes 34/34 tests. No RTL,
-testbench, VDB, or Formal job was rerun in this tooling/evidence-only round.
+### Current Raw/Adjusted coverage
 
-This does not close the 21,071 open code records: Raw remains Branch 523/637,
-Condition 656/849, Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and
-transitions 17/22. The outstanding counter and DPD Identity proofs remain
-INCONCLUSIVE. Next actions after candidate review are Gate 2 targeted
-reachable Branch/Condition closure, then Line/Toggle and the remaining FSM and
-Assertion audit. Do not approve or emit exclusions without a real review
-approval.
+The latest same-list Raw/Adjusted URG report uses one design VDB and 247 unique
+test VDB trees: 243 legal positive, two expected negative, and two additional
+legal directed cases. It is retained mixed-provenance evidence, not 247 fresh
+runs from one verification-source SHA. The prior STATUS-mismatched 16-point
+gap sweep is excluded. Raw equals Adjusted: approved waivers=0 and active
+Exclusions=0. Results are Branch 525/637, Condition 658/849, Line 3351/3796,
+Toggle 84340/104480, FSM states 13/13, transitions 17/22, and legal applicable
+functional bins 392/392. The gate remains RAW_100_OPEN; 20,893 Raw code
+records in 457 groups remain OPEN. No code-coverage delta was gained over the
+246-test checkpoint.
 
-The VCS target run was executed from `codex/thermo5-tx-system-random` at
-`ad3211b98677055646975e35924a5809c8d29bac`. This round is published as Draft
-PR #30 on `codex/thermo5-tx-w1c-coverage-round2`, stacked on PR #29. The
-product RTL source SHA used for coverage reports is
-`1236d49c72360aa62e316aea147528d93a1b3705`; the
-coverage-waiver audit utility fix is `52892f66b4fc80ac41557272a1434ac216ddd073`.
-This round changes testbench, Python trace oracle, evidence, and documentation
-only. Product RTL and the frozen TX algorithm are unchanged. Scope is Linux TX;
-RX, AI-DPD and Vivado physical implementation are excluded.
+### Assertion closure update
 
-Phase C coverage remains 110/110 packet/long-stream random seeds, 60/60 runtime
-DPD × gain × profile tuples, 48/48 randomized reset/COMMIT trials, directed
-reset/commit and source-gap/PA-stall/FIFO-full crosses, and 392/392 legally
-applicable functional bins. The expected-starvation test remains separately
-classified. Mutation checks detect `late_gain` and `plane_swap`.
+A separate legal-positive assertion URG report over 243 positive VDBs has 13
+DUT successes and zero failures. Two DUT properties have no legal attempts:
+assert(q1_tail) at rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310,
+one for each Centered-Cubic stage. A separate corrected illegal-frame test
+(seed 420102) observed the CDC frame-alignment assertion once and each stage's
+frame-tail assertion once, then checked sticky protocol-error recovery by
+public reset. UVM warnings/errors/fatals were zero. The fail-closed checker
+tools/hw/check_thermo5_axil_illegal_frame.py verifies exact instances/counts
+and rejects unexpected RTL assertion failures; its four mutation-focused unit
+tests pass. Legal and expected-negative assertion outcomes remain separate.
 
-Coverage Closure Round 2 adds a legal STATUS DONE W1C directed action after
-COMMIT and a negative Python trace mutation. VCS seed 930000 checks STATUS
-DONE=1, clears it through W1C, and observes zero on readback. The independent
-register predictor reports zero mismatches; all 56 output words match the
-Python oracle with zero underflow. The new VDB hits seven exact bins: Branch
-`94c317079c444447221e`, Line `51e1eab855e96c50a4fd`, Conditions
-`de2c421694e6e9174223` and `87c647010ed34a0a7091`, and Toggles
-`d209311686c25596f406`, `fdf1c5a010c986e614fc`, `64f234d6e5984d7c570e`.
+### Formal and waivers
 
-Latest DUT-only Raw and Adjusted URG use the same 244-test VDB list and have
-zero approved waivers/exclusions. Both remain `RAW_100_OPEN`: Branch 523/637,
-Condition 656/849, Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and
-transitions 17/22. There are 21,071 uncovered DUT code records in 475
-root-cause groups; every record remains OPEN. Legal applicable functional
-coverage remains 392/392. The 371 waiver candidates remain pending; none are
-approved. The positive assertion inventory has 13 successes, zero failures,
-two uncovered and two without attempts. All-test expected-negative assertion
-failures remain separately classified.
+The local one-tap Identity DPD leaf proof passed 5/5 assertions and 3/3 Covers,
+with zero black boxes and no environment assumptions. It fixes the Q14 unity
+coefficient image and ties out_ready high; it does not cover stalls or AXI
+commit/epoch control. Full-chain DPD Identity remains INCONCLUSIVE/OPEN. The
+continuous-source outstanding-counter proofs and exact guard Covers remain
+INCONCLUSIVE. A final extended product-bound run used a 22-minute global limit
+and completed in 1,364.76 seconds: saturation/underflow assertions were
+INCONCLUSIVE at depths 231/122, and the exact guard Covers at depths 196/126.
+The proof used zero assumptions and zero black boxes; the source/core/output
+activity Covers were reached. The two Raw Branches remain OPEN. All 371 waiver
+candidates remain PENDING, with zero approvals and no active `.el`
+Exclusions.
 
-The 244-test union reuses the exact prior 243-test VDB list and adds the W1C
-VDB compiled from this verification worktree based on `ad3211b...`. Historical
-VDB provenance is mixed across earlier test-source SHAs; product RTL is
-unchanged. The positive-only view uses 242 VDBs. Exact lists, manifests, source
-hashes, report/log checksums, commands and bin IDs are recorded in
-`docs/verification/data/thermo5-tx-coverage-w1c-round2-20261103.json`. Do not
-describe the union as 244 new simulations from one full-tree SHA.
+The waiver inventory was rebound in Review Round 7 after the focused Formal
+Review JSON was updated. The audit uses the 247-test Raw ledger and current
+compile/VDB manifests; 371 candidates remain pending (361 configuration and
+10 Formal candidates), with zero approvals and zero active `.el` directives.
+See `docs/verification/thermo5-tx-waiver-review-round7.md`.
 
-Latest checks: VCS compile and targeted UVM PASS; Python trace oracle 56/56
-PASS with zero underflow; Python reference tests 59/59 PASS; hardware utility
-tests 34/34 PASS; same-list Raw/Adjusted URG and fail-closed gate PASS. Formal
-was not rerun in this round. Existing outstanding-counter and DPD Identity
-proofs remain INCONCLUSIVE, not PASS. No waiver is approved. Real XPM, GT
-Wizard, FPGA PPA/routed timing, and physical RF/QAM256 BER remain outside this
-Linux signoff.
+### Checks, evidence, and next action
 
-**Next:** close remaining reachable Branch/Condition roots with exact legal
-stimulus and independent checkers, then Lines/Toggle and five CDC FSM
-transitions. Resolve the two interpolator assertion no-attempts and improve
-DPD Identity/counter Formal convergence. Do not expand seed sweeps without a
-coverage hypothesis. Do not modify the product algorithm or merge PRs.
+Checks: targeted illegal-frame VCS test PASS with exact expected failures;
+the integrated AXI-Lite negative Make target and independent log checker PASS;
+hardware utility tests 42/42 PASS; Formal Identity leaf proof PASS within its
+stated scope; same-list Raw/Adjusted URG and gate PASS (RAW_100_OPEN); extended
+counter Formal completed INCONCLUSIVE; `py_compile`, JSON validation, and
+`git diff --check` PASS. Full UVM regression was not rerun.
+Exact logs, VDBs and tool reports remain under ignored runs/; compact hashes
+and commands are in the
+assertion/DPD follow-up document and current Linux system signoff evidence JSON.
+The extended outstanding Formal property matrix and tool/log hashes are indexed
+in `docs/verification/thermo5-tx-outstanding-formal-extended-20261103.md` and
+its adjacent JSON evidence file.
+
+Do not spend more random seeds on the unchanged coverage gaps. Next, refactor
+the outstanding-counter proof around a source-bound in-flight-capacity lemma
+without imposing a source-gap or PA-stall bound; retain both guard goals as
+OPEN unless the exact assertion or guard Cover resolves. Then target
+source-bound Reset/State-Hold and remaining Condition roots. Keep unresolved
+bins OPEN and waivers pending until reviewed. Real XPM, GT Wizard, FPGA
+PPA/routed timing and physical RF/QAM256 remain outside Linux signoff. Do not
+merge PRs or modify the frozen TX algorithm.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 

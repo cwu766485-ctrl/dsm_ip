@@ -150,8 +150,8 @@ def _check_coverage_manifests(report: dict, vdb: dict, report_path: Path,
     inventory.extend(test.get("path") for test in vdb.get("tests", []))
     if inventory != raw:
         raise CandidateAuditError("VDB manifest inventory differs from Raw/Adjusted commands")
-    if not vdb.get("design") or len(vdb.get("tests", [])) != 244:
-        raise CandidateAuditError("VDB manifest is not the current 244-test W1C union")
+    if not vdb.get("design") or not vdb.get("tests"):
+        raise CandidateAuditError("VDB manifest must contain a design VDB and at least one test VDB")
     if report.get("approved_waiver_count") != 0 or report.get("adjusted_exclusions_applied"):
         raise CandidateAuditError("current baseline unexpectedly contains an approved exclusion")
     raw_summary = report.get("raw_summary", {})

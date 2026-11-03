@@ -32,3 +32,6 @@ ip/ip_repo/** linguist-generated=true
 syn/reports/** linguist-generated=true
 matlab/out/** linguist-generated=true
 dv/verif/out_xsim_p0/** linguist-generated=true
+docs/verification/data/thermo5-tx-waiver-review-round2/formal_snapshots/** binary
+docs/verification/data/thermo5-tx-waiver-review-round3/formal-snapshots/** binary
+docs/verification/data/thermo5-tx-waiver-review-round7/formal_snapshots/** binary

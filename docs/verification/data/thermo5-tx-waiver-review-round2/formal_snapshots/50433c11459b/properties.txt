@@ -1,0 +1,48 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 5
+     - # proven       : 5
+
+   > Vacuity
+     - # found        : 2
+     - # non_vacuous  : 2
+
+   > Cover
+     - # found        : 7
+     - # covered      : 5
+     - # uncoverable  : 2
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 5
+     [   0] proven                                  -  thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable
+     [   1] proven                                  -  thermo5_cdc_end_remaining_harness.a_no_product_protocol_error
+     [   2] proven                   (non_vacuous)  -  thermo5_cdc_end_remaining_harness.a_product_frame_start_aligned
+     [   3] proven                                  -  thermo5_cdc_end_remaining_harness.a_product_residual_legal
+     [   4] proven                   (non_vacuous)  -  thermo5_cdc_end_remaining_harness.a_source_ready_low_during_internal_reset
+
+   > Cover
+     # Cover: 7
+     [   5] covered     (depth=115)                 -  thermo5_cdc_end_remaining_harness.c_64beat_packet_end
+     [   6] covered     (depth=65)                  -  thermo5_cdc_end_remaining_harness.c_completed_legal_frame
+     [   7] covered     (depth=64)                  -  thermo5_cdc_end_remaining_harness.c_legal_end_arm
+     [   8] covered     (depth=9)                   -  thermo5_cdc_end_remaining_harness.c_product_frame_start_pop
+     [   9] uncoverable                             -  thermo5_cdc_end_remaining_harness.c_target_false_arm
+     [  10] uncoverable                             -  thermo5_cdc_end_remaining_harness.c_target_false_arm_protocol_clean
+     [  11] covered     (depth=3)                   -  thermo5_cdc_end_remaining_harness.c_valid_during_internal_source_reset
+
+   > Constraint
+     # Constraint: 1
+     [  12] constrained                             -  constant_12 - rst_n==1
+
+
+

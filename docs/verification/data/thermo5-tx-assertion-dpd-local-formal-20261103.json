@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "branch": "codex/thermo5-tx-waiver-audit-round1",
+  "verification_source_revision": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
+  "product": {
+    "rtl_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+    "configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; DPD_MAX_TAPS=1 Identity reset image; AXI-Lite; Generic FIFO; four 64-bit PA planes"
+  },
+  "tools": {
+    "vcs": "V-2023.12-SP1_Full64",
+    "urg": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2",
+    "python": "3.12.13"
+  },
+  "coverage": {
+    "status": "RAW_100_OPEN",
+    "raw_equals_adjusted": true,
+    "approved_waivers": 0,
+    "active_exclusions": 0,
+    "raw_vdb_inventory": {
+      "test_vdb_paths": 247,
+      "unique_test_vdb_tree_hashes": 247,
+      "legal_positive_vdbs": 243,
+      "expected_negative_vdbs": 2,
+      "additional_legal_directed_vdbs": 2,
+      "source_provenance": "240 retained test VDBs from verification source lineage 732a64; 1 retained starvation VDB from product RTL source lineage 1236d49; 4 gate2 AXI-Lite VDBs, comprising 2 expected-negative tests and 2 legal directed tests. Not all tests were freshly simulated from one full-tree SHA.",
+      "raw_urg_report_manifest": {
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/report_manifest.json",
+        "sha256": "89a160024a966e65f1bd7db279bc2f6acef3ae7197698bace17a8942838e4840"
+      },
+      "vdb_manifest": {
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/vdb_manifest.json",
+        "sha256": "dd85345f197cb05f5aa60713b78269c3347ff3b786da4f501de6ef7676a77fa7"
+      },
+      "gate": {
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/coverage_gate_round6.json",
+        "sha256": "ca6a910cb5f34dca8a9228fc436ee342a271f770c5f3d2ac84f6eae46cd85d21"
+      }
+    },
+    "raw_and_adjusted_metrics": {
+      "branch": {
+        "covered": 525,
+        "total": 637,
+        "missing": 112,
+        "percent": 82.4176
+      },
+      "condition": {
+        "covered": 658,
+        "total": 849,
+        "missing": 191,
+        "percent": 77.5029
+      },
+      "line": {
+        "covered": 3351,
+        "total": 3796,
+        "missing": 445,
+        "percent": 88.2771
+      },
+      "toggle": {
+        "covered": 84340,
+        "total": 104480,
+        "missing": 20140,
+        "percent": 80.7236
+      },
+      "fsm_states": {
+        "covered": 13,
+        "total": 13
+      },
+      "fsm_transitions": {
+        "covered": 17,
+        "total": 22,
+        "missing": 5
+      }
+    },
+    "functional": {
+      "legally_applicable_covered": 392,
+      "legally_applicable_total": 392
+    },
+    "root_cause": {
+      "open_raw_records": 20893,
+      "root_cause_groups": 457,
+      "all_records_open": true,
+      "summary_path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_rootcause_final/thermo5-tx-coverage-root-cause-summary.json",
+      "summary_sha256": "c3e5c3ffd600b2cd38e6d730cf3b18f1992b6dbc5c44fc7ce35b98798ddefdd3"
+    }
+  },
+  "assertion_audit": {
+    "legal_positive": {
+      "status": "PASS_WITH_OPEN_NO_ATTEMPT_PROPERTIES",
+      "test_vdb_count": 243,
+      "assertions": {
+        "success": 13,
+        "failure": 0,
+        "uncovered_dut_properties": 2,
+        "without_attempts_dut_properties": 2
+      },
+      "without_attempts": [
+        {
+          "property": "unnamed$$_1",
+          "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+          "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310",
+          "classification": "illegal_frame_tail_defense; exact expected-negative hit recorded separately"
+        },
+        {
+          "property": "unnamed$$_1",
+          "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+          "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310",
+          "classification": "illegal_frame_tail_defense; exact expected-negative hit recorded separately"
+        }
+      ],
+      "report_manifest": {
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/legal_positive_243_dual_urg_20261103/report_manifest.json",
+        "sha256": "e9669708fb870d08d8e5448a024a41a1207370d44951744305f0662fd888f23a"
+      },
+      "vdb_manifest_sha256": "c4499c1dfa87c0ca4431ceccff66da01412807fa27715bc111cc09dcc15dd806"
+    },
+    "expected_negative_illegal_frame": {
+      "status": "PASS",
+      "test": "thermo5_sku_axil_illegal_frame_test",
+      "seed": 420102,
+      "expected_assertion_failures": [
+        {
+          "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv:262",
+          "instance": "thermo5_sku_uvm_tb.dut.u_cdc.unnamed$$_1",
+          "count": 1,
+          "reason": "deliberately early TLAST violates 56-sample frame alignment"
+        },
+        {
+          "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310",
+          "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+          "count": 1,
+          "reason": "illegal same-frame data after frame-end vector"
+        },
+        {
+          "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310",
+          "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1",
+          "count": 1,
+          "reason": "illegal same-frame data after frame-end vector"
+        }
+      ],
+      "checker": "tools/hw/check_thermo5_axil_illegal_frame.py requires exactly these three RTL assertion events, no other RTL assertion Error lines, the sticky-error/reset-recovery marker, and UVM WARNING/ERROR/FATAL all zero.",
+      "log": {
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/assertion_negative_exact_20261103/axil_illegal_frame_seed420102_corrected.log",
+        "sha256": "3256331dfea59798069bc0975676d34c521a5a0cae1e2978946f7c07a6c45ade"
+      },
+      "vdb_tree_sha256": "f5d180e7080456166210e44cb3d276ce095f7dbd0da79973315930c08a312074",
+      "urg_report_manifest": {
+        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/axil_negative_assertion_urg_20261103/report_manifest.json",
+        "sha256": "f499afc3f62e6b61886f6432198c0e506d590964d2be244cea1b3852ba3491bc"
+      },
+      "urg_vdb_manifest_sha256": "6bc05e0b81c4fd054afea4f4758b308cdd455d0ea27f8f4cd44ae6f87c278e13",
+      "make_target_replay": {
+        "status": "PASS",
+        "command": "make -C dv/uvm/sim thermo5-axil-vcs-negative THERMO5_OUT=<fresh-product-compile> THERMO5_VECTORS=<seed_930000>",
+        "log_path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/frame_replace_sourcefresh_20261103/axil_illegal_frame_seed420102.log",
+        "log_sha256": "74d93df973437e77bc08445807c4997954fb640d9a5fad595cf3148912a25891",
+        "vdb_tree_sha256": "21205c779a9077c764d1859b120251d882bfb4a525551faaf4af6b6323ce2dca",
+        "merged_into_urg": false,
+        "note": "Runs the integrated exact-event checker; this repeat VDB is not added to the 247-test code report or the single-VDB negative Assertion URG report."
+      }
+    },
+    "misconfigured_attempt": {
+      "status": "INVALID_NOT_COUNTED",
+      "cause": "The first attempt pointed VEC_DIR at the vectors parent, which did not contain the required .mem files.",
+      "log_sha256": "022eb1e3ffb4479c30f8e0209678fcd2b62761d1040bd8f8cc68b253aec119cc",
+      "included_in_urg": false
+    },
+    "mixed_union_note": "The 247-VDB Raw code-coverage report includes expected-negative VDBs and its aggregate assertion counter is not the legal assertion signoff. Use the separate 243-positive and one-test negative URG reports above."
+  },
+  "dpd_identity_local_formal": {
+    "status": "PASS_SCOPED",
+    "job": "identity_nostall",
+    "runtime_seconds": 102.3878,
+    "assertions_proven": 5,
+    "covers_covered": 3,
+    "blackboxes": 0,
+    "environment_assumptions": 0,
+    "tool_initialization_constraint": "VC Formal reports rst_n==1 as its initialization constraint.",
+    "configuration": "MAX_TAPS=1, USE_EXTERNAL_TAPS=1, active_taps=1, c1_re=16384 (Q14 unity), c1_im=c3_re=c3_im=c5_re=c5_im=0, out_ready tied high, tap vectors equal current I/Q inputs.",
+    "proven_properties": [
+      "a_ready_without_backpressure",
+      "a_valid_latency",
+      "a_identity_payload",
+      "a_identity_no_saturation",
+      "a_saturation_count_zero"
+    ],
+    "covered_covers": [
+      "c_valid_output",
+      "c_negative_endpoint",
+      "c_positive_endpoint"
+    ],
+    "limits": [
+      "Does not prove behavior under arbitrary downstream backpressure.",
+      "Does not prove AXI Shadow/COMMIT/mailbox/active-epoch semantics.",
+      "Does not prove the full-chain DPD Identity equivalence property; that property remains INCONCLUSIVE/OPEN.",
+      "Does not classify any URG code bin or authorize any waiver/exclusion."
+    ],
+    "run_manifest": {
+      "path": "runs/thermo5_tx_closure_current/dpd_identity_nostall_local_20261103/manifest.json",
+      "sha256": "ee585f83fe6e79fe9b39f43fcb0c67305134243539f83d82dab710fdc5d100dd"
+    },
+    "formal_source_sha256": {
+      "harness": "37c62829ce7f2322dd66c8fa9e2b5653b146762cd20bd4f91931cf0cde3a9e4a",
+      "runner": "9553f4096911762e62a26644a07e8bfe065954e6eef9682d59ae4f6517e62027",
+      "tcl": "d1dbbc2a2e0800302434c3ad20a1973d6a5443bbad06554a9c91e5d8d5ba3ca1"
+    },
+    "console_sha256": "2d855677839d644b3c68b4b36973d3b7acb5dd94cba0627bf41aa9bfdcf719c7",
+    "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+  },
+  "commands": {
+    "positive_assertion_report": "python3.12 tools/hw/run_thermo5_tx_urg_dual_report.py --urg /opt/Synopsys/vcs/V-2023.12-SP1/bin/urg --design-vdb <product-design.vdb> --vdb <each-of-243-positive-test-vdbs> --approved-el <round6_thermo5_tx_main.el> --waiver-audit <round6_waiver_pipeline_audit.json> --out-dir runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/legal_positive_243_dual_urg_20261103",
+    "negative_assertion_report": "python3.12 tools/hw/run_thermo5_tx_urg_dual_report.py --urg /opt/Synopsys/vcs/V-2023.12-SP1/bin/urg --design-vdb runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/frame_replace_sourcefresh_20261103/simv.vdb --vdb runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/assertion_negative_exact_20261103/cov_axil_illegal_frame_seed420102_corrected.vdb --approved-el runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/round6_thermo5_tx_main.el --waiver-audit runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/round6_waiver_pipeline_audit.json --out-dir runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/axil_negative_assertion_urg_20261103",
+    "negative_log_checker": "python3.12 tools/hw/check_thermo5_axil_illegal_frame.py runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/assertion_negative_exact_20261103/axil_illegal_frame_seed420102_corrected.log",
+    "dpd_identity_local_formal": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_convergence.py --job identity_nostall --out-dir runs/thermo5_tx_closure_current/dpd_identity_nostall_local_20261103",
+    "negative_make_target": "make -C dv/uvm/sim thermo5-axil-vcs-negative THERMO5_OUT=<fresh-product-compile> THERMO5_VECTORS=<seed_930000>"
+  },
+  "checker": {
+    "path": "tools/hw/check_thermo5_axil_illegal_frame.py",
+    "sha256": "bf1539331b5c9550a4a4ce5b5fabd0aff42cd406dd8b8503d2e5741161ee5fb3",
+    "unit_test_path": "tools/hw/tests/test_thermo5_axil_illegal_frame_checker.py",
+    "unit_test_sha256": "198ec1f6d07032309da3582f2faa13a97b19a5e21865381d326e2d8d5a7e1327",
+    "makefile_path": "dv/uvm/sim/Makefile",
+    "makefile_sha256": "4557ac2385cffa6723ae126c546519959a9eb9ad4c63235fbffcfd72267aa03d",
+    "unit_test_result": "4/4 PASS",
+    "mutation_cases": [
+      "missing stage2 expected assertion",
+      "unexpected RTL assertion error line",
+      "nonzero UVM_ERROR count"
+    ]
+  }
+}
