@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 9200)
+Total output lines: 810
+
 {
   "assertion_dpd_local_followup": {
     "path": "docs/verification/data/thermo5-tx-assertion-dpd-local-formal-20261103.json",
@@ -292,6 +295,10 @@
       "sha256": "8cca30bc83b2b6f0e09618dc4a8ce634f58808b1783073d1d79c9ffd961af963",
       "report_path": "docs/verification/thermo5-tx-dpd-payload-hold-formal-20261103.md",
       "report_sha256": "8aa3e097fab6e2d9c9d4ef70a56451db8f896807d802c8391202f47dfbca5e28"
+    },
+    "outstanding_counter_capacity_followup": {
+      "path": "docs/verification/data/thermo5-tx-outstanding-capacity-formal-followup-20261103.json",
+      "sha256": "0428bac7a9c88e6db9de2f5c0abc893b6a5ec13d69e9e574701612b5d945ede3"
     }
   },
   "execution_branch": "codex/thermo5-tx-dpd-payload-hold-formal",
@@ -322,120 +329,7 @@
       "assertions_proven": 5,
       "assumptions": 0,
       "blackboxes": 0,
-      "covers_covered": 3,
-      "evidence": {
-        "path": "runs/thermo5_tx_closure_current/dpd_identity_nostall_local_20261103/manifest.json",
-        "sha256": "ee585f83fe6e79fe9b39f43fcb0c67305134243539f83d82dab710fdc5d100dd"
-      },
-      "limitations": "Fixed one-tap Q14 unity coefficient, tap vector=input, out_ready=1. Does not prove stalls, AXI commit/epoch behavior or full-chain DPD Identity; full-chain result remains inconclusive/open.",
-      "status": "PASS_SCOPED"
-    },
-    "focused_condition_reachability": {
-      "black_box_instances": 0,
-      "environment_assumptions": 0,
-      "exclusions_active": 0,
-      "limitations": {
-        "dpd_full_payload_hold": "Monolithic aggregate attempts remain INCONCLUSIVE (depth 15 and later depth 294). Equivalent decomposed 16-lane vector-leaf payload/metadata hold and lane-valid lockstep properties now PASS; full-chain DPD Identity arithmetic and COMMIT/CDC/epoch behavior remain OPEN.",
-        "proof_scope": "Exact source-bound condition reachability only; not full TX equivalence or overall code-coverage closure"
-      },
-      "raw_denominator_changed": false,
-      "results": [
-        {
-          "disposition": "PROVEN_UNREACHABLE",
-          "evidence": {
-            "path": "docs/verification/data/thermo5-tx-dpd-ready-condition-formal-20261103.json",
-            "sha256": "5f906108a42293ed8388729dabe0530aa54c9a127aa16bafb1aa62bec579dfe4"
-          },
-          "raw_bin_id": "ecc391f634f890dbadb6",
-          "raw_state": "NOT_COVERED_RETAINED",
-          "semantic_bin_id": "TXB-33613a1855fcc02e8ef4",
-          "source_position": "rtl/dpd/dpd_vector16_memory_poly.sv:93",
-          "task_id": "TXC-42b3e1174f6032fbbd84"
-        },
-        {
-          "disposition": "PROVEN_UNREACHABLE",
-          "evidence": {
-            "path": "docs/verification/data/thermo5-tx-axil-line93-condition-formal-20261103.json",
-            "sha256": "9b9495bcbbb2ec64e909f599e3b095e46d9e7e0cf43d374a4d012250c1bec038"
-          },
-          "raw_bin_id": "13d6754bf69d80bac0ac",
-          "raw_state": "NOT_COVERED_RETAINED",
-          "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
-          "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
-          "task_id": "TXC-4a1d631568353e7f8633"
-        }
-      ],
-      "setup_violations": 0,
-      "status": "PASS_FOR_TWO_EXACT_RAW_CONDITION_ROOTS",
-      "tool": "VC Formal V-2023.12-SP2",
-      "waivers_approved": 0
-    },
-    "outstanding_counter_guards": {
-      "assertions": {
-        "a_no_counter_saturation_guard": "inconclusive",
-        "a_no_counter_underflow_guard": "inconclusive"
-      },
-      "assumptions": 0,
-      "blackboxes": 0,
-      "covers": {
-        "c_core_accept": "covered",
-        "c_counter_saturation_guard": "inconclusive",
-        "c_counter_underflow_guard": "inconclusive",
-        "c_output_accept": "covered",
-        "c_source_accept": "covered"
-      },
-      "duration_seconds": 499.73,
-      "evidence": {
-        "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/formal_outstanding_continuous_source/formal_manifest.json",
-        "sha256": ""
-      },
-      "extended_followup": {
-        "assertions": {
-          "a_no_counter_saturation_guard": {
-            "depth": 231,
-            "nonvacuous": true,
-            "status": "inconclusive"
-          },
-          "a_no_counter_underflow_guard": {
-            "depth": 122,
-            "nonvacuous": true,
-            "status": "inconclusive"
-          }
-        },
-        "assumptions": 0,
-        "blackboxes": 0,
-        "covers": {
-          "c_core_accept": {
-            "depth": 9,
-            "status": "covered"
-          },
-          "c_counter_saturation_guard": {
-            "depth": 196,
-            "status": "inconclusive"
-          },
-          "c_counter_underflow_guard": {
-            "depth": 126,
-            "status": "inconclusive"
-          },
-          "c_output_accept": {
-            "depth": 33,
-            "status": "covered"
-          },
-          "c_source_accept": {
-            "depth": 4,
-            "status": "covered"
-          }
-        },
-        "duration_seconds": 1364.76,
-        "evidence": {
-          "machine_readable": "docs/verification/data/thermo5-tx-outstanding-formal-extended-20261103.json",
-          "machine_readable_sha256": "06af9de76ef67b14f336c6eea9146c8f7424fcf87d2f3224010f4fba4684134f",
-          "report": "docs/verification/thermo5-tx-outstanding-formal-extended-20261103.md",
-          "run_manifest": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/formal_outstanding_extended_20261103/formal_manifest.json",
-          "run_manifest_sha256": "ed714b591240dcb785e8eba761164c752855b8abd452a32f8ace99fd3c364176"
-        },
-        "global_effort_limit": "22m",
-        "property_limit": "20m",
+      "covers_covered"…1200 tokens truncated…: "20m",
         "raw_bins_open": [
           "TXB-e99262dd92665c3b9ea8",
           "TXB-c16debdf7d9cbab220ac"
@@ -460,6 +354,24 @@
       "limitations": "DPD vector-leaf output-hold protocol only. Does not prove Identity arithmetic, AXI-Lite COMMIT/CDC/active-epoch sequence, or full TX-chain equivalence.",
       "evidence": {
         "path": "docs/verification/data/thermo5-tx-dpd-payload-hold-formal-20261103.json"
+      }
+    },
+    "outstanding_counter_capacity_followup": {
+      "status": "INCONCLUSIVE",
+      "assertions": "5/5 inconclusive",
+      "exact_guard_covers": "2/2 inconclusive",
+      "activity_and_source_bubble_covers": "4/4 covered",
+      "setup_issues": 0,
+      "black_boxes": 0,
+      "coverage_delta": "none; URG not rerun",
+      "target_bins": [
+        "TXB-e99262dd92665c3b9ea8",
+        "TXB-c16debdf7d9cbab220ac"
+      ],
+      "raw_bins": "OPEN",
+      "evidence": {
+        "path": "docs/verification/data/thermo5-tx-outstanding-capacity-formal-followup-20261103.json",
+        "sha256": "0428bac7a9c88e6db9de2f5c0abc893b6a5ec13d69e9e574701612b5d945ede3"
       }
     }
   },

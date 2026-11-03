@@ -121,6 +121,15 @@ The Raw Branches remain OPEN. See the
 [`extended counter Formal report`](thermo5-tx-outstanding-formal-extended-20261103.md)
 and its hash-bound machine-readable evidence.
 
+A follow-up source-bubble/capacity experiment completed in 311.08 seconds. It
+removed an undriven generated-array hierarchy reference from the candidate
+slot expression and retained arbitrary source bubbles and PA stalls. Four
+activity/bubble Covers hit, setup issues and black boxes are zero, but the five
+assertions and both exact guard Covers are still INCONCLUSIVE. This run closes
+no Branch and does not support a waiver; Raw URG is unchanged. See the
+[`capacity Formal follow-up`](thermo5-tx-outstanding-capacity-formal-followup-20261103.md)
+and its evidence JSON.
+
 The previously open Phase C stimulus dimensions now have separate evidence:
 the original packet/long-stream random campaign, a 60-case runtime DPD matrix,
 48 randomized reset/COMMIT trials, directed reset/commit boundary tests, and

@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 8509)
+Total output lines: 397
+
 # Execution frontier
 
 ## Current execution state: Thermo5 TX Linux coverage/formal closure (2026-11-03)
@@ -103,6 +106,8 @@ zero black boxes and zero selected setup violations. The AXI shadow/COMMIT,
 mailbox, CDC, pending/active epoch, and full TX proof remain OPEN. See
 `thermo5-tx-dpd-identity-stall-formal-20261103.md` and its evidence JSON.
 
+A further 311.08-second VC Formal run on branch `codex/thermo5-tx-outstanding-capacity-formal` added arbitrary legal AXIS source bubbles and a candidate 29-slot pipeline bound. The generated-array EF2 hierarchical reference that previously caused a false counterexample was removed after VC Formal trace checking identified it as UNDRIVEN. The corrected full run has zero setup issues and zero black boxes; the legal source-hold assumption is non-vacuous and arbitrary source-bubble Cover reaches depth 4. However, all five assertions remain INCONCLUSIVE at depths 34-46, and both exact guard Covers remain INCONCLUSIVE at depths 34/38. The candidate slot constant is not proof evidence. Both exact Raw Branches stay OPEN; Raw URG is unchanged, all waivers remain pending, and there is no coverage delta. Evidence is indexed in `docs/verification/thermo5-tx-outstanding-capacity-formal-followup-20261103.md` and its adjacent JSON.
+
 ### Checks, evidence, and next action
 
 Checks: targeted illegal-frame VCS test PASS with exact expected failures;
@@ -198,13 +203,7 @@ Raw DUT code coverage and adjusted coverage are identical, with zero approved wa
 | FSM states / transitions | 13/13; 22/22 | 0 |
 | DUT assertions | 13 success / 15 attempted | 2 uncovered; 2 without attempts |
 
-The current-source ledger retains all 21,732 unhit Raw records in 470 grouped tasks: 48 Branch, 107 Condition, 114 Line, 201 Toggle. Five exact records are `PROVEN_UNREACHABLE` under their reviewed source-bound Formal evidence; all remain in Raw. They are the aligned 32-beat CDC end false arm, CDC outer-case default, AXI-Lite write-case default Branch, coefficient-read default Branch, and the matching default Line. The other 21,727 records and 465 tasks remain OPEN. Root-cause labels are triage only. Current review artifacts and checksums are linked from `docs/verification/data/thermo5-tx-coverage-closure-index.json`.
-
-Formal status is deliberately limited. The full identity-DPD payload equivalence property remains INCONCLUSIVE at depth 252. A new identity-only DPD saturation harness proves four no-clamp assertions and finds the four clamp Covers uncoverable under the reset-loaded unity coefficient, but AXI-Lite permits runtime coefficient writes; therefore this result does not disposition product Raw bins. The legal AXI-Lite stress test now hits those clamp paths. The PAIR_LOOKAHEAD exact-parameter run reported two proven assertions and two uncoverable Covers, but VC Formal explicitly marked both goals tautological; all four corresponding Raw branch bins remain OPEN. The source-bound Formal review closes five exact records; the AXI-Lite tuple condition assertion lacks a non-vacuous witness and stays OPEN.
-
-Mutation verification passed at VCS V-2023.12-SP1: baseline bit-true test PASS; `late_gain` and EF2 `plane_swap` mutants were both detected by the independent `[BITTRUE]` scoreboard. This demonstrates those checker paths only, not all fault classes. A 16-cycle AXI source gap still fails the independent checker with 54 underflows (112 output words, no protocol errors); the interface has no maximum-gap contract, so this remains OPEN.
-
-Scope remains focused frontend coverage, not full-system TX signoff. The separate one-test behavioral GT Parent report has no payload checker. Real XPM and GT Wizard simulation, full parent TX payload checking, EF2 identity Formal convergence, remaining reachable Branch/Condition/Line/Toggle closure, FPGA PPA, and physical QAM256 BER remain OPEN. Do not claim final signoff or 100% Raw/adjusted code coverage.
+The current-source ledger retains all 21,732 unhit Raw records in 470 grouped tasks: 48 Branch, 107 Condition, 114 Line, 201 Toggle. Five exact re…509 tokens truncated… and physical QAM256 BER remain OPEN. Do not claim final signoff or 100% Raw/adjusted code coverage.
 
 **Next:** use the source-position task table to target the highest-value legal Branch/Condition gap with an independent checker and DUT event. If a round produces no new valid Raw hits, stop seed sweeping and investigate reachability or monitor/bin mapping. Keep all candidate branches OPEN until exact evidence closes them.
 
