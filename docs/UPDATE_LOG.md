@@ -1,3 +1,32 @@
+## 2026-11-03 17:32 SGT - Prove Thermo5 DPD vector output hold under stall
+
+- Added a reproducible VC Formal harness, Tcl flow, runner, and fail-closed
+  auditor for the 16-lane `dpd_vector16_memory_poly` output stall-hold contract.
+  The 512-bit I/Q payload is split into 16 lane assertions; metadata hold and
+  all-lane valid lockstep are checked separately. MAX_TAPS=1 matches the
+  product vector shape. Runtime taps, coefficients, payload, metadata, valid
+  and ready are unconstrained; no environment assumptions were added.
+- Re-ran the exact committed harness with VC Formal V-2023.12-SP2. Result:
+  33/33 assertions proven, all 17 lane-payload/metadata properties
+  non-vacuous, 3/3 Covers reached, zero black boxes, zero environment
+  assumptions, one reset initialization constraint, and zero selected setup
+  violations. The audited run took 102.63 seconds.
+- The monolithic full-vector property previously remained INCONCLUSIVE at depth
+  15 and a later aggregate run at depth 294. The lane decomposition now proves
+  the vector leaf's stall-hold protocol; it does not prove Identity arithmetic
+  or full-chain COMMIT/CDC/epoch behavior. Full-chain DPD Identity remains
+  OPEN/INCONCLUSIVE. No RTL or algorithm changed.
+- Raw/Adjusted URG was not rerun because simulation/VDB inputs did not change.
+  Raw remains Branch 525/637, Condition 658/849, Line 3351/3796, Toggle
+  84340/104480, FSM states 13/13 and transitions 17/22, Functional 392/392;
+  zero approved waivers, zero exclusions, and `RAW_100_OPEN`. Formal creates no
+  URG hits or denominator changes.
+- Added the scoped report and JSON evidence, and updated the Linux signoff and
+  execution frontier. Python `py_compile`, JSON parsing and `git diff --check`
+  pass; VCS and URG were not rerun. Remaining Raw code bins, counter guards,
+  full-chain DPD Identity, pending waiver approvals and vendor/physical signoff
+  remain open.
+
 ## 2026-11-03 17:05 SGT - Prove two retained TX Raw Condition tuples unreachable
 
 - Ran focused VC Formal V-2023.12-SP2 on the product one-tap DPD ready/valid

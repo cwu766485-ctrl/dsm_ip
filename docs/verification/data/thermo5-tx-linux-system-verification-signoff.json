@@ -3,7 +3,7 @@
     "path": "docs/verification/data/thermo5-tx-assertion-dpd-local-formal-20261103.json",
     "sha256": "11cbdf1da304ab9b19e24f95a8c5e009eefe9b4e7d17b07de28e9040cc790f39"
   },
-  "branch": "codex/thermo5-tx-focused-condition-formal-closure",
+  "branch": "codex/thermo5-tx-dpd-payload-hold-formal",
   "coverage": {
     "active_exclusions": 0,
     "all_open": false,
@@ -286,9 +286,15 @@
     "waiver_pipeline_audit": {
       "path": "docs/verification/data/thermo5-tx-waiver-review-round3/thermo5-tx-waiver-pipeline-audit.json",
       "sha256": "4f9c0bf517fa217af85cf0637aa49f4032ed5fe338f1569d032cd7e49c85c654"
+    },
+    "dpd_vector_payload_hold_formal": {
+      "path": "docs/verification/data/thermo5-tx-dpd-payload-hold-formal-20261103.json",
+      "sha256": "8cca30bc83b2b6f0e09618dc4a8ce634f58808b1783073d1d79c9ffd961af963",
+      "report_path": "docs/verification/thermo5-tx-dpd-payload-hold-formal-20261103.md",
+      "report_sha256": "8aa3e097fab6e2d9c9d4ef70a56451db8f896807d802c8391202f47dfbca5e28"
     }
   },
-  "execution_branch": "codex/thermo5-tx-focused-condition-formal-closure",
+  "execution_branch": "codex/thermo5-tx-dpd-payload-hold-formal",
   "external_signoff_open": [
     "real XPM simulation",
     "GT Wizard simulation",
@@ -329,7 +335,7 @@
       "environment_assumptions": 0,
       "exclusions_active": 0,
       "limitations": {
-        "dpd_full_payload_hold": "INCONCLUSIVE at depth 15; remains OPEN",
+        "dpd_full_payload_hold": "Monolithic aggregate attempts remain INCONCLUSIVE (depth 15 and later depth 294). Equivalent decomposed 16-lane vector-leaf payload/metadata hold and lane-valid lockstep properties now PASS; full-chain DPD Identity arithmetic and COMMIT/CDC/epoch behavior remain OPEN.",
         "proof_scope": "Exact source-bound condition reachability only; not full TX equivalence or overall code-coverage closure"
       },
       "raw_denominator_changed": false,
@@ -439,6 +445,22 @@
       },
       "nonvacuous_goal_count": 2,
       "status": "INCONCLUSIVE"
+    },
+    "dpd_vector_payload_hold": {
+      "status": "PASS_SCOPED_DPD_VECTOR_STALL_HOLD",
+      "assertions_proven": 33,
+      "payload_metadata_assertions_non_vacuous": 17,
+      "lane_valid_lockstep_assertions_proven": 16,
+      "covers_hit": 3,
+      "environment_assumptions": 0,
+      "blackboxes": 0,
+      "setup_violations": 0,
+      "duration_seconds": 102.63,
+      "tool": "VC Formal V-2023.12-SP2",
+      "limitations": "DPD vector-leaf output-hold protocol only. Does not prove Identity arithmetic, AXI-Lite COMMIT/CDC/active-epoch sequence, or full TX-chain equivalence.",
+      "evidence": {
+        "path": "docs/verification/data/thermo5-tx-dpd-payload-hold-formal-20261103.json"
+      }
     }
   },
   "implementation_commit": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
@@ -662,13 +684,13 @@
   },
   "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
   "pull_request": {
-    "base": "codex/thermo5-tx-formal-waiver-closure-followup",
-    "draft": true,
-    "head": "codex/thermo5-tx-focused-condition-formal-closure",
-    "note": "Focused Condition Formal evidence follow-up, stacked directly on Draft PR #32 at head 96ac24b622a1d21b344de79e4d19adc555ee6a92; unmerged.",
-    "number": 33,
+    "number": 34,
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/34",
+    "head": "codex/thermo5-tx-dpd-payload-hold-formal",
+    "base": "codex/thermo5-tx-focused-condition-formal-closure",
     "state": "open",
-    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/33"
+    "draft": true,
+    "note": "Scoped DPD vector payload-hold Formal follow-up, stacked on Draft PR #33; unmerged."
   },
   "schema_version": 1,
   "tool_checks": {
@@ -736,14 +758,14 @@
       }
     },
     "expected_negative_assertion_checker": "PASS; exact CDC plus both interpolator assertion events; reset recovery PASS; UVM warning/error/fatal 0/0/0",
-    "focused_formal_condition_dispositions": "PASS; two exact tuple Covers uncoverable with non-vacuous implications; DPD payload-hold property remains INCONCLUSIVE",
-    "git_diff_check": "PASS; git diff --check run after Round 7 documentation and evidence binding updates",
+    "focused_formal_condition_dispositions": "PASS; two exact tuple Covers uncoverable with non-vacuous implications; separate DPD vector-leaf payload-hold proof PASS, while full-chain DPD Identity remains OPEN",
+    "git_diff_check": "PASS; final scoped DPD payload-hold evidence/documentation changes",
     "hardware_utility_tests": "PASS 42/42; latest saved log includes fail-closed checker mutation tests",
     "integrated_negative_make_target": "PASS; fresh compile, seed 420102; exact three expected RTL assertion events, reset recovery, checker PASS, UVM warning/error/fatal 0/0/0",
     "negative_assertion_urg": "PASS; one corrected illegal-frame VDB; three expected RTL assertion failures; reported separately",
     "outstanding_counter_formal_extended": "INCONCLUSIVE; 1364.76 s, 22m effort cap; assertions depths 231/122; guard Covers depths 196/126; no assumptions or blackboxes",
     "positive_assertion_urg": "PASS; 243 positive test VDBs; 13 DUT successes, zero failures, two frame-tail no-attempt properties",
-    "py_compile": "PASS",
+    "py_compile": "PASS; DPD payload-hold runner and fail-closed auditor",
     "python_reference": "PASS 59/59",
     "raw_adjusted_urg": "PASS; same 246-test VDB list plus one design VDB; zero exclusions",
     "targeted_outstanding_counter_stress": "PASS; seed 930901; 2072/2072 four-plane words; max outstanding 28; zero guard events",
@@ -751,7 +773,9 @@
     "targeted_w1c_uvm": "PASS; seed 930000; 56-word four-plane oracle match",
     "vcs_starvation_uvm_oracle": "PASS",
     "waiver_candidate_audit_round7": "PASS; 371/371 rebound to current Formal Review, compile manifest, 247-test Raw ledger and VDB inventory; 361 CONFIG_UNREACHABLE and 10 FORMAL_UNREACHABLE candidates; all pending",
-    "waiver_pipeline_round7": "PASS; 371 PENDING, 0 approved, 0 rejected, 0 active exclusions; generated .el contains no directives"
+    "waiver_pipeline_round7": "PASS; 371 PENDING, 0 approved, 0 rejected, 0 active exclusions; generated .el contains no directives",
+    "dpd_vector_payload_hold_formal": "PASS_SCOPED; 33/33 assertions proven, 17 payload/metadata non-vacuous, 3/3 covers, zero black boxes/environment assumptions; full-chain DPD Identity remains OPEN",
+    "json_validation": "PASS; new scoped Formal evidence and system signoff JSON parse"
   },
   "vdb_provenance": {
     "baseline_test_vdb_count": 244,

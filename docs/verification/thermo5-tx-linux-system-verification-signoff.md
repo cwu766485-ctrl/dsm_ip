@@ -5,7 +5,7 @@ VCS execution branch: `codex/thermo5-tx-system-random`
 Waiver audit branch: `codex/thermo5-tx-waiver-audit-round1` (Draft PR #31, stacked on PR #30)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
-Current focused Formal increment: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`, stacked on PR #32.
+Current Formal increments: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`, and scoped DPD output-hold Draft PR #34, `codex/thermo5-tx-dpd-payload-hold-formal`, stacked on PR #33; neither is merged.
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,
 four 64-bit PA planes, `DPD_MAX_TAPS=1`, Identity reset image, AXI-Lite,
 Generic FIFO.
@@ -68,14 +68,24 @@ The proof used no environment assumptions, had zero black boxes, and no
 selected setup violations. This exact root is also `PROVEN_UNREACHABLE`; the
 Raw bin remains unhit and retained.
 
-The separate DPD full-output hold property was inconclusive at depth 15. It
-remains OPEN and is not used for the ready/valid disposition. Across these two
-focused results, Raw Condition remains 658/849, Raw equals Adjusted, approved
-waivers and active `.el` exclusions are both zero, and the gate remains
-`RAW_100_OPEN`. Of the 20,893 records in the prior open-bin snapshot, two exact
-roots are now `PROVEN_UNREACHABLE`; the other 20,891 records remain OPEN. Full
-details, source hashes, VDB/report hashes and reproduction commands are in the
-[`DPD ready/valid Formal evidence`](thermo5-tx-dpd-ready-condition-closure-20261103.md)
+The earlier monolithic DPD full-output hold property was INCONCLUSIVE at depth
+15; a later 512-bit aggregate attempt also remained INCONCLUSIVE at depth 294.
+A source-bound lane-decomposed proof now proves the equivalent 16-lane vector
+leaf hold contract: 33/33 assertions, including all 16 I/Q lane payload holds,
+metadata hold and lane-valid lockstep; all 17 payload/metadata properties are
+non-vacuous and all 3 Covers are reached. The vector leaf uses MAX_TAPS=1 and
+unconstrained runtime coefficients, active tap count, payload, metadata and
+ready/valid inputs, with no environment assumptions and zero black boxes. This
+closes only output payload/control stability for the DPD vector leaf. It does
+not prove Identity arithmetic or the full TX-chain COMMIT/CDC/epoch behavior;
+full-chain DPD Identity remains OPEN/INCONCLUSIVE. Raw Condition remains 658/849,
+Raw equals Adjusted, approved waivers and active `.el` exclusions are both
+zero, and the gate remains `RAW_100_OPEN`. Of the 20,893 records in the prior
+open-bin snapshot, two exact Condition roots are `PROVEN_UNREACHABLE`; all
+other records remain OPEN. Full proof scope, hashes and reproduction commands
+are in the [DPD vector payload-hold Formal report](thermo5-tx-dpd-payload-hold-formal-20261103.md)
+and [machine-readable evidence](data/thermo5-tx-dpd-payload-hold-formal-20261103.json).
+The two exact Condition dispositions are detailed in the [DPD ready/valid Formal evidence](thermo5-tx-dpd-ready-condition-closure-20261103.md)
 and [machine-readable audit](data/thermo5-tx-dpd-ready-condition-formal-20261103.json),
 and the [AXI-Lite line-93 Formal evidence](thermo5-tx-axil-line93-condition-closure-20261103.md)
 and [machine-readable audit](data/thermo5-tx-axil-line93-condition-formal-20261103.json).

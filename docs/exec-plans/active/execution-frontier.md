@@ -12,6 +12,11 @@ The two focused Condition Formal dispositions are published as Draft PR #33,
 `codex/thermo5-tx-focused-condition-formal-closure`, stacked on PR #32 head
 `96ac24b622a1d21b344de79e4d19adc555ee6a92`. PR #33 remains unmerged.
 
+The scoped 16-lane DPD vector output stall-hold proof (33/33 assertions, 17
+non-vacuous, 3/3 Covers) is the subject of Draft PR #34,
+`codex/thermo5-tx-dpd-payload-hold-formal`, stacked on PR #33 and not merged.
+It proves the vector leaf protocol only; full-chain DPD Identity remains OPEN.
+
 ### Current Raw/Adjusted coverage
 
 The latest same-list Raw/Adjusted URG report uses one design VDB and 247 unique
@@ -68,9 +73,14 @@ activity Covers; the exact bad-tuple Cover is uncoverable. At
 `thermo5_dpd_axi_lite_cfg.sv:93`, the `write_fire` tuple `0/1/1` has a proven
 non-vacuous BVALID exclusion assertion and reached normal write/response
 Covers; its exact tuple Cover is uncoverable. Both Raw bins remain unhit and
-retained, with zero waivers and no `.el` exclusions. The separate DPD
-full-payload hold assertion is inconclusive at depth 15 and remains OPEN. See
-the per-bin Formal reports and machine-readable evidence.
+retained, with zero waivers and no `.el` exclusions. The former monolithic DPD full-output hold proof was INCONCLUSIVE at depth 15
+and a later aggregate attempt at depth 294. A scoped vector-leaf proof now
+splits the 512-bit payload into 16 lane properties and proves all lane payload
+holds, metadata hold and lane-valid lockstep (33/33 assertions; 17 payload/
+metadata assertions non-vacuous; 3/3 Covers; no assumptions or black boxes).
+This closes the vector leaf's stall-hold protocol only; full-chain DPD Identity
+arithmetic and COMMIT/CDC/epoch behavior remain OPEN. Raw URG remains unchanged.
+See `thermo5-tx-dpd-payload-hold-formal-20261103.md` and its evidence JSON.
 
 ### Checks, evidence, and next action
 

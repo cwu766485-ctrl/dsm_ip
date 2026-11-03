@@ -1,0 +1,274 @@
+{
+  "auditor_output": {
+    "audited_at_utc": "2026-11-03T09:31:14.711364+00:00",
+    "coverage_impact": {
+      "code_coverage_gate": "RAW_100_OPEN",
+      "raw_adjusted_same_list_metrics_unchanged": {
+        "active_exclusions": 0,
+        "approved_waivers": 0,
+        "branch": "525/637",
+        "condition": "658/849",
+        "fsm_states": "13/13",
+        "fsm_transitions": "17/22",
+        "functional": "392/392",
+        "line": "3351/3796",
+        "raw_adjusted_equal": true,
+        "raw_report_manifest_sha256": "89a160024a966e65f1bd7db279bc2f6acef3ae7197698bace17a8942838e4840",
+        "toggle": "84340/104480",
+        "vdb_manifest_sha256": "dd85345f197cb05f5aa60713b78269c3347ff3b786da4f501de6ef7676a77fa7"
+      },
+      "raw_code_coverage_delta": "NOT_MEASURED; Formal does not create URG hits",
+      "raw_urg_rerun": false
+    },
+    "errors": [],
+    "formal": {
+      "artifact_sha256": {
+        "engines.txt": "3c931dd72d60cf50c796508d3c383da5568bf94b6f654088456825dc7f3176d8",
+        "properties.txt": "061773fb7c0283894c279ddb8de54dc7a0ced7392b39a500ee534aeb51fef0e0",
+        "run_result.json": "65f25adae527a5a58b3fc02232fd0cc992d368de55f43957653259ed49ba94fa",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "38f78a5f51ecb7b42229186ac23cfa666cb568dad4511e0ffb4495b6910b431d"
+      },
+      "assertions": {
+        "thermo5_dpd_payload_hold_harness.a_meta_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.a_meta_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[0].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[0].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[0].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[0].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[10].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[10].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[10].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[10].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[11].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[11].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[11].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[11].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[12].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[12].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[12].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[12].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[13].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[13].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[13].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[13].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[14].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[14].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[14].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[14].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[15].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[15].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[15].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[15].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[1].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[1].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[1].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[1].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[2].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[2].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[2].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[2].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[3].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[3].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[3].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[3].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[4].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[4].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[4].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[4].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[5].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[5].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[5].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[5].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[6].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[6].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[6].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[6].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[7].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[7].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[7].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[7].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[8].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[8].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[8].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[8].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[9].a_lane_payload_hold": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[9].a_lane_payload_hold",
+          "non_vacuous": true,
+          "state": "proven"
+        },
+        "thermo5_dpd_payload_hold_harness.g_lane_hold[9].a_lane_valid_lockstep": {
+          "name": "thermo5_dpd_payload_hold_harness.g_lane_hold[9].a_lane_valid_lockstep",
+          "non_vacuous": false,
+          "state": "proven"
+        }
+      },
+      "black_box_instances": 0,
+      "covers": {
+        "thermo5_dpd_payload_hold_harness.c_input_accept": "covered",
+        "thermo5_dpd_payload_hold_harness.c_output_stall": "covered",
+        "thermo5_dpd_payload_hold_harness.c_stall_release": "covered"
+      },
+      "duration_seconds": 102.63,
+      "environment_assumptions": 0,
+      "exit_code": 0,
+      "formal_directory": "runs/thermo5_dpd_payload_hold_formal_20261103",
+      "reset_initial_constraint": "rst_n==1",
+      "run_command": [
+        "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+        "-batch",
+        "-fmode",
+        "FPV",
+        "-f",
+        "/tmp/dsm_ip_tx_formal_followup/dv/uvm/formal/run_thermo5_dpd_payload_hold_fpv.tcl"
+      ],
+      "setup_violations": 0,
+      "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+    },
+    "formal_source_sha256": {
+      "dv/uvm/formal/run_thermo5_dpd_payload_hold_fpv.py": "f182661cc682092e229ad9148fe10415c3ed2e9900fdf78a41848752f3bb041c",
+      "dv/uvm/formal/run_thermo5_dpd_payload_hold_fpv.tcl": "3072a21be021ec45fd259be0d5f556eeeeb2c96597d8d6d3bbcea5135777d163",
+      "dv/uvm/formal/thermo5_dpd_payload_hold_harness.sv": "117f52544947a1fd7d8721e88d4a84a8a571cef5f4708a20e69e85b7c4a99413",
+      "tools/hw/audit_thermo5_dpd_payload_hold_fpv.py": "cfb26907d664846372fbec7fb747d94811748e5fd05ce98d7c3ab59b3679c181"
+    },
+    "product_rtl": {
+      "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+      "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+      "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a"
+    },
+    "schema_version": 1,
+    "scope": {
+      "product_configuration": {
+        "active_taps": "unconstrained 3-bit input",
+        "coefficient_image": "unconstrained runtime coefficient inputs",
+        "lanes": 16,
+        "max_taps": 1,
+        "metadata": "unconstrained 2-bit input",
+        "module": "dpd_vector16_memory_poly",
+        "ready_valid_inputs": "unconstrained; zero environment assumptions",
+        "sample_width_bits": 16
+      },
+      "properties": {
+        "equivalent_to": "stable 512-bit I/Q payload, metadata, and valid under output stall",
+        "lane_payload_hold": 16,
+        "lane_valid_lockstep": 16,
+        "metadata_hold": 1
+      }
+    },
+    "source_state": {
+      "git_revision": "5b40881256444bcc6f88d0959a8af7336a776ca7",
+      "git_status": [],
+      "worktree_dirty": false
+    },
+    "status": "PASS_SCOPED_DPD_VECTOR_STALL_HOLD"
+  },
+  "raw_coverage_interpretation": {
+    "code_coverage_delta": "NOT_MEASURED; a Formal proof does not add URG hits.",
+    "gate": "RAW_100_OPEN",
+    "raw_adjusted": "Unchanged, equal, with zero approved waivers and zero active exclusions.",
+    "urg_rerun": false
+  },
+  "report_sha256": "8aa3e097fab6e2d9c9d4ef70a56451db8f896807d802c8391202f47dfbca5e28",
+  "schema_version": 1,
+  "scope_interpretation": {
+    "claim": "For the 16-lane, 16-bit, MAX_TAPS=1 DPD vector leaf, while out_valid is asserted and out_ready is low, all 16 complex sample lanes and metadata remain stable on the next cycle; all lane valid signals equal aggregate out_valid.",
+    "decomposition": "16 lane assertions each cover 16-bit I and 16-bit Q (512 payload bits total), plus one metadata assertion and 16 all-lane valid-lockstep assertions.",
+    "input_space": "active_taps, all coefficient inputs, metadata, sample data, in_valid, and out_ready are unconstrained. No protocol/environment assumptions are added.",
+    "not_claimed": "This does not prove DPD arithmetic identity, AXI-Lite COMMIT/CDC/epoch behavior, complete TX-chain equivalence, or overall code-coverage closure. The full-chain DPD Identity goal remains OPEN/INCONCLUSIVE."
+  },
+  "status": "PASS_SCOPED_DPD_VECTOR_STALL_HOLD",
+  "title": "Thermo5 16-lane DPD vector payload hold Formal result"
+}
