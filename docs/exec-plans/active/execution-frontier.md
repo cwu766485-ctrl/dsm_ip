@@ -15,6 +15,25 @@ The two focused Condition Formal dispositions are published as Draft PR #33,
 The scoped 16-lane DPD vector output stall-hold proof (33/33 assertions, 17
 non-vacuous, 3/3 Covers) is the subject of Draft PR #34,
 `codex/thermo5-tx-dpd-payload-hold-formal`, stacked on PR #33 and not merged.
+
+Draft PR #36 is a separate outstanding-counter follow-up stacked on PR #35.
+Its product-bound outstanding-counter
+properties and exact saturation/underflow guard Covers remain INCONCLUSIVE;
+the two Raw Branch records remain OPEN and are not waived.
+
+Draft PR #37, `codex/thermo5-tx-frame-tail-condition-formal`, is stacked on
+PR #35 and not merged. On clean verification-source SHA
+`2715b7a99042b3cd261884e53a82f287fe243ec6`, VC Formal V-2023.12-SP2 passed a
+composed two-stage centered-cubic metadata proof and a separate runtime-reset
+proof. The two exact reset-low line-309 Condition Covers are uncoverable with
+non-vacuous reset-empty assertions and queue-full/runtime-reset witnesses. The
+stage-2 active line-309 Condition Cover is uncoverable in the composed
+interpolator chain under the 56-sample DSP-frame / 448-sample packet contract,
+with non-vacuous frame-start, packet-end, tail and output Covers. The composed
+proof omits the intervening elastic FIFOs and DPD pipeline, so all three Raw
+rows remain present and OPEN pending independent waiver review; no `.el`, Raw
+or Adjusted change was made. Exact mapping, commands and hashes are in
+`thermo5-tx-frame-tail-condition-formal-20261103.md` and its JSON evidence.
 It proves the vector leaf protocol only; full-chain DPD Identity remains OPEN.
 
 A follow-up branch `codex/thermo5-tx-dpd-identity-stall-formal` is stacked on
@@ -77,7 +96,7 @@ compile/VDB manifests; 371 candidates remain pending (361 configuration and
 10 Formal candidates), with zero approvals and zero active `.el` directives.
 See `docs/verification/thermo5-tx-waiver-review-round7.md`.
 
-Two exact Raw Condition roots are now `PROVEN_UNREACHABLE` by focused
+Two earlier exact Raw Condition roots are `PROVEN_UNREACHABLE` by focused
 VC Formal runs against the same 247-test Raw report. At
 `dpd_vector16_memory_poly.sv:93`, the DPD ready/valid tuple `0/1` has a proven
 non-vacuous `!out_valid -> in_ready` assertion and reached input/output/stall
@@ -121,15 +140,16 @@ The extended outstanding Formal property matrix and tool/log hashes are indexed
 in `docs/verification/thermo5-tx-outstanding-formal-extended-20261103.md` and
 its adjacent JSON evidence file.
 
-Do not spend more random seeds on the unchanged coverage gaps. Next, refactor
-the outstanding-counter proof around a source-bound in-flight-capacity lemma
-without imposing a source-gap or PA-stall bound; retain both guard goals as
-OPEN unless the exact assertion or guard Cover resolves. Then target
-source-bound Reset/State-Hold and remaining Condition roots. The line-93 DPD
-condition root is formally dispositioned; its Raw miss remains visible. Keep unresolved
-bins OPEN and waivers pending until reviewed. Real XPM, GT Wizard, FPGA
-PPA/routed timing and physical RF/QAM256 remain outside Linux signoff. Do not
-merge PRs or modify the frozen TX algorithm.
+Do not spend more random seeds on the unchanged coverage gaps. Next, review the
+three line-309 Condition records against the exact product metadata pass-through
+through both elastic FIFOs and the DPD pipeline; keep the Raw rows OPEN and all
+waivers pending until that review is recorded. Then select the next exact
+Reset/State-Hold root by source position. Continue to treat the outstanding
+counter as INCONCLUSIVE, with both guard goals OPEN and no source-gap or
+PA-stall bound. The line-93 DPD condition root is formally dispositioned; its
+Raw miss remains visible. Real XPM, GT Wizard, FPGA PPA/routed timing and
+physical RF/QAM256 remain outside Linux signoff. Do not merge PRs or modify
+the frozen TX algorithm.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 

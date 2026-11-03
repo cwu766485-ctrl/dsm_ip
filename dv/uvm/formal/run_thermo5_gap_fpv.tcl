@@ -50,6 +50,14 @@ switch -- $top {
     set sources [list [file join $repo rtl interp dsm_interp_x2_centered_cubic_vector.sv] \
       [file join $repo dv uvm formal thermo5_frame_tail_harness.sv]]
   }
+  thermo5_frame_tail_legal_metadata_harness {
+    set sources [list [file join $repo rtl interp dsm_interp_x2_centered_cubic_vector.sv] \
+      [file join $repo dv uvm formal thermo5_frame_tail_harness.sv]]
+  }
+  thermo5_frame_tail_reset_condition_harness {
+    set sources [list [file join $repo rtl interp dsm_interp_x2_centered_cubic_vector.sv] \
+      [file join $repo dv uvm formal thermo5_frame_tail_harness.sv]]
+  }
   thermo5_ef2_product_params_harness {
     set sources [list [file join $repo rtl gt gt_tx_user_bridge.sv] \
       [file join $repo rtl gt gt_tx_raw64_boundary.sv] \
@@ -68,7 +76,7 @@ if {$top eq "thermo5_cdc_residual_harness"} {
 } else {
   create_clock clk -period 10
 }
-if {$top eq "thermo5_reset_gap_harness"} {
+if {$top eq "thermo5_reset_gap_harness" || $top eq "thermo5_frame_tail_reset_condition_harness"} {
   create_reset boot_n -sense low
 } else {
   create_reset rst_n -sense low

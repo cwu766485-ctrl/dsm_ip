@@ -35,7 +35,7 @@ def main():
                     help='Also prove identity arithmetic/latency and generic CDC residual legality')
     ap.add_argument('--residual-only',action='store_true',
                     help='Add the residual proof without the optional expensive arithmetic proof')
-    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','cdc_end_branch','ef2','ef2_pair','frame_tail','ef2_product_params'),
+    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','cdc_end_branch','ef2','ef2_pair','frame_tail','frame_tail_legal_metadata','frame_tail_reset_condition','ef2_product_params'),
                     help='Run selected existing jobs for focused diagnosis')
     args=ap.parse_args(); out=Path(args.out_dir).resolve()
     if ROOT/'runs' not in out.parents or out.exists(): ap.error('Use a new runs/ directory')
@@ -75,6 +75,21 @@ def main():
         result['scope']['cdc_end_branch']='Exact product 14:8 CDC gearbox and Generic FIFO; legal 32-beat AXIS packets; prove line-210 immediate frame-end arm unreachable and require legal frame-end context Cover'
     if args.jobs and 'frame_tail' in args.jobs:
         result['scope']['frame_tail']='Exact product centered-cubic stage geometry: W=16/LANES=8/APPEND_TAIL_VECTOR=1 at stage 1, W=16/LANES=16/APPEND_TAIL_VECTOR=0 at stage 2; stage-1 input tail tied low as in the product; prove legal single-entry pop/push reachable and exact tail-only paths uncoverable'
+    if args.jobs and 'frame_tail_legal_metadata' in args.jobs:
+        result['scope']['frame_tail_legal_metadata']=(
+            'Exact centered-cubic product stage geometries and legal frame-marker schedules: '
+            'stage 1 accepts 7 vectors of 8 lanes per 56-sample DSP frame, with frame_start '
+            'on each frame and TLAST/frame_end only on vector 56 of an eight-frame, 448-sample '
+            'packet. Stage 2 accepts 8 vectors of 16 lanes per DSP frame, with the final '
+            'synthetic tail tagged end/tail. The two production interpolator RTL stages are '
+            'directly composed with ready/valid backpressure. Intermediate elastic FIFOs and '
+            'DPD are omitted; this result alone does not disposition Raw URG bins.')
+    if args.jobs and 'frame_tail_reset_condition' in args.jobs:
+        result['scope']['frame_tail_reset_condition']=(
+            'Exact product interpolation geometries. Initial boot reset is followed by an '
+            'unconstrained runtime reset request sampled only on the inactive clock edge. '
+            'The harness requires nonempty queue and runtime-reset witnesses, proves queue '
+            'empty while reset is active, and targets only reset-low operands of line 309.')
     if any(kind in kinds for kind in ('ef2','ef2_pair')):
         result['configuration']={'proof_core':'thermo5_ef2',
             'input_width_bits':16,'state_width_bits':20,
@@ -87,7 +102,7 @@ def main():
     for kind in kinds:
         top=('thermo5_ef2_stability_harness' if kind=='ef2' else
              'thermo5_ef2_pair_equiv_harness' if kind=='ef2_pair' else
-             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual','cdc_end_branch','frame_tail','ef2_product_params') else
+             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual','cdc_end_branch','frame_tail','frame_tail_legal_metadata','frame_tail_reset_condition','ef2_product_params') else
              f'thermo5_{kind}_gap_harness')
         work=out/kind; work.mkdir()
         env=os.environ.copy()
@@ -104,10 +119,32 @@ def main():
             properties=(work/'properties.txt').read_text()
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
-            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 3 if kind=='cdc_end_branch' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 1 if kind=='cdc_end_branch' else 3
+            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 3 if kind=='cdc_end_branch' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 8 if kind=='frame_tail_legal_metadata' else 8 if kind=='frame_tail_reset_condition' else 4
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 2 if kind=='frame_tail_legal_metadata' else 2 if kind=='frame_tail_reset_condition' else 1 if kind=='cdc_end_branch' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
-            if kind=='frame_tail':
+            if kind=='frame_tail_legal_metadata':
+                expected_cover_states={'c_append_subframe_start':'covered',
+                    'c_append_packet_end':'covered',
+                    'c_append_tail_transfer':'covered',
+                    'c_plain_tail_consumed':'covered',
+                    'c_append_output_transfer':'covered',
+                    'c_plain_output_transfer':'covered',
+                    'c_append_active_bin':'uncoverable',
+                    'c_plain_active_bin':'uncoverable'}
+                observed_cover_states={n.rsplit('.',1)[-1]:s for s,n in covers}
+                ok=ok and len(covers)==expected_covers and observed_cover_states==expected_cover_states
+            elif kind=='frame_tail_reset_condition':
+                expected_cover_states={'c_append_queue_nonempty':'covered',
+                    'c_append_runtime_reset':'covered',
+                    'c_append_reset_empty':'covered',
+                    'c_append_reset_bin':'uncoverable',
+                    'c_plain_queue_nonempty':'covered',
+                    'c_plain_runtime_reset':'covered',
+                    'c_plain_reset_empty':'covered',
+                    'c_plain_reset_bin':'uncoverable'}
+                observed_cover_states={n.rsplit('.',1)[-1]:s for s,n in covers}
+                ok=ok and len(covers)==expected_covers and observed_cover_states==expected_cover_states
+            elif kind=='frame_tail':
                 expected_cover_states={'c_append_frame_end':'covered',
                     'c_append_tail_transfer':'covered','c_plain_frame_end':'covered',
                     'c_plain_tail_unreachable':'uncoverable',
@@ -153,6 +190,14 @@ def main():
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*4\b',properties))
                 elif kind=='ef2_pair':
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*[1-9]\d*\b',properties))
+                elif kind=='frame_tail_legal_metadata':
+                    ok=ok and bool(re.search(
+                        r'constrained\s+\(non_vacuous\).*\.asm_source_valid_stable',properties))
+                elif kind=='frame_tail_reset_condition':
+                    ok=ok and bool(re.search(
+                        r'proven\s+\(non_vacuous\).*\.a_append_reset_empty',properties))
+                    ok=ok and bool(re.search(
+                        r'proven\s+\(non_vacuous\).*\.a_plain_reset_empty',properties))
                 elif kind=='frame_tail':
                     ok=ok and bool(re.search(
                         r'constrained\s+\(non_vacuous\).*\.asm_source_stable',properties))

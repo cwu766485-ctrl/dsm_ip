@@ -5866,3 +5866,31 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   SHA-indexed in the evidence JSON.
 - GitHub PR #27 → #28 → #29 → #30 → #31 dependency chain was checked; all are
   open and unmerged, with #30 and #31 drafts. No PR was merged in this step.
+
+## 2026-11-03 20:47 SGT - Centered frame-tail Condition Formal follow-up
+
+- Added exact line-309 Formal targets for the three OPEN centered-cubic
+  Condition records. Two reset-low operand bins are unreachable after a
+  non-vacuous runtime-reset proof. The active stage-2 bin is unreachable in a
+  directly composed two-stage centered-cubic model using the legal 56-sample
+  DSP-frame / 448-sample packet metadata contract.
+- Corrected an initial exploratory schedule after checking the interface
+  contract: frame starts mark each 56-sample DSP frame, while `frame_end/TLAST`
+  occurs at the 448-sample AXIS packet boundary. The superseded run is not used
+  as evidence.
+- No product RTL/algorithm, Raw VDB, URG denominator, waiver approval, or `.el`
+  Exclusion changed. All three exact Raw rows remain pending independent
+  waiver review; coverage delta is zero and the gate remains `RAW_100_OPEN`.
+- Added the Formal report and machine-readable evidence under
+  `docs/verification/thermo5-tx-frame-tail-condition-formal-20261103.md` and
+  `docs/verification/data/thermo5-tx-frame-tail-condition-formal-20261103.json`.
+  Full logs remain locally in ignored `runs/` and are indexed by SHA-256.
+- Checks: VC Formal V-2023.12-SP2, both targeted jobs PASS (2/2 assertions
+  each, all non-vacuous; 12 activity/reset Covers reached and 4 exact
+  line-309 Covers reported uncoverable); setup violations 0 and black boxes
+  0. Python `py_compile` and `git diff --check` PASS. VCS and URG were not
+  rerun because product RTL and simulation/VDB inputs are unchanged.
+- Remaining review: the composed active-bin proof omits the two intervening
+  elastic FIFOs and DPD metadata pipeline; audit those product connections
+  before approving a waiver. Other code-coverage roots and the two outstanding
+  counter guards remain OPEN/INCONCLUSIVE.
