@@ -19,6 +19,8 @@
   compile and their JSON outputs parse; `git diff --check` PASS. The full UVM
   regression and Raw URG were not rerun because neither simulation inputs nor
   VDBs changed.
+- Published as Draft PR #33 on `codex/thermo5-tx-focused-condition-formal-closure`,
+  stacked on Draft PR #32 at its exact head; no PR was merged.
 
 ## 2026-11-03 16:30 SGT - Rebind TX waiver audit to the latest Formal review
 

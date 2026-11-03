@@ -3,7 +3,7 @@
     "path": "docs/verification/data/thermo5-tx-assertion-dpd-local-formal-20261103.json",
     "sha256": "11cbdf1da304ab9b19e24f95a8c5e009eefe9b4e7d17b07de28e9040cc790f39"
   },
-  "branch": "codex/thermo5-tx-waiver-audit-round1",
+  "branch": "codex/thermo5-tx-focused-condition-formal-closure",
   "coverage": {
     "active_exclusions": 0,
     "all_open": false,
@@ -288,7 +288,7 @@
       "sha256": "4f9c0bf517fa217af85cf0637aa49f4032ed5fe338f1569d032cd7e49c85c654"
     }
   },
-  "execution_branch": "codex/thermo5-tx-waiver-audit-round1",
+  "execution_branch": "codex/thermo5-tx-focused-condition-formal-closure",
   "external_signoff_open": [
     "real XPM simulation",
     "GT Wizard simulation",
@@ -662,14 +662,13 @@
   },
   "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
   "pull_request": {
-    "base": "codex/thermo5-tx-w1c-coverage-round2",
-    "coverage_refresh_included": false,
+    "base": "codex/thermo5-tx-formal-waiver-closure-followup",
     "draft": true,
-    "head": "codex/thermo5-tx-waiver-audit-round1",
-    "note": "This local refresh is not present on the remote PR head yet.",
-    "number": 31,
+    "head": "codex/thermo5-tx-focused-condition-formal-closure",
+    "note": "Focused Condition Formal evidence follow-up, stacked directly on Draft PR #32 at head 96ac24b622a1d21b344de79e4d19adc555ee6a92; unmerged.",
+    "number": 33,
     "state": "open",
-    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/31"
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/33"
   },
   "schema_version": 1,
   "tool_checks": {

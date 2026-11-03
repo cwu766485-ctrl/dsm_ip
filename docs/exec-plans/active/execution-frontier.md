@@ -8,6 +8,10 @@ ORDER=2/STEP=5120/20-bit state, DPD_MAX_TAPS=1 with Identity reset image,
 AXI-Lite and Generic FIFO. No RX, AI-DPD, product RTL/algorithm or Vivado
 physical implementation work is in scope.
 
+The two focused Condition Formal dispositions are published as Draft PR #33,
+`codex/thermo5-tx-focused-condition-formal-closure`, stacked on PR #32 head
+`96ac24b622a1d21b344de79e4d19adc555ee6a92`. PR #33 remains unmerged.
+
 ### Current Raw/Adjusted coverage
 
 The latest same-list Raw/Adjusted URG report uses one design VDB and 247 unique

@@ -5,6 +5,7 @@ VCS execution branch: `codex/thermo5-tx-system-random`
 Waiver audit branch: `codex/thermo5-tx-waiver-audit-round1` (Draft PR #31, stacked on PR #30)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
+Current focused Formal increment: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`, stacked on PR #32.
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,
 four 64-bit PA planes, `DPD_MAX_TAPS=1`, Identity reset image, AXI-Lite,
 Generic FIFO.
