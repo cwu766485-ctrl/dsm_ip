@@ -1,3 +1,25 @@
+## 2026-11-03 17:05 SGT - Prove two retained TX Raw Condition tuples unreachable
+
+- Ran focused VC Formal V-2023.12-SP2 on the product one-tap DPD ready/valid
+  relation and the AXI-Lite `write_fire` response relation. Both exact tuple
+  Covers were reported uncoverable; the corresponding implications were
+  proven non-vacuously with zero environment assumptions, zero black boxes,
+  and zero selected setup violations.
+- Bound each result to its exact Not Covered tuple in the same 247-test Raw
+  URG report and recorded source, harness, Tcl, Formal log, report, and VDB
+  hashes in separate fail-closed audit JSON and closure reports.
+- Raw Condition remains 658/849; Raw equals Adjusted, with zero approved
+  waivers and zero active `.el` exclusions. The gate remains `RAW_100_OPEN`.
+  Two of the 20,893 records in the latest open-bin snapshot now have exact
+  `PROVEN_UNREACHABLE` root-cause dispositions; the other 20,891 remain OPEN.
+- Updated the active execution frontier and Linux signoff. No DUT RTL,
+  algorithm, coverage denominator, or VDB was changed. The separate 512-bit
+  DPD payload-hold property remains INCONCLUSIVE at depth 15.
+- Checks: focused DPD and AXI-Lite Formal audits PASS; Python audit scripts
+  compile and their JSON outputs parse; `git diff --check` PASS. The full UVM
+  regression and Raw URG were not rerun because neither simulation inputs nor
+  VDBs changed.
+
 ## 2026-11-03 16:30 SGT - Rebind TX waiver audit to the latest Formal review
 
 - The current waiver CSV and Round 6 candidate audit were bound to an earlier

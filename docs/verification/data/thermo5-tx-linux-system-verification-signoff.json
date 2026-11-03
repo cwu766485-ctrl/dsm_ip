@@ -6,7 +6,9 @@
   "branch": "codex/thermo5-tx-waiver-audit-round1",
   "coverage": {
     "active_exclusions": 0,
-    "all_open": true,
+    "all_open": false,
+    "all_raw_misses_retained": true,
+    "all_unhit_roots_dispositioned_or_open": true,
     "approved_waivers": 0,
     "assertions_positive": {
       "failures": 0,
@@ -84,6 +86,33 @@
       }
     },
     "expected_negative_failures_in_union": 2,
+    "focused_formal_condition_dispositions": [
+      {
+        "disposition": "PROVEN_UNREACHABLE",
+        "evidence": {
+          "path": "docs/verification/data/thermo5-tx-dpd-ready-condition-formal-20261103.json",
+          "sha256": "5f906108a42293ed8388729dabe0530aa54c9a127aa16bafb1aa62bec579dfe4"
+        },
+        "raw_bin_id": "ecc391f634f890dbadb6",
+        "raw_state": "NOT_COVERED_RETAINED",
+        "semantic_bin_id": "TXB-33613a1855fcc02e8ef4",
+        "source_position": "rtl/dpd/dpd_vector16_memory_poly.sv:93",
+        "task_id": "TXC-42b3e1174f6032fbbd84"
+      },
+      {
+        "disposition": "PROVEN_UNREACHABLE",
+        "evidence": {
+          "path": "docs/verification/data/thermo5-tx-axil-line93-condition-formal-20261103.json",
+          "sha256": "9b9495bcbbb2ec64e909f599e3b095e46d9e7e0cf43d374a4d012250c1bec038"
+        },
+        "raw_bin_id": "13d6754bf69d80bac0ac",
+        "raw_state": "NOT_COVERED_RETAINED",
+        "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
+        "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
+        "task_id": "TXC-4a1d631568353e7f8633"
+      }
+    ],
+    "formally_dispositioned_unreachable_records": 2,
     "fsm": {
       "states": {
         "covered": 13,
@@ -104,10 +133,14 @@
       "percent": 88.2771,
       "total": 3796
     },
-    "open_code_records": 20893,
+    "note": "Raw misses include the two formally dispositioned but still unhit Condition bins. These are excluded from unresolved OPEN root-cause counts only; they remain in the Raw denominator.",
+    "open_code_records": 20891,
+    "open_rootcause_task_groups": 455,
     "pending_waivers": 371,
     "positive_test_vdb_count": 243,
     "raw_adjusted_equal": true,
+    "raw_unhit_code_records": 20893,
+    "reachable_open_bins_closed": false,
     "rootcause_task_groups": 457,
     "same_vdb_list_for_raw_adjusted": true,
     "status": "RAW_100_OPEN",
@@ -173,6 +206,14 @@
     "expected_negative_assertion_urg": {
       "path": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/axil_negative_assertion_urg_20261103/report_manifest.json",
       "sha256": "f499afc3f62e6b61886f6432198c0e506d590964d2be244cea1b3852ba3491bc"
+    },
+    "focused_axil_write_fire_condition_formal": {
+      "path": "docs/verification/data/thermo5-tx-axil-line93-condition-formal-20261103.json",
+      "sha256": "9b9495bcbbb2ec64e909f599e3b095e46d9e7e0cf43d374a4d012250c1bec038"
+    },
+    "focused_dpd_ready_condition_formal": {
+      "path": "docs/verification/data/thermo5-tx-dpd-ready-condition-formal-20261103.json",
+      "sha256": "5f906108a42293ed8388729dabe0530aa54c9a127aa16bafb1aa62bec579dfe4"
     },
     "focused_product_formal_review": {
       "path": "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
@@ -283,6 +324,46 @@
       "limitations": "Fixed one-tap Q14 unity coefficient, tap vector=input, out_ready=1. Does not prove stalls, AXI commit/epoch behavior or full-chain DPD Identity; full-chain result remains inconclusive/open.",
       "status": "PASS_SCOPED"
     },
+    "focused_condition_reachability": {
+      "black_box_instances": 0,
+      "environment_assumptions": 0,
+      "exclusions_active": 0,
+      "limitations": {
+        "dpd_full_payload_hold": "INCONCLUSIVE at depth 15; remains OPEN",
+        "proof_scope": "Exact source-bound condition reachability only; not full TX equivalence or overall code-coverage closure"
+      },
+      "raw_denominator_changed": false,
+      "results": [
+        {
+          "disposition": "PROVEN_UNREACHABLE",
+          "evidence": {
+            "path": "docs/verification/data/thermo5-tx-dpd-ready-condition-formal-20261103.json",
+            "sha256": "5f906108a42293ed8388729dabe0530aa54c9a127aa16bafb1aa62bec579dfe4"
+          },
+          "raw_bin_id": "ecc391f634f890dbadb6",
+          "raw_state": "NOT_COVERED_RETAINED",
+          "semantic_bin_id": "TXB-33613a1855fcc02e8ef4",
+          "source_position": "rtl/dpd/dpd_vector16_memory_poly.sv:93",
+          "task_id": "TXC-42b3e1174f6032fbbd84"
+        },
+        {
+          "disposition": "PROVEN_UNREACHABLE",
+          "evidence": {
+            "path": "docs/verification/data/thermo5-tx-axil-line93-condition-formal-20261103.json",
+            "sha256": "9b9495bcbbb2ec64e909f599e3b095e46d9e7e0cf43d374a4d012250c1bec038"
+          },
+          "raw_bin_id": "13d6754bf69d80bac0ac",
+          "raw_state": "NOT_COVERED_RETAINED",
+          "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
+          "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
+          "task_id": "TXC-4a1d631568353e7f8633"
+        }
+      ],
+      "setup_violations": 0,
+      "status": "PASS_FOR_TWO_EXACT_RAW_CONDITION_ROOTS",
+      "tool": "VC Formal V-2023.12-SP2",
+      "waivers_approved": 0
+    },
     "outstanding_counter_guards": {
       "assertions": {
         "a_no_counter_saturation_guard": "inconclusive",
@@ -363,6 +444,9 @@
   "implementation_commit": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
   "latest_coverage_refresh": {
     "active_exclusions": 0,
+    "all_open": false,
+    "all_raw_misses_retained": true,
+    "all_unhit_roots_dispositioned_or_open": true,
     "applicable_functional_bins": {
       "covered": 392,
       "total": 392
@@ -385,6 +469,33 @@
       "toggle_hits": 0
     },
     "design_vdbs": 1,
+    "focused_formal_condition_dispositions": [
+      {
+        "disposition": "PROVEN_UNREACHABLE",
+        "evidence": {
+          "path": "docs/verification/data/thermo5-tx-dpd-ready-condition-formal-20261103.json",
+          "sha256": "5f906108a42293ed8388729dabe0530aa54c9a127aa16bafb1aa62bec579dfe4"
+        },
+        "raw_bin_id": "ecc391f634f890dbadb6",
+        "raw_state": "NOT_COVERED_RETAINED",
+        "semantic_bin_id": "TXB-33613a1855fcc02e8ef4",
+        "source_position": "rtl/dpd/dpd_vector16_memory_poly.sv:93",
+        "task_id": "TXC-42b3e1174f6032fbbd84"
+      },
+      {
+        "disposition": "PROVEN_UNREACHABLE",
+        "evidence": {
+          "path": "docs/verification/data/thermo5-tx-axil-line93-condition-formal-20261103.json",
+          "sha256": "9b9495bcbbb2ec64e909f599e3b095e46d9e7e0cf43d374a4d012250c1bec038"
+        },
+        "raw_bin_id": "13d6754bf69d80bac0ac",
+        "raw_state": "NOT_COVERED_RETAINED",
+        "semantic_bin_id": "TXB-872eb98e51c3229e4c86",
+        "source_position": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93",
+        "task_id": "TXC-4a1d631568353e7f8633"
+      }
+    ],
+    "formally_dispositioned_unreachable_records": 2,
     "fsm": {
       "states": {
         "covered": 13,
@@ -399,8 +510,9 @@
         "total": 22
       }
     },
-    "note": "247 unique test VDBs include 243 legal positive, two expected-negative, and two additional legal directed VDBs. Raw/Adjusted code metrics match the 246-test checkpoint; assertion signoff uses separate positive and expected-negative URG reports.",
-    "open_code_records": 20893,
+    "note": "247 unique test VDBs include 243 legal positive, two expected-negative, and two additional legal directed VDBs. Raw/Adjusted code metrics match the 246-test checkpoint; assertion signoff uses separate positive and expected-negative URG reports. Focused Formal reclassified two exact Condition roots as PROVEN_UNREACHABLE; both Raw bins remain Not Covered and retained, so code-coverage score and denominator did not change.",
+    "open_code_records": 20891,
+    "open_rootcause_task_groups": 455,
     "pending_waivers": 371,
     "positive_test_vdbs": 243,
     "raw": {
@@ -430,6 +542,8 @@
       }
     },
     "raw_equals_adjusted": true,
+    "raw_unhit_code_records": 20893,
+    "reachable_open_bins_closed": false,
     "report_manifest_sha256": "89a160024a966e65f1bd7db279bc2f6acef3ae7197698bace17a8942838e4840",
     "rootcause_task_groups": 457,
     "status": "RAW_100_OPEN",
@@ -623,6 +737,7 @@
       }
     },
     "expected_negative_assertion_checker": "PASS; exact CDC plus both interpolator assertion events; reset recovery PASS; UVM warning/error/fatal 0/0/0",
+    "focused_formal_condition_dispositions": "PASS; two exact tuple Covers uncoverable with non-vacuous implications; DPD payload-hold property remains INCONCLUSIVE",
     "git_diff_check": "PASS; git diff --check run after Round 7 documentation and evidence binding updates",
     "hardware_utility_tests": "PASS 42/42; latest saved log includes fail-closed checker mutation tests",
     "integrated_negative_make_target": "PASS; fresh compile, seed 420102; exact three expected RTL assertion events, reset recovery, checker PASS, UVM warning/error/fatal 0/0/0",

@@ -37,12 +37,47 @@ Branch. The latest same-list Raw/Adjusted URG report uses 247 unique test VDBs
 plus one design VDB and reports Branch 525/637,
 Condition 658/849, Line 3351/3796, Toggle 84340/104480, FSM 13/13 states and
 17/22 transitions; legal applicable functional coverage is 392/392. The open
-ledger contains 20,893 records in 457 groups, all still OPEN. Raw equals
+ledger at that refresh contained 20,893 records in 457 groups. A later focused
+Formal addendum below reclassifies two exact condition roots; their Raw bins
+stay unhit. Raw equals
 Adjusted because there are no approved waivers and no active exclusions. The
 gate remains `RAW_100_OPEN`. See the
 [`interframe source-gap evidence`](thermo5-tx-interframe-stop-gap-20261103.md),
 [`outstanding-counter stress evidence`](thermo5-tx-outstanding-counter-stress-20261103.md),
 and [`waiver review round 3`](thermo5-tx-waiver-review-round3.md).
+
+## Focused Formal Condition closure — DPD ready/valid and AXI-Lite write fire
+
+The exact Raw Condition bin `TXB-33613a1855fcc02e8ef4` at
+`rtl/dpd/dpd_vector16_memory_poly.sv:93` remains Not Covered in the latest
+247-test same-list URG report (`0/1` operands). A focused VC Formal run on the
+same 16-lane, 16-bit, one-tap implementation proved `!out_valid -> in_ready`
+non-vacuously, reached legal input acceptance, output transfer, output stall
+and stall-release Covers, and found the exact `!in_ready && !out_valid` Cover
+uncoverable. There were no environment assumptions, black boxes, or selected
+setup violations. This resolves one root cause as `PROVEN_UNREACHABLE`; it does
+not create a coverage hit or remove the bin from Raw.
+
+The second exact bin, `TXB-872eb98e51c3229e4c86` (`13d6754bf69d80bac0ac`), is at
+`rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:93`, operands `0/1/1`. In the
+same 247-test Raw URG report this tuple is Not Covered. VC Formal proved the
+non-vacuous BVALID exclusion assertion, reached normal `write_fire` and
+response-active Covers, and found the exact `0/1/1` tuple Cover uncoverable.
+The proof used no environment assumptions, had zero black boxes, and no
+selected setup violations. This exact root is also `PROVEN_UNREACHABLE`; the
+Raw bin remains unhit and retained.
+
+The separate DPD full-output hold property was inconclusive at depth 15. It
+remains OPEN and is not used for the ready/valid disposition. Across these two
+focused results, Raw Condition remains 658/849, Raw equals Adjusted, approved
+waivers and active `.el` exclusions are both zero, and the gate remains
+`RAW_100_OPEN`. Of the 20,893 records in the prior open-bin snapshot, two exact
+roots are now `PROVEN_UNREACHABLE`; the other 20,891 records remain OPEN. Full
+details, source hashes, VDB/report hashes and reproduction commands are in the
+[`DPD ready/valid Formal evidence`](thermo5-tx-dpd-ready-condition-closure-20261103.md)
+and [machine-readable audit](data/thermo5-tx-dpd-ready-condition-formal-20261103.json),
+and the [AXI-Lite line-93 Formal evidence](thermo5-tx-axil-line93-condition-closure-20261103.md)
+and [machine-readable audit](data/thermo5-tx-axil-line93-condition-formal-20261103.json).
 
 The extended product-bound counter Formal run used the 22-minute global
 effort limit and completed after 1,364.76 seconds. Both guard assertions and

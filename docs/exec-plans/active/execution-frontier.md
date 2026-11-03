@@ -17,9 +17,10 @@ runs from one verification-source SHA. The prior STATUS-mismatched 16-point
 gap sweep is excluded. Raw equals Adjusted: approved waivers=0 and active
 Exclusions=0. Results are Branch 525/637, Condition 658/849, Line 3351/3796,
 Toggle 84340/104480, FSM states 13/13, transitions 17/22, and legal applicable
-functional bins 392/392. The gate remains RAW_100_OPEN; 20,893 Raw code
-records in 457 groups remain OPEN. No code-coverage delta was gained over the
-246-test checkpoint.
+functional bins 392/392. The gate remains RAW_100_OPEN. The 20,893-record
+open-bin snapshot has two subsequent exact reachability dispositions; 20,891
+other code records remain OPEN. Raw/Adjusted hits and denominators are
+unchanged, and no code-coverage delta was gained over the 246-test checkpoint.
 
 ### Assertion closure update
 
@@ -55,12 +56,26 @@ compile/VDB manifests; 371 candidates remain pending (361 configuration and
 10 Formal candidates), with zero approvals and zero active `.el` directives.
 See `docs/verification/thermo5-tx-waiver-review-round7.md`.
 
+Two exact Raw Condition roots are now `PROVEN_UNREACHABLE` by focused
+VC Formal runs against the same 247-test Raw report. At
+`dpd_vector16_memory_poly.sv:93`, the DPD ready/valid tuple `0/1` has a proven
+non-vacuous `!out_valid -> in_ready` assertion and reached input/output/stall
+activity Covers; the exact bad-tuple Cover is uncoverable. At
+`thermo5_dpd_axi_lite_cfg.sv:93`, the `write_fire` tuple `0/1/1` has a proven
+non-vacuous BVALID exclusion assertion and reached normal write/response
+Covers; its exact tuple Cover is uncoverable. Both Raw bins remain unhit and
+retained, with zero waivers and no `.el` exclusions. The separate DPD
+full-payload hold assertion is inconclusive at depth 15 and remains OPEN. See
+the per-bin Formal reports and machine-readable evidence.
+
 ### Checks, evidence, and next action
 
 Checks: targeted illegal-frame VCS test PASS with exact expected failures;
 the integrated AXI-Lite negative Make target and independent log checker PASS;
 hardware utility tests 42/42 PASS; Formal Identity leaf proof PASS within its
-stated scope; same-list Raw/Adjusted URG and gate PASS (RAW_100_OPEN); extended
+stated scope; focused DPD ready/valid and AXI-Lite write-fire exact-bin Formal
+dispositions PASS;
+same-list Raw/Adjusted URG and gate PASS (RAW_100_OPEN); extended
 counter Formal completed INCONCLUSIVE; `py_compile`, JSON validation, and
 `git diff --check` PASS. Full UVM regression was not rerun.
 Exact logs, VDBs and tool reports remain under ignored runs/; compact hashes
@@ -74,7 +89,8 @@ Do not spend more random seeds on the unchanged coverage gaps. Next, refactor
 the outstanding-counter proof around a source-bound in-flight-capacity lemma
 without imposing a source-gap or PA-stall bound; retain both guard goals as
 OPEN unless the exact assertion or guard Cover resolves. Then target
-source-bound Reset/State-Hold and remaining Condition roots. Keep unresolved
+source-bound Reset/State-Hold and remaining Condition roots. The line-93 DPD
+condition root is formally dispositioned; its Raw miss remains visible. Keep unresolved
 bins OPEN and waivers pending until reviewed. Real XPM, GT Wizard, FPGA
 PPA/routed timing and physical RF/QAM256 remain outside Linux signoff. Do not
 merge PRs or modify the frozen TX algorithm.
