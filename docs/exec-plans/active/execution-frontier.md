@@ -2,9 +2,11 @@
 
 ## Current execution state: Thermo5 TX Linux signoff closure (2026-11-03)
 
-Work is on `codex/thermo5-tx-system-random`, based at
-`ad3211b98677055646975e35924a5809c8d29bac`. The product RTL source SHA used
-for the coverage reports is `1236d49c72360aa62e316aea147528d93a1b3705`; the
+The VCS target run was executed from `codex/thermo5-tx-system-random` at
+`ad3211b98677055646975e35924a5809c8d29bac`. This round is published as Draft
+PR #30 on `codex/thermo5-tx-w1c-coverage-round2`, stacked on PR #29. The
+product RTL source SHA used for coverage reports is
+`1236d49c72360aa62e316aea147528d93a1b3705`; the
 coverage-waiver audit utility fix is `52892f66b4fc80ac41557272a1434ac216ddd073`.
 This round changes testbench, Python trace oracle, evidence, and documentation
 only. Product RTL and the frozen TX algorithm are unchanged. Scope is Linux TX;

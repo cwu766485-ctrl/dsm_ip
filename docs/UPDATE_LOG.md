@@ -1,4 +1,4 @@
-## 2026-11-03 12:24 SGT - Close legal AXI-Lite STATUS DONE W1C coverage path
+## 2026-11-03 12:27 SGT - Close legal AXI-Lite STATUS DONE W1C coverage path
 
 - Added a directed STATUS read / DONE W1C / STATUS readback sequence to the
   legal one-tap DPD UVM test. The independent register predictor checks the
@@ -21,6 +21,10 @@
   frontier. Evidence includes VCS/URG commands and versions, exact target bin
   IDs, source/VDB/report/log hashes, and VDB provenance. Historical VDBs were
   reused; the full regression was not rerun.
+- Published the reviewable update as Draft PR #30, branch
+  `codex/thermo5-tx-w1c-coverage-round2`, stacked on PR #29. The GitHub
+  integration publication tree matches the locally reviewed Git tree; no PR
+  was merged.
 - Checks: Python reference tests 59/59 PASS; hardware utility tests 34/34
   PASS; trace oracle 56/56 PASS with zero underflow; VCS compile and targeted
   UVM PASS; Raw/Adjusted URG and fail-closed coverage gate PASS; no new Formal

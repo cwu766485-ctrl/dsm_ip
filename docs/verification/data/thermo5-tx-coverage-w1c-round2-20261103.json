@@ -3,7 +3,7 @@
   "title": "Thermo5 TX coverage closure round 2: legal STATUS DONE W1C",
   "date": "2026-11-03",
   "timezone": "Asia/Singapore",
-  "branch": "codex/thermo5-tx-system-random",
+  "branch": "codex/thermo5-tx-w1c-coverage-round2",
   "base_commit": "ad3211b98677055646975e35924a5809c8d29bac",
   "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
   "product_configuration": {
@@ -421,5 +421,14 @@
     "All remaining 21,071 code records remain OPEN; root-cause labels are triage only.",
     "No formal proof was run in this round; INCONCLUSIVE results remain OPEN.",
     "No XPM, GT Wizard, Vivado PPA/routed timing, or physical RF/QAM256 BER signoff is claimed."
-  ]
+  ],
+  "execution_branch": "codex/thermo5-tx-system-random",
+  "pull_request": {
+    "number": 30,
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/30",
+    "state": "open",
+    "draft": true,
+    "base": "codex/thermo5-tx-system-random",
+    "head": "codex/thermo5-tx-w1c-coverage-round2"
+  }
 }

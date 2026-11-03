@@ -1,7 +1,8 @@
 # Thermo5 TX Linux System Verification Closure
 
 Date: 2026-11-03 (Asia/Singapore)  
-Branch: `codex/thermo5-tx-system-random`  
+VCS execution branch: `codex/thermo5-tx-system-random`
+Publication branch: `codex/thermo5-tx-w1c-coverage-round2` (Draft PR #30, stacked on PR #29)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,

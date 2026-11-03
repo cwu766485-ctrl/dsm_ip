@@ -1,5 +1,5 @@
 {
-  "branch": "codex/thermo5-tx-system-random",
+  "branch": "codex/thermo5-tx-w1c-coverage-round2",
   "coverage": {
     "active_exclusions": 0,
     "all_open": true,
@@ -57,7 +57,7 @@
       },
       "coverage_round2": {
         "path": "docs/verification/data/thermo5-tx-coverage-w1c-round2-20261103.json",
-        "sha256": "a92bb4adc529f676aacf7999bebd7d283cb06d7e0d07754d995cf9345e8013a4"
+        "sha256": "b9ac93ebad5688c4a9d400c23b707a31b3ef2fd374518b97e078717ceb5b6432"
       }
     },
     "expected_negative_failures_in_union": 2,
@@ -178,7 +178,7 @@
     },
     "coverage_round2": {
       "path": "docs/verification/data/thermo5-tx-coverage-w1c-round2-20261103.json",
-      "sha256": "a92bb4adc529f676aacf7999bebd7d283cb06d7e0d07754d995cf9345e8013a4"
+      "sha256": "b9ac93ebad5688c4a9d400c23b707a31b3ef2fd374518b97e078717ceb5b6432"
     }
   },
   "external_signoff_open": [
@@ -355,6 +355,18 @@
     "targeted_trace_oracle": "PASS; 56 words; 0 underflow"
   },
   "vdb_provenance": {
-    "note": "240 earlier positive and two earlier expected-negative test VDBs were compiled at 732a64ab...; one additive starvation VDB was compiled at product source 1236d49.... RTL diff is empty, and earlier test drivers/checkers are unchanged. Current design VDB and Raw/Adjusted report use current product compile plus the same exact 243-test VDB list. This is not 243 fresh full-tree runs at one SHA."
+    "baseline_test_vdb_count": 243,
+    "latest_union_test_vdb_count": 244,
+    "latest_positive_test_vdb_count": 242,
+    "note": "The prior 243-test VDB list is retained with the same DUT design VDB; the added legal W1C test VDB was compiled from verification sources based on ad3211b98677055646975e35924a5809c8d29bac. Earlier test VDB provenance is mixed across source revisions, while the product RTL source is unchanged. This is an additive coverage refresh, not 244 fresh simulations from one full-tree SHA."
+  },
+  "execution_branch": "codex/thermo5-tx-system-random",
+  "pull_request": {
+    "number": 30,
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/30",
+    "state": "open",
+    "draft": true,
+    "base": "codex/thermo5-tx-system-random",
+    "head": "codex/thermo5-tx-w1c-coverage-round2"
   }
 }
