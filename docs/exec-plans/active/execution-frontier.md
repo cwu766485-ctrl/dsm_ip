@@ -2,6 +2,28 @@
 
 ## Current execution state: Thermo5 TX Linux signoff closure (2026-11-03)
 
+### Gate 1 waiver audit follow-up (2026-11-03)
+
+An independent review branch, `codex/thermo5-tx-waiver-audit-round1`, is being
+prepared on the exact Draft PR #30 head
+`08061386900e5ae2c9f692dcf7e85d849623f818`. It rebinds 371 legacy waiver
+candidates to the current product compile, exact Raw bins, and existing
+same-list Raw/Adjusted URG/VDB evidence. Current classification is 361
+`CONFIG_UNREACHABLE` candidates and 10 `FORMAL_UNREACHABLE` candidates; every
+CSV row remains `PENDING`, with zero approvals and zero active exclusions.
+Raw bins and denominators are unchanged. The review report and machine-readable
+audit are in `docs/verification/thermo5-tx-waiver-review-round1.md` and its
+evidence directory. The hardware utility suite passes 34/34 tests. No RTL,
+testbench, VDB, or Formal job was rerun in this tooling/evidence-only round.
+
+This does not close the 21,071 open code records: Raw remains Branch 523/637,
+Condition 656/849, Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and
+transitions 17/22. The outstanding counter and DPD Identity proofs remain
+INCONCLUSIVE. Next actions after candidate review are Gate 2 targeted
+reachable Branch/Condition closure, then Line/Toggle and the remaining FSM and
+Assertion audit. Do not approve or emit exclusions without a real review
+approval.
+
 The VCS target run was executed from `codex/thermo5-tx-system-random` at
 `ad3211b98677055646975e35924a5809c8d29bac`. This round is published as Draft
 PR #30 on `codex/thermo5-tx-w1c-coverage-round2`, stacked on PR #29. The

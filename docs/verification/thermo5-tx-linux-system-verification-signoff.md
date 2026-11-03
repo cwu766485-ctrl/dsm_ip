@@ -17,6 +17,17 @@ is `RAW_100_OPEN`. Raw and Adjusted code coverage are identical because there
 are no approved waivers and no active URG exclusions. This is not a complete
 TX, FPGA, or physical signoff.
 
+**Gate 1 waiver-candidate audit update (2026-11-03):** An independent audit
+rebound all 371 pending candidate rows to the exact current product compile,
+source parameter chains, Raw bins, and the existing same-list Raw/Adjusted
+URG/VDB reports. It classifies 361 as fixed-configuration candidates and 10
+as exact Formal candidates. The review pipeline reports 371 pending, zero
+approved, and zero active `.el` exclusions; Raw and Adjusted remain equal and
+the code-coverage denominator is unchanged. This is candidate evidence only,
+not waiver approval or code-coverage closure. See the
+[`Gate 1 waiver audit report`](thermo5-tx-waiver-review-round1.md) and its
+machine-readable artifacts.
+
 The previously open Phase C stimulus dimensions now have separate evidence:
 the original packet/long-stream random campaign, a 60-case runtime DPD matrix,
 48 randomized reset/COMMIT trials, directed reset/commit boundary tests, and

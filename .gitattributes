@@ -26,6 +26,7 @@
 *.xlsx binary
 *.zip binary
 *.xci text
+docs/verification/data/thermo5-tx-waiver-review-round1/formal_snapshots/** binary
 
 ip/ip_repo/** linguist-generated=true
 syn/reports/** linguist-generated=true

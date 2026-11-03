@@ -1,3 +1,38 @@
+# 2026-11-03 12:53 SGT - Rebind and audit the 371 Thermo5 TX waiver candidates
+
+- Started an independent waiver-review round on
+  `codex/thermo5-tx-waiver-audit-round1`, based on Draft PR #30's exact head
+  `08061386900e5ae2c9f692dcf7e85d849623f818`. No historical PR was merged.
+- Rebound all 371 CSV candidates to unique current Raw Bin IDs, instances,
+  source locations, source hashes, the exact product compile manifest, and the
+  same-list Raw/Adjusted URG and VDB manifests. The audit classified 361 as
+  fixed-configuration candidates and 10 against exact archived Formal proofs.
+  No candidate was marked reachable or unresolved; this does not close any
+  Raw bin or authorize exclusion.
+- Re-derived each fixed-configuration proof from the present parameter chain
+  (including instance parameter blocks) and required every chain file to be
+  present in the compiled-source manifest. Formal activity witnesses are
+  checked against the archived console. The fail-closed pipeline accepted all
+  371 as pending: 0 approved, 0 rejected, 0 active `.el` exclusions. Raw and
+  Adjusted remain identical.
+- Added the structured candidate audit, compile/VDB/URG manifests, archived
+  Formal snapshots, review report, source-bound candidate columns, and a
+  parameter-tamper negative test. Product RTL, testbench behavior, and
+  denominators were unchanged.
+- Checks: compile-manifest generation PASS; candidate audit 371/371 PASS;
+  waiver pipeline PASS; hardware utility tests 34/34 PASS; Python compileall
+  and `git diff --check` PASS. VCS/URG/VC Formal were not rerun because their
+  RTL, testbench, VDB, and report inputs did not change; existing Formal proofs
+  were revalidated from archived logs and current source hashes.
+- Current Raw remains `RAW_100_OPEN`: Branch 523/637, Condition 656/849,
+  Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and transitions
+  17/22; 21,071 code records remain open in 475 root-cause groups. All 371
+  candidates still require independent review. Outstanding counter and DPD
+  Identity proofs remain INCONCLUSIVE.
+- Detailed report and machine-readable evidence:
+  `docs/verification/thermo5-tx-waiver-review-round1.md` and
+  `docs/verification/data/thermo5-tx-waiver-review-round1/`.
+
 ## 2026-11-03 12:27 SGT - Close legal AXI-Lite STATUS DONE W1C coverage path
 
 - Added a directed STATUS read / DONE W1C / STATUS readback sequence to the
