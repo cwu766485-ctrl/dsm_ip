@@ -238,9 +238,33 @@ This leaf proof deliberately avoids elastic backpressure and does not include
 AXI shadow/commit, mailbox transfer, active-epoch switching, or full-chain
 latency alignment. It is not a proof of the complete product Identity path,
 does not disposition URG bins, and does not replace the existing
-full-chain Identity proof, which remains INCONCLUSIVE. The exact 2026-11-03
-result and hashes are recorded in
+monolithic full-chain Identity proof, which remains INCONCLUSIVE. A separate
+under-stall local one-tap Identity datapath proof is documented below. The
+exact 2026-11-03 result and hashes are recorded in
 [`thermo5-tx-assertion-dpd-local-formal-20261103`](../../../docs/verification/thermo5-tx-assertion-dpd-local-formal-20261103.md).
+
+### One-tap Identity datapath under backpressure
+
+Run the source-bound compositional proof of Identity arithmetic, output
+alignment, and saturation under arbitrary downstream stalls with:
+
+```bash
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.py \
+  --out-dir runs/thermo5_dpd_identity_stall_formal \
+  --evidence runs/thermo5_dpd_identity_stall_formal/evidence.json \
+  --vcf /opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf
+```
+
+The flow first proves 41 internal pipeline lemmas in the base model. Only
+those already proven facts may be promoted as assumptions for the composed
+run; the four output/saturation assertions remain active and must prove. The
+flow fails closed on a changed property set, an unproven lemma, missing stall/
+recovery/endpoint witnesses, setup violations, black boxes, dirty source
+state, or source-revision/hash mismatch. It uses one legal source payload-hold
+assumption and the reset initialization constraint. AXI-Lite commit/mailbox/CDC
+and the whole TX chain are out of scope; see
+[`scoped Identity under-stall evidence`](../../../docs/verification/thermo5-tx-dpd-identity-stall-formal-20261103.md).
 
 ## Coverage convergence proofs
 

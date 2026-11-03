@@ -17,6 +17,18 @@ non-vacuous, 3/3 Covers) is the subject of Draft PR #34,
 `codex/thermo5-tx-dpd-payload-hold-formal`, stacked on PR #33 and not merged.
 It proves the vector leaf protocol only; full-chain DPD Identity remains OPEN.
 
+A follow-up branch `codex/thermo5-tx-dpd-identity-stall-formal` is stacked on
+PR #34 and is being published as a separate Draft PR. On clean Formal-input
+commit `e21c1ece205b633809e1dfd84d275936294b6378`, a composed production
+`dpd_memory_poly` proof verifies the one-tap Q14 Identity datapath under
+arbitrary output stalls: 41/41 internal base lemmas and 4/4 final output,
+latency, and saturation assertions prove; 4/4 endpoint/stall/recovery Covers
+are reached. The single legal source payload-hold assumption is non-vacuous;
+there are zero black boxes and zero selected setup violations. This remains a
+DPD leaf proof: AXI shadow/COMMIT, mailbox, CDC, pending/active epoch, and full
+TX composition remain OPEN. Full detail and hashes are in
+`thermo5-tx-dpd-identity-stall-formal-20261103.md` and its JSON evidence.
+
 ### Current Raw/Adjusted coverage
 
 The latest same-list Raw/Adjusted URG report uses one design VDB and 247 unique
@@ -82,12 +94,22 @@ This closes the vector leaf's stall-hold protocol only; full-chain DPD Identity
 arithmetic and COMMIT/CDC/epoch behavior remain OPEN. Raw URG remains unchanged.
 See `thermo5-tx-dpd-payload-hold-formal-20261103.md` and its evidence JSON.
 
+A separate composed one-tap Identity DPD leaf proof now closes local arithmetic,
+sample alignment, output latency, and no-saturation under arbitrary output
+stalls. It proves 41 internal lemmas in the base run, then keeps the four final
+output/saturation goals active; all four prove and all four endpoint/stall/
+recovery Covers hit. The legal source payload-hold assumption is non-vacuous;
+zero black boxes and zero selected setup violations. The AXI shadow/COMMIT,
+mailbox, CDC, pending/active epoch, and full TX proof remain OPEN. See
+`thermo5-tx-dpd-identity-stall-formal-20261103.md` and its evidence JSON.
+
 ### Checks, evidence, and next action
 
 Checks: targeted illegal-frame VCS test PASS with exact expected failures;
 the integrated AXI-Lite negative Make target and independent log checker PASS;
-hardware utility tests 42/42 PASS; Formal Identity leaf proof PASS within its
-stated scope; focused DPD ready/valid and AXI-Lite write-fire exact-bin Formal
+hardware utility tests 42/42 PASS; Formal Identity no-stall leaf proof PASS
+within scope; composed DPD Identity under-stall leaf proof PASS within scope;
+focused DPD ready/valid and AXI-Lite write-fire exact-bin Formal
 dispositions PASS;
 same-list Raw/Adjusted URG and gate PASS (RAW_100_OPEN); extended
 counter Formal completed INCONCLUSIVE; `py_compile`, JSON validation, and

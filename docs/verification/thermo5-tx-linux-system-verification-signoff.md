@@ -5,7 +5,7 @@ VCS execution branch: `codex/thermo5-tx-system-random`
 Waiver audit branch: `codex/thermo5-tx-waiver-audit-round1` (Draft PR #31, stacked on PR #30)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
-Current Formal increments: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`, and scoped DPD output-hold Draft PR #34, `codex/thermo5-tx-dpd-payload-hold-formal`, stacked on PR #33; neither is merged.
+Current Formal increments: Draft PR #33, `codex/thermo5-tx-focused-condition-formal-closure`; scoped DPD output-hold Draft PR #34, `codex/thermo5-tx-dpd-payload-hold-formal`; and the one-tap Identity under-stall follow-up on `codex/thermo5-tx-dpd-identity-stall-formal`, stacked on PR #34. None is merged.
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,
 four 64-bit PA planes, `DPD_MAX_TAPS=1`, Identity reset image, AXI-Lite,
 Generic FIFO.
@@ -76,10 +76,12 @@ metadata hold and lane-valid lockstep; all 17 payload/metadata properties are
 non-vacuous and all 3 Covers are reached. The vector leaf uses MAX_TAPS=1 and
 unconstrained runtime coefficients, active tap count, payload, metadata and
 ready/valid inputs, with no environment assumptions and zero black boxes. This
-closes only output payload/control stability for the DPD vector leaf. It does
-not prove Identity arithmetic or the full TX-chain COMMIT/CDC/epoch behavior;
-full-chain DPD Identity remains OPEN/INCONCLUSIVE. Raw Condition remains 658/849,
-Raw equals Adjusted, approved waivers and active `.el` exclusions are both
+closes output payload/control stability for the DPD vector leaf. A later
+composed proof also proves the local one-tap Identity DPD output, 11-cycle
+alignment, and no-saturation contract under arbitrary output stalls; see the
+dedicated report below. AXI COMMIT/CDC/epoch composition remains OPEN. Raw
+Condition remains 658/849, Raw equals Adjusted, approved waivers and active
+`.el` exclusions are both
 zero, and the gate remains `RAW_100_OPEN`. Of the 20,893 records in the prior
 open-bin snapshot, two exact Condition roots are `PROVEN_UNREACHABLE`; all
 other records remain OPEN. Full proof scope, hashes and reproduction commands
@@ -89,6 +91,26 @@ The two exact Condition dispositions are detailed in the [DPD ready/valid Formal
 and [machine-readable audit](data/thermo5-tx-dpd-ready-condition-formal-20261103.json),
 and the [AXI-Lite line-93 Formal evidence](thermo5-tx-axil-line93-condition-closure-20261103.md)
 and [machine-readable audit](data/thermo5-tx-axil-line93-condition-formal-20261103.json).
+
+## One-tap Identity DPD under-stall Formal closure
+
+A fresh, source-clean VC Formal V-2023.12-SP2 run on commit
+`e21c1ece205b633809e1dfd84d275936294b6378` proves all 41 internal arithmetic,
+coefficient, valid-alignment, and sample-order lemmas in the base model. It then
+uses only those individually proven lemmas as compositional assumptions; four
+end goals remain active and prove: I/Q output equals the 11-cycle reference,
+neither output saturates while valid, and the saturation counter stays zero.
+The endpoint, stall, and stall-recovery Covers are all reached. The single
+environment assumption is the source contract to hold valid/data while
+blocked. VC Formal reports zero black boxes and zero selected setup issues.
+
+This closes local one-tap Identity arithmetic and output latency under
+backpressure, not AXI Shadow/COMMIT, mailbox, CDC, pending/active epoch, or the
+full TX chain. Those system subproblems and overall TX signoff remain OPEN.
+Formal does not create URG hits: Raw/Adjusted metrics and waiver counts are
+unchanged, with `RAW_100_OPEN`. See the
+[scoped Formal report](thermo5-tx-dpd-identity-stall-formal-20261103.md) and
+its [machine-readable evidence](data/thermo5-tx-dpd-identity-stall-formal-20261103.json).
 
 The extended product-bound counter Formal run used the 22-minute global
 effort limit and completed after 1,364.76 seconds. Both guard assertions and

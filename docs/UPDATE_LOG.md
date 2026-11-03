@@ -1,3 +1,31 @@
+## 2026-11-03 18:48 SGT - Prove one-tap Identity DPD output under backpressure
+
+- Added a dedicated VC Formal harness and source-bound runner for the frozen
+  one-tap Q14 Identity DPD profile. The flow proves 41 internal pipeline
+  lemmas in the base model, checks their exact inventory, then promotes only
+  those base-proven facts; the four final I/Q latency and saturation goals
+  remain active in the composed proof.
+- Fresh VC Formal V-2023.12-SP2 run on clean commit
+  `e21c1ece205b633809e1dfd84d275936294b6378`: base 41/41 internal lemmas
+  proven; composed 4/4 final assertions proven; 4/4 endpoint/stall/recovery
+  Covers reached. The source-hold assumption is non-vacuous; setup violations
+  and black boxes are zero. A fail-closed auditor binds reports, harness,
+  runner, Tcl, RTL hashes, and run commit.
+- Added the scoped Formal report and machine-readable evidence, and updated the
+  Formal README, Linux signoff, and active execution frontier. No product RTL,
+  simulation input, VDB, Raw URG, waiver, or exclusion changed. Raw remains
+  Branch 525/637, Condition 658/849, Line 3351/3796, Toggle 84340/104480,
+  FSM 13/13 states and 17/22 transitions, Functional 392/392;
+  `RAW_100_OPEN` remains.
+- Checks: VC Formal scoped flow PASS; Python syntax/JSON audit PASS;
+  `git diff --check` PASS. Full VCS/URG and complete TX product regression were
+  not rerun because no simulation sources or coverage inputs changed.
+- Remaining: AXI Shadow/COMMIT, mailbox, CDC and active-epoch composition;
+  outstanding-counter saturation/underflow remain INCONCLUSIVE/OPEN; the
+  current open-bin snapshot has 20,891 code records OPEN, all 371 waiver
+  candidates are pending, and there are no approved waivers. Vendor XPM/GT
+  Wizard, FPGA PPA and physical RF/QAM256 remain outside Linux signoff.
+
 ## 2026-11-03 17:32 SGT - Prove Thermo5 DPD vector output hold under stall
 
 - Added a reproducible VC Formal harness, Tcl flow, runner, and fail-closed
