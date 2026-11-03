@@ -1,6 +1,32 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Linux coverage/formal closure (2026-11-03)
+## Current execution state: TX UVM observation event bus (2026-11-04)
+
+Started from PR #38 head `184c68b6d704998f5126a75a8f86d7577bb69a1a` on the
+independent branch `codex/thermo5-tx-platform-observation`. Implementation
+commit `8a70597245a7ff18fd7eabb1bda714d0974be4f5` adds passive CDC, DSP, and
+EF2-input observers and a typed UVM event bus carrying accepted AXIS, AXI-Lite,
+PA, and internal observation events to Functional Coverage and JSONL Trace.
+The Control Agent is now referenced by the Virtual Sequencer. No product RTL,
+default algorithm, RX, AI-DPD, or FPGA implementation changed.
+
+VCS V-2023.12-SP1 product-config compile and the AXI-Lite random-packet test
+passed at seed 491802: UVM errors/fatals 0, source/CDC/EF2/PA counts
+32/56/56/56, Register Predictor mismatches 0. The JSONL Trace replay passed
+56/56 PA words with zero underflow; the Python suite passed 60/60. Evidence:
+`thermo5-tx-observation-bus-round1-20261104.md` and its JSON manifest.
+The non-AXI bit-true test also passed at seed 491803 with 56/56 PA words
+matched by the existing static scoreboard and matching event-bus counts.
+
+This is a partial platform milestone. The online dynamic expected queue and
+stage-by-stage independent checks are still open. The existing PA Scoreboard
+still checks the static bit-true vectors; the Python model remains offline.
+Legacy configuration/status Trace sampling is not yet fully routed through
+the event bus. The one-test event-kind coverage is not a product coverage
+signoff. Continue with a transaction/epoch manager and independent expected
+queue before expanding scenario Cross Coverage.
+
+## Previous execution state: Thermo5 TX Linux coverage/formal closure (2026-11-03)
 
 The product remains frozen at RTL source SHA
 1236d49c72360aa62e316aea147528d93a1b3705: Centered-Cubic x2+x2, EF2

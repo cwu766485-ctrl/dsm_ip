@@ -1,3 +1,28 @@
+## 2026-11-04 06:22 SGT - Add Thermo5 TX passive observers and event bus
+
+- Based on PR #38 head `184c68b6d704998f5126a75a8f86d7577bb69a1a`, added CDC,
+  DSP-boundary, and EF2-input passive monitors plus a typed analysis-port
+  event bus for accepted AXIS, AXI-Lite, PA, and internal observations. Routed
+  the stream to event-kind Functional Coverage and JSONL Trace; internal DUT
+  values remain diagnostic and are not used as oracle expected values.
+- Added source/PA/AXI-Lite epoch metadata, exposed CDC and EF2 input payloads to
+  the verification interface, and connected Control Agent into the Virtual
+  Sequencer. Broadened the Make test-marker check to accept test-specific
+  `THERMO5_*_PASS` markers.
+- VCS V-2023.12-SP1 product configuration compile and AXI-Lite random packet
+  seed 491802 passed: source/CDC/EF2/PA events 32/56/56/56, 10 event kinds
+  sampled, UVM errors/fatals 0, predictor mismatches 0. Python JSONL Oracle
+  replay passed 56/56 words with zero underflow; Python tests passed 60/60.
+- The non-AXI bit-true full-stream test also passed at seed 491803 with UVM
+  errors/fatals 0 and 56/56 PA words checked against the static bit-true
+  scoreboard.
+- No product RTL or algorithm changed. This is not final system signoff:
+  dynamic expected-queue checking, stage-level independent comparisons,
+  complete system-random cross coverage, merged Raw/Adjusted URG, Formal and
+  Mutation closure remain open. Logs and Trace are ignored under `runs/`; the
+  committed evidence manifest records their hashes.
+- Report: `docs/verification/thermo5-tx-observation-bus-round1-20261104.md`.
+
 ## 2026-11-03 - Formal disposition of Generic-FIFO core_data_empty Condition
 
 - Added a source-bound Formal harness for Raw Condition `TXB-3b8b5df27b5b204fbb04` / Raw record `43024ee4b07d2164b0a2` at `dsm_axis14_to_core8_cdc.sv:113`. With Generic FIFO, `rd_valid` is exactly the inverse of `rd_empty`; the condition tuple `0/1/1/1/1` is unreachable.
