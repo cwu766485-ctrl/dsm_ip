@@ -1,0 +1,131 @@
+{
+  "schema": "thermo5_tx_outstanding_counter_stress_evidence",
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "local_revision_before_evidence_update": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
+  "product_rtl_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+  "product_configuration": {
+    "interpolation": "Centered-Cubic x2+x2",
+    "ef2_order": 2,
+    "step": 5120,
+    "state_bits": 20,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "control": "AXI-Lite",
+    "fifo": "Generic",
+    "pa_planes": 4,
+    "pa_word_bits": 64
+  },
+  "test": {
+    "name": "thermo5_sku_axil_outstanding_bounds_test",
+    "seed": 930901,
+    "core_words": 2072,
+    "packet_beats": 32,
+    "packets": 37,
+    "core_accepts": 2072,
+    "output_accepts": 2072,
+    "checked_pa_words": 2072,
+    "max_outstanding": 28,
+    "saturation_guard_events": 0,
+    "underflow_guard_events": 0,
+    "source_stall_cycles": 6962,
+    "pa_stall_cycles": 12129,
+    "uvm_warnings": 0,
+    "uvm_errors": 0,
+    "uvm_fatals": 0,
+    "result": "PASS"
+  },
+  "tools": {
+    "vcs": "V-2023.12-SP1_Full64",
+    "urg": "V-2023.12-SP1",
+    "python": "3.12.13"
+  },
+  "target_bins": [
+    {
+      "bin_id": "TXB-e99262dd92665c3b9ea8",
+      "source": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:203",
+      "target": "outstanding saturation guard",
+      "status": "OPEN"
+    },
+    {
+      "bin_id": "TXB-c16debdf7d9cbab220ac",
+      "source": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv:204",
+      "target": "outstanding underflow guard",
+      "status": "OPEN"
+    }
+  ],
+  "formal": {
+    "status": "INCONCLUSIVE",
+    "assumptions": 0,
+    "blackboxes": 0,
+    "assertions": {
+      "a_no_counter_saturation_guard": "INCONCLUSIVE",
+      "a_no_counter_underflow_guard": "INCONCLUSIVE"
+    },
+    "target_covers": {
+      "c_counter_saturation_guard": "INCONCLUSIVE",
+      "c_counter_underflow_guard": "INCONCLUSIVE"
+    }
+  },
+  "coverage": {
+    "input_vdbs": 247,
+    "design_vdbs": 1,
+    "test_vdbs": 246,
+    "raw_equals_adjusted": true,
+    "approved_waivers": 0,
+    "active_exclusions": 0,
+    "raw": {
+      "branch": {"covered": 525, "total": 637},
+      "condition": {"covered": 658, "total": 849},
+      "line": {"covered": 3351, "total": 3796},
+      "toggle": {"covered": 84340, "total": 104480},
+      "fsm_states": {"covered": 13, "total": 13},
+      "fsm_transitions": {"covered": 17, "total": 22},
+      "applicable_functional_bins": {"covered": 392, "total": 392}
+    },
+    "open_code_records": 20893,
+    "root_cause_task_groups": 457,
+    "pending_waivers": 371,
+    "gate": "RAW_100_OPEN"
+  },
+  "coverage_delta_vs_245_test_checkpoint": {
+    "branch_hits": 0,
+    "condition_hits": 0,
+    "line_hits": 0,
+    "toggle_hits": 160,
+    "fsm_state_hits": 0,
+    "fsm_transition_hits": 0,
+    "functional_bins": 0
+  },
+  "commands": {
+    "simulation": "make -C dv/uvm/sim thermo5-vcs-run-only PYTHON=python3.12 THERMO5_OUT=\"$PWD/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_long\" THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_long/vectors\" THERMO5_USE_AXIL=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_TESTNAME=thermo5_sku_axil_outstanding_bounds_test UVM_SEED=930901 THERMO5_EXTRA_ARGS='+CORE_WORDS=2072 +PACKET_BEATS=32'"
+  },
+  "evidence_paths": {
+    "run_directory": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_long",
+    "compile_log": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_long/compile.log",
+    "simulation_log": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_long/thermo5_sku_axil_outstanding_bounds_test_seed930901.log",
+    "raw_adjusted_report_manifest": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_246/product_hier_246_signoff_urg/report_manifest.json",
+    "vdb_manifest": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_246/product_hier_246_signoff_urg/vdb_manifest.json",
+    "coverage_gate": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_246/coverage_gate_signoff.json",
+    "open_bin_ledger": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_246/signoff_rootcause/thermo5-tx-coverage-open-bins.csv.gz"
+  },
+  "sha256": {
+    "compile_log": "aff5c386c812539cd60971cbc52c57f53f300cb7826ccfa1fc6b19dcb9dc3597",
+    "simulation_log": "a2ba353e5f5a7d0ebd42cba230fbfafd72cc8d31680fd667894a38073c6923db",
+    "target_vdb_tree": "476e03b82bb375a3a6ebb7918989ea87831713608f9953da4de91a8a25085b05",
+    "compile_manifest": "0b076347c363c428c3ac755984fafe1b86786b721a90ed2ab4745a566ce8f39e",
+    "raw_adjusted_report_manifest": "d1b1b42bb671bdb98bce312bf666992f10c7e101c1721d63fadd2171a3e6240b",
+    "vdb_manifest": "6402a4570b3a56bbe8054903227936838c3afd2eb5ca6f1b708568a78a38896d",
+    "coverage_gate": "23b84c486eb311561309995acbd04105c416a86b1bb5fba58f6edee3bcaea65f",
+    "rootcause_ledger": "47a9f11fd32221660c3ee2bec2158a70ff98164e69c39e663af9b93b526abd0e",
+    "candidate_audit": "32b00eb9686db9cb7af5a644b74f95b073f3180ad4d97331357e85be00f297b9",
+    "pipeline_audit": "4f9c0bf517fa217af85cf0637aa49f4032ed5fe338f1569d032cd7e49c85c654",
+    "el_file": "57d1f80c4862394d1a6e0fb0c12ed1ba57543d3b8e6d1ab8e9dfc452cc78c858"
+  },
+  "limitations": [
+    "The 246 test VDB set includes retained mixed-provenance evidence; it is not 246 fresh simulations from the current verification source revision.",
+    "Both outstanding-counter Raw Branch bins and their Formal properties remain unresolved.",
+    "The full Linux TX code-coverage gate remains RAW_100_OPEN.",
+    "XPM, GT Wizard, FPGA PPA/routed timing, and physical RF/QAM256 signoff are not included."
+  ]
+}

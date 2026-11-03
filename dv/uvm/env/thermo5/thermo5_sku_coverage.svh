@@ -162,7 +162,11 @@ class thermo5_sku_coverage extends uvm_component;
         end
         else if (vif.src_valid && vif.src_ready) begin
           accepted_source_beats_epoch++;
-          if (accepted_last && sampled_packet_quanta!=0) begin
+          // Every accepted frame tail has an exact 14:8 output position,
+          // including short Generic-FIFO frames used by the starvation test.
+          // Packet-quantum coverage remains separately gated by the legal
+          // 32-beat boundary in source_cg above.
+          if (accepted_last) begin
             pending_tlast_output_targets.push_back(
               (accepted_source_beats_epoch*7)/4);
             pending_tlast_cdc_output_targets.push_back(

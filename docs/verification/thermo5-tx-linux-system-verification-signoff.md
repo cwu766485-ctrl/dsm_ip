@@ -1,13 +1,21 @@
 # Thermo5 TX Linux System Verification Closure
 
-Date: 2026-11-03 (Asia/Singapore)  
+Date: 2026-11-04 (Asia/Singapore)
 VCS execution branch: `codex/thermo5-tx-system-random`
-Publication branch: `codex/thermo5-tx-w1c-coverage-round2` (Draft PR #30, stacked on PR #29)
+Waiver audit branch: `codex/thermo5-tx-waiver-audit-round1` (Draft PR #31, stacked on PR #30)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Coverage audit utility fix: `52892f66b4fc80ac41557272a1434ac216ddd073`
 Product: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state,
 four 64-bit PA planes, `DPD_MAX_TAPS=1`, Identity reset image, AXI-Lite,
 Generic FIFO.
+
+## Current status — Round 9 (2026-11-04)
+
+The superseding current-source signoff is documented in [`Round 9`](thermo5-tx-linux-signoff-round9-20261104.md) and its [machine-readable evidence index](data/thermo5-tx-linux-signoff-round9-20261104.json). It uses a fresh product-config VCS compile and reset-sweep VDB, then regenerates same-list Raw/Adjusted URG with the tracked Round 9 waiver CSV. There are 248 test VDBs (246 legal and two expected-negative), one design VDB, and mixed verification-source provenance.
+
+Current Raw and Adjusted results are equal: Branch 525/637, Condition 658/849, Line 3351/3796, Toggle 84340/104480, FSM states 13/13 and transitions 22/22. Legal applicable Functional Coverage is 392/392 across 12 groups. The current ledger has 20,888 OPEN records in 456 groups. Waivers: 371 PENDING, zero approved, zero active exclusions. Legal assertions: 13 successes, zero failures, two uncovered and two without attempts; expected-negative assertions are reported separately. The gate remains `RAW_100_OPEN`.
+
+The Round 9 refresh does not make the retained 248-VDB inventory a single-source fresh regression. The product RTL SHA remains `1236d49c72360aa62e316aea147528d93a1b3705`; no product RTL or frozen algorithm changed. Refer to the Round 9 report for exact command, hashes, and remaining Linux/vendor signoff items. Sections below are historical checkpoints unless explicitly superseded by Round 9.
 
 ## Signoff status
 
@@ -17,16 +25,42 @@ is `RAW_100_OPEN`. Raw and Adjusted code coverage are identical because there
 are no approved waivers and no active URG exclusions. This is not a complete
 TX, FPGA, or physical signoff.
 
-**Gate 1 waiver-candidate audit update (2026-11-03):** An independent audit
-rebound all 371 pending candidate rows to the exact current product compile,
-source parameter chains, Raw bins, and the existing same-list Raw/Adjusted
-URG/VDB reports. It classifies 361 as fixed-configuration candidates and 10
-as exact Formal candidates. The review pipeline reports 371 pending, zero
-approved, and zero active `.el` exclusions; Raw and Adjusted remain equal and
-the code-coverage denominator is unchanged. This is candidate evidence only,
-not waiver approval or code-coverage closure. See the
-[`Gate 1 waiver audit report`](thermo5-tx-waiver-review-round1.md) and its
-machine-readable artifacts.
+**Gate 1 waiver-candidate audit update (2026-11-03):** Round 7 rebinds all 371
+review candidates after the current Formal Review JSON changed. It uses the
+current product compile manifest, exact 247-test VDB inventory, and latest
+source-linked Raw gap ledger. It classifies 361 as
+`CONFIG_UNREACHABLE` candidates and 10 as `FORMAL_UNREACHABLE` candidates.
+These are review dispositions, not approvals. All 371 remain `PENDING`; zero
+are approved and no `.el` exclusions are active. See
+[`waiver review round 7`](thermo5-tx-waiver-review-round7.md) and its
+machine-readable audit package.
+
+**Current Linux closure refresh (2026-11-03):** The 11-cycle interframe-gap VCS
+run hit the centered-cubic pop/push Branch in both stages; the independent
+four-plane checker passed 112/112 words with zero underflow, STATUS mismatch,
+protocol error, or UVM error. A subsequent 2,072-word / 37-packet legal
+outstanding-counter stress run passed the independent PA checker and raised
+Toggle coverage by 160 hits, but did not hit either outstanding-counter guard
+Branch. The latest same-list Raw/Adjusted URG report uses 247 unique test VDBs
+plus one design VDB and reports Branch 525/637,
+Condition 658/849, Line 3351/3796, Toggle 84340/104480, FSM 13/13 states and
+17/22 transitions; legal applicable functional coverage is 392/392. The open
+ledger contains 20,893 records in 457 groups, all still OPEN. Raw equals
+Adjusted because there are no approved waivers and no active exclusions. The
+gate remains `RAW_100_OPEN`. This 247-test report supersedes the 246-test
+checkpoint below. See the
+[`interframe source-gap evidence`](thermo5-tx-interframe-stop-gap-20261103.md),
+[`outstanding-counter stress evidence`](thermo5-tx-outstanding-counter-stress-20261103.md),
+and [`waiver review round 7`](thermo5-tx-waiver-review-round7.md).
+
+The extended product-bound counter Formal run used the 22-minute global
+effort limit and completed after 1,364.76 seconds. Both guard assertions and
+both exact guard Covers remained INCONCLUSIVE (assertion depths 231/122; Cover
+depths 196/126). Source/core/output activity Covers were reached, with zero
+environment assumptions, zero black boxes, and two non-vacuous assertions.
+The Raw Branches remain OPEN. See the
+[`extended counter Formal report`](thermo5-tx-outstanding-formal-extended-20261103.md)
+and its hash-bound machine-readable evidence.
 
 The previously open Phase C stimulus dimensions now have separate evidence:
 the original packet/long-stream random campaign, a 60-case runtime DPD matrix,
@@ -44,6 +78,30 @@ do not represent one exhaustive Cartesian product of every system dimension.
 | Directed reset / commit tests | PASS, 8/8 | Reset-prefix × pending-coefficient classes; source-gap / PA-stall / FIFO-full targeted matrix is separately recorded as 12/12. |
 | Expected-starvation test | PASS, separate | 32 source beats, one TLAST, 56 bit-true PA words, zero protocol errors; one reported underflow after the packet. This is a starvation/error-class test, not a normal-stream zero-underflow result. |
 | Mutation checks | PASS | Independent PA scoreboard detected both `late_gain` and `plane_swap` mutants; baseline passed. This covers these two mutations only. |
+
+## Previous checkpoint — outstanding-counter long stream (246 VDBs)
+
+At the 246-test checkpoint, the focused AXI-Lite test ran 2,072 source words through 37 legal
+32-beat packets under source and PA backpressure. Seed `930901` reached an
+observed maximum outstanding count of 28, accepted and emitted 2,072 words,
+and passed the independent four-plane bit-true checker. There were zero
+underflow, STATUS/predictor mismatch, protocol error, or UVM warning/error/fatal.
+The test uses only public inputs; it does not force internal state.
+
+Neither target guard Branch was hit. The saturation guard target
+`TXB-e99262dd92665c3b9ea8` at line 203 and underflow guard target
+`TXB-c16debdf7d9cbab220ac` at line 204 remain OPEN. The product-bound Formal
+assertions and exact guard Covers remain INCONCLUSIVE, so the legal stress run
+does not close those roots or justify an Exclusion.
+
+Raw and Adjusted URG at that checkpoint used the same 246 test VDBs plus one design VDB. The
+245 earlier VDBs are retained mixed-provenance evidence; this is not a claim
+that all 246 tests were freshly simulated from one verification-source SHA.
+The additional VDB adds 160 Toggle hits in DPD `sample_count` high bits across
+the 16 lanes. Branch, Condition, Line, FSM, and functional-bin counts did not
+change. Details, commands, tool versions, and hashes are in the
+[`stress report`](thermo5-tx-outstanding-counter-stress-20261103.md) and its
+[machine-readable evidence](data/thermo5-tx-outstanding-counter-stress-20261103.json).
 
 The baseline random campaign keeps DPD at Identity. Non-Identity coefficients
 were verified in the separate 60-case matrix, so the product default was not
@@ -90,7 +148,7 @@ change:
 | Toggle | `fdf1c5a010c986e614fc`, `u_cfg.cfg_done_q`, `1→0` | Hit |
 | Toggle | `64f234d6e5984d7c570e`, DUT `cfg_done`, `1→0` | Hit |
 
-The aggregate now contains 244 test VDBs; the positive-only assertion and
+The initial W1C aggregate contained 244 test VDBs; the positive-only assertion and
 functional view contains 242. The 243-test baseline was 522/637 Branch,
 654/849 Condition, 3336/3796 Line, and 84177/104480 Toggle. The refreshed Raw
 and Adjusted reports use the same 244-VDB list and the same DUT hierarchy;
@@ -103,6 +161,45 @@ active exclusions. `RAW_100_OPEN` remains the correct gate result.
 The latest exact VDB lists, URG reports, gate output, waiver audit, and
 root-cause artifacts are recorded in
 [`thermo5-tx-coverage-w1c-round2-20261103.json`](data/thermo5-tx-coverage-w1c-round2-20261103.json).
+
+## Coverage follow-up — interframe source gap and STOP/drain
+
+The frame-replacement test now clears RUN after the final complete source
+packet is accepted, then checks the output drain. This exposed and corrected a
+test sequencing problem: its earlier stop-after-output order could starve the
+core after a source bubble, while the checker only counted underflow before the
+last source beat. The updated test checks all underflow cycles. No RTL or
+algorithm changed.
+
+VCS seeds 930811 and 930832 passed with a one-cycle source gap before beats 31
+and 32, respectively; seed 930812 passed without a gap. These diagnostics
+checked 112/112 four-plane words with zero underflow and zero STATUS predictor
+mismatches, but did not hit the target interpolator Branches. A derived
+11-cycle gap before source beat 32 then hit the exact single-entry pop/push
+decision in both interpolator stages. The formal product-hierarchy run
+(coverage compiled with `thermo5_product_dut_coverage.hier`) accepted 64 source
+beats and two TLASTs, checked 112/112 four-plane words against the independent
+bit-true checker, and reported zero underflow, STATUS mismatch, protocol
+error, UVM warning, error, or fatal. Its UVM event counters recorded
+`stage1=1 stage2=1`.
+
+At this checkpoint, the 245-test Raw/Adjusted URG refresh used the exact previous 244-test
+VDB set plus this properly hierarchical 11-cycle-gap VDB. Compared with the
+244-test Raw baseline, the merge adds two Branches, two Conditions, and 14
+Lines; Toggle is unchanged. Both exact interpolator Branch records are absent
+from the refreshed Raw open-bin ledger. Code coverage is now Branch 525/637,
+Condition 658/849, Line 3351/3796, Toggle 84180/104480, FSM states 13/13 and
+transitions 17/22. Legal applicable functional coverage remains 392/392.
+The outstanding-counter Formal run used continuous legal 32-beat packets;
+both assertions and both target Covers remain INCONCLUSIVE. Only the two
+counter guard Branches remain open from this four-Branch priority set.
+
+The earlier 16-point gap sweep used the old stop-after-output test order. All
+16 runs reported an AXI-Lite STATUS predictor mismatch and are excluded from
+Raw/Adjusted URG. The updated runs above are the valid evidence for the new
+test ordering. See the
+[`interframe gap and STOP/drain follow-up`](thermo5-tx-interframe-stop-gap-20261103.md)
+and its [machine-readable evidence](data/thermo5-tx-interframe-stop-gap-20261103.json).
 
 ## Functional coverage
 
@@ -125,31 +222,33 @@ results are not counted as legal assertion failures.
 ## DUT Raw and Adjusted code coverage
 
 The DUT-only URG hierarchy selects the elaborated TX product path. The latest
-Raw and Adjusted reports use the same 244 VDBs; Adjusted applies zero
-exclusions and therefore exactly matches Raw.
+Raw and Adjusted reports use the same 247 test VDBs plus one design VDB;
+Adjusted applies zero exclusions and therefore exactly matches Raw.
 
 | Metric | Raw | Adjusted | Missing |
 |---|---:|---:|---:|
-| Branch | 523/637 (82.1036%) | 523/637 (82.1036%) | 114 |
-| Condition | 656/849 (77.2674%) | 656/849 (77.2674%) | 193 |
-| Line | 3337/3796 (87.9083%) | 3337/3796 (87.9083%) | 459 |
-| Toggle, both directions | 84180/104480 (80.5704%) | 84180/104480 (80.5704%) | 20300 |
+| Branch | 525/637 (82.4176%) | 525/637 (82.4176%) | 112 |
+| Condition | 658/849 (77.5029%) | 658/849 (77.5029%) | 191 |
+| Line | 3351/3796 (88.2771%) | 3351/3796 (88.2771%) | 445 |
+| Toggle, both directions | 84340/104480 (80.7236%) | 84340/104480 (80.7236%) | 20140 |
 | FSM states | 13/13 (100%) | 13/13 (100%) | 0 |
 | FSM transitions | 17/22 (77.2727%) | 17/22 (77.2727%) | 5 |
 
-There are **21,071 open code records** in 475 root-cause task groups. Every
-record remains `OPEN`; the root-cause classes are triage hypotheses, not
-reachability decisions. Priority gaps include 115 Branches, 195 Conditions,
+At the 245-test checkpoint there were 21,053 open code records. The current
+247-test ledger has **20,893 open code records** in 457 root-cause task groups. Every
+remaining record is `OPEN`; root-cause labels are triage hypotheses, not
+reachability decisions. The 245-test checkpoint had 18 fewer open records
+than the preceding 244-test set. The 246th VDB then closed 160 Toggle
+directions; it did not close a Branch, Condition, Line, or FSM bin. Priority
+gaps include 112 Branches, 191 Conditions,
 and five exact `rem_count_q` transitions at
 `rtl/axis/dsm_axis14_to_core8_cdc.sv:125`:
 `'h2->'h0`, `'h4->'h0`, `'h6->'h0`, `'ha->'h0`, and `'hc->'h0`.
 
 The 371 existing waiver candidates remain **PENDING**. There are zero approved
-waivers and zero active `.el` exclusions. The waiver pipeline now permits a
-pending candidate to point to an exact current OPEN Raw bin, while still
-requiring a source/configuration-bound, non-vacuous proof and approval record
-before any exclusion can be generated. The pipeline and its fail-closed tests
-passed 34/34.
+waivers and zero active `.el` exclusions. The refreshed pipeline audit is
+bound to the current compile manifest and source-linked open-bin ledger; only
+an independently approved exact waiver can generate an exclusion.
 
 ## Assertions and Formal
 
@@ -164,10 +263,13 @@ from the negative tests.
 
 The outstanding-counter Formal harness ran with zero assumptions and zero
 black boxes. Source/core/output activity covers were witnessed, and the two
-assertions were non-vacuous. After 502 seconds VC Formal returned
-`INCONCLUSIVE` for both the saturation and underflow guard assertions and both
-target guard covers. The corresponding two DUT Branch bins remain OPEN; no
-waiver was created.
+assertions were non-vacuous. The first runs returned `INCONCLUSIVE` for both
+guard assertions and both target guard covers. The later 1,364.76-second,
+22-minute-effort run remained `INCONCLUSIVE`: assertion depths 231/122 and
+guard Cover depths 196/126. No proof or counterexample was produced. Both Raw
+Branch bins remain OPEN; no waiver was created. The exact latest result,
+command, tool version, source hashes, and report hashes are in the
+[`extended counter Formal report`](thermo5-tx-outstanding-formal-extended-20261103.md).
 
 The DPD Identity equivalence attempt remains inconclusive: one assertion
 proven, 12 inconclusive, five constrained, and four of four activity covers
@@ -175,6 +277,38 @@ witnessed; zero black boxes. This does not sign off Identity DPD arithmetic.
 The existing EF2 stability and pair-lookahead equivalence PASS evidence is
 retained, but pair-lookahead remains a disabled candidate and is not part of
 the product code denominator.
+
+## 2026-11-03 assertion and DPD leaf-proof update
+
+The later 247-test Raw/Adjusted refresh is the latest product code report. Its
+247 unique test VDBs consist of 243 legal positive VDBs, two expected-negative
+VDBs, and two additional legal directed VDBs. They are retained
+mixed-provenance evidence, not 247 fresh simulations from one full-tree SHA.
+The old 16-point gap sweep with STATUS-predictor mismatches is not included.
+The 247-test Raw/Adjusted metrics and 20,893 OPEN records are unchanged from
+the previous checkpoint; the gate remains `RAW_100_OPEN`, with 371 pending
+waiver candidates, zero approvals, and zero active Exclusions.
+
+The legal-only 243-VDB assertion report has 13 successful DUT properties, zero
+failures, and two no-attempt DUT properties: `assert(q1_tail)` at line 310 of
+`dsm_interp_x2_centered_cubic_vector.sv`, once in each interpolator stage. A
+separate corrected expected-negative AXI-Lite test (seed 420102) observed
+exactly one CDC frame-alignment assertion and one frame-tail assertion in each
+stage. The test checked sticky protocol-error observation and public-reset
+recovery; UVM warning/error/fatal counts were zero. A fail-closed log checker
+now verifies the exact three RTL assertion sites and rejects additional RTL
+assertion Error lines. Keep the negative assertion failures separate from
+legal-run status.
+
+A new local DPD Identity VC Formal leaf proof completed with 5/5 assertions
+proven, 3/3 Covers reached, zero black boxes, and no environment assumptions.
+It fixes the one-tap coefficient image to Q14 unity and ties `out_ready` high.
+It proves local arithmetic, fixed latency, ready behavior, and no saturation
+for that datapath case. It does not cover stalls, AXI commit/epoch semantics,
+or full-chain Identity configuration. The full product DPD Identity proof
+remains INCONCLUSIVE/OPEN; this leaf proof does not close URG bins or approve a
+waiver. Exact logs, URG reports, hashes and commands are in the
+[`assertion and DPD leaf-proof evidence`](thermo5-tx-assertion-dpd-local-formal-20261103.md).
 
 ## Commands and evidence
 
@@ -184,12 +318,15 @@ record exact commands, tool versions, VDB fingerprints, and log hashes. Key
 artifacts:
 
 - `logs/seed_930000.log` and `traces/seed_930000.jsonl` — targeted W1C UVM run and captured monitor trace.
-- `final_dual_urg_bound/report_manifest.json` — 244-VDB same-list Raw/Adjusted URG manifest.
-- `legal_positive_dual_urg_bound/report_manifest.json` — 242-VDB positive-only assertion/functional report.
-- `coverage_gate.json` — `RAW_100_OPEN`, 392/392 legally applicable functional bins.
-- `rootcause/thermo5-tx-coverage-root-cause-summary.json` — 21,071 OPEN records, 475 groups.
-- `waiver_audit.json` and `thermo5_tx_main.el` — 371 pending, zero approved, no active exclusions.
-- `product_compile_manifest.json` — exact 90-file product compile source inventory.
+- `coverage_247_round6_dual_urg/report_manifest.json` — latest same-list 247-test-VDB Raw/Adjusted URG manifest.
+- `coverage_247_round6_dual_urg/coverage_gate_round6.json` — `RAW_100_OPEN`, 392/392 legal applicable bins, 371 pending waivers, zero exclusions.
+- `coverage_247_round6_rootcause_final/thermo5-tx-coverage-root-cause-summary.json` — 20,893 OPEN records in 457 tasks.
+- `coverage_247_round6_dual_urg/vdb_manifest.json` — exact design-plus-247-test VDB input inventory.
+- `docs/verification/data/thermo5-tx-waiver-review-round7/` — current 371-row candidate audit and fail-closed zero-exclusion pipeline audit; supersedes round 3.
+- `legal_positive_dual_urg_bound/report_manifest.json` — 243-VDB positive-only assertion/functional report.
+- `frame_replace_sourcefresh_20261103/product_compile_manifest.json` — current compile-source manifest used to rebind the 247-test coverage and waiver audit.
+- `product_hier_gap11_ledger/` — historical 245-test checkpoint, superseded by `coverage_247_round6_dual_urg/` above.
+- `docs/verification/data/thermo5-tx-waiver-review-round2/` — historical candidate audit, superseded by round 3 above.
 
 The retained 243-VDB baseline and earlier Phase C artifacts remain under
 `runs/thermo5_tx_closure_current/source_1236d49/` and
@@ -200,6 +337,8 @@ The retained 243-VDB baseline and earlier Phase C artifacts remain under
 - `coverage_243/rootcause_final/thermo5-tx-coverage-root-cause-summary.json` — exact open-bin totals and legal functional audit.
 - `coverage_243/waiver_audit.json` and `coverage_243/thermo5_tx_main.el` — 371 pending, zero approved, zero active exclusions.
 - `formal/outstanding_final/formal_manifest.json` — current counter-guard proof result.
+- `formal_outstanding_continuous_source/formal_manifest.json` — continuous-packet counter-guard recheck; INCONCLUSIVE.
+- `formal_outstanding_extended_20261103/formal_manifest.json` — 22-minute-effort counter-guard run; INCONCLUSIVE.
 - `starvation/summary.json` — directed starvation UVM, oracle, and coverage evidence.
 - `verification/tools_hw_tests.log` and `verification/python_reference_tests.log` — latest utility and reference tests.
 - Earlier Phase C evidence is under `source_732a64/{system_random,dpd_matrix,randomized_control_final,reset_pending,mutation,formal_identity_lemmas}/`.
@@ -222,14 +361,20 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   --out-dir runs/thermo5_tx_closure_current/source_1236d49/formal/outstanding_replay
 ```
 
-Latest checks: Python reference suite **59/59 PASS**; hardware utility suite
-**34/34 PASS**; `py_compile` and `git diff --check` PASS; targeted W1C VCS UVM
-and Python trace oracle PASS; same-list Raw/Adjusted URG and gate generation
-PASS. The prior counter Formal result remains **INCONCLUSIVE**, not PASS.
+Latest checks: formal-hierarchy VCS compile and targeted 11-cycle source-gap
+run PASS; both target Branch event counters were 1, the independent 112-word
+four-plane checker passed, and Underflow/STATUS/protocol/UVM errors were zero.
+The 2,072-word counter stress test passed with 2,072/2,072 bit-true words and
+zero UVM warnings/errors/fatals. Same-list 247-test Raw/Adjusted URG,
+refreshed source-linked ledger, 371-row round-7 candidate audit,
+zero-exclusion pipeline, and final fail-closed Gate all PASS. Hardware utility
+tests passed 42/42 on the current worktree; Python reference tests passed 59/59; `py_compile` and
+`git diff --check` passed. The extended counter Formal result remains
+**INCONCLUSIVE**, not PASS. No full regression was rerun.
 
 ## Remaining signoff items
 
-- Close or formally disposition all 21,071 open DUT code records without
+- Close or formally disposition all 20,893 open DUT code records without
   changing the valid denominator; first investigate reachable Branch and
   Condition records, then Lines, Toggle, and the five FSM transitions.
 - Resolve the two interpolator assertions with legal witnesses or exact

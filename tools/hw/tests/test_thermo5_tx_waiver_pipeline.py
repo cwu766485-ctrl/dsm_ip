@@ -12,11 +12,73 @@ from tools.hw.thermo5_tx_waiver_pipeline import (
     _configuration_fingerprint,
     audit_and_generate,
 )
-from tools.hw.thermo5_tx_waiver_candidate_audit import _configuration_rule
+from tools.hw.thermo5_tx_waiver_candidate_audit import (
+    CandidateAuditError,
+    _check_coverage_manifests,
+    _configuration_rule,
+)
 
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+class CandidateCoverageManifestTests(unittest.TestCase):
+    def test_exact_inventory_accepts_245_test_vdbs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            test_paths = [f"/fixture/test_{index:03}.vdb" for index in range(245)]
+            design_path = "/fixture/design.vdb"
+            vdb = {
+                "design": {"path": design_path},
+                "tests": [{"path": path} for path in test_paths],
+            }
+            all_paths = [design_path, *test_paths]
+            canonical = hashlib.sha256(
+                json.dumps(vdb, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            report = {
+                "product_configuration_fingerprint": "cfg",
+                "raw_command": ["urg", "-dir", *all_paths],
+                "adjusted_command": ["urg", "-dir", *all_paths, "-elfile", "/fixture/main.el"],
+                "vdb_manifest_sha256": canonical,
+                "vdb_manifest": vdb,
+                "common_inputs": {"design_vdb": design_path, "test_vdbs": test_paths},
+                "approved_waiver_count": 0,
+                "adjusted_exclusions_applied": False,
+                "raw_summary": {"branch": {"covered": 5, "total": 7}},
+                "adjusted_summary": {"branch": {"covered": 5, "total": 7}},
+            }
+            report_path = root / "report.json"
+            vdb_path = root / "vdb.json"
+            report_path.write_text(json.dumps(report))
+            vdb_path.write_text(json.dumps(vdb))
+            result = _check_coverage_manifests(report, vdb, report_path, vdb_path, "cfg")
+        self.assertEqual(result["test_vdb_count"], 245)
+        self.assertEqual(result["input_vdb_count"], 246)
+
+    def test_raw_and_adjusted_must_use_identical_vdbs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            vdb = {"design": {"path": "/fixture/design.vdb"},
+                   "tests": [{"path": "/fixture/test.vdb"}]}
+            canonical = hashlib.sha256(
+                json.dumps(vdb, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            report = {
+                "product_configuration_fingerprint": "cfg",
+                "raw_command": ["urg", "-dir", "/fixture/design.vdb", "/fixture/test.vdb"],
+                "adjusted_command": ["urg", "-dir", "/fixture/design.vdb", "/fixture/other.vdb"],
+                "vdb_manifest_sha256": canonical, "vdb_manifest": vdb,
+                "common_inputs": {"design_vdb": "/fixture/design.vdb",
+                                  "test_vdbs": ["/fixture/test.vdb"]},
+            }
+            report_path = root / "report.json"
+            vdb_path = root / "vdb.json"
+            report_path.write_text(json.dumps(report))
+            vdb_path.write_text(json.dumps(vdb))
+            with self.assertRaisesRegex(CandidateAuditError, "different VDB input lists"):
+                _check_coverage_manifests(report, vdb, report_path, vdb_path, "cfg")
 
 
 class WaiverPipelineTests(unittest.TestCase):

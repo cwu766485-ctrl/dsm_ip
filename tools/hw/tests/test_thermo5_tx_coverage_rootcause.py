@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,6 +10,7 @@ from tools.hw.thermo5_tx_coverage_rootcause import (
     location_for,
     root_cause_for_row,
     ROOT,
+    metric_counts_match,
     source_bound_branch_context,
     source_position,
     validate_diagnostic_instrumentation,
@@ -16,6 +18,10 @@ from tools.hw.thermo5_tx_coverage_rootcause import (
 
 
 class BranchPathContextTests(unittest.TestCase):
+    def test_closed_metric_may_be_absent_from_open_gap_ledger(self):
+        self.assertTrue(metric_counts_match(Counter({"line": 3}), {"line": 3, "fsm": 0}))
+        self.assertFalse(metric_counts_match(Counter({"line": 3}), {"line": 3, "fsm": 1}))
+
     def test_fsm_gap_uses_terminal_source_line(self):
         row = {
             "metric": "fsm",

@@ -215,6 +215,33 @@ compile-time DSM/DPD/interpolation SKU. `dsm_async_fifo_order_checker` remains a
 simulation-only data-order checker for the asynchronous feedback subsystem.
 Formality is an equivalence-checking product and does not replace VC Formal FPV.
 
+## One-tap Identity datapath leaf proof
+
+Run the local, no-backpressure Identity datapath proof from Linux with:
+
+```bash
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_convergence.py \
+  --job identity_nostall \
+  --out-dir runs/thermo5_dpd_identity_nostall
+```
+
+`thermo5_dpd_identity_nostall_harness.sv` instantiates production
+`dpd_memory_poly` at `MAX_TAPS=1`, uses an external one-tap Q14 unity
+coefficient image, feeds the input sample as the single tap, and ties
+`out_ready` high. It proves the local payload, latency, ready, and no-saturation
+properties for arbitrary I/Q and `in_valid`, and covers valid output plus both
+signed endpoints. The harness has no protocol/environment assumptions; VC
+Formal reports its initialization constraint `rst_n==1`.
+
+This leaf proof deliberately avoids elastic backpressure and does not include
+AXI shadow/commit, mailbox transfer, active-epoch switching, or full-chain
+latency alignment. It is not a proof of the complete product Identity path,
+does not disposition URG bins, and does not replace the existing
+full-chain Identity proof, which remains INCONCLUSIVE. The exact 2026-11-03
+result and hashes are recorded in
+[`thermo5-tx-assertion-dpd-local-formal-20261103`](../../../docs/verification/thermo5-tx-assertion-dpd-local-formal-20261103.md).
+
 ## Coverage convergence proofs
 
 `run_thermo5_convergence.py` adds actual-XPM residual/reset contracts,

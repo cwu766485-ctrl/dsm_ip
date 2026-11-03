@@ -14,6 +14,9 @@ switch -- $top {
     lappend sources $repo/dv/uvm/formal/thermo5_dpd_identity_harness.sv \
       $repo/dv/uvm/formal/thermo5_dpd_identity_lemmas_harness.sv
   }
+  thermo5_identity_nostall_harness {
+    lappend sources $repo/dv/uvm/formal/thermo5_dpd_identity_nostall_harness.sv
+  }
   thermo5_interp_bounds_harness {
     lappend sources $repo/dv/uvm/formal/thermo5_interp_bounds_harness.sv
   }
@@ -55,6 +58,10 @@ set_fml_var fml_property_time_limit 1m
 if {$top eq "thermo5_identity_lemmas_harness"} {
   set_fml_var fml_max_time 1m
   set_fml_var fml_property_time_limit 30s
+}
+if {$top eq "thermo5_identity_nostall_harness"} {
+  set_fml_var fml_max_time 2m
+  set_fml_var fml_property_time_limit 1m
 }
 set_fml_var fml_max_mem 8GB
 set_fml_var fml_cov_gen_trace on

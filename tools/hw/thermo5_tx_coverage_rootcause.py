@@ -36,6 +36,13 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def metric_counts_match(actual: Counter, expected: dict[str, int]) -> bool:
+    """Compare nonzero gap counts; a fully closed metric has no ledger key."""
+    return {key: value for key, value in actual.items() if value} == {
+        key: value for key, value in expected.items() if value
+    }
+
+
 def validate_refresh_record(path: Path, product_sha: str, raw_report: Path) -> dict:
     """Validate that the reported fresh URG is the exact audited Raw report."""
     evidence = json.loads(path.read_text(encoding="utf-8"))
@@ -422,7 +429,7 @@ def main() -> int:
         expected_metric_counts["toggle"] += bit_count * sum(
             row[name] == "No" for name in ("one_to_zero", "zero_to_one")
         )
-    if dict(metric_counts) != expected_metric_counts:
+    if not metric_counts_match(metric_counts, expected_metric_counts):
         raise ValueError(
             "ledger metric counts do not match the exact current Raw URG gaps: "
             f"ledger={dict(metric_counts)} Raw={expected_metric_counts}"

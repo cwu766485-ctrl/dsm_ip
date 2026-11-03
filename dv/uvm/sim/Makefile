@@ -373,6 +373,7 @@ thermo5-axil-vcs-negative:
 	grep -q 'UVM_WARNING *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'UVM_ERROR *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'UVM_FATAL *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	$(PYTHON) $(ROOT)/tools/hw/check_thermo5_axil_illegal_frame.py $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	echo "Expected AXI-Lite negative assertion observed (simulator exit $$status)"
 
 thermo5-axil-vcs-mailbox-negative:

@@ -1,85 +1,32 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Linux signoff closure (2026-11-03)
+## Current execution state: Thermo5 TX Linux coverage/formal closure (2026-11-04)
 
-### Gate 1 waiver audit follow-up (2026-11-03)
+The frozen product RTL is SHA `1236d49c72360aa62e316aea147528d93a1b3705`: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit state, four PA planes, DPD_MAX_TAPS=1 with Identity reset image, AXI-Lite and Generic FIFO. No product RTL, default algorithm, RX, AI-DPD, or Vivado physical implementation changed.
 
-An independent review branch, `codex/thermo5-tx-waiver-audit-round1`, is being
-prepared on the exact Draft PR #30 head
-`08061386900e5ae2c9f692dcf7e85d849623f818`. It rebinds 371 legacy waiver
-candidates to the current product compile, exact Raw bins, and existing
-same-list Raw/Adjusted URG/VDB evidence. Current classification is 361
-`CONFIG_UNREACHABLE` candidates and 10 `FORMAL_UNREACHABLE` candidates; every
-CSV row remains `PENDING`, with zero approvals and zero active exclusions.
-Raw bins and denominators are unchanged. The review report and machine-readable
-audit are in `docs/verification/thermo5-tx-waiver-review-round1.md` and its
-evidence directory. The hardware utility suite passes 34/34 tests. No RTL,
-testbench, VDB, or Formal job was rerun in this tooling/evidence-only round.
+### Current Round 9 signoff
 
-This does not close the 21,071 open code records: Raw remains Branch 523/637,
-Condition 656/849, Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and
-transitions 17/22. The outstanding counter and DPD Identity proofs remain
-INCONCLUSIVE. Next actions after candidate review are Gate 2 targeted
-reachable Branch/Condition closure, then Line/Toggle and the remaining FSM and
-Assertion audit. Do not approve or emit exclusions without a real review
-approval.
+A fresh VCS product configuration compile and current-source reset-sweep run passed. The exact reset sweep covers four partial-DSP-frame resets and five CDC residual resets with full four-plane bit-true replay; underflow, predictor mismatch and UVM W/E/F were zero. The exact product configuration test passed. Hardware utility tests passed 43/43 and Python reference tests 59/59. Existing generic-core targeted regression retained PASS evidence (seven cases).
 
-The VCS target run was executed from `codex/thermo5-tx-system-random` at
-`ad3211b98677055646975e35924a5809c8d29bac`. This round is published as Draft
-PR #30 on `codex/thermo5-tx-w1c-coverage-round2`, stacked on PR #29. The
-product RTL source SHA used for coverage reports is
-`1236d49c72360aa62e316aea147528d93a1b3705`; the
-coverage-waiver audit utility fix is `52892f66b4fc80ac41557272a1434ac216ddd073`.
-This round changes testbench, Python trace oracle, evidence, and documentation
-only. Product RTL and the frozen TX algorithm are unchanged. Scope is Linux TX;
-RX, AI-DPD and Vivado physical implementation are excluded.
+Same-list Raw/Adjusted URG was regenerated with one design VDB and 248 test VDBs (246 legal and two expected-negative). The inventory is mixed verification-source provenance, not a one-SHA fresh regression. Raw equals Adjusted, with zero approved waivers and zero active Exclusions:
 
-Phase C coverage remains 110/110 packet/long-stream random seeds, 60/60 runtime
-DPD × gain × profile tuples, 48/48 randomized reset/COMMIT trials, directed
-reset/commit and source-gap/PA-stall/FIFO-full crosses, and 392/392 legally
-applicable functional bins. The expected-starvation test remains separately
-classified. Mutation checks detect `late_gain` and `plane_swap`.
+- Branch 525/637; Condition 658/849; Line 3351/3796; Toggle 84340/104480.
+- FSM states 13/13 and transitions 22/22.
+- Legally applicable Functional Coverage 392/392 across 12 groups.
+- 20,888 exact Raw code records in 456 task groups remain OPEN.
+- 371 waiver candidates remain PENDING (361 configuration, 10 Formal); approved=0 and `.el` has no directives.
+- Legal assertion report: 13 successes, 0 failures, 2 uncovered, 2 without attempts. Both no-attempt properties are `assert(q1_tail)` in the two Centered-Cubic interpolator stages. The union report separately includes two expected-negative assertion failures.
 
-Coverage Closure Round 2 adds a legal STATUS DONE W1C directed action after
-COMMIT and a negative Python trace mutation. VCS seed 930000 checks STATUS
-DONE=1, clears it through W1C, and observes zero on readback. The independent
-register predictor reports zero mismatches; all 56 output words match the
-Python oracle with zero underflow. The new VDB hits seven exact bins: Branch
-`94c317079c444447221e`, Line `51e1eab855e96c50a4fd`, Conditions
-`de2c421694e6e9174223` and `87c647010ed34a0a7091`, and Toggles
-`d209311686c25596f406`, `fdf1c5a010c986e614fc`, `64f234d6e5984d7c570e`.
+The fail-closed gate is `RAW_100_OPEN`. Full-chain DPD Identity and outstanding-counter Formal remain INCONCLUSIVE; the outstanding guard branches remain OPEN. A source-gap/underflow contract is also unresolved. Exact hashes, VDB inventory, Raw/Adjusted reports, gate JSON, and commands are indexed in `docs/verification/data/thermo5-tx-linux-signoff-round9-20261104.json`; the human-readable report is `docs/verification/thermo5-tx-linux-signoff-round9-20261104.md`. Logs, vectors and manifests remain under ignored `runs/`.
 
-Latest DUT-only Raw and Adjusted URG use the same 244-test VDB list and have
-zero approved waivers/exclusions. Both remain `RAW_100_OPEN`: Branch 523/637,
-Condition 656/849, Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and
-transitions 17/22. There are 21,071 uncovered DUT code records in 475
-root-cause groups; every record remains OPEN. Legal applicable functional
-coverage remains 392/392. The 371 waiver candidates remain pending; none are
-approved. The positive assertion inventory has 13 successes, zero failures,
-two uncovered and two without attempts. All-test expected-negative assertion
-failures remain separately classified.
+After recording Round 9, `make -C dv/uvm/sim clean` removed 1,856 generated
+VDB directories and tool scratch trees, including the 18 requested root VDBs.
+The Round 9 logs, vectors, reports and manifests remain. Regenerate VDBs before
+another URG run; see the 2026-11-04 cleanup entry in `docs/UPDATE_LOG.md`.
 
-The 244-test union reuses the exact prior 243-test VDB list and adds the W1C
-VDB compiled from this verification worktree based on `ad3211b...`. Historical
-VDB provenance is mixed across earlier test-source SHAs; product RTL is
-unchanged. The positive-only view uses 242 VDBs. Exact lists, manifests, source
-hashes, report/log checksums, commands and bin IDs are recorded in
-`docs/verification/data/thermo5-tx-coverage-w1c-round2-20261103.json`. Do not
-describe the union as 244 new simulations from one full-tree SHA.
+### Next action
 
-Latest checks: VCS compile and targeted UVM PASS; Python trace oracle 56/56
-PASS with zero underflow; Python reference tests 59/59 PASS; hardware utility
-tests 34/34 PASS; same-list Raw/Adjusted URG and fail-closed gate PASS. Formal
-was not rerun in this round. Existing outstanding-counter and DPD Identity
-proofs remain INCONCLUSIVE, not PASS. No waiver is approved. Real XPM, GT
-Wizard, FPGA PPA/routed timing, and physical RF/QAM256 BER remain outside this
-Linux signoff.
-
-**Next:** close remaining reachable Branch/Condition roots with exact legal
-stimulus and independent checkers, then Lines/Toggle and five CDC FSM
-transitions. Resolve the two interpolator assertion no-attempts and improve
-DPD Identity/counter Formal convergence. Do not expand seed sweeps without a
-coverage hypothesis. Do not modify the product algorithm or merge PRs.
+Continue root-cause closure from exact Raw bins: first Branch and Condition, then Line and Toggle. Do not add seeds without a new bin-specific hypothesis. Keep every unhit bin OPEN until a legal public-interface witness with an independent checker or a non-vacuous source-bound proof resolves it. Keep all 371 waivers pending unless independently reviewed. Real XPM, GT Wizard, FPGA PPA/routed timing, and RF/QAM256 remain outside Linux signoff.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 

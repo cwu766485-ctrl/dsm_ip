@@ -16,10 +16,17 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
   // integrated default scenario focuses on commit, datapath, boundary and
   // reset behavior; register-map/protocol-only checks live in a separate test.
   virtual function int unsigned configured_active_taps();
+`ifdef THERMO5_DPD_MAX_TAPS
+    // Keep the integrated config test legal for the elaborated product cap.
+    // The unconstrained research build still exercises the two-tap image.
+    if (`THERMO5_DPD_MAX_TAPS < 2) return 1;
+`endif
     return 2;
   endfunction
 
   virtual function bit [386:0] configured_payload();
+    if (configured_active_taps()==1)
+      return {3'd1,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0};
     return {3'd2,64'h0000_0000_0000_4000,64'd0,64'd0,64'd0,64'd0,64'd0};
   endfunction
 
@@ -28,11 +35,13 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
   endfunction
 
   virtual function string scenario_pass_message();
+    if (configured_active_taps()==1)
+      return "THERMO5_AXIL_CONFIG_UVM_PASS: illegal tap rejected; mailbox waited for DPD frame boundary; legal identity one-tap config applied; all four planes bit-true";
     return "THERMO5_AXIL_CONFIG_UVM_PASS: illegal tap rejected; mailbox waited for DPD frame boundary; legal identity-equivalent two-tap config applied; all four planes bit-true";
   endfunction
 
   virtual task program_dpd_image(output bit [1:0] resp);
-    axil_write(8'h08,32'd2,0,3,resp);
+    axil_write(8'h08,32'(configured_active_taps()),0,3,resp);
     if (resp!=2'b00) `uvm_fatal("AXIL_TAPS","Legal tap-count write failed")
     axil_write(8'h10,32'h0000_4000,2,0,resp);
     if (resp!=2'b00) `uvm_fatal("AXIL_COEFF","Unity c1 coefficient write failed")

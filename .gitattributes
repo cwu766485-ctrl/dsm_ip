@@ -32,3 +32,7 @@ ip/ip_repo/** linguist-generated=true
 syn/reports/** linguist-generated=true
 matlab/out/** linguist-generated=true
 dv/verif/out_xsim_p0/** linguist-generated=true
+# Preserve exact VC Formal-generated setup/property snapshots used by waiver audits.
+docs/verification/data/thermo5-tx-waiver-review-round*/formal_snapshots/** binary
+docs/verification/data/thermo5-tx-waiver-review-round*/formal-snapshots/** binary
+docs/verification/data/thermo5-tx-waiver-review-round*/snapshots/** binary

@@ -18,8 +18,13 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
       begin
         wait(env.source.monitor.accepted_beats>=4);
         env.control.core_on();
-        for (int cycles=0; cycles<10000 && env.scoreboard.checked<cfg.core_words-1; cycles++)
+        for (int cycles=0; cycles<10000 && env.scoreboard.checked<cfg.core_words-1; cycles++) begin
           @(posedge vif.core_clk);
+          // The PA monitor updates the scoreboard on this edge. Sample after
+          // the monitor callback so readiness is requested before the next
+          // falling edge and cannot race the final output handshake.
+          #1ps;
+        end
         if (env.scoreboard.checked!=cfg.core_words-1)
           `uvm_fatal("RESET_TAIL_SETUP",
             $sformatf("Could not reach last expected output: words=%0d",
@@ -27,7 +32,6 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
 
         // Stall the final four-plane output (the centered frame-tail word)
         // by deasserting readiness on one PA plane, then reset while held.
-        @(negedge vif.core_clk);
         env.pa_sink.set_ready(4'hd);
         tail_held=0;
         for (int cycles=0; cycles<1000 && !tail_held; cycles++) begin
@@ -35,7 +39,11 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
           tail_held=(vif.pa_valid==4'hf && vif.pa_ready==4'hd);
         end
         if (!tail_held)
-          `uvm_fatal("RESET_TAIL_STALL","Final frame-tail PA word did not stall")
+          `uvm_fatal("RESET_TAIL_STALL",
+            $sformatf("Final frame-tail PA word did not stall: checked=%0d source=%0d last=%0d valid=%h ready=%h pa0=%016h expected_tail0=%016h",
+              env.scoreboard.checked,env.source.monitor.accepted_beats,
+              env.source.monitor.accepted_last_count,vif.pa_valid,vif.pa_ready,
+              vif.pa_data[0],env.scoreboard.expected[0][cfg.core_words-1]))
         for (int cycles=0; cycles<1000 &&
              env.source.monitor.accepted_last_count==0; cycles++)
           @(posedge vif.src_clk);

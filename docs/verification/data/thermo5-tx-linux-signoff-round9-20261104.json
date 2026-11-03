@@ -1,0 +1,325 @@
+{
+  "assertions": {
+    "legal_positive": {
+      "failures": 0,
+      "properties": "assert(q1_tail) on the two Centered-Cubic interpolator stages; no legal attempts observed",
+      "success": 13,
+      "uncovered": 2,
+      "without_attempts": 2
+    },
+    "legal_positive_summary": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/legal_positive_round9/raw_inventory/summary.json",
+      "sha256": "0213be25807fc44c8a7500d1f2b71bcdea940b3c3764b030a5cdc622a6990066"
+    },
+    "legal_positive_urg_manifest": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/legal_positive_round9/report_manifest.json",
+      "sha256": "5d72f26caa242fee374f23734f644a149a4799f797eae0843369ed8cebfd0782"
+    },
+    "note": "Expected-negative assertion failures are reported separately and are not classified as legal-test failures.",
+    "raw_union_including_expected_negative": {
+      "expected_negative_failures": 2,
+      "success": 13,
+      "uncovered": 2,
+      "without_attempts": 1
+    }
+  },
+  "base_commit_sha": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
+  "branch": "codex/thermo5-tx-waiver-audit-round1",
+  "compile": {
+    "compile_log": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/product_build/compile.log",
+      "sha256": "5bc51c6295fdb0339ff8a075b5c9e0d22d3aa87c437fc2c1aee326c6e43ef07b"
+    },
+    "configuration_defines": [
+      "+define+THERMO5_AXIL_CONTROL",
+      "+define+THERMO5_CENTERED_CUBIC",
+      "+define+THERMO5_TIDSM_ORDER=2",
+      "+define+THERMO5_STEP=5120",
+      "+define+THERMO5_DPD_MAX_TAPS=1"
+    ],
+    "manifest_source_file_count": 90,
+    "note": "Fresh compile uses the frozen product defines and current verification worktree; product RTL hashes map to the frozen product RTL SHA above.",
+    "parsed_local_source_count": 88,
+    "product_compile_manifest": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/product_compile_manifest.json",
+      "sha256": "36aacf88fa95269728eded27bc48e314c8e55877920379f70da00116b9a40d42"
+    },
+    "source_manifest": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/source_manifest.json",
+      "sha256": "6d5b678181d5e00569b41c4f8fe1759819dda7e237e364389040cb3735686ca7"
+    },
+    "status": "PASS",
+    "top": "thermo5_sku_uvm_tb"
+  },
+  "coverage": {
+    "active_exclusions": 0,
+    "adjusted": {
+      "branch": {
+        "covered": 525,
+        "missing": 112,
+        "percent": 82.4176,
+        "total": 637
+      },
+      "condition": {
+        "covered": 658,
+        "missing": 191,
+        "percent": 77.5029,
+        "total": 849
+      },
+      "line": {
+        "covered": 3351,
+        "missing": 445,
+        "percent": 88.2771,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 84340,
+        "missing": 20140,
+        "percent": 80.7236,
+        "total": 104480
+      }
+    },
+    "approved_waivers": 0,
+    "fsm": {
+      "states": {
+        "covered": 13,
+        "total": 13
+      },
+      "transitions": {
+        "covered": 22,
+        "total": 22
+      }
+    },
+    "functional": {
+      "groups": 12,
+      "illegal_test_only_uncovered_records": 4,
+      "legally_applicable_covered": 392,
+      "legally_applicable_total": 392,
+      "percent": 100.0,
+      "raw_covered_records": 392,
+      "raw_scoreable_records": 396,
+      "urg_model_excluded_rows": 24
+    },
+    "functional_bin_detail": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-functional-bin-detail.csv",
+      "sha256": "fd2a6d6987a4ab897380ec8abecabdd2362ede43957cd83039fe9ecbf9afba31"
+    },
+    "gate": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_gate_round9_lf_final.json",
+      "sha256": "fd9bf7d5a35cc38950ad94f00ef185a2b2a2b5f434bab0a02665a1f44523bcf6"
+    },
+    "raw": {
+      "branch": {
+        "covered": 525,
+        "missing": 112,
+        "percent": 82.4176,
+        "total": 637
+      },
+      "condition": {
+        "covered": 658,
+        "missing": 191,
+        "percent": 77.5029,
+        "total": 849
+      },
+      "line": {
+        "covered": 3351,
+        "missing": 445,
+        "percent": 88.2771,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 84340,
+        "missing": 20140,
+        "percent": 80.7236,
+        "total": 104480
+      }
+    },
+    "raw_equals_adjusted": true,
+    "raw_open_ledger": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-coverage-open-bins.csv.gz",
+      "sha256": "11d16d1f1a942d19889a0130f8967867543c50b08a0e9b210d7e24f9d7ce7fab"
+    },
+    "raw_summary_and_adjusted_summary": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/report_manifest.json",
+      "sha256": "42861c12102b9cdd55cc51d8aed9a96ef9a70439839cc2e07434015def1fcf6a"
+    },
+    "root_cause": {
+      "open_groups": 456,
+      "open_records": 20888,
+      "status": "all OPEN; no fabricated HIT or unreachable disposition"
+    },
+    "root_cause_manifest": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-coverage-root-cause-manifest.json",
+      "sha256": "9bfc42faeaab4fcd627ab6550c23415742e3a6629689d02a8260b792eddc617a"
+    },
+    "root_cause_summary": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-coverage-root-cause-summary.json",
+      "sha256": "7337a20d6f78f382f45b4817b13594c32457d79c79ac11c2174a0c5b03b56e54"
+    },
+    "status": "RAW_100_OPEN"
+  },
+  "current_checks": [
+    {
+      "command": "make -C dv/uvm/sim thermo5-vcs with AXI-Lite, Centered-Cubic, EF2 ORDER=2/STEP=5120, DPD_MAX_TAPS=1 and Generic FIFO",
+      "log": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/product_build/compile.log",
+        "sha256": "5bc51c6295fdb0339ff8a075b5c9e0d22d3aa87c437fc2c1aee326c6e43ef07b"
+      },
+      "name": "VCS fresh product compile",
+      "status": "PASS"
+    },
+    {
+      "details": "seed 420101; one-tap configuration, four-plane bit-true comparison, predictor mismatch 0; UVM warning/error/fatal 0/0/0",
+      "log": {
+        "path": "runs/thermo5_tx_closure_current/linux_regression_20261103/axil_product_config_run.log",
+        "sha256": "11e178006cb2241545a19858a695b628f18e9a951a5c070fffd281bcb96c4b51"
+      },
+      "name": "AXI-Lite product-config test",
+      "status": "PASS"
+    },
+    {
+      "command": "VCS_HOME=/tmp/thermo5_vcs_compat_20261103 VCS_ARCH_OVERRIDE=linux make -C dv/uvm/sim thermo5-tx-product-axil-reset-sweep PYTHON=python3.12 VCS=/opt/Synopsys/vcs/V-2023.12-SP1/bin/vcs URG=/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg THERMO5_VECTORS=\"$PWD/runs/thermo5_tx_closure_current/linux_regression_20261103/vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_tx_closure_current/current_source_20261104/product_build\" THERMO5_EXTRA_ARGS=\"+CORE_WORDS=56 +THERMO5_TRACE_JSONL=$PWD/runs/thermo5_tx_closure_current/current_source_20261104/reset_sweep_trace.jsonl\"",
+      "details": "seed 610802; four partial-DSP-frame resets and five CDC residual resets; bit-true replay complete; underflow 0; predictor mismatch 0; UVM warning/error/fatal 0/0/0",
+      "driver_log": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/reset_sweep_driver_retry.log",
+        "sha256": "e35ca78e0253204845b98f7eba2736fc08dc8b0f16184ab0025b70b7c2f4fc9c"
+      },
+      "name": "AXI-Lite reset sweep",
+      "simulation_log": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/product_build/thermo5_sku_axil_reset_sweep_test_seed610802.log",
+        "sha256": "d59daee22ab3526cd6eeba0ffcb640bb69c7c4a2b91e123e7492754d9774a480"
+      },
+      "status": "PASS"
+    },
+    {
+      "details": "seven targeted cases including bit-true, bubble/backpressure, FIFO boundary/empty, reset/tail, residual reset and expected-negative frame test; current retained regression log",
+      "log": {
+        "path": "runs/thermo5_tx_closure_current/linux_regression_20261103/generic_core_final3_regression.log",
+        "sha256": "b3693f696e5a550692b9d7550db9022bebc92ee135c6c0155c746930dd84cc81"
+      },
+      "name": "Generic-core UVM regression",
+      "status": "PASS"
+    },
+    {
+      "command": "python3.12 -m unittest discover -s tools/hw/tests -v",
+      "log": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/hw_utility_tests.log",
+        "sha256": "1420689ed3c88d66a799e2dad208d4a8635a9f99908f9f84ebf548fc31a9708a"
+      },
+      "name": "Hardware utility tests",
+      "status": "PASS 43/43"
+    },
+    {
+      "command": "PYTHONPATH=\"$PWD/dv/uvm/refmodel/python\" python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
+      "log": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/python_ref_tests.log",
+        "sha256": "e690a7f5ca9854d404d94ec3dee1d21d98ff842bae21813ee74aedbfe6b10bcc"
+      },
+      "name": "Python integer reference tests",
+      "status": "PASS 59/59"
+    },
+    {
+      "command": "tools/hw/run_thermo5_tx_urg_dual_report.py using the exact ordered VDB manifest, tracked-CSV generated .el and pipeline audit",
+      "name": "Raw/Adjusted URG",
+      "report_manifest": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_signoff/report_manifest.json",
+        "sha256": "983eaa3fd4134f68aa20a352da4ea71e81aa83155d05de10dbf1f08bac800898"
+      },
+      "status": "PASS; metrics equal; 0 exclusions"
+    },
+    {
+      "command": "tools/hw/thermo5_tx_coverage_gate.py using Round9 Raw/Adjusted URG, legal-only assertion report, functional bin detail, current waiver CSV and product compile manifest",
+      "gate": {
+        "path": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_gate_round9_lf_final.json",
+        "sha256": "fd9bf7d5a35cc38950ad94f00ef185a2b2a2b5f434bab0a02665a1f44523bcf6"
+      },
+      "name": "Fail-closed coverage gate",
+      "status": "PASS with RAW_100_OPEN"
+    }
+  ],
+  "date": "2026-11-04",
+  "decision": "Linux TX functional and targeted behavioral evidence passes within the stated scope. Overall TX code/Formal signoff remains partial and RAW_100_OPEN.",
+  "formal": {
+    "candidate_audit_formal_candidates": 10,
+    "dpd_identity_local_leaf": "PASS scoped: 5/5 assertions and 3/3 covers, no assumptions or black boxes; full-chain identity remains INCONCLUSIVE",
+    "outstanding_counter": "INCONCLUSIVE after 1364.76 s; assertions at depths 231/122 and exact guard Covers at depths 196/126; zero assumptions/black boxes; both Raw Branches remain OPEN",
+    "waiver_status": "PENDING; proof classification alone did not approve exclusions"
+  },
+  "outside_linux_signoff": [
+    "Real XPM FIFO",
+    "GT Wizard",
+    "Vivado FPGA PPA and routed timing",
+    "physical RF/QAM256 BER"
+  ],
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "ef2_step": 5120,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "pa_planes": 4,
+    "state_bits": 20
+  },
+  "product_rtl_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+  "remaining_linux_open": [
+    "20,888 reachable-or-unresolved Raw code records in 456 groups; all remain OPEN until exact legal hit or non-vacuous proof.",
+    "Two outstanding-counter guard Branches and their Formal assertions/Covers remain unresolved.",
+    "Two legal-positive q1_tail assertions have no attempts.",
+    "Full-chain DPD Identity Formal remains INCONCLUSIVE.",
+    "Source-gap/underflow contract remains unresolved; do not treat starvation tests as normal traffic.",
+    "Waiver reviewer approvals remain zero; Adjusted coverage therefore equals Raw."
+  ],
+  "repository": "cwu766485-ctrl/dsm_ip",
+  "round": "round9_current_source_signoff",
+  "schema_version": 1,
+  "tool_versions": {
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1_Full64",
+    "vc_formal": "V-2023.12-SP2",
+    "vcs": "V-2023.12-SP1_Full64"
+  },
+  "vdb_inventory": {
+    "design_vdb_count": 1,
+    "expected_negative_test_vdb_count": 2,
+    "legal_test_vdb_count": 246,
+    "manifest": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/vdb_manifest.json",
+      "sha256": "81d1c0c64441c366795c415a91f4405a8bbe190033550805baafbc1076749fe6"
+    },
+    "note": "Retained mixed verification-source provenance. The current-source reset-sweep VDB replaces the prior reset-sweep entry; this is not a fresh 248-test rerun from one verification-source SHA. Raw and Adjusted use the identical ordered VDB list.",
+    "test_vdb_count": 248
+  },
+  "waiver_commands": {
+    "candidate_audit": "python3.12 tools/hw/thermo5_tx_waiver_candidate_audit.py --waivers-csv docs/verification/thermo5_tx_waivers.csv --raw-gap-ledger runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-coverage-open-bins.csv.gz --compile-manifest runs/thermo5_tx_closure_current/current_source_20261104/product_compile_manifest.json --report-manifest runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_signoff/report_manifest.json --vdb-manifest runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_signoff/vdb_manifest.json --formal-review docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json --output docs/verification/data/thermo5-tx-waiver-review-round9/thermo5-tx-waiver-candidate-audit.json --snapshot-dir docs/verification/data/thermo5-tx-waiver-review-round9/formal_snapshots",
+    "coverage_gate": "python3.12 tools/hw/thermo5_tx_coverage_gate.py --raw-summary runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/raw_inventory/summary.json --assertion-summary runs/thermo5_tx_closure_current/current_source_20261104/legal_positive_round9/raw_inventory/summary.json --groups-html runs/thermo5_tx_closure_current/current_source_20261104/legal_positive_round9/raw_urg/groups.html --functional-bin-detail runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-functional-bin-detail.csv --waivers-csv docs/verification/thermo5_tx_waivers.csv --el-file runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/thermo5_tx_main.el --waiver-audit runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/pipeline_audit.json --adjusted-summary runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/adjusted_inventory/summary.json --adjusted-report-manifest runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/report_manifest.json --source-manifest runs/thermo5_tx_closure_current/current_source_20261104/product_compile_manifest.json --output runs/thermo5_tx_closure_current/current_source_20261104/coverage_gate_round9_lf_final.json",
+    "dual_urg": "python3.12 tools/hw/run_thermo5_tx_urg_dual_report.py --urg /opt/Synopsys/vcs/V-2023.12-SP1/bin/urg --design-vdb <design.path from current VDB manifest> --vdb <repeat for each ordered tests[].path> --approved-el runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/thermo5_tx_main.el --waiver-audit runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/pipeline_audit.json --out-dir runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff",
+    "pipeline": "python3.12 tools/hw/thermo5_tx_waiver_pipeline.py --waivers-csv docs/verification/thermo5_tx_waivers.csv --gap-ledger runs/thermo5_tx_closure_current/current_source_20261104/rootcause_round9/thermo5-tx-coverage-open-bins.csv.gz --compile-manifest runs/thermo5_tx_closure_current/current_source_20261104/product_compile_manifest.json --el-output runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/thermo5_tx_main.el --audit-output runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/pipeline_audit.json"
+  },
+  "waivers": {
+    "active_exclusions": 0,
+    "approved": 0,
+    "candidate_audit": {
+      "path": "docs/verification/data/thermo5-tx-waiver-review-round9/thermo5-tx-waiver-candidate-audit.json",
+      "sha256": "9716b1027b4b3851c7c88b7c7edfe53cef9cca4d24864323f700c18cc20906fe"
+    },
+    "candidate_count": 371,
+    "configuration_unreachable_pending": 361,
+    "csv": {
+      "path": "docs/verification/thermo5_tx_waivers.csv",
+      "sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830"
+    },
+    "formal_unreachable_pending": 10,
+    "generated_el": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/thermo5_tx_main.el",
+      "sha256": "57d1f80c4862394d1a6e0fb0c12ed1ba57543d3b8e6d1ab8e9dfc452cc78c858"
+    },
+    "note": "All candidates remain PENDING. No .el directive is active; Raw denominator and hit statuses are unchanged.",
+    "pipeline_audit": {
+      "path": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round9_tracked/pipeline_audit.json",
+      "sha256": "9246da2f9b5e4576ec74239c01acad14d261d04709f5b0d199f16db7bc65bc78"
+    },
+    "rejected": 0
+  }
+}
