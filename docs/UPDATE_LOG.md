@@ -1,3 +1,11 @@
+## 2026-11-03 - Formal disposition of Generic-FIFO core_data_empty Condition
+
+- Added a source-bound Formal harness for Raw Condition `TXB-3b8b5df27b5b204fbb04` / Raw record `43024ee4b07d2164b0a2` at `dsm_axis14_to_core8_cdc.sv:113`. With Generic FIFO, `rd_valid` is exactly the inverse of `rd_empty`; the condition tuple `0/1/1/1/1` is unreachable.
+- VC Formal V-2023.12-SP2 on clean code SHA `dffcd94f95ed6dd455dd892b49391e102594cb4b` passed 3/3 assertions (2 non-vacuous) and 3/4 Covers; the exact target Cover is uncoverable. Zero selected setup violations and zero black boxes.
+- Raw/Adjusted URG was not rerun. The Raw bin remains unhit and retained; no waiver was approved and no `.el` exclusion was generated. The `RAW_100_OPEN` baseline is unchanged.
+- Added the formal report/evidence and scoped runner job; updated the active frontier, signoff and Formal README. `py_compile`, JSON validation and `git diff --check` pass.
+- Evidence: `docs/verification/thermo5-tx-cdc-data-empty-formal-20261103.md` and adjacent JSON.
+
 ## 2026-11-03 18:48 SGT - Prove one-tap Identity DPD output under backpressure
 
 - Added a dedicated VC Formal harness and source-bound runner for the frozen

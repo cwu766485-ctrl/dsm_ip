@@ -34,6 +34,12 @@ switch -- $top {
       [file join $repo rtl axis dsm_axis14_to_core8_cdc.sv] \
       [file join $repo dv uvm formal thermo5_generic_cdc_harness.sv]]
   }
+  thermo5_cdc_data_empty_harness {
+    set sources [list [file join $repo rtl axis dsm_reset_sync.sv] \
+      [file join $repo rtl axis dsm_async_fifo.sv] \
+      [file join $repo rtl axis dsm_axis14_to_core8_cdc.sv] \
+      [file join $repo dv uvm formal thermo5_cdc_data_empty_harness.sv]]
+  }
   thermo5_ef2_stability_harness {
     set sources [list [file join $repo rtl gt gt_tx_user_bridge.sv] \
       [file join $repo rtl gt gt_tx_raw64_boundary.sv] \
@@ -68,7 +74,7 @@ switch -- $top {
 }
 lappend sources -assert svaext
 read_file -top $top -format sverilog -sva -vcs $sources
-if {$top eq "thermo5_cdc_residual_harness"} {
+if {$top eq "thermo5_cdc_residual_harness" || $top eq "thermo5_cdc_data_empty_harness"} {
   # Exact 7:4 period ratio (125:218.75 MHz), scaled to integral periods.
   # The rounded 4.572-ns period creates a large unnecessary formal time grid.
   create_clock s_axis_aclk -period 14

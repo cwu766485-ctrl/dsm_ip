@@ -16,6 +16,7 @@ SOURCES=('rtl/axis/dsm_reset_sync.sv','rtl/dpd/dpd_poly.v','rtl/dpd/dpd_memory_p
          'dv/uvm/formal/thermo5_dpd_counter_harness.sv',
          'dv/uvm/formal/thermo5_dpd_identity_harness.sv',
          'dv/uvm/formal/thermo5_generic_cdc_harness.sv',
+         'dv/uvm/formal/thermo5_cdc_data_empty_harness.sv',
          'dv/uvm/formal/thermo5_cdc_end_branch_harness.sv',
          'dv/uvm/formal/thermo5_ef2_stability_harness.sv',
          'dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv',
@@ -35,7 +36,7 @@ def main():
                     help='Also prove identity arithmetic/latency and generic CDC residual legality')
     ap.add_argument('--residual-only',action='store_true',
                     help='Add the residual proof without the optional expensive arithmetic proof')
-    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','cdc_end_branch','ef2','ef2_pair','frame_tail','frame_tail_legal_metadata','frame_tail_reset_condition','ef2_product_params'),
+    ap.add_argument('--jobs',nargs='+',choices=('reset','counter','counter_unbounded','identity','cdc_residual','cdc_data_empty','cdc_end_branch','ef2','ef2_pair','frame_tail','frame_tail_legal_metadata','frame_tail_reset_condition','ef2_product_params'),
                     help='Run selected existing jobs for focused diagnosis')
     args=ap.parse_args(); out=Path(args.out_dir).resolve()
     if ROOT/'runs' not in out.parents or out.exists(): ap.error('Use a new runs/ directory')
@@ -63,6 +64,11 @@ def main():
         kinds=tuple(dict.fromkeys(args.jobs))
         if 'cdc_residual' in kinds:
             result['scope']['cdc_residual']='production generic FIFO CDC; exact 7:4 scaled clock periods; constructed registered legal AXIS source; no runtime assumptions on DUT state'
+        if 'cdc_data_empty' in kinds:
+            result['scope']['cdc_data_empty']=(
+                'Production 14:8 CDC with exact Generic FIFO configuration and registered legal AXIS source. '
+                'Targets Raw condition TXB-3b8b5df27b5b204fbb04 at core_data_empty line 113; '
+                'requires source/FIFO activity and core_data_empty witnesses while the exact condition Cover is uncoverable.')
     if args.unbounded_counter:
         result['scope']['counter_unbounded']='MAX_TAPS=1 identity; no acceptance budget; transition proofs do not imply URG hits'
     if args.jobs and 'ef2' in args.jobs:
@@ -102,7 +108,7 @@ def main():
     for kind in kinds:
         top=('thermo5_ef2_stability_harness' if kind=='ef2' else
              'thermo5_ef2_pair_equiv_harness' if kind=='ef2_pair' else
-             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual','cdc_end_branch','frame_tail','frame_tail_legal_metadata','frame_tail_reset_condition','ef2_product_params') else
+             f'thermo5_{kind}_harness' if kind in ('counter_unbounded','identity','cdc_residual','cdc_data_empty','cdc_end_branch','frame_tail','frame_tail_legal_metadata','frame_tail_reset_condition','ef2_product_params') else
              f'thermo5_{kind}_gap_harness')
         work=out/kind; work.mkdir()
         env=os.environ.copy()
@@ -119,10 +125,17 @@ def main():
             properties=(work/'properties.txt').read_text()
             assertions=re.findall(r'^\s*\[\s*\d+\]\s+(\w+)\s+.*? -\s+(\S*\.a_\S+)',properties,re.M)
             covers=re.findall(r'^\s*\[\s*\d+\]\s+(covered|uncoverable|inconclusive|undetermined|unprocessed)\s+.*? -\s+(\S*\.c_\S+)',properties,re.M)
-            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 3 if kind=='cdc_end_branch' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 8 if kind=='frame_tail_legal_metadata' else 8 if kind=='frame_tail_reset_condition' else 4
-            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 2 if kind=='frame_tail_legal_metadata' else 2 if kind=='frame_tail_reset_condition' else 1 if kind=='cdc_end_branch' else 3
+            expected_covers=5 if kind=='reset' else 9 if kind=='cdc_residual' else 4 if kind=='cdc_data_empty' else 3 if kind=='cdc_end_branch' else 4 if kind=='ef2_pair' else 3 if kind=='ef2' else 2 if kind=='ef2_product_params' else 9 if kind=='frame_tail' else 8 if kind=='frame_tail_legal_metadata' else 8 if kind=='frame_tail_reset_condition' else 4
+            expected_assertions=35 if kind=='counter_unbounded' else 5 if kind=='identity' else 3 if kind=='cdc_data_empty' else 7 if kind in ('cdc_residual','ef2_pair') else 6 if kind=='ef2' else 2 if kind=='ef2_product_params' else 6 if kind=='frame_tail' else 2 if kind=='frame_tail_legal_metadata' else 2 if kind=='frame_tail_reset_condition' else 1 if kind=='cdc_end_branch' else 3
             ok=code==0 and len(assertions)==expected_assertions and all(s=='proven' for s,n in assertions)
-            if kind=='frame_tail_legal_metadata':
+            if kind=='cdc_data_empty':
+                expected_cover_states={'c_source_accept':'covered',
+                    'c_fifo_nonempty_valid':'covered',
+                    'c_core_data_empty':'covered',
+                    'c_exact_raw_bin':'uncoverable'}
+                observed_cover_states={n.rsplit('.',1)[-1]:s for s,n in covers}
+                ok=ok and len(covers)==expected_covers and observed_cover_states==expected_cover_states
+            elif kind=='frame_tail_legal_metadata':
                 expected_cover_states={'c_append_subframe_start':'covered',
                     'c_append_packet_end':'covered',
                     'c_append_tail_transfer':'covered',
@@ -183,6 +196,9 @@ def main():
                     ok=ok and bool(re.search(r'# non_vacuous\s*:\s*2\b',properties))
                 elif kind=='cdc_residual':
                     ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_axis_stable',properties))
+                elif kind=='cdc_data_empty':
+                    ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_nonempty_implies_valid',properties))
+                    ok=ok and not re.search(r'trivially proven|tautolog',banner,re.I)
                 elif kind=='cdc_end_branch':
                     ok=ok and bool(re.search(r'proven\s+\(non_vacuous\).*\.a_immediate_end_arm_unreachable',properties))
                     ok=ok and not re.search(r'inconclusive|undetermined',properties)

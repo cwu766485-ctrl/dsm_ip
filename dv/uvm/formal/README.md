@@ -17,6 +17,7 @@ for that job:
 | Reset release | `thermo5_reset_harness.sv` | `thermo5_reset_gap_harness` |
 | DPD sample counter | `thermo5_dpd_counter_harness.sv` | bounded and unbounded counter tops |
 | Generic FIFO CDC / 14:8 residual | `thermo5_generic_cdc_harness.sv` | `thermo5_cdc_residual_harness` |
+| Generic FIFO `core_data_empty` Condition reachability | `thermo5_cdc_data_empty_harness.sv` | `thermo5_cdc_data_empty_harness` |
 | Product 14:8 CDC frame-end branch | `thermo5_cdc_end_branch_harness.sv` | `thermo5_cdc_end_branch_harness` |
 | Product 14:8 CDC outer-case default | `thermo5_cdc_default_branch_harness.sv` | `thermo5_cdc_default_branch_harness` |
 | Product consecutive-frame start alignment | `thermo5_cdc_frame_start_alignment_harness.sv` | `thermo5_cdc_frame_start_alignment_harness` |
@@ -53,6 +54,9 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs cdc_end_branch --out-dir runs/thermo5_cdc_end_branch_review
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
+  --jobs cdc_data_empty --out-dir runs/thermo5_cdc_data_empty_review
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py \
   runs/thermo5_cdc_default_branch_review
