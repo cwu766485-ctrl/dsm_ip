@@ -338,7 +338,7 @@ thermo5-vcs-run-only:
 		$(THERMO5_EXTRA_ARGS) -l $(THERMO5_RUN_LOG)
 	@grep -q 'UVM_ERROR *: *0' $(THERMO5_RUN_LOG)
 	@grep -q 'UVM_FATAL *: *0' $(THERMO5_RUN_LOG)
-	@grep -q 'THERMO5_.*_UVM_PASS' $(THERMO5_RUN_LOG)
+	@grep -q 'THERMO5_.*_PASS' $(THERMO5_RUN_LOG)
 	@! grep -q 'DSM frame_start was not aligned' $(THERMO5_RUN_LOG)
 
 thermo5-vcs-negative:

@@ -2,6 +2,7 @@
 // +THERMO5_TRACE_JSONL=<path>; never drives a DUT signal.
 class thermo5_trace_recorder extends uvm_component;
   `uvm_component_utils(thermo5_trace_recorder)
+  uvm_analysis_imp_event#(thermo5_transaction_event,thermo5_trace_recorder) event_imp;
   uvm_analysis_imp_trace_src#(thermo5_source_item,thermo5_trace_recorder) source_imp;
   uvm_analysis_imp_trace_pa#(thermo5_pa_word,thermo5_trace_recorder) pa_imp;
   uvm_analysis_imp_trace_axil_fire#(thermo5_axil_item,thermo5_trace_recorder) axil_fire_imp;
@@ -23,6 +24,7 @@ class thermo5_trace_recorder extends uvm_component;
 
   function new(string name, uvm_component parent);
     super.new(name,parent);
+    event_imp=new("event_imp",this);
     source_imp=new("source_imp",this);
     pa_imp=new("pa_imp",this);
     axil_fire_imp=new("axil_fire_imp",this);
@@ -131,6 +133,118 @@ class thermo5_trace_recorder extends uvm_component;
   function void write_trace_axil_cycle(thermo5_axil_item tr);
     if (!enabled || !tr.reset_n) return;
     current_axil_cycle=tr.event_cycle;
+  endfunction
+
+  function void write_event(thermo5_transaction_event event_tr);
+    string i_json, q_json, samples_json, saturations_json, event_type;
+    int signed value;
+    thermo5_source_item source_tr;
+    thermo5_pa_word pa_tr;
+    thermo5_axil_item axil_tr;
+    if (!enabled) return;
+    case (event_tr.kind)
+      THERMO5_EVENT_SOURCE_BEAT: begin
+        source_tr=thermo5_source_item::type_id::create("trace_source_event");
+        source_tr.i_vec=event_tr.source_i;
+        source_tr.q_vec=event_tr.source_q;
+        source_tr.frame_start=event_tr.frame_start;
+        source_tr.frame_gain=event_tr.frame_gain;
+        source_tr.tlast=event_tr.tlast;
+        source_tr.beat_index=event_tr.local_index;
+        source_tr.valid_gap_cycles=event_tr.valid_gap_cycles;
+        write_trace_src(source_tr);
+      end
+      THERMO5_EVENT_PA_WORD: begin
+        pa_tr=thermo5_pa_word::type_id::create("trace_pa_event");
+        for (int p=0;p<4;p++) pa_tr.plane[p]=event_tr.pa_plane[p];
+        write_trace_pa(pa_tr);
+      end
+      THERMO5_EVENT_AXIL_WRITE: begin
+        axil_tr=thermo5_axil_item::type_id::create("trace_axil_write_event");
+        axil_tr.is_write=1;
+        axil_tr.addr=event_tr.axil_addr;
+        axil_tr.data=event_tr.axil_data;
+        axil_tr.strb=event_tr.axil_strb;
+        axil_tr.txn_id=event_tr.axil_txn_id;
+        axil_tr.event_cycle=event_tr.event_cycle;
+        write_trace_axil_fire(axil_tr);
+      end
+      THERMO5_EVENT_AXIL_READ: begin
+        axil_tr=thermo5_axil_item::type_id::create("trace_axil_read_event");
+        axil_tr.addr=event_tr.axil_addr;
+        axil_tr.txn_id=event_tr.axil_txn_id;
+        axil_tr.event_cycle=event_tr.event_cycle;
+        write_trace_axil_addr(axil_tr);
+      end
+      THERMO5_EVENT_AXIL_RESPONSE: begin
+        axil_tr=thermo5_axil_item::type_id::create("trace_axil_response_event");
+        axil_tr.is_write=event_tr.is_write;
+        axil_tr.addr=event_tr.axil_addr;
+        axil_tr.data=event_tr.axil_data;
+        axil_tr.rdata=event_tr.axil_rdata;
+        axil_tr.strb=event_tr.axil_strb;
+        axil_tr.resp=event_tr.axil_resp;
+        axil_tr.txn_id=event_tr.axil_txn_id;
+        axil_tr.event_cycle=event_tr.event_cycle;
+        write_trace_axil_done(axil_tr);
+      end
+      THERMO5_EVENT_CDC_WORD: begin
+        i_json="["; q_json="[";
+        for (int lane=0;lane<8;lane++) begin
+          value=$signed(event_tr.cdc_i[lane*16+:16]);
+          i_json={i_json,$sformatf("%s%0d",lane==0 ? "" : ",",value)};
+          value=$signed(event_tr.cdc_q[lane*16+:16]);
+          q_json={q_json,$sformatf("%s%0d",lane==0 ? "" : ",",value)};
+        end
+        i_json={i_json,"]"}; q_json={q_json,"]"};
+        $fdisplay(fd,
+          "{\"seq\":%0d,\"type\":\"cdc_core_word\",\"epoch\":%0d,\"monitor_epoch\":%0d,\"time_ns\":%0.3f,\"word_index\":%0d,\"i\":%s,\"q\":%s,\"frame_start\":%s,\"frame_end\":%s,\"frame_gain\":%0d,\"residual\":%0d,\"end_pending\":%s,\"end_false_arm\":%s}",
+          sequence_id++,epoch,event_tr.epoch,event_tr.time_ns,event_tr.local_index,i_json,q_json,
+          event_tr.cdc_frame_start ? "true" : "false",
+          event_tr.cdc_frame_end ? "true" : "false",$signed(event_tr.cdc_frame_gain),
+          event_tr.cdc_residual,event_tr.cdc_end_pending ? "true" : "false",
+          event_tr.cdc_end_false_arm ? "true" : "false");
+      end
+      THERMO5_EVENT_DSP_OBSERVATION: begin
+        samples_json="["; saturations_json="[";
+        for (int lane=0;lane<16;lane++) begin
+          samples_json={samples_json,$sformatf("%s%0d",lane==0 ? "" : ",",event_tr.dpd_samples[lane])};
+          saturations_json={saturations_json,$sformatf("%s%0d",lane==0 ? "" : ",",event_tr.dpd_saturations[lane])};
+        end
+        samples_json={samples_json,"]"}; saturations_json={saturations_json,"]"};
+        $fdisplay(fd,
+          "{\"seq\":%0d,\"type\":\"dsp_observation\",\"epoch\":%0d,\"monitor_epoch\":%0d,\"time_ns\":%0.3f,\"core_cycle\":%0d,\"probe_state\":\"0x%04h\",\"dpd_active_taps\":%0d,\"cfg_pending\":%s,\"dpd_samples\":%s,\"dpd_saturations\":%s}",
+          sequence_id++,epoch,event_tr.epoch,event_tr.time_ns,event_tr.event_cycle,
+          event_tr.dsp_probe_state,event_tr.dpd_active_taps,
+          event_tr.cfg_pending ? "true" : "false",samples_json,saturations_json);
+      end
+      THERMO5_EVENT_EF2_WORD, THERMO5_EVENT_EF2_STALL: begin
+        if (event_tr.kind==THERMO5_EVENT_EF2_WORD)
+          event_type="ef2_input_word";
+        else
+          event_type="ef2_input_stall";
+        i_json="["; q_json="[";
+        for (int lane=0;lane<32;lane++) begin
+          value=$signed(event_tr.ef2_i[lane*16+:16]);
+          i_json={i_json,$sformatf("%s%0d",lane==0 ? "" : ",",value)};
+          value=$signed(event_tr.ef2_q[lane*16+:16]);
+          q_json={q_json,$sformatf("%s%0d",lane==0 ? "" : ",",value)};
+        end
+        i_json={i_json,"]"}; q_json={q_json,"]"};
+        $fdisplay(fd,
+          "{\"seq\":%0d,\"type\":\"%s\",\"epoch\":%0d,\"monitor_epoch\":%0d,\"time_ns\":%0.3f,\"core_cycle\":%0d,\"word_index\":%0d,\"i\":%s,\"q\":%s,\"pos_clamp\":\"0x%01h\",\"neg_clamp\":\"0x%01h\",\"state_rail\":\"0x%01h\"}",
+          sequence_id++,event_type,
+          epoch,event_tr.epoch,event_tr.time_ns,event_tr.event_cycle,event_tr.local_index,
+          i_json,q_json,event_tr.ef2_pos_clamp_mask,event_tr.ef2_neg_clamp_mask,
+          event_tr.ef2_state_rail_mask);
+      end
+      THERMO5_EVENT_RESET: begin
+        $fdisplay(fd,
+          "{\"seq\":%0d,\"type\":\"observer_reset_epoch\",\"epoch\":%0d,\"monitor_epoch\":%0d,\"core_cycle\":%0d,\"time_ns\":%0.3f}",
+          sequence_id++,epoch,event_tr.epoch,event_tr.event_cycle,event_tr.time_ns);
+      end
+      default: `uvm_error("TRACE_EVENT_KIND","Unknown Thermo5 transaction event")
+    endcase
   endfunction
 
   task run_phase(uvm_phase phase);

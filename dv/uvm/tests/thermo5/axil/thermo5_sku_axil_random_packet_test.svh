@@ -46,6 +46,16 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
     vseq.start(env.virtual_sequencer);
 
     source_beats=env.source.monitor.accepted_beats;
+    if (env.event_bus.source_beats!=cfg.source_beats ||
+        env.event_bus.cdc_words!=cfg.core_words ||
+        env.event_bus.ef2_words!=cfg.core_words ||
+        env.event_bus.pa_words!=cfg.core_words)
+      `uvm_fatal("EVENT_BUS_COUNTS",
+        $sformatf("event stream counts source=%0d/%0d CDC=%0d/%0d EF2=%0d/%0d PA=%0d/%0d",
+          env.event_bus.source_beats,cfg.source_beats,
+          env.event_bus.cdc_words,cfg.core_words,
+          env.event_bus.ef2_words,cfg.core_words,
+          env.event_bus.pa_words,cfg.core_words))
     if (source_beats!=cfg.source_beats ||
         env.scoreboard.source_checked!=cfg.source_beats ||
         env.scoreboard.checked!=cfg.core_words ||

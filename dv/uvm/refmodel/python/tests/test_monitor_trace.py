@@ -31,6 +31,29 @@ class MonitorTraceOracleTests(unittest.TestCase):
             })
         return i_words, q_words, starts, gains, source
 
+    def test_internal_observer_records_do_not_drive_oracle_prediction(self):
+        i_words, q_words, starts, gains, source = self._source_events(words=56)
+        expected = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        events = [
+            {"type": "dsp_observation", "epoch": 0, "seq": 0,
+             "probe_state": "0x0000", "dpd_samples": [0] * 16},
+            {"type": "cdc_core_word", "epoch": 0, "seq": 1,
+             "word_index": 0, "i": [1] * 8, "q": [0] * 8},
+            {"type": "ef2_input_word", "epoch": 0, "seq": 2,
+             "word_index": 0, "i": [2] * 32, "q": [0] * 32},
+            {"type": "ef2_input_stall", "epoch": 0, "seq": 3,
+             "word_index": 1, "i": [3] * 32, "q": [0] * 32},
+            {"type": "observer_reset_epoch", "epoch": 0, "seq": 4},
+        ]
+        for beat in source:
+            beat["seq"] = len(events)
+            events.append(beat)
+        self._append_pa(events, expected, len(events))
+
+        result, = run_monitor_trace(events)
+        self.assertTrue(result.passed)
+        self.assertEqual(result.compared_words, 56)
+
     def _append_pa(self, events, pa_words, seq):
         for word_index, planes in enumerate(pa_words):
             events.append({"type": "pa_word", "epoch": 0, "seq": seq,

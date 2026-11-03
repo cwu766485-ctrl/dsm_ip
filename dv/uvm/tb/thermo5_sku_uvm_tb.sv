@@ -210,9 +210,16 @@ module thermo5_sku_uvm_tb;
   assign bus.cdc_core_ready = dut.core_ready;
   assign bus.cdc_frame_start = dut.core_frame_start;
   assign bus.cdc_frame_end = dut.core_frame_end;
+  assign bus.cdc_core_i_vec = dut.core_i_vec;
+  assign bus.cdc_core_q_vec = dut.core_q_vec;
+  assign bus.cdc_core_frame_gain = dut.core_frame_gain;
   assign bus.cdc_end_pending = dut.u_cdc.end_pending_q;
   assign bus.cdc_end_remaining = dut.u_cdc.end_remaining_q;
   assign bus.cdc_source_reset_released = dut.u_cdc.s_rst_n;
+  assign bus.ef2_input_valid = dut.u_frontend.i2_fifo_valid;
+  assign bus.ef2_input_ready = dut.u_frontend.tid_ready;
+  assign bus.ef2_input_i_vec = dut.u_frontend.i2_fifo_i;
+  assign bus.ef2_input_q_vec = dut.u_frontend.i2_fifo_q;
   assign bus.cdc_end_false_arm = dut.u_cdc.advance &&
     (dut.u_cdc.rem_count_q >= 8) && dut.u_cdc.end_pending_q &&
     (dut.u_cdc.end_remaining_q > 8);

@@ -11,6 +11,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_axil_item.svh"
   class thermo5_pa_word extends uvm_sequence_item;
     bit [63:0] plane[4];
+    int unsigned epoch, word_index;
     `uvm_object_utils(thermo5_pa_word)
     function new(string name = "thermo5_pa_word"); super.new(name); endfunction
   endclass
@@ -27,6 +28,11 @@ package thermo5_sku_uvm_pkg;
   `uvm_analysis_imp_decl(_trace_axil_addr)
   `uvm_analysis_imp_decl(_trace_axil_done)
   `uvm_analysis_imp_decl(_trace_axil_cycle)
+  `uvm_analysis_imp_decl(_cdc_evt)
+  `uvm_analysis_imp_decl(_dsp_evt)
+  `uvm_analysis_imp_decl(_ef2_evt)
+  `uvm_analysis_imp_decl(_event)
+  `include "thermo5_transaction_event.svh"
   `include "thermo5_source_sequencer.svh"
   `include "thermo5_source_driver.svh"
   `include "thermo5_source_monitor.svh"
@@ -37,6 +43,9 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_axil_monitor.svh"
   `include "thermo5_axil_agent.svh"
   `include "thermo5_pa_monitor.svh"
+  `include "thermo5_cdc_core_monitor.svh"
+  `include "thermo5_dsp_boundary_monitor.svh"
+  `include "thermo5_ef2_input_monitor.svh"
   `include "thermo5_pa_sink_driver.svh"
   `include "thermo5_pa_sink_agent.svh"
   `include "thermo5_control_agent.svh"
@@ -44,6 +53,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_trace_recorder.svh"
   `include "thermo5_pa_scoreboard.svh"
   `include "thermo5_sku_coverage.svh"
+  `include "thermo5_transaction_event_bus.svh"
   `include "thermo5_sku_virtual_sequencer.svh"
   `include "thermo5_sku_env.svh"
   `include "thermo5_sku_base_test.svh"

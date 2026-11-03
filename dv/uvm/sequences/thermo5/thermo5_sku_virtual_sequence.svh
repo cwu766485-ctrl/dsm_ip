@@ -52,7 +52,8 @@ class thermo5_sku_axil_packet_vseq extends uvm_sequence #(uvm_sequence_item);
     bit [31:0] status;
     bit drained;
     if (p_sequencer.cfg==null || p_sequencer.source_sequencer==null ||
-        p_sequencer.axil_sequencer==null || p_sequencer.pa_monitor==null)
+        p_sequencer.axil_sequencer==null || p_sequencer.pa_monitor==null ||
+        p_sequencer.pa_sink==null || p_sequencer.control==null)
       `uvm_fatal("VSEQ_CONFIG","Thermo5 packet virtual sequencer handles are incomplete")
 
     source_seq=thermo5_source_sequence::type_id::create("vseq_source_packet");

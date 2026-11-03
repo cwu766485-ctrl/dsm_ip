@@ -3,6 +3,10 @@ class thermo5_sku_env extends uvm_env;
   thermo5_source_agent source;
   thermo5_pa_sink_agent pa_sink;
   thermo5_pa_monitor monitor;
+  thermo5_cdc_core_monitor cdc_monitor;
+  thermo5_dsp_boundary_monitor dsp_monitor;
+  thermo5_ef2_input_monitor ef2_monitor;
+  thermo5_transaction_event_bus event_bus;
   thermo5_pa_scoreboard scoreboard;
   thermo5_sku_coverage coverage;
   thermo5_control_agent control;
@@ -19,6 +23,10 @@ class thermo5_sku_env extends uvm_env;
     uvm_config_db#(thermo5_sku_config)::set(this,"*","cfg",cfg);
     source=thermo5_source_agent::type_id::create("source",this);
     pa_sink=thermo5_pa_sink_agent::type_id::create("pa_sink",this);
+    cdc_monitor=thermo5_cdc_core_monitor::type_id::create("cdc_monitor",this);
+    dsp_monitor=thermo5_dsp_boundary_monitor::type_id::create("dsp_monitor",this);
+    ef2_monitor=thermo5_ef2_input_monitor::type_id::create("ef2_monitor",this);
+    event_bus=thermo5_transaction_event_bus::type_id::create("event_bus",this);
     scoreboard=thermo5_pa_scoreboard::type_id::create("scoreboard",this);
     coverage=thermo5_sku_coverage::type_id::create("coverage",this);
     control=thermo5_control_agent::type_id::create("control",this);
@@ -40,6 +48,12 @@ class thermo5_sku_env extends uvm_env;
     monitor=pa_sink.monitor;
     source.monitor.ap.connect(scoreboard.source_imp);
     monitor.ap.connect(scoreboard.pa_imp);
+    source.monitor.ap.connect(event_bus.source_imp);
+    monitor.ap.connect(event_bus.pa_imp);
+    cdc_monitor.ap.connect(event_bus.cdc_imp);
+    dsp_monitor.ap.connect(event_bus.dsp_imp);
+    ef2_monitor.ap.connect(event_bus.ef2_imp);
+    event_bus.event_ap.connect(coverage.event_imp);
     if (cfg.axil_control) begin
       source.monitor.ap.connect(register_predictor.source_imp);
       monitor.ap.connect(register_predictor.pa_imp);
@@ -47,12 +61,11 @@ class thermo5_sku_env extends uvm_env;
       axil.monitor.read_address_ap.connect(register_predictor.read_addr_imp);
       axil.monitor.ap.connect(register_predictor.completion_imp);
       axil.monitor.cycle_ap.connect(register_predictor.cycle_imp);
+      axil.monitor.write_fire_ap.connect(event_bus.axil_fire_imp);
+      axil.monitor.read_address_ap.connect(event_bus.axil_addr_imp);
+      axil.monitor.ap.connect(event_bus.axil_done_imp);
       if (trace_recorder!=null) begin
-        source.monitor.ap.connect(trace_recorder.source_imp);
-        monitor.ap.connect(trace_recorder.pa_imp);
-        axil.monitor.write_fire_ap.connect(trace_recorder.axil_fire_imp);
-        axil.monitor.read_address_ap.connect(trace_recorder.axil_addr_imp);
-        axil.monitor.ap.connect(trace_recorder.axil_done_imp);
+        event_bus.event_ap.connect(trace_recorder.event_imp);
         axil.monitor.cycle_ap.connect(trace_recorder.axil_cycle_imp);
       end
     end
@@ -64,6 +77,7 @@ class thermo5_sku_env extends uvm_env;
     virtual_sequencer.axil_sequencer=(axil==null) ? null : axil.sequencer;
     virtual_sequencer.pa_sink=pa_sink;
     virtual_sequencer.pa_monitor=monitor;
+    virtual_sequencer.control=control;
     virtual_sequencer.cfg=cfg;
   endfunction
 endclass

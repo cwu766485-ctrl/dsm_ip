@@ -2,8 +2,10 @@
 // must check its required event counts; a sampled bin alone is not a PASS.
 class thermo5_sku_coverage extends uvm_component;
   `uvm_component_utils(thermo5_sku_coverage)
+  uvm_analysis_imp_event#(thermo5_transaction_event,thermo5_sku_coverage) event_imp;
   virtual thermo5_sku_if vif;
   thermo5_sku_config cfg;
+  int unsigned event_counts[10];
   int fifo_full_cycles, source_stall_cycles, frame_starts;
   int reset_reassertions, underflow_cycles, protocol_error_cycles;
   int underflow_before_last_source;
@@ -110,10 +112,34 @@ class thermo5_sku_coverage extends uvm_component;
     }
   endgroup
 
+  covergroup transaction_event_cg with function sample(bit [3:0] event_kind);
+    option.per_instance = 1;
+    cp_kind: coverpoint event_kind {
+      bins source_beat = {THERMO5_EVENT_SOURCE_BEAT};
+      bins pa_word = {THERMO5_EVENT_PA_WORD};
+      bins axil_write = {THERMO5_EVENT_AXIL_WRITE};
+      bins axil_read = {THERMO5_EVENT_AXIL_READ};
+      bins axil_response = {THERMO5_EVENT_AXIL_RESPONSE};
+      bins cdc_word = {THERMO5_EVENT_CDC_WORD};
+      bins dsp_observation = {THERMO5_EVENT_DSP_OBSERVATION};
+      bins ef2_word = {THERMO5_EVENT_EF2_WORD};
+      bins ef2_stall = {THERMO5_EVENT_EF2_STALL};
+      bins reset = {THERMO5_EVENT_RESET};
+    }
+  endgroup
+
   function new(string name, uvm_component parent);
     super.new(name,parent);
     source_cg=new(); core_cg=new(); plane_atomic_cg=new(); ef2_cg=new();
-    stop_restart_cg=new();
+    stop_restart_cg=new(); transaction_event_cg=new();
+    event_imp=new("event_imp",this);
+  endfunction
+
+  function void write_event(thermo5_transaction_event tr);
+    int unsigned index;
+    index=tr.kind;
+    if (index<10) event_counts[index]++;
+    transaction_event_cg.sample(tr.kind);
   endfunction
 
   function void sample_stop_restart(bit [2:0] event_code);
@@ -274,6 +300,7 @@ class thermo5_sku_coverage extends uvm_component;
   endtask
 
   function void report_phase(uvm_phase phase);
+    super.report_phase(phase);
     `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
       accepted_cdc_output_words_epoch,cdc_frame_end_events,
@@ -288,5 +315,13 @@ class thermo5_sku_coverage extends uvm_component;
       ef2_state_rail_stall_cycles,source_cg.get_coverage(),core_cg.get_coverage(),
       plane_atomic_cg.get_coverage(),stop_restart_cg.get_coverage(),
       ef2_cg.get_coverage()),UVM_NONE)
+    `uvm_info("THERMO5_EVENT_COVERAGE",
+      $sformatf("stream=%.1f%% src=%0d pa=%0d axil_wr=%0d axil_rd=%0d axil_rsp=%0d cdc=%0d dsp=%0d ef2=%0d ef2_stall=%0d reset=%0d",
+        transaction_event_cg.get_coverage(),
+        event_counts[THERMO5_EVENT_SOURCE_BEAT],event_counts[THERMO5_EVENT_PA_WORD],
+        event_counts[THERMO5_EVENT_AXIL_WRITE],event_counts[THERMO5_EVENT_AXIL_READ],
+        event_counts[THERMO5_EVENT_AXIL_RESPONSE],event_counts[THERMO5_EVENT_CDC_WORD],
+        event_counts[THERMO5_EVENT_DSP_OBSERVATION],event_counts[THERMO5_EVENT_EF2_WORD],
+        event_counts[THERMO5_EVENT_EF2_STALL],event_counts[THERMO5_EVENT_RESET]),UVM_NONE)
   endfunction
 endclass
