@@ -1,9 +1,9 @@
 # Thermo5 TX Frame-Tail Condition Formal Review
 
-Date: 2026-11-03  
-Verification source SHA: `2715b7a99042b3cd261884e53a82f287fe243ec6`  
-Product RTL SHA: `1236d49c72360aa62e316aea147528d93a1b3705`  
-Parent review base: `938176bb3e3c9850085889602306c1b861df8e76` (PR #35 head)  
+Date: 2026-11-03
+Verification source SHA: `2715b7a99042b3cd261884e53a82f287fe243ec6`
+Product RTL SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
+Parent review base: `938176bb3e3c9850085889602306c1b861df8e76` (PR #35 head)
 Product configuration: Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 /
 20-bit state, 32 chronological lanes, DPD_MAX_TAPS=1 with Identity reset
 image, AXI-Lite, Generic FIFO.
