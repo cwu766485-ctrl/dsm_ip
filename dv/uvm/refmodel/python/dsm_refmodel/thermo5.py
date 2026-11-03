@@ -44,6 +44,20 @@ def nonlinear_test_dpd_coefficients_4tap():
     }
 
 
+def one_tap_complex_coefficients(c1_re_q14, c1_im_q14=0,
+                                 c3_re_q14=0, c3_im_q14=0,
+                                 c5_re_q14=0, c5_im_q14=0):
+    """Build a legal one-active-tap complex 3rd/5th-order DPD image."""
+    return {
+        "c1_re": (int(c1_re_q14), 0, 0, 0),
+        "c1_im": (int(c1_im_q14), 0, 0, 0),
+        "c3_re": (int(c3_re_q14), 0, 0, 0),
+        "c3_im": (int(c3_im_q14), 0, 0, 0),
+        "c5_re": (int(c5_re_q14), 0, 0, 0),
+        "c5_im": (int(c5_im_q14), 0, 0, 0),
+    }
+
+
 def wrap_signed(value, bits):
     modulus = 1 << bits
     return ((int(value) + (modulus >> 1)) % modulus) - (modulus >> 1)

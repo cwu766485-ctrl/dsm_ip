@@ -5,7 +5,9 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_random_packet_test)
 
   int unsigned random_gap_max_cycles;
+  int unsigned prefill_beats;
   int unsigned expected_last_count;
+  bit expect_no_pa_stall;
 
   function new(string name, uvm_component parent);
     super.new(name,parent);
@@ -22,10 +24,15 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
     cfg.manual_pa_ready=1'b0;
     cfg.random_partial_pa_ready=1'b1;
     cfg.pa_stall_percent=25;
+    prefill_beats=16;
+    void'($value$plusargs("THERMO5_RANDOM_PREFILL_BEATS=%d",prefill_beats));
+    expect_no_pa_stall=$test$plusargs("THERMO5_EXPECT_NO_PA_STALL");
     void'($value$plusargs("THERMO5_RANDOM_PA_STALL_PERCENT=%d",cfg.pa_stall_percent));
     void'($value$plusargs("THERMO5_RANDOM_SOURCE_GAP_MAX=%d",random_gap_max_cycles));
     if (cfg.pa_stall_percent>80 || random_gap_max_cycles>8)
       `uvm_fatal("RANDOM_LIMIT","Random PA stall/gap setting exceeds the qualified bound")
+    if (prefill_beats>=cfg.source_beats)
+      `uvm_fatal("RANDOM_PREFILL","Prefill must remain shorter than the complete packet")
   endfunction
 
   task run_phase(uvm_phase phase);
@@ -33,7 +40,7 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
     int unsigned source_beats;
     phase.raise_objection(this);
     vseq=thermo5_sku_axil_packet_vseq::type_id::create("random_packet_vseq");
-    vseq.prefill_beats=16;
+    vseq.prefill_beats=prefill_beats;
     vseq.random_gap_max_cycles=random_gap_max_cycles;
     vseq.packet_beats=32;
     vseq.start(env.virtual_sequencer);
@@ -58,7 +65,9 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
         $sformatf("protocol=%b underflow=%b underflow_cycles=%0d predictor_mismatches=%0d",
           vif.protocol_error,vif.underflow,env.coverage.underflow_cycles,
           env.register_predictor.mismatches))
-    if (env.monitor.stall_cycles==0)
+    if (expect_no_pa_stall && env.monitor.stall_cycles!=0)
+      `uvm_fatal("RANDOM_PA_STALL","No-stall scenario observed a PA backpressure event")
+    if (!expect_no_pa_stall && env.monitor.stall_cycles==0)
       `uvm_fatal("RANDOM_PA_STALL","Random PA readiness did not create a stall")
     for (int lane=0;lane<16;lane++) begin
       if (vif.dpd_sample_count[lane]!==cfg.core_words+cfg.frame_starts ||

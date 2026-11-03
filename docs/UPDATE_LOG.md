@@ -5520,3 +5520,42 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - No product RTL or frozen algorithm changed. Phase C remains a minimum random
   qualification; deferred DPD/COMMIT/reset dimensions, complete exact cross
   closure, Phase D/E, and FPGA/physical signoff remain open.
+
+## 2026-11-03 10:18 SGT - Thermo5 TX Linux system verification closure
+
+- Closed the previously open Phase C test dimensions with retained evidence:
+  110 packet/long-stream seeds, a 60-tuple runtime DPD × gain × profile
+  matrix, 48 randomized reset/COMMIT trials, directed reset/commit and source
+  gap/PA-stall/FIFO-full crosses, and an expected-starvation test with an
+  independent bit-true PA checker. The frozen product RTL and algorithm remain
+  unchanged.
+- Regenerated Raw and Adjusted URG from the same 243 test VDBs and current
+  product design VDB. The 243-test provenance is mixed: 240 positive and two
+  expected-negative prior test VDBs plus one additive starvation VDB. RTL
+  sources are unchanged across the two source revisions. Raw and Adjusted
+  remain equal; the gate is `RAW_100_OPEN`, with 21,078 open code records.
+- Repaired waiver-pipeline handling so PENDING candidates can map to exact
+  current OPEN Raw bins without producing exclusions. APPROVED candidates
+  still require exact proof, source/configuration binding, reviewer and
+  approval reference. The fresh audit reports 371 PENDING, zero approved and
+  zero active exclusions.
+- Legal applicable functional coverage is 392/392; 24 URG-model-excluded rows
+  and the illegal-only frame bins remain in the audit artifacts. Positive
+  assertion inventory has 13 successes, zero failures, two uncovered and two
+  without attempts. Expected negative assertion failures are reported
+  separately.
+- VC Formal counter-guard run was non-vacuous but INCONCLUSIVE after 502 s;
+  DPD Identity Formal remains inconclusive. Neither was waived. XPM, GT Wizard,
+  Vivado PPA/routed timing and physical RF/QAM256 remain open.
+- Updated `docs/verification/thermo5-tx-linux-system-verification-signoff.md`,
+  its machine-readable evidence manifest, a superseding addendum to the Phase C
+  report, and the active execution frontier. Committed the waiver-pipeline correction and tests as
+  `52892f66b4fc80ac41557272a1434ac216ddd073` (local commit; not pushed or
+  merged).
+- Checks: Python reference tests 58/58 PASS; hardware utility tests 34/34
+  PASS; Python compile and `git diff --check` PASS; starvation UVM/Python
+  oracle PASS; Raw/Adjusted URG PASS; functional coverage gate 392/392 legal
+  bins and `RAW_100_OPEN` code result. Counter Formal remains INCONCLUSIVE.
+- Evidence, logs and VDBs are under ignored `runs/thermo5_tx_closure_current/`;
+  generated data is SHA-indexed in
+  `docs/verification/data/thermo5-tx-linux-system-verification-signoff.json`.

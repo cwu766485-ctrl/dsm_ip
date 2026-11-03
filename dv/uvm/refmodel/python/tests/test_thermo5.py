@@ -13,6 +13,7 @@ from dsm_refmodel.thermo5 import (
     apply_memory_polynomial,
     nonlinear_test_dpd_coefficients,
     nonlinear_test_dpd_coefficients_4tap,
+    one_tap_complex_coefficients,
     write_vectors,
 )
 
@@ -161,6 +162,19 @@ class Thermo5ReferenceTests(unittest.TestCase):
             dpd_active_taps=2)
         self.assertEqual(len(nonlinear), 56)
         self.assertNotEqual(nonlinear, identity)
+
+    def test_one_tap_c3_and_c5_coefficients_are_modeled(self):
+        samples = [(12000, 0), (8000, -4000), (-10000, 3000)]
+        identity = one_tap_complex_coefficients(16384)
+        cubic = one_tap_complex_coefficients(16384, c3_re_q14=1536)
+        quintic = one_tap_complex_coefficients(16384, c5_re_q14=-4096)
+        self.assertEqual(cubic["c3_re"], (1536, 0, 0, 0))
+        self.assertEqual(quintic["c5_re"], (-4096, 0, 0, 0))
+        identity_out, _, _ = apply_memory_polynomial(samples, identity, 1)
+        cubic_out, _, _ = apply_memory_polynomial(samples, cubic, 1)
+        quintic_out, _, _ = apply_memory_polynomial(samples, quintic, 1)
+        self.assertNotEqual(cubic_out, identity_out)
+        self.assertNotEqual(quintic_out, identity_out)
 
     def test_centered_frontend_rejects_unaligned_frame_start(self):
         i_words, q_words, starts, gains = generate_source_vectors(

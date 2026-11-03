@@ -215,6 +215,7 @@ def main():
                        "THERMO5_USE_AXIL=1", "THERMO5_DPD_MAX_TAPS=1",
                        "THERMO5_CENTERED_CUBIC=1", "THERMO5_TIDSM_ORDER=2",
                        "THERMO5_STEP=5120", "THERMO5_COVERAGE=1",
+                       "THERMO5_COV_HIER=" + str(SIM_DIR / "thermo5_product_dut_coverage.hier"),
                        "THERMO5_VECTORS=" + str(PRODUCT_VECTORS),
                        "THERMO5_OUT=" + str(build)]
     compile_log = logs_root / "compile.log"

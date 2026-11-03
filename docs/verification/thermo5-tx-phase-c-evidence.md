@@ -130,3 +130,23 @@ Linux benchmark reconciliation. Real XPM, GT Wizard, FPGA PPA, routed timing,
 and physical RF/QAM256 performance require separate platform evidence.
 
 No RX, AI-DPD learning, Vivado, product RTL, or frozen TX algorithm was changed.
+
+## Superseding status update — 2026-11-03
+
+The report above is a dated snapshot of the initial Phase C minimum random
+campaign. Its then-open DPD, randomized COMMIT/reset, exact functional coverage,
+and starvation items have since been exercised in separate campaigns. As of
+the update below, 60/60 runtime DPD × gain × profile tuples, 48/48 randomized
+reset/COMMIT trials, directed reset/commit and source-gap crosses, and 392/392
+legally applicable functional bins pass. The detailed current status, exact
+VDB provenance, Raw/Adjusted code coverage, assertion/Formal results, and
+remaining open items are in
+[`thermo5-tx-linux-system-verification-signoff.md`](thermo5-tx-linux-system-verification-signoff.md)
+and
+[`thermo5-tx-linux-system-verification-signoff.json`](data/thermo5-tx-linux-system-verification-signoff.json).
+
+The Phase C functional objectives are closed for the declared legal bins.
+Overall Linux signoff remains partial because DUT Code Coverage is
+`RAW_100_OPEN`, the outstanding-counter and DPD Identity Formal tasks remain
+inconclusive, and platform-level XPM/GT Wizard, FPGA PPA, and physical RF/QAM256
+evidence has not been run.

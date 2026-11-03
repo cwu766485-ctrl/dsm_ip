@@ -124,6 +124,29 @@ class WaiverPipelineTests(unittest.TestCase):
         self.assertEqual(result["approved_count"], 0)
         self.assertNotIn("exclude", self.el.read_text())
 
+    def test_pending_candidate_can_track_an_open_raw_bin(self):
+        self.gap["status"] = "OPEN"
+        with gzip.open(self.ledger, "wt", newline="", encoding="utf-8") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(self.gap))
+            writer.writeheader()
+            writer.writerow(self.gap)
+
+        result = self._run()
+        self.assertEqual(result["pending_count"], 1)
+        self.assertEqual(result["approved_count"], 0)
+        self.assertNotIn("exclude", self.el.read_text())
+
+    def test_open_raw_bin_cannot_be_approved(self):
+        self.gap["status"] = "OPEN"
+        with gzip.open(self.ledger, "wt", newline="", encoding="utf-8") as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(self.gap))
+            writer.writeheader()
+            writer.writerow(self.gap)
+        self._write_row(row=self._approved_row())
+
+        with self.assertRaisesRegex(WaiverError, "not proven unreachable"):
+            self._run()
+
     def test_exact_approved_formal_evidence_generates_one_directive(self):
         row = self._approved_row()
         self._write_row(row=row)

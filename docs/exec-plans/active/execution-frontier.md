@@ -1,43 +1,54 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX System Verification Phase C (2026-11-02)
+## Current execution state: Thermo5 TX Linux signoff closure (2026-11-03)
 
-Work is on `codex/thermo5-tx-system-random`, based on the frozen `thermo5`
-product RTL/configuration at `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
-Implementation source SHA is `26a9f0482e952f70ed62c438aa9201e626bd103e`.
-Product RTL and TX algorithm remain unchanged. PR #27 (Phase A) and PR #28
-(Phase B) are open and unmerged. Phase C is published as open, unmerged PR #29
-on `codex/thermo5-tx-system-random`, stacked on PR #28. The initial remote
-tree was checked against the local reviewed tree; publication details are in
-the update log.
-Scope remains Linux TX only: no RX, AI-DPD, or Vivado physical implementation.
+Work is on `codex/thermo5-tx-system-random`. Product RTL/source used by the
+current VCS product build is `1236d49c72360aa62e316aea147528d93a1b3705`; the
+coverage-waiver audit fix is committed locally at
+`52892f66b4fc80ac41557272a1434ac216ddd073`. The later verification changes
+are testbench/tooling/documentation only. No product RTL or frozen TX
+algorithm changed. PR #27, #28 and #29 remain unmerged; no PR was merged in
+this round. Scope remains Linux TX only, excluding RX, AI-DPD and Vivado
+physical implementation.
 
-Phase A dynamic Oracle/independent STATUS prediction and Phase B PA/Control
-agent ownership plus deterministic virtual packet sequencing are implemented;
-see their evidence reports. Phase C minimum runnable system-random qualification
-passed 100 packet seeds (56 PA words each) and 10 long-stream seeds (112 PA
-words each). VCS UVM and independent Python trace Oracle passed 110/110, with
-zero PA mismatches, unexpected underflow, predictor mismatches, protocol
-errors, transaction count errors, UVM errors, or fatals. URG merged the 110
-per-seed VDBs and compile/design VDB. Its percentages are mixed-hierarchy
-exploratory data, not DUT-only Raw/Adjusted coverage. See
-`docs/verification/thermo5-tx-phase-c-evidence.md` and its JSON/VDB manifests.
+Phase C gaps recorded in the prior frontier are now exercised in separate
+campaigns: 110/110 packet/long-stream random seeds, 60/60 runtime DPD × gain ×
+profile tuples, 48/48 randomized reset/COMMIT trials, directed reset/commit
+and source-gap/PA-stall/FIFO-full crosses, plus exact legally applicable
+functional coverage at 392/392. A separate expected-starvation test detects
+one post-packet underflow and checks all 56 PA words. Mutation checks detected
+the `late_gain` and `plane_swap` mutants. Evidence is summarized in
+`docs/verification/thermo5-tx-linux-system-verification-signoff.md` and its
+JSON manifest.
 
-Python reference tests passed 57/57. Retained evidence checks confirmed all
-110 trace/UVM/oracle log SHA-256 values, 111 VDB fingerprints and file/byte
-counts, evidence hashes, and JSON validity. No full VCS campaign was repeated
-after the source SHA; documentation and evidence-manifest checks followed.
+Current DUT-only Raw and Adjusted URG use the same 243 VDB list and have zero
+approved waivers/exclusions. Both remain `RAW_100_OPEN`: Branch 522/637,
+Condition 654/849, Line 3336/3796, Toggle 84177/104480, FSM states 13/13 and
+transitions 17/22. All 21,078 uncovered code records remain OPEN in 482
+root-cause groups. The 371 waiver candidates remain pending. The two
+centered-cubic frame-end assertions have no attempts; the positive assertion
+run has 13 successes, zero failures, two uncovered and two without attempts.
+The current outstanding-counter Formal run is INCONCLUSIVE after 502 seconds;
+DPD Identity Formal also remains inconclusive. No unreachability waiver is
+approved.
 
-Remaining Phase C OPEN items: runtime legal non-Identity DPD coefficient
-randomization, randomized COMMIT and reset epochs, complete exact SV functional
-cross coverage, and closure of deferred crosses. Phase D DUT-only Raw/Adjusted
-coverage/Formal/Waiver closure and Phase E Linux benchmark review remain OPEN.
-No final Linux system signoff, FPGA/physical signoff, XPM, GT Wizard, or RF/BER
-result is claimed.
+The 243-VDB merge provenance is mixed across VCS test runs: 240 prior positive
+and two expected-negative VDBs from `732a64ab...`, plus one additive
+starvation VDB from `1236d49...`; product RTL is identical and unchanged. The
+coverage report manifest records the exact common VDB list. Do not describe
+this as a fresh 243-test compile from one full-tree SHA.
 
-**Next:** review PR #29. Continue with exact cross coverage and randomized
-configuration/reset as a separate follow-up; do not merge PR #27, #28, or #29
-without the user's separate review decision.
+Latest checks: Python reference 58/58 PASS; hardware utility tests 34/34 PASS;
+waiver pipeline fail-closed audit PASS (371 pending, 0 approved); starvation
+UVM/Python oracle PASS; Raw/Adjusted URG and gate generation PASS. Formal
+counter guards remain INCONCLUSIVE. Real XPM, GT Wizard, FPGA PPA/routed timing
+and physical RF/QAM256 BER remain outside this Linux signoff.
+
+**Next:** target reachable Branch/Condition roots with a concrete legal
+stimulus and independent checker, then Lines/Toggle and the five open CDC FSM
+transitions. Resolve interpolator assertion no-attempts and improve DPD
+Identity/counter Formal convergence. Do not broaden seed sweeps without a
+new coverage hypothesis; do not change the product algorithm or merge PRs.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 

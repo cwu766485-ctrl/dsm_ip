@@ -6,14 +6,27 @@ from pathlib import Path
 from tools.hw.thermo5_tx_coverage_rootcause import (
     branch_path_context,
     audited_source_position,
+    location_for,
     root_cause_for_row,
     ROOT,
     source_bound_branch_context,
+    source_position,
     validate_diagnostic_instrumentation,
 )
 
 
 class BranchPathContextTests(unittest.TestCase):
+    def test_fsm_gap_uses_terminal_source_line(self):
+        row = {
+            "metric": "fsm",
+            "bin": "rem_count_q:transitions:'h2->'h0:125",
+            "source_files": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        }
+        self.assertEqual(location_for(row), "line:125:fsm-transition")
+        position, source_line = source_position(row)
+        self.assertEqual(position, "rtl/axis/dsm_axis14_to_core8_cdc.sv:125")
+        self.assertTrue(source_line)
+
     def test_nested_dpd_path_points_to_saturation_counter(self):
         predicates = (
             "1:199 if (!rst_n) begin; "

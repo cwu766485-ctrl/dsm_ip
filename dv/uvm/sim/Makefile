@@ -129,6 +129,9 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-stop-restart-vcs-run \
         thermo5-tx-agent-vseq-smoke \
         thermo5-tx-system-random \
+        thermo5-tx-random-dpd-matrix \
+        thermo5-tx-commit-boundary-stall \
+        thermo5-tx-reset-pending-commit \
         thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
@@ -154,6 +157,9 @@ help:
 	@echo "  make thermo5-axil-graceful-stop-vcs-run  Run AXI-Lite mid-frame graceful-stop test"
 	@echo "  make thermo5-axil-stop-restart-vcs-run   Run centered-cubic two-packet STOP/drain/restart test"
 	@echo "  make thermo5-tx-system-random  Run replayable packet and long-stream random tests"
+	@echo "  make thermo5-tx-random-dpd-matrix  Run product 1-tap DPD/gain/profile bit-true matrix"
+	@echo "  make thermo5-tx-commit-boundary-stall  Verify COMMIT timing x frame boundary x PA stall"
+	@echo "  make thermo5-tx-reset-pending-commit  Verify reset aborts pending product COMMIT"
 	@echo "  make thermo5-axil-long-frame-vcs-run  Run 64-beat/two-quantum TLAST and drain test"
 	@echo "  make thermo5-axil-register-access-vcs-run  Run AXI-Lite register/protocol-only test"
 	@echo "  make thermo5-axil-coeff-transport-vcs-run  Run coefficient mailbox transport case"
@@ -287,6 +293,18 @@ thermo5-tx-system-random:
 	  --random-seeds $(THERMO5_RANDOM_SEEDS) \
 	  --long-seeds $(THERMO5_LONG_RANDOM_SEEDS) \
 	  --seed-base $(THERMO5_RANDOM_SEED_BASE)
+
+thermo5-tx-random-dpd-matrix:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_product_dpd_matrix.py \
+	  --out $(THERMO5_RANDOM_OUT)/dpd_matrix
+
+thermo5-tx-commit-boundary-stall:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_commit_boundary_stall.py \
+	  --out $(THERMO5_RANDOM_OUT)/commit_boundary_stall
+
+thermo5-tx-reset-pending-commit:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_reset_pending_commit.py \
+	  --out $(THERMO5_RANDOM_OUT)/reset_pending_commit
 
 # Legal AXI-Stream startup overlaps the two-flop local source-reset release.
 thermo5-tx-product-axil-reset-release-source:

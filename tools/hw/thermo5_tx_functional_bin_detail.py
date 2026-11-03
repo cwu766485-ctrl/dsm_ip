@@ -180,8 +180,10 @@ def main() -> int:
 
     group_html = (raw / "groups.html").read_text(encoding="utf-8", errors="replace")
     group_links = GROUP_LINK.findall(group_html)
-    if len(group_links) != 8:
-        raise ValueError(f"expected eight product functional groups, found {len(group_links)}")
+    if not group_links:
+        raise ValueError("URG groups.html contains no product functional groups")
+    if len({(filename, scope.strip()) for filename, scope in group_links}) != len(group_links):
+        raise ValueError("URG groups.html contains duplicate group links")
     all_rows: list[dict[str, str]] = []
     for filename, type_scope in group_links:
         all_rows.extend(parse_group_page(raw / filename, type_scope.strip(), negative,
@@ -190,17 +192,25 @@ def main() -> int:
     scoreable = [row for row in all_rows if row["raw_denominator_applicable"] == "true"]
     hit = [row for row in scoreable if row["raw_status"] == "COVERED"]
     miss = [row for row in scoreable if row["raw_status"] == "UNCOVERED"]
-    expected_missing = {
-        "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg.cp_packet_quanta.malformed_early",
-        "thermo5_sku_uvm_tb.me.obj.source_cg.cp_packet_quanta.malformed_early",
-        "thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg.cp_illegal.bad_frame",
-        "thermo5_sku_uvm_tb.me.obj.core_cg.cp_illegal.bad_frame",
-    }
     observed_missing = {f"{row['urg_scope']}.{row['coverpoint']}.{row['bin']}" for row in miss}
-    if (len(scoreable), len(hit), len(miss)) != (214, 210, 4):
-        raise ValueError(f"URG totals mismatch: scoreable={len(scoreable)}, covered={len(hit)}, uncovered={len(miss)}")
-    if observed_missing != expected_missing:
-        raise ValueError(f"unexpected uncovered functional bins: {sorted(observed_missing)}")
+    # The System UVM product added reset-pending, commit-boundary, STATUS,
+    # random-configuration, and source-gap groups after the original eight
+    # group model was written. Keep checking every parsed row against its URG
+    # group summary, then require the only current positive-report misses to
+    # be the known negative-only bins and the still-open starvation bin.
+    scopes_by_group: dict[str, set[str]] = {}
+    for row in all_rows:
+        scopes_by_group.setdefault(row["group"], set()).add(row["urg_scope"])
+    permitted_open: set[str] = set()
+    starvation_bins: set[str] = set()
+    for scope in scopes_by_group.get("source_cg", set()):
+        permitted_open.add(f"{scope}.cp_packet_quanta.malformed_early")
+    for scope in scopes_by_group.get("core_cg", set()):
+        permitted_open.add(f"{scope}.cp_illegal.bad_frame")
+        starvation_bins.add(f"{scope}.cp_underflow.empty")
+    unexpected_missing = observed_missing - permitted_open - starvation_bins
+    if unexpected_missing:
+        raise ValueError(f"unexpected uncovered functional bins: {sorted(unexpected_missing)}")
     if len({(row["urg_scope"], row["coverpoint"], row["bin"]) for row in all_rows}) != len(all_rows):
         raise ValueError("duplicate functional bin rows were parsed")
 
@@ -210,7 +220,11 @@ def main() -> int:
         writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(sorted(all_rows, key=lambda row: (row["group"], row["report_scope"], row["coverpoint"], row["bin"])))
+    legal = [row for row in scoreable if row["legal_applicability"] == "LEGAL_PRODUCT"]
+    legal_hit = [row for row in legal if row["raw_status"] == "COVERED"]
     print(f"functional_rows={len(all_rows)} scoreable={len(scoreable)} covered={len(hit)} uncovered={len(miss)}")
+    print(f"legal_applicable={len(legal_hit)}/{len(legal)} legal_uncovered={len(legal)-len(legal_hit)}")
+    print(f"open_expected_starvation_bins={sum(row['raw_status'] == 'UNCOVERED' and row['legal_applicability'] == 'LEGAL_PRODUCT' and row['coverpoint'] == 'cp_underflow' and row['bin'] == 'empty' for row in all_rows)}")
     print(f"excluded_by_urg_model={len(all_rows) - len(scoreable)} output={args.out}")
     return 0
 

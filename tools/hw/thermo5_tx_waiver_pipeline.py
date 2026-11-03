@@ -132,10 +132,7 @@ def _match_gap(row: dict[str, str], gaps: list[dict[str, str]]) -> dict[str, str
                and gap["metric"] == metric]
     if len(matches) != 1:
         raise WaiverError(f"waiver {row['waiver_id']} maps to {len(matches)} current Raw bins")
-    gap = matches[0]
-    if gap["status"] != "PROVEN_UNREACHABLE":
-        raise WaiverError(f"waiver {row['waiver_id']} targets a Raw bin not proven unreachable")
-    return gap
+    return matches[0]
 
 
 def _native_urg_directive(row: dict[str, str], repo_root: Path) -> dict[str, str]:
@@ -275,6 +272,8 @@ def audit_and_generate(*, waivers_csv: Path, gap_ledger: Path, compile_manifest:
                     raise WaiverError("rejected waiver cannot contain active .el text")
                 continue
             raise WaiverError(f"unsupported waiver review status: {status}")
+        if gap["status"] != "PROVEN_UNREACHABLE":
+            raise WaiverError(f"waiver {row['waiver_id']} targets a Raw bin not proven unreachable")
         if not row["reviewer"].strip() or not APPROVAL_RE.fullmatch(row["approval_reference"].strip()):
             raise WaiverError("approved waiver requires reviewer and GitHub PR review reference")
         if not row["el_directive"].strip():

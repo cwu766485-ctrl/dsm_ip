@@ -36,8 +36,10 @@ class thermo5_axil_register_predictor extends uvm_component;
   bit [31:0] sampled_status_model;
   int unsigned sampled_status_cycle;
   bit sampled_status_valid, sampled_lifecycle_stable;
+  bit axil_reset_active;
   int unsigned max_taps = 4;
   int unsigned checked_reads, checked_write_responses, mismatches;
+  int unsigned expected_early_tlasts, observed_early_tlasts;
   int unsigned source_gap_events_model, source_gap_cycles_model;
   int unsigned status_lifecycle_masked, status_lifecycle_checked;
 
@@ -52,11 +54,22 @@ class thermo5_axil_register_predictor extends uvm_component;
     checked_reads=0;
     checked_write_responses=0;
     mismatches=0;
+    expected_early_tlasts=0;
+    observed_early_tlasts=0;
     source_gap_events_model=0;
     source_gap_cycles_model=0;
     status_lifecycle_masked=0;
     status_lifecycle_checked=0;
+    axil_reset_active=0;
     reset_model();
+  endfunction
+
+  // Negative protocol tests may deliberately inject early TLAST. Keep this
+  // expectation explicit and count only the requested events; all other
+  // predictor mismatches remain errors.
+  function void expect_early_tlasts(input int unsigned count);
+    expected_early_tlasts=count;
+    observed_early_tlasts=0;
   endfunction
 
   function void reset_model();
@@ -199,10 +212,13 @@ class thermo5_axil_register_predictor extends uvm_component;
     end
     if (tr.tlast) begin
       if ((accepted_packet_beats_model % 32) != 0) begin
-        mismatches++;
-        `uvm_error("AXIL_STATUS_MODEL",
-          $sformatf("accepted TLAST after %0d packet beats; expected a multiple of 32",
-            accepted_packet_beats_model))
+        observed_early_tlasts++;
+        if (observed_early_tlasts > expected_early_tlasts) begin
+          mismatches++;
+          `uvm_error("AXIL_STATUS_MODEL",
+            $sformatf("unexpected accepted TLAST after %0d packet beats; expected a multiple of 32",
+              accepted_packet_beats_model))
+        end
       end
       expected_pa_words_model += (accepted_packet_beats_model * 14) / 8;
       accepted_packet_beats_model=0;
@@ -250,9 +266,17 @@ class thermo5_axil_register_predictor extends uvm_component;
     bit lifecycle_stable;
     bit [1:0] lifecycle_status;
     if (!tr.reset_n) begin
-      reset_model();
+      // AXIS source reset may release before the AXI-Lite/core reset. Keep
+      // any beats legally accepted into the source FIFO during that release
+      // skew; repeatedly clearing this epoch on every AXI reset clock loses
+      // those independently observed transactions.
+      if (!axil_reset_active) begin
+        reset_model();
+        axil_reset_active=1;
+      end
       return;
     end
+    axil_reset_active=0;
 
     last_axil_cycle_model=tr.event_cycle;
     lifecycle_status=predict_lifecycle_status(tr.event_cycle,lifecycle_stable);
