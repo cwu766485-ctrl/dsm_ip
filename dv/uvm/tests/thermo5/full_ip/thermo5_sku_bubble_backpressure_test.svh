@@ -76,10 +76,10 @@ class thermo5_sku_bubble_backpressure_test extends thermo5_sku_base_test;
         forever begin
           @(negedge vif.core_clk);
           case (ready_phase % 4)
-            0: vif.pa_ready=4'hf;
-            1: vif.pa_ready=4'b1110;
-            2: vif.pa_ready=4'h0;
-            default: vif.pa_ready=4'b1011;
+            0: env.pa_sink.set_ready(4'hf);
+            1: env.pa_sink.set_ready(4'b1110);
+            2: env.pa_sink.set_ready(4'h0);
+            default: env.pa_sink.set_ready(4'b1011);
           endcase
           ready_phase++;
         end

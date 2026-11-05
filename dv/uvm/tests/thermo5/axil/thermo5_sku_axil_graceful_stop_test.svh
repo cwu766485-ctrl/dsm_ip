@@ -5,6 +5,29 @@
 class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_graceful_stop_test)
 
+  virtual function void configure_case();
+    integer fd;
+    integer scan_result;
+    logic [15:0] marker;
+    string path;
+    super.configure_case();
+    if (cfg.core_words%56!=0)
+      `uvm_fatal("AXIL_STOP_WORDS","Graceful STOP test requires an integer number of 56-word frames")
+    path=$sformatf("%s/tid32_thermo5_frontend_frame_start.mem",cfg.vector_dir);
+    fd=$fopen(path,"r");
+    if (fd==0) `uvm_fatal("AXIL_STOP_FRAME_FILE",$sformatf("Cannot open %s",path))
+    scan_result=$fscanf(fd,"%h",marker);
+    cfg.frame_starts=0;
+    while (scan_result==1) begin
+      if (marker[0]) cfg.frame_starts++;
+      scan_result=$fscanf(fd,"%h",marker);
+    end
+    $fclose(fd);
+    if (scan_result!=-1 || cfg.frame_starts==0)
+      `uvm_fatal("AXIL_STOP_FRAME_FILE",
+        $sformatf("Invalid frame-start vector %s",path))
+  endfunction
+
   function new(string name, uvm_component parent);
     super.new(name,parent);
   endfunction
@@ -48,10 +71,21 @@ class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
               `uvm_fatal("AXIL_DRAIN_STATUS",
                 $sformatf("Expected RUN_ACTIVE+DRAINING after STOP, status=%08x",rdata))
 
-            // Stall one PA plane while STOP is draining. The four planes
-            // share one handshake, so partial ready must hold every plane.
+            // First allow the legal 64-beat packet to close. Holding a PA
+            // lane stalled while waiting for source TLAST can fill the finite
+            // output path and feed backpressure to AXIS, creating a testbench
+            // deadlock rather than exercising the graceful-drain contract.
+            for (int cycles=0; cycles<1000 &&
+                 env.source.monitor.accepted_last_count==0; cycles++)
+              @(posedge vif.src_clk);
+            if (env.source.monitor.accepted_last_count!=1)
+              `uvm_fatal("AXIL_STOP_TLAST_TIMEOUT","Source did not reach TLAST after STOP")
+
+            // The final centered-cubic words remain outstanding after the
+            // accepted TLAST marker. Stall one PA plane briefly in this drain
+            // window, then release it so all four planes can complete.
             @(negedge vif.core_clk);
-            vif.pa_ready=4'hd;
+            env.pa_sink.set_ready(4'hd);
             partial_stall_seen=0;
             for (int cycles=0; cycles<2000 && !partial_stall_seen; cycles++) begin
               @(posedge vif.core_clk);
@@ -59,18 +93,13 @@ class thermo5_sku_axil_graceful_stop_test extends thermo5_sku_axil_base_test;
             end
             if (!partial_stall_seen)
               `uvm_fatal("AXIL_STOP_PA_STALL_TIMEOUT","No PA word appeared under partial-ready STOP drain")
-            for (int cycles=0; cycles<1000 &&
-                 env.source.monitor.accepted_last_count==0; cycles++)
-              @(posedge vif.src_clk);
-            if (env.source.monitor.accepted_last_count!=1)
-              `uvm_fatal("AXIL_STOP_TLAST_TIMEOUT","Source did not reach TLAST during PA backpressure")
             repeat (4) begin
               @(posedge vif.core_clk);
               if (vif.pa_valid!=4'hf || vif.pa_ready!=4'hd)
                 `uvm_fatal("AXIL_STOP_PA_STALL","PA planes did not remain valid under partial ready")
             end
             @(negedge vif.core_clk);
-            vif.pa_ready=4'hf;
+            env.pa_sink.set_ready(4'hf);
             repeat (2) @(posedge vif.core_clk);
             if (env.coverage.stop_partial_pa_stall_cycles==0 ||
                 env.coverage.tlast_pa_stall_cycles==0)

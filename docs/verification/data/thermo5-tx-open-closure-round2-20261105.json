@@ -1,0 +1,343 @@
+{
+  "artifact_sha256": {
+    "runs/thermo5_axil_outstanding_round2_20261105/console.log": "75f518e1bc9a25a7772641097143086e1815a54edfe8356582c6a6c66546f01c",
+    "runs/thermo5_axil_outstanding_round2_20261105/formal_manifest.json": "fb9f8eb288eca58be919554a78b1cf124f34c9fbd5a3e4b4c5aef3f366eca816",
+    "runs/thermo5_axil_outstanding_round2_20261105/properties.txt": "8c3937e6bc08ce26d782773df28a4e165d4014b324a8f33f4d657887cdb72f78",
+    "runs/thermo5_axil_underflow_property_20261105_fullscope/console.log": "c2a60bb89564f65424a1f4b1483ca8d75e2b104cf556603b2c36c445608f167b",
+    "runs/thermo5_axil_underflow_property_20261105_fullscope/properties.txt": "aae23c9cdb11625a6d05e2c9a50d1b0b94563f59c7eb0bf26bbfb535a118c6aa",
+    "runs/thermo5_open_closure_round2_20261105/python_unittest.log": "9acac7433b9ef348a4754c0b756c1bfaf38f4a1eb342a808fec7bb3241dd2a28",
+    "runs/thermo5_open_closure_round2_20261105/system_random_full/logs/seed_721000.log": "3f14636ac8fed2e52bb03e90ef909798a892eb0b72f3a75bbc101d99a71013dc",
+    "runs/thermo5_open_closure_round2_20261105/system_random_full/summary.json": "190cf86e7e461e67c1d8f03ec20fa96e9593ee030313d5c15cf68d6ca1fcbe50",
+    "runs/thermo5_open_closure_round2_20261105/system_random_full/urg_system_random/groups.html": "45c8a6e16c0035432df0398dc4432cf91614a6739e5e5e13bb48b72b6850fa6a",
+    "runs/thermo5_q1_tail_formal_20261105/formal_summary.json": "a17fff7fc4cec69c42982ba44332055ca42825dc903a7e9a614f6fc60953ee23",
+    "runs/thermo5_q1_tail_formal_20261105/frame_tail_legal_metadata/console.log": "a0315877f91d3fbdd248f02fe78c8f5c5e1a0dc4ab93e35038ebb8dd3299ea2c",
+    "runs/thermo5_q1_tail_formal_20261105/frame_tail_legal_metadata/properties.txt": "d1cc933cd112c045715a1771f7033956fe615afe9f0421bdb3ab4c8becd15aa9",
+    "runs/thermo5_tx_closure_current/current_source_20261104/coverage_gate_round9_lf_final.json": "fd9bf7d5a35cc38950ad94f00ef185a2b2a2b5f434bab0a02665a1f44523bcf6",
+    "runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/report_manifest.json": "42861c12102b9cdd55cc51d8aed9a96ef9a70439839cc2e07434015def1fcf6a"
+  },
+  "base_head_before_round1_work": "6bef1cbd66a55bbec5601a5d36fa4c86f85bfd26",
+  "branch": "codex/thermo5-final-integration",
+  "checks": {
+    "git_diff_check_before_documentation": "PASS",
+    "python_compile": "PASS"
+  },
+  "coverage": {
+    "active_exclusions": 0,
+    "approved_waivers": 0,
+    "canonical_raw_adjusted_refreshed_this_round": false,
+    "canonical_raw_equals_adjusted": true,
+    "functional_coverage_prior_audit": {
+      "distinct_bins": 206,
+      "groups": 13,
+      "legal_rows": [
+        412,
+        412
+      ]
+    },
+    "gate": "RAW_100_OPEN",
+    "note": "Round 2 system-random VDBs are scenario evidence only and were not merged into the canonical DUT-only inventory.",
+    "pending_waiver_candidates": 371,
+    "raw_adjusted_baseline": {
+      "branch": [
+        524,
+        637
+      ],
+      "condition": [
+        657,
+        849
+      ],
+      "fsm_states": [
+        13,
+        13
+      ],
+      "fsm_transitions": [
+        22,
+        22
+      ],
+      "line": [
+        3338,
+        3796
+      ],
+      "toggle": [
+        91112,
+        104480
+      ]
+    },
+    "separate_round9_retained_inventory": {
+      "coverage_gate_json": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_gate_round9_lf_final.json",
+      "design_product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "not_merged_with_round2_or_integrated_snapshot": true,
+      "raw_adjusted": true,
+      "raw_adjusted_counts": {
+        "branch": [
+          525,
+          637
+        ],
+        "condition": [
+          658,
+          849
+        ],
+        "line": [
+          3351,
+          3796
+        ],
+        "toggle": [
+          84340,
+          104480
+        ]
+      },
+      "report_manifest": "runs/thermo5_tx_closure_current/current_source_20261104/coverage_round9_tracked_lf_signoff/report_manifest.json",
+      "source_revision": "c0e104878c71a1f4d873b0553e8ee0940560df71",
+      "test_vdb_count": 248
+    }
+  },
+  "date": "2026-11-05",
+  "evidence_paths": {
+    "outstanding_formal_manifest": "runs/thermo5_axil_outstanding_round2_20261105/formal_manifest.json",
+    "q1_tail_formal_manifest": "runs/thermo5_q1_tail_formal_20261105/formal_summary.json",
+    "round1_json": "docs/verification/data/thermo5-tx-open-closure-round1-20261105.json",
+    "round1_report": "docs/verification/thermo5-tx-open-closure-round1-20261105.md",
+    "round2_system_random_summary": "runs/thermo5_open_closure_round2_20261105/system_random_full/summary.json"
+  },
+  "not_run": [
+    "real XPM simulation",
+    "GT Wizard simulation",
+    "Vivado timing/PPA",
+    "FPGA routed implementation",
+    "physical RF/QAM256 BER"
+  ],
+  "p1_online_ef2": {
+    "breakdown": {
+      "commit_boundary": 8,
+      "dpd_gain_profile": 60,
+      "system_random": 110
+    },
+    "expected_negative_mutation": "detected at I word 0 lane 0; UVM_ERROR and test failure observed",
+    "legal_runs": 178,
+    "mismatches": 0,
+    "reset_truncated_epochs": "checked by independent Python trace Oracle, not online sidecar mode",
+    "status": "PASS_FOR_EXERCISED_LEGAL_PACKET_PATHS"
+  },
+  "p2_system_scenarios": {
+    "crosses": {
+      "commit_x_frame_boundary_x_pa_stall": {
+        "covered": 2,
+        "evidence": "Round 1",
+        "expected": 2,
+        "uncovered": 0
+      },
+      "dpd_x_gain_x_input_profile": {
+        "covered": 60,
+        "evidence": "Round 1",
+        "expected": 60,
+        "uncovered": 0
+      },
+      "reset_x_pending_commit": {
+        "covered": 4,
+        "evidence": "Round 1",
+        "expected": 4,
+        "uncovered": 0
+      },
+      "status_x_commit_x_stop": {
+        "covered": 1,
+        "evidence": "Round 1",
+        "expected": 1,
+        "uncovered": 0
+      },
+      "x_run_prefill_source_gap": {
+        "covered": 1,
+        "expected": 1,
+        "uncovered": 0
+      },
+      "x_source_gap_pa_stall_fifo_full": {
+        "covered": 1,
+        "expected": 1,
+        "uncovered": 0
+      },
+      "x_stop_tlast_drain": {
+        "covered": 1,
+        "expected": 1,
+        "uncovered": 0
+      }
+    },
+    "long_stop_partial_pa_stall": {
+      "accepted_tlast": 1,
+      "direct_trace_seed": 420114,
+      "make_target": "make -C dv/uvm/sim thermo5-axil-long-frame-vcs-run THERMO5_VECTORS=\"$PWD/runs/thermo5_centered_stop_restart_vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_open_closure_round1_20261105/make_long_stop\"",
+      "pa_words": 112,
+      "python_trace_oracle": "PASS: CDC 112/112, EF2 112/112, PA 112/112, underflow 0",
+      "source_beats": 64,
+      "stop_partial_pa_stall_cycles": 7,
+      "tlast_pa_stall_cycles": 7,
+      "uvm_pass": true
+    },
+    "round2_campaign": {
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 PYTHONPATH=dv/uvm/refmodel/python python3.12 dv/uvm/sim/run_thermo5_system_random.py --random-seeds 100 --long-seeds 10 --seed-base 721000 --out runs/thermo5_open_closure_round2_20261105/system_random_full",
+      "completed_cases": 110,
+      "crosses": {
+        "x_run_prefill_source_gap": {
+          "covered": 1,
+          "expected": 1,
+          "uncovered": 0
+        },
+        "x_source_gap_pa_stall_fifo_full": {
+          "covered": 1,
+          "expected": 1,
+          "uncovered": 0
+        },
+        "x_stop_tlast_drain": {
+          "covered": 1,
+          "expected": 1,
+          "uncovered": 0
+        }
+      },
+      "profile_counts": {
+        "ef2_saturation": 27,
+        "extreme": 28,
+        "random": 28,
+        "range_stress": 27
+      },
+      "status": "PASS",
+      "urg_merge": "PASS"
+    },
+    "status": "PASS_FOR_NAMED_SCENARIO_MATRIX"
+  },
+  "p3_formal": {
+    "dpd_identity": {
+      "reason": "formal source and harness unchanged from prior inconclusive evidence",
+      "rerun": false,
+      "status": "INCONCLUSIVE/OPEN"
+    },
+    "outstanding_counter_guards": {
+      "assertions": {
+        "a_no_counter_saturation_guard": "inconclusive",
+        "a_no_counter_underflow_guard": "inconclusive",
+        "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+        "a_outstanding_within_product_capacity": "inconclusive",
+        "a_pa_valid_has_outstanding_word": "inconclusive"
+      },
+      "covers": {
+        "c_arbitrary_source_bubble": "covered",
+        "c_core_accept": "covered",
+        "c_counter_saturation_guard": "inconclusive",
+        "c_counter_underflow_guard": "inconclusive",
+        "c_output_accept": "covered",
+        "c_source_accept": "covered"
+      },
+      "disposition": "INCONCLUSIVE; both guard root causes remain OPEN",
+      "duration_seconds": 311.49,
+      "exit_code": 0,
+      "manifest": "runs/thermo5_axil_outstanding_round2_20261105/formal_manifest.json",
+      "non_vacuous_goal_count": 4,
+      "status": "INCONCLUSIVE",
+      "underflow_property_retry": {
+        "command": "THERMO5_FORMAL_REPO=$PWD THERMO5_FORMAL_OUT=$PWD/runs/thermo5_axil_underflow_property_20261105_fullscope THERMO5_FORMAL_PROPERTY=thermo5_axil_outstanding_harness.a_no_counter_underflow_guard PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 vcf -batch -fmode FPV -f $PWD/dv/uvm/formal/run_thermo5_axil_outstanding_fpv.tcl",
+        "console": "runs/thermo5_axil_underflow_property_20261105_fullscope/console.log",
+        "depth": 56,
+        "duration_seconds": 304.1,
+        "interpretation": "single assertion remained inconclusive; no Cover witness was requested or generated",
+        "properties": "runs/thermo5_axil_underflow_property_20261105_fullscope/properties.txt",
+        "property": "thermo5_axil_outstanding_harness.a_no_counter_underflow_guard",
+        "status": "INCONCLUSIVE"
+      }
+    },
+    "q1_tail_legal_metadata": {
+      "assertions": [
+        [
+          "proven",
+          "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context"
+        ]
+      ],
+      "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs frame_tail_legal_metadata --out-dir runs/thermo5_q1_tail_formal_20261105",
+      "covers": [
+        [
+          "uncoverable",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"
+        ]
+      ],
+      "disposition": "PROVEN_UNREACHABLE only within exact legal product frame-marker schedule; no Raw exclusion/waiver approved",
+      "harness_sha256": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+      "rtl_sha256": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+      "run_manifest": "runs/thermo5_q1_tail_formal_20261105/formal_summary.json",
+      "scope": "Exact centered-cubic product stage geometries and legal frame-marker schedules: stage 1 accepts 7 vectors of 8 lanes per 56-sample DSP frame, with frame_start on each frame and TLAST/frame_end only on vector 56 of an eight-frame, 448-sample packet. Stage 2 accepts 8 vectors of 16 lanes per DSP frame, with the final synthetic tail tagged end/tail. The two production interpolator RTL stages are directly composed with ready/valid backpressure. Intermediate elastic FIFOs and DPD are omitted; this result alone does not disposition Raw URG bins.",
+      "status": "PASS"
+    }
+  },
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "pa_plane_width_bits": 64,
+    "pa_planes": 4,
+    "state_bits": 20,
+    "step": 5120
+  },
+  "python_tests": {
+    "command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
+    "failed": 0,
+    "log": "runs/thermo5_open_closure_round2_20261105/python_unittest.log",
+    "passed": 62
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "dv/uvm/agent/rf/thermo5_pa_sink_agent.svh": "b3674ffc69966b92e001a342731f5836e1d9ed08a8b037947f90eab87d8936b9",
+    "dv/uvm/env/thermo5/thermo5_sku_config.svh": "8414ac494472e4e3b494cac6eb705f87264c0edf45ddd4c4ee53fd288db66617",
+    "dv/uvm/env/thermo5/thermo5_sku_coverage.svh": "fb6864fc0d7253dcec9867fcd0f86e3f5abdddf51e560d5296212472c5c68353",
+    "dv/uvm/env/thermo5/thermo5_unified_scoreboard.svh": "013359143800d0c92fbb384469b391b49bad0e262e7ecea8e129acc2ab15ab76",
+    "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+    "dv/uvm/refmodel/python/dsm_refmodel/thermo5.py": "be16193e6914cf779af7ccb67c7cac2d98fb703f55d0f652971d6d3c72e46581",
+    "dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py": "60f79a44887ddb1f854360537f29ee29cd9bb6f7c2f913cfe2e4fbdc2b5fae63",
+    "dv/uvm/refmodel/python/tests/test_thermo5.py": "8e6755ed11cf40a2e638166474d71f2b13d91b59bbb3a35549a28af162f91c05",
+    "dv/uvm/sequences/thermo5/thermo5_sku_virtual_sequence.svh": "c61c743fc5bd279c3db5a15260aa4d99b420ae088dafe6ddf95235e94060946d",
+    "dv/uvm/sim/Makefile": "f968d124738319d1d3daf22c8e48d1061bb1400af18e1ed8318203daaad07319",
+    "dv/uvm/sim/run_thermo5_commit_boundary_stall.py": "5a433cafe9449aaac4a9e5980315e15d3a3b2087fbac1885cca87aa01c3e3d8e",
+    "dv/uvm/sim/run_thermo5_randomized_control.py": "5dd2329cb3c9e36f303dfe262ef5912d432f0e86dd6a255d310d356d2bb84776",
+    "dv/uvm/sim/run_thermo5_system_random.py": "164921ca25de7e955cc91bc31b00d7bab2a2e82d9d271bdd2a33e2592cbe1c4a",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_graceful_stop_test.svh": "75d5ad26ee06fc42890a2d9855808f3fa701ed4076cb78d9a46e6f04f5828235",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_random_dpd_bittrue_test.svh": "4a45ee8f8a5de68e48a7c73fb3102b9e37e5b520ac970a423e2c1f81e2ef8fd7",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_random_packet_test.svh": "3a4857d6f385511abb833d0e1acf583ec630ea002b37ed0569a4143c785b8a69",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9"
+  },
+  "tools": {
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2",
+    "vcs": "V-2023.12-SP1"
+  },
+  "worktree_dirty": true
+}

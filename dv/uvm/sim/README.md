@@ -30,6 +30,46 @@ This directory is the Linux VCS/Verdi entry point for system-level verification.
 Windows XSim scripts under `dv/verif/scripts/` are retained for local smoke runs;
 they are not the signoff flow.
 
+### Thermo5 packet-level constrained-random smoke
+
+`make thermo5-tx-system-random` generates seeded Python bit-true vectors, then
+runs the frozen AXI-Lite product configuration through the virtual packet
+sequence. The initial qualification uses 100 56-word packet seeds plus 10
+112-word streams (two 32-beat packets each). Each run has bounded 0–2-cycle
+source gaps, randomized four-plane PA READY masks, a 16-beat prefill before
+RUN, graceful STOP/drain, an accepted-transaction JSONL trace, and an
+independent Python monitor-trace oracle check. Identity DPD remains the reset
+image; this base suite does not randomize DPD coefficients, commits, or resets.
+The trace oracle checks the accepted CDC samples against AXIS input, predicts
+the 32-lane EF2 input from source data and the modeled frame configuration,
+then checks the four-plane PA output. It reports the first divergent stage.
+
+The runner stores seed parameters, accepted AXIS/AXI-Lite/PA trace hashes,
+commands, per-seed logs, VCS databases, and an observed-event matrix under the
+ignored `runs/thermo5_tx_system_random_phase_c/` directory. It stops on the
+first unexpected underflow, bit mismatch, transaction-count error, predictor
+mismatch, UVM error, or missing drain status. Its event matrix is supplementary
+system-level evidence, not a substitute for URG Functional Coverage or the
+separate DUT-only Code Coverage signoff.
+
+The minimum campaign passed 100 56-word packet seeds plus 10 112-word streams
+(110/110 VCS UVM and 110/110 Python trace-oracle replays). URG merged all
+per-seed VDBs, but the reported percentages include mixed hierarchy and are
+not DUT-only Raw/Adjusted signoff. Separate directed and randomized campaigns
+cover legal one-tap DPD/gain/profile settings, COMMIT boundary timing, and
+reset with a pending COMMIT. Their combined stage-replay and coverage status,
+including the still-open long-frame STOP/backpressure pairing, is recorded in
+the [`final integration closure report`](../../../docs/verification/thermo5-tx-final-integration-20261104.md).
+The base campaign's
+[`Phase C evidence report`](../../../docs/verification/thermo5-tx-phase-c-evidence.md)
+retains its exact observed bins, commands, and SHA manifest.
+
+Use smaller counts for a smoke run:
+
+```sh
+python3.12 dv/uvm/sim/run_thermo5_system_random.py --random-seeds 2 --long-seeds 1 --out runs/thermo5_tx_system_random_smoke
+```
+
 ## Main Files
 
 - `Makefile`: compile, run, coverage merge, and Verdi targets.

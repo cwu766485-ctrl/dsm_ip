@@ -17,6 +17,7 @@ module thermo5_sku_outstanding_guard_sva (
     else $error("outstanding counter underflow guard was taken");
 endmodule
 
+`ifdef THERMO5_AXIL_CONTROL
 bind thermo5_sku_uvm_tb thermo5_sku_outstanding_guard_sva
   u_outstanding_guard_sva (
     .clk(core_clk),
@@ -25,3 +26,4 @@ bind thermo5_sku_uvm_tb thermo5_sku_outstanding_guard_sva
     .core_accept(dut.core_accept),
     .output_accept(dut.output_accept)
   );
+`endif

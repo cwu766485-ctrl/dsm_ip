@@ -22,12 +22,14 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic [386:0] cfg_mailbox_payload, cfg_pending_payload, cfg_active_payload;
   logic [3:0] pa_valid;
   logic [63:0] pa_data [0:3];
-  logic [3:0] pa_ready = 4'hf;
+  logic [3:0] pa_ready;
   int accepted_beats = 0;
   logic restart_source = 0;
   int restart_epoch = 0;
   logic [3:0] cdc_residual;
   logic cdc_core_valid, cdc_core_ready, cdc_frame_start, cdc_frame_end;
+  logic signed [127:0] cdc_core_i_vec, cdc_core_q_vec;
+  logic signed [15:0] cdc_core_frame_gain;
   logic cdc_end_pending, cdc_end_false_arm;
   logic cdc_source_reset_released;
   logic [4:0] cdc_end_remaining;
@@ -57,4 +59,7 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic ef2_clamp_stalled, ef2_tidsm_stalled;
   logic signed [19:0] ef2_err1_i[0:3], ef2_err2_i[0:3];
   logic signed [19:0] ef2_err1_q[0:3], ef2_err2_q[0:3];
+  // Transaction-level observation immediately before the four EF2 branches.
+  logic ef2_input_valid, ef2_input_ready;
+  logic signed [511:0] ef2_input_i_vec, ef2_input_q_vec;
 endinterface

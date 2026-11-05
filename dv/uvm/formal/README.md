@@ -17,6 +17,7 @@ for that job:
 | Reset release | `thermo5_reset_harness.sv` | `thermo5_reset_gap_harness` |
 | DPD sample counter | `thermo5_dpd_counter_harness.sv` | bounded and unbounded counter tops |
 | Generic FIFO CDC / 14:8 residual | `thermo5_generic_cdc_harness.sv` | `thermo5_cdc_residual_harness` |
+| Generic FIFO `core_data_empty` Condition reachability | `thermo5_cdc_data_empty_harness.sv` | `thermo5_cdc_data_empty_harness` |
 | Product 14:8 CDC frame-end branch | `thermo5_cdc_end_branch_harness.sv` | `thermo5_cdc_end_branch_harness` |
 | Product 14:8 CDC outer-case default | `thermo5_cdc_default_branch_harness.sv` | `thermo5_cdc_default_branch_harness` |
 | Product consecutive-frame start alignment | `thermo5_cdc_frame_start_alignment_harness.sv` | `thermo5_cdc_frame_start_alignment_harness` |
@@ -53,6 +54,9 @@ PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
   --jobs cdc_end_branch --out-dir runs/thermo5_cdc_end_branch_review
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
+  --jobs cdc_data_empty --out-dir runs/thermo5_cdc_data_empty_review
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
   python3.12 dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py \
   runs/thermo5_cdc_default_branch_review
@@ -214,6 +218,57 @@ gate-level/SDF sign-off, physical implementation sign-off, or proof of every
 compile-time DSM/DPD/interpolation SKU. `dsm_async_fifo_order_checker` remains a
 simulation-only data-order checker for the asynchronous feedback subsystem.
 Formality is an equivalence-checking product and does not replace VC Formal FPV.
+
+## One-tap Identity datapath leaf proof
+
+Run the local, no-backpressure Identity datapath proof from Linux with:
+
+```bash
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_convergence.py \
+  --job identity_nostall \
+  --out-dir runs/thermo5_dpd_identity_nostall
+```
+
+`thermo5_dpd_identity_nostall_harness.sv` instantiates production
+`dpd_memory_poly` at `MAX_TAPS=1`, uses an external one-tap Q14 unity
+coefficient image, feeds the input sample as the single tap, and ties
+`out_ready` high. It proves the local payload, latency, ready, and no-saturation
+properties for arbitrary I/Q and `in_valid`, and covers valid output plus both
+signed endpoints. The harness has no protocol/environment assumptions; VC
+Formal reports its initialization constraint `rst_n==1`.
+
+This leaf proof deliberately avoids elastic backpressure and does not include
+AXI shadow/commit, mailbox transfer, active-epoch switching, or full-chain
+latency alignment. It is not a proof of the complete product Identity path,
+does not disposition URG bins, and does not replace the existing
+monolithic full-chain Identity proof, which remains INCONCLUSIVE. A separate
+under-stall local one-tap Identity datapath proof is documented below. The
+exact 2026-11-03 result and hashes are recorded in
+[`thermo5-tx-assertion-dpd-local-formal-20261103`](../../../docs/verification/thermo5-tx-assertion-dpd-local-formal-20261103.md).
+
+### One-tap Identity datapath under backpressure
+
+Run the source-bound compositional proof of Identity arithmetic, output
+alignment, and saturation under arbitrary downstream stalls with:
+
+```bash
+PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
+  python3.12 dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.py \
+  --out-dir runs/thermo5_dpd_identity_stall_formal \
+  --evidence runs/thermo5_dpd_identity_stall_formal/evidence.json \
+  --vcf /opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf
+```
+
+The flow first proves 41 internal pipeline lemmas in the base model. Only
+those already proven facts may be promoted as assumptions for the composed
+run; the four output/saturation assertions remain active and must prove. The
+flow fails closed on a changed property set, an unproven lemma, missing stall/
+recovery/endpoint witnesses, setup violations, black boxes, dirty source
+state, or source-revision/hash mismatch. It uses one legal source payload-hold
+assumption and the reset initialization constraint. AXI-Lite commit/mailbox/CDC
+and the whole TX chain are out of scope; see
+[`scoped Identity under-stall evidence`](../../../docs/verification/thermo5-tx-dpd-identity-stall-formal-20261103.md).
 
 ## Coverage convergence proofs
 

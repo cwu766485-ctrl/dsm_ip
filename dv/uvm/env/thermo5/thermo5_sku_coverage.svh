@@ -2,8 +2,10 @@
 // must check its required event counts; a sampled bin alone is not a PASS.
 class thermo5_sku_coverage extends uvm_component;
   `uvm_component_utils(thermo5_sku_coverage)
+  uvm_analysis_imp_event#(thermo5_transaction_event,thermo5_sku_coverage) event_imp;
   virtual thermo5_sku_if vif;
   thermo5_sku_config cfg;
+  int unsigned event_counts[10];
   int fifo_full_cycles, source_stall_cycles, frame_starts;
   int reset_reassertions, underflow_cycles, protocol_error_cycles;
   int underflow_before_last_source;
@@ -23,6 +25,45 @@ class thermo5_sku_coverage extends uvm_component;
   int unsigned pending_tlast_output_targets[$];
   int unsigned pending_tlast_cdc_output_targets[$];
   bit seen_src_release, last_src_rst_n, ef2_state_nonzero_seen;
+  bit source_gap_seen, fifo_full_seen, pa_stall_seen;
+  bit run_write_seen, prefill_before_run_seen, source_gap_after_run_seen;
+  bit stop_write_seen, source_tlast_seen, stop_tlast_seen;
+  int unsigned accepted_source_event_count;
+  int unsigned source_gap_pa_fifo_full_hits, run_prefill_gap_hits;
+  int unsigned stop_tlast_drain_hits;
+
+  // This is a packet-scenario cross: all three facts must be observed in the
+  // same accepted packet and its test must pass its independent integrity
+  // checks before sampling. They are not required to be simultaneous cycles.
+  covergroup source_gap_pa_fifo_cg with function sample(bit source_gap,
+                                                         bit fifo_full,
+                                                         bit pa_stall);
+    option.per_instance = 1;
+    cp_source_gap: coverpoint source_gap iff (source_gap) { bins observed={1}; }
+    cp_fifo_full: coverpoint fifo_full iff (fifo_full) { bins observed={1}; }
+    cp_pa_stall: coverpoint pa_stall iff (pa_stall) { bins observed={1}; }
+    x_source_gap_pa_stall_fifo_full: cross cp_source_gap, cp_fifo_full, cp_pa_stall;
+  endgroup
+
+  covergroup run_prefill_gap_cg with function sample(bit run_seen,
+                                                      bit prefill_seen,
+                                                      bit source_gap);
+    option.per_instance = 1;
+    cp_run: coverpoint run_seen iff (run_seen) { bins observed={1}; }
+    cp_prefill: coverpoint prefill_seen iff (prefill_seen) { bins observed={1}; }
+    cp_source_gap: coverpoint source_gap iff (source_gap) { bins observed={1}; }
+    x_run_prefill_source_gap: cross cp_run, cp_prefill, cp_source_gap;
+  endgroup
+
+  covergroup stop_tlast_drain_cg with function sample(bit stop_seen,
+                                                       bit tlast_seen,
+                                                       bit drain_seen);
+    option.per_instance = 1;
+    cp_stop: coverpoint stop_seen iff (stop_seen) { bins observed={1}; }
+    cp_tlast: coverpoint tlast_seen iff (tlast_seen) { bins observed={1}; }
+    cp_drain: coverpoint drain_seen iff (drain_seen) { bins observed={1}; }
+    x_stop_tlast_drain: cross cp_stop, cp_tlast, cp_drain;
+  endgroup
 
   covergroup source_cg with function sample(bit full, bit stalled, bit start,
                                               bit reset_low, bit signed_min,
@@ -110,14 +151,94 @@ class thermo5_sku_coverage extends uvm_component;
     }
   endgroup
 
+  covergroup transaction_event_cg with function sample(bit [3:0] event_kind);
+    option.per_instance = 1;
+    cp_kind: coverpoint event_kind {
+      bins source_beat = {THERMO5_EVENT_SOURCE_BEAT};
+      bins pa_word = {THERMO5_EVENT_PA_WORD};
+      bins axil_write = {THERMO5_EVENT_AXIL_WRITE};
+      bins axil_read = {THERMO5_EVENT_AXIL_READ};
+      bins axil_response = {THERMO5_EVENT_AXIL_RESPONSE};
+      bins cdc_word = {THERMO5_EVENT_CDC_WORD};
+      bins dsp_observation = {THERMO5_EVENT_DSP_OBSERVATION};
+      bins ef2_word = {THERMO5_EVENT_EF2_WORD};
+      bins ef2_stall = {THERMO5_EVENT_EF2_STALL};
+      bins reset = {THERMO5_EVENT_RESET};
+    }
+  endgroup
+
   function new(string name, uvm_component parent);
     super.new(name,parent);
     source_cg=new(); core_cg=new(); plane_atomic_cg=new(); ef2_cg=new();
-    stop_restart_cg=new();
+    stop_restart_cg=new(); transaction_event_cg=new();
+    source_gap_pa_fifo_cg=new(); run_prefill_gap_cg=new();
+    stop_tlast_drain_cg=new();
+    event_imp=new("event_imp",this);
+  endfunction
+
+  function void write_event(thermo5_transaction_event tr);
+    int unsigned index;
+    index=tr.kind;
+    if (index<10) event_counts[index]++;
+    transaction_event_cg.sample(tr.kind);
+    case (tr.kind)
+      THERMO5_EVENT_RESET: begin
+        accepted_source_event_count=0;
+        source_gap_seen=0;
+        fifo_full_seen=0;
+        pa_stall_seen=0;
+        run_write_seen=0;
+        prefill_before_run_seen=0;
+        source_gap_after_run_seen=0;
+        stop_write_seen=0;
+        source_tlast_seen=0;
+        stop_tlast_seen=0;
+      end
+      THERMO5_EVENT_SOURCE_BEAT: begin
+        accepted_source_event_count++;
+        if (tr.valid_gap_cycles!=0) source_gap_seen=1;
+        if (tr.valid_gap_cycles!=0 && run_write_seen && prefill_before_run_seen) begin
+          source_gap_after_run_seen=1;
+          run_prefill_gap_hits++;
+          run_prefill_gap_cg.sample(run_write_seen,prefill_before_run_seen,1'b1);
+        end
+        if (tr.tlast) begin
+          source_tlast_seen=1;
+          if (stop_write_seen) stop_tlast_seen=1;
+        end
+      end
+      THERMO5_EVENT_AXIL_WRITE: begin
+        if (tr.axil_addr==8'h00 && tr.axil_strb[0]) begin
+          if (tr.axil_data[0]) begin
+            if (!run_write_seen && accepted_source_event_count!=0)
+              prefill_before_run_seen=1;
+            run_write_seen=1;
+          end else begin
+            stop_write_seen=1;
+            if (source_tlast_seen) stop_tlast_seen=1;
+          end
+        end
+      end
+      THERMO5_EVENT_AXIL_RESPONSE: begin
+        if (!tr.is_write && tr.axil_addr==8'h04 &&
+            tr.axil_resp==2'b00 && tr.axil_rdata[4:3]==2'b00 &&
+            stop_tlast_seen) begin
+          stop_tlast_drain_hits++;
+          stop_tlast_drain_cg.sample(stop_write_seen,source_tlast_seen,1'b1);
+        end
+      end
+      default: begin end
+    endcase
   endfunction
 
   function void sample_stop_restart(bit [2:0] event_code);
     stop_restart_cg.sample(event_code);
+  endfunction
+
+  function void sample_random_packet_crosses();
+    if (source_gap_seen && fifo_full_seen && pa_stall_seen)
+      source_gap_pa_fifo_full_hits++;
+    source_gap_pa_fifo_cg.sample(source_gap_seen,fifo_full_seen,pa_stall_seen);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -162,7 +283,11 @@ class thermo5_sku_coverage extends uvm_component;
         end
         else if (vif.src_valid && vif.src_ready) begin
           accepted_source_beats_epoch++;
-          if (accepted_last && sampled_packet_quanta!=0) begin
+          // Every accepted frame tail has an exact 14:8 output position,
+          // including short Generic-FIFO frames used by the starvation test.
+          // Packet-quantum coverage remains separately gated by the legal
+          // 32-beat boundary in source_cg above.
+          if (accepted_last) begin
             pending_tlast_output_targets.push_back(
               (accepted_source_beats_epoch*7)/4);
             pending_tlast_cdc_output_targets.push_back(
@@ -175,7 +300,10 @@ class thermo5_sku_coverage extends uvm_component;
         if (vif.src_rst_n) seen_src_release=1;
         last_src_rst_n=vif.src_rst_n;
         if (vif.src_rst_n) begin
-          if (vif.fifo_full) fifo_full_cycles++;
+          if (vif.fifo_full) begin
+            fifo_full_cycles++;
+            fifo_full_seen=1;
+          end
           if (vif.src_valid && !vif.src_ready) source_stall_cycles++;
           if (vif.src_valid && vif.src_ready && vif.frame_start) frame_starts++;
           if (accepted_min) signed_min_beats++;
@@ -194,6 +322,7 @@ class thermo5_sku_coverage extends uvm_component;
                        vif.pa_valid==4'hf && vif.pa_ready!=4'hf,
                        vif.pa_valid==4'hf && vif.pa_ready==4'hf);
         if (vif.core_rst_n) begin
+          if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf) pa_stall_seen=1;
           if (!cfg.illegal_frame) begin
             if (vif.cdc_end_false_arm)
               cdc_end_remaining_false_arm_events++;
@@ -274,7 +403,8 @@ class thermo5_sku_coverage extends uvm_component;
   endtask
 
   function void report_phase(uvm_phase phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
+    super.report_phase(phase);
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
       accepted_cdc_output_words_epoch,cdc_frame_end_events,
       cdc_end_remaining_false_arm_events,
@@ -285,8 +415,19 @@ class thermo5_sku_coverage extends uvm_component;
       signed_min_beats,signed_max_beats,
       ef2_positive_clamp_events,ef2_negative_clamp_events,
       ef2_clamp_stall_cycles,ef2_tidsm_stall_cycles,ef2_state_rail_cycles,
-      ef2_state_rail_stall_cycles,source_cg.get_coverage(),core_cg.get_coverage(),
+      ef2_state_rail_stall_cycles,source_gap_pa_fifo_full_hits,run_prefill_gap_hits,
+      stop_tlast_drain_hits,source_gap_pa_fifo_cg.get_coverage(),
+      run_prefill_gap_cg.get_coverage(),stop_tlast_drain_cg.get_coverage(),
+      source_cg.get_coverage(),core_cg.get_coverage(),
       plane_atomic_cg.get_coverage(),stop_restart_cg.get_coverage(),
       ef2_cg.get_coverage()),UVM_NONE)
+    `uvm_info("THERMO5_EVENT_COVERAGE",
+      $sformatf("stream=%.1f%% src=%0d pa=%0d axil_wr=%0d axil_rd=%0d axil_rsp=%0d cdc=%0d dsp=%0d ef2=%0d ef2_stall=%0d reset=%0d",
+        transaction_event_cg.get_coverage(),
+        event_counts[THERMO5_EVENT_SOURCE_BEAT],event_counts[THERMO5_EVENT_PA_WORD],
+        event_counts[THERMO5_EVENT_AXIL_WRITE],event_counts[THERMO5_EVENT_AXIL_READ],
+        event_counts[THERMO5_EVENT_AXIL_RESPONSE],event_counts[THERMO5_EVENT_CDC_WORD],
+        event_counts[THERMO5_EVENT_DSP_OBSERVATION],event_counts[THERMO5_EVENT_EF2_WORD],
+        event_counts[THERMO5_EVENT_EF2_STALL],event_counts[THERMO5_EVENT_RESET]),UVM_NONE)
   endfunction
 endclass

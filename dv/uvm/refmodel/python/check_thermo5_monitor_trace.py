@@ -22,18 +22,21 @@ def main():
                                 tidsm_order=args.tidsm_order,
                                 max_taps=args.max_taps)
     total_words = sum(result.compared_words for result in results)
+    total_cdc_words = sum(result.compared_cdc_words for result in results)
+    total_ef2_words = sum(result.compared_ef2_words for result in results)
     total_underflows = sum(result.underflow_events for result in results)
     for result in results:
-        print("epoch=%d data=%s compared_words=%d applied_config_frames=%s underflow_events=%d" % (
+        print("epoch=%d data=%s CDC_words=%d EF2_words=%d PA_words=%d applied_config_frames=%s underflow_events=%d" % (
             result.epoch, "PASS" if result.passed else "FAIL",
+            result.compared_cdc_words, result.compared_ef2_words,
             result.compared_words, list(result.applied_config_frames),
             result.underflow_events))
         if result.reset_terminated:
             print("epoch=%d reset_terminated=true reset_discarded_model_words=%d" % (
                 result.epoch, result.discarded_model_words))
-    print("TRACE_ORACLE=%s total_words=%d underflow_events=%d" % (
+    print("TRACE_ORACLE=%s CDC_words=%d EF2_words=%d PA_words=%d underflow_events=%d" % (
         "PASS" if all(result.passed for result in results) else "FAIL",
-        total_words, total_underflows))
+        total_cdc_words, total_ef2_words, total_words, total_underflows))
     if not all(result.passed for result in results):
         return 1
     if total_underflows and not args.allow_underflow:

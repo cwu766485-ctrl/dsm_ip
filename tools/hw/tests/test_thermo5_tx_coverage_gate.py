@@ -4,10 +4,29 @@ import unittest
 from pathlib import Path
 
 from tools.hw.thermo5_tx_coverage_gate import (
-    AuditError, _applicable_functional_bins, _coverage_fingerprint,
+    AuditError, WAIVER_FIELDS, _applicable_functional_bins, _coverage_fingerprint,
+    _read_waivers,
     _vdb_tree_fingerprint,
     _verify_dual_report_manifest,
 )
+
+
+class WaiverLedgerSchemaTests(unittest.TestCase):
+    def test_pipeline_candidate_audit_schema_is_accepted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "waivers.csv"
+            with path.open("w", newline="", encoding="utf-8") as stream:
+                writer = csv.DictWriter(stream, fieldnames=WAIVER_FIELDS)
+                writer.writeheader()
+                writer.writerow({field: "" for field in WAIVER_FIELDS})
+            self.assertEqual(len(_read_waivers(path)), 1)
+
+    def test_unrecognized_waiver_schema_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "waivers.csv"
+            path.write_text("waiver_id,proof_evidence\nW-1,proof.json\n", encoding="utf-8")
+            with self.assertRaisesRegex(AuditError, "header mismatch"):
+                _read_waivers(path)
 
 
 class ApplicableFunctionalBinTests(unittest.TestCase):

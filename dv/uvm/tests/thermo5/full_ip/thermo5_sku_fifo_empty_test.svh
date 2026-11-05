@@ -9,8 +9,9 @@ class thermo5_sku_fifo_empty_test extends thermo5_sku_base_test;
       begin
         fork
 `ifdef THERMO5_CENTERED_CUBIC
-          // Centered interpolation needs an explicit frame tail to flush the
-          // final look-ahead-dependent vector before starvation is meaningful.
+          // Flush the short Generic-FIFO test frame before checking the empty
+          // input condition. This non-AXI-Lite block test is not a 32-beat SKU
+          // packet test; the monitor checks its exact frame-tail output word.
           send_source(4,0,-1,0,-1,1);
 `else
           send_source(4);
@@ -21,6 +22,8 @@ class thermo5_sku_fifo_empty_test extends thermo5_sku_base_test;
             wait(env.scoreboard.checked==7);
             wait(vif.underflow===1'b1);
             if (vif.protocol_error) `uvm_fatal("FIFO_EMPTY","Starvation corrupted frame protocol")
+            if (env.scoreboard.checked!=7)
+              `uvm_fatal("FIFO_EMPTY","Short test frame did not match its seven-word bit-true oracle")
             if (env.coverage.underflow_cycles==0) @(posedge vif.core_clk);
             if (env.coverage.underflow_cycles==0)
               `uvm_fatal("COVERAGE","FIFO empty/underflow was not observed")

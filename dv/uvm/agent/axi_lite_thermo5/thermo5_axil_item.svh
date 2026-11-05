@@ -13,6 +13,7 @@ class thermo5_axil_item extends uvm_sequence_item;
   bit reset_n;
   int unsigned txn_id;
   int unsigned event_cycle;
+  int unsigned reset_epoch;
   bit [31:0] rdata;
   bit [1:0] resp;
 
@@ -37,6 +38,7 @@ class thermo5_axil_item extends uvm_sequence_item;
     `uvm_field_int(reset_n, UVM_DEFAULT)
     `uvm_field_int(txn_id, UVM_DEFAULT)
     `uvm_field_int(event_cycle, UVM_DEFAULT)
+    `uvm_field_int(reset_epoch, UVM_DEFAULT)
     `uvm_field_int(rdata, UVM_DEFAULT)
     `uvm_field_int(resp, UVM_DEFAULT)
   `uvm_object_utils_end

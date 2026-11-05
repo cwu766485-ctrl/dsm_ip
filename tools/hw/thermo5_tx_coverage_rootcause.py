@@ -36,6 +36,13 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def metric_counts_match(actual: Counter, expected: dict[str, int]) -> bool:
+    """Compare nonzero gap counts; a fully closed metric has no ledger key."""
+    return {key: value for key, value in actual.items() if value} == {
+        key: value for key, value in expected.items() if value
+    }
+
+
 def validate_refresh_record(path: Path, product_sha: str, raw_report: Path) -> dict:
     """Validate that the reported fresh URG is the exact audited Raw report."""
     evidence = json.loads(path.read_text(encoding="utf-8"))
@@ -60,8 +67,17 @@ def validate_refresh_record(path: Path, product_sha: str, raw_report: Path) -> d
     gate = json.loads((ROOT / coverage["coverage_gate"]).read_text(encoding="utf-8"))
     if gate.get("status") != "RAW_100_OPEN" or gate.get("exclusions_applied"):
         raise ValueError("fresh VCS/URG gate must remain fail-closed RAW_100_OPEN with no exclusions")
-    if gate.get("inputs", {}).get("groups_html") != report_path:
-        raise ValueError("fresh VCS/URG gate audited a different Group Report")
+    legal_report = coverage.get("legal_functional_groups_html", "")
+    legal_report_path = Path(legal_report).resolve() if legal_report else None
+    gate_legal_path = Path(gate.get("inputs", {}).get("groups_html", "")).resolve()
+    if not legal_report_path or gate_legal_path != legal_report_path:
+        raise ValueError("fresh VCS/URG gate legal-functional report does not match the audit evidence")
+    legal_groups = legal_report_path
+    if not legal_groups.is_file() or coverage.get("legal_functional_groups_html_sha256") != sha256_file(legal_groups):
+        raise ValueError("fresh VCS/URG legal-functional Group Report SHA does not match this audit input")
+    gate_raw_summary = gate.get("inputs", {}).get("raw_summary", "")
+    if Path(gate_raw_summary).resolve() != (ROOT / coverage.get("raw_summary", "")).resolve():
+        raise ValueError("fresh VCS/URG gate Raw summary does not match this audit evidence")
     return evidence
 
 
@@ -298,6 +314,8 @@ def location_for(row: dict[str, object]) -> str:
     if metric == "branch":
         value = str(row["bin"])
         return f"line:{value.split(':', 1)[0]}:decision:{value.split(':', 1)[1] if ':' in value else 'unknown'}"
+    if metric == "fsm":
+        return f"line:{str(row['bin']).rsplit(':', 1)[-1]}:fsm-transition"
     return f"line:{str(row['bin']).split(':', 1)[0]}"
 
 
@@ -310,7 +328,9 @@ def source_position(row: dict[str, object]) -> tuple[str, str]:
         match = re.match(r"(?:Port|Signal) Details:(.*?):([01]_to_[01])$", value)
         signal = match.group(1) if match else value
         return f"{source}:symbol {signal}", ""
-    line_number = int(str(row["bin"]).split(":", 1)[0])
+    bin_value = str(row["bin"])
+    line_number = int(bin_value.rsplit(":", 1)[-1] if metric == "fsm"
+                      else bin_value.split(":", 1)[0])
     try:
         source_line = (ROOT / source).read_text(encoding="utf-8", errors="replace").splitlines()[line_number - 1].strip()
     except (OSError, IndexError):
@@ -380,7 +400,7 @@ def main() -> int:
 
     sys.path.insert(0, str(ROOT / "tools" / "hw"))
     import thermo5_audit_reports as audit
-    from thermo5_coverage_denominator import inventory
+    from thermo5_coverage_denominator import inventory, fsm_gap_inventory
 
     evidence = json.loads(args.evidence.read_text(encoding="utf-8"))
     product_sha = evidence["code_coverage"]["gap_ledger"]["generated_source_sha"]
@@ -392,12 +412,14 @@ def main() -> int:
     metric_counts = Counter(row["metric"] for row in original_rows)
     raw_totals, raw_lines, raw_branches = inventory(args.raw_report)
     raw_conditions, raw_toggles, _, _ = audit.condition_rows(args.raw_report)
+    raw_fsm_gaps = fsm_gap_inventory(args.raw_report)
     expected_metric_counts = {
         "branch": sum(row["ownership"] == "PROJECT_RTL" for row in raw_branches),
         "cond": sum(row["status"] == "Not Covered" and row["ownership"] == "PROJECT_RTL"
                     for row in raw_conditions),
         "line": sum(row["missing"] for row in raw_lines if row["ownership"] == "PROJECT_RTL"),
         "toggle": 0,
+        "fsm": len(raw_fsm_gaps),
     }
     for row in raw_toggles:
         if row["ownership"] != "PROJECT_RTL":
@@ -407,11 +429,21 @@ def main() -> int:
         expected_metric_counts["toggle"] += bit_count * sum(
             row[name] == "No" for name in ("one_to_zero", "zero_to_one")
         )
-    if dict(metric_counts) != expected_metric_counts:
+    if not metric_counts_match(metric_counts, expected_metric_counts):
         raise ValueError(
             "ledger metric counts do not match the exact current Raw URG gaps: "
             f"ledger={dict(metric_counts)} Raw={expected_metric_counts}"
         )
+    expected_fsm_keys = Counter(
+        (row["instance"], f"{row['fsm']}:{row['metric']}:{row['bin']}:{row['line']}")
+        for row in raw_fsm_gaps
+    )
+    ledger_fsm_keys = Counter(
+        (row["instance"], row["bin"])
+        for row in original_rows if row["metric"] == "fsm"
+    )
+    if ledger_fsm_keys != expected_fsm_keys:
+        raise ValueError("FSM gap records do not exactly match current Raw URG state/transition bins")
     if {row["configuration"] for row in original_rows} != {"axil"}:
         raise ValueError("ledger is not the frozen AXI-Lite product hierarchy")
 
@@ -571,7 +603,7 @@ def main() -> int:
         tid = stable_id(*key, prefix="TXC-")
         for member in members:
             member["task_id"] = tid
-        priority = {"branch": "P0_BRANCH", "cond": "P0_CONDITION",
+        priority = {"branch": "P0_BRANCH", "cond": "P0_CONDITION", "fsm": "P0_FSM",
                     "line": "P1_LINE", "toggle": "P2_TOGGLE"}[key[1]]
         tasks.append({
             "task_id": tid,
@@ -709,6 +741,14 @@ def main() -> int:
         "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
         "source_ledger_metric_counts": dict(sorted(metric_counts.items())),
         "raw_dut_coverage": {metric: raw[metric_key[metric]] for metric in metric_key},
+        "raw_dut_fsm_gaps": {
+            "uncovered_state_transition_bins": len(raw_fsm_gaps),
+            "exact_bins": [
+                {"instance": row["instance"], "fsm": row["fsm"], "kind": row["metric"],
+                 "bin": row["bin"], "source_line": row["line"]}
+                for row in raw_fsm_gaps
+            ],
+        },
         "closure_status_counts": dict(sorted(status_counts.items())),
         "all_rows_have_allowed_status": all(row["closure_status"] in ALLOWED_STATUSES for row in classified),
         "approved_waivers": 0,
@@ -812,6 +852,12 @@ def main() -> int:
         entry = raw[metric_key[metric]]
         label = "condition" if metric == "cond" else metric
         lines.append(f"| {label} | {entry['covered']:,}/{entry['total']:,} ({entry['percent']:.4f}%) | {entry['missing']:,} | {task_metric_counts[metric]} |")
+    lines.append(
+        f"| FSM state/transition bins | {raw['fsm']['states']['covered']}/{raw['fsm']['states']['total']} states; "
+        f"{raw['fsm']['transitions']['covered']}/{raw['fsm']['transitions']['total']} transitions "
+        f"({len(raw_fsm_gaps)} exact uncovered transition bins) | {len(raw_fsm_gaps)} | "
+        f"{task_metric_counts['fsm']} |"
+    )
     lines += [
         "",
         f"The task CSV has {len(tasks):,} source/instance/location-rooted tasks. The compressed bin ledger preserves all {len(original_rows):,} source rows and includes expression-aware IDs, URG Condition text, instance, source file/location, product SHA, and status. Every row is OPEN at this audit stage.",

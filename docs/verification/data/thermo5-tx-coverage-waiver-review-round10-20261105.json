@@ -1,0 +1,307 @@
+{
+  "adjusted_analysis_only": {
+    "dut_assertions": {
+      "failures": 0,
+      "success": 13,
+      "uncovered": 2,
+      "without_attempts": 2
+    },
+    "exclusions_applied": {
+      "branch_bins": 14,
+      "condition_bins": 84,
+      "line_bins": 0,
+      "native_el_entries": 98,
+      "official_approval": false,
+      "toggle_bins": 0,
+      "urg_checksum_or_parse_warnings": 0
+    },
+    "fsm_states": {
+      "covered": 13,
+      "total": 13
+    },
+    "fsm_transitions": {
+      "covered": 15,
+      "percent": 68.1818,
+      "total": 22
+    },
+    "metrics": {
+      "branch": {
+        "covered": 503,
+        "metric": "branch",
+        "missing": 120,
+        "ownership": "PROJECT_RTL",
+        "percent": 80.7384,
+        "total": 623
+      },
+      "cond": {
+        "covered": 631,
+        "metric": "cond",
+        "missing": 134,
+        "ownership": "PROJECT_RTL",
+        "percent": 82.4837,
+        "total": 765
+      },
+      "line": {
+        "covered": 3317,
+        "metric": "line",
+        "missing": 479,
+        "ownership": "PROJECT_RTL",
+        "percent": 87.3815,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 82308,
+        "metric": "toggle",
+        "missing": 22172,
+        "ownership": "PROJECT_RTL",
+        "percent": 78.7787,
+        "total": 104480
+      }
+    },
+    "urg_total_score_percent": 79.42
+  },
+  "artifact_paths": {
+    "adjusted_inventory": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/adjusted_inventory",
+    "adjusted_report": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/adjusted_urg",
+    "analysis_only_el": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/provisional_candidates.el",
+    "candidate_mapping_csv": "docs/verification/data/thermo5-tx-waiver-review-round10-20261105.csv",
+    "line_scope_probe": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/line_scope_probe",
+    "raw_inventory": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/round10_product_raw_inventory",
+    "raw_report": "runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/round10_product_raw_with_exclusion_dump"
+  },
+  "branch": "codex/thermo5-final-integration",
+  "date": "2026-11-05",
+  "input_inventory": {
+    "categories": {
+      "round1_build_directed": 2,
+      "round1_dpd_matrix": 60,
+      "round1_focused_directed": 3,
+      "round1_long_stop": 1,
+      "round1_nonlinear_c3": 1,
+      "round1_randomized_control": 16,
+      "round2_system_random": 110
+    },
+    "design_vdb": "/home/ray/workspace/dsm_ip/runs/thermo5_open_closure_round2_20261105/system_random_full/build/simv.vdb",
+    "same_inputs_raw_adjusted": true,
+    "test_vdb_paths": 195,
+    "unique_test_vdb_paths": 195,
+    "urg_dashboard_test_records": 193
+  },
+  "limitations": [
+    "The merged Raw set consists of existing VDBs from multiple campaigns; this is not a fresh single-source full regression.",
+    "The URG dashboard reports 193 tests for 195 unique test-VDB paths supplied; reconcile this accounting before final signoff.",
+    "Analysis-only exclusions are not approved Waivers and do not change the official Waiver CSV or official coverage gate.",
+    "Real XPM/GT Wizard, FPGA timing/PPA and physical RF/QAM256 remain outside this run."
+  ],
+  "official_waiver_ledger": {
+    "active_exclusions": 0,
+    "approved": 0,
+    "csv_sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830",
+    "pending": 371,
+    "raw_gate": "RAW_100_OPEN",
+    "rows": 371
+  },
+  "product_configuration": {
+    "dpd": "DPD_MAX_TAPS=1 reset_image=Identity",
+    "dsm": "EF2 ORDER=2 STEP=5120 state_width=20",
+    "fifo": "Generic FIFO",
+    "interface": "AXI-Lite product",
+    "interpolator": "Centered-Cubic x2+x2"
+  },
+  "product_rtl_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+  "raw_project_rtl": {
+    "dut_assertions": {
+      "failures": 0,
+      "success": 13,
+      "uncovered": 2,
+      "without_attempts": 2
+    },
+    "fsm_states": {
+      "covered": 13,
+      "total": 13
+    },
+    "fsm_transitions": {
+      "covered": 15,
+      "percent": 68.1818,
+      "total": 22
+    },
+    "metrics": {
+      "branch": {
+        "covered": 503,
+        "metric": "branch",
+        "missing": 134,
+        "ownership": "PROJECT_RTL",
+        "percent": 78.9639,
+        "total": 637
+      },
+      "cond": {
+        "covered": 631,
+        "metric": "cond",
+        "missing": 218,
+        "ownership": "PROJECT_RTL",
+        "percent": 74.3227,
+        "total": 849
+      },
+      "line": {
+        "covered": 3317,
+        "metric": "line",
+        "missing": 479,
+        "ownership": "PROJECT_RTL",
+        "percent": 87.3815,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 82308,
+        "metric": "toggle",
+        "missing": 22172,
+        "ownership": "PROJECT_RTL",
+        "percent": 78.7787,
+        "total": 104480
+      }
+    },
+    "urg_total_score_percent": 77.76
+  },
+  "review_findings": {
+    "cdc_formal_parent_mapping_review": 3,
+    "ef2_branch_action": "KEEP_OPEN_URG_CHECKSUM_MISMATCH; URG emitted 24 UCAPI-EL-MCM warnings when candidate exclusions were tried",
+    "ef2_branch_candidates": 88,
+    "line_action": "KEEP_OPEN_URG_LINE_BLOCK_GRANULARITY; a line-only probe reduced Line denominator by 153 bins, so block scope does not equal one ledger row",
+    "line_candidates_with_exact_native_map": 37,
+    "native_urg_mapping_unresolved": 141,
+    "stale_formal_source_hash": 4
+  },
+  "run_id": "thermo5_tx_round10_coverage_waiver_review_20261105",
+  "schema_version": 1,
+  "sha256": {
+    "adjusted_command": "bf8b0f9c60b4cf9037114064648cce7269763d71169fb4d52434b7fa70050965",
+    "adjusted_dashboard": "c597d6f72b25593444535a09bd3e0e6d472f50fa8071a427c5de14b80682e9c6",
+    "adjusted_inventory_summary": "291fb36f331babfc706b79f7651a6e892e371781ba05bc20530596679afcc5ed",
+    "adjusted_urg_log": "6db3438b54dbb346242a90fcb47ba7e3ec21a6f84dea419d0abf40065fba7ba5",
+    "analysis_only_el": "7d326287793538749045fe8e5570802e57f50b644475e0d14dbcd43819873aa2",
+    "candidate_audit": "9716b1027b4b3851c7c88b7c7edfe53cef9cca4d24864323f700c18cc20906fe",
+    "candidate_mapping_csv": "b9558c3073a2a108dedabfe03c2f7eeca9775a4bc41614c7c762a791cd32090c",
+    "line_probe_dashboard": "0f7de64c83053c30ed3479f8478d6c36b9c9ab397554f25c068b3651d4351732",
+    "line_probe_el": "cf2070b20046264c27d08cf69bbf9209f4dce76dd1dbd04279149581f2c39cd6",
+    "raw_dashboard": "e4fd20f12a01d69b7b3c70e9504c645f48d1b75a3b1318a41a921034c1cfd9c6",
+    "raw_inventory_summary": "2bf0e652f0dccb83a86df880f71c09dd40cf77dade6ea7cd7fa1a49e21b84886",
+    "raw_urg_log": "55facbae60ab1e88ec6a82735814b106fdac22a1290aaa024d0f93bf4a02a648",
+    "raw_vdb_input_manifest": "680f53e1adb86e2e3dfe3f1ce68efd428ddfacc604333ee1ef5531a00d1c7e82"
+  },
+  "status": "ANALYSIS_COMPLETE_OFFICIAL_WAIVERS_PENDING",
+  "tools": {
+    "urg": "V-2023.12-SP1",
+    "vcs_simulation": "not rerun; existing VDBs reused"
+  },
+  "waiver_review": {
+    "actions": {
+      "KEEP_OPEN_CDC_FORMAL_MAPPING_REVIEW": 3,
+      "KEEP_OPEN_FORMAL_SOURCE_HASH_STALE": 4,
+      "KEEP_OPEN_NATIVE_URG_MAPPING_UNRESOLVED": 141,
+      "KEEP_OPEN_URG_CHECKSUM_MISMATCH": 88,
+      "KEEP_OPEN_URG_LINE_BLOCK_GRANULARITY": 37,
+      "RECOMMEND_PROVISIONAL_ADJUSTED": 98
+    },
+    "candidate_count": 371,
+    "formal_candidate_count": 10,
+    "formal_candidates": [
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+        "metric": "line",
+        "native_entry_match_count": "1",
+        "review_action": "KEEP_OPEN_URG_LINE_BLOCK_GRANULARITY",
+        "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "source_line": "142",
+        "waiver_id": "W-75530ed17d5b396a4e9b"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+        "metric": "branch",
+        "native_entry_match_count": "0",
+        "review_action": "KEEP_OPEN_NATIVE_URG_MAPPING_UNRESOLVED",
+        "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "source_line": "246",
+        "waiver_id": "W-9010fccd0889b46ea284"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+        "metric": "branch",
+        "native_entry_match_count": "1",
+        "review_action": "RECOMMEND_PROVISIONAL_ADJUSTED",
+        "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "source_line": "135",
+        "waiver_id": "W-d7cb262894a5aae016b6"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+        "metric": "branch",
+        "native_entry_match_count": "1",
+        "review_action": "KEEP_OPEN_FORMAL_SOURCE_HASH_STALE",
+        "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "source_line": "129",
+        "waiver_id": "W-fca77c64e5465f089f37"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+        "metric": "branch",
+        "native_entry_match_count": "1",
+        "review_action": "KEEP_OPEN_FORMAL_SOURCE_HASH_STALE",
+        "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "source_line": "217",
+        "waiver_id": "W-e8e68602c739b86a80b5"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+        "metric": "branch",
+        "native_entry_match_count": "1",
+        "review_action": "KEEP_OPEN_FORMAL_SOURCE_HASH_STALE",
+        "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "source_line": "223",
+        "waiver_id": "W-f83f4a14b37b232df778"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+        "metric": "branch",
+        "native_entry_match_count": "1",
+        "review_action": "KEEP_OPEN_FORMAL_SOURCE_HASH_STALE",
+        "source_file": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        "source_line": "229",
+        "waiver_id": "W-ccf37502b42fd61c4cd7"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "metric": "branch",
+        "native_entry_match_count": "1",
+        "review_action": "KEEP_OPEN_CDC_FORMAL_MAPPING_REVIEW",
+        "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        "source_line": "146",
+        "waiver_id": "W-32b5745433f0ff75d5c2"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "metric": "branch",
+        "native_entry_match_count": "0",
+        "review_action": "KEEP_OPEN_CDC_FORMAL_MAPPING_REVIEW",
+        "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        "source_line": "215",
+        "waiver_id": "W-a9fc97093bdddfb7f5aa"
+      },
+      {
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "metric": "branch",
+        "native_entry_match_count": "0",
+        "review_action": "KEEP_OPEN_CDC_FORMAL_MAPPING_REVIEW",
+        "source_file": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        "source_line": "141",
+        "waiver_id": "W-98a39b6429bbed7c29ad"
+      }
+    ],
+    "provisional_recommendation": {
+      "branch_config_unreachable": 13,
+      "branch_formal_unreachable": 1,
+      "condition": 84,
+      "total": 98
+    }
+  },
+  "working_git_head": "6bef1cbd66a55bbec5601a5d36fa4c86f85bfd26",
+  "working_tree_dirty": true
+}

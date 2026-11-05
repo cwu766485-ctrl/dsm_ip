@@ -1,0 +1,407 @@
+{
+  "assertions": {
+    "evidence": "runs/thermo5_final_integration_d2b5a12/coverage_full_product/assertion_split",
+    "expected_negative_only": {
+      "classification": "separate from legal regression",
+      "expected_rtl_failures": 3
+    },
+    "legal_only": {
+      "additional_uvm_without_attempts": 2,
+      "dut_failures": 0,
+      "dut_properties_with_success": 13,
+      "dut_unattempted": 2,
+      "unattempted_names": [
+        "q1_tail at centered interpolator stage 1",
+        "q1_tail at centered interpolator stage 2"
+      ]
+    }
+  },
+  "branch": "codex/thermo5-final-integration",
+  "checks": {
+    "py_compile_and_diff_check": {
+      "command": "python3.12 -m py_compile dv/uvm/refmodel/python/check_thermo5_monitor_trace.py dv/uvm/refmodel/python/dsm_refmodel/monitor_trace.py dv/uvm/refmodel/python/dsm_refmodel/thermo5.py dv/uvm/refmodel/python/tests/test_monitor_trace.py && git diff --check",
+      "status": "PASS"
+    },
+    "python_unit_tests": {
+      "command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
+      "failed": 0,
+      "log": "runs/thermo5_final_integration_d2b5a12/final_recheck/python_unittest.log",
+      "log_sha256": "3e8c515ec1c0906937c5865c7f1072f68012a967a64173e647f7351dfa68fd37",
+      "passed": 61,
+      "status": "PASS"
+    },
+    "stage_oracle_replay": {
+      "checker_source_sha": "7e1ab1930921be1b293d8c59323611ef0b3f9359",
+      "groups": {
+        "commit_boundary_stall": {
+          "cdc_words": 112,
+          "ef2_words": 112,
+          "files": 2,
+          "pa_words": 112,
+          "trace_set_sha256": "4ef9b3e36629ec3948ce2afe09cbb258039e3d9849b1f8e9d5ce27d74eec3927",
+          "underflows": 0
+        },
+        "dpd_matrix": {
+          "cdc_words": 3360,
+          "ef2_words": 3360,
+          "files": 60,
+          "pa_words": 3360,
+          "trace_set_sha256": "ab89b44442a515b25650ac1800a4e1c85aade1380060ec09e7bef8502946fb37",
+          "underflows": 0
+        },
+        "randomized_control": {
+          "cdc_words": 2688,
+          "ef2_words": 2688,
+          "files": 48,
+          "pa_words": 2688,
+          "trace_set_sha256": "b42c9cfa079c21d788dea723577002bdf233f3198e34ec860c4380fe437d3a37",
+          "underflows": 0
+        },
+        "reset_pending_commit": {
+          "cdc_words": 448,
+          "ef2_words": 448,
+          "files": 8,
+          "pa_words": 448,
+          "trace_set_sha256": "4e92e90c6128cf9aa16d649ad52a68de563aa1c318d2345ffeda3cdc11f4bf0a",
+          "underflows": 0
+        },
+        "system_random": {
+          "cdc_words": 6720,
+          "ef2_words": 6720,
+          "files": 110,
+          "pa_words": 6720,
+          "trace_set_sha256": "25ae753f2bd37d9ce445a7c8083415d9fcf9ef3280088dd1d43a549043178d30",
+          "underflows": 0
+        }
+      },
+      "product_config": {
+        "centered_cubic": true,
+        "dpd_max_taps": 1,
+        "dpd_reset": "identity",
+        "fifo": "generic",
+        "state_bits": 20,
+        "step": 5120,
+        "tidsm_order": 2
+      },
+      "result": "PASS",
+      "totals": {
+        "cdc_words": 13328,
+        "ef2_words": 13328,
+        "files": 228,
+        "pa_words": 13328,
+        "underflows": 0
+      }
+    },
+    "vcs_axil_product": {
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-axil-product-vcs-regression THERMO5_OUT=\"$PWD/runs/thermo5_final_integration_7e1ab19/axil_product\" THERMO5_VECTORS=\"$PWD/runs/uvm_thermo5_i2_d1/vectors\" THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "driver_log": "runs/thermo5_final_integration_7e1ab19/axil_product/driver.log",
+      "driver_log_sha256": "fc2a8ada7db8c23e256ecf0a2403532add15fd92ac3b3bf67c84336a215cf021",
+      "exit_code": 0,
+      "logs": [
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/axil_illegal_frame_seed420102.log",
+          "sha256": "7053bc0e8fafc6add1a5d201a4a38660c963baf4b7aa0a5826a39e0a7abc3f6f"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/axil_mailbox_fault_seed420103.log",
+          "sha256": "9c9d883274663648c269402e6f60e832e31ab382f18d76b6b0e0e11be868e97c"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/compile.log",
+          "sha256": "f76ec4a9439b790c9e565f012cac2163bf9200baeddb05af099943aaae211101"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/driver.log",
+          "sha256": "fc2a8ada7db8c23e256ecf0a2403532add15fd92ac3b3bf67c84336a215cf021"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/parameter_guard/compile.log",
+          "sha256": "6b23caba6574535e9d210e8ce2eccd61c105941bbec72c02990c4b50c4f4da75"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/parameter_guard/run.log",
+          "sha256": "ac5c5c88ce803b5d84845cb8875de7aac66529e357145a3054f5f87d53975fe6"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/product_coverage_merge.log",
+          "sha256": "250cd47059c3434c5fbe19da113f9fb28f4131969b1f53f6357aa85fe4d40359"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/thermo5_sku_axil_boundary_phase_test_seed420107.log",
+          "sha256": "2d056dc6e098fad2cdb4608b3c2586ce17ba7afe6025ee2e2aebe3fe1d6582e6"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/thermo5_sku_axil_coeff_transport_test_seed420104.log",
+          "sha256": "b30805cafb3beeec890080b48068a7e43a56fda0b54041a679145f6911568049"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/thermo5_sku_axil_config_test_seed420101.log",
+          "sha256": "5d7da9c64ec48b7a172d26c814bbb949294a2ab9f7822f29c7465827f23e1870"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/thermo5_sku_axil_graceful_stop_test_seed420108.log",
+          "sha256": "919a36fd07f6dd108fb61a51ccd169fdd2fc93c962a3ffe0c35d444bc3626def"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/thermo5_sku_axil_nonlinear_dpd_test_seed420105.log",
+          "sha256": "d903afb01708622b7dc234cba5b52acde7582393b40ea40345d0c790cf9fa80c"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/axil_product/thermo5_sku_axil_register_access_test_seed420100.log",
+          "sha256": "9b619accb69e997341fdf18fd449862be20d051b249205155a618ecbf7eee849"
+        }
+      ],
+      "product_urg_merge_marker": {
+        "driver_log": "runs/thermo5_final_integration_7e1ab19/axil_product/driver.log",
+        "status": "PASS",
+        "text": "THERMO5_AXIL_PRODUCT_COVERAGE_MERGE_PASS"
+      },
+      "status": "PASS",
+      "tool": "VCS/URG V-2023.12-SP1"
+    },
+    "vcs_core": {
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=\"$PWD/runs/thermo5_final_integration_7e1ab19/core\" THERMO5_VECTORS=\"$PWD/runs/uvm_thermo5_i2_d1/vectors\" THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120",
+      "exit_code": 0,
+      "logs": [
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/compile.log",
+          "sha256": "089f6203c85164746b1ecf9d913d2fecceb68508885505ddecb4b01b94fa83d4"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/illegal_frame_seed4.log",
+          "sha256": "4eea0a755b356b6c90eb80c9300dfec0936a24ed3c0a6990f1dbd8c06d54e985"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/thermo5_sku_bittrue_test_seed1.log",
+          "sha256": "33cf947f722b5704856462ece1a1f25b493f21411c70f7629c4bc22e236b0f09"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/thermo5_sku_bubble_backpressure_test_seed2.log",
+          "sha256": "50e860a32a3e5ac4e35d4f0a6bcf66119ade3cfa632b5fb378c543420d093d96"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/thermo5_sku_fifo_boundary_test_seed2.log",
+          "sha256": "13adb5dbe2df0706ea4e016da81c1918154922c91b6896467630767c69c3fbf8"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/thermo5_sku_fifo_empty_test_seed5.log",
+          "sha256": "c41ce2d7a4727a3402b0ba234394dd3ae087a7ad2610987813d12c5dd6b4aefe"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/thermo5_sku_reset_sweep_test_seed6.log",
+          "sha256": "61c6091d76c6bd3d1d3629d3ec306ced509ad66d29f0afb5338f781c9410dbf3"
+        },
+        {
+          "path": "runs/thermo5_final_integration_7e1ab19/core/thermo5_sku_reset_test_seed3.log",
+          "sha256": "3b27904b8bc8e14e64931919f52d514e9b0e7a24c93a0e3e17da33731adc38f2"
+        }
+      ],
+      "status": "PASS",
+      "tool": "VCS V-2023.12-SP1"
+    }
+  },
+  "dut_code_coverage": {
+    "active_exclusions": 0,
+    "adjusted_equals_raw": true,
+    "adjusted_inventory": "runs/thermo5_final_integration_d2b5a12/coverage_full_product/adjusted_inventory",
+    "approved_waivers": 0,
+    "fsm_states": {
+      "covered": 13,
+      "total": 13
+    },
+    "fsm_transitions": {
+      "covered": 18,
+      "total": 22
+    },
+    "functional_coverage": {
+      "audit_command": "python3.12 tools/hw/thermo5_tx_functional_bin_detail.py --raw-report runs/thermo5_final_integration_d2b5a12/coverage_full_product/raw_urg --negative-audit runs/thermo5_final_integration_d2b5a12/coverage_full_product/assertion_split/negative_functional_bin_audit.csv --out runs/thermo5_final_integration_d2b5a12/final_recheck/functional_bin_detail.csv --product-source-sha d2b5a1217707514d6d48047ff66f25f7c651000a",
+      "csv": "runs/thermo5_final_integration_d2b5a12/final_recheck/functional_bin_detail.csv",
+      "csv_sha256": "6c228c6c619387a30a64b81cfeab7ebaf235aeeaa20267af92aa37364face410",
+      "distinct_legal_bins": 206,
+      "groups_complete": 13,
+      "illegal_test_only_rows": 4,
+      "legal_product_expanded_hits": 412,
+      "legal_product_expanded_rows": 412,
+      "log": "runs/thermo5_final_integration_d2b5a12/final_recheck/functional_bin_detail.log",
+      "log_sha256": "7a24ca89fea0cc84e4378d22423b13710cd5dbda7436a1b1ec98112e53939f84",
+      "note": "An older saved functional_detail.log in the coverage directory was generated against an earlier URG snapshot and reported stale misses; this fresh parse against current Raw URG passed.",
+      "source_sha": "d2b5a1217707514d6d48047ff66f25f7c651000a",
+      "status": "PASS",
+      "total_rows": 440,
+      "urg_model_excluded_rows": 24,
+      "urg_scoreable_hits": 416,
+      "urg_scoreable_rows": 416
+    },
+    "functional_unique_legal_bins": {
+      "covered": 206,
+      "groups_100_percent": 13,
+      "total": 206
+    },
+    "pending_waiver_candidates": 371,
+    "provenance": "Retained mixed-provenance VDB set; 238 test VDBs plus one design VDB. Current implementation changes no RTL or UVM SystemVerilog.",
+    "raw": {
+      "branch": {
+        "covered": 524,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "cond": {
+        "covered": 657,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "line": {
+        "covered": 3338,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 91112,
+        "percent": 87.2052,
+        "total": 104480
+      }
+    },
+    "raw_100_gate": "RAW_100_OPEN",
+    "raw_inventory": "runs/thermo5_final_integration_d2b5a12/coverage_full_product/raw_inventory",
+    "source_sha": "d2b5a1217707514d6d48047ff66f25f7c651000a",
+    "vdb_inventory": {
+      "design_vdb_count": 1,
+      "expected_negative_test_vdbs": 2,
+      "positive_legal_test_vdbs": 236,
+      "provenance": "mixed retained evidence; not a fresh same-source corpus",
+      "test_vdb_count": 238
+    }
+  },
+  "evidence_roots": [
+    "runs/thermo5_final_integration_7e1ab19/",
+    "runs/thermo5_final_integration_d2b5a12/final_recheck/",
+    "runs/thermo5_final_integration_d2b5a12/coverage_full_product/"
+  ],
+  "evidence_source_revisions": {
+    "fresh_vcs_core_and_axil": "7e1ab1930921be1b293d8c59323611ef0b3f9359",
+    "retained_campaign_traces_raw_urg_formal_and_mutation": "d2b5a1217707514d6d48047ff66f25f7c651000a",
+    "staged_python_replay_and_functional_bin_reparse": "7e1ab1930921be1b293d8c59323611ef0b3f9359"
+  },
+  "formal": {
+    "approved_waivers": 0,
+    "focused_exact_condition_proofs": "PASS within documented scope; raw bins retained pending waiver review",
+    "full_chain_dpd_identity": "OPEN_INCONCLUSIVE",
+    "new_formal_run_this_round": "NOT_RUN (no RTL/SV changes)",
+    "outstanding_counter_guards": "INCONCLUSIVE"
+  },
+  "hardware_signoff": {
+    "gt_wizard": "NOT_RUN",
+    "physical_rf_qam256": "NOT_RUN",
+    "top_level_cdc_rdc": "NOT_RUN",
+    "vivado_timing_ppa": "NOT_RUN",
+    "xpm": "NOT_RUN"
+  },
+  "implementation_changes": [
+    "dv/uvm/refmodel/python/check_thermo5_monitor_trace.py",
+    "dv/uvm/refmodel/python/dsm_refmodel/monitor_trace.py",
+    "dv/uvm/refmodel/python/dsm_refmodel/thermo5.py",
+    "dv/uvm/refmodel/python/tests/test_monitor_trace.py",
+    "dv/uvm/sim/README.md"
+  ],
+  "implementation_sha": "7e1ab1930921be1b293d8c59323611ef0b3f9359",
+  "integrated_parent_sha": "d2b5a1217707514d6d48047ff66f25f7c651000a",
+  "mutation": {
+    "mutations": [
+      {
+        "case": "late_gain",
+        "expected_checker_seen": true,
+        "first_failure": "UVM_FATAL dv/uvm/env/thermo5/thermo5_pa_scoreboard.svh(67) @ 363474: uvm_test_top.env.scoreboard [BITTRUE] epoch=0 word=14 plane=0 got=599ff8d388b9d9a0 expected=91b8cbbdf819d9a0",
+        "status": "DETECTED"
+      },
+      {
+        "case": "plane_swap",
+        "expected_checker_seen": true,
+        "first_failure": "UVM_FATAL dv/uvm/env/thermo5/thermo5_pa_scoreboard.svh(67) @ 249174: uvm_test_top.env.scoreboard [BITTRUE] epoch=0 word=0 plane=0 got=3377367f476f44c4 expected=b3bb39bf8b9f88c8",
+        "status": "DETECTED"
+      }
+    ],
+    "source_sha": "d2b5a1217707514d6d48047ff66f25f7c651000a",
+    "status": "PASS"
+  },
+  "product_configuration": {
+    "axil": true,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "pa_planes": 4,
+    "pa_width_bits": 64,
+    "state_bits": 20,
+    "step": 5120,
+    "tidsm_order": 2
+  },
+  "report_date": "2026-11-04",
+  "schema_version": 1,
+  "scope": "Thermo5 TX only; no RX, AI-DPD, or Vivado implementation",
+  "source_tree_hashes": {
+    "rtl_and_uvm_systemverilog": {
+      "file_count": 120,
+      "sha256": "ba5137afba6402657d27ed8131a39785c0de4fb84c32ef6bc0b57542f0564f22"
+    }
+  },
+  "system_scenarios": {
+    "known_gap": "Long-frame graceful STOP combined with PA stall deadlocks in the existing testbench; combined system-cross matrix is incomplete.",
+    "scenario_matrix_status": "PARTIAL",
+    "separate_trace_campaigns": {
+      "commit_boundary_stall": {
+        "cdc_words": 112,
+        "ef2_words": 112,
+        "files": 2,
+        "pa_words": 112,
+        "trace_set_sha256": "4ef9b3e36629ec3948ce2afe09cbb258039e3d9849b1f8e9d5ce27d74eec3927",
+        "underflows": 0
+      },
+      "dpd_matrix": {
+        "cdc_words": 3360,
+        "ef2_words": 3360,
+        "files": 60,
+        "pa_words": 3360,
+        "trace_set_sha256": "ab89b44442a515b25650ac1800a4e1c85aade1380060ec09e7bef8502946fb37",
+        "underflows": 0
+      },
+      "randomized_control": {
+        "cdc_words": 2688,
+        "ef2_words": 2688,
+        "files": 48,
+        "pa_words": 2688,
+        "trace_set_sha256": "b42c9cfa079c21d788dea723577002bdf233f3198e34ec860c4380fe437d3a37",
+        "underflows": 0
+      },
+      "reset_pending_commit": {
+        "cdc_words": 448,
+        "ef2_words": 448,
+        "files": 8,
+        "pa_words": 448,
+        "trace_set_sha256": "4e92e90c6128cf9aa16d649ad52a68de563aa1c318d2345ffeda3cdc11f4bf0a",
+        "underflows": 0
+      },
+      "system_random": {
+        "cdc_words": 6720,
+        "ef2_words": 6720,
+        "files": 110,
+        "pa_words": 6720,
+        "trace_set_sha256": "25ae753f2bd37d9ce445a7c8083415d9fcf9ef3280088dd1d43a549043178d30",
+        "underflows": 0
+      }
+    },
+    "system_random": {
+      "cases": 110,
+      "long_stream_seeds": 10,
+      "packet_seeds": 100,
+      "profile_counts": {
+        "ef2_saturation": 27,
+        "extreme": 28,
+        "random": 28,
+        "range_stress": 27
+      },
+      "runtime_dpd": "Identity reset image",
+      "source_sha": "d2b5a1217707514d6d48047ff66f25f7c651000a",
+      "status": "PASS"
+    }
+  }
+}

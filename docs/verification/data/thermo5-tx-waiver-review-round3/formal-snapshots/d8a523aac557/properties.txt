@@ -1,0 +1,52 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 6
+     - # proven       : 6
+
+   > Vacuity
+     - # found        : 2
+     - # non_vacuous  : 2
+
+   > Cover
+     - # found        : 9
+     - # covered      : 5
+     - # uncoverable  : 4
+
+   > Constraint
+     - # found        : 2
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 6
+     [   0] proven                                  -  thermo5_frame_tail_harness.a_append_no_input_tail
+     [   1] proven                   (non_vacuous)  -  thermo5_frame_tail_harness.a_append_tail_clears
+     [   2] proven                                  -  thermo5_frame_tail_harness.a_append_tail_consistent
+     [   3] proven                                  -  thermo5_frame_tail_harness.a_plain_tail_disabled
+     [   4] proven                                  -  thermo5_frame_tail_harness.a_plain_tail_fire_disabled
+     [   5] proven                                  -  thermo5_frame_tail_harness.a_plain_tail_pending_never_set
+
+   > Cover
+     # Cover: 9
+     [   7] covered     (depth=1)                   -  thermo5_frame_tail_harness.c_append_frame_end
+     [   8] covered     (depth=2)                   -  thermo5_frame_tail_harness.c_append_single_pop_push
+     [   9] uncoverable                             -  thermo5_frame_tail_harness.c_append_tail_head_drop_unreachable
+     [  10] covered     (depth=3)                   -  thermo5_frame_tail_harness.c_append_tail_transfer
+     [  11] uncoverable                             -  thermo5_frame_tail_harness.c_plain_append_tail_arm_unreachable
+     [  12] covered     (depth=1)                   -  thermo5_frame_tail_harness.c_plain_frame_end
+     [  13] covered     (depth=2)                   -  thermo5_frame_tail_harness.c_plain_single_pop_push
+     [  14] uncoverable                             -  thermo5_frame_tail_harness.c_plain_tail_fire_unreachable
+     [  15] uncoverable                             -  thermo5_frame_tail_harness.c_plain_tail_unreachable
+
+   > Constraint
+     # Constraint: 2
+     [   6] constrained              (non_vacuous)  -  thermo5_frame_tail_harness.asm_source_stable
+     [  16] constrained                             -  constant_16 - rst_n==1
+
+
+

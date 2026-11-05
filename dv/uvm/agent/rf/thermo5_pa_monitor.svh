@@ -7,6 +7,8 @@ class thermo5_pa_monitor extends uvm_component;
   int stall_cycles = 0;
   int output_gap_cycles = 0;
   int accepted_words = 0;
+  int unsigned reset_epoch;
+  bit reset_active;
   bit output_started = 0;
   thermo5_sku_config cfg;
   function new(string name, uvm_component parent);
@@ -23,6 +25,7 @@ class thermo5_pa_monitor extends uvm_component;
     forever begin
       @(posedge vif.core_clk);
       if (vif.core_rst_n) begin
+        reset_active=0;
         if ((vif.pa_valid == 4'h0) && output_started && accepted_words < cfg.core_words) begin
           output_gap_cycles++;
         end
@@ -44,10 +47,14 @@ class thermo5_pa_monitor extends uvm_component;
           accepted_words++;
           output_started=1;
           tr=thermo5_pa_word::type_id::create("tr");
+          tr.epoch=reset_epoch;
+          tr.word_index=accepted_words-1;
           for (int p=0;p<4;p++) tr.plane[p]=vif.pa_data[p];
           ap.write(tr);
         end
       end else begin
+        if (!reset_active) reset_epoch++;
+        reset_active=1;
         stalled=0;
         output_gap_cycles=0;
         accepted_words=0;

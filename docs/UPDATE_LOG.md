@@ -1,3 +1,496 @@
+# 2026-11-05 17:30 SGT - Refresh TX Raw coverage and audit waiver candidates
+
+- Re-ran URG on the current retained product inventory (195 unique test-VDB
+  paths plus one design VDB; dashboard reports 193 test records). Raw project
+  RTL coverage is Line 3317/3796 (87.38%), Condition 631/849 (74.32%), Branch
+  503/637 (78.96%), Toggle 82308/104480 (78.78%), FSM states 13/13 and
+  transitions 15/22 (68.18%); DUT assertions are 13 successes, 2 uncovered,
+  2 without attempts and zero failures.
+- Audited all 371 waiver rows against current Raw bins and native URG entries.
+  Generated a non-approved Adjusted report from the same VDB input set with
+  84 exact Condition and 14 exact Branch exclusions; Adjusted is Condition
+  631/765 (82.48%), Branch 503/623 (80.74%), with Line/Toggle/FSM/Assertions
+  unchanged. URG dashboard score is 77.76% Raw / 79.42% Adjusted.
+- The official waiver ledger remains unchanged: 371 PENDING, zero approved,
+  zero official active exclusions; gate remains `RAW_100_OPEN`. Kept 88 EF2
+  Branch candidates OPEN after URG checksum warnings, 37 Line candidates OPEN
+  after a 37-directive probe reduced the denominator by 153, 141 candidates
+  OPEN due no unique native mapping, 4 stale Formal candidates OPEN and 3 CDC
+  Formal candidates OPEN pending parent mapping review. These are not counted
+  in the Adjusted report.
+- Added `docs/verification/thermo5-tx-coverage-waiver-review-round10-20261105.md`,
+  its JSON evidence and the row-by-row CSV review ledger. Updated the execution
+  frontier. Product RTL and frozen algorithm were not changed; RX and AI-DPD
+  were not touched.
+- Checks: Raw and Adjusted URG V-2023.12-SP1 completed with exit 0. Final
+  Adjusted URG log has no `UCAPI-EL-MCM`/Warning entries. The isolated Line
+  scope probe completed with exit 0 and no warnings. VCS simulations were not
+  rerun; existing VDBs were reused. The 195-input/193-URG-test accounting
+  difference and mixed-campaign provenance remain open.
+- Run evidence and hashes are recorded in
+  `docs/verification/data/thermo5-tx-coverage-waiver-review-round10-20261105.json`;
+  VDBs and URG reports remain in ignored `runs/thermo5_tx_closure_current/`.
+
+# 2026-11-05 16:30 SGT - Isolate outstanding underflow Formal goal
+
+- Re-ran the product-bound underflow guard as a single fully qualified Formal property. VC Formal returned `INCONCLUSIVE(depth=56)` after 304 seconds; the targeted Cover was not requested and no reachability conclusion was made. The guard remains OPEN. The full combined counter harness remains `INCONCLUSIVE` with both target Covers unresolved.
+- Reconciled the two available full-product Raw snapshots in the Round 2 report: the accepted integrated report baseline is 524/637 Branch, 657/849 Condition, 3338/3796 Line, 91112/104480 Toggle; a distinct retained Round 9 mixed-provenance VDB package reports 525/637, 658/849, 3351/3796, 84340/104480. Neither is silently merged into the new scenario VDBs.
+- Evidence and hashes are recorded in `docs/verification/data/thermo5-tx-open-closure-round2-20261105.json`. No RTL or algorithm changes.
+
+# 2026-11-05 16:18 SGT - Close named TX scenario crosses and refresh Formal root cause
+
+- Added three event-sampled system cross covergroups for source-gap/PA-stall/FIFO-full, RUN/prefill/source-gap, and STOP/TLAST/Drain. VCS/URG system-random campaign passed 110/110 and reported each exact new cross as 1 expected, 0 uncovered, 1 covered. Combined with Round 1 exact DPD/gain/profile, COMMIT/boundary/stall, Reset/pending-COMMIT, and STATUS/COMMIT/STOP bins, all seven named scenario families are closed for the exercised matrix; this is not every Cartesian combination.
+- Live independent Python EF2 checking passed 178 legal UVM cases with zero lane mismatches; expected-negative EF2 mutation was detected. Python tests passed 62/62.
+- Fresh legal Centered-Cubic frame-marker Formal proved both `q1_tail` assertion antecedents unreachable for both product interpolation stages, with non-vacuous legal-context proofs and positive legal frame/tail witnesses. No URG Exclusion or Waiver was approved; simulation assertion attempts remain absent.
+- Re-ran product-bound outstanding-counter Formal. Runner returned INCONCLUSIVE: assertions and two target guard Covers did not resolve at depths 34-50, though source/core/output activity and arbitrary source-bubble Covers were witnessed. Counter guard bins remain OPEN. Full-chain DPD Identity proof also remains INCONCLUSIVE/OPEN.
+- Canonical full-product Raw/Adjusted inventory was not merged with these scenario VDBs. Coverage remains Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91112/104480; 371 waiver candidates pending, zero approved, zero active exclusions; `RAW_100_OPEN`.
+- Real XPM, GT Wizard, Vivado PPA/timing, and physical RF/QAM256 checks remain NOT_RUN. Product RTL, frozen algorithm, RX and AI-DPD were unchanged.
+- Evidence: `docs/verification/thermo5-tx-open-closure-round2-20261105.md` and `docs/verification/data/thermo5-tx-open-closure-round2-20261105.json`; run details under ignored `runs/thermo5_open_closure_round2_20261105/`, `runs/thermo5_q1_tail_formal_20261105/`, and `runs/thermo5_axil_outstanding_round2_20261105/`.
+
+# 2026-11-05 15:42 SGT - Close live EF2 checks and refresh TX scenarios
+
+- Added independent Python-generated EF2 lane sidecars to the UVM Unified
+  Scoreboard. Online comparison passed across 110 system-random packets, 60
+  DPD/gain/profile cases and 8 COMMIT-boundary cases; a mutated expected EF2
+  lane was detected by the checker in a separate expected-negative run.
+- Updated COMMIT runners to generate the EF2 sidecars their online checker
+  requires. Repaired the long STOP test to send one 64-beat packet and apply
+  PA partial-ready stall only after accepted TLAST while Drain remains active.
+- VCS system-random campaign passed 110/110 with URG merge PASS; DPD matrix
+  closed 60/60 exact cross bins; randomized control passed 8 Reset and 8
+  COMMIT cases with exact URG crosses 4/4, 2/2 and STATUS/COMMIT/STOP 1/1.
+  Long STOP passed 64 source beats and drained 112 PA words; independent Python
+  trace replay matched CDC, EF2 and PA 112/112 with no underflow.
+- Python tests passed 62/62. No product RTL, frozen algorithm, RX or AI-DPD was
+  changed. Canonical Raw/Adjusted coverage was not refreshed because this
+  round's VDBs were not merged with the full canonical inventory; it remains
+  Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91112/104480.
+  Waivers remain 371 pending / 0 approved; `RAW_100_OPEN` remains active.
+- P2 is still partial: source-gap/PA-stall/FIFO-full and RUN/prefill/source-gap
+  are trace-observed but not exact URG cross bins; STOP/TLAST/Drain has directed
+  checking but no dedicated three-way URG bin. P3 remains open: two DUT
+  `q1_tail` assertions have no attempts, DPD Identity and outstanding-counter
+  Formal remain inconclusive, and vendor/physical RFSoC validation is not run.
+- Evidence: `docs/verification/thermo5-tx-open-closure-round1-20261105.md` and
+  `docs/verification/data/thermo5-tx-open-closure-round1-20261105.json`. Raw
+  logs, traces, VDBs and URG reports are SHA-indexed under ignored
+  `runs/thermo5_open_closure_round1_20261105/`.
+
+# 2026-11-05 00:06 SGT - Integrate staged TX Oracle and refresh final status
+
+- Added an independent trace-stage Oracle for source-to-CDC samples and
+  reconstructed Centered-Cubic/DPD data at the EF2 input, retaining the
+  independent four-plane PA model. Added corruption checks for CDC and EF2
+  stages; no RTL or product algorithm changed.
+- At implementation SHA `7e1ab1930921be1b293d8c59323611ef0b3f9359`,
+  Python reference tests passed 61/61 and 228 retained traces passed stage
+  replay: 13,328 CDC, 13,328 EF2, and 13,328 PA words; zero unexpected
+  underflows. Fresh Generic-FIFO core and AXI-Lite product VCS regressions
+  passed under VCS V-2023.12-SP1.
+- Refreshed current integration report, evidence JSON, execution frontier, and
+  pointer from the older Linux-system signoff. The local integration branch
+  is not pushed or merged to `thermo5`.
+- Current coverage remains Raw=Adjusted: Branch 524/637, Condition 657/849,
+  Line 3338/3796, Toggle 91112/104480; 371 waiver candidates remain pending,
+  zero approved. P1 online EF2 checking, complete system crosses, outstanding
+  Formal, and legal assertion attempts remain open. Real XPM, GT Wizard,
+  Vivado timing/PPA and physical RF/QAM256 signoff remain not run.
+- Checks: Python suite 61/61 PASS; stage trace replay 228/228 PASS;
+  `py_compile` and `git diff --check` PASS; Generic-FIFO VCS regression PASS;
+  AXI-Lite product VCS regression and URG merge marker PASS. Reparsed current
+  Raw URG Functional Coverage detail: 412/412 legal rows PASS across 206
+  distinct bins; 4 illegal-test-only and 24 URG-excluded rows remain separately
+  classified. An older detail log was stale relative to the current URG and is
+  superseded by the fresh parse.
+- Evidence: `docs/verification/thermo5-tx-final-integration-20261104.md` and
+  adjacent `data/thermo5-tx-final-integration-20261104.json`; full logs remain
+  under ignored `runs/thermo5_final_integration_7e1ab19/` and trace replay
+  evidence under ignored `runs/thermo5_final_integration_d2b5a12/final_recheck/`.
+
+## 2026-11-04 11:20 SGT - Clean Thermo5 generated simulation databases
+
+- Ran `make -C dv/uvm/sim clean` after preserving the Round 9 coverage reports,
+  gate result, logs, vectors and manifests. The target removed 1,856 generated
+  `.vdb` directories across the repository, including all 18 VDBs shown in the
+  cleanup request, plus simulator/Formal scratch directories and waveforms.
+- Verified zero `.vdb` directories remain and confirmed the Round 9 gate JSON
+  and reset-sweep log remain available. VDB hashes and inventory remain in the
+  manifests; regenerate the VDBs before running URG again.
+- Checks: `make -C dv/uvm/sim clean` exit 0; requested VDB absence check PASS;
+  retained signoff artifacts check PASS. No tracked RTL changed.
+
+## 2026-11-04 10:45 SGT - Thermo5 TX Round 9 current-source Linux signoff refresh
+
+- Recompiled the frozen TX product profile with VCS V-2023.12-SP1 and reran the
+  targeted AXI-Lite reset sweep from the current verification worktree. Four
+  partial-DSP-frame resets and five CDC residual resets passed full four-plane
+  bit-true replay; underflow, predictor mismatch and UVM warning/error/fatal
+  counts were zero. The product RTL remained at SHA
+  `1236d49c72360aa62e316aea147528d93a1b3705`.
+- Rebound all 371 waiver candidates to the Round 9 Raw gap ledger, product
+  compile manifest, VDB/report manifest and current Formal review. The
+  fail-closed audit passed: 361 configuration and 10 Formal candidates remain
+  PENDING; zero approved/rejected, zero active URG exclusions. Re-ran Raw and
+  Adjusted URG from the same one design VDB plus 248 ordered test VDBs and
+  reran the coverage gate. Raw equals Adjusted and the gate correctly reports
+  `RAW_100_OPEN`.
+- Current code coverage: Branch 525/637, Condition 658/849, Line 3351/3796,
+  Toggle 84340/104480; FSM states 13/13 and transitions 22/22. Legal
+  applicable Functional Coverage is 392/392 across 12 groups. The exact Raw
+  ledger contains 20,888 OPEN records in 456 groups; no hit, waiver, or
+  exclusion was fabricated.
+- Legal-only Assertions: 13 success, zero failures, two uncovered and two
+  without attempts (`q1_tail` on each interpolator stage). Two expected-negative
+  assertion failures are retained only in the union inventory and are not
+  mixed into legal assertion failures.
+- Checks: exact product VCS compile PASS; product AXI-Lite config test PASS;
+  reset sweep PASS; Generic-core seven-case targeted regression PASS (retained
+  evidence); hardware utilities 43/43 PASS; Python integer reference 59/59
+  PASS; waiver candidate audit/pipeline PASS; same-list Raw/Adjusted URG PASS;
+  fail-closed gate PASS with `RAW_100_OPEN`. Formal counter guards and full-chain
+  DPD Identity remain INCONCLUSIVE.
+- Added the Round 9 machine-readable signoff index and human-readable report;
+  updated the long-lived signoff, execution frontier and tracked waiver CSV.
+  Exact paths and SHA-256 hashes are in
+  `docs/verification/data/thermo5-tx-linux-signoff-round9-20261104.json`.
+- Remaining Linux OPEN: 20,888 code records, two counter guard branches, two
+  legal `q1_tail` no-attempt assertions, full-chain DPD Identity Formal, and
+  source-gap/underflow contract. Real XPM, GT Wizard, FPGA PPA/routed timing
+  and physical RF/QAM256 remain outside Linux signoff.
+
+## 2026-11-04 06:22 SGT - Add Thermo5 TX passive observers and event bus
+
+- Based on PR #38 head `184c68b6d704998f5126a75a8f86d7577bb69a1a`, added CDC,
+  DSP-boundary, and EF2-input passive monitors plus a typed analysis-port
+  event bus for accepted AXIS, AXI-Lite, PA, and internal observations. Routed
+  the stream to event-kind Functional Coverage and JSONL Trace; internal DUT
+  values remain diagnostic and are not used as oracle expected values.
+- Added source/PA/AXI-Lite epoch metadata, exposed CDC and EF2 input payloads to
+  the verification interface, and connected Control Agent into the Virtual
+  Sequencer. Broadened the Make test-marker check to accept test-specific
+  `THERMO5_*_PASS` markers.
+- VCS V-2023.12-SP1 product configuration compile and AXI-Lite random packet
+  seed 491802 passed: source/CDC/EF2/PA events 32/56/56/56, 10 event kinds
+  sampled, UVM errors/fatals 0, predictor mismatches 0. Python JSONL Oracle
+  replay passed 56/56 words with zero underflow; Python tests passed 60/60.
+- The non-AXI bit-true full-stream test also passed at seed 491803 with UVM
+  errors/fatals 0 and 56/56 PA words checked against the static bit-true
+  scoreboard.
+- No product RTL or algorithm changed. This is not final system signoff:
+  dynamic expected-queue checking, stage-level independent comparisons,
+  complete system-random cross coverage, merged Raw/Adjusted URG, Formal and
+  Mutation closure remain open. Logs and Trace are ignored under `runs/`; the
+  committed evidence manifest records their hashes.
+- Report: `docs/verification/thermo5-tx-observation-bus-round1-20261104.md`.
+
+## 2026-11-03 - Formal disposition of Generic-FIFO core_data_empty Condition
+
+- Added a source-bound Formal harness for Raw Condition `TXB-3b8b5df27b5b204fbb04` / Raw record `43024ee4b07d2164b0a2` at `dsm_axis14_to_core8_cdc.sv:113`. With Generic FIFO, `rd_valid` is exactly the inverse of `rd_empty`; the condition tuple `0/1/1/1/1` is unreachable.
+- VC Formal V-2023.12-SP2 on clean code SHA `dffcd94f95ed6dd455dd892b49391e102594cb4b` passed 3/3 assertions (2 non-vacuous) and 3/4 Covers; the exact target Cover is uncoverable. Zero selected setup violations and zero black boxes.
+- Raw/Adjusted URG was not rerun. The Raw bin remains unhit and retained; no waiver was approved and no `.el` exclusion was generated. The `RAW_100_OPEN` baseline is unchanged.
+- Added the formal report/evidence and scoped runner job; updated the active frontier, signoff and Formal README. `py_compile`, JSON validation and `git diff --check` pass.
+- Evidence: `docs/verification/thermo5-tx-cdc-data-empty-formal-20261103.md` and adjacent JSON.
+
+## 2026-11-03 20:27 SGT - Extend outstanding-counter capacity Formal investigation
+
+- Added a legal AXIS source-valid input with arbitrary source bubbles and the
+  required hold-VALID-until-handshake assumption. PA stalls remain arbitrary;
+  no maximum source-gap or PA-stall bound is imposed.
+- Added candidate source-bound pipeline-capacity assertions and a bubble Cover.
+  A prior generated-array EF2 hierarchical reference was diagnosed by VC Formal
+  as UNDRIVEN and removed; it was a harness resolution defect, not evidence of
+  a product counterexample.
+- VC Formal V-2023.12-SP2 completed in 311.08 seconds with zero selected setup
+  issues, zero black boxes, and a non-vacuous source-hold assumption. Source,
+  core, output, and arbitrary-bubble Covers reached. All five assertions and
+  both exact saturation/underflow Covers remain INCONCLUSIVE (depths 34-46).
+  The two Raw Branch roots remain OPEN; no waiver is supported.
+- Raw URG was not rerun because this Formal-only harness change does not create
+  URG hits. Coverage is unchanged at Branch 525/637, Condition 658/849, Line
+  3351/3796, Toggle 84340/104480, FSM 13/13 states and 17/22 transitions,
+  Functional 392/392; zero approved waivers, zero exclusions, `RAW_100_OPEN`.
+- Added exact run/source hashes and disposition in the outstanding capacity
+  report/evidence JSON; updated the Linux signoff and execution frontier. No
+  product RTL or algorithm changed.
+- Checks: VC Formal ran to completion but closure result is INCONCLUSIVE;
+  Python `py_compile`, evidence JSON parse, and `git diff --check` PASS. Full
+  VCS/URG regression was not rerun. Remaining: prove component conservation
+  contracts and compose them, otherwise keep both target bins OPEN.
+
+## 2026-11-03 18:48 SGT - Prove one-tap Identity DPD output under backpressure
+
+- Added a dedicated VC Formal harness and source-bound runner for the frozen
+  one-tap Q14 Identity DPD profile. The flow proves 41 internal pipeline
+  lemmas in the base model, checks their exact inventory, then promotes only
+  those base-proven facts; the four final I/Q latency and saturation goals
+  remain active in the composed proof.
+- Fresh VC Formal V-2023.12-SP2 run on clean commit
+  `e21c1ece205b633809e1dfd84d275936294b6378`: base 41/41 internal lemmas
+  proven; composed 4/4 final assertions proven; 4/4 endpoint/stall/recovery
+  Covers reached. The source-hold assumption is non-vacuous; setup violations
+  and black boxes are zero. A fail-closed auditor binds reports, harness,
+  runner, Tcl, RTL hashes, and run commit.
+- Added the scoped Formal report and machine-readable evidence, and updated the
+  Formal README, Linux signoff, and active execution frontier. No product RTL,
+  simulation input, VDB, Raw URG, waiver, or exclusion changed. Raw remains
+  Branch 525/637, Condition 658/849, Line 3351/3796, Toggle 84340/104480,
+  FSM 13/13 states and 17/22 transitions, Functional 392/392;
+  `RAW_100_OPEN` remains.
+- Checks: VC Formal scoped flow PASS; Python syntax/JSON audit PASS;
+  `git diff --check` PASS. Full VCS/URG and complete TX product regression were
+  not rerun because no simulation sources or coverage inputs changed.
+- Remaining: AXI Shadow/COMMIT, mailbox, CDC and active-epoch composition;
+  outstanding-counter saturation/underflow remain INCONCLUSIVE/OPEN; the
+  current open-bin snapshot has 20,891 code records OPEN, all 371 waiver
+  candidates are pending, and there are no approved waivers. Vendor XPM/GT
+  Wizard, FPGA PPA and physical RF/QAM256 remain outside Linux signoff.
+
+## 2026-11-03 17:32 SGT - Prove Thermo5 DPD vector output hold under stall
+
+- Added a reproducible VC Formal harness, Tcl flow, runner, and fail-closed
+  auditor for the 16-lane `dpd_vector16_memory_poly` output stall-hold contract.
+  The 512-bit I/Q payload is split into 16 lane assertions; metadata hold and
+  all-lane valid lockstep are checked separately. MAX_TAPS=1 matches the
+  product vector shape. Runtime taps, coefficients, payload, metadata, valid
+  and ready are unconstrained; no environment assumptions were added.
+- Re-ran the exact committed harness with VC Formal V-2023.12-SP2. Result:
+  33/33 assertions proven, all 17 lane-payload/metadata properties
+  non-vacuous, 3/3 Covers reached, zero black boxes, zero environment
+  assumptions, one reset initialization constraint, and zero selected setup
+  violations. The audited run took 102.63 seconds.
+- The monolithic full-vector property previously remained INCONCLUSIVE at depth
+  15 and a later aggregate run at depth 294. The lane decomposition now proves
+  the vector leaf's stall-hold protocol; it does not prove Identity arithmetic
+  or full-chain COMMIT/CDC/epoch behavior. Full-chain DPD Identity remains
+  OPEN/INCONCLUSIVE. No RTL or algorithm changed.
+- Raw/Adjusted URG was not rerun because simulation/VDB inputs did not change.
+  Raw remains Branch 525/637, Condition 658/849, Line 3351/3796, Toggle
+  84340/104480, FSM states 13/13 and transitions 17/22, Functional 392/392;
+  zero approved waivers, zero exclusions, and `RAW_100_OPEN`. Formal creates no
+  URG hits or denominator changes.
+- Added the scoped report and JSON evidence, and updated the Linux signoff and
+  execution frontier. Python `py_compile`, JSON parsing and `git diff --check`
+  pass; VCS and URG were not rerun. Remaining Raw code bins, counter guards,
+  full-chain DPD Identity, pending waiver approvals and vendor/physical signoff
+  remain open.
+
+## 2026-11-03 17:05 SGT - Prove two retained TX Raw Condition tuples unreachable
+
+- Ran focused VC Formal V-2023.12-SP2 on the product one-tap DPD ready/valid
+  relation and the AXI-Lite `write_fire` response relation. Both exact tuple
+  Covers were reported uncoverable; the corresponding implications were
+  proven non-vacuously with zero environment assumptions, zero black boxes,
+  and zero selected setup violations.
+- Bound each result to its exact Not Covered tuple in the same 247-test Raw
+  URG report and recorded source, harness, Tcl, Formal log, report, and VDB
+  hashes in separate fail-closed audit JSON and closure reports.
+- Raw Condition remains 658/849; Raw equals Adjusted, with zero approved
+  waivers and zero active `.el` exclusions. The gate remains `RAW_100_OPEN`.
+  Two of the 20,893 records in the latest open-bin snapshot now have exact
+  `PROVEN_UNREACHABLE` root-cause dispositions; the other 20,891 remain OPEN.
+- Updated the active execution frontier and Linux signoff. No DUT RTL,
+  algorithm, coverage denominator, or VDB was changed. The separate 512-bit
+  DPD payload-hold property remains INCONCLUSIVE at depth 15.
+- Checks: focused DPD and AXI-Lite Formal audits PASS; Python audit scripts
+  compile and their JSON outputs parse; `git diff --check` PASS. The full UVM
+  regression and Raw URG were not rerun because neither simulation inputs nor
+  VDBs changed.
+- Published as Draft PR #33 on `codex/thermo5-tx-focused-condition-formal-closure`,
+  stacked on Draft PR #32 at its exact head; no PR was merged.
+
+## 2026-11-03 16:30 SGT - Rebind TX waiver audit to the latest Formal review
+
+- The current waiver CSV and Round 6 candidate audit were bound to an earlier
+  focused Formal Review JSON. After adding the extended counter Formal result,
+  reran the source-bound candidate audit against the latest review, product
+  compile manifest, same-list 247-test Raw/Adjusted report and Raw open-bin
+  ledger.
+- Created waiver review Round 7. It rebinds all 371 exact candidate rows:
+  361 `CONFIG_UNREACHABLE`, 10 `FORMAL_UNREACHABLE`; every row remains PENDING.
+  The fail-closed pipeline reports zero approved, zero rejected, and zero
+  active Exclusions. Its generated `.el` contains no directives. Raw remains
+  unchanged.
+- Added the Round 7 report and machine-readable pipeline audit; updated the
+  waiver CSV pointers, Linux signoff, evidence JSON, and execution frontier.
+  The latest 247-test Raw metrics remain Branch 525/637, Condition 658/849,
+  Line 3351/3796, Toggle 84340/104480, FSM 13/13 states and 17/22
+  transitions; functional 392/392. No new VDB was merged.
+- Checks: Round 7 candidate audit PASS (371/371); waiver pipeline PASS (371
+  pending; no exclusions); hardware utility tests 42/42 PASS; Python compile,
+  JSON/hash validation and `git diff --check` PASS. Full UVM regression and Raw
+  URG were not rerun because their inputs did not change.
+- Remaining: no waiver has independent reviewer approval; 20,893 Raw code
+  records remain OPEN in 457 groups; outstanding-counter Formal remains
+  INCONCLUSIVE; legal frame-tail no-attempt properties and full-chain DPD
+  Identity remain OPEN. Physical/vendor validation remains out of scope.
+
+## 2026-11-03 16:24 SGT - Extend counter Formal and enforce expected-negative assertion checks
+
+- Extended the product-bound outstanding-counter VC Formal effort limit to
+  22 minutes (20 minutes per property). V-2023.12-SP2 completed in 1,364.76 s.
+  Both guard assertions remain non-vacuous INCONCLUSIVE at depths 231/122;
+  both exact guard Covers remain INCONCLUSIVE at depths 196/126. Source/core/
+  output activity Covers were reached. There are zero environment assumptions,
+  zero black boxes, and zero setup violations. The two Raw Branches remain
+  OPEN; no waiver or Exclusion was created.
+- Added the extended Formal report and machine-readable evidence index with
+  exact property results, source hashes, tool version, run-manifest hash and
+  console/property/setup/engine hashes.
+- Connected a fail-closed checker to `thermo5-axil-vcs-negative`. The
+  integrated target now requires exactly one CDC frame-alignment assertion
+  and one frame-tail assertion in each Centered-Cubic stage, zero unexpected
+  RTL assertion errors, zero UVM warning/error/fatal, and verified reset
+  recovery. The target passed on a fresh compile with seed 420102.
+- Updated the Linux system signoff, machine-readable signoff index, and active
+  execution frontier. Raw/Adjusted URG inputs and metrics are unchanged;
+  Functional Coverage remains 392/392, Branch 525/637, Condition 658/849,
+  Line 3351/3796, Toggle 84340/104480, FSM 13/13 states and 17/22
+  transitions. There are zero approved waivers and zero active Exclusions.
+- Checks: hardware utility suite 42/42 PASS; exact negative VCS Make target
+  PASS; Python compile checks PASS; signoff JSON validation PASS; final
+  `git diff --check` PASS. No full regression,
+  new random seed sweep, RX, AI-DPD, or Vivado run was made.
+- Remaining: both outstanding-counter Raw Branches / Formal goals OPEN or
+  INCONCLUSIVE; 20,893 code records remain OPEN in 457 groups; 371 waivers
+  still PENDING with zero approvals. Full-chain DPD Identity, the two legal
+  no-attempt frame-tail assertions, real XPM/GT Wizard, FPGA PPA, and physical
+  RF/QAM256 remain outside completed Linux signoff.
+
+## 2026-11-03 15:58 SGT - Separate Thermo5 TX assertion evidence and prove the DPD Identity leaf
+
+- Re-audited the latest 247-test Raw/Adjusted URG inventory. All 247 VDB
+  trees are unique: 243 legal-positive, two expected-negative, and two
+  additional legal directed cases. The 16-point STATUS-mismatched sweep is
+  absent. Raw and Adjusted remain equal with zero approvals/exclusions and
+  `RAW_100_OPEN`; code coverage is unchanged from the 246-test checkpoint.
+- Replayed the AXI-Lite illegal-frame case with the correct seed-specific
+  vectors. It observed exactly one CDC frame-alignment assertion and one
+  Centered-Cubic frame-tail assertion in each stage, then verified sticky
+  protocol-error clearing by public reset. UVM warning/error/fatal counts
+  were zero. Kept its expected assertion failures in a separate URG report
+  from the 243-VDB legal-positive assertion report.
+- Added a fail-closed expected-negative log checker, connected it to the
+  AXI-Lite negative Make target, and added mutation-focused tests for a
+  missing stage event, unexpected RTL assertion, and nonzero UVM error.
+- Added a local DPD one-tap Identity/no-stall Formal harness. VC Formal proved
+  5/5 properties and reached 3/3 Covers with zero black boxes and no
+  environment assumptions. This is a datapath leaf result only; arbitrary
+  stalls, AXI commit/epoch behavior, and full-chain Identity remain OPEN.
+- Added the detailed assertion/DPD evidence report, machine-readable hash
+  index, Formal README invocation, updated Linux signoff, and execution
+  frontier. No product RTL or algorithm was changed.
+- Checks: expected-negative checker PASS; checker unit tests 4/4 PASS;
+  hardware utility tests 42/42 PASS; DPD Identity leaf Formal 5/5 assertions
+  and 3/3 Covers PASS; 243-positive and one-test negative URG reports PASS.
+  The integrated `thermo5-axil-vcs-negative` Make target also PASSed using the
+  fresh compile and seed-specific vectors.
+  The old misconfigured negative attempt is retained as
+  `INVALID_NOT_COUNTED`. Full VCS regression was not rerun.
+- Remaining: 20,893 Raw code records in 457 groups, five FSM transitions,
+  371 pending waiver candidates, outstanding-counter Formal INCONCLUSIVE,
+  and full-chain DPD Identity Formal INCONCLUSIVE. Real XPM/GT Wizard, FPGA
+  PPA/routed timing, and physical RF/QAM256 are outside Linux signoff.
+
+## 2026-11-03 14:56 SGT - Thermo5 TX interframe coverage and waiver audit refresh
+
+- Recompiled the frozen Thermo5 AXI-Lite product with the explicit DUT-only
+  coverage hierarchy and ran the directed 11-cycle interframe-gap test
+  (VCS seed 930833). Both centered-cubic stage pop/push Branches were hit;
+  all 112 four-plane output words matched the independent checker, with zero
+  Underflow, STATUS mismatch, protocol error, or UVM error.
+- Rebuilt Raw and Adjusted URG on the exact same 245-test VDB set. Coverage is
+  Branch 525/637, Condition 658/849, Line 3351/3796, Toggle 84180/104480,
+  FSM states 13/13 and transitions 17/22; legal applicable functional bins
+  are 392/392. Raw and Adjusted match with zero active Exclusions. The ledger
+  has 21,053 OPEN records in 457 groups; gate remains `RAW_100_OPEN`.
+- Rebound the 371 waiver-candidate audit and zero-approval pipeline to the
+  refreshed product configuration. All remain PENDING; zero approved and
+  zero `.el` directives. Fixed the coverage-gate schema mismatch and removed
+  the candidate-audit tool's hardcoded 244-VDB assumption.
+- Rechecked the outstanding-counter Formal result: zero assumptions, zero
+  black boxes, two non-vacuous assertions, but both assertions and both target
+  Covers remain INCONCLUSIVE. No waiver was approved.
+- Updated the Linux signoff report, waiver review round 2, machine-readable
+  interframe evidence, and active execution frontier. Product RTL and frozen
+  algorithm were not modified.
+- Checks: VCS product-hierarchy compile and targeted UVM PASS; same-list
+  Raw/Adjusted URG and fail-closed gate PASS; candidate audit PASS (371/371);
+  waiver pipeline PASS (0 exclusions); hardware utility tests 38/38 PASS;
+  Python reference tests 59/59 PASS; `py_compile` and `git diff --check` PASS.
+  Full UVM regression was not run.
+- Remaining: two counter-guard Branches and Formal goals OPEN/INCONCLUSIVE;
+  21,053 OPEN code records; two frame-tail assertions without attempts; DPD
+  Identity Formal inconclusive; no real XPM/GT Wizard, FPGA PPA, or physical
+  RF/QAM256 signoff.
+
+# 2026-11-03 12:53 SGT - Rebind and audit the 371 Thermo5 TX waiver candidates
+
+- Started an independent waiver-review round on
+  `codex/thermo5-tx-waiver-audit-round1`, based on Draft PR #30's exact head
+  `08061386900e5ae2c9f692dcf7e85d849623f818`. No historical PR was merged.
+- Rebound all 371 CSV candidates to unique current Raw Bin IDs, instances,
+  source locations, source hashes, the exact product compile manifest, and the
+  same-list Raw/Adjusted URG and VDB manifests. The audit classified 361 as
+  fixed-configuration candidates and 10 against exact archived Formal proofs.
+  No candidate was marked reachable or unresolved; this does not close any
+  Raw bin or authorize exclusion.
+- Re-derived each fixed-configuration proof from the present parameter chain
+  (including instance parameter blocks) and required every chain file to be
+  present in the compiled-source manifest. Formal activity witnesses are
+  checked against the archived console. The fail-closed pipeline accepted all
+  371 as pending: 0 approved, 0 rejected, 0 active `.el` exclusions. Raw and
+  Adjusted remain identical.
+- Added the structured candidate audit, compile/VDB/URG manifests, archived
+  Formal snapshots, review report, source-bound candidate columns, and a
+  parameter-tamper negative test. Product RTL, testbench behavior, and
+  denominators were unchanged.
+- Checks: compile-manifest generation PASS; candidate audit 371/371 PASS;
+  waiver pipeline PASS; hardware utility tests 34/34 PASS; Python compileall
+  and `git diff --check` PASS. VCS/URG/VC Formal were not rerun because their
+  RTL, testbench, VDB, and report inputs did not change; existing Formal proofs
+  were revalidated from archived logs and current source hashes.
+- Current Raw remains `RAW_100_OPEN`: Branch 523/637, Condition 656/849,
+  Line 3337/3796, Toggle 84180/104480, FSM states 13/13 and transitions
+  17/22; 21,071 code records remain open in 475 root-cause groups. All 371
+  candidates still require independent review. Outstanding counter and DPD
+  Identity proofs remain INCONCLUSIVE.
+- Detailed report and machine-readable evidence:
+  `docs/verification/thermo5-tx-waiver-review-round1.md` and
+  `docs/verification/data/thermo5-tx-waiver-review-round1/`.
+
+## 2026-11-03 12:27 SGT - Close legal AXI-Lite STATUS DONE W1C coverage path
+
+- Added a directed STATUS read / DONE W1C / STATUS readback sequence to the
+  legal one-tap DPD UVM test. The independent register predictor checks the
+  sampled register response; the four-plane Python oracle still checks all 56
+  output words. Fixed same-cycle `commit_done`/STATUS-read ordering in the
+  monitor-trace oracle and added a corrupted-STATUS mutation test.
+- A fresh VCS V-2023.12-SP1 compile and seed 930000 test passed with zero UVM
+  errors/fatals, zero predictor mismatches, 17 write-response checks, four
+  reads, 56/56 oracle words, and zero underflows. The added VDB hit seven
+  exact current-product Raw bins: one Branch, one Line, two Conditions and
+  three Toggles in `thermo5_dpd_axi_lite_cfg.sv:264-265` and `cfg_done`.
+- Re-ran same-list Raw/Adjusted URG on 244 test VDBs and the positive-only
+  assertion/functional report on 242 VDBs. Raw equals Adjusted with zero
+  exclusions. Coverage delta from the retained 243-VDB report is +1 Branch,
+  +2 Conditions, +1 Line, +3 Toggles; FSM is unchanged. Legal applicable
+  functional coverage remains 392/392. Remaining 21,071 code records are all
+  OPEN in 475 root-cause groups; 371 waivers remain pending, none approved.
+  Gate remains `RAW_100_OPEN`.
+- Refreshed the Linux signoff report, machine-readable evidence, and execution
+  frontier. Evidence includes VCS/URG commands and versions, exact target bin
+  IDs, source/VDB/report/log hashes, and VDB provenance. Historical VDBs were
+  reused; the full regression was not rerun.
+- Published the reviewable update as Draft PR #30, branch
+  `codex/thermo5-tx-w1c-coverage-round2`, stacked on PR #29. The GitHub
+  integration publication tree matches the locally reviewed Git tree; no PR
+  was merged.
+- Checks: Python reference tests 59/59 PASS; hardware utility tests 34/34
+  PASS; trace oracle 56/56 PASS with zero underflow; VCS compile and targeted
+  UVM PASS; Raw/Adjusted URG and fail-closed coverage gate PASS; no new Formal
+  run. No product RTL/default algorithm, RX, AI-DPD, XPM/GT Wizard, or Vivado
+  implementation changed.
+
 ## 2026-11-02 09:07 SGT - Merge Thermo5 TX closure branches
 
 - Merged PR #24 (`codex/thermo5-coverage-closure-round1`) into `thermo5` at
@@ -26,6 +519,7 @@
   4.72 GiB), waveforms, simulator executables, and root scratch files.
   VDBs must be regenerated by VCS before another URG merge. No RTL or
   verification behavior changed.
+
 ## 2026-11-02 09:03 SGT - Fix PR #25 trace-oracle syntax check
 
 - GitHub Actions reported an `IndentationError` in
@@ -743,8 +1237,6 @@
   in general review. DPD identity arithmetic Formal remains inconclusive.
   Actual XPM/GT Wizard, Vivado FPGA PPA, physical QAM256 BER and product
   BER/BLER acceptance target remain open. No claim of Raw 100% is made.
-
-# Update Log
 
 ## 2026-10-29 - Complete Linux TX Gate 2 model campaign
 
@@ -4563,6 +5055,7 @@ The restored-license DV CI37462007850 remains PASS at its recorded commit.
 Next: restore permitted Formality feature authorization, rerun equivalence
 against this mapped netlist/SVF, and close the cap/leakage constraint items.
 Do not rerun the completed multi-hour synthesis just for the FM option fix.
+
 ## 2026-10-08 12:48 SGT — bounded XPM FWFT reset attempt
 
 - Changed: added read-only FWFT state/reset observation and a plusarg-gated
@@ -5139,6 +5632,7 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   remain open. The module-level proof does not qualify full-chain frame-tail
   composition. Real XPM, GT Wizard, FPGA PPA, and physical QAM256 BER remain
   outside this Linux signoff.
+
 ## 2026-10-30 22:04 SGT - Formal reachability closure for TX coverage bins
 
 - Added exact product-configuration Formal Covers/assertions for the two
@@ -5176,7 +5670,6 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - 2026-10-30: Reconciled the active execution-frontier branch name with draft
   PR #10 (`codex/thermo5-tx-final-signoff`). No RTL, evidence database, coverage
   denominator, or verification result changed; `RAW_100_OPEN` remains.
-
 
 ## 2026-10-31 10:22 SGT - AXI-Lite coefficient-read Branch Formal closure
 
@@ -5425,3 +5918,201 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   are unchanged from the frozen Linux package.
 - Remaining: 21,320 Raw code bins OPEN; physical/vendor XPM/GT Wizard, FPGA
   PPA, and QAM256 BER remain outside this Linux signoff.
+
+## 2026-11-02 12:32 SGT - Thermo5 TX Dynamic Oracle Phase A
+
+- Completed PR-A work on `codex/thermo5-tx-dynamic-oracle`, based on
+  `thermo5` SHA `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`. No product RTL or
+  frozen algorithm changed.
+- Extended the independent Python trace oracle for sequence/epoch integrity,
+  partial-frame reset causal prefixes, transaction-derived STATUS, and strict
+  COMMIT/Pending/Frame Apply/ACK/completion order. Added checker mutations for
+  PA data, STATUS, trace order, and commit ordering.
+- Added source-valid gap length recording, replaced the UVM RUN_ACTIVE/DRAINING
+  predictor's use of DUT core status outputs with accepted-transaction-derived
+  lifecycle state, and extended the product reset sweep for partial DSP frames.
+- Evidence report and machine-readable manifest:
+  `docs/verification/thermo5-tx-phase-a-evidence.md` and
+  `docs/verification/data/thermo5-tx-phase-a-evidence.json`. Detailed VCS logs,
+  JSONL traces, Python suite log, and their SHA-256 values are retained under
+  the ignored local `runs/thermo5_tx_system_phase_a/` directory.
+- Checks: Python suite 57/57 PASS; Python byte compilation PASS; VCS
+  V-2023.12-SP1 STOP/Restart seed 610215 PASS (112/112 PA words); one-cycle
+  source-gap seed 610216 PASS (112/112, gap=1, underflow=0); reset sweep seed
+  610802 PASS (4 partial-frame resets, 5 CDC residual resets, 56/56 replay,
+  91 accepted PA words); all three dynamic trace replays PASS; `git diff
+  --check` PASS.
+- URG aggregation/Raw-Adjusted code-coverage review and VC Formal were not run. No FPGA, XPM/GT
+  Wizard, RF, or BER signoff is claimed. Phase B/C random verification,
+  Phase D coverage/formal closure, and Phase E benchmark review remain open.
+
+## 2026-11-02 12:42 SGT - Thermo5 TX Phase B agent organization
+
+- Added an active/passive PA sink agent as the only procedural `PA_READY`
+  writer, an active Control agent for reset/direct-core enable, a virtual
+  sequencer, and an AXIL packet RUN/STOP/drain smoke sequence. Migrated test PA
+  backpressure requests to the PA agent API. Added a configuration guard around
+  the AXIL-only outstanding-counter SVA bind after non-AXIL compile exposed
+  references to signals absent from that DUT.
+- Implementation source commit: `35115626a95c14db76e29ee36bf68f5d80132aba`.
+  Product RTL, TX algorithm, and product defaults are unchanged.
+- VCS V-2023.12-SP1 product tests passed: AXIL virtual-sequence seed 620301,
+  graceful STOP/Drain seed 620304, and reset sweep seed 620305. All had 56
+  post-reset/product PA words as applicable, zero PA/predictor mismatches,
+  zero underflow, and zero UVM errors/fatals. The reset sweep included four
+  partial-DSP-frame resets and five CDC residual resets.
+- The legacy non-AXIL bubble test is retained as diagnostic only: its default
+  80-cycle gap run recorded 361 underflow cycles (180 before final source
+  acceptance) despite printing its existing PASS marker. With a one-cycle gap,
+  early underflow was zero but the direct-core/no-drain test still recorded
+  100 sticky underflow cycles after source completion. Neither run is counted
+  as a legal product regression. Phase C must use the AXIL packet/drain path
+  and reject unexpected underflow.
+- Evidence commands and log SHA-256 values are recorded in
+  `docs/verification/thermo5-tx-phase-b-evidence.md` and
+  `docs/verification/data/thermo5-tx-phase-b-evidence.json`. Per-test coverage
+  instrumentation was enabled, but no URG aggregation or Raw/Adjusted
+  percentage was run. Dynamic clock fault control, Phase C randomization,
+  Phase D Formal/coverage closure, and Phase E benchmarking remain open.
+- Checks: AXIL VCS compile + virtual-sequence smoke, AXIL graceful STOP/Drain,
+  AXIL reset sweep, non-AXIL compile and diagnostic bubble runs, SVA bind
+  configuration check, direct `PA_READY` writer scan, `git diff --check`, and
+  JSON manifest parse. No RTL/XSim, RX, AI-DPD, Vivado, or physical flow ran.
+
+## 2026-11-02 13:01 SGT - Thermo5 TX Phase C minimum random qualification
+
+- Completed the minimum runnable Phase C campaign on implementation source SHA
+  `26a9f0482e952f70ed62c438aa9201e626bd103e`; the frozen product RTL and TX
+  algorithm remain unchanged.
+- Ran 100 56-word packet seeds and 10 112-word long-stream seeds. All 110 VCS
+  UVM tests and 110 independent Python trace-oracle replays passed with exact
+  four-plane PA comparison, zero unexpected underflow, and zero predictor,
+  protocol, transaction-count, UVM error, or fatal failures. URG merge passed.
+- Added the Phase C evidence report and machine-readable evidence/VDB manifests.
+  Independently checked all 110 trace/UVM/oracle log hashes, 111 VDB file
+  counts, byte totals and tree fingerprints, evidence hashes and JSON syntax.
+  The canonical sorted-path/size/file-SHA algorithm is recorded in the VDB
+  manifest.
+- Updated the system-verification specification and execution frontier to
+  distinguish the completed minimum random milestone from remaining Phase C
+  work. The URG percentages are mixed-hierarchy exploratory results, not
+  DUT-only Raw/Adjusted signoff.
+- Checks: Python 3.12.13 reference suite 57/57 PASS; VCS V-2023.12-SP1 and URG
+  campaign 110/110 PASS (run before this documentation-only follow-up); trace
+  and evidence integrity checks PASS; JSON parse PASS; `git diff --check` PASS after documentation edits.
+- Remaining OPEN: non-Identity runtime DPD randomization, randomized COMMIT
+  and reset epochs, exact SV cross closure, Phase D DUT-only Code Coverage /
+  Formal / Waiver signoff, Phase E Linux benchmark review, and separate XPM,
+  GT Wizard, FPGA PPA and physical RF/QAM256 validation.
+
+## 2026-11-02 13:06 SGT - Publish Thermo5 TX Phase C PR #29
+
+- Published `codex/thermo5-tx-system-random` as PR #29 targeting the exact
+  open PR #28 head `991591dca3bf710405e5cd3a35ea855f23248dfa`.
+- GitHub head commit is `983c1a4ad217d0abf68b2e14a3ccb2d34f79b0b6`; its tree
+  `22fa3cd65eec9869ff58f0dd9646104ba6228f74` matches local reviewed tree
+  `22fa3cd65eec9869ff58f0dd9646104ba6228f74`. GitHub reports the PR open,
+  mergeable, 17 files, and unmerged. PR #27 and PR #28 are also unmerged.
+- No product RTL or frozen algorithm changed. Phase C remains a minimum random
+  qualification; deferred DPD/COMMIT/reset dimensions, complete exact cross
+  closure, Phase D/E, and FPGA/physical signoff remain open.
+
+## 2026-11-03 10:18 SGT - Thermo5 TX Linux system verification closure
+
+- Closed the previously open Phase C test dimensions with retained evidence:
+  110 packet/long-stream seeds, a 60-tuple runtime DPD × gain × profile
+  matrix, 48 randomized reset/COMMIT trials, directed reset/commit and source
+  gap/PA-stall/FIFO-full crosses, and an expected-starvation test with an
+  independent bit-true PA checker. The frozen product RTL and algorithm remain
+  unchanged.
+- Regenerated Raw and Adjusted URG from the same 243 test VDBs and current
+  product design VDB. The 243-test provenance is mixed: 240 positive and two
+  expected-negative prior test VDBs plus one additive starvation VDB. RTL
+  sources are unchanged across the two source revisions. Raw and Adjusted
+  remain equal; the gate is `RAW_100_OPEN`, with 21,078 open code records.
+- Repaired waiver-pipeline handling so PENDING candidates can map to exact
+  current OPEN Raw bins without producing exclusions. APPROVED candidates
+  still require exact proof, source/configuration binding, reviewer and
+  approval reference. The fresh audit reports 371 PENDING, zero approved and
+  zero active exclusions.
+- Legal applicable functional coverage is 392/392; 24 URG-model-excluded rows
+  and the illegal-only frame bins remain in the audit artifacts. Positive
+  assertion inventory has 13 successes, zero failures, two uncovered and two
+  without attempts. Expected negative assertion failures are reported
+  separately.
+- VC Formal counter-guard run was non-vacuous but INCONCLUSIVE after 502 s;
+  DPD Identity Formal remains inconclusive. Neither was waived. XPM, GT Wizard,
+  Vivado PPA/routed timing and physical RF/QAM256 remain open.
+- Updated `docs/verification/thermo5-tx-linux-system-verification-signoff.md`,
+  its machine-readable evidence manifest, a superseding addendum to the Phase C
+  report, and the active execution frontier. Committed the waiver-pipeline correction and tests as
+  `52892f66b4fc80ac41557272a1434ac216ddd073` (local commit; not pushed or
+  merged).
+- Checks: Python reference tests 58/58 PASS; hardware utility tests 34/34
+  PASS; Python compile and `git diff --check` PASS; starvation UVM/Python
+  oracle PASS; Raw/Adjusted URG PASS; functional coverage gate 392/392 legal
+  bins and `RAW_100_OPEN` code result. Counter Formal remains INCONCLUSIVE.
+- Evidence, logs and VDBs are under ignored `runs/thermo5_tx_closure_current/`;
+  generated data is SHA-indexed in
+  `docs/verification/data/thermo5-tx-linux-system-verification-signoff.json`.
+
+## 2026-11-03 16:10 SGT - Thermo5 TX outstanding-counter long-stream refresh
+
+- Extended the public-interface outstanding-counter stress to 2,072 accepted
+  samples across 37 legal 32-beat packets with source and PA backpressure. Seed
+  930901 passed the independent four-plane bit-true checker for 2,072/2,072
+  output words, observed maximum outstanding occupancy 28, and recorded zero
+  saturation/underflow guard events or UVM warnings/errors/fatals. Product RTL
+  and frozen algorithm remain unchanged.
+- Refreshed Raw and Adjusted URG from the same 246-test VDB inventory plus one
+  design VDB. Raw equals Adjusted with zero approved waivers and zero active
+  Exclusions. Toggle increased by 160 hits to 84340/104480; Branch remains
+  525/637, Condition 658/849, Line 3351/3796, FSM states 13/13 and transitions
+  17/22. Applicable Functional Coverage remains 392/392. The gate remains
+  `RAW_100_OPEN`; 20,893 code records in 457 root-cause groups remain OPEN.
+- Rebound the 371 waiver candidates to the 246-test report and current compile
+  manifest. 361 remain configuration-unreachable candidates and 10
+  formal-unreachable candidates; all remain PENDING. No reviewer approval or
+  Exclusion was fabricated.
+- Both exact outstanding-counter Branch bins remain OPEN. The product-bound
+  counter assertions and guard Covers remain INCONCLUSIVE; the long-stream
+  maximum is simulation evidence, not a reachability proof.
+- Added `thermo5-tx-outstanding-counter-stress-20261103.md` and its evidence
+  JSON, plus the round-3 waiver audit review note. Updated the Linux system
+  signoff, execution frontier, and current waiver status.
+- Checks: VCS V-2023.12-SP1_Full64 targeted UVM PASS; Raw/Adjusted URG refresh
+  and fail-closed gate PASS (`RAW_100_OPEN`); Python reference suite 59/59 PASS;
+  hardware utility suite 38/38 PASS; Python compile checks PASS; `git diff
+  --check` PASS before final documentation-only edits. Full regression was not
+  rerun. Exact VCS/URG logs and VDBs remain under ignored `runs/` and are
+  SHA-indexed in the evidence JSON.
+- GitHub PR #27 → #28 → #29 → #30 → #31 dependency chain was checked; all are
+  open and unmerged, with #30 and #31 drafts. No PR was merged in this step.
+
+## 2026-11-03 20:47 SGT - Centered frame-tail Condition Formal follow-up
+
+- Added exact line-309 Formal targets for the three OPEN centered-cubic
+  Condition records. Two reset-low operand bins are unreachable after a
+  non-vacuous runtime-reset proof. The active stage-2 bin is unreachable in a
+  directly composed two-stage centered-cubic model using the legal 56-sample
+  DSP-frame / 448-sample packet metadata contract.
+- Corrected an initial exploratory schedule after checking the interface
+  contract: frame starts mark each 56-sample DSP frame, while `frame_end/TLAST`
+  occurs at the 448-sample AXIS packet boundary. The superseded run is not used
+  as evidence.
+- No product RTL/algorithm, Raw VDB, URG denominator, waiver approval, or `.el`
+  Exclusion changed. All three exact Raw rows remain pending independent
+  waiver review; coverage delta is zero and the gate remains `RAW_100_OPEN`.
+- Added the Formal report and machine-readable evidence under
+  `docs/verification/thermo5-tx-frame-tail-condition-formal-20261103.md` and
+  `docs/verification/data/thermo5-tx-frame-tail-condition-formal-20261103.json`.
+  Full logs remain locally in ignored `runs/` and are indexed by SHA-256.
+- Checks: VC Formal V-2023.12-SP2, both targeted jobs PASS (2/2 assertions
+  each, all non-vacuous; 12 activity/reset Covers reached and 4 exact
+  line-309 Covers reported uncoverable); setup violations 0 and black boxes
+  0. Python `py_compile` and `git diff --check` PASS. VCS and URG were not
+  rerun because product RTL and simulation/VDB inputs are unchanged.
+- Remaining review: the composed active-bin proof omits the two intervening
+  elastic FIFOs and DPD metadata pipeline; audit those product connections
+  before approving a waiver. Other code-coverage roots and the two outstanding
+  counter guards remain OPEN/INCONCLUSIVE.

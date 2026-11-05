@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "verification_source_sha": "2715b7a99042b3cd261884e53a82f287fe243ec6",
+  "formal_base_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+  "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+  "product_configuration": {
+    "interpolation": "Centered-Cubic x2+x2",
+    "ef2_order": 2,
+    "ef2_step": 5120,
+    "state_bits": 20,
+    "lanes": 32,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "fifo": "Generic",
+    "control": "AXI-Lite"
+  },
+  "scope": "TX-only focused VC Formal for line-309 centered-cubic condition bins; no product RTL, algorithm, VCS Raw VDB, URG database, or denominator modification",
+  "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+  "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs frame_tail_legal_metadata frame_tail_reset_condition --out-dir runs/thermo5_tx_closure_current/frame_tail_composed_formal_20261103_rerun",
+  "runner_sha256": "96df3891a12674d0475947d6b2092f45d27c837b68ed1a234df308293d972e2f",
+  "run_directory": "runs/thermo5_tx_closure_current/frame_tail_composed_formal_20261103_rerun",
+  "worktree_dirty": false,
+  "status": "PASS_WITH_RAW_OPEN",
+  "setup": {
+    "black_box_instances": 0,
+    "clock_violations": 0,
+    "glitch_violations": 0,
+    "combinational_loop_violations": 0,
+    "multidriven_net_violations": 0
+  },
+  "formal_input_sha256": {
+    "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+    "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+    "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+    "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+    "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+    "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+    "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+    "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+    "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+    "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+    "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+    "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+    "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+    "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+    "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+    "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+    "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+    "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "d2d19aec7791d4525509b9ea6109ac32519ab19b011d918c93746be92d37d9b3",
+    "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f"
+  },
+  "jobs": [
+    {
+      "name": "frame_tail_legal_metadata",
+      "status": "PASS",
+      "duration_seconds": 28.61,
+      "top": "thermo5_frame_tail_legal_metadata_harness",
+      "assertions": [
+        ["proven", "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context", "non_vacuous"],
+        ["proven", "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context", "non_vacuous"]
+      ],
+      "covers": [
+        ["uncoverable", "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"],
+        ["covered", "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"],
+        ["covered", "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"],
+        ["covered", "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"],
+        ["covered", "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"],
+        ["uncoverable", "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"],
+        ["covered", "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"],
+        ["covered", "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"]
+      ],
+      "assumptions": ["thermo5_frame_tail_legal_metadata_harness.asm_source_valid_stable"],
+      "assumption_status": "non_vacuous",
+      "compositional_limit": "Both production interpolator RTL instances are composed; intermediate registered elastic FIFOs and DPD are omitted. No product Raw bin is dispositioned by this job alone."
+    },
+    {
+      "name": "frame_tail_reset_condition",
+      "status": "PASS",
+      "duration_seconds": 21.46,
+      "top": "thermo5_frame_tail_reset_condition_harness",
+      "assertions": [
+        ["proven", "thermo5_frame_tail_reset_condition_harness.a_append_reset_empty", "non_vacuous"],
+        ["proven", "thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty", "non_vacuous"]
+      ],
+      "covers": [
+        ["covered", "thermo5_frame_tail_reset_condition_harness.c_append_queue_nonempty"],
+        ["uncoverable", "thermo5_frame_tail_reset_condition_harness.c_append_reset_bin"],
+        ["covered", "thermo5_frame_tail_reset_condition_harness.c_append_reset_empty"],
+        ["covered", "thermo5_frame_tail_reset_condition_harness.c_append_runtime_reset"],
+        ["covered", "thermo5_frame_tail_reset_condition_harness.c_plain_queue_nonempty"],
+        ["uncoverable", "thermo5_frame_tail_reset_condition_harness.c_plain_reset_bin"],
+        ["covered", "thermo5_frame_tail_reset_condition_harness.c_plain_reset_empty"],
+        ["covered", "thermo5_frame_tail_reset_condition_harness.c_plain_runtime_reset"]
+      ],
+      "assumptions": [],
+      "reset_model": "boot_n supplies formal initialization; unconstrained reset_request is sampled on negedge clk, excluding active-edge reset races. Queue-nonempty and runtime-reset Covers are reached."
+    }
+  ],
+  "raw_bins": [
+    {
+      "semantic_bin_id": "TXB-8ed12996edaade43bb74",
+      "raw_bin_id": "8f6d3ab31932cb2fac24",
+      "configuration": "axil",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:309",
+      "expression": "rst_n && (q_count == 2'h2) && q0_end && (!q1_start)",
+      "operands": "0/1/1/1",
+      "raw_status_before": "OPEN",
+      "formal_job": "frame_tail_reset_condition",
+      "formal_status": "PROVEN_UNREACHABLE",
+      "waiver_review": "PENDING",
+      "raw_retained": true,
+      "excluded": false
+    },
+    {
+      "semantic_bin_id": "TXB-1a3c01edbe1a6cdf4f0f",
+      "raw_bin_id": "622fb84f8bc9af1ca577",
+      "configuration": "axil",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:309",
+      "expression": "rst_n && (q_count == 2'h2) && q0_end && (!q1_start)",
+      "operands": "0/1/1/1",
+      "raw_status_before": "OPEN",
+      "formal_job": "frame_tail_reset_condition",
+      "formal_status": "PROVEN_UNREACHABLE",
+      "waiver_review": "PENDING",
+      "raw_retained": true,
+      "excluded": false
+    },
+    {
+      "semantic_bin_id": "TXB-e04591df73cbd238b0f0",
+      "raw_bin_id": "2aef3ac569e044b8a469",
+      "configuration": "axil",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:309",
+      "expression": "rst_n && (q_count == 2'h2) && q0_end && (!q1_start)",
+      "operands": "1/1/1/1",
+      "raw_status_before": "OPEN",
+      "formal_job": "frame_tail_legal_metadata",
+      "formal_status": "PROVEN_UNREACHABLE",
+      "formal_scope": "composed_interpolator_chain_with_product_legal_metadata",
+      "waiver_review": "PENDING",
+      "raw_retained": true,
+      "excluded": false
+    }
+  ],
+  "coverage_before_after": {
+    "report_manifest": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/report_manifest.json",
+    "vdb_manifest": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/vdb_manifest.json",
+    "vcs_test_vdb_count": 247,
+    "design_vdb_count": 1,
+    "raw_equals_adjusted": true,
+    "approved_waivers": 0,
+    "active_exclusions": 0,
+    "coverage_delta": {
+      "branch": "0/637",
+      "condition": "0/849",
+      "line": "0/3796",
+      "toggle": "0/104480",
+      "fsm_state": "0/13",
+      "fsm_transition": "0/22",
+      "functional_legal": "0/392"
+    },
+    "raw_100_status": "RAW_100_OPEN",
+    "open_bin_records_before_waiver_review": 20891
+  },
+  "artifact_hashes": {
+    "formal_summary.json": "977661d358c45d5f5a2844fb10ce0f6cabd8ad2fafc0d8a5c7b1ffe075e89127",
+    "frame_tail_legal_metadata/console.log": "637fb8f91f022e5fe949ea9add094b89ff84abbbc6fd68563f0040fdf6a7ae34",
+    "frame_tail_legal_metadata/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "frame_tail_legal_metadata/properties.txt": "dc988149e8283051366d629b41e1c45f68bc9faa76a14b9d63c44bedb6b2847a",
+    "frame_tail_reset_condition/console.log": "b87e3a3b47a3061d6e94febcdda5c6d01a09d9c0e8e9ef711788a08e07d69c04",
+    "frame_tail_reset_condition/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "frame_tail_reset_condition/properties.txt": "c21444d195bda95a1fb5a04d817217fb7eb4f790f2e97fb460b784df94caef1d"
+  },
+  "checks": {
+    "python_compile": "PASS",
+    "git_diff_check": "PASS",
+    "vcs_rerun": "NOT_RUN_UNCHANGED_COMPILE_AND_TEST_SOURCES",
+    "urg_rerun": "NOT_RUN_RAW_REPORT_UNCHANGED"
+  },
+  "remaining": [
+    "The product path's two registered elastic FIFOs and intervening DPD metadata pipeline are not instantiated in the composed proof; review these exact pass-through connections before approving a waiver.",
+    "The three exact Raw Condition rows remain OPEN and in the Raw denominator until the waiver review is completed.",
+    "The other code bins, EF2 outstanding-counter Formal goals, assertion audit, and full-chain DPD Identity proof remain OPEN or INCONCLUSIVE."
+  ]
+}

@@ -18,6 +18,17 @@ class thermo5_sku_bittrue_test extends thermo5_sku_base_test;
             wait(env.scoreboard.checked==cfg.core_words);
             env.control.core_off();
             check_full();
+            #1ps;
+            if (env.event_bus.source_beats!=cfg.source_beats ||
+                env.event_bus.cdc_words!=cfg.core_words ||
+                env.event_bus.ef2_words!=cfg.core_words ||
+                env.event_bus.pa_words!=cfg.core_words)
+              `uvm_fatal("EVENT_BUS_COUNTS",
+                $sformatf("event stream counts source=%0d/%0d CDC=%0d/%0d EF2=%0d/%0d PA=%0d/%0d",
+                  env.event_bus.source_beats,cfg.source_beats,
+                  env.event_bus.cdc_words,cfg.core_words,
+                  env.event_bus.ef2_words,cfg.core_words,
+                  env.event_bus.pa_words,cfg.core_words))
             if (require_signed_extremes &&
                 (env.coverage.signed_min_beats==0 || env.coverage.signed_max_beats==0))
               `uvm_fatal("COVERAGE",$sformatf("Signed endpoint bins missed: min=%0d max=%0d",
