@@ -7,6 +7,11 @@ from dsm_refmodel.thermo5 import (generate_source_vectors,
 
 
 class MonitorTraceOracleTests(unittest.TestCase):
+    def _renumber(self, events):
+        for seq, event in enumerate(events):
+            event["seq"] = seq
+        return events
+
     def _source_events(self, words=112):
         starts_words = tuple(range(1, words + 1, 7))
         gains_by_frame = (16384, 14336, 12288, 10240)
@@ -103,6 +108,36 @@ class MonitorTraceOracleTests(unittest.TestCase):
         ef2["q"][11] ^= 1
         with self.assertRaisesRegex(AssertionError, "EF2 mismatch at word 0, lane 11"):
             run_monitor_trace(ef2_mutation)
+
+    def test_scoreboard_mutations_detect_missing_duplicate_and_reordered_pa(self):
+        i_words, q_words, starts, gains, source = self._source_events(words=56)
+        expected = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        events = []
+        for beat in source:
+            events.append(dict(beat))
+        self._append_pa(events, expected, len(events))
+
+        missing = self._renumber([dict(event) for event in events[:-1]])
+        with self.assertRaisesRegex(AssertionError, "PA mismatch at word 55"):
+            run_monitor_trace(missing)
+
+        duplicate = [dict(event) for event in events]
+        duplicate.insert(len(source) + 12,
+                         dict(duplicate[len(source) + 11]))
+        with self.assertRaisesRegex(ValueError, "PA word index"):
+            run_monitor_trace(self._renumber(duplicate))
+
+        reordered = [dict(event) for event in events]
+        reordered[-1], reordered[-2] = reordered[-2], reordered[-1]
+        with self.assertRaisesRegex(ValueError, "PA word index"):
+            run_monitor_trace(self._renumber(reordered))
+
+    def test_scoreboard_mutation_detects_wrong_source_frame_id(self):
+        _, _, _, _, source = self._source_events(words=56)
+        events = [dict(event) for event in source]
+        events[8]["source_frame_id"] += 1
+        with self.assertRaisesRegex(ValueError, "source frame id"):
+            run_monitor_trace(self._renumber(events))
 
     def _append_pa(self, events, pa_words, seq):
         for word_index, planes in enumerate(pa_words):

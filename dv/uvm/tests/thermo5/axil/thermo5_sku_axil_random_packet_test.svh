@@ -63,6 +63,8 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
         $sformatf("independent online EF2 reference loaded=%b mismatches=%0d",
           env.unified_scoreboard.ef2_reference_loaded,
           env.unified_scoreboard.ef2_data_mismatches))
+    if (!env.unified_scoreboard.check_expected_queues_drained("random-packet"))
+      `uvm_fatal("RANDOM_EXPECTED_QUEUE","Independent scoreboard did not drain at packet completion")
     if (source_beats!=cfg.source_beats ||
         env.scoreboard.source_checked!=cfg.source_beats ||
         env.scoreboard.checked!=cfg.core_words ||
@@ -95,12 +97,10 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
             vif.dpd_saturation_count[lane]))
     end
     env.coverage.sample_random_packet_crosses();
-    if (!env.coverage.source_gap_seen || !env.coverage.fifo_full_seen ||
-        !env.coverage.pa_stall_seen)
+    if (!env.coverage.has_source_gap_fifo_pa_packet())
       `uvm_fatal("RANDOM_SCENARIO_CROSS",
-        $sformatf("packet cross requires observed source_gap=%b fifo_full=%b pa_stall=%b",
-          env.coverage.source_gap_seen,env.coverage.fifo_full_seen,
-          env.coverage.pa_stall_seen))
+        $sformatf("packet-scoped cross requires one epoch/packet with source gap, FIFO full, and PA stall; split_packet_records=%0d",
+          env.coverage.split_packet_cross_count()))
     `uvm_info("SKU_PASS",
       $sformatf("THERMO5_TX_RANDOM_PACKET_PASS source=%0d PA=%0d TLAST=%0d source_stall=%0d PA_stall=%0d FIFO_full=%0d",
         source_beats,env.scoreboard.checked,expected_last_count,

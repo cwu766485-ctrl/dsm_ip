@@ -190,6 +190,8 @@ class thermo5_transaction_event_bus extends uvm_component;
     tr.epoch=source.epoch;
     tr.event_cycle=source.beat_index;
     tr.local_index=source.beat_index;
+    tr.packet_id=source.packet_id;
+    tr.packet_id_valid=1'b1;
     tr.source_i=source.i_vec;
     tr.source_q=source.q_vec;
     tr.frame_start=source.frame_start;

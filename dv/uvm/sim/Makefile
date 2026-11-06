@@ -506,6 +506,11 @@ thermo5-axil-product-vcs-regression:
 	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_boundary_phase_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420110 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_boundary_phase_test \
+	  THERMO5_EXTRA_ARGS='+AXIL_STOP_AFTER_SOURCE +THERMO5_NEGATIVE_CROSS_AUDIT'
 	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
 	  --output-dir $(THERMO5_OUT)/negative_vectors --words 56 --seed 420102 \
 	  --profile random --interp-mode centered_cubic --dpd-profile identity \

@@ -35,6 +35,8 @@ class thermo5_transaction_event extends uvm_sequence_item;
   int unsigned event_cycle;
   int unsigned local_index;
   int unsigned frame_id;
+  int unsigned packet_id;
+  bit packet_id_valid;
   int unsigned config_id;
   int unsigned pending_config_id;
   bit frame_id_valid;
