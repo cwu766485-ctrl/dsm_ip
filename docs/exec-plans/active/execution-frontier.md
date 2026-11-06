@@ -2,34 +2,42 @@
 
 ## Current execution state: Thermo5 Branch Consolidation (2026-11-06)
 
-The target `thermo5` is still at `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
-PR #40 (`330815a5db5a26af50de81aff0c304dea714ead3`) and PR #41
-(`744683b987ae5ecdc542c7c5fbf24ad63301e25d`) are Draft/Open and unmerged.
-The branch/PR audit is recorded in
-`docs/verification/thermo5-branch-consolidation-audit-20261106.md` and its JSON
-manifest. All paths changed by PRs #27–#39 are present in PR #41; exact blob
-and reverse-patch comparisons identify evolved files. PR #36 counter Formal
-remains INCONCLUSIVE; PR #37 is scoped and does not prove the full FIFO/DPD
-chain. PR #32 has a stale recorded base SHA.
+`thermo5` now contains PR #40 and #41. PR #40 merged as
+`f8b14df743eeb6facfd0378b402f1670a6cf9b0f`; PR #41 merged as
+`8fddad5ba59814d9a0b95a9d94b88e7036efc16f` (tree
+`76b082af1c94a1082f3c68cc64fa42c1b63c6838`). PRs #27–#39 were commented as
+superseded by the integrated snapshots and closed. Their remote branch refs
+remain intact and recoverable; the available GitHub connector has no branch
+ref deletion operation.
 
-The audit found no product RTL, MATLAB, synthesis, or FPGA path changes in
-PR #40/#41. Round 11 regression evidence is bound to the PR #41 source tree,
-but the requested final product regression remains to be rerun after merging
-on the exact `thermo5` SHA. `hygiene` and `syntax` passed on both PR heads;
-`licensed-dv` was skipped. No force push was used.
+The branch/patch audit and final post-merge record are in
+`docs/verification/thermo5-branch-consolidation-audit-20261106.md`,
+`docs/verification/thermo5-branch-consolidation-postmerge-20261106.md`, and
+their adjacent JSON manifests. All audited PR #27–#39 changes are retained in
+the integrated source; parallel PR #36/#37 Formal changes were reviewed with
+their inconclusive/scoped limits preserved. The independent dirty Formal
+worktree and stash are unchanged.
 
-At audit start the current worktree was clean; one separate worktree
-(`codex/thermo5-tx-frame-tail-full-chain-formal`) contained unique uncommitted
-Formal/coverage changes and one Round 11 stash was present. Both are preserved.
-Five long-lived/history branches remain protected. The GitHub connector cannot
-delete branch refs and the environment has no authenticated `gh` CLI, so remote
-ref cleanup is not available here. After merging, close PRs #27–#39 as
-superseded; do not delete any unreviewed branch.
+The requested post-merge Linux matrix passed from the exact product source
+SHA: Generic FIFO and AXI-Lite VCS, System Random 110/110, DPD/Gain/Profile
+60/60, randomized Reset 24/24 and COMMIT 24/24, and Python 64/64. All 96
+compile-input file hashes and all 21 product RTL hashes match the final
+merged source; the compile fingerprint is
+`08e62a87420ee9a9acce7724d2cca3c909f8cb7265dac22563522ac97a74b300`.
 
-Next: publish the audit and portable path/whitespace cleanup on PR #41, merge
-PR #40 into `thermo5`, retarget and review PR #41, then run the complete
-Round 11 regression matrix against the merged target SHA. Preserve open
-coverage/Formal and physical-signoff limitations.
+The retained same-manifest Raw/Adjusted URG remains valid for this unchanged
+source fingerprint: Branch 524/637, Condition 657/849, Line 3338/3796,
+Toggle 91112/104480, FSM states 13/13 and transitions 18/22. Legal applicable
+Functional Coverage is 436/436 and all seven named system crosses remain
+closed. Waivers remain 371 pending, 0 approved, 0 active exclusions; the gate
+is still `RAW_100_OPEN`. Counter Formal remains INCONCLUSIVE; scoped
+frame-tail/DPD evidence does not close full-chain proof. Direct SV scoreboard
+mutation, real XPM/GT Wizard, Vivado PPA/timing, and physical RF/QAM256 remain
+open or not run. No RTL or frozen algorithm changed during consolidation.
+
+No force push or remote branch deletion was performed. The five independent
+long-lived/history branches remain preserved: `main`, `thermo5`, `thermo3`,
+`dsm`, and `dv-de-portfolio-20261006`.
 
 ## Previous execution snapshot: TX Final Verification Convergence Round 11 (2026-11-06)
 

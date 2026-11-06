@@ -117,8 +117,32 @@ worktree status, and stash reference are in
 
 ## Phase decision
 
-Phase 1 audit is recorded. PR #40/#41 are suitable integration candidates
-after the portable-path and whitespace cleanup is committed and their normal
-GitHub checks are refreshed. Phase 3 must run the requested regression matrix
-against the exact merged `thermo5` SHA. Raw/Adjusted coverage, Formal gaps,
-vendor XPM/GT, FPGA PPA, and physical RF/QAM256 remain separate open items.
+This was the decision at the end of the initial audit, before integration and
+post-merge verification. The completed state is recorded in the following
+section. Raw/Adjusted coverage, Formal gaps, vendor XPM/GT, FPGA PPA, and
+physical RF/QAM256 remain separate open items.
+
+## Post-merge disposition
+
+PR #40 merged into `thermo5` as `f8b14df743eeb6facfd0378b402f1670a6cf9b0f`.
+PR #41 was retargeted to the updated `thermo5` and merged as
+`8fddad5ba59814d9a0b95a9d94b88e7036efc16f`. The merge tree is
+`76b082af1c94a1082f3c68cc64fa42c1b63c6838`. The final source tree contains
+the audited changes from PR #27–#39, including the distinct Formal work from
+parallel PRs #36 and #37; their unresolved proof limits remain documented.
+
+The complete requested Linux product regression was run from a detached
+worktree at that exact merged SHA. All six suites passed. The 96-file compile
+input and 21-file product RTL hashes are byte-identical to the reviewed Round
+11 source manifest. Detailed commands, log hashes, Raw/Adjusted URG identity,
+and remaining limits are in
+[`thermo5-branch-consolidation-postmerge-20261106.md`](thermo5-branch-consolidation-postmerge-20261106.md)
+and its JSON evidence manifest.
+
+After those checks, PRs #27–#39 were each commented as superseded by #40/#41
+and closed. Their Git refs were not deleted and remain recoverable. The
+long-lived branches `main`, `thermo5`, `thermo3`, `dsm`, and
+`dv-de-portfolio-20261006` remain preserved. The separate dirty Formal
+worktree and existing stash are still untouched. The GitHub connector exposes
+no branch-ref deletion operation in this environment; no force-push or remote
+branch deletion was performed.

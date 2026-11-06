@@ -1,3 +1,33 @@
+# 2026-11-06 15:18 SGT - Complete Thermo5 branch consolidation
+
+- Merged PR #40 (`f8b14df743eeb6facfd0378b402f1670a6cf9b0f`) and PR #41
+  (`8fddad5ba59814d9a0b95a9d94b88e7036efc16f`) into `thermo5`; final tree is
+  `76b082af1c94a1082f3c68cc64fa42c1b63c6838`.
+- Revalidated the final merged source against all 96 Round 11 compile-input
+  hashes and 21 product RTL hashes: all match. Frozen TX RTL/algorithm was not
+  changed.
+- Ran the post-merge Linux matrix: Generic FIFO VCS, AXI-Lite product VCS,
+  System Random 110/110, DPD/Gain/Profile 60/60, randomized Reset 24/24,
+  randomized COMMIT 24/24, and Python reference tests 64/64 all PASS.
+- Preserved the validated same-manifest Raw/Adjusted URG result: Branch
+  524/637, Condition 657/849, Line 3338/3796, Toggle 91112/104480, FSM
+  states 13/13 and transitions 18/22. Legal applicable Functional Coverage
+  is 436/436; all seven named system crosses remain closed. No waivers or
+  exclusions were applied; gate remains `RAW_100_OPEN`.
+- Commented and closed PRs #27–#39 as superseded by #40/#41. Original remote
+  branch refs remain recoverable. Kept long-lived branches, dirty Formal
+  worktree, and stash. The available GitHub connector has no branch deletion
+  action; no force push or ref deletion was attempted.
+- Added the post-merge report and machine-readable source/run manifest. Logs,
+  VDBs, traces, and URG outputs remain under ignored `runs/`; they were not
+  added to Git.
+- Checks: six post-merge regression suites PASS; 96 source file hashes and 21
+  product RTL hashes match; JSON evidence parses; `git diff --check` PASS.
+  Outstanding-counter Formal is INCONCLUSIVE; 371 waiver candidates remain
+  pending; direct SV scoreboard mutation, real XPM/GT Wizard, Vivado PPA, and
+  physical RF/QAM256 remain open or not run.
+- Report: `docs/verification/thermo5-branch-consolidation-postmerge-20261106.md`.
+
 # 2026-11-06 - Thermo5 Branch Consolidation Audit
 
 - Fetched and inventoried all remote/local branches, PR refs, seven worktrees,

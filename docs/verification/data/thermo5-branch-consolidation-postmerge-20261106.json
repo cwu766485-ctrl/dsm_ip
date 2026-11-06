@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "repository": "cwu766485-ctrl/dsm_ip",
+  "target_branch": "thermo5",
+  "tested_commit": "8fddad5ba59814d9a0b95a9d94b88e7036efc16f",
+  "tested_tree": "76b082af1c94a1082f3c68cc64fa42c1b63c6838",
+  "commit_role": "Merged product source used for the post-merge regression. The documentation-only post-merge record is committed as a descendant.",
+  "merged_prs": [
+    {
+      "number": 40,
+      "merge_commit": "f8b14df743eeb6facfd0378b402f1670a6cf9b0f"
+    },
+    {
+      "number": 41,
+      "merge_commit": "8fddad5ba59814d9a0b95a9d94b88e7036efc16f"
+    }
+  ],
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "reset_image": "Identity",
+    "state_bits": 20,
+    "step": 5120
+  },
+  "compile_defines": [
+    "THERMO5_AXIL_CONTROL",
+    "THERMO5_CENTERED_CUBIC",
+    "THERMO5_TIDSM_ORDER=2",
+    "THERMO5_STEP=5120",
+    "THERMO5_DPD_MAX_TAPS=1"
+  ],
+  "source_binding": {
+    "compile_input_count": 96,
+    "compile_inputs_byte_identical_to_final_source": true,
+    "product_rtl_file_count": 21,
+    "product_rtl_all_byte_identical_to_final_source": true,
+    "product_rtl_aggregate_sha256": "c627e02758be102e379e5eb464590189f354894dc84fc967c8e408554be38fe8",
+    "compile_input_content_sha256": "08e62a87420ee9a9acce7724d2cca3c909f8cb7265dac22563522ac97a74b300",
+    "source_manifest_path": "docs/verification/data/thermo5-r11/thermo5-tx-clean-source-manifest.json",
+    "source_manifest_sha256": "8e79defb970cc5f8650142d858c1044e0a3c38cdc8c2631bfab7f73874a1e700",
+    "coverage_summary_path": "docs/verification/data/thermo5-r11/thermo5-tx-coverage-summary.json",
+    "coverage_summary_sha256": "dc31dc8e1d002a0ee56b8f0484aff08d51f745f04f7a700ffd1c2f268eff1262",
+    "vdb_input_manifest_path": "docs/verification/data/thermo5-r11/thermo5-tx-vdb-input-manifest.json",
+    "vdb_input_manifest_sha256_file": "613927721cf6a87a7bd7ed602ed787f560cf4305569cf6da734fcf62889d03c4",
+    "formal_status_path": "docs/verification/data/thermo5-r11/thermo5-tx-formal-status.json",
+    "formal_status_sha256": "7ed0edb8f5a8c45d9611c7df3118fccad02e898b108fe1f19bebe84f78cc8a3e",
+    "verified_compile_files": 96,
+    "mismatches": 0
+  },
+  "tool_versions": {
+    "python": "3.12.13",
+    "vcs": "V-2023.12-SP1_Full64",
+    "urg": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2_Full64"
+  },
+  "regressions": [
+    {
+      "name": "Generic FIFO product VCS",
+      "status": "PASS",
+      "tests": "7 directed scenarios",
+      "uvm_errors": 0,
+      "uvm_fatals": 0,
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3.12 THERMO5_OUT=<RUNS>/postmerge_generic THERMO5_VECTORS=<Round11-product-vectors> THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_FIFO_IMPL=generic",
+      "log_key": "generic_suite"
+    },
+    {
+      "name": "AXI-Lite product VCS",
+      "status": "PASS",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-axil-product-vcs-regression PYTHON=python3.12 THERMO5_OUT=<RUNS>/postmerge_axil THERMO5_VECTORS=<Round11-product-vectors> THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_FIFO_IMPL=generic",
+      "log_key": "axil_suite"
+    },
+    {
+      "name": "System Random",
+      "status": "PASS",
+      "cases": 110,
+      "random_packet_seeds": 100,
+      "long_stream_seeds": 10,
+      "seed_base": 721100,
+      "command": "python3.12 dv/uvm/sim/run_thermo5_system_random.py --out runs/thermo5_branch_consolidation_final_20261106/postmerge_system_random --random-seeds 100 --long-seeds 10 --seed-base 721100",
+      "summary_key": "system_random",
+      "log_key": "system_random_wrapper"
+    },
+    {
+      "name": "DPD x Gain x Input Profile",
+      "status": "PASS",
+      "cases": 60,
+      "seed_base": 1043100,
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 python3.12 dv/uvm/sim/run_thermo5_product_dpd_matrix.py --out runs/thermo5_branch_consolidation_final_20261106/postmerge_dpd_matrix --seed-base 1043100",
+      "summary_key": "dpd_matrix",
+      "log_key": "dpd_matrix_wrapper"
+    },
+    {
+      "name": "Randomized Reset",
+      "status": "PASS",
+      "cases": 24,
+      "seed_base": 1044100,
+      "schedule_seed": 20261106,
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 python3.12 dv/uvm/sim/run_thermo5_randomized_control.py --out runs/thermo5_branch_consolidation_final_20261106/postmerge_randomized_control --seed-base 1044100 --reset-cases 24 --commit-cases 24 --schedule-seed 20261106",
+      "summary_key": "randomized_control",
+      "log_key": "randomized_control_wrapper"
+    },
+    {
+      "name": "Randomized COMMIT",
+      "status": "PASS",
+      "cases": 24,
+      "seed_base": 1044100,
+      "schedule_seed": 20261106,
+      "summary_key": "randomized_control",
+      "log_key": "randomized_control_wrapper"
+    },
+    {
+      "name": "Python reference unit tests",
+      "status": "PASS",
+      "tests": 64,
+      "command": "PYTHONPATH=dv/uvm/refmodel/python:matlab PYTHONDONTWRITEBYTECODE=1 python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
+      "log_key": "python_unittest"
+    }
+  ],
+  "system_crosses": [
+    {
+      "name": "DPD x Gain x Input Profile",
+      "covered": 60,
+      "total": 60
+    },
+    {
+      "name": "COMMIT x Frame Boundary x PA Stall",
+      "covered": 2,
+      "total": 2
+    },
+    {
+      "name": "Reset x Pending COMMIT",
+      "covered": 4,
+      "total": 4
+    },
+    {
+      "name": "STATUS x COMMIT x STOP",
+      "covered": 1,
+      "total": 1
+    },
+    {
+      "name": "Source Gap x PA Stall x FIFO Full",
+      "covered": 1,
+      "total": 1
+    },
+    {
+      "name": "RUN x Prefill x Source Gap",
+      "covered": 1,
+      "total": 1
+    },
+    {
+      "name": "STOP x TLAST x Drain",
+      "covered": 1,
+      "total": 1
+    }
+  ],
+  "code_coverage": {
+    "source_fingerprint": "08e62a87420ee9a9acce7724d2cca3c909f8cb7265dac22563522ac97a74b300",
+    "vdb_count_tests": 449,
+    "raw_adjusted_same_input_manifest": true,
+    "vdb_manifest_sha256": "2dbdad75ac0a877381a30e46ece68ddef49cbdff1422943919a5585cc6faeb62",
+    "approved_waivers": 0,
+    "active_exclusions": 0,
+    "gate": "RAW_100_OPEN",
+    "raw": {
+      "branch": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "cond": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "line": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 91112,
+        "missing": 13368,
+        "percent": 87.2052,
+        "total": 104480
+      }
+    },
+    "adjusted": {
+      "branch": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "cond": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "line": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 91112,
+        "missing": 13368,
+        "percent": 87.2052,
+        "total": 104480
+      }
+    },
+    "fsm_raw": {
+      "states": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      },
+      "transitions": {
+        "covered": 18,
+        "missing": 4,
+        "percent": 81.8182,
+        "total": 22
+      }
+    },
+    "fsm_adjusted": {
+      "states": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      },
+      "transitions": {
+        "covered": 18,
+        "missing": 4,
+        "percent": 81.8182,
+        "total": 22
+      }
+    },
+    "functional_legal_bins": {
+      "covered": 436,
+      "percent": 100.0,
+      "total": 436,
+      "uncovered": 0
+    },
+    "functional_scoreable_bins": {
+      "covered": 440,
+      "total": 440
+    },
+    "open_code_tasks": 416,
+    "waivers": {
+      "total": 371,
+      "pending": 371,
+      "approved": 0,
+      "rejected": 0,
+      "active_exclusions": 0
+    },
+    "note": "The same validated 449-test-VDB plus design-VDB URG aggregate was retained; no new URG merge was performed because all 96 compile-input content hashes match the merged tree and PR #41 changed only documentation/evidence.",
+    "open_code_records": 14135,
+    "open_root_cause_groups": 416
+  },
+  "formal": {
+    "rerun_after_merge": false,
+    "source_content_reverified": true,
+    "source_status_manifest": "docs/verification/data/thermo5-r11/thermo5-tx-formal-status.json",
+    "results": [
+      {
+        "obligation": "AXI-Lite config leaf",
+        "status": "SCOPED_PASS"
+      },
+      {
+        "obligation": "Outstanding-counter saturation/underflow",
+        "status": "INCONCLUSIVE_OPEN"
+      },
+      {
+        "obligation": "q1_tail full-chain reachability",
+        "status": "SCOPED_ONLY_OPEN"
+      },
+      {
+        "obligation": "DPD Identity full chain",
+        "status": "SCOPED_LEAF_ONLY_OPEN"
+      },
+      {
+        "obligation": "COMMIT/Pending/Active full lifecycle",
+        "status": "OPEN"
+      }
+    ]
+  },
+  "pr_disposition": {
+    "merged": [
+      40,
+      41
+    ],
+    "closed_as_superseded": [
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ],
+    "branch_refs_deleted": false,
+    "branch_refs_recoverable": true,
+    "long_lived_preserved": [
+      "main",
+      "thermo5",
+      "thermo3",
+      "dsm",
+      "dv-de-portfolio-20261006"
+    ]
+  },
+  "preserved_uncommitted_state": {
+    "dirty_formal_worktree": "codex/thermo5-tx-frame-tail-full-chain-formal at af22d2a7f86ccc77ac7a3b9f04e671316a607d0f",
+    "stash": "21aadbe27f462def4b831a050bb697cfe419a04b",
+    "modified": false
+  },
+  "open_limits": [
+    "DUT Raw/Adjusted Code Coverage below 100%; RAW_100_OPEN",
+    "371 waiver candidates pending, 0 approved",
+    "direct SystemVerilog Unified Scoreboard mutation injection open",
+    "counter guard Formal inconclusive",
+    "full-chain q1_tail, DPD Identity and COMMIT lifecycle proofs open",
+    "real XPM/GT Wizard simulation not run",
+    "Vivado routed timing/PPA/power not run",
+    "physical RF/QAM256 BER not run"
+  ],
+  "logs": {
+    "generic_suite": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_generic_suite.log",
+      "sha256": "bb875d6fe71e76b3f4e66ea034b35491b74e47eab1fcee395470a0267c513155"
+    },
+    "generic_compile": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_generic/compile.log",
+      "sha256": "631660106fa83b74b3c485d77a76f63c4b19f12c05334eff2afb29b66fa6beff"
+    },
+    "axil_suite": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_axil_suite.log",
+      "sha256": "1178c0fceadeb424bef1b34379a8e48864fe1cc57e1a250da1941574ce1449d1"
+    },
+    "axil_compile": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_axil/compile.log",
+      "sha256": "fdb471006a481bffe3040cff185be8662a3966f43a51b0145d2578dabc417ad7"
+    },
+    "axil_product_coverage_merge": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_axil/product_coverage_merge.log",
+      "sha256": "db4df44822fd516a85a45fdbb7a1bc74b19275158d7975da5b432db273c719b2"
+    },
+    "system_random_wrapper": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_system_random_retry.log",
+      "sha256": "87a3d907f661db200120b4f57d6304d94dc4e90cd599ea5cc51e4014734be950"
+    },
+    "system_random_campaign": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_system_random.log",
+      "sha256": "00474d5769fbdcca6393466d9a9bebe3c5d415ca34219cb0fc4f947421687589"
+    },
+    "dpd_matrix_wrapper": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_dpd_matrix_wrapper.log",
+      "sha256": "ba096fe2b7b04ee816e335e373915bfeeb0cc359f9e0b6c5b2609407b1bd0cde"
+    },
+    "randomized_control_wrapper": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_randomized_control_wrapper.log",
+      "sha256": "837752e2a67091c795322ee48bb2717fc1ff3fbaa67180efff98a597ddaa6612"
+    },
+    "python_unittest": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_python_unittest.log",
+      "sha256": "fd5cc59c6d3ae2cfa9a5288b66ea06f9a35d4cdee4f5c2630f794991cc64cb19"
+    }
+  },
+  "summaries": {
+    "system_random": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_system_random/summary.json",
+      "sha256": "631bb66f06e472360ca0aa621a1f7fb23bde3bb3f5661c71a7d4761664d5d35b"
+    },
+    "dpd_matrix": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_dpd_matrix/summary.json",
+      "sha256": "f616e86ba414d44db075c67b10e7710b12952907320fe47e7025271a8ec45850"
+    },
+    "randomized_control": {
+      "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_randomized_control/summary.json",
+      "sha256": "ed279826b1d0c23f52bcb6cfcc37a05bdfbb3501ee5eb243312c957764a3f367"
+    }
+  }
+}
