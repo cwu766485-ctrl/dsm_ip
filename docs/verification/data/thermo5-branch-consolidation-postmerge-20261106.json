@@ -63,13 +63,13 @@
       "tests": "7 directed scenarios",
       "uvm_errors": 0,
       "uvm_fatals": 0,
-      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3.12 THERMO5_OUT=<RUNS>/postmerge_generic THERMO5_VECTORS=<Round11-product-vectors> THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_FIFO_IMPL=generic",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-vcs-regression PYTHON=python3.12 THERMO5_OUT=runs/thermo5_branch_consolidation_final_20261106/postmerge_generic THERMO5_VECTORS=runs/thermo5_tx_final_verification_r11/baseline/vectors/product THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_FIFO_IMPL=generic",
       "log_key": "generic_suite"
     },
     {
       "name": "AXI-Lite product VCS",
       "status": "PASS",
-      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-axil-product-vcs-regression PYTHON=python3.12 THERMO5_OUT=<RUNS>/postmerge_axil THERMO5_VECTORS=<Round11-product-vectors> THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_FIFO_IMPL=generic",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 make -C dv/uvm/sim thermo5-axil-product-vcs-regression PYTHON=python3.12 THERMO5_OUT=runs/thermo5_branch_consolidation_final_20261106/postmerge_axil THERMO5_VECTORS=runs/thermo5_tx_final_verification_r11/baseline/vectors/product THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 THERMO5_FIFO_IMPL=generic",
       "log_key": "axil_suite"
     },
     {
@@ -109,7 +109,8 @@
       "seed_base": 1044100,
       "schedule_seed": 20261106,
       "summary_key": "randomized_control",
-      "log_key": "randomized_control_wrapper"
+      "log_key": "randomized_control_wrapper",
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 python3.12 dv/uvm/sim/run_thermo5_randomized_control.py --out runs/thermo5_branch_consolidation_final_20261106/postmerge_randomized_control --seed-base 1044100 --reset-cases 24 --commit-cases 24 --schedule-seed 20261106"
     },
     {
       "name": "Python reference unit tests",
@@ -393,5 +394,10 @@
       "path": "runs/thermo5_branch_consolidation_final_20261106/postmerge_randomized_control/summary.json",
       "sha256": "ed279826b1d0c23f52bcb6cfcc37a05bdfbb3501ee5eb243312c957764a3f367"
     }
+  },
+  "run_environment": {
+    "cwd": "repository root",
+    "runs_directory": "runs/thermo5_branch_consolidation_final_20261106",
+    "vector_directory": "runs/thermo5_tx_final_verification_r11/baseline/vectors/product"
   }
 }
