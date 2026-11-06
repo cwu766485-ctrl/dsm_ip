@@ -28,7 +28,7 @@
     "top": "thermo5_sku_uvm_tb",
     "unparsed_parent_manifest_entries": [],
     "unparsed_parent_manifest_entry_count": 0,
-    "vcs_command": "vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps  -f /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL  +define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120  +define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/csrc  -cm line+cond+fsm+tgl+branch+assert -cm_hier /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_product_dut_coverage.hier  -debug_access+all -o /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/simv  -l /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/compile.log \\"
+    "vcs_command": "vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps  -f ./dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL  +define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120  +define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/csrc  -cm line+cond+fsm+tgl+branch+assert -cm_hier ./dv/uvm/sim/thermo5_product_dut_coverage.hier  -debug_access+all -o ./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/simv  -l ./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/build/compile.log \\"
   },
   "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
   "schema_version": 1,

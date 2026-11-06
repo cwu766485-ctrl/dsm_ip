@@ -40,15 +40,15 @@
     "adjusted_coverage": "same as Raw; no approved exclusions",
     "latest_report_inputs": {
       "report_manifest": {
-        "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/report_manifest.json",
+        "path": "./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/report_manifest.json",
         "sha256": "89a160024a966e65f1bd7db279bc2f6acef3ae7197698bace17a8942838e4840"
       },
       "urg_html": {
-        "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/raw_urg/mod6.html",
+        "path": "./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/raw_urg/mod6.html",
         "sha256": "256d27e3648974de9121f18e7c1e665bdde6497c1596c58c86d5ad5ee7dd7872"
       },
       "vdb_manifest": {
-        "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/vdb_manifest.json",
+        "path": "./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/coverage_247_round6_dual_urg/vdb_manifest.json",
         "sha256": "dd85345f197cb05f5aa60713b78269c3347ff3b786da4f501de6ef7676a77fa7"
       }
     },

@@ -189,10 +189,10 @@ The XSim vendor test also passed seed 10 with
 ```bash
 make -C dv/uvm/sim thermo5-axil-vcs-regression \
   THERMO5_FIFO_IMPL=generic \
-  THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/<unique-generic-run>
+  THERMO5_OUT=./runs/<unique-generic-run>
 make -C dv/uvm/sim thermo5-axil-vcs-regression \
   THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/Xilinx/Vivado/2024.1 \
-  THERMO5_OUT=/mnt/e/workspace/chip/dsm_ip/runs/<unique-xpm-run>
+  THERMO5_OUT=./runs/<unique-xpm-run>
 ```
 
   On 2026-10-12 the current three-VDB AXI-Lite integration merge passed for

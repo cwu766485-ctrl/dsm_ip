@@ -38,7 +38,7 @@
     "simulator_binary_sha256": "e36e47abf0954f068ae21f397942ccd4df69d253768e962b1c7d559e7cfa4777",
     "source_compile_base_commit": "ad3211b98677055646975e35924a5809c8d29bac",
     "source_count": 90,
-    "vcs_command": "vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps  -f /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL  +define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120  +define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/csrc  -cm line+cond+fsm+tgl+branch+assert -cm_hier /home/ray/workspace/dsm_ip/dv/uvm/sim/thermo5_product_dut_coverage.hier  -debug_access+all -o /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/simv  -l /home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/compile.log \\"
+    "vcs_command": "vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps  -f ./dv/uvm/sim/thermo5_sku_filelist.f +define+THERMO5_AXIL_CONTROL  +define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2 +define+THERMO5_STEP=5120  +define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb -Mdir=./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/csrc  -cm line+cond+fsm+tgl+branch+assert -cm_hier ./dv/uvm/sim/thermo5_product_dut_coverage.hier  -debug_access+all -o ./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/simv  -l ./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/compile.log \\"
   },
   "coverage": {
     "active_exclusions": false,
@@ -172,7 +172,7 @@
   "status": "PARTIAL",
   "target_test": {
     "axil_status_predictor_mismatches": 0,
-    "command": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/simv -no_save +UVM_TESTNAME=thermo5_sku_axil_frame_replacement_test +VEC_DIR=/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_vectors_seed930201 +ntb_random_seed=930833 +CORE_WORDS=112 +PACKET_BEATS=32 +THERMO5_SOURCE_GAP_BEAT=32 +THERMO5_SOURCE_GAP_CYCLES=11 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/interp_gap_sweep/frame_replace_producthier_stop_at_tlast_gap11.vdb -l runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/interp_gap_sweep/frame_replace_producthier_stop_at_tlast_gap11.log",
+    "command": "./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/product_hier_compile/simv -no_save +UVM_TESTNAME=thermo5_sku_axil_frame_replacement_test +VEC_DIR=./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/outstanding_vectors_seed930201 +ntb_random_seed=930833 +CORE_WORDS=112 +PACKET_BEATS=32 +THERMO5_SOURCE_GAP_BEAT=32 +THERMO5_SOURCE_GAP_CYCLES=11 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/interp_gap_sweep/frame_replace_producthier_stop_at_tlast_gap11.vdb -l runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/interp_gap_sweep/frame_replace_producthier_stop_at_tlast_gap11.log",
     "dut_coverage_hierarchy": "dv/uvm/sim/thermo5_product_dut_coverage.hier",
     "dut_coverage_hierarchy_enabled": true,
     "four_plane_checker": "PASS_BITTRUE",

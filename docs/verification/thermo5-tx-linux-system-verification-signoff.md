@@ -8,7 +8,7 @@
 > P1–P3 are still partial/open; see the current report for corrected coverage
 > values, exact assertion split, Formal status and remaining system scenarios.
 
-Date: 2026-11-03 (Asia/Singapore)  
+Date: 2026-11-03 (Asia/Singapore)
 VCS execution branch: `codex/thermo5-tx-system-random`
 Waiver audit branch: `codex/thermo5-tx-waiver-audit-round1` (Draft PR #31, stacked on PR #30)
 Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`

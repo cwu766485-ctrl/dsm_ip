@@ -51,9 +51,9 @@ The 98 entries in the analysis-only `.el` are **not approvals**. Official status
 Commands executed:
 
 ```bash
-bash -ilc 'cd /home/ray/workspace/dsm_ip && python3.12 runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/run_exact_metric_dump.py'
+bash -ilc 'cd . && python3.12 runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/run_exact_metric_dump.py'
 python3.12 runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/build_provisional_candidate.py
-bash -ilc 'cd /home/ray/workspace/dsm_ip && python3.12 runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/run_adjusted_urg.py'
+bash -ilc 'cd . && python3.12 runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/run_adjusted_urg.py'
 python3.12 tools/hw/thermo5_coverage_denominator.py runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/adjusted_urg runs/thermo5_tx_closure_current/current_source_20261104/waiver_round10_review/provisional_candidate/adjusted_inventory
 ```
 

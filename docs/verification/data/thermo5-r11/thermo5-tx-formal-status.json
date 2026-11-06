@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "source_commit": "d823654cba715e9093bb8cc08e6d819e8ae1365f",
+  "round11_formal_rerun": false,
+  "formal_results": [
+    {
+      "name": "AXI-Lite cfg focused proof",
+      "status": "PASS",
+      "proof_worktree_dirty_at_run": true,
+      "git_revision_at_run": "7f62dbb903aa857d287137918a5091807bd68788",
+      "source_file_count": 3,
+      "source_files_match_current_tree": true,
+      "assertions": {
+        "a_bvalid_clears_pending": "proven",
+        "a_coeff_read_default_unreachable": "proven",
+        "a_line88_tuple_unreachable": "proven",
+        "a_write_case_default_unreachable": "proven"
+      },
+      "covers": {
+        "c_coeff_read_default_arm_unreachable": "uncoverable",
+        "c_coeff_read_transaction": "covered",
+        "c_line88_tuple_unreachable": "uncoverable",
+        "c_write_case_default_unreachable": "uncoverable"
+      },
+      "assumption_count": 0,
+      "black_box_instances": 0,
+      "duration_seconds": 30.64,
+      "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "console_sha256": "1a27e535b5f0b73ce59feaf49286a5d79c873b741acb2e9f9a8e9a82c18e5a55",
+      "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+    },
+    {
+      "name": "Outstanding counter saturation/underflow",
+      "status": "INCONCLUSIVE",
+      "proof_worktree_dirty_at_run": true,
+      "git_revision_at_run": "7f62dbb903aa857d287137918a5091807bd68788",
+      "source_file_count": 19,
+      "source_files_match_current_tree": true,
+      "assertions": {
+        "a_no_counter_saturation_guard": "inconclusive",
+        "a_no_counter_underflow_guard": "inconclusive",
+        "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+        "a_outstanding_within_product_capacity": "inconclusive",
+        "a_pa_valid_has_outstanding_word": "inconclusive"
+      },
+      "covers": {
+        "c_arbitrary_source_bubble": "covered",
+        "c_core_accept": "covered",
+        "c_counter_saturation_guard": "inconclusive",
+        "c_counter_underflow_guard": "inconclusive",
+        "c_output_accept": "covered",
+        "c_source_accept": "covered"
+      },
+      "assumption_count": null,
+      "black_box_instances": null,
+      "duration_seconds": 292.74,
+      "properties_sha256": "1efe8550d46066f0b91a2463e75e88da4f4c1d40153a0d05c2e1956e74a8a7f5",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "console_sha256": "1673feca24d3b1616458615006b7545e803c3c248372e491cf2043f3ddc2797a",
+      "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+    }
+  ],
+  "retained_prior_evidence": [
+    {
+      "name": "Centered-Cubic q1_tail / frame-tail",
+      "status": "PASS_WITH_RAW_OPEN",
+      "scope": "Two-stage frame-marker proof; elastic FIFOs and DPD omitted; does not waive two legal no-attempt assertion rows.",
+      "evidence": "docs/verification/data/thermo5-tx-frame-tail-condition-formal-20261103.json"
+    },
+    {
+      "name": "DPD Identity",
+      "status": "PASS_SCOPED_LEAF_ONLY",
+      "scope": "One-tap datapath under output stall; not full AXI shadow/COMMIT/mailbox/CDC/pending/active composition.",
+      "evidence": "docs/verification/data/thermo5-tx-dpd-identity-stall-formal-20261103.json"
+    },
+    {
+      "name": "AXI-Lite COMMIT/Pending/Active full lifecycle",
+      "status": "OPEN",
+      "scope": "Simulation causality checker exists; no full-chain Formal proof."
+    }
+  ],
+  "disposition": "No INCONCLUSIVE proof is closed or waived. Retained proof records are not claimed as Round 11 reruns."
+}

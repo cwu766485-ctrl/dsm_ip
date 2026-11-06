@@ -125,11 +125,18 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
             end
             if (!idle_seen)
               `uvm_fatal("AXIL_DRAIN2_TIMEOUT","Second packet did not drain to idle")
+            if (!env.unified_scoreboard.check_expected_queues_drained("stop-restart"))
+              `uvm_fatal("AXIL_EXPECTED_QUEUE","Expected queue remained nonempty after final STOP/drain")
             env.coverage.sample_stop_restart(3'd5);
             if (env.coverage.stop_restart_cg.get_coverage()!=100.0)
               `uvm_fatal("AXIL_STOP_RESTART_COVERAGE",
                 $sformatf("STOP/restart event coverage %.1f%%",
                   env.coverage.stop_restart_cg.get_coverage()))
+            env.coverage.finalize_packet_crosses(1'b1);
+            if (env.coverage.stop_tlast_drain_hits<2)
+              `uvm_fatal("STOP_TLAST_DRAIN_CROSS",
+                $sformatf("Expected two same-packet STOP<TLAST<DRAIN records, observed %0d",
+                  env.coverage.stop_tlast_drain_hits))
             `uvm_info("SKU_PASS",
               "THERMO5_AXIL_STOP_RESTART_UVM_PASS: STOP drained packet 1; packet 2 stayed blocked until RUN restarted; 112 ordered four-plane words matched oracle",
               UVM_NONE)

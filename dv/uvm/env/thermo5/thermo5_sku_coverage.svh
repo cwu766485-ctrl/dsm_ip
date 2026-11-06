@@ -2,6 +2,26 @@
 // must check its required event counts; a sampled bin alone is not a PASS.
 class thermo5_sku_coverage extends uvm_component;
   `uvm_component_utils(thermo5_sku_coverage)
+  typedef struct packed {
+    int unsigned epoch;
+    int unsigned packet_id;
+    int unsigned source_beats;
+    bit source_gap;
+    bit fifo_full;
+    bit pa_stall;
+    bit run_seen;
+    bit prefill_before_run;
+    bit source_gap_after_run;
+    bit tlast_seen;
+    bit stop_before_tlast;
+    bit tlast_after_stop;
+    bit drain_after_tlast;
+    bit finalized;
+    longint unsigned stop_event_id;
+    longint unsigned tlast_event_id;
+    longint unsigned drain_event_id;
+  } packet_cross_record_t;
+
   uvm_analysis_imp_event#(thermo5_transaction_event,thermo5_sku_coverage) event_imp;
   virtual thermo5_sku_if vif;
   thermo5_sku_config cfg;
@@ -25,12 +45,37 @@ class thermo5_sku_coverage extends uvm_component;
   int unsigned pending_tlast_output_targets[$];
   int unsigned pending_tlast_cdc_output_targets[$];
   bit seen_src_release, last_src_rst_n, ef2_state_nonzero_seen;
-  bit source_gap_seen, fifo_full_seen, pa_stall_seen;
-  bit run_write_seen, prefill_before_run_seen, source_gap_after_run_seen;
-  bit stop_write_seen, source_tlast_seen, stop_tlast_seen;
-  int unsigned accepted_source_event_count;
+  packet_cross_record_t packet_cross[longint unsigned];
+  longint unsigned packet_cross_keys[$];
+  int unsigned last_source_epoch, last_source_packet_id;
+  bit last_source_packet_valid;
+  bit run_active;
+  longint unsigned stop_candidate_key;
+  bit stop_candidate_valid;
+  int unsigned output_words_per_packet;
   int unsigned source_gap_pa_fifo_full_hits, run_prefill_gap_hits;
   int unsigned stop_tlast_drain_hits;
+
+  function automatic longint unsigned packet_key(int unsigned epoch,
+                                                   int unsigned packet_id);
+    return {epoch,packet_id};
+  endfunction
+
+  function automatic packet_cross_record_t get_packet_record(
+      int unsigned epoch, int unsigned packet_id, bit create_if_missing=1'b1);
+    packet_cross_record_t record;
+    longint unsigned key;
+    key=packet_key(epoch,packet_id);
+    if (packet_cross.exists(key)) return packet_cross[key];
+    record='0;
+    record.epoch=epoch;
+    record.packet_id=packet_id;
+    if (create_if_missing) begin
+      packet_cross[key]=record;
+      packet_cross_keys.push_back(key);
+    end
+    return record;
+  endfunction
 
   // This is a packet-scenario cross: all three facts must be observed in the
   // same accepted packet and its test must pass its independent integrity
@@ -178,53 +223,84 @@ class thermo5_sku_coverage extends uvm_component;
 
   function void write_event(thermo5_transaction_event tr);
     int unsigned index;
+    longint unsigned key;
+    packet_cross_record_t record;
     index=tr.kind;
     if (index<10) event_counts[index]++;
     transaction_event_cg.sample(tr.kind);
     case (tr.kind)
       THERMO5_EVENT_RESET: begin
-        accepted_source_event_count=0;
-        source_gap_seen=0;
-        fifo_full_seen=0;
-        pa_stall_seen=0;
-        run_write_seen=0;
-        prefill_before_run_seen=0;
-        source_gap_after_run_seen=0;
-        stop_write_seen=0;
-        source_tlast_seen=0;
-        stop_tlast_seen=0;
+        packet_cross.delete();
+        packet_cross_keys.delete();
+        last_source_packet_valid=0;
+        run_active=0;
+        stop_candidate_valid=0;
       end
       THERMO5_EVENT_SOURCE_BEAT: begin
-        accepted_source_event_count++;
-        if (tr.valid_gap_cycles!=0) source_gap_seen=1;
-        if (tr.valid_gap_cycles!=0 && run_write_seen && prefill_before_run_seen) begin
-          source_gap_after_run_seen=1;
-          run_prefill_gap_hits++;
-          run_prefill_gap_cg.sample(run_write_seen,prefill_before_run_seen,1'b1);
-        end
+        if (!tr.packet_id_valid)
+          `uvm_error("PACKET_ID_MISSING","Accepted AXIS transaction has no packet ID")
+        key=packet_key(tr.epoch,tr.packet_id);
+        record=get_packet_record(tr.epoch,tr.packet_id);
+        record.source_beats++;
+        if (run_active) record.run_seen=1;
+        if (tr.valid_gap_cycles!=0) record.source_gap=1;
+        if (tr.valid_gap_cycles!=0 && record.run_seen &&
+            record.prefill_before_run)
+          record.source_gap_after_run=1;
         if (tr.tlast) begin
-          source_tlast_seen=1;
-          if (stop_write_seen) stop_tlast_seen=1;
+          record.tlast_seen=1;
+          if (stop_candidate_valid && key==stop_candidate_key &&
+              record.stop_before_tlast && tr.event_id>record.stop_event_id) begin
+            record.tlast_after_stop=1;
+            record.tlast_event_id=tr.event_id;
+          end
         end
+        packet_cross[key]=record;
+        last_source_epoch=tr.epoch;
+        last_source_packet_id=tr.packet_id;
+        last_source_packet_valid=1;
       end
       THERMO5_EVENT_AXIL_WRITE: begin
         if (tr.axil_addr==8'h00 && tr.axil_strb[0]) begin
-          if (tr.axil_data[0]) begin
-            if (!run_write_seen && accepted_source_event_count!=0)
-              prefill_before_run_seen=1;
-            run_write_seen=1;
-          end else begin
-            stop_write_seen=1;
-            if (source_tlast_seen) stop_tlast_seen=1;
+          if (last_source_packet_valid) begin
+            key=packet_key(last_source_epoch,last_source_packet_id);
+            record=get_packet_record(last_source_epoch,last_source_packet_id);
+            if (tr.axil_data[0]) begin
+              run_active=1;
+              if (!record.run_seen && record.source_beats!=0 && !record.tlast_seen)
+                record.prefill_before_run=1;
+              record.run_seen=1;
+            end else begin
+              if (record.run_seen && record.source_beats!=0 &&
+                  !record.tlast_seen) begin
+              // The cross is specifically STOP-before-TLAST. A TLAST that
+              // was already observed can never be retroactively paired with
+              // a later STOP write.
+                record.stop_before_tlast=1;
+                record.stop_event_id=tr.event_id;
+                stop_candidate_key=key;
+                stop_candidate_valid=1;
+              end
+              run_active=0;
+            end
+            packet_cross[key]=record;
           end
         end
       end
       THERMO5_EVENT_AXIL_RESPONSE: begin
         if (!tr.is_write && tr.axil_addr==8'h04 &&
             tr.axil_resp==2'b00 && tr.axil_rdata[4:3]==2'b00 &&
-            stop_tlast_seen) begin
-          stop_tlast_drain_hits++;
-          stop_tlast_drain_cg.sample(stop_write_seen,source_tlast_seen,1'b1);
+            stop_candidate_valid) begin
+          key=stop_candidate_key;
+          if (packet_cross.exists(key)) begin
+            record=packet_cross[key];
+            if (record.stop_before_tlast && record.tlast_after_stop &&
+                tr.event_id>record.tlast_event_id) begin
+              record.drain_after_tlast=1;
+              record.drain_event_id=tr.event_id;
+              packet_cross[key]=record;
+            end
+          end
         end
       end
       default: begin end
@@ -235,10 +311,115 @@ class thermo5_sku_coverage extends uvm_component;
     stop_restart_cg.sample(event_code);
   endfunction
 
+  function void finalize_packet_crosses(bit integrity_pass);
+    packet_cross_record_t record;
+    longint unsigned key;
+    int sampled_gap_fifo_pa=0, sampled_run_prefill_gap=0;
+    int sampled_stop_tlast_drain=0;
+    if (!integrity_pass) begin
+      `uvm_error("COVERAGE_INTEGRITY","Scenario crosses cannot be finalized without a passing DUT integrity check")
+      return;
+    end
+    for (int unsigned index=0;index<packet_cross_keys.size();index++) begin
+      key=packet_cross_keys[index];
+      if (!packet_cross.exists(key)) continue;
+      record=packet_cross[key];
+      if (record.finalized) continue;
+      record.finalized=1;
+      packet_cross[key]=record;
+      if (record.source_gap && record.fifo_full && record.pa_stall) begin
+        source_gap_pa_fifo_cg.sample(1'b1,1'b1,1'b1);
+        source_gap_pa_fifo_full_hits++;
+        sampled_gap_fifo_pa++;
+      end
+      if (record.run_seen && record.prefill_before_run &&
+          record.source_gap_after_run) begin
+        run_prefill_gap_cg.sample(1'b1,1'b1,1'b1);
+        run_prefill_gap_hits++;
+        sampled_run_prefill_gap++;
+      end
+      if (record.stop_before_tlast && record.tlast_after_stop &&
+          record.drain_after_tlast) begin
+        stop_tlast_drain_cg.sample(1'b1,1'b1,1'b1);
+        stop_tlast_drain_hits++;
+        sampled_stop_tlast_drain++;
+      end
+      `uvm_info("PACKET_CROSS_AUDIT",
+        $sformatf("epoch=%0d packet=%0d source_gap=%b fifo_full=%b pa_stall=%b run=%b prefill=%b gap_after_run=%b stop_before_tlast=%b tlast_after_stop=%b drain_after_tlast=%b integrity=PASS",
+          record.epoch,record.packet_id,record.source_gap,record.fifo_full,
+          record.pa_stall,record.run_seen,record.prefill_before_run,
+          record.source_gap_after_run,record.stop_before_tlast,
+          record.tlast_after_stop,record.drain_after_tlast),UVM_MEDIUM)
+    end
+    `uvm_info("PACKET_CROSS_FINALIZE",
+      $sformatf("integrity=PASS packet_records=%0d gap_fifo_pa=%0d run_prefill_gap=%0d stop_tlast_drain=%0d",
+        packet_cross_keys.size(),sampled_gap_fifo_pa,sampled_run_prefill_gap,
+        sampled_stop_tlast_drain),UVM_LOW)
+  endfunction
+
   function void sample_random_packet_crosses();
-    if (source_gap_seen && fifo_full_seen && pa_stall_seen)
-      source_gap_pa_fifo_full_hits++;
-    source_gap_pa_fifo_cg.sample(source_gap_seen,fifo_full_seen,pa_stall_seen);
+    // Legacy call site retained: it occurs only after the test has completed
+    // its independent source/CDC/EF2/PA and STATUS checks.
+    finalize_packet_crosses(1'b1);
+  endfunction
+
+  function bit has_source_gap_fifo_pa_packet();
+    return source_gap_pa_fifo_full_hits!=0;
+  endfunction
+
+  function int unsigned split_packet_cross_count();
+    packet_cross_record_t record;
+    int unsigned count;
+    for (int unsigned index=0;index<packet_cross_keys.size();index++) begin
+      if (packet_cross.exists(packet_cross_keys[index])) begin
+        record=packet_cross[packet_cross_keys[index]];
+        if ((record.source_gap || record.fifo_full || record.pa_stall) &&
+            !(record.source_gap && record.fifo_full && record.pa_stall))
+          count++;
+      end
+    end
+    return count;
+  endfunction
+
+  function bit audit_split_packet_negative();
+    packet_cross_record_t record;
+    longint unsigned key;
+    packet_cross.delete();
+    packet_cross_keys.delete();
+    source_gap_pa_fifo_full_hits=0;
+    run_prefill_gap_hits=0;
+    stop_tlast_drain_hits=0;
+    record='0;
+    record.epoch=32'hffff_fffe;
+    record.packet_id=0;
+    record.source_gap=1;
+    key=packet_key(record.epoch,record.packet_id);
+    packet_cross[key]=record;
+    packet_cross_keys.push_back(key);
+    record='0;
+    record.epoch=32'hffff_fffe;
+    record.packet_id=1;
+    record.fifo_full=1;
+    record.pa_stall=1;
+    key=packet_key(record.epoch,record.packet_id);
+    packet_cross[key]=record;
+    packet_cross_keys.push_back(key);
+    finalize_packet_crosses(1'b1);
+    if (source_gap_pa_fifo_full_hits!=0 ||
+        source_gap_pa_fifo_cg.get_coverage()!=0.0) begin
+      `uvm_error("CROSS_PACKET_FALSE_HIT",
+        "Source gap from packet 0 combined with FIFO-full/PA-stall from packet 1")
+      return 0;
+    end
+    packet_cross.delete();
+    packet_cross_keys.delete();
+    last_source_packet_valid=0;
+    run_active=0;
+    stop_candidate_valid=0;
+    `uvm_info("CROSS_PACKET_NEGATIVE_PASS",
+      "packet 0 source gap and packet 1 FIFO-full/PA-stall did not hit the same-packet Cross",
+      UVM_NONE)
+    return 1;
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -253,6 +434,8 @@ class thermo5_sku_coverage extends uvm_component;
     bit accepted_min, accepted_max;
     bit accepted_last;
     int unsigned sampled_packet_quanta;
+    packet_cross_record_t packet_record;
+    longint unsigned packet_record_key;
     fork
       forever begin
         @(posedge vif.src_clk);
@@ -302,7 +485,12 @@ class thermo5_sku_coverage extends uvm_component;
         if (vif.src_rst_n) begin
           if (vif.fifo_full) begin
             fifo_full_cycles++;
-            fifo_full_seen=1;
+            if (last_source_packet_valid) begin
+              packet_record_key=packet_key(last_source_epoch,last_source_packet_id);
+              packet_record=get_packet_record(last_source_epoch,last_source_packet_id);
+              packet_record.fifo_full=1;
+              packet_cross[packet_record_key]=packet_record;
+            end
           end
           if (vif.src_valid && !vif.src_ready) source_stall_cycles++;
           if (vif.src_valid && vif.src_ready && vif.frame_start) frame_starts++;
@@ -322,7 +510,15 @@ class thermo5_sku_coverage extends uvm_component;
                        vif.pa_valid==4'hf && vif.pa_ready!=4'hf,
                        vif.pa_valid==4'hf && vif.pa_ready==4'hf);
         if (vif.core_rst_n) begin
-          if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf) pa_stall_seen=1;
+          if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf &&
+              last_source_packet_valid && output_words_per_packet!=0) begin
+            int unsigned output_packet_id;
+            output_packet_id=accepted_output_words_epoch/output_words_per_packet;
+            packet_record_key=packet_key(last_source_epoch,output_packet_id);
+            packet_record=get_packet_record(last_source_epoch,output_packet_id);
+            packet_record.pa_stall=1;
+            packet_cross[packet_record_key]=packet_record;
+          end
           if (!cfg.illegal_frame) begin
             if (vif.cdc_end_false_arm)
               cdc_end_remaining_false_arm_events++;
@@ -429,5 +625,23 @@ class thermo5_sku_coverage extends uvm_component;
         event_counts[THERMO5_EVENT_AXIL_RESPONSE],event_counts[THERMO5_EVENT_CDC_WORD],
         event_counts[THERMO5_EVENT_DSP_OBSERVATION],event_counts[THERMO5_EVENT_EF2_WORD],
         event_counts[THERMO5_EVENT_EF2_STALL],event_counts[THERMO5_EVENT_RESET]),UVM_NONE)
+  endfunction
+
+  function void connect_phase(uvm_phase phase);
+    int unsigned packet_count;
+    super.connect_phase(phase);
+    if (cfg.source_beats>=32 && cfg.source_beats%32==0) begin
+      packet_count=cfg.source_beats/32;
+      if (packet_count!=0 && cfg.core_words%packet_count==0)
+        output_words_per_packet=cfg.core_words/packet_count;
+      else
+        `uvm_error("PACKET_OUTPUT_RATIO",
+          $sformatf("Cannot map PA output words to AXIS packets: source=%0d output=%0d",
+            cfg.source_beats,cfg.core_words))
+    end else begin
+      `uvm_error("PACKET_LENGTH_CONTRACT",
+        $sformatf("Packet-scoped coverage requires 32-beat packets, source_beats=%0d",
+          cfg.source_beats))
+    end
   endfunction
 endclass

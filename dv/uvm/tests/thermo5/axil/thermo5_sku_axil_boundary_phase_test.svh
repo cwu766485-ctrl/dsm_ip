@@ -22,6 +22,7 @@ class thermo5_sku_axil_boundary_phase_test extends thermo5_sku_axil_config_test;
     bit commit_on_run;
     bit early_bready;
     bit stop_after_source;
+    bit run_negative_cross_audit;
 
     if (!$value$plusargs("AXIL_BOUNDARY_OFFSET=%d",boundary_offset))
       boundary_offset=0;
@@ -40,6 +41,7 @@ class thermo5_sku_axil_boundary_phase_test extends thermo5_sku_axil_config_test;
     commit_on_run=$test$plusargs("AXIL_COMMIT_ON_RUN");
     early_bready=$test$plusargs("AXIL_EARLY_BREADY");
     stop_after_source=$test$plusargs("AXIL_STOP_AFTER_SOURCE");
+    run_negative_cross_audit=$test$plusargs("THERMO5_NEGATIVE_CROSS_AUDIT");
     if (boundary_offset>64)
       `uvm_fatal("AXIL_BOUNDARY_OFFSET","Offset must be in [0,64] core cycles")
     if (start_after_beats<1 || start_after_beats>cfg.source_beats)
@@ -53,6 +55,9 @@ class thermo5_sku_axil_boundary_phase_test extends thermo5_sku_axil_config_test;
       `uvm_fatal("AXIL_COMMIT_SCHEDULE","Use commit-on-run or a 0..80 core-cycle delay, not both")
 
     phase.raise_objection(this);
+    if (run_negative_cross_audit && !env.coverage.audit_split_packet_negative())
+      `uvm_fatal("CROSS_PACKET_NEGATIVE_AUDIT",
+        "Cross-packet separated observations falsely hit packet-scoped coverage")
     fork
       begin
         fork
@@ -114,11 +119,19 @@ class thermo5_sku_axil_boundary_phase_test extends thermo5_sku_axil_config_test;
 
             wait(env.scoreboard.checked==cfg.core_words);
             check_full();
+            if (!env.unified_scoreboard.check_expected_queues_drained("boundary-phase"))
+              `uvm_fatal("AXIL_BOUNDARY_EXPECTED_QUEUE",
+                "Expected queues remained nonempty after boundary-phase output completion")
             if (!stop_after_source) begin
               axil_write(8'h00,32'd0,0,0,resp);
               if (resp!=2'b00)
                 `uvm_fatal("AXIL_PHASE_STOP","Could not stop after the bit-true stream drained")
             end
+            env.coverage.finalize_packet_crosses(1'b1);
+            if (stop_after_source && env.coverage.stop_tlast_drain_hits!=0)
+              `uvm_fatal("TLAST_BEFORE_STOP_FALSE_HIT",
+                $sformatf("TLAST preceded STOP but STOP<TLAST<DRAIN coverage hit %0d times",
+                  env.coverage.stop_tlast_drain_hits))
             `uvm_info("SKU_PASS",
               $sformatf("THERMO5_AXIL_BOUNDARY_PHASE_UVM_PASS offset=%0d aw_gap=%0d w_gap=%0d gap_beat=%0d gap_cycles=%0d start_after_beats=%0d commit_on_run=%0d commit_after_run_cycles=%0d boundary=external-handshake identity=bittrue",
                         boundary_offset,aw_gap,w_gap,source_gap_beat,source_gap_cycles,start_after_beats,commit_on_run,commit_after_run_cycles),UVM_NONE)

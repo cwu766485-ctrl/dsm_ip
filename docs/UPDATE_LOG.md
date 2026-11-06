@@ -1,3 +1,74 @@
+# 2026-11-06 - Thermo5 Branch Consolidation Audit
+
+- Fetched and inventoried all remote/local branches, PR refs, seven worktrees,
+  and the existing stash. Preserved the one dirty full-chain Formal/coverage
+  worktree and the Round 11 stash.
+- Audited PR #27–#39 against PR #41 using exact blob comparisons and per-file
+  reverse-patch checks. All 404 changed paths are present in the candidate
+  tree; evolved files are recorded as context differences, not treated as
+  integrated solely because their paths match. Reviewed parallel PR #36/#37
+  Formal evidence and recorded their INCONCLUSIVE/scoped limits.
+- Reviewed PR #40/#41 source roots, history, GitHub checks and review state.
+  No product RTL, MATLAB, synthesis, or FPGA sources changed. Both heads have
+  passing `hygiene`/`syntax` checks; licensed DV is skipped. PRs remain
+  unmerged pending final post-merge regression.
+- Replaced machine-specific workspace paths in evidence/documentation with
+  repository-relative or generic tool-root references. VDB identities and
+  recorded content hashes were not changed. Cleaned report-header trailing
+  whitespace.
+- Added the branch audit report and machine-readable manifest. Remote branch
+  refs are preserved; this environment lacks an authenticated deletion path.
+- Checks: branch/PR inventory and ancestry audit; exact file/blob and
+  reverse-patch comparison; static credential-marker scan; changed JSON files
+  parse; `git diff --cached --check` passes. No force push or branch deletion
+  was performed.
+
+# 2026-11-06 - Thermo5 TX Final Verification Convergence Round 11
+
+- Published Round 11 code commit `cd9532a7d805f2f60250f2ef687a15711a9c485e` on
+  `codex/thermo5-final-verification-round11`; its source tree `244b49c4daf1561806d7f02d6dfb560227757571` exactly
+  matches the local simulation commit `d823654cba715e9093bb8cc08e6d819e8ae1365f`. Opened Draft PR
+  [#41](https://github.com/cwu766485-ctrl/dsm_ip/pull/41), stacked on PR #40; GitHub reports it mergeable and it remains unmerged. The report/evidence use PR #40 HEAD
+  `330815a5db5a26af50de81aff0c304dea714ead3`. Confirmed PR #40 includes all
+  255 unique paths touched by PRs #27–#39 within its 266-path diff; it remains
+  Draft/Open and was not merged.
+- Reconciled the previous 195-path / 193-test URG discrepancy: all 193 test
+  entries are present and the other two inputs are design VDBs. The refreshed
+  Raw/Adjusted package uses 449 test VDBs plus one fresh design VDB. The 231
+  retained VDBs match the current 96-file compile-input content fingerprint;
+  218 VDBs came from fresh Round 11 runs.
+- Updated event-based Functional Coverage semantics to use Reset Epoch and
+  Packet ID for Source Gap/FIFO Full/PA Stall and RUN/Prefill/Source Gap, and
+  strict STOP < TLAST < Drain ordering. The cross-packet and TLAST-before-STOP
+  negative checks passed. All seven named scenario crosses are fully hit.
+- Fresh Linux runs passed: Generic FIFO core VCS, AXI-Lite product VCS, 110
+  System Random cases, 60 DPD/Gain/Profile cases, 24 Reset and 24 COMMIT
+  trials, and Python tests 64/64. Frozen product RTL and algorithm were not
+  modified.
+- Refreshed DUT-only Raw and Adjusted URG from the same VDB manifest. Results
+  are Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91112/104480,
+  FSM states 13/13 and transitions 18/22. Raw equals Adjusted because there
+  are zero approved waivers and zero active exclusions. Legal Functional
+  Coverage is 436/436; 371 waiver rows remain pending. The gate remains
+  `RAW_100_OPEN` with 14,135 open code records in 416 tasks.
+- Assertion audit separates legal tests (13 success, zero failures, two
+  uncovered and two without attempts) from two expected-negative VDBs, which
+  have three checker-confirmed assertion failures. The two legal `q1_tail`
+  instances remain unattempted. AXI-Lite config Formal is a focused PASS;
+  counter-guard Formal remains INCONCLUSIVE. Scoped q1_tail and DPD Identity
+  results remain OPEN for Raw/full-chain signoff. Direct SV Unified Scoreboard
+  mutation injection remains OPEN; Python trace mutation checks passed.
+- Added the report, clean-source manifest, itemized VDB merge inventory,
+  functional bin audit/detail, open-bin ledger and grouped tasks under
+  `docs/verification/thermo5-r11/`. Full logs/VDBs/URG reports remain ignored
+  under `runs/`; their hashes are indexed in the Round 11 JSON evidence.
+- Checks: six listed regression suites PASS; current 96 compile-input hashes
+  match; all 21 product RTL hashes match; seven exact cross bin totals verified;
+  Round 10 VDB reconciliation validated; evidence JSON parses; `git diff
+  --check` PASS. No RX, AI-DPD, XPM, GT Wizard, Vivado or physical RF/QAM256
+  run was performed.
+- Report: `docs/verification/thermo5-tx-final-verification-round11-20261106.md`.
+
 # 2026-11-05 17:30 SGT - Refresh TX Raw coverage and audit waiver candidates
 
 - Re-ran URG on the current retained product inventory (195 unique test-VDB
@@ -3932,7 +4003,7 @@ distinguishes last successful commit from later untested protocol-reset fix.
   the TSMC28 RVT TT library.  DC loaded the library and reported 839 cells
   with 15 inverter-name matches; this is valid mapping-library evidence.
 - The previously referenced SRAM macro `.db` under
-  `/home/ray/ic/CIMForge/syn/out/pdk_cache/` was not found.  Full macro-aware
+  `an external CIMForge project directory/syn/out/pdk_cache/` was not found.  Full macro-aware
   synthesis remains blocked; standard-cell-only synthesis can proceed now.
 
 ## 2026-09-21 23:58 SGT - Thermo5 routed closure and CDC/serializer verification
@@ -5234,7 +5305,8 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 ## 2026-10-13 10:50 SGT - XPM bit24 local-input restart
 
 - Diagnosis: the first fresh XPM attempt, seed610708, was blocked in WSL
-  `p9_client_rpc` while streaming 2.5 GB of vectors from `/mnt/e`; after47 CPU
+  `p9_client_rpc` while streaming 2.5 GB of vectors from an external mounted
+  drive; after 47 CPU
   seconds it was stopped (exit255), and its partial VDB is explicitly
   excluded. No functional failure was observed.
 - Change/check: copied the eight unchanged oracle `.mem` inputs to

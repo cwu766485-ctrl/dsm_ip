@@ -206,6 +206,15 @@ class thermo5_unified_scoreboard extends uvm_component;
         `uvm_fatal("EF2_REFERENCE_MISSING","Online EF2 comparison enabled without a loaded reference")
       for (int lane=0;lane<32;lane++) begin
         sample_index=tr.local_index*32+lane;
+        if (sample_index>=expected_ef2_i_samples.size() ||
+            sample_index>=expected_ef2_q_samples.size()) begin
+          ef2_data_mismatches++;
+          `uvm_error("UNIFIED_EF2_INDEX",
+            $sformatf("epoch=%0d word=%0d lane=%0d sample index=%0d exceeds sidecar I/Q sizes %0d/%0d",
+              active_epoch,tr.local_index,lane,sample_index,
+              expected_ef2_i_samples.size(),expected_ef2_q_samples.size()))
+          return;
+        end
         expected_i=expected_ef2_i_samples[sample_index];
         expected_q=expected_ef2_q_samples[sample_index];
         observed_i=$signed(tr.ef2_i[lane*16+:16]);
@@ -451,6 +460,24 @@ class thermo5_unified_scoreboard extends uvm_component;
     `uvm_error("UNIFIED_STAGE_INDEX",
       $sformatf("%s local index=%0d expected=%0d in epoch=%0d",
         stage,observed,expected,active_epoch))
+  endfunction
+
+  function bit check_expected_queues_drained(input string checkpoint);
+    bit clean;
+    clean=(expected_i_samples.size()==0 && expected_q_samples.size()==0 &&
+           expected_start_samples.size()==0 && expected_end_samples.size()==0 &&
+           expected_gain_samples.size()==0 && expected_frame_ids.size()==0 &&
+           expected_commit_ids.size()==0 && !config_pending_model &&
+           !config_applied_model && !config_ack_model);
+    if (!clean)
+      `uvm_error("UNIFIED_DRAIN",
+        $sformatf("%s expected source queues=%0d/%0d/%0d/%0d/%0d/%0d commits=%0d pending=%b applied=%b ack=%b",
+          checkpoint,expected_i_samples.size(),expected_q_samples.size(),
+          expected_start_samples.size(),expected_end_samples.size(),
+          expected_gain_samples.size(),expected_frame_ids.size(),
+          expected_commit_ids.size(),config_pending_model,
+          config_applied_model,config_ack_model))
+    return clean;
   endfunction
 
   function void report_phase(uvm_phase phase);

@@ -383,9 +383,12 @@ def main():
                        "thermo5_tx_system_random"]
         try:
             run(urg_command, cwd=ROOT, env=env, log_path=logs_root / "urg.log")
+            # This campaign generates packet/long-stream source and PA
+            # backpressure, but it does not issue STOP.  STOP/TLAST/Drain is
+            # closed by the dedicated stop/restart scenario and is checked in
+            # the final cross-campaign URG merge, not against this VDB subset.
             for name in ("x_source_gap_pa_stall_fifo_full",
-                         "x_run_prefill_source_gap",
-                         "x_stop_tlast_drain"):
+                         "x_run_prefill_source_gap"):
                 counts = cross_counts(report_dir, name)
                 system_crosses[name] = {
                     "expected": counts[0], "uncovered": counts[1],
@@ -394,6 +397,10 @@ def main():
                 if counts != (1, 0, 1):
                     raise RuntimeError("system cross %s not closed: %s" % (
                         name, counts))
+            system_crosses["x_stop_tlast_drain"] = {
+                "expected": 1, "uncovered": None, "covered": None,
+                "status": "CHECKED_IN_DEDICATED_STOP_RESTART_CAMPAIGN",
+            }
             urg_result = "PASS"
         except RuntimeError as exc:
             urg_result = "FAIL: " + str(exc).splitlines()[0]

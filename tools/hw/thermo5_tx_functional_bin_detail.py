@@ -165,10 +165,10 @@ def main() -> int:
     parser.add_argument("--negative-audit", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--product-source-sha", required=True,
-                        help="full Git SHA of the product RTL/DV inputs used for the VCS database")
+                        help="40-character Git SHA or 64-character source fingerprint for the product RTL/DV inputs")
     args = parser.parse_args()
-    if not re.fullmatch(r"[0-9a-fA-F]{40}", args.product_source_sha):
-        parser.error("--product-source-sha must be a full 40-character Git SHA")
+    if not re.fullmatch(r"(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})", args.product_source_sha):
+        parser.error("--product-source-sha must be a 40-character Git SHA or 64-character source fingerprint")
     raw = args.raw_report.resolve()
     if not (raw / "groups.html").is_file():
         parser.error("--raw-report must point at a URG report containing groups.html")
