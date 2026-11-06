@@ -24,7 +24,7 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
                 (positive ? (|vif.ef2_pos_clamp_candidate) :
                             (|vif.ef2_neg_clamp_candidate));
     end
-    vif.pa_ready=4'h0;
+    env.pa_sink.set_ready(4'h0);
     wait(vif.ef2_clamp_stalled &&
          (positive ? (|vif.ef2_pos_clamp_candidate) :
                      (|vif.ef2_neg_clamp_candidate)));
@@ -50,7 +50,7 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
             $sformatf("EF2 branch %0d state advanced under PA stall",branch))
     end
     @(negedge vif.core_clk);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
   endtask
 
   task send_and_check(bit check_saturation);
@@ -73,7 +73,7 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
   task qualify();
     if (vif.ef2_order2_enabled !== 1'b1)
       `uvm_fatal("CONFIG","EF2 corner test requires TIDSM_ORDER=2")
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     send_and_check(1'b1);
     if (env.coverage.ef2_positive_clamp_events==0 ||
         env.coverage.ef2_negative_clamp_events==0 ||
@@ -93,7 +93,7 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
       env.coverage.ef2_positive_clamp_branch[3],env.coverage.ef2_negative_clamp_branch[3]),UVM_NONE)
 
     @(negedge vif.core_clk);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     env.control.reset_both();
     repeat(2) @(posedge vif.core_clk);
     if (vif.ef2_state_zero !== 4'hf)

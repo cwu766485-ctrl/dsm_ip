@@ -14,6 +14,8 @@ class thermo5_axil_monitor extends uvm_monitor;
   bit [3:0] wstrb_seen;
   bit write_fire_seen;
   int unsigned next_write_id, next_read_id, active_write_id, active_read_id;
+  int unsigned reset_epoch;
+  bit reset_active;
   covergroup write_cg with function sample(bit [3:0] address_kind,
                                             bit [1:0] response,
                                             bit [1:0] strobe_kind,
@@ -125,13 +127,17 @@ class thermo5_axil_monitor extends uvm_monitor;
         cycle_event.is_cycle_sample = 1;
         cycle_event.reset_n = (vif.aresetn === 1'b1);
         cycle_event.event_cycle = cycle_count;
+      cycle_event.reset_epoch = reset_epoch;
         cycle_ap.write(cycle_event);
       end
       if (!vif.aresetn) begin
+        if (!reset_active) reset_epoch++;
+        reset_active = 1;
         aw_seen = 0; w_seen = 0; read_seen = 0;
         write_fire_seen = 0;
         b_stall_cycles = 0; r_stall_cycles = 0;
       end else begin
+        reset_active = 0;
         if (vif.bvalid && !vif.bready) b_stall_cycles++;
         if (vif.rvalid && !vif.rready) r_stall_cycles++;
         // The read data/status registers sample the address on this edge.
@@ -146,6 +152,7 @@ class thermo5_axil_monitor extends uvm_monitor;
           address_event.txn_id = ++next_read_id;
           active_read_id = address_event.txn_id;
           address_event.event_cycle = cycle_count;
+          address_event.reset_epoch = reset_epoch;
           read_address_ap.write(address_event);
         end
         if (vif.awvalid && vif.awready) begin
@@ -165,6 +172,7 @@ class thermo5_axil_monitor extends uvm_monitor;
           fire_event.txn_id = ++next_write_id;
           active_write_id = fire_event.txn_id;
           fire_event.event_cycle = cycle_count;
+          fire_event.reset_epoch = reset_epoch;
           write_fire_ap.write(fire_event);
           write_fire_seen = 1;
         end
@@ -174,6 +182,7 @@ class thermo5_axil_monitor extends uvm_monitor;
           tr.strb = wstrb_seen; tr.resp = vif.bresp;
           tr.txn_id = active_write_id;
           tr.event_cycle = cycle_count;
+          tr.reset_epoch = reset_epoch;
           if (aw_cycle == w_cycle)
             write_cg.sample(classify_write_address(awaddr_seen), vif.bresp,
                             classify_strobe(wstrb_seen), 2'd0,
@@ -201,6 +210,7 @@ class thermo5_axil_monitor extends uvm_monitor;
           tr.is_write = 0; tr.addr = araddr_seen; tr.rdata = vif.rdata; tr.resp = vif.rresp;
           tr.txn_id = active_read_id;
           tr.event_cycle = cycle_count;
+          tr.reset_epoch = reset_epoch;
           read_cg.sample(classify_read_address(araddr_seen), vif.rresp,
                          r_stall_cycles != 0);
           reads++;

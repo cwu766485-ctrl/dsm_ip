@@ -11,15 +11,33 @@ class thermo5_sku_axil_reset_sweep_test extends thermo5_sku_axil_base_test;
 
   task run_phase(uvm_phase phase);
     int target_residual[5]='{2,4,6,10,12};
+    int partial_frame_beats[4]='{1,2,3,5};
     bit [1:0] resp;
 
     phase.raise_objection(this);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     wait(vif.src_rst_n && vif.core_rst_n);
     if (vif.dpd_active_taps!==3'd1)
       `uvm_fatal("PRODUCT_DPD_CONFIG",
         $sformatf("Expected product identity DPD with one active tap, got %0d",
           vif.dpd_active_taps))
+
+    // Reset after accepted AXIS prefixes that stop inside a 56-sample DSP
+    // frame. RUN stays low so these recovery epochs cannot create a starvation
+    // event; the dynamic trace oracle checks the causal PA prefix bound.
+    foreach (partial_frame_beats[index]) begin
+      send_source(partial_frame_beats[index]);
+      wait(env.source.monitor.accepted_beats==partial_frame_beats[index]);
+      repeat(4) @(posedge vif.core_clk);
+      if (env.scoreboard.checked!=0)
+        `uvm_fatal("PARTIAL_FRAME_RESET_OUTPUT",
+          "PA output advanced while RUN was low during a partial-frame reset setup")
+      env.control.reset_both();
+      if (vif.cdc_residual!=0)
+        `uvm_fatal("PARTIAL_FRAME_RESET_CLEAR",
+          $sformatf("CDC residual did not clear after %0d-beat prefix",
+            partial_frame_beats[index]))
+    end
 
     for (int epoch=0;epoch<5;epoch++) begin
       fork
@@ -75,15 +93,15 @@ class thermo5_sku_axil_reset_sweep_test extends thermo5_sku_axil_base_test;
     join
 
     check_full(0);
-    if (env.scoreboard.reset_epochs!=5 || env.coverage.reset_reassertions!=5)
+    if (env.scoreboard.reset_epochs!=9 || env.coverage.reset_reassertions!=9)
       `uvm_fatal("RESET_SWEEP_COUNT",
-        $sformatf("Expected five reset epochs; scoreboard=%0d monitor=%0d",
+        $sformatf("Expected four partial-frame plus five residual reset epochs; scoreboard=%0d monitor=%0d",
           env.scoreboard.reset_epochs,env.coverage.reset_reassertions))
     if (vif.protocol_error || vif.underflow)
       `uvm_fatal("RESET_SWEEP_DIAGNOSTIC",
         "Protocol error or underflow observed during reset sweep/replay")
     `uvm_info("SKU_PASS",
-      "THERMO5_AXIL_RESET_SWEEP_UVM_PASS five legal residual resets and complete four-plane bit-true replay",
+      "THERMO5_AXIL_RESET_SWEEP_UVM_PASS four partial-DSP-frame resets, five CDC residual resets, and complete four-plane bit-true replay",
       UVM_NONE)
     phase.drop_objection(this);
   endtask

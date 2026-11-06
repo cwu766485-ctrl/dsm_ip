@@ -124,6 +124,7 @@ def derive(args: argparse.Namespace) -> dict:
         "tools/hw/thermo5_tx_product_compile_manifest.py",
         "tools/hw/thermo5_tx_coverage_gate.py",
         "tools/hw/thermo5_tx_waiver_pipeline.py",
+        "tools/hw/thermo5_tx_waiver_candidate_audit.py",
         "tools/hw/run_thermo5_tx_urg_dual_report.py",
     )
     unused = sorted(set(source_hashes) - selected)

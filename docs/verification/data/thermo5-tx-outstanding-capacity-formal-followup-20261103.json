@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+  "formal_source_revision": "938176bb3e3c9850085889602306c1b861df8e76",
+  "formal_source_tree_dirty_at_run": true,
+  "formal_tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+  "formal_command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_axil_outstanding_fpv.py --out-dir runs/thermo5_tx_closure_current/gate4_1_capacity_corrected_full_20261103 --timeout 360",
+  "product_configuration": {
+    "dpd": "identity",
+    "dpd_max_taps": 1,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "step": 5120,
+    "tidsm_order": 2
+  },
+  "environment": {
+    "assumptions": 1,
+    "assumption": "AXIS source retains TVALID through backpressure; non-vacuous",
+    "source_gap_bound": null,
+    "pa_stall_bound": null,
+    "black_box_instances": 0,
+    "formal_setup_issues": 0
+  },
+  "duration_seconds": 311.08,
+  "vc_formal_exit_code": 0,
+  "closure_runner_status": "INCONCLUSIVE",
+  "assertions": {
+    "a_no_counter_saturation_guard": "inconclusive",
+    "a_no_counter_underflow_guard": "inconclusive",
+    "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+    "a_outstanding_within_product_capacity": "inconclusive",
+    "a_pa_valid_has_outstanding_word": "inconclusive"
+  },
+  "covers": {
+    "c_arbitrary_source_bubble": "covered",
+    "c_core_accept": "covered",
+    "c_counter_saturation_guard": "inconclusive",
+    "c_counter_underflow_guard": "inconclusive",
+    "c_output_accept": "covered",
+    "c_source_accept": "covered"
+  },
+  "errors": [],
+  "expectation_mismatches": [
+    "a_outstanding_not_greater_than_pipeline_slots: expected proven, got inconclusive",
+    "a_outstanding_within_product_capacity: expected proven, got inconclusive",
+    "a_pa_valid_has_outstanding_word: expected proven, got inconclusive",
+    "a_no_counter_saturation_guard: expected proven, got inconclusive",
+    "a_no_counter_underflow_guard: expected proven, got inconclusive",
+    "c_counter_saturation_guard: expected a resolved reachability result, got inconclusive",
+    "c_counter_underflow_guard: expected a resolved reachability result, got inconclusive"
+  ],
+  "artifacts_sha256": {
+    "formal_manifest.json": "3c66902fe62e3dc070b219930d18e5b893350ba35ef7544810360272547f42d5",
+    "properties.txt": "17beed593c3c46d4e23285d38a6abdcaff7db8c2bd0a9bc868544b2e3345da57",
+    "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "console.log": "87cb50edc36350a897705846d22c9373b74056a98b22cb3ee780a749ac4673ad",
+    "vcf.log": "811366fa6afd5ff013b2a3c89bfc68f91c80a82a68740f9bb96e5f0a24f24087"
+  },
+  "formal_source_sha256": {
+    "dv/uvm/formal/run_thermo5_axil_outstanding_fpv.py": "c90e4f330f3d8cbeb6725529b0f6870e8a978dc840dbbb12ec2a1664375ac662",
+    "dv/uvm/formal/run_thermo5_axil_outstanding_fpv.tcl": "49ae05c9a0c6ad12464eab073a09b475146dd89febcd4bba7c9699e5f90db1d6",
+    "dv/uvm/formal/thermo5_axil_outstanding_harness.sv": "234319c7784f5229afd64ab00f1b97de93757714487778b827f25c465248fbd7",
+    "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+    "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+    "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+    "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+    "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+    "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+    "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+    "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+    "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+    "rtl/interp/dsm_interp_x2_polyphase_vector.sv": "74dac42f69e8c8e5e859d3afddf9facaa66439398967984f1bc3001588977309",
+    "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+    "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+    "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+  },
+  "coverage_impact": {
+    "urg_rerun": false,
+    "code_coverage_delta": "NOT_MEASURED; formal run does not produce URG hits",
+    "latest_raw_adjusted": {
+      "branch": "525/637",
+      "condition": "658/849",
+      "line": "3351/3796",
+      "toggle": "84340/104480",
+      "fsm_states": "13/13",
+      "fsm_transitions": "17/22",
+      "legal_functional": "392/392",
+      "approved_waivers": 0,
+      "active_exclusions": 0,
+      "gate": "RAW_100_OPEN"
+    },
+    "target_bins": {
+      "TXB-e99262dd92665c3b9ea8": "OPEN; saturation guard not proven unreachable; exact guard Cover inconclusive",
+      "TXB-c16debdf7d9cbab220ac": "OPEN; underflow guard not proven unreachable; exact guard Cover inconclusive"
+    }
+  },
+  "disposition": "INCONCLUSIVE; no Raw Branch closure, no waiver basis, no adjusted coverage claim"
+}

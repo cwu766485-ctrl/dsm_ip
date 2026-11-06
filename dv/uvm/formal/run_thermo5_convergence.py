@@ -2,7 +2,7 @@
 import argparse,hashlib,json,os,re,subprocess,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
-TOPS={'identity':'thermo5_identity_lemmas_harness','xpm_reset':'thermo5_xpm_reset_contract_harness','xpm_residual':'thermo5_xpm_cdc_residual_harness','xpm_fwft':'thermo5_xpm_fwft_harness'}
+TOPS={'identity':'thermo5_identity_lemmas_harness','identity_nostall':'thermo5_identity_nostall_harness','xpm_reset':'thermo5_xpm_reset_contract_harness','xpm_residual':'thermo5_xpm_cdc_residual_harness','xpm_fwft':'thermo5_xpm_fwft_harness'}
 TOPS['interp_bounds']='thermo5_interp_bounds_harness'
 def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
@@ -17,6 +17,7 @@ def main():
     sources=list((ROOT/'rtl').rglob('*.sv'))+list((ROOT/'rtl').rglob('*.v'))
     sources += [ROOT/'dv/uvm/formal'/p for p in [
         'thermo5_dpd_identity_harness.sv','thermo5_dpd_identity_lemmas_harness.sv',
+        'thermo5_dpd_identity_nostall_harness.sv',
         'thermo5_interp_bounds_harness.sv','thermo5_xpm_fifo_harness.sv',
         'run_thermo5_convergence.tcl']]
     if args.job.startswith('xpm'):
@@ -56,6 +57,21 @@ def main():
         required=['model.a_no_saturation_i','model.a_no_saturation_q','model.a_saturation_count_zero','a_sum_i','a_sum_q']
         scoped=code==0 and all(re.search(r'\] proven\s+.* -  '+TOPS[args.job]+r'\.'+re.escape(n)+r'\s*$',base,re.M) for n in required)
         scoped=scoped and len(covers)==4 and all(s=='covered' for s,n in covers) and bb==['0'] and hashes==after
+    if args.job=='identity_nostall':
+        required={
+            'a_ready_without_backpressure', 'a_valid_latency',
+            'a_identity_payload', 'a_identity_no_saturation',
+            'a_saturation_count_zero',
+        }
+        observed={name.rsplit('.',1)[-1] for state,name in assertions if state=='proven'}
+        cover_states={name.rsplit('.',1)[-1]:state for state,name in covers}
+        scoped=(code==0 and required.issubset(observed) and len(assertions)==5
+                and cover_states=={'c_valid_output':'covered',
+                                   'c_negative_endpoint':'covered',
+                                   'c_positive_endpoint':'covered'}
+                and bb==['0'] and hashes==after
+                and not re.search(r'^\s*\d+\s+assumed\b',text,re.M))
+        ok=ok and scoped
     result={'status':'PASS' if ok else 'SCOPED_SATURATION_PROVEN_PAYLOAD_OPEN' if scoped else 'INCONCLUSIVE_OR_FAIL','job':args.job,'argv':argv,'exit_code':code,'seconds':time.monotonic()-start,'source_sha256':hashes,'sources_unchanged':hashes==after,'assertions':assertions,'covers':covers,'blackboxes':bb,'promoted_proven_lemmas':lemmas,'lemma_evidence':str(args.lemma_evidence) if lemmas else None}
     (out/'manifest.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({k:result[k] for k in ['status','job','seconds']}))

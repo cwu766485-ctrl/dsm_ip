@@ -56,6 +56,19 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
             repeat(run_phase_cycles) @(posedge vif.core_clk);
             axil_write(8'h00,32'h1,0,0,resp);
             if (resp!=2'b00) `uvm_fatal("AXIL_RUN","RUN request failed")
+            // Close RUN as soon as the final complete source packet has been
+            // accepted. The DUT then drains its finite datapath tail instead
+            // of remaining in RUN after the source has stopped and reporting
+            // a real source-starvation underflow.
+            for (int cycles=0;cycles<12000 &&
+                 env.source.monitor.accepted_beats<cfg.source_beats;cycles++)
+              @(posedge vif.src_clk);
+            if (env.source.monitor.accepted_beats!=cfg.source_beats)
+              `uvm_fatal("FRAME_REPLACEMENT_SOURCE_TIMEOUT",
+                $sformatf("source=%0d/%0d before STOP",
+                  env.source.monitor.accepted_beats,cfg.source_beats))
+            axil_write(8'h00,32'd0,0,0,resp);
+            if (resp!=2'b00) `uvm_fatal("AXIL_STOP","RUN clear failed")
             for (int cycles=0;cycles<12000 && env.scoreboard.checked<cfg.core_words;cycles++)
               @(posedge vif.core_clk);
             if (env.scoreboard.checked!=cfg.core_words)
@@ -69,13 +82,16 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
                 env.scoreboard.source_checked!=cfg.source_beats ||
                 env.coverage.pa_words!=cfg.core_words ||
                 env.coverage.frame_starts!=cfg.frame_starts ||
-                vif.protocol_error || env.coverage.underflow_before_last_source!=0)
+                vif.protocol_error || vif.underflow ||
+                env.coverage.underflow_cycles!=0 ||
+                env.coverage.underflow_before_last_source!=0)
               `uvm_fatal("FRAME_REPLACEMENT_STREAM",
-                $sformatf("source=%0d TLAST=%0d frames=%0d output=%0d protocol=%0b early_underflow=%0d",
+                $sformatf("source=%0d TLAST=%0d frames=%0d output=%0d protocol=%0b underflow=%0b underflow_cycles=%0d early_underflow=%0d",
                   env.source.monitor.accepted_beats,
                   env.source.monitor.accepted_last_count,
                   env.coverage.frame_starts,env.scoreboard.checked,
-                  vif.protocol_error,env.coverage.underflow_before_last_source))
+                  vif.protocol_error,vif.underflow,env.coverage.underflow_cycles,
+                  env.coverage.underflow_before_last_source))
             for (int lane=0;lane<16;lane++)
               if (vif.dpd_sample_count[lane]!==expected_dpd_words ||
                   vif.dpd_saturation_count[lane]!==0)
@@ -89,8 +105,6 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
                   interp1_hits,interp1_single_end_pop,interp1_single_end,
                   interp2_hits,interp2_single_end_pop,interp2_single_end,
                   run_phase_cycles,source_start_delay_cycles),UVM_NONE)
-            axil_write(8'h00,32'd0,0,0,resp);
-            if (resp!=2'b00) `uvm_fatal("AXIL_STOP","RUN clear failed")
             drain_complete=0;
             for (int polls=0;polls<1000 && !drain_complete;polls++) begin
               axil_read(8'h04,status,resp);

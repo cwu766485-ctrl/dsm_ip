@@ -9,10 +9,12 @@ from dsm_refmodel.thermo5 import (
     round_shift_symmetric,
     run_frozen_frontend,
     run_centered_cubic_frontend,
+    run_centered_cubic_ef2_inputs,
     tid_word_ef2,
     apply_memory_polynomial,
     nonlinear_test_dpd_coefficients,
     nonlinear_test_dpd_coefficients_4tap,
+    one_tap_complex_coefficients,
     write_vectors,
 )
 
@@ -84,6 +86,27 @@ class Thermo5ReferenceTests(unittest.TestCase):
         output = run_centered_cubic_frontend(i_words, q_words, starts, gains)
         self.assertEqual(len(output), 56)
         self.assertTrue(all(len(word) == 4 for word in output))
+
+    def test_centered_ef2_reference_vectors_are_written_lane_ordered(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=56, seed=620301, frame_start_words=(1, 15, 36),
+            frame_gains=(16384, 14336, 12288))
+        ef2_words = run_centered_cubic_ef2_inputs(
+            i_words, q_words, starts, gains)
+        pa_words = run_centered_cubic_frontend(i_words, q_words, starts, gains)
+        with tempfile.TemporaryDirectory() as root:
+            write_vectors(root, i_words, q_words, starts, gains, pa_words,
+                          ef2_words=ef2_words)
+            for component, lane in (("i", 0), ("q", 1)):
+                with open(f"{root}/tid32_thermo5_frontend_ef2_{component}.mem",
+                          encoding="ascii") as stream:
+                    observed = [int(line, 16) for line in stream]
+                expected_values = [sample for block_i, block_q in ef2_words
+                                   for sample in (block_i if component == "i"
+                                                  else block_q)]
+                self.assertEqual(len(observed), 56 * 32)
+                self.assertEqual(observed, [value & 0xffff
+                                            for value in expected_values])
 
     def test_four_tap_nonlinear_dpd_image_runs_through_centered_frontend(self):
         i_words, q_words, starts, gains = generate_source_vectors(
@@ -161,6 +184,19 @@ class Thermo5ReferenceTests(unittest.TestCase):
             dpd_active_taps=2)
         self.assertEqual(len(nonlinear), 56)
         self.assertNotEqual(nonlinear, identity)
+
+    def test_one_tap_c3_and_c5_coefficients_are_modeled(self):
+        samples = [(12000, 0), (8000, -4000), (-10000, 3000)]
+        identity = one_tap_complex_coefficients(16384)
+        cubic = one_tap_complex_coefficients(16384, c3_re_q14=1536)
+        quintic = one_tap_complex_coefficients(16384, c5_re_q14=-4096)
+        self.assertEqual(cubic["c3_re"], (1536, 0, 0, 0))
+        self.assertEqual(quintic["c5_re"], (-4096, 0, 0, 0))
+        identity_out, _, _ = apply_memory_polynomial(samples, identity, 1)
+        cubic_out, _, _ = apply_memory_polynomial(samples, cubic, 1)
+        quintic_out, _, _ = apply_memory_polynomial(samples, quintic, 1)
+        self.assertNotEqual(cubic_out, identity_out)
+        self.assertNotEqual(quintic_out, identity_out)
 
     def test_centered_frontend_rejects_unaligned_frame_start(self):
         i_words, q_words, starts, gains = generate_source_vectors(

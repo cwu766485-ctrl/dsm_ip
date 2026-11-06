@@ -17,6 +17,7 @@ class thermo5_sku_axil_illegal_frame_test extends thermo5_sku_axil_config_test;
   task run_phase(uvm_phase phase);
     bit [1:0] resp;
     phase.raise_objection(this);
+    env.register_predictor.expect_early_tlasts(2);
     fork
       begin
         fork
@@ -35,6 +36,12 @@ class thermo5_sku_axil_illegal_frame_test extends thermo5_sku_axil_config_test;
               `uvm_fatal("AXIL_NEG_COVERAGE","Illegal-frame functional bin was not sampled")
             `uvm_info("NEGATIVE","THERMO5_AXIL_ILLEGAL_FRAME_OBSERVED early_tlast=1; expected RTL frame assertion must also appear",UVM_NONE)
             wait(env.source.monitor.accepted_beats==cfg.source_beats);
+            if (env.register_predictor.observed_early_tlasts!=2 ||
+                env.register_predictor.mismatches!=0)
+              `uvm_fatal("AXIL_NEG_PREDICTOR",
+                $sformatf("expected_early_tlasts=2 observed=%0d predictor_mismatches=%0d",
+                  env.register_predictor.observed_early_tlasts,
+                  env.register_predictor.mismatches))
             axil_write(8'h00,32'd0,0,0,resp);
             if (resp!=2'b00)
               `uvm_fatal("AXIL_NEG_STOP","Could not stop after illegal-frame detection")

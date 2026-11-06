@@ -1,0 +1,239 @@
+{
+  "base_head_before_changes": "6bef1cbd66a55bbec5601a5d36fa4c86f85bfd26",
+  "branch": "codex/thermo5-final-integration",
+  "campaigns": {
+    "dpd_gain_profile": {
+      "cases": 60,
+      "command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 dv/uvm/sim/run_thermo5_product_dpd_matrix.py --seed-base 735000 --out runs/thermo5_open_closure_round1_20261105/dpd_matrix",
+      "expected_tuples": 60,
+      "full_matrix": true,
+      "online_ef2_loaded_and_zero_mismatch_logs": 60,
+      "urg_expected_uncovered_covered": [
+        60,
+        0,
+        60
+      ]
+    },
+    "ef2_sidecar_mutation": {
+      "checker_id": "UNIFIED_EF2_DATA",
+      "classification": "expected-negative",
+      "detected": "I word 0 lane 0; expected -32767, observed -32768"
+    },
+    "long_stop_partial_pa_stall": {
+      "accepted_tlast": 1,
+      "direct_trace_seed": 420114,
+      "make_target": "make -C dv/uvm/sim thermo5-axil-long-frame-vcs-run THERMO5_VECTORS=\"$PWD/runs/thermo5_centered_stop_restart_vectors\" THERMO5_OUT=\"$PWD/runs/thermo5_open_closure_round1_20261105/make_long_stop\"",
+      "pa_words": 112,
+      "python_trace_oracle": "PASS: CDC 112/112, EF2 112/112, PA 112/112, underflow 0",
+      "source_beats": 64,
+      "stop_partial_pa_stall_cycles": 7,
+      "tlast_pa_stall_cycles": 7,
+      "uvm_pass": true
+    },
+    "randomized_control": {
+      "command": "PYTHONPATH=dv/uvm/refmodel/python VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 python3.12 dv/uvm/sim/run_thermo5_randomized_control.py --reset-cases 8 --commit-cases 8 --seed-base 1045000 --schedule-seed 20261105 --out runs/thermo5_open_closure_round1_20261105/randomized_control",
+      "commit_cases": 8,
+      "cross_coverage": {
+        "commit_timing_x_boundary_apply_x_pa_stall": [
+          2,
+          0,
+          2
+        ],
+        "reset_prefix_x_pending_coefficient": [
+          4,
+          0,
+          4
+        ],
+        "status_x_commit_x_stop": [
+          1,
+          0,
+          1
+        ]
+      },
+      "online_ef2_commit_logs_loaded_and_zero_mismatch": 8,
+      "reset_cases": 8,
+      "status": "PASS"
+    },
+    "system_random": {
+      "cases": 110,
+      "command": "PYTHONPATH=dv/uvm/refmodel/python VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 python3.12 dv/uvm/sim/run_thermo5_system_random.py --random-seeds 100 --long-seeds 10 --seed-base 721000 --out runs/thermo5_open_closure_round1_20261105/system_random_full",
+      "observed_trace_scenario_labels": [
+        "DPD_IDENTITY x GAIN_HIGH x PROFILE_EF2_SATURATION",
+        "DPD_IDENTITY x GAIN_HIGH x PROFILE_EXTREME",
+        "DPD_IDENTITY x GAIN_HIGH x PROFILE_RANDOM",
+        "DPD_IDENTITY x GAIN_LOW x PROFILE_EF2_SATURATION",
+        "DPD_IDENTITY x GAIN_LOW x PROFILE_EXTREME",
+        "DPD_IDENTITY x GAIN_LOW x PROFILE_RANDOM",
+        "DPD_IDENTITY x GAIN_NOMINAL x PROFILE_EF2_SATURATION",
+        "DPD_IDENTITY x GAIN_NOMINAL x PROFILE_EXTREME",
+        "DPD_IDENTITY x GAIN_NOMINAL x PROFILE_RANDOM",
+        "DPD_IDENTITY x GAIN_NOMINAL x PROFILE_RANGE_STRESS",
+        "FIFO_FULL",
+        "PA_ALL_READY",
+        "PA_PARTIAL_READY_STALL",
+        "PA_ZERO_READY_STALL",
+        "RUN_PREFILL",
+        "RUN_PREFILL_SOURCE_GAP",
+        "SOURCE_GAP",
+        "SOURCE_PRESENT x PA_PARTIAL_READY x FIFO_FULL_YES",
+        "SOURCE_PRESENT x PA_ZERO_READY x FIFO_FULL_YES",
+        "STOP_TLAST_DRAIN"
+      ],
+      "online_ef2_loaded_and_zero_mismatch_logs": 110,
+      "profiles": {
+        "ef2_saturation": 27,
+        "extreme": 28,
+        "random": 28,
+        "range_stress": 27
+      },
+      "status": "PASS",
+      "urg_merge": "PASS"
+    }
+  },
+  "checks": {
+    "git_diff_check": {
+      "status": "PASS"
+    },
+    "online_ef2": {
+      "breakdown": {
+        "commit_boundary": 8,
+        "dpd_matrix": 60,
+        "system_random": 110
+      },
+      "legal_runs": 178,
+      "mismatches": 0,
+      "mutation_negative": "expected detection at word 0 lane 0; UVM_ERROR and RANDOM_EF2_ORACLE fatal observed",
+      "status": "PASS"
+    },
+    "py_compile": {
+      "files": [
+        "dv/uvm/refmodel/python/dsm_refmodel/thermo5.py",
+        "dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py",
+        "dv/uvm/refmodel/python/tests/test_thermo5.py",
+        "dv/uvm/sim/run_thermo5_commit_boundary_stall.py",
+        "dv/uvm/sim/run_thermo5_randomized_control.py"
+      ],
+      "status": "PASS"
+    },
+    "python_unit_tests": {
+      "command": "PYTHONPATH=dv/uvm/refmodel/python python3.12 -m unittest discover -s dv/uvm/refmodel/python/tests -v",
+      "failed": 0,
+      "log": "runs/thermo5_open_closure_round1_20261105/python_unittest.log",
+      "passed": 62,
+      "status": "PASS"
+    }
+  },
+  "coverage_and_signoff": {
+    "active_exclusions": 0,
+    "approved_waivers": 0,
+    "canonical_raw_adjusted_refreshed_this_round": false,
+    "canonical_raw_counts": {
+      "branch": [
+        524,
+        637
+      ],
+      "condition": [
+        657,
+        849
+      ],
+      "line": [
+        3338,
+        3796
+      ],
+      "toggle": [
+        91112,
+        104480
+      ]
+    },
+    "canonical_raw_equals_adjusted": true,
+    "dut_assertions_latest_110_seed_urg": {
+      "failures": 0,
+      "success": [
+        13,
+        15
+      ],
+      "without_attempts": 2,
+      "without_attempts_exact": [
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+        "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+      ]
+    },
+    "formal": {
+      "dpd_identity": "INCONCLUSIVE/OPEN",
+      "new_proof_run": "NOT_RUN",
+      "outstanding_counter_guards": "INCONCLUSIVE/OPEN"
+    },
+    "functional_coverage_previous_canonical": {
+      "distinct_bins": 206,
+      "groups": 13,
+      "legal_rows": [
+        412,
+        412
+      ]
+    },
+    "gate": "RAW_100_OPEN",
+    "not_run": [
+      "XPM simulation",
+      "GT Wizard simulation",
+      "Vivado timing/PPA",
+      "FPGA routed implementation",
+      "physical RF/QAM256 BER"
+    ],
+    "p2_remaining_exact_urg_crosses": [
+      "SOURCE GAP x PA STALL x FIFO FULL",
+      "RUN x PREFILL x SOURCE GAP",
+      "STOP x TLAST x DRAIN (directed checker exists; no exact URG three-way bin)"
+    ],
+    "pending_waiver_candidates": 371
+  },
+  "created_local": "2026-11-05 15:42 +08",
+  "evidence_root": "runs/thermo5_open_closure_round1_20261105/",
+  "evidence_sha256": {
+    "runs/runs/thermo5_open_closure_round1_20261105/dpd_matrix/summary.json": "e3850ca14da9209406e562565b80ba155cb6fc391e1ffe392ceb90c2277d5726",
+    "runs/runs/thermo5_open_closure_round1_20261105/dpd_matrix/urg_dut_product/dashboard.html": "e96fcee871d48d20efee483de54cb2cd5d6b1dc090afcd836e667f7afdfe6876",
+    "runs/runs/thermo5_open_closure_round1_20261105/long_stop_trace/oracle.log": "ce0b530a11ef656ad9de4ed6bffd5f7a3a972205384cd0b71c47df24f6e7cd45",
+    "runs/runs/thermo5_open_closure_round1_20261105/long_stop_trace/trace.jsonl": "041ae3e3cf8e8b088ab032a2bc4e4f819b2bd5bb43230bb7284c932862a0e7f9",
+    "runs/runs/thermo5_open_closure_round1_20261105/long_stop_trace/uvm.log": "989f6373ba6072a1a4936d69dfd142bd27f90d286251fce20d5e82a8f5a7c334",
+    "runs/runs/thermo5_open_closure_round1_20261105/negative_ef2_mutation.log": "ba4b4224f88c18a28bf79597c30001454f0f802182dfd686bde4138baf14e301",
+    "runs/runs/thermo5_open_closure_round1_20261105/python_unittest.log": "b171b33ec72979ef4da44be2b0db59e8a7acc6261e25e46f68d4fc3e909a97b0",
+    "runs/runs/thermo5_open_closure_round1_20261105/randomized_control/commit_urg/hierarchy.html": "3952693a0e1640be5758b6fa3ef600086967d1dd57881857b3272ca78c534127",
+    "runs/runs/thermo5_open_closure_round1_20261105/randomized_control/reset_urg/hierarchy.html": "a8f0523e81aaf97c991ebc82f2d210de32b85d3b55487517b7db9bb41f994f14",
+    "runs/runs/thermo5_open_closure_round1_20261105/randomized_control/summary.json": "0f418dbfc6bbe82b9592d697e99f58ee4d57d275c5ec40b6872f1222110f8a9d",
+    "runs/runs/thermo5_open_closure_round1_20261105/system_random_full/summary.json": "38540efd528437433f8fc6606fc18fafa0a1a8ad5611cd57ec5a3668d50491a9",
+    "runs/runs/thermo5_open_closure_round1_20261105/system_random_full/urg_system_random/asserts.html": "691f75cd8af935da357c3d1c606fa3e7e33d5a438c25e48178495ea3381db166",
+    "runs/runs/thermo5_open_closure_round1_20261105/system_random_full/urg_system_random/hierarchy.html": "a0cbc53d79f7bf3be9be33a63782ed8f586b28a9fe2148d8c246c3c59eb3c47a"
+  },
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "pa_plane_width_bits": 64,
+    "pa_planes": 4,
+    "state_bits": 20,
+    "step": 5120
+  },
+  "report": "docs/verification/thermo5-tx-open-closure-round1-20261105.md",
+  "schema_version": 1,
+  "source_sha256": {
+    "dv/uvm/env/thermo5/thermo5_sku_config.svh": "8414ac494472e4e3b494cac6eb705f87264c0edf45ddd4c4ee53fd288db66617",
+    "dv/uvm/env/thermo5/thermo5_unified_scoreboard.svh": "013359143800d0c92fbb384469b391b49bad0e262e7ecea8e129acc2ab15ab76",
+    "dv/uvm/refmodel/python/dsm_refmodel/thermo5.py": "be16193e6914cf779af7ccb67c7cac2d98fb703f55d0f652971d6d3c72e46581",
+    "dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py": "60f79a44887ddb1f854360537f29ee29cd9bb6f7c2f913cfe2e4fbdc2b5fae63",
+    "dv/uvm/refmodel/python/tests/test_thermo5.py": "8e6755ed11cf40a2e638166474d71f2b13d91b59bbb3a35549a28af162f91c05",
+    "dv/uvm/sim/Makefile": "f968d124738319d1d3daf22c8e48d1061bb1400af18e1ed8318203daaad07319",
+    "dv/uvm/sim/run_thermo5_commit_boundary_stall.py": "5a433cafe9449aaac4a9e5980315e15d3a3b2087fbac1885cca87aa01c3e3d8e",
+    "dv/uvm/sim/run_thermo5_randomized_control.py": "5dd2329cb3c9e36f303dfe262ef5912d432f0e86dd6a255d310d356d2bb84776",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_graceful_stop_test.svh": "75d5ad26ee06fc42890a2d9855808f3fa701ed4076cb78d9a46e6f04f5828235",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_random_dpd_bittrue_test.svh": "4a45ee8f8a5de68e48a7c73fb3102b9e37e5b520ac970a423e2c1f81e2ef8fd7",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_random_packet_test.svh": "b9ad092c52b935948ac04d84f89b80e04a78ac0151ed9bd0980de1fa31cb7ce4"
+  },
+  "tools": {
+    "python": "3.12.13",
+    "vc_formal": "not run this round",
+    "vcs": "V-2023.12-SP1_Full64"
+  },
+  "worktree_state": "modified; tests compiled from dirty worktree; this manifest records per-file SHA256"
+}

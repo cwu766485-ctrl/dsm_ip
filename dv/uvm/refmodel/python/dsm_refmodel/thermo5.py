@@ -44,6 +44,20 @@ def nonlinear_test_dpd_coefficients_4tap():
     }
 
 
+def one_tap_complex_coefficients(c1_re_q14, c1_im_q14=0,
+                                 c3_re_q14=0, c3_im_q14=0,
+                                 c5_re_q14=0, c5_im_q14=0):
+    """Build a legal one-active-tap complex 3rd/5th-order DPD image."""
+    return {
+        "c1_re": (int(c1_re_q14), 0, 0, 0),
+        "c1_im": (int(c1_im_q14), 0, 0, 0),
+        "c3_re": (int(c3_re_q14), 0, 0, 0),
+        "c3_im": (int(c3_im_q14), 0, 0, 0),
+        "c5_re": (int(c5_re_q14), 0, 0, 0),
+        "c5_im": (int(c5_im_q14), 0, 0, 0),
+    }
+
+
 def wrap_signed(value, bits):
     modulus = 1 << bits
     return ((int(value) + (modulus >> 1)) % modulus) - (modulus >> 1)
@@ -417,21 +431,19 @@ def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
     return output_words
 
 
-def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
-                                step=5120, dpd_coefficients=None,
-                                dpd_active_taps=None, tidsm_order=2,
-                                dpd_configs_by_frame=None):
-    """Generate four-plane oracle words for the streaming centered-cubic SKU.
+def run_centered_cubic_ef2_inputs(i_words, q_words, frame_starts, frame_gains,
+                                  dpd_coefficients=None, dpd_active_taps=None,
+                                  dpd_configs_by_frame=None):
+    """Return independently modeled 32-lane words presented to the EF2 block.
 
-    Each frame is zero-extended independently for the two centered FIR stages.
-    The bit-true DPD in the UVM SKU is configured to identity; TID state remains
-    continuous across frame boundaries, as in the RTL.
+    The model includes frame gain, both centered-cubic x2 stages, the
+    configured memory-polynomial DPD, and the RTL frame-tail extension. It is
+    intended for stage-by-stage monitor-trace checking; it does not consume
+    DUT internal values to form expected samples.
     """
     count = len(i_words)
     if count != len(q_words) or count != len(frame_starts) or count != len(frame_gains):
         raise ValueError("I/Q and frame metadata word counts must match")
-    if tidsm_order not in (1, 2):
-        raise ValueError("tidsm_order must be 1 or 2")
     if not count:
         return []
     for i_word, q_word in zip(i_words, q_words):
@@ -444,9 +456,8 @@ def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
     if any(index % 7 for index in starts):
         raise ValueError("centered-cubic frame starts must align to 7-word TID quanta")
     boundaries = starts + [count]
-    states = None
     dpd_history = ()
-    raw_words = []
+    ef2_words = []
     for frame_index in range(len(starts)):
         first_word, end_word = boundaries[frame_index:frame_index + 2]
         if (end_word - first_word) % 7:
@@ -488,14 +499,37 @@ def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
             raise ValueError("interpolated centered frame must contain full 32-lane TID words")
         for first in range(0, len(interpolated), 32):
             block = interpolated[first:first + 32]
-            block_i = [sample[0] for sample in block]
-            block_q = [sample[1] for sample in block]
-            if tidsm_order == 1:
-                word, states = tid_word(block_i, block_q, states, width=16, step=step)
-            else:
-                word, states, _ = tid_word_ef2(
-                    block_i, block_q, states, width=16, step=step)
-            raw_words.append(word)
+            ef2_words.append((tuple(sample[0] for sample in block),
+                              tuple(sample[1] for sample in block)))
+    return ef2_words
+
+
+def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
+                                step=5120, dpd_coefficients=None,
+                                dpd_active_taps=None, tidsm_order=2,
+                                dpd_configs_by_frame=None):
+    """Generate four-plane oracle words for the streaming centered-cubic SKU.
+
+    Each frame is zero-extended independently for the two centered FIR stages.
+    The bit-true DPD in the UVM SKU is configured to identity; TID state remains
+    continuous across frame boundaries, as in the RTL.
+    """
+    if tidsm_order not in (1, 2):
+        raise ValueError("tidsm_order must be 1 or 2")
+    ef2_words = run_centered_cubic_ef2_inputs(
+        i_words, q_words, frame_starts, frame_gains,
+        dpd_coefficients=dpd_coefficients,
+        dpd_active_taps=dpd_active_taps,
+        dpd_configs_by_frame=dpd_configs_by_frame)
+    states = None
+    raw_words = []
+    for block_i, block_q in ef2_words:
+        if tidsm_order == 1:
+            word, states = tid_word(block_i, block_q, states, width=16, step=step)
+        else:
+            word, states, _ = tid_word_ef2(
+                block_i, block_q, states, width=16, step=step)
+        raw_words.append(word)
 
     if tidsm_order == 2:
         return raw_words
@@ -529,7 +563,8 @@ def read_source_vectors(vector_dir, width=LANES_IN):
     return i_words, q_words, starts, gains
 
 
-def write_vectors(output_dir, i_words, q_words, frame_starts, frame_gains, pa_words):
+def write_vectors(output_dir, i_words, q_words, frame_starts, frame_gains, pa_words,
+                  ef2_words=None):
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     if len(i_words) != len(q_words) or len(i_words) != len(frame_starts):
@@ -550,6 +585,15 @@ def write_vectors(output_dir, i_words, q_words, frame_starts, frame_gains, pa_wo
         with open(root / ("tid32_thermo5_frontend_pa%d.mem" % branch), "w") as stream:
             for word in pa_words:
                 stream.write("%016X\n" % int(word[branch]))
+    if ef2_words is not None:
+        if len(ef2_words) != len(i_words) or any(
+                len(block_i) != 32 or len(block_q) != 32
+                for block_i, block_q in ef2_words):
+            raise ValueError("EF2 reference must contain one 32-lane word per source word")
+        write_samples("tid32_thermo5_frontend_ef2_i.mem",
+                      [sample for block_i, _ in ef2_words for sample in block_i])
+        write_samples("tid32_thermo5_frontend_ef2_q.mem",
+                      [sample for _, block_q in ef2_words for sample in block_q])
 
 
 def generate_source_vectors(words=56, seed=20260930, profile="random",

@@ -31,7 +31,7 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
 
     // Backpressure is asserted before the candidate's next core-clock
     // transfer, then the state and candidate must remain stable.
-    vif.pa_ready=4'h0;
+    env.pa_sink.set_ready(4'h0);
     wait(vif.ef2_clamp_stalled &&
          (positive ? (|vif.ef2_pos_clamp_candidate) :
                      (|vif.ef2_neg_clamp_candidate)));
@@ -57,7 +57,7 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
             $sformatf("EF2 branch %0d state advanced under AXIL PA stall",branch))
     end
     @(negedge vif.core_clk);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
   endtask
 
   task automatic stall_state_rail();
@@ -67,7 +67,7 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
       @(negedge vif.core_clk);
       state_at_rail=(vif.pa_valid==4'hf) && (|vif.ef2_state_at_rail);
     end
-    vif.pa_ready=4'h0;
+    env.pa_sink.set_ready(4'h0);
     wait(vif.ef2_tidsm_stalled && (|vif.ef2_state_at_rail));
     for (int branch=0;branch<4;branch++) begin
       saved_e1_i[branch]=vif.ef2_err1_i[branch];
@@ -89,7 +89,7 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
             $sformatf("EF2 branch %0d state changed while a rail was stalled",branch))
     end
     @(negedge vif.core_clk);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
   endtask
 
   task run_phase(uvm_phase phase);
@@ -97,7 +97,7 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
     bit [31:0] rdata;
     bit drain_complete;
     phase.raise_objection(this);
-    vif.pa_ready=4'hf;
+    env.pa_sink.set_ready(4'hf);
     fork
       begin
         fork

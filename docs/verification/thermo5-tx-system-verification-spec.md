@@ -58,6 +58,16 @@ sets sticky `core_underflow`. Therefore a legal normal-stream gap is one for
 which the accepted-data backlog prevents underflow; a fixed maximum gap must
 not be assumed without a measured directed test.
 
+The source monitor counts `TVALID=0` source-clock cycles between accepted
+beats. A beat held with `TVALID=1` while `TREADY=0` is backpressure, not a
+source gap. The trace stores the measured gap length and the independently
+observed underflow event. The checker does not infer a universal safe gap from
+the gap length alone: safety depends on FIFO/core backlog and PA backpressure.
+Normal regressions require zero underflow. A deliberate starvation test is
+classified separately and passes only when its expected underflow is observed
+and its accepted output prefix remains bit-true. The existing empty-FIFO test
+is the intentional starvation case.
+
 RUN is a request synchronized into the core clock domain. Clearing RUN closes
 new ingress only after the already-open packet is accepted through its legal
 `TLAST`; the core then drains FIFO/gearbox residuals, datapath pipeline, and
@@ -70,7 +80,15 @@ Reset during a transaction is a separately classified recovery test. The
 checker records the pre-reset accepted prefix, permits that epoch's queued
 work to be discarded, and requires the first post-reset output to match only
 post-reset input. A reset is not a normal-stream flush and is excluded from
-the no-loss assertion across epochs.
+the no-loss assertion across epochs. If Reset truncates an incomplete
+56-sample DSP frame, the Python model may zero-pad only to construct a
+candidate full-frame reference. It compares no padded-dependent output. For a
+partial frame with `N` accepted, complete 8-sample core input samples, output
+word `k` is safe only if the frame has at least `8*k + 11` known samples; thus
+the safe partial-frame count is
+`min(7, max(0, floor((N - 11)/8) + 1))`. Each complete earlier frame adds
+seven safe words. An observed PA count beyond this bound is a trace-contract
+failure, even if the padded model happens to match.
 
 ## AXI-Lite configuration epochs
 
@@ -83,14 +101,20 @@ distinct events. STATUS reads return the value sampled at the AR handshake;
 RUN_ACTIVE and DRAINING are synchronized views and must be predicted using
 the AXI-Lite sampling edge and the RTL's synchronizer/event priority.
 
-The UVM register predictor snapshots all five defined STATUS bits on every
-AXI-Lite clock before publishing same-edge AR or write-fire events. It compares
-the returned sampled value without masking BUSY, DONE, ERROR, RUN_ACTIVE, or
-DRAINING. The two-stage views are modeled from the observed core ACK, active,
-and draining signals; therefore this checks the AXI-Lite synchronized view,
-while directed STOP/Drain assertions independently check the core control
-behavior. The predictor also checks shadow-register readback, WSTRB merges,
-write response codes, read response codes, and transaction association.
+The UVM and Python STATUS models derive RUN/Drain expectations independently
+from the DUT `core_tx_active` and `core_draining` status outputs. They use
+accepted AXIS packet/TLAST transactions, AXI-Lite RUN/STOP writes, accepted
+four-plane PA words, and the specified two-beat startup and packet-drain
+contract. A four-AXI-clock settling window covers the RUN/STOP crossing and the
+two-stage return synchronizer. In that transition window, only STATUS bits
+RUN_ACTIVE and DRAINING are masked; BUSY, DONE, ERROR, read response, and
+transaction association remain checked. Stable lifecycle reads compare all
+five defined bits. The core `stop_state` trace is corroborating evidence and
+does not drive the predicted value. Config COMMIT is checked in the order
+write-fire, CDC pending, frame-boundary apply, core ACK, then AXI-Lite
+completion/STATUS. The predictor also checks shadow-register readback, WSTRB
+merges, write response codes, read response codes, and transaction
+association.
 
 ## Error classification
 
@@ -102,37 +126,65 @@ and reset during pending configuration belong to separate negative tests with
 explicit expected response/error/recovery checks. They are not included in the
 normal-pass count.
 
-The first dynamic Python trace-oracle implementation supports complete legal
-frame/packet epochs, arbitrary accepted-data gaps represented by accepted
-transaction order, PA backpressure as accepted output ordering, multi-frame
-packets, and configuration changes applied at observed frame boundaries. It
-compares monitor-recorded PA words and reports underflow events separately so
-normal and expected-fault classifications remain explicit. Reset-only epochs
-are represented without payload comparison. A reset-ended, incomplete packet
-compares only the PA prefix actually accepted before reset; queued/pipeline
-suffix words are reported as discarded. Five real residual-state reset epochs
-and the following clean replay pass this path. A reset that truncates a DSP
-frame at a non-frame-aligned source position, cycle-accurate starvation
-recovery, and independent Python assertions for STOP/Drain/Restart remain open;
-directed UVM assertions cover the current STOP/Drain/Restart sequence.
+The dynamic Python trace oracle checks global recorder sequence numbers,
+consecutive Reset epochs, accepted source and PA indices, packet/frame
+alignment, config event order, independent STATUS reads, STOP/Drain/Restart
+observations, and four-plane bit-true data. It reports source gap lengths and
+underflow separately. The VCS scoreboard continues to compare the same output
+against the frozen static vector files, providing a static-Golden cross-check
+of the new monitor-derived oracle. Four additional product Reset cases stop
+after 1, 2, 3, and 5 accepted source beats, including partial core words and a
+partial DSP frame; the oracle confirms that no accepted PA word exceeds the
+causal safe-prefix limit. Five residual-state Reset cases and a full
+post-reset replay remain in the same directed regression.
 
 ## Phase 0–2 implementation status
 
-Phase 0 contract and the first Phase 1 predictor / Phase 2 trace-oracle
-implementation are present. Focused VCS evidence includes the register-only
-protocol test and a clean two-packet STOP/Drain/Restart product trace. The
-one-tap stress trace and the four-tap configuration trace are diagnostic or
-candidate-configuration evidence and are kept separate from normal product
-PASS results. The Python oracle checks PA data against monitor transactions;
-the `.mem` vector path remains in use as the existing static baseline.
+Phase A dynamic-oracle closure is implemented and exercised on the Linux
+Generic FIFO product configuration. Focused VCS evidence includes the existing
+two-packet STOP/Drain/Restart sequence, a one-source-clock-cycle gap variant,
+and the Reset Sweep with four partial-frame prefixes and five CDC residual
+resets. All 112 STOP/Restart PA words and all 56 post-reset replay words match
+the frozen static vectors; both traces pass the independent Python oracle with
+zero underflow. The one-cycle gap trace records one gap event / one source
+cycle and zero underflow. Python negative mutations detect a corrupted PA
+word, corrupted STATUS, reordered trace sequence, and Frame Apply before CDC
+Pending. No DUT algorithm or RTL changed, and no code-coverage or Formal
+signoff is claimed.
 
-This is an initial constrained-verification foundation, not completion of the
-entire system-random acceptance list. The predictor's source STATUS inputs are
-observed core signals rather than an independent model of the core controller.
-Timed source-gap behavior and reset inside a partially assembled DSP frame
-remain open. Full constrained-random stimulus generation and seed replay belong
-to later phases; no Phase 3–6 super-random framework or signoff is claimed. No
-DUT algorithm RTL changed and no DUT code-coverage run was made for these edits.
+Phase B adds an active/passive PA sink agent as the sole `PA_READY` owner, a
+Control agent for common reset/direct-core enable, a virtual sequencer, and a
+deterministic AXIL packet RUN/STOP/drain sequence. VCS product tests passed:
+56-word packet smoke (seed 620301), graceful STOP with partial-ready stalls
+(seed 620304), and reset sweep with four partial-DSP-frame plus five CDC
+residual resets (seed 620305). All three had zero PA mismatch, predictor
+mismatch, UVM error/fatal, and underflow. Exact commands and log hashes are in
+[`thermo5-tx-phase-b-evidence.md`](thermo5-tx-phase-b-evidence.md) and its JSON
+manifest. The legacy non-AXIL full-chain bubble test can print PASS while
+counting underflow; its runs are diagnostic only and are not legal product
+regression passes. The minimum runnable Phase C random milestone is now complete as documented
+in `thermo5-tx-phase-c-evidence.md`; full cross closure and random COMMIT/reset
+coverage remain open.
+
+## Phase C minimum random qualification
+
+The first replayable system-random campaign is implemented on source SHA
+`26a9f0482e952f70ed62c438aa9201e626bd103e`. It ran 100 56-word packet seeds
+and 10 112-word long-stream seeds on the frozen AXI-Lite / Generic FIFO TX
+configuration. All 110 VCS UVM runs and all 110 independent Python accepted-
+transaction trace replays passed with exact four-plane PA comparison, zero
+unexpected underflow, and zero predictor/protocol/transaction-count errors.
+URG merged all campaign VDBs; its mixed-hierarchy percentages are exploratory
+and are not DUT-only Raw/Adjusted coverage. The evidence report and SHA-indexed
+JSON/VDB manifest contain exact commands, seeds, observed event bins, metrics,
+and limitations.
+
+This is a minimum runnable Phase C milestone, not completion of all planned
+random dimensions. DPD stayed at the Identity reset image; runtime coefficient
+randomization, COMMIT timing, reset-under-pending-COMMIT, and exact SV cross-bin
+closure remain OPEN. Source gaps were restricted to the 16-beat prefill before
+RUN; source traffic was continuous while RUN was active. See the evidence
+report for exact observed and deferred cross categories.
 
 The core clean-trace replay command is:
 

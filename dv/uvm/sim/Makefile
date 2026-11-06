@@ -96,6 +96,10 @@ GT_PARENT_FAULT_SRCS := \
 	rtl/gt/thermo5_raw64_continuous_tx.sv \
 	fpga/zu15eg/rtl/thermo5_qsfp_gt14_parent.sv
 THERMO5_STRESS_SEEDS ?= 11 12 13 14 15 16 17 18 19 20
+THERMO5_RANDOM_SEEDS ?= 100
+THERMO5_LONG_RANDOM_SEEDS ?= 10
+THERMO5_RANDOM_SEED_BASE ?= 720000
+THERMO5_RANDOM_OUT ?= $(ROOT)/runs/thermo5_tx_system_random_phase_c
 THERMO5_URG_EXTRA_VDBS ?=
 
 VCS_COV_COMPILE := $(if $(filter 1,$(COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
@@ -123,6 +127,11 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-vcs-run-only thermo5-vcs-regression thermo5-vcs-negative thermo5-coverage-merge thermo5-vcs-multiseed \
         thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
         thermo5-axil-stop-restart-vcs-run \
+        thermo5-tx-agent-vseq-smoke \
+        thermo5-tx-system-random \
+        thermo5-tx-random-dpd-matrix \
+        thermo5-tx-commit-boundary-stall \
+        thermo5-tx-reset-pending-commit \
         thermo5-axil-long-frame-vcs-run \
         thermo5-axil-coeff-transport-vcs-run \
         thermo5-axil-nonlinear-dpd-vcs-run thermo5-axil-tap4-identity-vcs-run \
@@ -132,7 +141,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-centered-nonlinear-bittrue-vcs \
         thermo5-axil-centered-nonlinear-tap4-bittrue-vcs \
         thermo5-axil-boundary-phase-vcs-run thermo5-axil-vcs-negative thermo5-axil-vcs-mailbox-negative \
-        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-cfg-unit-vcs \
+        thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-product-vcs-regression thermo5-axil-cfg-unit-vcs \
         thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-reset-release-source \
         thermo5-tx-product-axil-coeff-transport \
         thermo5-dpd-bittrue-vcs
@@ -147,6 +156,10 @@ help:
 	@echo "  make thermo5-axil-config-vcs-run  Run AXI-Lite config/CDC plus bit-true test"
 	@echo "  make thermo5-axil-graceful-stop-vcs-run  Run AXI-Lite mid-frame graceful-stop test"
 	@echo "  make thermo5-axil-stop-restart-vcs-run   Run centered-cubic two-packet STOP/drain/restart test"
+	@echo "  make thermo5-tx-system-random  Run replayable packet and long-stream random tests"
+	@echo "  make thermo5-tx-random-dpd-matrix  Run product 1-tap DPD/gain/profile bit-true matrix"
+	@echo "  make thermo5-tx-commit-boundary-stall  Verify COMMIT timing x frame boundary x PA stall"
+	@echo "  make thermo5-tx-reset-pending-commit  Verify reset aborts pending product COMMIT"
 	@echo "  make thermo5-axil-long-frame-vcs-run  Run 64-beat/two-quantum TLAST and drain test"
 	@echo "  make thermo5-axil-register-access-vcs-run  Run AXI-Lite register/protocol-only test"
 	@echo "  make thermo5-axil-coeff-transport-vcs-run  Run coefficient mailbox transport case"
@@ -154,6 +167,7 @@ help:
 	@echo "  make thermo5-axil-tap4-identity-vcs-run  Run legal four-tap identity case"
 	@echo "  make thermo5-axil-boundary-phase-vcs-run  Run commit/frame-boundary phase case"
 	@echo "  make thermo5-axil-vcs-regression  Run focused AXI-Lite tests, integration tests and URG merge"
+	@echo "  make thermo5-axil-product-vcs-regression  Run the frozen one-tap AXI-Lite product suite"
 	@echo "  make thermo5-vcs-regression  Run bittrue/reset/FIFO/negative-frame suite"
 	@echo "  make thermo5-vcs-run THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120  Run EF2 candidate bittrue test"
 	@echo "  make thermo5-ef2-qualification  Run fixed-seed long-frame EF2 qualification and hash manifest"
@@ -226,11 +240,17 @@ thermo5-axil-graceful-stop-vcs-run:
 # stop-safe quanta (112 words on each of four output planes).
 thermo5-axil-long-frame-vcs-run:
 	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_COV_HIER=$(ROOT)/dv/uvm/sim/thermo5_product_dut_coverage.hier \
 	  THERMO5_VECTORS=$(THERMO5_LONG_VECTORS)
 	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_COV_HIER=$(ROOT)/dv/uvm/sim/thermo5_product_dut_coverage.hier \
 	  THERMO5_TESTNAME=thermo5_sku_axil_graceful_stop_test \
 	  THERMO5_VECTORS=$(THERMO5_LONG_VECTORS) UVM_SEED=420112 \
-	  THERMO5_EXTRA_ARGS=+CORE_WORDS=112
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=112 +PACKET_BEATS=64'
 
 thermo5-axil-register-access-vcs-run:
 	@$(MAKE) --no-print-directory thermo5-vcs-run \
@@ -262,7 +282,36 @@ thermo5-tx-product-axil-reset-sweep:
 	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 \
-	  THERMO5_EXTRA_ARGS=+CORE_WORDS=56
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +THERMO5_TRACE_JSONL=$(THERMO5_OUT)/reset_sweep_trace.jsonl'
+
+thermo5-tx-agent-vseq-smoke:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_virtual_sequence_smoke_test \
+	  UVM_SEED=620301 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+
+thermo5-tx-system-random:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_system_random.py \
+	  --out $(THERMO5_RANDOM_OUT) \
+	  --random-seeds $(THERMO5_RANDOM_SEEDS) \
+	  --long-seeds $(THERMO5_LONG_RANDOM_SEEDS) \
+	  --seed-base $(THERMO5_RANDOM_SEED_BASE)
+
+thermo5-tx-random-dpd-matrix:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_product_dpd_matrix.py \
+	  --out $(THERMO5_RANDOM_OUT)/dpd_matrix
+
+thermo5-tx-commit-boundary-stall:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_commit_boundary_stall.py \
+	  --out $(THERMO5_RANDOM_OUT)/commit_boundary_stall
+
+thermo5-tx-reset-pending-commit:
+	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_reset_pending_commit.py \
+	  --out $(THERMO5_RANDOM_OUT)/reset_pending_commit
 
 # Legal AXI-Stream startup overlaps the two-flop local source-reset release.
 thermo5-tx-product-axil-reset-release-source:
@@ -296,7 +345,7 @@ thermo5-vcs-run-only:
 		$(THERMO5_EXTRA_ARGS) -l $(THERMO5_RUN_LOG)
 	@grep -q 'UVM_ERROR *: *0' $(THERMO5_RUN_LOG)
 	@grep -q 'UVM_FATAL *: *0' $(THERMO5_RUN_LOG)
-	@grep -q 'THERMO5_.*_UVM_PASS' $(THERMO5_RUN_LOG)
+	@grep -q 'THERMO5_.*_PASS' $(THERMO5_RUN_LOG)
 	@! grep -q 'DSM frame_start was not aligned' $(THERMO5_RUN_LOG)
 
 thermo5-vcs-negative:
@@ -331,6 +380,7 @@ thermo5-axil-vcs-negative:
 	grep -q 'UVM_WARNING *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'UVM_ERROR *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	grep -q 'UVM_FATAL *: *0' $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
+	$(PYTHON) $(ROOT)/tools/hw/check_thermo5_axil_illegal_frame.py $(THERMO5_OUT)/axil_illegal_frame_seed420102.log; \
 	echo "Expected AXI-Lite negative assertion observed (simulator exit $$status)"
 
 thermo5-axil-vcs-mailbox-negative:
@@ -423,6 +473,64 @@ thermo5-axil-vcs-regression:
 	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/coverage_merge.log || \
 		{ echo "ERROR: AXI-Lite URG merge failed; inspect coverage_merge.log"; exit 1; }
 	@echo "THERMO5_AXIL_COVERAGE_MERGE_PASS report=$(THERMO5_OUT)/coverage"
+
+# Frozen TX product AXI-Lite suite. Keep the four-tap identity candidate in the
+# broader AXI-Lite exploration target above; it is not legal when the product
+# is elaborated with DPD_MAX_TAPS=1.
+thermo5-axil-product-vcs-regression:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420100 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_register_access_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420101 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_config_test \
+	  THERMO5_EXTRA_ARGS=+THERMO5_AXIL_INTERNAL_COVERAGE_PROBE
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420108 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_graceful_stop_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420104 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_coeff_transport_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420105 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_nonlinear_dpd_test
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only UVM_SEED=420107 \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_boundary_phase_test
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(THERMO5_OUT)/negative_vectors --words 56 --seed 420102 \
+	  --profile random --interp-mode centered_cubic --dpd-profile identity \
+	  --step 5120 --tidsm-order 2 --frame-start-words 1 --frame-gains 16384
+	@$(MAKE) --no-print-directory thermo5-axil-vcs-negative \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_VECTORS=$(THERMO5_OUT)/negative_vectors
+	@$(MAKE) --no-print-directory thermo5-axil-vcs-mailbox-negative \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1
+	@$(MAKE) --no-print-directory thermo5-axil-vcs-parameter-guard \
+	  THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1
+	@$(URG) -full64 -dir $(THERMO5_OUT)/simv.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_register_access_test_seed420100.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_config_test_seed420101.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_graceful_stop_test_seed420108.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_coeff_transport_test_seed420104.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_nonlinear_dpd_test_seed420105.vdb \
+	  $(THERMO5_OUT)/cov_thermo5_sku_axil_boundary_phase_test_seed420107.vdb \
+	  $(THERMO5_OUT)/cov_axil_illegal_frame_seed420102.vdb \
+	  $(THERMO5_OUT)/cov_axil_mailbox_fault_seed420103.vdb \
+	  -report $(THERMO5_OUT)/product_coverage -dbname thermo5_axil_product_merged \
+	  > $(THERMO5_OUT)/product_coverage_merge.log 2>&1
+	@! grep -Eq 'Error-|Design Not Loaded' $(THERMO5_OUT)/product_coverage_merge.log || \
+	  { echo "ERROR: product AXI-Lite URG merge failed; inspect product_coverage_merge.log"; exit 1; }
+	@echo "THERMO5_AXIL_PRODUCT_COVERAGE_MERGE_PASS report=$(THERMO5_OUT)/product_coverage"
 
 thermo5-axil-stop-restart-vcs-run:
 	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \

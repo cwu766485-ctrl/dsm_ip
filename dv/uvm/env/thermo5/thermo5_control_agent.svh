@@ -1,6 +1,6 @@
-// Sole testbench owner of reset, core enable, and common four-plane ready.
-class thermo5_control_bfm extends uvm_component;
-  `uvm_component_utils(thermo5_control_bfm)
+// Active control agent for reset and non-AXI core-enable control.
+class thermo5_control_agent extends uvm_agent;
+  `uvm_component_utils(thermo5_control_agent)
   virtual thermo5_sku_if vif;
   thermo5_sku_config cfg;
   function new(string name, uvm_component parent); super.new(name,parent); endfunction
@@ -8,18 +8,13 @@ class thermo5_control_bfm extends uvm_component;
     super.build_phase(phase);
     if (!uvm_config_db#(virtual thermo5_sku_if)::get(this,"","vif",vif) ||
         !uvm_config_db#(thermo5_sku_config)::get(this,"","cfg",cfg))
-      `uvm_fatal("NOCFG","Control BFM requires vif and SKU configuration")
+      `uvm_fatal("NOCFG","Control agent requires vif and SKU configuration")
   endfunction
   task run_phase(uvm_phase phase);
     repeat(8) @(negedge vif.src_clk);
     vif.src_rst_n=1'b1;
     repeat(8) @(negedge vif.core_clk);
     vif.core_rst_n=1'b1;
-    forever begin
-      @(negedge vif.core_clk);
-      if (!cfg.manual_pa_ready)
-        vif.pa_ready=cfg.random_pa_ready && $urandom_range(0,99)<cfg.pa_stall_percent ? 4'h0 : 4'hf;
-    end
   endtask
   task core_on();
     @(negedge vif.core_clk); vif.core_enable=1'b1;

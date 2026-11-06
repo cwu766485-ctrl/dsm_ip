@@ -299,17 +299,18 @@
       "bin": "122:0/-/1/-/-/0 2 4 6/1/-/1/1/-/-",
       "configuration": "axil",
       "console_file": "console.log",
-      "console_sha256": "6963cb3346c0c1851d6c81c4a1d7c6a6092921ba211b48377d003b882ff71c20",
+      "console_sha256": "943f98acca79dd6e089c9e0a863d9d3860dee49a951676113766f5054c89390c",
       "cover": "thermo5_cdc_frame_end_threshold_harness.c_short_final_word_branch_target",
-      "evidence_note": "Exact product-bound 14:8 CDC/Generic FIFO instance with explicit SRC_LANES=14 and CORE_LANES=8; two legal consecutive 32-beat packets. The non-vacuous frame-end tail-drain assertion is proven; the second frame-end pop is covered and the exact short-final-word branch target Cover is uncoverable. No SVA environment assumptions, setup violations=0, black boxes=0, no tautology warnings, and no ignored initial assertions.",
+      "evidence_note": "Fresh current-source VC Formal run at git HEAD 0279b8e4e64d3f7a1fe214b905c60d5018b5f726, product source SHA 1236d49c72360aa62e316aea147528d93a1b3705. Exact 14:8 CDC and Generic FIFO product instance; two legal consecutive 32-beat packets; no environment assumptions, zero black boxes. Three non-vacuous assertions proven; legal first/second frame-start and frame-end activity covers reached; exact short-final-word branch Cover is uncoverable. This is reachability evidence only; waiver remains pending and Raw bin remains in denominator.",
       "evidence_sha256": {
-        "console": "6963cb3346c0c1851d6c81c4a1d7c6a6092921ba211b48377d003b882ff71c20",
+        "console": "943f98acca79dd6e089c9e0a863d9d3860dee49a951676113766f5054c89390c",
         "properties": "72843f5fc08d62ddc4d21e6a83c977d09eee88a7e0fab0b5b4c5c92786954f09",
         "setup": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
       },
-      "formal_run": "runs/thermo5_tx_cdc_frame_end_threshold_20261031_pr21_retry3/cdc_frame_end_threshold",
+      "formal_run": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/formal_cdc_frame_end_threshold_current_20261103/cdc_frame_end_threshold",
       "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
       "metric": "branch",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
       "properties_file": "properties.txt",
       "properties_sha256": "72843f5fc08d62ddc4d21e6a83c977d09eee88a7e0fab0b5b4c5c92786954f09",
       "semantic_bin_id": "TXB-7ea7a7506f13f31ca4a9",
@@ -1090,6 +1091,41 @@
       "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
       "setup_violations": 0,
       "status": "INCONCLUSIVE"
+    },
+    {
+      "name": "outstanding_counter_guards_extended_effort_20261103",
+      "status": "INCONCLUSIVE",
+      "product_source_sha": "1236d49c72360aa62e316aea147528d93a1b3705",
+      "formal_source_revision": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
+      "formal_run": "runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/formal_outstanding_extended_20261103",
+      "tool": "VC Formal V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "duration_seconds": 1364.76,
+      "global_effort_limit": "22m",
+      "property_time_limit": "20m",
+      "environment_assumptions": [],
+      "black_box_instances": 0,
+      "setup_violations": 0,
+      "non_vacuous_assertions": 2,
+      "assertions": {
+        "a_no_counter_saturation_guard": "inconclusive depth 231",
+        "a_no_counter_underflow_guard": "inconclusive depth 122"
+      },
+      "covers": {
+        "c_source_accept": "covered depth 4",
+        "c_core_accept": "covered depth 9",
+        "c_output_accept": "covered depth 33",
+        "c_counter_saturation_guard": "inconclusive depth 196",
+        "c_counter_underflow_guard": "inconclusive depth 126"
+      },
+      "target_raw_bins_remain_open": [
+        "TXB-e99262dd92665c3b9ea8",
+        "TXB-c16debdf7d9cbab220ac"
+      ],
+      "run_manifest_sha256": "ed714b591240dcb785e8eba761164c752855b8abd452a32f8ace99fd3c364176",
+      "console_sha256": "cd6890ee4c9c2d1b9ebb7d150e270e9ecdd6f323e1f62ada54feb101db26e702",
+      "properties_sha256": "349ed935b5e0ed359fd83bb5c2765e6ec563e11812c9ccf9de0356fa4f906a88",
+      "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "disposition": "No proof, counterexample, or exact guard Cover witness; both Raw Branches remain OPEN. Do not approve a waiver from this Inconclusive run."
     }
   ]
 }

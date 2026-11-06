@@ -1,5 +1,302 @@
 # Execution frontier
 
+## Current execution state: TX Round 10 Raw / Waiver review (2026-11-05)
+
+Working branch `codex/thermo5-final-integration`, base HEAD before this local
+work `6bef1cbd66a55bbec5601a5d36fa4c86f85bfd26`. This local worktree is dirty
+and uncommitted. Product RTL, the frozen TX algorithm, RX and AI-DPD are
+unchanged.
+
+Status:
+
+- **P1: CLOSED for the exercised legal paths.** The online Python EF2 sidecar
+  checker passed 178 UVM cases (110 system-random, 60 DPD/gain/profile, 8
+  COMMIT-boundary), with zero lane mismatches. The intentional EF2 mutation
+  was detected. Reset-truncated epochs retain independent trace replay.
+- **P2: CLOSED for the seven named scenario families, not the full Cartesian
+  space.** All seven requested crosses have exact URG counts across Round 1/2:
+  DPD/gain/profile 60/60; COMMIT/boundary/stall 2/2; Reset/pending COMMIT 4/4;
+  STATUS/COMMIT/STOP 1/1; source gap/PA stall/FIFO full 1/1; RUN/prefill/source
+  gap 1/1; STOP/TLAST/Drain 1/1. The 110-case VCS campaign and long STOP/Drain
+  test pass; details are in the Round 2 report.
+- **P3: OPEN.** The Round 10 full-product Raw inventory was regenerated from
+  195 unique existing test-VDB paths plus one design VDB. Product RTL-only
+  results: Line 3317/3796 (87.38%), Condition 631/849 (74.32%), Branch
+  503/637 (78.96%), Toggle 82308/104480 (78.78%), FSM states 13/13 and
+  transitions 15/22 (68.18%). DUT assertions: 13 successes, 2 uncovered,
+  2 without attempts, zero failures. URG records 193 tests for the 195 input
+  VDB paths; reconcile this before final signoff. The merged VDBs are from
+  multiple campaigns; simulation was not rerun for this report.
+- **Waiver review is analysis-only.** A same-input Adjusted URG was produced
+  with 84 exact Condition and 14 exact Branch candidates, giving Condition
+  631/765 (82.48%) and Branch 503/623 (80.74%); Line, Toggle, FSM and
+  Assertions are unchanged. URG score is 77.76% Raw / 79.42% Adjusted.
+  These 98 exclusions are not official approvals. The official 371-row CSV
+  remains PENDING, approved=0 and active exclusions=0; `RAW_100_OPEN` remains.
+  Another 273 candidates remain OPEN: 88 EF2 Branch checksum mismatches, 37
+  Line block-scope issues (a line-only probe dropped 153 denominator bins),
+  141 native-URG mapping gaps, 4 stale Formal source contexts and 3 CDC
+  parent-mapping reviews. Details and hashes are in
+  `docs/verification/thermo5-tx-coverage-waiver-review-round10-20261105.md`
+  and `docs/verification/data/thermo5-tx-coverage-waiver-review-round10-20261105.json`.
+- Fresh legal-metadata Formal proves both `q1_tail` assertion
+  antecedents unreachable in the exact product frame-marker contract with
+  non-vacuous legal witnesses. This is a root-cause disposition, not a waiver
+  or Raw exclusion. Outstanding-counter Formal remains INCONCLUSIVE; full-chain
+  DPD Identity Formal remains INCONCLUSIVE/OPEN. Round 10 numbers supersede
+  the older coverage snapshots only for this stated VDB set; they are not a
+  single-source freshly compiled signoff package.
+- Real XPM, GT Wizard, Vivado PPA/routed timing, and physical RF/QAM256 remain
+  NOT_RUN and outside Linux signoff.
+
+Round 2 scenario report and source/tool/run hashes:
+`docs/verification/thermo5-tx-open-closure-round2-20261105.md` and
+`docs/verification/data/thermo5-tx-open-closure-round2-20261105.json`.
+The Round 2 scenario result remains separate from this Round 10 coverage
+merge. Next Linux work is to reconcile the VDB/test count, close reachable
+code bins, resolve/decompose the counter and DPD Identity proof roots, and
+obtain independent review for any official waiver approval.
+
+## Previous execution snapshot: TX final integration and staged Oracle (2026-11-04)
+
+Working branch `codex/thermo5-final-integration` now has implementation commit
+`7e1ab1930921be1b293d8c59323611ef0b3f9359`, based on integrated branch head
+`d2b5a1217707514d6d48047ff66f25f7c651000a`. The local cumulative branch
+contains the recent UVM event-bus/unified-scoreboard and Formal/waiver changes.
+It is not merged into or pushed to `thermo5`.
+
+The independent Python monitor-trace Oracle now checks accepted CDC samples
+against source AXIS transactions, reconstructs the 32-lane EF2 input from
+source/frame configuration and checks it, then checks four-plane PA output.
+It does not use DUT internal DSP values to build expected data. On the retained
+product-profile traces, 228/228 replays passed: 13,328 CDC words, 13,328 EF2
+words and 13,328 PA words matched; zero unexpected underflows. Python tests
+passed 61/61. Fresh VCS V-2023.12-SP1 Generic-FIFO core and AXI-Lite product
+regressions passed at this source SHA; exact commands and log hashes are in
+`thermo5-tx-final-integration-20261104.md` and its JSON evidence.
+
+Roadmap status:
+
+- **P0 PASS locally:** one reproducible integration SHA and fresh product
+  regressions. Upstream branch integration is not performed.
+- **P1 PARTIAL:** UVM has a transaction event bus, epoch/index-aware
+  scoreboard and CDC source checker; the independent Python replay now checks
+  CDC, EF2 and PA stages. EF2 numeric prediction is offline rather than in a
+  live UVM expected queue, so the requested unified online stage checker is
+  still open.
+- **P2 PARTIAL:** the 110-seed system suite and separate DPD, COMMIT and reset
+  campaigns pass, but do not form a complete Cartesian system-cross matrix.
+  DPD is Identity in the 110-seed baseline, and the long-frame STOP plus PA
+  stall pairing remains an unresolved testbench deadlock.
+- **P3 OPEN:** Raw/Adjusted DUT coverage is 524/637 Branch, 657/849 Condition,
+  3338/3796 Line and 91112/104480 Toggle; no waivers are approved and the
+  gate remains `RAW_100_OPEN`. Two legal `q1_tail` DUT assertions remain
+  unattempted. Outstanding-counter and full-chain DPD Identity Formal remain
+  inconclusive/open. The current Raw URG functional audit passes 412/412
+  legal-product rows (206 distinct bins, 13 groups); the new system cross
+  matrix is still partial. No real XPM, GT Wizard, FPGA timing/PPA or physical
+  RF signoff was run.
+
+The detailed snapshot records Raw and Adjusted as identical, 371 pending waiver
+candidates, exact assertion separation, Formal scope, mutation outcomes, and
+all remaining boundaries. Do not describe this as complete FPGA or TX
+signoff. Next: close the online EF2 expected queue and unresolved legal
+scenario pairing, then continue exact-bin coverage/Formal/waiver review. The
+source-level status and evidence index are in
+`docs/verification/thermo5-tx-final-integration-20261104.md`.
+
+## Current execution state: TX UVM observation event bus (2026-11-04)
+
+Started from PR #38 head `184c68b6d704998f5126a75a8f86d7577bb69a1a` on the
+independent branch `codex/thermo5-tx-platform-observation`. Implementation
+commit `8a70597245a7ff18fd7eabb1bda714d0974be4f5` adds passive CDC, DSP, and
+EF2-input observers and a typed UVM event bus carrying accepted AXIS, AXI-Lite,
+PA, and internal observation events to Functional Coverage and JSONL Trace.
+The Control Agent is now referenced by the Virtual Sequencer. No product RTL,
+default algorithm, RX, AI-DPD, or FPGA implementation changed.
+
+VCS V-2023.12-SP1 product-config compile and the AXI-Lite random-packet test
+passed at seed 491802: UVM errors/fatals 0, source/CDC/EF2/PA counts
+32/56/56/56, Register Predictor mismatches 0. The JSONL Trace replay passed
+56/56 PA words with zero underflow; the Python suite passed 60/60. Evidence:
+`thermo5-tx-observation-bus-round1-20261104.md` and its JSON manifest.
+The non-AXI bit-true test also passed at seed 491803 with 56/56 PA words
+matched by the existing static scoreboard and matching event-bus counts.
+
+This is a partial platform milestone. The online dynamic expected queue and
+stage-by-stage independent checks are still open. The existing PA Scoreboard
+still checks the static bit-true vectors; the Python model remains offline.
+Legacy configuration/status Trace sampling is not yet fully routed through
+the event bus. The one-test event-kind coverage is not a product coverage
+signoff. Continue with a transaction/epoch manager and independent expected
+queue before expanding scenario Cross Coverage.
+
+## Previous execution state: Thermo5 TX Linux coverage/formal closure (2026-11-03)
+
+The product remains frozen at RTL source SHA
+1236d49c72360aa62e316aea147528d93a1b3705: Centered-Cubic x2+x2, EF2
+ORDER=2/STEP=5120/20-bit state, DPD_MAX_TAPS=1 with Identity reset image,
+AXI-Lite and Generic FIFO. No RX, AI-DPD, product RTL/algorithm or Vivado
+physical implementation work is in scope.
+
+The two focused Condition Formal dispositions are published as Draft PR #33,
+`codex/thermo5-tx-focused-condition-formal-closure`, stacked on PR #32 head
+`96ac24b622a1d21b344de79e4d19adc555ee6a92`. PR #33 remains unmerged.
+
+The scoped 16-lane DPD vector output stall-hold proof (33/33 assertions, 17
+non-vacuous, 3/3 Covers) is the subject of Draft PR #34,
+`codex/thermo5-tx-dpd-payload-hold-formal`, stacked on PR #33 and not merged.
+
+Draft PR #36 is a separate outstanding-counter follow-up stacked on PR #35.
+Its product-bound outstanding-counter
+properties and exact saturation/underflow guard Covers remain INCONCLUSIVE;
+the two Raw Branch records remain OPEN and are not waived.
+
+Draft PR #38, `codex/thermo5-tx-cdc-data-empty-formal`, is stacked on PR #37
+and not merged. On
+clean code SHA `dffcd94f95ed6dd455dd892b49391e102594cb4b`, VC Formal proved the
+exact `0/1/1/1/1` Condition tuple at
+`dsm_axis14_to_core8_cdc.sv:113` unreachable because the production Generic
+FIFO defines `rd_valid = !rd_empty`. Source acceptance, nonempty FIFO data and
+`core_data_empty` Covers were reached; the exact tuple Cover was uncoverable.
+The Raw bin remains visible and unhit; no URG or denominator change was made.
+No waiver is approved and no exclusion is active. Report and hashes are in
+`thermo5-tx-cdc-data-empty-formal-20261103.md` and its JSON evidence.
+
+Draft PR #37, `codex/thermo5-tx-frame-tail-condition-formal`, is stacked on
+PR #35 and not merged. On clean verification-source SHA
+`2715b7a99042b3cd261884e53a82f287fe243ec6`, VC Formal V-2023.12-SP2 passed a
+composed two-stage centered-cubic metadata proof and a separate runtime-reset
+proof. The two exact reset-low line-309 Condition Covers are uncoverable with
+non-vacuous reset-empty assertions and queue-full/runtime-reset witnesses. The
+stage-2 active line-309 Condition Cover is uncoverable in the composed
+interpolator chain under the 56-sample DSP-frame / 448-sample packet contract,
+with non-vacuous frame-start, packet-end, tail and output Covers. The composed
+proof omits the intervening elastic FIFOs and DPD pipeline, so all three Raw
+rows remain present and OPEN pending independent waiver review; no `.el`, Raw
+or Adjusted change was made. Exact mapping, commands and hashes are in
+`thermo5-tx-frame-tail-condition-formal-20261103.md` and its JSON evidence.
+It proves the vector leaf protocol only; full-chain DPD Identity remains OPEN.
+
+A follow-up branch `codex/thermo5-tx-dpd-identity-stall-formal` is stacked on
+PR #34 and is being published as a separate Draft PR. On clean Formal-input
+commit `e21c1ece205b633809e1dfd84d275936294b6378`, a composed production
+`dpd_memory_poly` proof verifies the one-tap Q14 Identity datapath under
+arbitrary output stalls: 41/41 internal base lemmas and 4/4 final output,
+latency, and saturation assertions prove; 4/4 endpoint/stall/recovery Covers
+are reached. The single legal source payload-hold assumption is non-vacuous;
+there are zero black boxes and zero selected setup violations. This remains a
+DPD leaf proof: AXI shadow/COMMIT, mailbox, CDC, pending/active epoch, and full
+TX composition remain OPEN. Full detail and hashes are in
+`thermo5-tx-dpd-identity-stall-formal-20261103.md` and its JSON evidence.
+
+### Current Raw/Adjusted coverage
+
+The latest same-list Raw/Adjusted URG report uses one design VDB and 247 unique
+test VDB trees: 243 legal positive, two expected negative, and two additional
+legal directed cases. It is retained mixed-provenance evidence, not 247 fresh
+runs from one verification-source SHA. The prior STATUS-mismatched 16-point
+gap sweep is excluded. Raw equals Adjusted: approved waivers=0 and active
+Exclusions=0. Results are Branch 525/637, Condition 658/849, Line 3351/3796,
+Toggle 84340/104480, FSM states 13/13, transitions 17/22, and legal applicable
+functional bins 392/392. The gate remains RAW_100_OPEN. The 20,893-record
+open-bin snapshot has two subsequent exact reachability dispositions; 20,891
+other code records remain OPEN. Raw/Adjusted hits and denominators are
+unchanged, and no code-coverage delta was gained over the 246-test checkpoint.
+
+### Assertion closure update
+
+A separate legal-positive assertion URG report over 243 positive VDBs has 13
+DUT successes and zero failures. Two DUT properties have no legal attempts:
+assert(q1_tail) at rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310,
+one for each Centered-Cubic stage. A separate corrected illegal-frame test
+(seed 420102) observed the CDC frame-alignment assertion once and each stage's
+frame-tail assertion once, then checked sticky protocol-error recovery by
+public reset. UVM warnings/errors/fatals were zero. The fail-closed checker
+tools/hw/check_thermo5_axil_illegal_frame.py verifies exact instances/counts
+and rejects unexpected RTL assertion failures; its four mutation-focused unit
+tests pass. Legal and expected-negative assertion outcomes remain separate.
+
+### Formal and waivers
+
+The local one-tap Identity DPD leaf proof passed 5/5 assertions and 3/3 Covers,
+with zero black boxes and no environment assumptions. It fixes the Q14 unity
+coefficient image and ties out_ready high; it does not cover stalls or AXI
+commit/epoch control. Full-chain DPD Identity remains INCONCLUSIVE/OPEN. The
+continuous-source outstanding-counter proofs and exact guard Covers remain
+INCONCLUSIVE. A final extended product-bound run used a 22-minute global limit
+and completed in 1,364.76 seconds: saturation/underflow assertions were
+INCONCLUSIVE at depths 231/122, and the exact guard Covers at depths 196/126.
+The proof used zero assumptions and zero black boxes; the source/core/output
+activity Covers were reached. The two Raw Branches remain OPEN. All 371 waiver
+candidates remain PENDING, with zero approvals and no active `.el`
+Exclusions.
+
+The waiver inventory was rebound in Review Round 7 after the focused Formal
+Review JSON was updated. The audit uses the 247-test Raw ledger and current
+compile/VDB manifests; 371 candidates remain pending (361 configuration and
+10 Formal candidates), with zero approvals and zero active `.el` directives.
+See `docs/verification/thermo5-tx-waiver-review-round7.md`.
+
+Two earlier exact Raw Condition roots are `PROVEN_UNREACHABLE` by focused
+VC Formal runs against the same 247-test Raw report. At
+`dpd_vector16_memory_poly.sv:93`, the DPD ready/valid tuple `0/1` has a proven
+non-vacuous `!out_valid -> in_ready` assertion and reached input/output/stall
+activity Covers; the exact bad-tuple Cover is uncoverable. At
+`thermo5_dpd_axi_lite_cfg.sv:93`, the `write_fire` tuple `0/1/1` has a proven
+non-vacuous BVALID exclusion assertion and reached normal write/response
+Covers; its exact tuple Cover is uncoverable. Both Raw bins remain unhit and
+retained, with zero waivers and no `.el` exclusions. The former monolithic DPD full-output hold proof was INCONCLUSIVE at depth 15
+and a later aggregate attempt at depth 294. A scoped vector-leaf proof now
+splits the 512-bit payload into 16 lane properties and proves all lane payload
+holds, metadata hold and lane-valid lockstep (33/33 assertions; 17 payload/
+metadata assertions non-vacuous; 3/3 Covers; no assumptions or black boxes).
+This closes the vector leaf's stall-hold protocol only; full-chain DPD Identity
+arithmetic and COMMIT/CDC/epoch behavior remain OPEN. Raw URG remains unchanged.
+See `thermo5-tx-dpd-payload-hold-formal-20261103.md` and its evidence JSON.
+
+A separate composed one-tap Identity DPD leaf proof now closes local arithmetic,
+sample alignment, output latency, and no-saturation under arbitrary output
+stalls. It proves 41 internal lemmas in the base run, then keeps the four final
+output/saturation goals active; all four prove and all four endpoint/stall/
+recovery Covers hit. The legal source payload-hold assumption is non-vacuous;
+zero black boxes and zero selected setup violations. The AXI shadow/COMMIT,
+mailbox, CDC, pending/active epoch, and full TX proof remain OPEN. See
+`thermo5-tx-dpd-identity-stall-formal-20261103.md` and its evidence JSON.
+
+A further 311.08-second VC Formal run on branch `codex/thermo5-tx-outstanding-capacity-formal` added arbitrary legal AXIS source bubbles and a candidate 29-slot pipeline bound. The generated-array EF2 hierarchical reference that previously caused a false counterexample was removed after VC Formal trace checking identified it as UNDRIVEN. The corrected full run has zero setup issues and zero black boxes; the legal source-hold assumption is non-vacuous and arbitrary source-bubble Cover reaches depth 4. However, all five assertions remain INCONCLUSIVE at depths 34-46, and both exact guard Covers remain INCONCLUSIVE at depths 34/38. The candidate slot constant is not proof evidence. Both exact Raw Branches stay OPEN; Raw URG is unchanged, all waivers remain pending, and there is no coverage delta. Evidence is indexed in `docs/verification/thermo5-tx-outstanding-capacity-formal-followup-20261103.md` and its adjacent JSON.
+
+### Checks, evidence, and next action
+
+Checks: targeted illegal-frame VCS test PASS with exact expected failures;
+the integrated AXI-Lite negative Make target and independent log checker PASS;
+hardware utility tests 42/42 PASS; Formal Identity no-stall leaf proof PASS
+within scope; composed DPD Identity under-stall leaf proof PASS within scope;
+focused DPD ready/valid and AXI-Lite write-fire exact-bin Formal
+dispositions PASS;
+same-list Raw/Adjusted URG and gate PASS (RAW_100_OPEN); extended
+counter Formal completed INCONCLUSIVE; `py_compile`, JSON validation, and
+`git diff --check` PASS. Full UVM regression was not rerun.
+Exact logs, VDBs and tool reports remain under ignored runs/; compact hashes
+and commands are in the
+assertion/DPD follow-up document and current Linux system signoff evidence JSON.
+The extended outstanding Formal property matrix and tool/log hashes are indexed
+in `docs/verification/thermo5-tx-outstanding-formal-extended-20261103.md` and
+its adjacent JSON evidence file.
+
+Do not spend more random seeds on the unchanged coverage gaps. Next, review the
+three line-309 Condition records against the exact product metadata pass-through
+through both elastic FIFOs and the DPD pipeline; keep the Raw rows OPEN and all
+waivers pending until that review is recorded. Then select the next exact
+Reset/State-Hold root by source position. Continue to treat the outstanding
+counter as INCONCLUSIVE, with both guard goals OPEN and no source-gap or
+PA-stall bound. The line-93 DPD condition root is formally dispositioned; its
+Raw miss remains visible. Real XPM, GT Wizard, FPGA PPA/routed timing and
+physical RF/QAM256 remain outside Linux signoff. Do not merge PRs or modify
+the frozen TX algorithm.
+
+## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
+
 ## Current execution state: Thermo5 TX branch consolidation and cleanup (2026-11-02)
 
 TX Coverage Closure Round 1 (PR #24) and System UVM Phase 0–2 (PR #25) have

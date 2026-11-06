@@ -1,0 +1,96 @@
+{
+  "schema": "thermo5-tx-observation-bus-evidence-v1",
+  "status": "PARTIAL",
+  "parent_commit": "184c68b6d704998f5126a75a8f86d7577bb69a1a",
+  "implementation_commit": "8a70597245a7ff18fd7eabb1bda714d0974be4f5",
+  "product_configuration": {
+    "interpolator": "centered-cubic-x2-x2",
+    "tidsm_order": 2,
+    "step": 5120,
+    "state_bits": 20,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "identity",
+    "fifo": "generic",
+    "control": "axi-lite"
+  },
+  "tools": {
+    "vcs": "V-2023.12-SP1_Full64",
+    "python": "Python 3.12.13"
+  },
+  "test": {
+    "name": "thermo5_sku_axil_random_packet_test",
+    "seed": 491802,
+    "result": "PASS",
+    "uvm_errors": 0,
+    "uvm_fatals": 0,
+    "register_predictor_mismatches": 0,
+    "event_counts": {
+      "source_beats": 32,
+      "cdc_words": 56,
+      "dsp_observations": 76,
+      "ef2_words": 56,
+      "ef2_stall_events": 10,
+      "pa_words": 56,
+      "axil_writes": 2,
+      "axil_reads": 2,
+      "axil_responses": 4,
+      "reset_epochs": 1,
+      "event_kind_bins_hit": 10,
+      "event_kind_bins_total": 10
+    },
+    "trace_oracle": {
+      "result": "PASS",
+      "pa_words_compared": 56,
+      "underflow_events": 0,
+      "jsonl_records": 317
+    },
+    "python_tests": {
+      "result": "PASS",
+      "passed": 60
+    }
+  },
+  "core_bittrue_test": {
+    "name": "thermo5_sku_bittrue_test",
+    "seed": 491803,
+    "result": "PASS",
+    "uvm_errors": 0,
+    "uvm_fatals": 0,
+    "event_counts": {
+      "source_beats": 32,
+      "cdc_words": 56,
+      "dsp_observations": 60,
+      "ef2_words": 56,
+      "ef2_stall_events": 0,
+      "pa_words": 56,
+      "axil_writes": 0,
+      "axil_reads": 0,
+      "axil_responses": 0,
+      "reset_epochs": 1
+    },
+    "static_bittrue_pa_scoreboard": "PASS"
+  },
+  "commands": [
+    "make -C dv/uvm/sim thermo5-vcs-run THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_OUT=$PWD/runs/thermo5_platform_observation_pr39/vcs THERMO5_TESTNAME=thermo5_sku_axil_random_packet_test UVM_SEED=491802 THERMO5_EXTRA_ARGS=+THERMO5_TRACE_JSONL=$PWD/runs/thermo5_platform_observation_pr39/vcs/random_packet_trace.jsonl",
+    "make -C dv/uvm/sim thermo5-vcs-run THERMO5_USE_AXIL=0 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_OUT=$PWD/runs/thermo5_platform_observation_pr39/core_vcs THERMO5_TESTNAME=thermo5_sku_bittrue_test UVM_SEED=491803",
+    "cd dv/uvm/refmodel/python && python3.12 -m unittest discover -s tests -v",
+    "cd dv/uvm/refmodel/python && python3.12 check_thermo5_monitor_trace.py ../../../../runs/thermo5_platform_observation_pr39/vcs/random_packet_trace.jsonl --step 5120 --tidsm-order 2 --max-taps 1",
+    "git diff --check"
+  ],
+  "artifacts": {
+    "run_directory": "runs/thermo5_platform_observation_pr39/",
+    "compile_log_sha256": "b45fcc9670cb08edb3b06036a7b6ce4a110f2ad6eba2023ae03ab87a914dc55e",
+    "simulation_log_sha256": "ea4d2c5d50842bc9deb0f734276babdfca378cb1cc8b51a147d9f1a311280dca",
+    "jsonl_trace_sha256": "26d09fb072c0af6af62cb62065b0b54bcdd8a685c01f38fe0a5debf7b08e8ce9",
+    "core_compile_log_sha256": "6ca31f74fae692efd39d6784e2893ae53b8dee711f25bb0778849ea41f3b80ff",
+    "core_simulation_log_sha256": "15ac0cdc403539ae7d74c8935d75fa5b50b6cf46824dd1b96105854b13d6b4f5",
+    "committed": false
+  },
+  "not_signed_off": [
+    "online_dynamic_expected_queue",
+    "stage_by_stage_independent_oracle_checks",
+    "complete_system_random_cross_coverage",
+    "fresh_merged_dut_only_raw_adjusted_urg",
+    "formal_and_mutation_closure",
+    "xpm_gt_wizard_fpga_ppa_rf_qam256"
+  ]
+}

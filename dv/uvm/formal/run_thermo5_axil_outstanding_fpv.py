@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 from pathlib import Path
 import re
 import subprocess
@@ -36,6 +37,9 @@ SOURCES = (
     "dv/uvm/formal/run_thermo5_axil_outstanding_fpv.py",
 )
 EXPECTED_ASSERTIONS = {
+    "a_outstanding_not_greater_than_pipeline_slots": "proven",
+    "a_outstanding_within_product_capacity": "proven",
+    "a_pa_valid_has_outstanding_word": "proven",
     "a_no_counter_saturation_guard": "proven",
     "a_no_counter_underflow_guard": "proven",
 }
@@ -43,8 +47,11 @@ EXPECTED_COVERS = {
     "c_source_accept": "covered",
     "c_core_accept": "covered",
     "c_output_accept": "covered",
-    "c_counter_saturation_guard": "uncoverable",
-    "c_counter_underflow_guard": "uncoverable",
+    "c_arbitrary_source_bubble": "covered",
+}
+GUARD_COVERS = {
+    "c_counter_saturation_guard",
+    "c_counter_underflow_guard",
 }
 
 
@@ -77,17 +84,32 @@ def main() -> int:
                str(ROOT / "dv/uvm/formal/run_thermo5_axil_outstanding_fpv.tcl")]
     log_path = out / "console.log"
     started = time.monotonic()
+    launch_error = None
     try:
         with log_path.open("w", encoding="utf-8") as log:
-            completed = subprocess.run(
+            process = subprocess.Popen(
                 command, cwd=out, env=env, stdout=log, stderr=subprocess.STDOUT,
-                timeout=args.timeout, check=False,
+                start_new_session=True,
             )
-        exit_code = completed.returncode
-        timeout = False
-    except subprocess.TimeoutExpired:
+            try:
+                exit_code = process.wait(timeout=args.timeout)
+                timeout = False
+            except subprocess.TimeoutExpired:
+                timeout = True
+                try:
+                    os.killpg(process.pid, signal.SIGTERM)
+                    process.wait(timeout=10)
+                except (ProcessLookupError, subprocess.TimeoutExpired):
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    process.wait()
+                exit_code = None
+    except OSError as exc:
         exit_code = None
-        timeout = True
+        timeout = False
+        launch_error = f"failed to launch VC Formal: {exc}"
 
     properties_path, setup_path = out / "properties.txt", out / "setup.txt"
     properties = properties_path.read_text(encoding="utf-8", errors="replace") if properties_path.exists() else ""
@@ -106,6 +128,8 @@ def main() -> int:
         )
     }
     errors: list[str] = []
+    if launch_error:
+        errors.append(launch_error)
     expectation_mismatches: list[str] = []
     for name, expected in EXPECTED_ASSERTIONS.items():
         if assertions.get(name) != expected:
@@ -113,8 +137,19 @@ def main() -> int:
     for name, expected in EXPECTED_COVERS.items():
         if covers.get(name) != expected:
             expectation_mismatches.append(f"{name}: expected {expected}, got {covers.get(name)}")
-    if re.search(r"^\s*\[\s*\d+\]\s+\w+\b.*?-\s+\S*\.asm_", properties, re.M):
-        errors.append("the product-bound reachability harness must not use assumptions")
+    for name in GUARD_COVERS:
+        if covers.get(name) not in {"covered", "uncoverable"}:
+            expectation_mismatches.append(
+                f"{name}: expected a resolved reachability result, got {covers.get(name)}"
+            )
+    assumption_lines = [line for line in properties.splitlines()
+                        if "constrained" in line and
+                        (".as_" in line or ".asm_" in line)]
+    if (len(assumption_lines) != 1 or
+            "as_source_hold_when_stalled" not in assumption_lines[0]):
+        errors.append(
+            "expected exactly the legal AXIS hold-VALID assumption; source-gap and PA-ready constraints are forbidden"
+        )
     if re.search(r":\s+[1-9]\d*\s*$", setup, re.M):
         errors.append("Formal setup reported nonzero clock/reset/loop/multidriver checks")
     if not re.search(r"Number of Black-Box Instances\s*=\s*0\b", console):
@@ -155,8 +190,10 @@ def main() -> int:
                 "fifo": "Generic",
             },
             "clock_period_units": {"axil_clk": 35, "source_clk": 28, "core_clk": 16},
-            "environment_assumptions": 0,
-            "source_driver": "legal 32-beat AXIS packet; stable valid/data until handshake",
+            "environment_assumptions": 1,
+            "source_driver": "legal 32-beat AXIS packet; arbitrary source bubbles; valid held while stalled",
+            "maximum_source_gap": None,
+            "maximum_pa_stall": None,
             "output_backpressure": "arbitrary per-plane PA ready",
             "target_bins": [
                 "TXB-e99262dd92665c3b9ea8",
