@@ -57,10 +57,11 @@ waiver, and log-hash evidence:
 `docs/verification/data/thermo5-r11/thermo5-tx-final-verification-round11-20261106.json`.
 Raw logs, VDBs, and full URG trees remain under ignored `runs/`.
 
-Next: publish the Round 11 Draft PR stacked on PR #40; continue direct SV
-scoreboard mutation checks, reachable code-bin closure, counter guard Formal,
-full-chain DPD Identity Formal, and independent review of any exact waiver
-candidate. Do not call this a final Linux, FPGA, or physical signoff.
+PR #41 is open as a Draft stacked on PR #40 and is mergeable; it has not been
+merged. Next, review direct SV scoreboard mutation checks, reachable code-bin
+closure, counter guard Formal, full-chain DPD Identity Formal, and independent
+review of any exact waiver candidate. Do not call this a final Linux, FPGA, or
+physical signoff.
 
 ## Previous execution snapshot: TX final integration and staged Oracle (2026-11-04)
 

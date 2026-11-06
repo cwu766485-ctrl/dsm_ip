@@ -556,6 +556,13 @@
     "code_commit": "cd9532a7d805f2f60250f2ef687a15711a9c485e",
     "code_tree": "244b49c4daf1561806d7f02d6dfb560227757571",
     "tested_local_commit": "d823654cba715e9093bb8cc08e6d819e8ae1365f",
-    "tree_equivalence_verified": true
+    "tree_equivalence_verified": true,
+    "pull_request": {
+      "number": 41,
+      "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/41",
+      "state": "open",
+      "draft": true,
+      "base": "codex/thermo5-final-integration"
+    }
   }
 }

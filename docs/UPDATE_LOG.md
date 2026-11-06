@@ -2,8 +2,8 @@
 
 - Published Round 11 code commit `cd9532a7d805f2f60250f2ef687a15711a9c485e` on
   `codex/thermo5-final-verification-round11`; its source tree `244b49c4daf1561806d7f02d6dfb560227757571` exactly
-  matches the local simulation commit `d823654cba715e9093bb8cc08e6d819e8ae1365f`. The report and evidence are
-  stacked on PR #40 HEAD
+  matches the local simulation commit `d823654cba715e9093bb8cc08e6d819e8ae1365f`. Opened Draft PR
+  [#41](https://github.com/cwu766485-ctrl/dsm_ip/pull/41), stacked on PR #40; GitHub reports it mergeable and it remains unmerged. The report/evidence use PR #40 HEAD
   `330815a5db5a26af50de81aff0c304dea714ead3`. Confirmed PR #40 includes all
   255 unique paths touched by PRs #27–#39 within its 266-path diff; it remains
   Draft/Open and was not merged.

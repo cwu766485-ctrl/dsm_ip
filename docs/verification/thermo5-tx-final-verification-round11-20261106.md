@@ -6,6 +6,7 @@
 - Local simulation source commit: `d823654cba715e9093bb8cc08e6d819e8ae1365f`
 - Published code commit: `cd9532a7d805f2f60250f2ef687a15711a9c485e` (same tree `244b49c4daf1561806d7f02d6dfb560227757571`)
 - Published parent: `330815a5db5a26af50de81aff0c304dea714ead3`
+- Review: [PR #41](https://github.com/cwu766485-ctrl/dsm_ip/pull/41), Draft, stacked on PR #40
 
 ## Decision
 
