@@ -106,6 +106,9 @@ class thermo5_sku_base_test extends uvm_test;
          vif.dpd_saturation_count[lane] !== 0)
         `uvm_fatal("DPD_COUNT",$sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
           lane,vif.dpd_sample_count[lane],expected_dpd_words,vif.dpd_saturation_count[lane]))
+    if (!env.unified_scoreboard.check_expected_queues_drained("full-stream"))
+      `uvm_fatal("UNIFIED_EXPECTED_QUEUE",
+        "A normally completed stream left independent source or configuration expectations pending")
     if (require_signed_extremes &&
         (env.coverage.signed_min_beats==0 || env.coverage.signed_max_beats==0))
       `uvm_fatal("SIGNED_EXTREMES",

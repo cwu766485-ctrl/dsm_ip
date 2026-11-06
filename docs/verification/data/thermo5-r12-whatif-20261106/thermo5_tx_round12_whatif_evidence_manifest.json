@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "status": "ANALYSIS_ONLY_NOT_OFFICIAL_SIGNOFF",
+  "created_local_date": "2026-11-06",
+  "repository": "cwu766485-ctrl/dsm_ip",
+  "working_branch": "codex/thermo5-linux-dv-signoff-closure",
+  "repository_head": "98620217e8b752cef165fa0c01512e5c34306aff",
+  "product_source_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+  "integrated_thermo5_base_sha": "73577475230a9c4e51273ac7071437f0a7373d48",
+  "product_configuration": {
+    "interpolation": "Centered-Cubic x2+x2",
+    "ef2_order": 2,
+    "step": 5120,
+    "state_bits": 20,
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "control": "AXI-Lite",
+    "fifo": "Generic"
+  },
+  "compile_fingerprint": "9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a",
+  "tools": {
+    "urg": "V-2023.12-SP1",
+    "python": "3.12.13"
+  },
+  "baseline": {
+    "round12_raw_manifest": "docs/verification/data/thermo5-r12/thermo5-tx-vdb-manifest.json",
+    "round12_vdb_manifest_sha256": "5f0a8b256e1c656758f6eca7f28414dac91eedce2a0d2f8474242f5fae04a0d9",
+    "whatif_vdb_manifest_path": "runs/thermo5_tx_round12_waiver_whatif_20261106/raw_dump_input_manifest.json",
+    "whatif_vdb_manifest_sha256": "3de7c1d58c89dac432a6e2a328e255e845047bbe3c0655496de90c4891dc2645",
+    "same_as_round12_manifest": true,
+    "design_vdb_count": 1,
+    "test_vdb_count": 232,
+    "total_vdb_count": 233,
+    "vdb_path_list_sha256": "58118a7f4172c1098585655eab58712ce3e10443284fc22ad20b09b534cedb7a",
+    "raw_adjusted_vdb_paths_identical": true
+  },
+  "github_local_waiver_reconciliation": {
+    "official_branch": "thermo5",
+    "official_row_count": 371,
+    "local_candidate_row_count": 369,
+    "difference_count": 2,
+    "difference_file": "thermo5_tx_round12_github_local_waiver_diff.csv",
+    "difference_reason": "both remote-only rows are Raw HITs and were archived as no-waiver-required",
+    "official_file_git_blob_sha": "d3e7eebefb61fef68089101779db70ee647f68fa",
+    "official_branch_ref": "thermo5",
+    "remote_row_count_verified": 371,
+    "remote_only_ids_verified": [
+      "W-75530ed17d5b396a4e9b",
+      "W-d7cb262894a5aae016b6"
+    ],
+    "local_only_ids_verified": [],
+    "local_csv_sha256": "d8b4e060abe042ddf4c21c39bec4ec811567f50f7a69398784e24f9a02216c47"
+  },
+  "candidate_classification": {
+    "ELIGIBLE": 361,
+    "NEEDS_REPROOF": 4,
+    "MAPPING_ERROR": 0,
+    "REACHABLE": 0,
+    "UNRESOLVED": 4,
+    "officially_approved": 0,
+    "official_exclusions": 0,
+    "all_candidate_source_hashes_current": true,
+    "all_candidate_exact_native_mappings_unique": true
+  },
+  "analysis_only_exclusions": {
+    "exact_bins": 361,
+    "native_objects": 245,
+    "line_bins": 152,
+    "branch_bins": 101,
+    "condition_bins": 108,
+    "toggle_bins": 0,
+    "fsm_bins": 0,
+    "independent_reviewer_approval": false,
+    "approved_status_changed": false,
+    "el_sha256": "9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb"
+  },
+  "coverage": {
+    "raw": {
+      "line": {
+        "covered": 3338,
+        "total": 3796,
+        "missing": 458,
+        "percent": 87.9347
+      },
+      "cond": {
+        "covered": 657,
+        "total": 849,
+        "missing": 192,
+        "percent": 77.3852
+      },
+      "toggle": {
+        "covered": 91288,
+        "total": 104480,
+        "missing": 13192,
+        "percent": 87.3737
+      },
+      "branch": {
+        "covered": 524,
+        "total": 637,
+        "missing": 113,
+        "percent": 82.2606
+      }
+    },
+    "whatif_adjusted": {
+      "line": {
+        "covered": 3338,
+        "total": 3644,
+        "missing": 306,
+        "percent": 91.6026
+      },
+      "cond": {
+        "covered": 657,
+        "total": 741,
+        "missing": 84,
+        "percent": 88.664
+      },
+      "toggle": {
+        "covered": 91288,
+        "total": 104480,
+        "missing": 13192,
+        "percent": 87.3737
+      },
+      "branch": {
+        "covered": 524,
+        "total": 536,
+        "missing": 12,
+        "percent": 97.7612
+      }
+    },
+    "fsm_states": {
+      "covered": 13,
+      "total": 13
+    },
+    "fsm_transitions": {
+      "covered": 22,
+      "total": 22
+    },
+    "remaining_uncovered_exact_bin_count": 13594,
+    "remaining_by_metric": {
+      "branch": 12,
+      "cond": 84,
+      "line": 306,
+      "toggle": 13192
+    },
+    "remaining_root_cause_summary": "thermo5_tx_round12_remaining_root_cause_summary.csv",
+    "remaining_exact_bins": "thermo5_tx_round12_remaining_exact_uncovered_bins.csv.gz"
+  },
+  "execution": {
+    "manifest": "docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_whatif_urg_execution_summary.json",
+    "manifest_sha256": "d8eac9d42cedd349ca7f89db312d27a6fbd22a0720194f94dedb267abfa9ac80",
+    "raw_command_sha256": "2aa10807da7c4991fbaf20302b2a7045fc674f1e9113ca7f2e0d147c8991b763",
+    "raw_log_sha256": "94e529a7c1a169054f45e368ebc6fc4df36062eb091ee5c6f10915aa744ba2b8",
+    "raw_exit_code": 0,
+    "adjusted_command_sha256": "89687c39b56ffc496ae259a169bc186cc0803813282032534a825a70e534b2c5",
+    "adjusted_log_sha256": "d2bd57eaa37a0490f893874b0a783af9fd5564f2735e21204c3c8da37c8f4461",
+    "adjusted_exit_code": 0,
+    "analysis_el_sha256": "9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb",
+    "same_metrics": "line+cond+fsm+tgl+branch+assert",
+    "raw_inventory_command": "python3.12 tools/hw/thermo5_coverage_denominator.py <raw URG report> <raw inventory>",
+    "adjusted_inventory_command": "python3.12 tools/hw/thermo5_coverage_denominator.py <adjusted URG report> <adjusted inventory>",
+    "warnings": {
+      "raw": 0,
+      "adjusted": 0
+    },
+    "vdb_path_list_sha256": "58118a7f4172c1098585655eab58712ce3e10443284fc22ad20b09b534cedb7a",
+    "vdb_count": 233
+  },
+  "artifacts_sha256": {
+    "analysis-el-manifest.json": "1b233246e7ff7b2fce495684a5eedb4b790edcb51e385cca27e228f9de6c3b4b",
+    "thermo5_tx_round12_candidate_audit.csv": "a5d6e30958cd54f0d13c8960810436a268e64a152960a2cdc7035c449d33dce8",
+    "thermo5_tx_round12_github_local_waiver_diff.csv": "f66b64f4a1ff4f39ec7d2c5b906275101cace72421c2fcb02eaf06614d877e65",
+    "thermo5_tx_round12_raw_vs_whatif_metrics.csv": "b305cb732cb74d66832ed49a6941694b69e8ca5f77f1c2a8f63b5df426a798d5",
+    "thermo5_tx_round12_remaining_exact_uncovered_bins.csv.gz": "1d6a20177f37808eb5ede4e1056265cf2747064ec31775378d8dc2636a7f0112",
+    "thermo5_tx_round12_remaining_root_cause_summary.csv": "225fb2b9913313a0efcb18789118f710fdf22278523a582d760f189140ef710a",
+    "thermo5_tx_round12_toggle_root_cause_audit.csv": "7efee8bc5df50f91621971f7aee5ada1fe12b6d0eb6f2520ee19b0f07bb7b55c",
+    "thermo5_tx_round12_toggle_signal_groups.csv": "219df9b937ab80bdecd9fd64118bcb2335e196f419e41168306c589682a5cba9",
+    "thermo5_tx_round12_whatif_ANALYSIS_ONLY_NOT_APPROVED.el": "9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb",
+    "thermo5_tx_round12_whatif_urg_execution_summary.json": "d8eac9d42cedd349ca7f89db312d27a6fbd22a0720194f94dedb267abfa9ac80"
+  },
+  "report_path": "docs/verification/thermo5-tx-round12-waiver-what-if-20261106.md",
+  "report_sha256": "a7e85e6be4098c3b6b633d8b0370c8d675d149fdaa6b4040397c15d74a7acbc0",
+  "source_file_sha256": {
+    "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+    "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+    "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+    "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56"
+  },
+  "eligible_basis_by_rule": {
+    "EF2_PAIR_LOOKAHEAD_DEFAULT_DISABLED": 344,
+    "fixed_product_parameter_guards": 17
+  },
+  "whatif_result": {
+    "remaining_open_exact_bins": 13594,
+    "remaining_by_metric": {
+      "branch": 12,
+      "condition": 84,
+      "line": 306,
+      "toggle": 13192,
+      "fsm": 0
+    },
+    "official_signoff": false
+  }
+}

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from datetime import datetime, timezone
 import gzip
 import hashlib
 import json
@@ -569,7 +570,8 @@ def _configuration_rule(waiver: dict[str, str], gap: dict[str, str],
 
 
 def _classify(waiver: dict[str, str], gap: dict[str, str], formal_by_semantic: dict,
-              repo_root: Path, snapshot_root: Path, formal_runs: dict) -> dict:
+              repo_root: Path, snapshot_root: Path, formal_runs: dict,
+              compile_manifest: dict) -> dict:
     source = _safe_repo_file(repo_root, waiver["source_file"], "waiver source")
     source_sha = sha256(source)
     ledger_sha = _sha_map_from_ledger(gap).get(waiver["source_file"])
@@ -603,13 +605,18 @@ def _classify(waiver: dict[str, str], gap: dict[str, str], formal_by_semantic: d
                 or formal.get("source_position") != gap.get("source_position")):
             return {**exact, "disposition": "UNRESOLVED",
                     "reason": "Formal semantic-bin record does not exactly match the current Raw tuple."}
-        formal_evidence = _formal_support(formal, repo_root, snapshot_root, formal_runs)
+        try:
+            formal_evidence = _formal_support(formal, repo_root, snapshot_root, formal_runs)
+        except CandidateAuditError as exc:
+            return {**exact, "disposition": "UNRESOLVED",
+                    "formal_review_record": formal,
+                    "reason": f"Formal evidence is stale or incomplete: {exc}"}
         return {**exact, "disposition": "FORMAL_UNREACHABLE",
                 "proof": formal_evidence,
                 "evidence_files": formal_runs[formal_evidence["formal_run_key"]]["evidence_files"],
                 "formal_review_record": formal,
                 "reason": "Exact assertion is proven, its matching target Cover is uncoverable, legal activity Cover is reached, no black boxes or unreviewed assumptions are present, and all Formal source hashes match current files. Raw remains OPEN."}
-    configuration = _configuration_rule(waiver, gap, repo_root, {})
+    configuration = _configuration_rule(waiver, gap, repo_root, compile_manifest)
     if configuration:
         return {**exact, "disposition": "CONFIG_UNREACHABLE",
                 "proof": configuration,
@@ -631,7 +638,7 @@ def _update_csv(path: Path, rows: list[dict[str, str]], audit_path: Path,
         row["candidate_audit"] = rel
         row["candidate_audit_sha256"] = digest
     with path.open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -667,15 +674,13 @@ def audit_candidates(*, waivers_csv: Path, raw_gap_ledger: Path, compile_manifes
         seen_bins.add(waiver["bin"])
         gap = _find_gap(waiver, gaps)
         candidates.append(_classify(waiver, gap, formal_by_semantic, repo_root,
-                                    snapshot_dir, formal_runs))
+                                    snapshot_dir, formal_runs, compile_manifest))
 
     disposition_counts = Counter(item["disposition"] for item in candidates)
-    if len(candidates) != 371:
-        raise CandidateAuditError(f"expected 371 historical candidates, found {len(candidates)}")
-    if disposition_counts["CONFIG_UNREACHABLE"] != 361:
-        raise CandidateAuditError("expected 361 exact fixed-configuration candidates")
-    if disposition_counts["FORMAL_UNREACHABLE"] != 10:
-        raise CandidateAuditError("expected 10 exact Formal candidates")
+    if len(candidates) != len(waivers):
+        raise CandidateAuditError(
+            f"candidate count {len(candidates)} differs from active waiver inventory {len(waivers)}"
+        )
     if disposition_counts["REACHABLE"]:
         raise CandidateAuditError("a candidate was classified reachable; route it to directed tests")
 
@@ -689,7 +694,7 @@ def audit_candidates(*, waivers_csv: Path, raw_gap_ledger: Path, compile_manifes
     audit = {
         "schema_version": 1,
         "schema": "thermo5_tx_waiver_candidate_audit",
-        "created_date": "2026-11-03",
+        "created_date": datetime.now(timezone.utc).date().isoformat(),
         "product_source_sha": compile_manifest["product_source_sha"],
         "product_configuration_fingerprint": config_hash,
         "product_configuration": {

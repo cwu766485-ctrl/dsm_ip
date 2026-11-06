@@ -1,3 +1,84 @@
+# 2026-11-06 20:59 SGT - Thermo5 Round 12 waiver What-if coverage audit
+
+- Compared the current GitHub `thermo5` waiver CSV (371 rows, Git blob SHA
+  `d3e7eebefb61fef68089101779db70ee647f68fa`) with the local 369-row candidate
+  list. The only remote-only IDs, `W-75530ed17d5b396a4e9b` and
+  `W-d7cb262894a5aae016b6`, are already Raw URG HITs and remain archived as
+  no-waiver-required; there are no local-only IDs.
+- Audited all 369 candidates against current source file hashes, product SHA,
+  product parameters, exact bin IDs and native URG mapping. Classification:
+  361 ELIGIBLE for What-if only, 4 NEEDS_REPROOF, 4 UNRESOLVED, 0 MAPPING_ERROR,
+  0 classified REACHABLE. No official row was approved or changed.
+- Generated an analysis-only `.el` with 361 exact bins (245 native URG objects)
+  and reran Raw and strict What-if URG over the identical Round 12 VDB set (one
+  design + 232 tests). Both final jobs exited 0, generated dashboards, had no
+  warning lines, and used the same VDB path-list SHA. After normalizing the copied
+  analysis `.el` to remove three generated trailing blank lines, strict Adjusted
+  URG was rerun with SHA-256
+  `9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb`; Raw and
+  Adjusted inventories still match the reported counts. The final local execution
+  record is `runs/thermo5_tx_round12_waiver_whatif_20261106/final_pair_execution_manifest.json`
+  and a portable command/log hash summary is tracked with the evidence.
+- What-if results: Branch 524/536 (97.7612%), Condition 657/741 (88.6640%),
+  Line 3338/3644 (91.6026%), Toggle 91288/104480 (87.3737%), FSM states 13/13
+  and transitions 22/22. Exact remaining OPEN bins: 13,594 (12 Branch, 84
+  Condition, 306 Line, 13,192 Toggle). The 13,192 Toggle bins were audited by
+  root cause; no URG range/counting artifact was confirmed. Fixed pair-1 and
+  active-tap groups remain only review candidates and were not excluded.
+- Added the comprehensive What-if report and row-level candidate, exact-bin,
+  toggle, reconciliation, and SHA evidence under
+  `docs/verification/thermo5-tx-round12-waiver-what-if-20261106.md` and
+  `docs/verification/data/thermo5-r12-whatif-20261106/`. Updated the active
+  execution frontier. Product RTL, test set, compile settings, official waiver
+  CSV and official `.el` are unchanged.
+- Checks: current source SHA matched all 369 candidate source hashes; exact
+  URG denominator deltas matched 101 Branch + 108 Condition + 152 Line bins;
+  the post-What-if ledger reconciled to 13,594 bins. Final URG Raw and Adjusted
+  each exited 0 with dashboards and zero warnings. No VCS regression rerun was
+  needed; existing Round 12 VDBs were reused unchanged. Full Linux DV remains
+  OPEN and this What-if is NOT OFFICIAL SIGNOFF.
+
+# 2026-11-06 18:49 SGT - Thermo5 TX Linux DV closure Round 12
+
+- Rechecked the integrated `thermo5` base `73577475230a9c4e51273ac7071437f0a7373d48`.
+  The closure branch source `a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0` is three
+  verification-only commits ahead; all 21 product RTL hashes match the base.
+- Closed Gate 1 functional criteria at the tested source: 230 legal and two
+  expected-negative product tests pass; System Random 110/110, DPD/Gain/Profile
+  60/60, randomized Reset/COMMIT 24/24 each, Python 64/64, all 436 legal
+  functional bins across 16 groups, seven system crosses, empty Expected
+  Queues, and six direct SV scoreboard mutations detected.
+- Rebound the Waiver Pipeline after refreshing its audit and regenerated Raw
+  and Adjusted URG from the same 232 test VDBs plus the product DUT VDB. Results
+  remain identical with no active Exclusions: Branch 524/637, Condition
+  657/849, Line 3338/3796, Toggle 91288/104480; FSM states 13/13 and
+  transitions 22/22. The gate remains `RAW_100_OPEN`.
+- Reclassified two historical waiver rows as covered by current Raw URG and
+  archived them. Of the 369 remaining candidates, 0 are approved, 0 rejected,
+  and 0 Exclusions are active. Independent Reviewer approval has not occurred.
+- Refreshed the current-source gap ledger: 13,955 open exact records in 415
+  root-cause tasks. The plan's inherited task count is 416; this discrepancy
+  remains open. Legal-only assertion regression has zero failures; two
+  `q1_tail` properties remain without attempts.
+- Ran VC Formal at the current source: DPD counter budget is PASS in its scoped
+  harness; AXI-Lite outstanding saturation/underflow remains INCONCLUSIVE;
+  clean-worktree DPD Identity output-under-stall composition passes at local
+  one-tap scope (41 lemmas, four assertions, four Covers), not full-chain.
+- Changed files: Waiver audit utility/test and current ledger; Round 12 source,
+  compile, VDB, URG, gate, assertion, Formal and candidate evidence; final
+  closure report; execution frontier. No product RTL or frozen algorithm was
+  changed. VDBs and full simulator logs remain under ignored `runs/`.
+- The candidate audit now binds fixed-configuration source context to the
+  product Compile Manifest and writes the waiver ledger with LF endings. The
+  compile manifest, candidate audit, waiver pipeline and same-input dual URG
+  were regenerated after this correction; the 232 test VDBs and design VDB are
+  unchanged.
+- Checks: `python3.12 -m unittest tools.hw.tests.test_thermo5_tx_waiver_candidate_audit tools.hw.tests.test_thermo5_tx_coverage_gate` — 10 tests PASS; fail-closed Coverage Gate rerun — `RAW_100_OPEN` as expected (exit 0); all Round 12 evidence JSON parses; all indexed artifact hashes match; `git -c core.whitespace=-blank-at-eof diff HEAD --check` PASS. `blank-at-eof` is excluded only because the source-bound Formal snapshots are byte-for-byte copies of the archived proof text. The Gate was not invoked with `--require-closed`, because open code/assertion bins and unapproved waiver candidates remain.
+- Signoff: Functional Gate 1 PASS; Full Linux DV remains OPEN. Real XPM/GT
+  Wizard, integrated CDC/RDC, Vivado PPA/timing/power and physical RF/QAM256
+  are NOT_RUN.
+- Report: `docs/verification/thermo5-tx-linux-final-closure-round12-20261106.md`.
+
 # 2026-11-06 15:18 SGT - Complete Thermo5 branch consolidation
 
 - Merged PR #40 (`f8b14df743eeb6facfd0378b402f1670a6cf9b0f`) and PR #41

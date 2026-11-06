@@ -1,6 +1,71 @@
 # Execution frontier
 
-## Current execution state: Thermo5 Branch Consolidation (2026-11-06)
+## Current execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
+
+Latest integrated `thermo5` base is `73577475230a9c4e51273ac7071437f0a7373d48`;
+the tested closure branch is `codex/thermo5-linux-dv-signoff-closure` at
+`a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0`, three verification-only commits
+ahead. All 21 product RTL hashes match the integrated base. Product profile:
+Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit, DPD_MAX_TAPS=1 with
+Identity reset image, AXI-Lite, Generic FIFO. The 97-input compile manifest
+fingerprint is `9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a`.
+
+Gate 1 Functional criteria PASS at this product SHA: 230 legal product tests
+plus two separate expected-negative tests pass; Python reference tests are
+64/64; legally applicable Functional Coverage is 436/436 across 16/16 groups;
+the seven named system crosses pass; all 232 expected queues drain; and direct
+SV Unified Scoreboard mutation detection passes 6/6. Legal assertion
+regression has zero failures, with two `q1_tail` properties still uncovered
+and without attempts.
+
+Fresh same-input Raw/Adjusted URG: Branch 524/637, Condition 657/849, Line
+3338/3796, Toggle 91288/104480, FSM states 13/13 and transitions 22/22.
+Adjusted equals Raw because there are zero approved waivers and zero active
+Exclusions. There are 13,955 open code-bin records grouped into 415 OPEN
+root-cause tasks; the inherited plan says 416, so the task-ledger discrepancy
+remains explicit. The fail-closed gate is `RAW_100_OPEN`.
+
+Separate Round 12 What-if analysis (not official coverage/signoff) used the
+same one Design VDB + 232 Test VDBs and a strict analysis-only `.el` containing
+361 exact candidate bins (normalized SHA-256
+`9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb`). The final
+Raw/Adjusted inventories were rerun and matched. URG reports show Branch 524/536,
+Condition 657/741, Line 3338/3644, Toggle 91288/104480, FSM states 13/13 and
+transitions 22/22. The remaining exact OPEN set is 13,594 bins: Branch 12,
+Condition 84, Line 306, Toggle 13,192. GitHub has 371 waiver rows versus 369
+local; the two remote-only rows are current Raw HITs, not missing candidates.
+No official waiver status or exclusion changed. Full report:
+`docs/verification/thermo5-tx-round12-waiver-what-if-20261106.md`.
+
+Waiver audit: two old candidates are archived as Raw hits; 369 remain PENDING
+(361 configuration candidates, four Formal candidates, four stale-context
+unresolved), 0 approved, 0 rejected. The generated `.el` has no active
+directives. No independent Reviewer approval is recorded.
+
+Formal: product AXI-Lite outstanding saturation/underflow run is
+INCONCLUSIVE (all five assertions and both guard Covers unresolved at effort
+limit). The separate DPD counter budget proof passes in its scoped harness.
+DPD Identity arithmetic/output-under-stall proof passes in its scoped leaf
+harness, but excludes config mailbox/CDC/full TX chain. COMMIT → Pending →
+Apply → ACK → DONE and full-chain DPD Identity remain OPEN. Do not infer FPGA
+or physical signoff: real XPM/GT Wizard, integrated CDC/RDC, Vivado PPA/timing,
+board/RF and physical QAM256 were not run.
+
+Full report and machine evidence:
+`docs/verification/thermo5-tx-linux-final-closure-round12-20261106.md` and
+`docs/verification/data/thermo5-r12/`. VDBs and tool logs are under ignored
+`runs/thermo5_linux_dv_signoff_gate1/source_a03c2/`.
+
+Next: review the 361 What-if candidates and the 13,594-bin root-cause ledger;
+start with the 12 remaining Branch bins, then targeted Conditions and Lines.
+Audit the 8,312 fixed-configuration Toggle candidates before proposing any
+exact exclusions; keep the high-counter and 130 CDC residual Toggle bins
+open pending stimulus or reachability evidence. Reconcile the 415/416 task
+count, obtain independent exact-bin waiver approval, and split the outstanding
+counter proof into product-bound lemmas without strengthening legal stimulus
+assumptions. Keep full-chain Commit/DPD and the two `q1_tail` attempts open.
+
+## Previous execution state: Thermo5 Branch Consolidation (2026-11-06)
 
 `thermo5` now contains PR #40 and #41. PR #40 merged as
 `f8b14df743eeb6facfd0378b402f1670a6cf9b0f`; PR #41 merged as

@@ -138,6 +138,9 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
             end
             if (!drain_complete)
               `uvm_fatal("AXIL_DRAIN_TIMEOUT","Frontend did not finish nonlinear packet drain")
+            if (!env.unified_scoreboard.check_expected_queues_drained("nonlinear-bittrue"))
+              `uvm_fatal("AXIL_NONLINEAR_EXPECTED_QUEUE",
+                "Independent expectations remained after nonlinear STOP/drain")
             `uvm_info("SKU_PASS",scenario_pass_message(),UVM_NONE)
           end
         join

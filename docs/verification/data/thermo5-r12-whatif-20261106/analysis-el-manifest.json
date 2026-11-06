@@ -1,0 +1,24 @@
+{
+  "classification_counts": {
+    "ELIGIBLE": 361,
+    "NEEDS_REPROOF": 4,
+    "UNRESOLVED": 4
+  },
+  "selected_candidate_count": 361,
+  "selected_native_object_count": 245,
+  "selected_by_metric": {
+    "line": 36,
+    "branch": 101,
+    "cond": 108
+  },
+  "all_selected_objects_found_exactly_once": true,
+  "missing_or_duplicate_objects": [],
+  "source_template_sha256": {
+    "line": "b9d373247bd72fbfcf370d92ac93bced5a14a9f7ea36b51b6809c34d10c769ed",
+    "branch": "29df2a917bba9e296986a864c11889918bbb0c3b1c77e411b82d62802e9657c1",
+    "cond": "26471eaf2e0c426af685102f18e90324deb02e166bb8226f0dca8e20ca3650bc"
+  },
+  "analysis_el_sha256": "9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb",
+  "status": "ANALYSIS_ONLY_NOT_APPROVED_NOT_OFFICIAL_SIGNOFF",
+  "normalized_trailing_blank_lines_removed": 3
+}

@@ -55,6 +55,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_coverage.svh"
   `include "thermo5_transaction_event_bus.svh"
   `include "thermo5_unified_scoreboard.svh"
+  `include "thermo5_unified_scoreboard_mutation_test.svh"
   `include "thermo5_sku_virtual_sequencer.svh"
   `include "thermo5_sku_env.svh"
   `include "thermo5_sku_base_test.svh"
