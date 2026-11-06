@@ -1,8 +1,8 @@
 # Thermo5 TX DPD Vector Payload Hold Formal Evidence
 
-Date: 2026-11-03 (Asia/Singapore)  
-Status: `PASS_SCOPED_DPD_VECTOR_STALL_HOLD`  
-Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`  
+Date: 2026-11-03 (Asia/Singapore)
+Status: `PASS_SCOPED_DPD_VECTOR_STALL_HOLD`
+Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Formal-input commit: `5b40881256444bcc6f88d0959a8af7336a776ca7`
 
 ## Scope

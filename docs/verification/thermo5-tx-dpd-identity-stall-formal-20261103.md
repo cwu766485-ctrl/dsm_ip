@@ -1,8 +1,8 @@
 # Thermo5 TX One-Tap Identity DPD Under-Stall Formal Evidence
 
-Date: 2026-11-03 (Asia/Singapore)  
-Status: `PASS_SCOPED_DPD_IDENTITY_OUTPUT_UNDER_STALL`  
-Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`  
+Date: 2026-11-03 (Asia/Singapore)
+Status: `PASS_SCOPED_DPD_IDENTITY_OUTPUT_UNDER_STALL`
+Product RTL source SHA: `1236d49c72360aa62e316aea147528d93a1b3705`
 Formal run source commit: `e21c1ece205b633809e1dfd84d275936294b6378`
 
 ## Scope and contract

@@ -25,7 +25,7 @@
     "single_seed_urg_baseline": "/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -full64 -dir runs/thermo5_tx_system_random_phase_c/build/simv.vdb runs/thermo5_tx_system_random_smoke3/vdb/phase_b_replay.vdb -report runs/thermo5_tx_system_random_phase_c/urg_single_seed_baseline -dbname thermo5_tx_system_random_baseline",
     "trace_oracle": "python3.12 dv/uvm/refmodel/python/check_thermo5_monitor_trace.py <trace.jsonl> --step 5120 --tidsm-order 2 --max-taps 1"
   },
-  "compile_command": "make -C /home/ray/workspace/dsm_ip/dv/uvm/sim thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_COVERAGE=1 THERMO5_VECTORS=/home/ray/workspace/dsm_ip/runs/uvm_thermo5_i2_d1/vectors THERMO5_OUT=/home/ray/workspace/dsm_ip/runs/thermo5_tx_system_random_phase_c/build",
+  "compile_command": "make -C ./dv/uvm/sim thermo5-vcs THERMO5_USE_AXIL=1 THERMO5_DPD_MAX_TAPS=1 THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_COVERAGE=1 THERMO5_VECTORS=./runs/uvm_thermo5_i2_d1/vectors THERMO5_OUT=./runs/thermo5_tx_system_random_phase_c/build",
   "status": "PASS",
   "case_count": 110,
   "packet_56_word_cases": 100,

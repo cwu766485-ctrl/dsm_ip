@@ -1,0 +1,1207 @@
+{
+  "captured_at": "2026-11-06",
+  "local_branch_count": 43,
+  "local_branches": [
+    {
+      "branch": "backup/thermo5-tx-local-round9-3957",
+      "head_sha": "3957e5a900829afebac41e4984c1a3bccca5aac5",
+      "is_current": false
+    },
+    {
+      "branch": "backup/thermo5-tx-system-random-before-upload",
+      "head_sha": "f58b7b5f545d2fb8b915740df7c9ec8e4829b83f",
+      "is_current": false
+    },
+    {
+      "branch": "backup/thermo5-tx-waiver-audit-local-0279",
+      "head_sha": "0279b8e4e64d3f7a1fe214b905c60d5018b5f726",
+      "is_current": false
+    },
+    {
+      "branch": "codex/local-pre-github-upload",
+      "head_sha": "b7a777d15992f3326b1ad61888091ae95c9914bd",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-cdc-frame-end-threshold-formal",
+      "head_sha": "5657e6629ebd28762160210ce3d15dc0a648beb3",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-cdc-frame-start-alignment",
+      "head_sha": "cc32661a576d30634375f61552621e49f351c541",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-coverage-closure-round1",
+      "head_sha": "98d4fda026628b1f818c34937b3afd5c93fefa95",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-final-integration",
+      "head_sha": "7f62dbb903aa857d287137918a5091807bd68788",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-final-verification-r11",
+      "head_sha": "7f62dbb903aa857d287137918a5091807bd68788",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-final-verification-round11",
+      "head_sha": "744683b987ae5ecdc542c7c5fbf24ad63301e25d",
+      "is_current": true
+    },
+    {
+      "branch": "codex/thermo5-fixed-parameter-branch-audit",
+      "head_sha": "66771bdf0584482ef7eb4bede361edfd2b909216",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-frame-tail-closure-r2",
+      "head_sha": "b93bde394373c1a1ba7dec54c56b99373e7d8760",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-integration-review",
+      "head_sha": "19592eb85bebf6dbe4cf9dc9783314b60e178786",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-pair-lookahead-product-audit",
+      "head_sha": "0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-system-uvm-phase0-2",
+      "head_sha": "0ffb63a329aa50b566918afd5978c5fb427d6fa6",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-agent-organization",
+      "head_sha": "850200ebabbf0f110ed9a831b6b003c7be2ac932",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-axil-mailbox-formal",
+      "head_sha": "bae5ec7c72bdeda26103218883ef4502dc13271a",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-cdc-end-branch-formal",
+      "head_sha": "19d295360aa6438f4af20e7a6ab44bfebf2fc1ea",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-closure-gates4-6",
+      "head_sha": "565237b250b73e95e08fba4923fe0ffe6aaab3dd",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-coverage-audit",
+      "head_sha": "8e4c7e1bbe507795534b4a5fa7c9e6a9e49c6f12",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-dpd-identity-stall-formal",
+      "head_sha": "ef555726b76cfa04c28be845a22430130708fbe3",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-dpd-payload-hold-formal",
+      "head_sha": "9c2020cbd3040ddb60518ded96fffed3c0b36eb8",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-dynamic-oracle",
+      "head_sha": "52b94f8e7ddce42f1ec890038ed3bc7068e02d26",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-final-closure",
+      "head_sha": "2a2ce4d9e6f73c135cb355cdbeef52b8f386f359",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-final-signoff",
+      "head_sha": "bae5ec7c72bdeda26103218883ef4502dc13271a",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-formal-closure",
+      "head_sha": "8e4c7e1bbe507795534b4a5fa7c9e6a9e49c6f12",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-formal-waiver-closure-followup",
+      "head_sha": "1a86b49c785bd768cc61cff2443405735ee508b6",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-frame-tail-condition-formal",
+      "head_sha": "d00b997180f299417391da6036e166658ebb038d",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-frame-tail-full-chain-formal",
+      "head_sha": "af22d2a7f86ccc77ac7a3b9f04e671316a607d0f",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-gate0-baseline",
+      "head_sha": "d4b88de46d7f39c761b74f11bf3ad93008b45a72",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-gate1-algorithm-ab",
+      "head_sha": "e5d1951dde51089ae431017aa39ea25af48cf26e",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-gate2-worst-case",
+      "head_sha": "660480a84a0133124c3b994d68feadeee7a1d100",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-integration-final",
+      "head_sha": "6eb7548aa9098e7b26465ebeac2ea91bd1b3880b",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-linux-coverage-closure",
+      "head_sha": "2ceb9c3ff850ead70e555ca770c99842e2d7380e",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-negative-coverage-evidence",
+      "head_sha": "402d62a3948848146e775a917b19bd0c9c8efff6",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-outstanding-capacity-formal",
+      "head_sha": "8a8fdbadbabbc5c660b49ce8449011a35933e6ce",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-outstanding-counter-formal",
+      "head_sha": "9d0234895922dba57e1ec93eb9f7f818df24d01a",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-platform-observation",
+      "head_sha": "616adc93ee73bb0c8dd9932fca84481f6a4eb63c",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-product-coverage",
+      "head_sha": "b7f9cab0a3aae20ed3a948559be32f62fe33795b",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-system-random",
+      "head_sha": "ad3211b98677055646975e35924a5809c8d29bac",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-w1c-coverage-round2",
+      "head_sha": "27a55e92528025c109eebedd0c0a59110dcf3040",
+      "is_current": false
+    },
+    {
+      "branch": "codex/thermo5-tx-waiver-audit-round1",
+      "head_sha": "4942731e8228a3535823d9920e27a7bf7b1f35a7",
+      "is_current": false
+    },
+    {
+      "branch": "thermo5",
+      "head_sha": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b",
+      "is_current": false
+    }
+  ],
+  "merge_notes": {
+    "force_push_used": false,
+    "matlab_syn_fpga_changed": false,
+    "pr32_base_note": "PR #32 reports base c0e104878c71a1f4d873b0553e8ee0940560df71, not the current PR #31 head 4942731e8228a3535823d9920e27a7bf7b1f35a7.",
+    "pr36_formal_source_exact_in_pr41": 3,
+    "pr36_formal_status": "INCONCLUSIVE for outstanding-counter target properties/Covers; no coverage closure.",
+    "pr37_harness_exact_in_pr41": true,
+    "pr37_proof_scope": "Scoped composed two-stage interpolator; full elastic FIFO/DPD chain remains unproven.",
+    "pr40_diff_roots": [
+      "docs/",
+      "dv/",
+      "tools/"
+    ],
+    "product_rtl_changed": false,
+    "remote_branch_delete_available": false,
+    "update_log_lines": {
+      "pr40": 6118,
+      "pr41": 6164,
+      "thermo5": 5427
+    }
+  },
+  "patch_comparison": {
+    "exact_final_blobs_total": 278,
+    "method": "Compare exact Git blobs for each PR-changed path and test each per-file PR patch with git apply --reverse --check against the checked-out PR #41 tree. A failed context check means the path evolved; it is not by itself evidence of missing behavior.",
+    "paths_absent_from_pr41": 0,
+    "pr_details": [
+      {
+        "base": "thermo5",
+        "base_sha": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b",
+        "changed_paths": 14,
+        "draft": false,
+        "final_tree_exact_blob_matches": 2,
+        "head": "codex/thermo5-tx-dynamic-oracle",
+        "head_sha": "d727bffd2917599b37f08a39702a3d34f80d3cd5",
+        "merged": false,
+        "number": 27,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 3,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX Phase A dynamic oracle closure"
+      },
+      {
+        "base": "codex/thermo5-tx-dynamic-oracle",
+        "base_sha": "d727bffd2917599b37f08a39702a3d34f80d3cd5",
+        "changed_paths": 29,
+        "draft": false,
+        "final_tree_exact_blob_matches": 13,
+        "head": "codex/thermo5-tx-agent-organization",
+        "head_sha": "991591dca3bf710405e5cd3a35ea855f23248dfa",
+        "merged": false,
+        "number": 28,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 15,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX Phase B agents and virtual sequence"
+      },
+      {
+        "base": "codex/thermo5-tx-agent-organization",
+        "base_sha": "991591dca3bf710405e5cd3a35ea855f23248dfa",
+        "changed_paths": 41,
+        "draft": false,
+        "final_tree_exact_blob_matches": 16,
+        "head": "codex/thermo5-tx-system-random",
+        "head_sha": "ad3211b98677055646975e35924a5809c8d29bac",
+        "merged": false,
+        "number": 29,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 24,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX system-random verification and Linux closure evidence"
+      },
+      {
+        "base": "codex/thermo5-tx-system-random",
+        "base_sha": "ad3211b98677055646975e35924a5809c8d29bac",
+        "changed_paths": 8,
+        "draft": true,
+        "final_tree_exact_blob_matches": 1,
+        "head": "codex/thermo5-tx-w1c-coverage-round2",
+        "head_sha": "08061386900e5ae2c9f692dcf7e85d849623f818",
+        "merged": false,
+        "number": 30,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 4,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX STATUS W1C coverage closure round 2"
+      },
+      {
+        "base": "codex/thermo5-tx-w1c-coverage-round2",
+        "base_sha": "08061386900e5ae2c9f692dcf7e85d849623f818",
+        "changed_paths": 155,
+        "draft": true,
+        "final_tree_exact_blob_matches": 145,
+        "head": "codex/thermo5-tx-waiver-audit-round1",
+        "head_sha": "4942731e8228a3535823d9920e27a7bf7b1f35a7",
+        "merged": false,
+        "number": 31,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 147,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Audit and rebind Thermo5 TX waiver candidates"
+      },
+      {
+        "base": "codex/thermo5-tx-waiver-audit-round1",
+        "base_sha": "c0e104878c71a1f4d873b0553e8ee0940560df71",
+        "changed_paths": 71,
+        "draft": true,
+        "final_tree_exact_blob_matches": 53,
+        "head": "codex/thermo5-tx-formal-waiver-closure-followup",
+        "head_sha": "96ac24b622a1d21b344de79e4d19adc555ee6a92",
+        "merged": false,
+        "number": 32,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 54,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX closure evidence and Formal follow-up"
+      },
+      {
+        "base": "codex/thermo5-tx-formal-waiver-closure-followup",
+        "base_sha": "96ac24b622a1d21b344de79e4d19adc555ee6a92",
+        "changed_paths": 14,
+        "draft": true,
+        "final_tree_exact_blob_matches": 10,
+        "head": "codex/thermo5-tx-focused-condition-formal-closure",
+        "head_sha": "739fbaff8481b562a82eaaf1826ff16ce9a8c67d",
+        "merged": false,
+        "number": 33,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 10,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX focused Condition Formal dispositions"
+      },
+      {
+        "base": "codex/thermo5-tx-focused-condition-formal-closure",
+        "base_sha": "739fbaff8481b562a82eaaf1826ff16ce9a8c67d",
+        "changed_paths": 10,
+        "draft": true,
+        "final_tree_exact_blob_matches": 6,
+        "head": "codex/thermo5-tx-dpd-payload-hold-formal",
+        "head_sha": "21fc33cde564e93c011ca9ad57a81d4da6730684",
+        "merged": false,
+        "number": 34,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 6,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX DPD vector stall-hold Formal proof"
+      },
+      {
+        "base": "codex/thermo5-tx-dpd-payload-hold-formal",
+        "base_sha": "21fc33cde564e93c011ca9ad57a81d4da6730684",
+        "changed_paths": 10,
+        "draft": true,
+        "final_tree_exact_blob_matches": 6,
+        "head": "codex/thermo5-tx-dpd-identity-stall-formal",
+        "head_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+        "merged": false,
+        "number": 35,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 7,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX one-tap Identity DPD under output stall"
+      },
+      {
+        "base": "codex/thermo5-tx-dpd-identity-stall-formal",
+        "base_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+        "changed_paths": 9,
+        "draft": true,
+        "final_tree_exact_blob_matches": 5,
+        "head": "codex/thermo5-tx-outstanding-capacity-formal",
+        "head_sha": "cb1e177615a7aec9f060152611e924a4341b54a4",
+        "merged": false,
+        "number": 36,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 6,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX outstanding counter capacity Formal audit"
+      },
+      {
+        "base": "codex/thermo5-tx-dpd-identity-stall-formal",
+        "base_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+        "changed_paths": 7,
+        "draft": true,
+        "final_tree_exact_blob_matches": 3,
+        "head": "codex/thermo5-tx-frame-tail-condition-formal",
+        "head_sha": "9753624c8ff33ae35ee372208d17b18ee167bf52",
+        "merged": false,
+        "number": 37,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 5,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX frame-tail condition Formal review"
+      },
+      {
+        "base": "codex/thermo5-tx-frame-tail-condition-formal",
+        "base_sha": "9753624c8ff33ae35ee372208d17b18ee167bf52",
+        "changed_paths": 9,
+        "draft": true,
+        "final_tree_exact_blob_matches": 6,
+        "head": "codex/thermo5-tx-cdc-data-empty-formal",
+        "head_sha": "184c68b6d704998f5126a75a8f86d7577bb69a1a",
+        "merged": false,
+        "number": 38,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 8,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX Generic-FIFO core_data_empty Formal review"
+      },
+      {
+        "base": "codex/thermo5-tx-cdc-data-empty-formal",
+        "base_sha": "184c68b6d704998f5126a75a8f86d7577bb69a1a",
+        "changed_paths": 27,
+        "draft": true,
+        "final_tree_exact_blob_matches": 12,
+        "head": "codex/thermo5-tx-platform-observation",
+        "head_sha": "b3531cdfee13515086db23b0a7136c594ccf46f2",
+        "merged": false,
+        "number": 39,
+        "paths_absent_from_pr41": 0,
+        "reverse_patch_file_checks_pass": 14,
+        "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+        "state": "open",
+        "title": "Thermo5 TX passive observers and transaction event bus"
+      }
+    ],
+    "prs_27_39_changed_paths_total": 404,
+    "reverse_patch_file_checks_pass_total": 303
+  },
+  "phase": "pre-integration branch and PR audit",
+  "pull_requests": [
+    {
+      "base": "thermo5",
+      "base_sha": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b",
+      "changed_paths": 14,
+      "draft": false,
+      "final_tree_exact_blob_matches": 2,
+      "head": "codex/thermo5-tx-dynamic-oracle",
+      "head_sha": "d727bffd2917599b37f08a39702a3d34f80d3cd5",
+      "merged": false,
+      "number": 27,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 3,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX Phase A dynamic oracle closure"
+    },
+    {
+      "base": "codex/thermo5-tx-dynamic-oracle",
+      "base_sha": "d727bffd2917599b37f08a39702a3d34f80d3cd5",
+      "changed_paths": 29,
+      "draft": false,
+      "final_tree_exact_blob_matches": 13,
+      "head": "codex/thermo5-tx-agent-organization",
+      "head_sha": "991591dca3bf710405e5cd3a35ea855f23248dfa",
+      "merged": false,
+      "number": 28,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 15,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX Phase B agents and virtual sequence"
+    },
+    {
+      "base": "codex/thermo5-tx-agent-organization",
+      "base_sha": "991591dca3bf710405e5cd3a35ea855f23248dfa",
+      "changed_paths": 41,
+      "draft": false,
+      "final_tree_exact_blob_matches": 16,
+      "head": "codex/thermo5-tx-system-random",
+      "head_sha": "ad3211b98677055646975e35924a5809c8d29bac",
+      "merged": false,
+      "number": 29,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 24,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX system-random verification and Linux closure evidence"
+    },
+    {
+      "base": "codex/thermo5-tx-system-random",
+      "base_sha": "ad3211b98677055646975e35924a5809c8d29bac",
+      "changed_paths": 8,
+      "draft": true,
+      "final_tree_exact_blob_matches": 1,
+      "head": "codex/thermo5-tx-w1c-coverage-round2",
+      "head_sha": "08061386900e5ae2c9f692dcf7e85d849623f818",
+      "merged": false,
+      "number": 30,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 4,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX STATUS W1C coverage closure round 2"
+    },
+    {
+      "base": "codex/thermo5-tx-w1c-coverage-round2",
+      "base_sha": "08061386900e5ae2c9f692dcf7e85d849623f818",
+      "changed_paths": 155,
+      "draft": true,
+      "final_tree_exact_blob_matches": 145,
+      "head": "codex/thermo5-tx-waiver-audit-round1",
+      "head_sha": "4942731e8228a3535823d9920e27a7bf7b1f35a7",
+      "merged": false,
+      "number": 31,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 147,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Audit and rebind Thermo5 TX waiver candidates"
+    },
+    {
+      "base": "codex/thermo5-tx-waiver-audit-round1",
+      "base_sha": "c0e104878c71a1f4d873b0553e8ee0940560df71",
+      "changed_paths": 71,
+      "draft": true,
+      "final_tree_exact_blob_matches": 53,
+      "head": "codex/thermo5-tx-formal-waiver-closure-followup",
+      "head_sha": "96ac24b622a1d21b344de79e4d19adc555ee6a92",
+      "merged": false,
+      "number": 32,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 54,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX closure evidence and Formal follow-up"
+    },
+    {
+      "base": "codex/thermo5-tx-formal-waiver-closure-followup",
+      "base_sha": "96ac24b622a1d21b344de79e4d19adc555ee6a92",
+      "changed_paths": 14,
+      "draft": true,
+      "final_tree_exact_blob_matches": 10,
+      "head": "codex/thermo5-tx-focused-condition-formal-closure",
+      "head_sha": "739fbaff8481b562a82eaaf1826ff16ce9a8c67d",
+      "merged": false,
+      "number": 33,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 10,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX focused Condition Formal dispositions"
+    },
+    {
+      "base": "codex/thermo5-tx-focused-condition-formal-closure",
+      "base_sha": "739fbaff8481b562a82eaaf1826ff16ce9a8c67d",
+      "changed_paths": 10,
+      "draft": true,
+      "final_tree_exact_blob_matches": 6,
+      "head": "codex/thermo5-tx-dpd-payload-hold-formal",
+      "head_sha": "21fc33cde564e93c011ca9ad57a81d4da6730684",
+      "merged": false,
+      "number": 34,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 6,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX DPD vector stall-hold Formal proof"
+    },
+    {
+      "base": "codex/thermo5-tx-dpd-payload-hold-formal",
+      "base_sha": "21fc33cde564e93c011ca9ad57a81d4da6730684",
+      "changed_paths": 10,
+      "draft": true,
+      "final_tree_exact_blob_matches": 6,
+      "head": "codex/thermo5-tx-dpd-identity-stall-formal",
+      "head_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+      "merged": false,
+      "number": 35,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 7,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX one-tap Identity DPD under output stall"
+    },
+    {
+      "base": "codex/thermo5-tx-dpd-identity-stall-formal",
+      "base_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+      "changed_paths": 9,
+      "draft": true,
+      "final_tree_exact_blob_matches": 5,
+      "head": "codex/thermo5-tx-outstanding-capacity-formal",
+      "head_sha": "cb1e177615a7aec9f060152611e924a4341b54a4",
+      "merged": false,
+      "number": 36,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 6,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX outstanding counter capacity Formal audit"
+    },
+    {
+      "base": "codex/thermo5-tx-dpd-identity-stall-formal",
+      "base_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+      "changed_paths": 7,
+      "draft": true,
+      "final_tree_exact_blob_matches": 3,
+      "head": "codex/thermo5-tx-frame-tail-condition-formal",
+      "head_sha": "9753624c8ff33ae35ee372208d17b18ee167bf52",
+      "merged": false,
+      "number": 37,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 5,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX frame-tail condition Formal review"
+    },
+    {
+      "base": "codex/thermo5-tx-frame-tail-condition-formal",
+      "base_sha": "9753624c8ff33ae35ee372208d17b18ee167bf52",
+      "changed_paths": 9,
+      "draft": true,
+      "final_tree_exact_blob_matches": 6,
+      "head": "codex/thermo5-tx-cdc-data-empty-formal",
+      "head_sha": "184c68b6d704998f5126a75a8f86d7577bb69a1a",
+      "merged": false,
+      "number": 38,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 8,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX Generic-FIFO core_data_empty Formal review"
+    },
+    {
+      "base": "codex/thermo5-tx-cdc-data-empty-formal",
+      "base_sha": "184c68b6d704998f5126a75a8f86d7577bb69a1a",
+      "changed_paths": 27,
+      "draft": true,
+      "final_tree_exact_blob_matches": 12,
+      "head": "codex/thermo5-tx-platform-observation",
+      "head_sha": "b3531cdfee13515086db23b0a7136c594ccf46f2",
+      "merged": false,
+      "number": 39,
+      "paths_absent_from_pr41": 0,
+      "reverse_patch_file_checks_pass": 14,
+      "review_disposition": "superseded by PR #40/#41 candidate after final merge; keep open until then",
+      "state": "open",
+      "title": "Thermo5 TX passive observers and transaction event bus"
+    },
+    {
+      "base": "thermo5",
+      "base_sha": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b",
+      "changed_paths": 266,
+      "ci": {
+        "hygiene": "success",
+        "licensed_dv": "skipped",
+        "syntax": "success"
+      },
+      "draft": true,
+      "head": "codex/thermo5-final-integration",
+      "head_sha": "330815a5db5a26af50de81aff0c304dea714ead3",
+      "merged": false,
+      "number": 40,
+      "review_comments": 0,
+      "reviews": 0,
+      "state": "open",
+      "title": "Thermo5 TX: publish current coverage closure snapshot"
+    },
+    {
+      "base": "codex/thermo5-final-integration",
+      "base_sha": "330815a5db5a26af50de81aff0c304dea714ead3",
+      "changed_paths": 28,
+      "ci": {
+        "hygiene": "success",
+        "licensed_dv": "skipped",
+        "syntax": "success"
+      },
+      "commits": 3,
+      "draft": true,
+      "head": "codex/thermo5-final-verification-round11",
+      "head_sha": "744683b987ae5ecdc542c7c5fbf24ad63301e25d",
+      "merged": false,
+      "number": 41,
+      "review_comments": 0,
+      "reviews": 0,
+      "state": "open",
+      "title": "Thermo5 TX: Round 11 verification convergence"
+    }
+  ],
+  "remote_branch_count": 45,
+  "remote_branches": [
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-cdc-frame-end-threshold-formal",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "5657e6629ebd28762160210ce3d15dc0a648beb3",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-cdc-frame-start-alignment",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "cc32661a576d30634375f61552621e49f351c541",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-coverage-closure-round1",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "98d4fda026628b1f818c34937b3afd5c93fefa95",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-final-integration",
+      "classification": "PR #40 integration candidate",
+      "commits_ahead_of_thermo5": 1,
+      "head_sha": "330815a5db5a26af50de81aff0c304dea714ead3",
+      "open_pr": 40
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-final-verification-round11",
+      "classification": "PR #41 final candidate",
+      "commits_ahead_of_thermo5": 4,
+      "head_sha": "744683b987ae5ecdc542c7c5fbf24ad63301e25d",
+      "open_pr": 41
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-fixed-parameter-branch-audit",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "01d331295b6d8dfc1161cbd8526e7d237c82200d",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-frame-tail-closure-r2",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "b93bde394373c1a1ba7dec54c56b99373e7d8760",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-generated-artifact-cleanup",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "409e796a9ad871693bd19096966bb9e215003adb",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-integration-review",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "e26d5d20e26ede307f9ce6699241dbe4ea76fa30",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-pair-lookahead-product-audit",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "0d2c20b8ae02ba44e0bfc7f55b9f60988c72be77",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-system-uvm-phase0-2",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "7345a62340af7c97e1dadbae7f3af903fc26f836",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-agent-organization",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 2,
+      "head_sha": "991591dca3bf710405e5cd3a35ea855f23248dfa",
+      "open_pr": 28
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-causal-test-scope",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "6c2a961633044b3f93f0e4b01ac1ee4f3d15649d",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-cdc-data-empty-formal",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 17,
+      "head_sha": "184c68b6d704998f5126a75a8f86d7577bb69a1a",
+      "open_pr": 38
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-cdc-default-branch-formal",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "17eccf06426f37b8bd22d16c48fd1ff244e72e8d",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-cdc-end-branch-formal",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "028f9c443b153d432015296768729943c32dce6a",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-closure-gates4-6",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "f5394c3eaa6d283caf91c5c64b08a7d83c714a57",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-coverage-audit",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "c6789fed498802675ec63dd48967073d1794d1ef",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-dpd-identity-stall-formal",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 13,
+      "head_sha": "938176bb3e3c9850085889602306c1b861df8e76",
+      "open_pr": 35
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-dpd-payload-hold-formal",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 12,
+      "head_sha": "21fc33cde564e93c011ca9ad57a81d4da6730684",
+      "open_pr": 34
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-dynamic-oracle",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 1,
+      "head_sha": "d727bffd2917599b37f08a39702a3d34f80d3cd5",
+      "open_pr": 27
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-final-closure",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "c4d96be3df246ad828340a7294e972287084d457",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-final-signoff",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "bae5ec7c72bdeda26103218883ef4502dc13271a",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-focused-condition-formal-closure",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 11,
+      "head_sha": "739fbaff8481b562a82eaaf1826ff16ce9a8c67d",
+      "open_pr": 33
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-formal-waiver-closure-followup",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 9,
+      "head_sha": "96ac24b622a1d21b344de79e4d19adc555ee6a92",
+      "open_pr": 32
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-frame-tail-condition-formal",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 15,
+      "head_sha": "9753624c8ff33ae35ee372208d17b18ee167bf52",
+      "open_pr": 37
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-gate0-baseline",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "494fb2c3cbb9aa964a589bf0b5aa545cdabf6fe6",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-gate1-algorithm-ab",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "813db9c9a488b033dc4686553cbe3a06856acc0b",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-gate2-worst-case",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "d65ac3762d344c1001552890ae81cd9d243a4910",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-gate3-coverage",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "0c974aa45b8875794d33195530242320b419c249",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-integration-final",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "f9c03da77f72a0d1b099c690e3353cb87881ac52",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-linux-coverage-closure",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "eddddd650a2853a05deab0bdb7a2272fdb647d18",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-negative-coverage-evidence",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "402d62a3948848146e775a917b19bd0c9c8efff6",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-outstanding-capacity-formal",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 14,
+      "head_sha": "cb1e177615a7aec9f060152611e924a4341b54a4",
+      "open_pr": 36
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-outstanding-counter-formal",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "cdf187556aeceac3dfde19448dedea990adad379",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-platform-observation",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 19,
+      "head_sha": "b3531cdfee13515086db23b0a7136c594ccf46f2",
+      "open_pr": 39
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "codex/thermo5-tx-product-coverage",
+      "classification": "Already Integrated by ancestry; retain pending cleanup capability",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "006d52deaaf8ef3980461a6d4efdf1d2c0aa7011",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-system-random",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 5,
+      "head_sha": "ad3211b98677055646975e35924a5809c8d29bac",
+      "open_pr": 29
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-w1c-coverage-round2",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 7,
+      "head_sha": "08061386900e5ae2c9f692dcf7e85d849623f818",
+      "open_pr": 30
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "codex/thermo5-tx-waiver-audit-round1",
+      "classification": "Unique historical PR head; supersession pending merge",
+      "commits_ahead_of_thermo5": 9,
+      "head_sha": "4942731e8228a3535823d9920e27a7bf7b1f35a7",
+      "open_pr": 31
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "dsm",
+      "classification": "Independent / Preserve",
+      "commits_ahead_of_thermo5": 1,
+      "head_sha": "f7e3fd47e08fd2a59047154e8846bddff763f6f4",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "dv-de-portfolio-20261006",
+      "classification": "Independent / Preserve",
+      "commits_ahead_of_thermo5": 6,
+      "head_sha": "a9b0bc6f67f575e9bb98085b1e064f9eddc886f2",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "main",
+      "classification": "Independent / Preserve",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "8d260dacbece071bc3f53546fd2b2ee3d08c64cb",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": false,
+      "ancestor_of_thermo5": false,
+      "branch": "thermo3",
+      "classification": "Independent / Preserve",
+      "commits_ahead_of_thermo5": 1,
+      "head_sha": "3bf05e2f3ba2536a93277ce812e57378ab1af00a",
+      "open_pr": null
+    },
+    {
+      "ancestor_of_pr41": true,
+      "ancestor_of_thermo5": true,
+      "branch": "thermo5",
+      "classification": "Independent / Preserve",
+      "commits_ahead_of_thermo5": 0,
+      "head_sha": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b",
+      "open_pr": null
+    }
+  ],
+  "repository": "cwu766485-ctrl/dsm_ip",
+  "schema_version": 1,
+  "source_baseline": {
+    "compile_defines": [
+      "THERMO5_AXIL_CONTROL",
+      "THERMO5_CENTERED_CUBIC",
+      "THERMO5_TIDSM_ORDER=2",
+      "THERMO5_STEP=5120",
+      "THERMO5_DPD_MAX_TAPS=1"
+    ],
+    "compile_input_sha256": "08e62a87420ee9a9acce7724d2cca3c909f8cb7265dac22563522ac97a74b300",
+    "pr40_sha": "330815a5db5a26af50de81aff0c304dea714ead3",
+    "pr41_sha": "744683b987ae5ecdc542c7c5fbf24ad63301e25d",
+    "pr41_tested_source_commit": "d823654cba715e9093bb8cc08e6d819e8ae1365f",
+    "pr41_tested_tree_sha": "244b49c4daf1561806d7f02d6dfb560227757571",
+    "product_rtl_aggregate_sha256": "c627e02758be102e379e5eb464590189f354894dc84fc967c8e408554be38fe8",
+    "thermo5_sha": "2d7a58df43f7bffecd3d34edd2f21bb3262abe2b"
+  },
+  "stashes": [
+    {
+      "message": "On codex/thermo5-final-verification-r11: Thermo5 R11 worktree preserved before rebasing on published PR40",
+      "preserved": true,
+      "ref": "stash@{0}",
+      "sha": "21aadbe27f462def4b831a050bb697cfe419a04b"
+    }
+  ],
+  "target_branch": "thermo5",
+  "worktrees": [
+    {
+      "branch": "codex/thermo5-final-verification-round11",
+      "dirty_entries": [],
+      "head_sha": "744683b987ae5ecdc542c7c5fbf24ad63301e25d",
+      "label": "primary checkout",
+      "status_at_audit_start": "clean"
+    },
+    {
+      "branch": "codex/thermo5-coverage-closure-round1",
+      "dirty_entries": [],
+      "head_sha": "98d4fda026628b1f818c34937b3afd5c93fefa95",
+      "label": "coverage closure round 1 worktree",
+      "status_at_audit_start": "clean"
+    },
+    {
+      "branch": "codex/thermo5-system-uvm-phase0-2",
+      "dirty_entries": [],
+      "head_sha": "0ffb63a329aa50b566918afd5978c5fb427d6fa6",
+      "label": "system UVM phase 0.2 worktree",
+      "status_at_audit_start": "clean"
+    },
+    {
+      "branch": "codex/thermo5-tx-frame-tail-full-chain-formal",
+      "dirty_entries": [
+        "M docs/UPDATE_LOG.md",
+        "M docs/exec-plans/active/execution-frontier.md",
+        "M docs/verification/data/thermo5-tx-linux-system-verification-signoff.json",
+        "M docs/verification/thermo5-tx-design-ablation.md",
+        "M docs/verification/thermo5-tx-linux-system-verification-signoff.md",
+        "M dv/uvm/sim/run_thermo5_frozen_regression.py",
+        "M tools/hw/tests/test_thermo5_tx_coverage_rootcause.py",
+        "M tools/hw/thermo5_tx_coverage_rootcause.py",
+        "?? docs/verification/data/thermo5-tx-linux-final-closure-20261103.json",
+        "?? docs/verification/thermo5-tx-linux-final-closure-20261103.md",
+        "?? tools/hw/tests/test_thermo5_urg_coverage_parser.py"
+      ],
+      "head_sha": "af22d2a7f86ccc77ac7a3b9f04e671316a607d0f",
+      "label": "CDC data-empty formal worktree",
+      "status_at_audit_start": "dirty"
+    },
+    {
+      "branch": "codex/thermo5-tx-outstanding-capacity-formal",
+      "dirty_entries": [],
+      "head_sha": "8a8fdbadbabbc5c660b49ce8449011a35933e6ce",
+      "label": "outstanding counter follow-up worktree",
+      "status_at_audit_start": "clean"
+    },
+    {
+      "branch": "codex/thermo5-tx-dpd-identity-stall-formal",
+      "dirty_entries": [],
+      "head_sha": "ef555726b76cfa04c28be845a22430130708fbe3",
+      "label": "DPD identity follow-up worktree",
+      "status_at_audit_start": "clean"
+    },
+    {
+      "branch": "codex/thermo5-tx-frame-tail-condition-formal",
+      "dirty_entries": [],
+      "head_sha": "d00b997180f299417391da6036e166658ebb038d",
+      "label": "frame-tail condition follow-up worktree",
+      "status_at_audit_start": "clean"
+    }
+  ]
+}

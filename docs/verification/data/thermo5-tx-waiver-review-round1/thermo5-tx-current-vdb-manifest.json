@@ -123,7 +123,7 @@
         "size_bytes": 6988
       }
     ],
-    "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_1236d49/starvation/build/simv.vdb",
+    "path": "./runs/thermo5_tx_closure_current/source_1236d49/starvation/build/simv.vdb",
     "total_bytes": 212277,
     "tree_sha256": "90dd25215f8b0d479b0584cd676dd9d1ab55bacebaf6a35ea04009c29b701e04"
   },
@@ -197,7 +197,7 @@
           "size_bytes": 329
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/commit_boundary_stall/vdb/seed_996000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/commit_boundary_stall/vdb/seed_996000.vdb",
       "total_bytes": 12911,
       "tree_sha256": "ab4e5afcdd81f38d40f214a0ab7abb0055e9984279d51cd330a1d868af5ae299"
     },
@@ -270,7 +270,7 @@
           "size_bytes": 329
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/commit_boundary_stall/vdb/seed_996001.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/commit_boundary_stall/vdb/seed_996001.vdb",
       "total_bytes": 12940,
       "tree_sha256": "0ad20ad13e1cf15adef6ffeccfc8c5db1c04f2a8103b45ee9f820a4562b71400"
     },
@@ -343,7 +343,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/directed/vdb/extended_packet_seed1030104.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/directed/vdb/extended_packet_seed1030104.vdb",
       "total_bytes": 12876,
       "tree_sha256": "d6ef1e084b41625f7afd7cef1c08a6f7ba8cb33cd9549b32153534c1b3c0986a"
     },
@@ -416,7 +416,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/directed/vdb/thermo5_sku_axil_register_access_test_seed610716.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/directed/vdb/thermo5_sku_axil_register_access_test_seed610716.vdb",
       "total_bytes": 11057,
       "tree_sha256": "d194fb212757e004c11ebfc2879715fa31e4ff38bd53a3b1ae528979975f41f7"
     },
@@ -489,7 +489,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/directed/vdb/thermo5_sku_axil_reset_release_source_test_seed610717.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/directed/vdb/thermo5_sku_axil_reset_release_source_test_seed610717.vdb",
       "total_bytes": 11889,
       "tree_sha256": "3ba62f71290b92ab41b08e64e5735633c46b89f28183fbf9eeebe45e97a0e49f"
     },
@@ -562,7 +562,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/directed/vdb/thermo5_sku_axil_stop_restart_test_seed610719.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/directed/vdb/thermo5_sku_axil_stop_restart_test_seed610719.vdb",
       "total_bytes": 11823,
       "tree_sha256": "9fd8705b9b832bd85e7af0ab6fa3468891dec172fc35b722edbbc107c5a000f7"
     },
@@ -635,7 +635,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031000.vdb",
       "total_bytes": 13013,
       "tree_sha256": "ee45c62d76561ea754b4f302fdeb571c2a5cb47221e988d0772e486f9405e07c"
     },
@@ -708,7 +708,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031001.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031001.vdb",
       "total_bytes": 12987,
       "tree_sha256": "ea2d0f563bb3c94e6bf9df350e791dca6c82943983646bd91fecc9667bc8b763"
     },
@@ -781,7 +781,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031002.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031002.vdb",
       "total_bytes": 13764,
       "tree_sha256": "522cd7e7ef5068e28f4f02142f70a121016a6feb16b89545c0e02daeab847249"
     },
@@ -854,7 +854,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031003.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031003.vdb",
       "total_bytes": 13097,
       "tree_sha256": "aab748effd39306faa3a7a215ba500c11a07ca5b9c93e03aa1e7df9389e8043a"
     },
@@ -927,7 +927,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031004.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031004.vdb",
       "total_bytes": 12914,
       "tree_sha256": "557553dedddb5e1adb5997c5d79b6c99cf698deee5d42adace9b49fef55b7323"
     },
@@ -1000,7 +1000,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031005.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031005.vdb",
       "total_bytes": 13152,
       "tree_sha256": "2055b9fd29d58b14b3b6c690676d04d3726a690106cc5352c785b5637fe69d33"
     },
@@ -1073,7 +1073,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031006.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031006.vdb",
       "total_bytes": 13661,
       "tree_sha256": "610b982dab60962d708074fca11618806e5f3dd0b28989aaf0831b5ec10e786c"
     },
@@ -1146,7 +1146,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031007.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031007.vdb",
       "total_bytes": 13169,
       "tree_sha256": "76f3d7e166b1202fad26da346da0fbedf3e7fbb31af1c74f4b0a826d18d5cd0d"
     },
@@ -1219,7 +1219,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031008.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031008.vdb",
       "total_bytes": 12922,
       "tree_sha256": "78c4f9ba2ec9cb6feac9cc595c44eee667d91e314789ae0f8092c02a05a44c90"
     },
@@ -1292,7 +1292,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031009.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031009.vdb",
       "total_bytes": 13074,
       "tree_sha256": "a0ee6240b4edad4ef97e8841ac21874735486b178980e5390dc51551e18e2296"
     },
@@ -1365,7 +1365,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031010.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031010.vdb",
       "total_bytes": 13974,
       "tree_sha256": "4bcacc40af836a43d758225f59fa36eaaed66d4c96d492de811ef3b5b42056da"
     },
@@ -1438,7 +1438,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031011.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031011.vdb",
       "total_bytes": 13042,
       "tree_sha256": "11f4a5f091f134447f306a9ecee494b01a5e6c963d24f88ab7e9085cb87bc53f"
     },
@@ -1511,7 +1511,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031012.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031012.vdb",
       "total_bytes": 12927,
       "tree_sha256": "c7050f5fbbe2e7e988096d095294f07c7b820314b28175ab58e56e774ef268b6"
     },
@@ -1584,7 +1584,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031013.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031013.vdb",
       "total_bytes": 13091,
       "tree_sha256": "5c44db79b4d0cc1a4696de063d7c710156cb61ab49c2a446587fc509ea22a759"
     },
@@ -1657,7 +1657,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031014.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031014.vdb",
       "total_bytes": 13400,
       "tree_sha256": "b1430839b41faa9231712e485eebe7d7f45f09e9ec1da551128c3c1b4e66e183"
     },
@@ -1730,7 +1730,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031015.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031015.vdb",
       "total_bytes": 13084,
       "tree_sha256": "1614c54cbfbe10a11e7b26d6b137e412806624670826918a6ba585a2c8508f7b"
     },
@@ -1803,7 +1803,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031016.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031016.vdb",
       "total_bytes": 12863,
       "tree_sha256": "a50ad2d4961a53b0c869d55a9faad27f0fb4dec37312904f636a39226565be5e"
     },
@@ -1876,7 +1876,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031017.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031017.vdb",
       "total_bytes": 13176,
       "tree_sha256": "004200fcd720e2d4c626330ede83aa533deb15326aa63fab64889a40e6d348c3"
     },
@@ -1949,7 +1949,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031018.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031018.vdb",
       "total_bytes": 13390,
       "tree_sha256": "9a139ca9f6bbf4d06f2a0d44f1f24badaff7fb22cabf7d18e83528bfea5b05d5"
     },
@@ -2022,7 +2022,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031019.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031019.vdb",
       "total_bytes": 13170,
       "tree_sha256": "ecafc9b3c6561217372b461860cac5ab03449fa8e8cdc69e05e0da66b9e71b62"
     },
@@ -2095,7 +2095,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031020.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031020.vdb",
       "total_bytes": 12905,
       "tree_sha256": "3b5ed236d980f538a1452abab1d139ee1f6f19c13f74c6c549672d1db6279156"
     },
@@ -2168,7 +2168,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031021.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031021.vdb",
       "total_bytes": 13073,
       "tree_sha256": "8f71085e48822affef0ac85eb86cfc18c5db9ef2e77263fa6a6c2e055b801b02"
     },
@@ -2241,7 +2241,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031022.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031022.vdb",
       "total_bytes": 13387,
       "tree_sha256": "daee91f6f3969c9327d5072a8d031258691d8dc218b9e1e173f30710b7ca30f8"
     },
@@ -2314,7 +2314,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031023.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031023.vdb",
       "total_bytes": 13065,
       "tree_sha256": "b0f69461b82b319385a5207d5b7fcd1884a73909496b331c1b7a1c5b91bc84a5"
     },
@@ -2387,7 +2387,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031024.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031024.vdb",
       "total_bytes": 12927,
       "tree_sha256": "aa248a5487c7a01fdd9e0f27b6d123962f84c8ab148ac4db87e7a1921b243ac0"
     },
@@ -2460,7 +2460,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031025.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031025.vdb",
       "total_bytes": 13220,
       "tree_sha256": "699120bbe9f29aa513c5be58686902f8df95d81c2a81d2fedd8314bd20735953"
     },
@@ -2533,7 +2533,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031026.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031026.vdb",
       "total_bytes": 13410,
       "tree_sha256": "af5c3379438c4f4b6b39251083bc72d36549f371e6f9d3013e46d7998ca99ac5"
     },
@@ -2606,7 +2606,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031027.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031027.vdb",
       "total_bytes": 13188,
       "tree_sha256": "7a7d110cbbe0b9c2d4e3d956e1ad6acb34b5f13aa9dee57336dc286339d6dfcb"
     },
@@ -2679,7 +2679,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031028.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031028.vdb",
       "total_bytes": 12988,
       "tree_sha256": "bcdcf290801a6e7f90341398d40bee45303019ec49f300605fb1ace4834c14eb"
     },
@@ -2752,7 +2752,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031029.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031029.vdb",
       "total_bytes": 13127,
       "tree_sha256": "43cbbf4e6e9ad0e37f54b3fc58a5050c1d0e438c42282965ebc3b834ae1a5244"
     },
@@ -2825,7 +2825,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031030.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031030.vdb",
       "total_bytes": 13425,
       "tree_sha256": "41d2f06f2a60bd8254f14314c42f2fdcceb4987b2bcd60eee335061499ab2c2d"
     },
@@ -2898,7 +2898,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031031.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031031.vdb",
       "total_bytes": 13175,
       "tree_sha256": "6bee274dd244c576161b2e74e65dd200dd017a60d953090af061b2bcae067ed3"
     },
@@ -2971,7 +2971,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031032.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031032.vdb",
       "total_bytes": 13037,
       "tree_sha256": "da443a6ad7b8c564ccbff34f63c3b8746cb0ab233805eb6fc0fb4b416938f3f4"
     },
@@ -3044,7 +3044,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031033.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031033.vdb",
       "total_bytes": 13164,
       "tree_sha256": "c4d62c1efaf8891a576c1f1e967861a6ccc3c305638fe4b5aa61ac5e9083aec1"
     },
@@ -3117,7 +3117,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031034.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031034.vdb",
       "total_bytes": 13424,
       "tree_sha256": "14ce1b2d1ffe5db962c629b1d6eae12f9e8dffee81efad6eeb556a9f58e2597c"
     },
@@ -3190,7 +3190,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031035.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031035.vdb",
       "total_bytes": 13072,
       "tree_sha256": "82a50f0e64c708672189a9c66579da3ebbdc5949791a0e8e1540d5f3bded736f"
     },
@@ -3263,7 +3263,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031036.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031036.vdb",
       "total_bytes": 12948,
       "tree_sha256": "c80e56c391030e47f93717e7cbefc1285a66d7093cf6768b4e0d8918ff4308c5"
     },
@@ -3336,7 +3336,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031037.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031037.vdb",
       "total_bytes": 13186,
       "tree_sha256": "ddbb4635340b1059a07f49707c073b0d6ef0e8771a664c6840f4a33ce729b6c9"
     },
@@ -3409,7 +3409,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031038.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031038.vdb",
       "total_bytes": 13492,
       "tree_sha256": "3c3736c084f87d51c4f6283eb0beb37765748982cdecc52f9543ffed975c023b"
     },
@@ -3482,7 +3482,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031039.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031039.vdb",
       "total_bytes": 13052,
       "tree_sha256": "5baf820f92e34a71bce53bca938e98cd304a53d5fe8651409aa50cfd7534286e"
     },
@@ -3555,7 +3555,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031040.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031040.vdb",
       "total_bytes": 13010,
       "tree_sha256": "03eead754042ede8b995435fc7b6ce4eafd6a3d7f063500b0286395fda8672a2"
     },
@@ -3628,7 +3628,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031041.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031041.vdb",
       "total_bytes": 13180,
       "tree_sha256": "8122a62b8443a35ee2d4c376108a7a3cbf4da588c3d90dfa047f37fb29ec75ad"
     },
@@ -3701,7 +3701,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031042.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031042.vdb",
       "total_bytes": 13607,
       "tree_sha256": "7575e4a2678155460a87cce15230e5bf872264785318ac39c0718f433beaa0ff"
     },
@@ -3774,7 +3774,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031043.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031043.vdb",
       "total_bytes": 13207,
       "tree_sha256": "349074143049ae2f79a45e6a3320b109675027120ee94e69da02bf279dbc5872"
     },
@@ -3847,7 +3847,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031044.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031044.vdb",
       "total_bytes": 13117,
       "tree_sha256": "410bfe1affea7626931d235e8084d4251224a51e619b74f28925ff790e3554e0"
     },
@@ -3920,7 +3920,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031045.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031045.vdb",
       "total_bytes": 13189,
       "tree_sha256": "a14d9aa0f1bb796af2816802ca1731588fe6e7da65eba5e05e2bb43a3bf24b74"
     },
@@ -3993,7 +3993,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031046.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031046.vdb",
       "total_bytes": 13457,
       "tree_sha256": "698a9f39dab532ea47103d4b23795037624c267278479e65f62eefc07b784ff0"
     },
@@ -4066,7 +4066,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031047.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031047.vdb",
       "total_bytes": 13174,
       "tree_sha256": "03c0395b999474f74b2661bc73647f4ec84523a80f63a59e3c97f831238e4397"
     },
@@ -4139,7 +4139,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031048.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031048.vdb",
       "total_bytes": 12978,
       "tree_sha256": "7e95ca4439bc1c7ef4df8b56d526db03d4fb737d5e2c6bb8cb36dd1b6f244583"
     },
@@ -4212,7 +4212,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031049.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031049.vdb",
       "total_bytes": 13148,
       "tree_sha256": "bb08782959ac62aaa9f07690579b0430e267572c64b5e6faf03d0a63931f123b"
     },
@@ -4285,7 +4285,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031050.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031050.vdb",
       "total_bytes": 13444,
       "tree_sha256": "307cf0a9c841ae86740f0150162940753d093c3fda70d8eb93b36066f652dac7"
     },
@@ -4358,7 +4358,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031051.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031051.vdb",
       "total_bytes": 13098,
       "tree_sha256": "6a32c0ec68c1943e1b70e2837b26ee05106e4b71dfeec424388c5274632ca59b"
     },
@@ -4431,7 +4431,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031052.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031052.vdb",
       "total_bytes": 13060,
       "tree_sha256": "8ac836bf171f4023636f2ec61fcb5f133717114b42f2937587a2ce752e24d945"
     },
@@ -4504,7 +4504,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031053.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031053.vdb",
       "total_bytes": 13196,
       "tree_sha256": "641e1ef019d98cbc804fb1f6be6d88f89f98679971d05e470914c4955261866c"
     },
@@ -4577,7 +4577,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031054.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031054.vdb",
       "total_bytes": 14025,
       "tree_sha256": "c1a97920f4e40abdd237db80bb89b141741ad546ddb8bc4e0c919cdb012f0277"
     },
@@ -4650,7 +4650,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031055.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031055.vdb",
       "total_bytes": 13253,
       "tree_sha256": "fb3914a699e9bcdbccda7fa5641c9a31524f16d092d541ef67c10f731be30033"
     },
@@ -4723,7 +4723,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031056.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031056.vdb",
       "total_bytes": 13151,
       "tree_sha256": "d9b9c3eb09b6d54b9716e1f30af7a0822ab21967c7241c62d6719792711e8c91"
     },
@@ -4796,7 +4796,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031057.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031057.vdb",
       "total_bytes": 13085,
       "tree_sha256": "538d98b9fc672e5cf39f80aee1f0183d7743c67623dab1b04df392ec5b097a7d"
     },
@@ -4869,7 +4869,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031058.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031058.vdb",
       "total_bytes": 13366,
       "tree_sha256": "ffa75ba1d71d2ba5ae407064e6beac318a8c222240871d78eb64b412fce1540a"
     },
@@ -4942,7 +4942,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031059.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/dpd_matrix/vdb/seed_1031059.vdb",
       "total_bytes": 13052,
       "tree_sha256": "59c0eefc56fa04f926ea602d0eaf99e14fc5d75ca3f53a46babfead51ca35015"
     },
@@ -5015,7 +5015,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991000.vdb",
       "total_bytes": 12248,
       "tree_sha256": "718534e4431d0da0661ab554ed3ca4ff16cd02cb8ded3f9ba2693ae3f57a7727"
     },
@@ -5088,7 +5088,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991001.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991001.vdb",
       "total_bytes": 12263,
       "tree_sha256": "74a61647fa29c58f2a0cd39a048762f736bb0b5c4ac88046bd3dcc96924b105b"
     },
@@ -5161,7 +5161,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991002.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991002.vdb",
       "total_bytes": 12253,
       "tree_sha256": "a1e8073e237a26e481492bbe150e1e8975f8e8132c521a6ad303500254555237"
     },
@@ -5234,7 +5234,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991003.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991003.vdb",
       "total_bytes": 12270,
       "tree_sha256": "1b1c9fc75ebfd5cdae62abade76e35626c94771578bc490f8d2197c045fad4d1"
     },
@@ -5307,7 +5307,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991004.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991004.vdb",
       "total_bytes": 12259,
       "tree_sha256": "a42dfa4ff65305e98c045f29d757f84123690ab63d6776b38ea4edb89b1a91a2"
     },
@@ -5380,7 +5380,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991005.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991005.vdb",
       "total_bytes": 12271,
       "tree_sha256": "6086e3c52c98516c2b36a1e307194cdc23f04a36ced4a210056e60cb87c4e5f7"
     },
@@ -5453,7 +5453,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991006.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991006.vdb",
       "total_bytes": 12257,
       "tree_sha256": "a07d89d727026a7373ea67fab4007b381fa22355aba11abde88b9a936f23974d"
     },
@@ -5526,7 +5526,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991007.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/reset_pending/vdb/seed_991007.vdb",
       "total_bytes": 12258,
       "tree_sha256": "8010575362d1cee46574d5d31465a46c1e0a1d89d281529a1a816abcabe4bc53"
     },
@@ -5599,7 +5599,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_none_nostall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_none_nostall.vdb",
       "total_bytes": 11866,
       "tree_sha256": "0a5222faa5aa04afe9aa45d6191f42c826bd87ecf448dde58b90557902304569"
     },
@@ -5672,7 +5672,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_none_stall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_none_stall.vdb",
       "total_bytes": 11904,
       "tree_sha256": "59a73a4e682dde95ece99885fbb64943b8ef7b700785c464d59caa6898de08c6"
     },
@@ -5745,7 +5745,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_present_nostall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_present_nostall.vdb",
       "total_bytes": 11881,
       "tree_sha256": "198eaccbb40bd63e455ccad6ce97dbc5ff3581723e13ae09bbf3f5a495336641"
     },
@@ -5818,7 +5818,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_present_stall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullno_present_stall.vdb",
       "total_bytes": 11906,
       "tree_sha256": "d8ed79faefe4a66259e3a64519ce6f33d4b6e706bb5a37ecf828ef3dd7687686"
     },
@@ -5891,7 +5891,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_none_nostall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_none_nostall.vdb",
       "total_bytes": 11885,
       "tree_sha256": "2dea12592ff0047e48d7d37ee48cd5283f683406243963828c24a73cf81fed32"
     },
@@ -5964,7 +5964,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_none_stall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_none_stall.vdb",
       "total_bytes": 11905,
       "tree_sha256": "e206c59da1d9065039e6c63d74c31b461459a7a48eb827cac5c2771fe5bb5dcb"
     },
@@ -6037,7 +6037,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_present_nostall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_present_nostall.vdb",
       "total_bytes": 11888,
       "tree_sha256": "eb9c513f8c6c47896b3866b52c9de2687a6914b1fc310a64657d435091adb1e4"
     },
@@ -6110,7 +6110,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_present_stall.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/source_gap_cross/vdb/fullyes_present_stall.vdb",
       "total_bytes": 11883,
       "tree_sha256": "65ce1c88b4bad5642840ae7bec239871c99d4a69da0745d1455a0cf240aa67ca"
     },
@@ -6183,7 +6183,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721000.vdb",
       "total_bytes": 11842,
       "tree_sha256": "8c0149ae0f70c520f518483b947c526769e661fb8648751553e283cf171f5220"
     },
@@ -6256,7 +6256,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721001.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721001.vdb",
       "total_bytes": 11924,
       "tree_sha256": "42848e3f5cc30719b4933abafb8fe740a6ba4e56fcc50ca7327d01914d66997a"
     },
@@ -6329,7 +6329,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721002.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721002.vdb",
       "total_bytes": 12299,
       "tree_sha256": "bdec95eb12a292ceeeaec48af502e3a90afd92e2528a233fa3eb01a8a03dd688"
     },
@@ -6402,7 +6402,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721003.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721003.vdb",
       "total_bytes": 11964,
       "tree_sha256": "ff8524b8468ecd537a07fae2e9e5b6085910bfa527ef45cd3b4fe0665bca93b0"
     },
@@ -6475,7 +6475,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721004.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721004.vdb",
       "total_bytes": 11838,
       "tree_sha256": "2d1ca9353fc1ae14b07d292c5b663d5dd1ec954b70237e75941126b4d811c361"
     },
@@ -6548,7 +6548,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721005.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721005.vdb",
       "total_bytes": 11902,
       "tree_sha256": "9af6f6f5e3dfa77d6abc8a01a1428fae7974f604cb68973f263c41740d7b71f9"
     },
@@ -6621,7 +6621,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721006.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721006.vdb",
       "total_bytes": 12317,
       "tree_sha256": "e240ca368febbeefff8226487488dac8192dc47f7ecd59a04e3e7501f7975065"
     },
@@ -6694,7 +6694,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721007.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721007.vdb",
       "total_bytes": 11972,
       "tree_sha256": "46105f6143d83197727a829985fe0be9b20966b4b251302b4a5c76a36b646bc3"
     },
@@ -6767,7 +6767,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721008.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721008.vdb",
       "total_bytes": 11843,
       "tree_sha256": "2c88dbf41c98266d13bbcd4a30d5e4cc2c56d98a55e9a67389421bec0362bf85"
     },
@@ -6840,7 +6840,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721009.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721009.vdb",
       "total_bytes": 11968,
       "tree_sha256": "11b879abedff83ab63339f972713edc0f8c911d9896a754eaa9937d5757644b9"
     },
@@ -6913,7 +6913,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721010.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721010.vdb",
       "total_bytes": 12288,
       "tree_sha256": "0a1562b667366568de6c48c5877e3a3cf82d708a228818fe48f2a17ebfb0702d"
     },
@@ -6986,7 +6986,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721011.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721011.vdb",
       "total_bytes": 11895,
       "tree_sha256": "ee7493ed539f47bf826b6c4bf34e1f8bae97179b6f0d82a164786c24a9b03a97"
     },
@@ -7059,7 +7059,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721012.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721012.vdb",
       "total_bytes": 11867,
       "tree_sha256": "0b6a8661963c02de160c3ec92e5bfad43f4b364609a54037838edfe1d6736a39"
     },
@@ -7132,7 +7132,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721013.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721013.vdb",
       "total_bytes": 11959,
       "tree_sha256": "a203a9810c77c67d6fc7c4a2b4c0aa2ce916b6b3a453ff972797a24d0b2d371d"
     },
@@ -7205,7 +7205,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721014.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721014.vdb",
       "total_bytes": 12317,
       "tree_sha256": "46f0a724a1508634c74544405c8aba800013ecab43410b91c752fe98bb64785f"
     },
@@ -7278,7 +7278,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721015.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721015.vdb",
       "total_bytes": 11927,
       "tree_sha256": "874bac74aa58c99b8b50122ec52decc89fff370a353fa3d586a20e1e64045575"
     },
@@ -7351,7 +7351,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721016.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721016.vdb",
       "total_bytes": 11827,
       "tree_sha256": "695a86182d6c93f621308e17ad2d8c5380305113948664155f95ae826bf09dcc"
     },
@@ -7424,7 +7424,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721017.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721017.vdb",
       "total_bytes": 11917,
       "tree_sha256": "1f080fec91c196172fe8b10e609546468486c3905b0c7a046b715453d249ab43"
     },
@@ -7497,7 +7497,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721018.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721018.vdb",
       "total_bytes": 12290,
       "tree_sha256": "f0691760d6202c59eaf2f4ea02573bac1cfe688a3d2582ac11f23a13943611e7"
     },
@@ -7570,7 +7570,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721019.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721019.vdb",
       "total_bytes": 11950,
       "tree_sha256": "bdbf37298628a961736df043d12cf49dd9c4c97751ab08ff17bd31b454f38f98"
     },
@@ -7643,7 +7643,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721020.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721020.vdb",
       "total_bytes": 11873,
       "tree_sha256": "387ca1e9a046d80fbaed9a5e531493d77bedbf7006ab7f81245a9af136ffbf7d"
     },
@@ -7716,7 +7716,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721021.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721021.vdb",
       "total_bytes": 11959,
       "tree_sha256": "f34068b6a5d3f85104e8fea5c24b7efd25e9923ad8fd23034692596b02420c55"
     },
@@ -7789,7 +7789,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721022.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721022.vdb",
       "total_bytes": 12284,
       "tree_sha256": "6be7b3b7448c755d9e27f59264657be4fc721e4b237582a98f9ebad828e64e89"
     },
@@ -7862,7 +7862,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721023.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721023.vdb",
       "total_bytes": 11915,
       "tree_sha256": "f47b17965e735651136ba11882f3663c98feffeffe5813f08e5bf6693a00c857"
     },
@@ -7935,7 +7935,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721024.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721024.vdb",
       "total_bytes": 11833,
       "tree_sha256": "39bfc9b4ce5d1ba9e0eb704b23387960135edeb7c512687512be3e97fdb2bfe9"
     },
@@ -8008,7 +8008,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721025.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721025.vdb",
       "total_bytes": 11912,
       "tree_sha256": "58ff438cb87f52c7a9646d8a94df2c6c98f82362433c22fe0eb2b9042bd4e82c"
     },
@@ -8081,7 +8081,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721026.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721026.vdb",
       "total_bytes": 12293,
       "tree_sha256": "900758c7fd465a29a3d42633da28bf08e2dac6cce7315c35b59f7a4566edd78f"
     },
@@ -8154,7 +8154,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721027.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721027.vdb",
       "total_bytes": 11964,
       "tree_sha256": "b74ee8ab946f5dbc946a019df626b791a0ecea2b897fd0a97816cf80d8f53490"
     },
@@ -8227,7 +8227,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721028.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721028.vdb",
       "total_bytes": 11858,
       "tree_sha256": "691ce3fe1c573c3492249ff6d94c0081fb8c60c697754ec68af2c3c371166a80"
     },
@@ -8300,7 +8300,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721029.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721029.vdb",
       "total_bytes": 11964,
       "tree_sha256": "989491cfeb967f8702a4591baf90d025271b5a0b65a081b5f77f95481d1c007a"
     },
@@ -8373,7 +8373,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721030.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721030.vdb",
       "total_bytes": 12287,
       "tree_sha256": "cb0ef0fe8ffaf4ff14021cb8b6b6c6f0925542965c007462d20c6915f882c96c"
     },
@@ -8446,7 +8446,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721031.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721031.vdb",
       "total_bytes": 11937,
       "tree_sha256": "aa4a06388c65d6682fa5eaba77f3ded8f54acdcfcd993db4c8639b33b92943b0"
     },
@@ -8519,7 +8519,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721032.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721032.vdb",
       "total_bytes": 11823,
       "tree_sha256": "1137410b88e75398f0845e22f607ea9322bbf611bb71998892bfff84a3d9a898"
     },
@@ -8592,7 +8592,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721033.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721033.vdb",
       "total_bytes": 11921,
       "tree_sha256": "f4d860eff8838333ce676c5e4387d99f6968e8ae39a77d1d6b5d472668ec2f6b"
     },
@@ -8665,7 +8665,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721034.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721034.vdb",
       "total_bytes": 12315,
       "tree_sha256": "02a67d4c98136a7c0464c9664119f6def25e35b9b8aac068222f7b73f17f8228"
     },
@@ -8738,7 +8738,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721035.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721035.vdb",
       "total_bytes": 11921,
       "tree_sha256": "55525dda9c0895e426d1c1845ce422ad4c9bbba965dced142582ad4f9da4377c"
     },
@@ -8811,7 +8811,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721036.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721036.vdb",
       "total_bytes": 11825,
       "tree_sha256": "258eb71584a313359b09c0d3c511fd854f8ccb4ee6b61b6de1f48228d6de0f3e"
     },
@@ -8884,7 +8884,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721037.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721037.vdb",
       "total_bytes": 11959,
       "tree_sha256": "30174b37ebe7bd15209d2f0927c578da3baabd80c310e6a34ac441e8534517d1"
     },
@@ -8957,7 +8957,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721038.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721038.vdb",
       "total_bytes": 12296,
       "tree_sha256": "25e96cdfc0b982a18760acd8258416683aaf7ad88bdfc5ba099e726229661cb8"
     },
@@ -9030,7 +9030,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721039.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721039.vdb",
       "total_bytes": 11884,
       "tree_sha256": "a5fbeca38f395cc3de35d05d0b302932e53edfe58006494116b099703feafcb8"
     },
@@ -9103,7 +9103,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721040.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721040.vdb",
       "total_bytes": 11832,
       "tree_sha256": "eea28129849f8de1aa147ce4802b7aa4a47ad438576ae1e3165c9591a03f0b42"
     },
@@ -9176,7 +9176,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721041.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721041.vdb",
       "total_bytes": 11915,
       "tree_sha256": "a24ef480f5f4b54989088cbc367663dfc660fcc202c62c58f8ec38b8df489c86"
     },
@@ -9249,7 +9249,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721042.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721042.vdb",
       "total_bytes": 12286,
       "tree_sha256": "3401b7173c811a8b1e125361436f5ad2f42cad847eb2849c8087c1425f5ea418"
     },
@@ -9322,7 +9322,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721043.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721043.vdb",
       "total_bytes": 11930,
       "tree_sha256": "2317b88c51c9eb0348b10c25d43d0c4409fbf260eeb0d9f01e3d6681d50fd24c"
     },
@@ -9395,7 +9395,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721044.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721044.vdb",
       "total_bytes": 11843,
       "tree_sha256": "0de71d211016035957e4c6c8f4437fbebb5c81090b7085806886ac8c8d8344a9"
     },
@@ -9468,7 +9468,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721045.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721045.vdb",
       "total_bytes": 11924,
       "tree_sha256": "5c1c56c38eac57c4a04ac93655e07f46edbc07ef63ce957d1a4fb916b533eb97"
     },
@@ -9541,7 +9541,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721046.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721046.vdb",
       "total_bytes": 12294,
       "tree_sha256": "d726d1f74f94324a23fb9fc8f5c30fe427c39ca199fed634548f998e66fd9894"
     },
@@ -9614,7 +9614,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721047.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721047.vdb",
       "total_bytes": 11913,
       "tree_sha256": "48025444e5cb1022574b5d332254b847881d1a432c2b7bfbb308afac4975a236"
     },
@@ -9687,7 +9687,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721048.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721048.vdb",
       "total_bytes": 11826,
       "tree_sha256": "42181425456a3bdbdf9eca8dea5d9f6e5b981095bca96d78512b5cda2e4d81db"
     },
@@ -9760,7 +9760,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721049.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721049.vdb",
       "total_bytes": 11917,
       "tree_sha256": "dc2b1e07bf87ee16d10720560324a958863fa48d0d1e7a289b2e08266802ad40"
     },
@@ -9833,7 +9833,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721050.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721050.vdb",
       "total_bytes": 12299,
       "tree_sha256": "d7662db90727a06e7f84b0bc1c7d7734f056a4d534bf881d391de4492f66a792"
     },
@@ -9906,7 +9906,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721051.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721051.vdb",
       "total_bytes": 11916,
       "tree_sha256": "ce6c98c0dd5c3642b53bad4dc9202df9722ae7298a27c04a378d94d5c176daea"
     },
@@ -9979,7 +9979,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721052.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721052.vdb",
       "total_bytes": 11852,
       "tree_sha256": "9d9d9ec8258d6f04e53b96894a765834fc8c77c3a46f6ca104c82175dc93133a"
     },
@@ -10052,7 +10052,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721053.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721053.vdb",
       "total_bytes": 11919,
       "tree_sha256": "ab3ea8bc19752c0c9c70eacb98f8164a986222a99337f28f7cd85a56dcb5a9a2"
     },
@@ -10125,7 +10125,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721054.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721054.vdb",
       "total_bytes": 12304,
       "tree_sha256": "fff84eb70056e3112e95bc3e79b6f9b808c9ff9ed99a7febf8be2813408940f3"
     },
@@ -10198,7 +10198,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721055.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721055.vdb",
       "total_bytes": 11893,
       "tree_sha256": "9f41faf7d5ebf466b3d14ef91b3680ed6142aa8c1556a3868e4671a522332b71"
     },
@@ -10271,7 +10271,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721056.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721056.vdb",
       "total_bytes": 11855,
       "tree_sha256": "a3222de31bd9ed5ce0085155a95d27d76c7c35c0c6d092da5d50015065fc14e5"
     },
@@ -10344,7 +10344,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721057.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721057.vdb",
       "total_bytes": 11902,
       "tree_sha256": "d91c9440028abe84e41ede039840a18d035a0b4a89d04a58492e59250e2e025c"
     },
@@ -10417,7 +10417,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721058.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721058.vdb",
       "total_bytes": 12289,
       "tree_sha256": "7b3e9db57f46a69650676a9195a555acb415b39dad7c01040ea0e49bd8dc794b"
     },
@@ -10490,7 +10490,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721059.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721059.vdb",
       "total_bytes": 11918,
       "tree_sha256": "3e78a297b8252d5db2e1a5eb2a2f85f9f7d9f5880088b89111af46d792deec37"
     },
@@ -10563,7 +10563,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721060.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721060.vdb",
       "total_bytes": 11830,
       "tree_sha256": "84d7fd1ae886dd8c2991204596278abb3195d61c1d0cd1fc0f8eecb89d84d53d"
     },
@@ -10636,7 +10636,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721061.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721061.vdb",
       "total_bytes": 11892,
       "tree_sha256": "9edceb70a89bfdb86a38771346cc546a935e37f2a6b23c15d640c3950d7d7337"
     },
@@ -10709,7 +10709,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721062.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721062.vdb",
       "total_bytes": 12285,
       "tree_sha256": "ec768efc8bb184a6c0a5935cb4c93072875ff23f8d3f9ac41530b147cf2f8908"
     },
@@ -10782,7 +10782,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721063.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721063.vdb",
       "total_bytes": 11925,
       "tree_sha256": "fa914cdf8b6ca35b617c5ff7bcd3fc9cd555f4f8c653e41f0d9ec553af0e5294"
     },
@@ -10855,7 +10855,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721064.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721064.vdb",
       "total_bytes": 11846,
       "tree_sha256": "4f8f845037ebc665110be0de8da56adb073b3fe25bd22cacca2073e163d1adf6"
     },
@@ -10928,7 +10928,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721065.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721065.vdb",
       "total_bytes": 11936,
       "tree_sha256": "c5dacd85839c38a6b802b56984244fb3ad1c00746e6524ef5f73809efc61c9ff"
     },
@@ -11001,7 +11001,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721066.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721066.vdb",
       "total_bytes": 12290,
       "tree_sha256": "a1f1e8a34a7447f013b21005fa2ff8a947ac4eaba1cf138cb4b046e26635ed8b"
     },
@@ -11074,7 +11074,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721067.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721067.vdb",
       "total_bytes": 11938,
       "tree_sha256": "b707fb2ae78ad3ecbd769d28988ca83c460917978410840c02d6c303c22ee105"
     },
@@ -11147,7 +11147,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721068.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721068.vdb",
       "total_bytes": 11849,
       "tree_sha256": "5e56c7cf1327d1f3926136e5f9a8993ba536b6c532cac2ed1764918b0ca48824"
     },
@@ -11220,7 +11220,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721069.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721069.vdb",
       "total_bytes": 11898,
       "tree_sha256": "d0552e5f652868769562231b79162d53fe94aec85c1677c4e84642dff3444a82"
     },
@@ -11293,7 +11293,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721070.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721070.vdb",
       "total_bytes": 12310,
       "tree_sha256": "aaa247455bb220eca7bf28a0de178b250254cfbe3817417fbe5f79e59c3d7e6e"
     },
@@ -11366,7 +11366,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721071.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721071.vdb",
       "total_bytes": 11934,
       "tree_sha256": "717fca9fadb8f2c6735ee840bcf50703ac5ceb62b0daf4367c7731e523db12d5"
     },
@@ -11439,7 +11439,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721072.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721072.vdb",
       "total_bytes": 11846,
       "tree_sha256": "70d6469ef1f577683dc3bbaf4e053da238ba42a5255627f8cd860ae57fd2ecf3"
     },
@@ -11512,7 +11512,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721073.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721073.vdb",
       "total_bytes": 11927,
       "tree_sha256": "45e8eaf2793b6591363bbd07398c9d6739390bf345ff616a2145e754f332646d"
     },
@@ -11585,7 +11585,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721074.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721074.vdb",
       "total_bytes": 12305,
       "tree_sha256": "f213fd1b81e38f9d80cad67887e95a7ae7e39f8c461adf8589755191232fc34d"
     },
@@ -11658,7 +11658,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721075.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721075.vdb",
       "total_bytes": 11928,
       "tree_sha256": "df6f19eb7e3e6b7336f524c7fb7b95c20819111eadc35bcfb42dbaae71020ec6"
     },
@@ -11731,7 +11731,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721076.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721076.vdb",
       "total_bytes": 11836,
       "tree_sha256": "5caefb506a0c5d1f2cb1fb7adc128d2bf220f1a150efcc04c1604e144ed9d5bd"
     },
@@ -11804,7 +11804,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721077.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721077.vdb",
       "total_bytes": 11968,
       "tree_sha256": "245dcbe0283c53954a7da79f7aeba957d8c577b5ddfb527608e0091c9a2d7efa"
     },
@@ -11877,7 +11877,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721078.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721078.vdb",
       "total_bytes": 12301,
       "tree_sha256": "d611f4ec0b6ce871528a03b223dde1aeecf820c743e5d1bc47bd32719aa30e17"
     },
@@ -11950,7 +11950,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721079.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721079.vdb",
       "total_bytes": 11926,
       "tree_sha256": "0f50facc8a181115588c311c9a7655893f8560c560565237dddbf03b309d14c9"
     },
@@ -12023,7 +12023,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721080.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721080.vdb",
       "total_bytes": 11842,
       "tree_sha256": "515dbb295a7a5f4c27c8ef3f712a7bc9d250d9b7ee33e74cec5d2fb4b03436e3"
     },
@@ -12096,7 +12096,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721081.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721081.vdb",
       "total_bytes": 11874,
       "tree_sha256": "42983c11a2d8a29d5db5603ff03db1c8a5db679a1f442836dac92b58566645e9"
     },
@@ -12169,7 +12169,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721082.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721082.vdb",
       "total_bytes": 12306,
       "tree_sha256": "07d6fa0ee905f256e9d159b5333e8ba081ac14272bb662e19e04970cda3154f6"
     },
@@ -12242,7 +12242,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721083.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721083.vdb",
       "total_bytes": 11944,
       "tree_sha256": "e4b7d942681fdb8457c4bfbe803ac9c09aef49b16320486655014b8d259a9bbc"
     },
@@ -12315,7 +12315,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721084.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721084.vdb",
       "total_bytes": 11818,
       "tree_sha256": "07dc5d7dba6891f06f152884e9984126fb6f767763759e22ded9757b4d88aaa5"
     },
@@ -12388,7 +12388,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721085.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721085.vdb",
       "total_bytes": 11875,
       "tree_sha256": "c7c9a4fee36c25a2b765ff4d8f6b3c2b833d5518b1438f001ea54c6e9800edee"
     },
@@ -12461,7 +12461,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721086.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721086.vdb",
       "total_bytes": 12304,
       "tree_sha256": "6213ec5644a9390a8b6e49fecf3f833057e9683a8a7c895a7ac3699f79bbb0b7"
     },
@@ -12534,7 +12534,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721087.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721087.vdb",
       "total_bytes": 11933,
       "tree_sha256": "fe7da75ebf3863535763d7cd239ede9b614009c89ae9ef7e1656c38a5ab8038c"
     },
@@ -12607,7 +12607,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721088.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721088.vdb",
       "total_bytes": 11816,
       "tree_sha256": "61fec9e6f39ffbf4e9c26b2c1d16a8e5e1eb4d5cf3b909337b8d63eb07d22c2d"
     },
@@ -12680,7 +12680,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721089.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721089.vdb",
       "total_bytes": 11941,
       "tree_sha256": "59f8730203b4accfae098de49f7efc1e0d5e76594cef4e17ba944bc0d039c8fe"
     },
@@ -12753,7 +12753,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721090.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721090.vdb",
       "total_bytes": 12313,
       "tree_sha256": "456311bf57190c0f9bababb53c8fb0f886d93913ba2dcf04bbc12f061d015cd7"
     },
@@ -12826,7 +12826,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721091.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721091.vdb",
       "total_bytes": 11943,
       "tree_sha256": "97c929486f95e861518828e1ffe23e5c637607f2bf57c5d52c595ec6c96dff7b"
     },
@@ -12899,7 +12899,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721092.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721092.vdb",
       "total_bytes": 11855,
       "tree_sha256": "b92fd1a7409cb8dcc84893e02709a5f56f803bd3d816ba31bc0424677c6c87d7"
     },
@@ -12972,7 +12972,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721093.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721093.vdb",
       "total_bytes": 11947,
       "tree_sha256": "6ae227487f115df6124f56721717234f5909d21e755882f9412e0ce26c155899"
     },
@@ -13045,7 +13045,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721094.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721094.vdb",
       "total_bytes": 12315,
       "tree_sha256": "b485810f3088b21d958ad6edb73cbf9f62a236951aefb5e5b902f5dd76509e71"
     },
@@ -13118,7 +13118,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721095.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721095.vdb",
       "total_bytes": 11965,
       "tree_sha256": "e6dabc10d217d60c28dfdd41ee30761ed99e42886544f41c2971f058b9c7aaba"
     },
@@ -13191,7 +13191,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721096.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721096.vdb",
       "total_bytes": 11876,
       "tree_sha256": "f233c2c1c1a4c62f4392df190e9f7f17b05940a93c0df981ccd619f79a319026"
     },
@@ -13264,7 +13264,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721097.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721097.vdb",
       "total_bytes": 11852,
       "tree_sha256": "16b800a97ba96e86be2ec94ed635cdfb45231b7f17bfadade285febe90240d45"
     },
@@ -13337,7 +13337,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721098.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721098.vdb",
       "total_bytes": 12286,
       "tree_sha256": "e5064c4087106abb32e92925aba66a3d1f3d066e0a546aa8c0246bd1c44a1919"
     },
@@ -13410,7 +13410,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721099.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_721099.vdb",
       "total_bytes": 11856,
       "tree_sha256": "083f4dfce456b8f2a61c2beeb87961d4ce83df9d83cb1936b243948fdc0be86c"
     },
@@ -13483,7 +13483,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821000.vdb",
       "total_bytes": 11817,
       "tree_sha256": "62123ca9c7093c38dfb594a710b19b44112d54e0a5b76c2dd9ac46cdc4a36663"
     },
@@ -13556,7 +13556,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821001.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821001.vdb",
       "total_bytes": 11913,
       "tree_sha256": "48f824fae788e55d99ce270ad77af96a12403e70e3609cfece584b7eaf614fa8"
     },
@@ -13629,7 +13629,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821002.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821002.vdb",
       "total_bytes": 12299,
       "tree_sha256": "0017142466ff99e74496676dbf4867b6d1ee45f35e745d810d910a012702d519"
     },
@@ -13702,7 +13702,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821003.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821003.vdb",
       "total_bytes": 11941,
       "tree_sha256": "21fa4f295d513e0ce892a422615ae52d28b18d9be05cc4c365c59c75b1f083c6"
     },
@@ -13775,7 +13775,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821004.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821004.vdb",
       "total_bytes": 11847,
       "tree_sha256": "ca499d6b5f08d7ae552b5b3d604f07baf9afd28cafb93dd1e96aec35f70c6613"
     },
@@ -13848,7 +13848,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821005.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821005.vdb",
       "total_bytes": 11948,
       "tree_sha256": "40c2cbc56f5c3c4f198850b61e0e7f1467782c8a9cdb01f766097af23b8715e9"
     },
@@ -13921,7 +13921,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821006.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821006.vdb",
       "total_bytes": 12333,
       "tree_sha256": "789c31fb1c8a435d1850313e9a81d45e7f4484e8cfeac52b5fcd3e1babe9f7fa"
     },
@@ -13994,7 +13994,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821007.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821007.vdb",
       "total_bytes": 11919,
       "tree_sha256": "a00140ffcf6ed787c1766377205c42999d84d6bbd4f338c402c6394fb6791a74"
     },
@@ -14067,7 +14067,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821008.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821008.vdb",
       "total_bytes": 11850,
       "tree_sha256": "e9422a68503217e5a1a56dee6345f663945f3c86798e349fa8618f33ae458103"
     },
@@ -14140,7 +14140,7 @@
           "size_bytes": 325
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821009.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/system_random/vdb/seed_821009.vdb",
       "total_bytes": 11961,
       "tree_sha256": "9e9d8764e4814669edffa7af8497c948cf4e14d82f996b3ba46ffbd76aadb298"
     },
@@ -14213,7 +14213,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040000.vdb",
       "total_bytes": 12274,
       "tree_sha256": "8e408ce0188905a02f0f72a1efd6b563db8b5843ef42f67fac0281c4cb65fe41"
     },
@@ -14286,7 +14286,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040001.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040001.vdb",
       "total_bytes": 12275,
       "tree_sha256": "2d23ea47d7779a33f61aac9c7261a1985f08fbc2a7925fafa7815ddb55d6b42e"
     },
@@ -14359,7 +14359,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040002.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040002.vdb",
       "total_bytes": 12283,
       "tree_sha256": "3b94406dff360b2913e7a9128b46b4c4034379d67903fce0c8d45c15987b6e29"
     },
@@ -14432,7 +14432,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040003.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040003.vdb",
       "total_bytes": 12286,
       "tree_sha256": "7fc1f1b89aafe32c00678326194615a04c2a2c98c4b794333a4d86a818a2399a"
     },
@@ -14505,7 +14505,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040004.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040004.vdb",
       "total_bytes": 12274,
       "tree_sha256": "10b3a41188de7b8eca16c7ffbeaecc2948b437fffd6ab4355c9e75133fd58570"
     },
@@ -14578,7 +14578,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040005.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040005.vdb",
       "total_bytes": 12288,
       "tree_sha256": "1e332476c776f66900aa17e2ed2469be5c8f4a4f5e086ef557c94dd40db43e48"
     },
@@ -14651,7 +14651,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040006.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040006.vdb",
       "total_bytes": 12282,
       "tree_sha256": "28b79c8ad3299d891542a173a9b7b3985478ea3e3b0752b2c8ea1187c8e721f8"
     },
@@ -14724,7 +14724,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040007.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040007.vdb",
       "total_bytes": 12293,
       "tree_sha256": "8d038bfe0c17d99ead56ca17423105ef4bd19c0f51014fd3b0de6d0c7812dd8d"
     },
@@ -14797,7 +14797,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040008.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040008.vdb",
       "total_bytes": 12303,
       "tree_sha256": "42ac5e665410460dc118e6b21006cf0f9b5dbb20ebdfb5215a3d33da1651c68d"
     },
@@ -14870,7 +14870,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040009.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040009.vdb",
       "total_bytes": 12282,
       "tree_sha256": "050cfacb8a4b36447f310c06c65c47d722aa7a9dc2f3342073c20e4a095ba5f7"
     },
@@ -14943,7 +14943,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040010.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040010.vdb",
       "total_bytes": 12280,
       "tree_sha256": "860dd5781d44c9fef78f17fb9d5d29d7a751e701c1da3dfc0f87f850a38c4c38"
     },
@@ -15016,7 +15016,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040011.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040011.vdb",
       "total_bytes": 12284,
       "tree_sha256": "dfced3a269d9d30cf099f317aff964471a433c5651c32b45b5f94fd807df7904"
     },
@@ -15089,7 +15089,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040012.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040012.vdb",
       "total_bytes": 12273,
       "tree_sha256": "db11296598be7db72ac8097ceddd75040590b67f0030431d4e7afe9921005b1c"
     },
@@ -15162,7 +15162,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040013.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040013.vdb",
       "total_bytes": 12278,
       "tree_sha256": "c03f77b15fcd2739532b55963457ef3978e42aa8af527c61dcade3593f892b76"
     },
@@ -15235,7 +15235,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040014.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040014.vdb",
       "total_bytes": 12273,
       "tree_sha256": "2f35f5e4a098c8bf12a79166187bc05307d7c525b7d00570bc3d7696410c6306"
     },
@@ -15308,7 +15308,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040015.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040015.vdb",
       "total_bytes": 12282,
       "tree_sha256": "7648ddc4afe196f16987aba60e018727c3c1a18df0c3940ec6adfa981796d88e"
     },
@@ -15381,7 +15381,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040016.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040016.vdb",
       "total_bytes": 12289,
       "tree_sha256": "04b8ae25b6130139fed97bf60239105d78d2117c3ab7489d25523843a4300801"
     },
@@ -15454,7 +15454,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040017.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040017.vdb",
       "total_bytes": 12273,
       "tree_sha256": "2c1d43f06667bbff98161972b79ca95628a3f5cf0c83b77c3678dc3c20a9c916"
     },
@@ -15527,7 +15527,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040018.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040018.vdb",
       "total_bytes": 12281,
       "tree_sha256": "b3980cbcaee464e8c4ad2e6268d68604d29602b486375f04ef8e075fc7c0f5b1"
     },
@@ -15600,7 +15600,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040019.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040019.vdb",
       "total_bytes": 12286,
       "tree_sha256": "867d66753238fb420b2817addfafeb18b988d33075821b48fc72959a57eeca0f"
     },
@@ -15673,7 +15673,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040020.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040020.vdb",
       "total_bytes": 12295,
       "tree_sha256": "9b46bfdb02192ad2b8a7405c4409df2be2695dfdad6e4d69acc23eebefb25a35"
     },
@@ -15746,7 +15746,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040021.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040021.vdb",
       "total_bytes": 12276,
       "tree_sha256": "be69f8a9932b105c4e96b997539fad84b29b735e79faadfd2a081d6b1cca5c57"
     },
@@ -15819,7 +15819,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040022.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040022.vdb",
       "total_bytes": 12293,
       "tree_sha256": "29be665beaebebcbd997feb1eb718e8859fdc433346a9f4f8635dd8f690e3baf"
     },
@@ -15892,7 +15892,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040023.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/reset_vdb/reset_1040023.vdb",
       "total_bytes": 12290,
       "tree_sha256": "a195379c568775cdd751fcd7de8fd9c0546ad714411a2b698e29edf4863b7b3f"
     },
@@ -15965,7 +15965,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040024.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040024.vdb",
       "total_bytes": 12928,
       "tree_sha256": "200f00e8b58d65aa21d7a88a9d78ead7940ae51e7d2ae84de0e1d1cd690ade02"
     },
@@ -16038,7 +16038,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040025.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040025.vdb",
       "total_bytes": 12960,
       "tree_sha256": "f3432779831209352c5da5822b6203eb69ec1902c7966d3fe9c03a6b34a9a3b5"
     },
@@ -16111,7 +16111,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040026.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040026.vdb",
       "total_bytes": 12958,
       "tree_sha256": "213315087cd268b42da24e25d8676fd92ea79dc8567e7e677424e4f1eb13dbfd"
     },
@@ -16184,7 +16184,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040027.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040027.vdb",
       "total_bytes": 12925,
       "tree_sha256": "514d1a1dbcb369d38f8ec6c2f402ccbc5a30c9a6135abffc1956261570761923"
     },
@@ -16257,7 +16257,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040028.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040028.vdb",
       "total_bytes": 12958,
       "tree_sha256": "95ce1d6a86fff2a63c8aaa9356157e5fd0de18e940345a07b6ed9799f8a82d33"
     },
@@ -16330,7 +16330,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040029.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040029.vdb",
       "total_bytes": 12928,
       "tree_sha256": "e5805dcd91f38d7dec4cbce4a23f0b62e11f426e8c6c237f5401978995108b8d"
     },
@@ -16403,7 +16403,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040030.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040030.vdb",
       "total_bytes": 12928,
       "tree_sha256": "139c038e33e5d33c9c2b173ea5791420a83713a54a25a8fab08c2f98b4bf792a"
     },
@@ -16476,7 +16476,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040031.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040031.vdb",
       "total_bytes": 12961,
       "tree_sha256": "22f04647865e1bd23f4ff287c43878b28d82b0fcd6fcee5fb22383f0c0cfec8a"
     },
@@ -16549,7 +16549,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040032.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040032.vdb",
       "total_bytes": 12959,
       "tree_sha256": "db153ef62a7e21b5230545d3657ff0c66900a2e91eb59afa8aea23ee656983c7"
     },
@@ -16622,7 +16622,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040033.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040033.vdb",
       "total_bytes": 12961,
       "tree_sha256": "607a22e43dff304fcc0f10f5c5ef780d0ef0171b0678629468757dbac32e29cd"
     },
@@ -16695,7 +16695,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040034.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040034.vdb",
       "total_bytes": 12959,
       "tree_sha256": "850e2bb6e2e6599ab7f06501be62349cdc76470a9f1e0cd7c27228121923641f"
     },
@@ -16768,7 +16768,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040035.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040035.vdb",
       "total_bytes": 12957,
       "tree_sha256": "fcc203b5ac0fd576704b2437567416f989beae897ecd8f260ba8a9b5d30a8579"
     },
@@ -16841,7 +16841,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040036.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040036.vdb",
       "total_bytes": 12956,
       "tree_sha256": "a77090da458266fe381b72f9933db2a9867bcc493c70260dd587b1993090fb8b"
     },
@@ -16914,7 +16914,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040037.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040037.vdb",
       "total_bytes": 12959,
       "tree_sha256": "e562f5e01874ac136e4e7a8b96c83cd26592942884166614e3286e6ca68dd062"
     },
@@ -16987,7 +16987,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040038.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040038.vdb",
       "total_bytes": 12927,
       "tree_sha256": "d60824a22b48247b2f633803b57b1148c959c0bdee98b4867d9bf55f5b438221"
     },
@@ -17060,7 +17060,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040039.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040039.vdb",
       "total_bytes": 12928,
       "tree_sha256": "380d054eb35ab63eb692b000fd8682717802db5659603192a6ac26acf2eace8f"
     },
@@ -17133,7 +17133,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040040.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040040.vdb",
       "total_bytes": 12959,
       "tree_sha256": "839aef14359dca7ef430ff0150bf068627aca9082a9c607e34978a37dc40655a"
     },
@@ -17206,7 +17206,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040041.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040041.vdb",
       "total_bytes": 12959,
       "tree_sha256": "c9941764cb323e57ad9a273af180f13756d8952a224e2d872757926ae2b79987"
     },
@@ -17279,7 +17279,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040042.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040042.vdb",
       "total_bytes": 12929,
       "tree_sha256": "153536c92094e9863148f4f62a79c0debf7af783ac5e274c359895ee7537bea5"
     },
@@ -17352,7 +17352,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040043.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040043.vdb",
       "total_bytes": 12959,
       "tree_sha256": "3d09c3cf34b5277ff13aaba92ddd537f80cbbb8fa315c35adce8cd83f6d0d7ec"
     },
@@ -17425,7 +17425,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040044.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040044.vdb",
       "total_bytes": 12959,
       "tree_sha256": "fcfb57f05c0b8c7790171c7c5e6e18d952037db90a3afbb093f3d87ddec7de1e"
     },
@@ -17498,7 +17498,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040045.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040045.vdb",
       "total_bytes": 12928,
       "tree_sha256": "dc40aa690efc066dd49db42fa358ce343574f2029e12e42f50de671c14c19c77"
     },
@@ -17571,7 +17571,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040046.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040046.vdb",
       "total_bytes": 12957,
       "tree_sha256": "2810ac17b52632a269f1fcd1b6945a213ac81e828f4e09251b8aa1cb4320953e"
     },
@@ -17644,7 +17644,7 @@
           "size_bytes": 333
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040047.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_732a64/randomized_control_final/commit_vdb/commit_1040047.vdb",
       "total_bytes": 12960,
       "tree_sha256": "ae6d38421591f4a63d6fe79aaf5fc242974ca850cb9ee68cc42fc8dd4b08140a"
     },
@@ -17717,7 +17717,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/negative_predictor_fix/build/cov_axil_illegal_frame_seed420102.vdb",
+      "path": "./runs/thermo5_tx_closure_current/negative_predictor_fix/build/cov_axil_illegal_frame_seed420102.vdb",
       "total_bytes": 11676,
       "tree_sha256": "a9bdb036d8fdac8d1bc16f55cb7ada9c5a70d2baeb30875538fcd9c8a33f8ad4"
     },
@@ -17790,7 +17790,7 @@
           "size_bytes": 320
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/negative_predictor_fix/build/cov_axil_mailbox_fault_seed420103.vdb",
+      "path": "./runs/thermo5_tx_closure_current/negative_predictor_fix/build/cov_axil_mailbox_fault_seed420103.vdb",
       "total_bytes": 10926,
       "tree_sha256": "d103cf36a0e2bc9e25dcb77564fa086b809d9ab3b0e725a4fa9f5b66d7a3f9b8"
     },
@@ -17863,7 +17863,7 @@
           "size_bytes": 324
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/source_1236d49/starvation/starvation.vdb",
+      "path": "./runs/thermo5_tx_closure_current/source_1236d49/starvation/starvation.vdb",
       "total_bytes": 11805,
       "tree_sha256": "0f4694a41ea362999209ffa9694d29c26753552fd54da6ede6d88df2746cf1fe"
     },
@@ -17936,7 +17936,7 @@
           "size_bytes": 323
         }
       ],
-      "path": "/home/ray/workspace/dsm_ip/runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/vdb/seed_930000.vdb",
+      "path": "./runs/thermo5_tx_closure_current/gate2_axil_w1c_20261103/vdb/seed_930000.vdb",
       "total_bytes": 12981,
       "tree_sha256": "88391f2c2c4bbea62890018ba3a330800bbf29b7f902f7035ac59ba4c061818c"
     }

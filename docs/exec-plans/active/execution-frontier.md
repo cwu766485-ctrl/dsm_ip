@@ -1,6 +1,37 @@
 # Execution frontier
 
-## Current execution state: TX Final Verification Convergence Round 11 (2026-11-06)
+## Current execution state: Thermo5 Branch Consolidation (2026-11-06)
+
+The target `thermo5` is still at `2d7a58df43f7bffecd3d34edd2f21bb3262abe2b`.
+PR #40 (`330815a5db5a26af50de81aff0c304dea714ead3`) and PR #41
+(`744683b987ae5ecdc542c7c5fbf24ad63301e25d`) are Draft/Open and unmerged.
+The branch/PR audit is recorded in
+`docs/verification/thermo5-branch-consolidation-audit-20261106.md` and its JSON
+manifest. All paths changed by PRs #27–#39 are present in PR #41; exact blob
+and reverse-patch comparisons identify evolved files. PR #36 counter Formal
+remains INCONCLUSIVE; PR #37 is scoped and does not prove the full FIFO/DPD
+chain. PR #32 has a stale recorded base SHA.
+
+The audit found no product RTL, MATLAB, synthesis, or FPGA path changes in
+PR #40/#41. Round 11 regression evidence is bound to the PR #41 source tree,
+but the requested final product regression remains to be rerun after merging
+on the exact `thermo5` SHA. `hygiene` and `syntax` passed on both PR heads;
+`licensed-dv` was skipped. No force push was used.
+
+At audit start the current worktree was clean; one separate worktree
+(`codex/thermo5-tx-frame-tail-full-chain-formal`) contained unique uncommitted
+Formal/coverage changes and one Round 11 stash was present. Both are preserved.
+Five long-lived/history branches remain protected. The GitHub connector cannot
+delete branch refs and the environment has no authenticated `gh` CLI, so remote
+ref cleanup is not available here. After merging, close PRs #27–#39 as
+superseded; do not delete any unreviewed branch.
+
+Next: publish the audit and portable path/whitespace cleanup on PR #41, merge
+PR #40 into `thermo5`, retarget and review PR #41, then run the complete
+Round 11 regression matrix against the merged target SHA. Preserve open
+coverage/Formal and physical-signoff limitations.
+
+## Previous execution snapshot: TX Final Verification Convergence Round 11 (2026-11-06)
 
 Working branch `codex/thermo5-final-verification-round11`; local simulation source commit `d823654cba715e9093bb8cc08e6d819e8ae1365f`; the published code commit
 `cd9532a7d805f2f60250f2ef687a15711a9c485e` has the identical source tree `244b49c4daf1561806d7f02d6dfb560227757571` and is directly stacked
@@ -521,7 +552,7 @@ words checked and all16 lane counters cleared. Full details:
     branch73, assertion100); this is not full code-coverage closure. A fresh
     XPM 56-word bit-true license smoke seed610709 PASSed with zero UVM errors/
     fatals. Initial detached seed610708 spent most wall time blocked in WSL
-    `p9_client_rpc` while reading the 2.5 GB vector set from `/mnt/e`; it was
+    `p9_client_rpc` while reading the 2.5 GB vector set from `an external mounted drive`; it was
     stopped after 47 CPU seconds with exit255 and its partial VDB is excluded.
      All eight oracle `.mem` files were staged under
      `/tmp/thermo5_bit24_xpm_610710/vectors`. XPM seed610710 has now PASSed

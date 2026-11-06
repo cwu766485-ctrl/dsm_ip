@@ -81,7 +81,7 @@
       "round1_randomized_control": 16,
       "round2_system_random": 110
     },
-    "design_vdb": "/home/ray/workspace/dsm_ip/runs/thermo5_open_closure_round2_20261105/system_random_full/build/simv.vdb",
+    "design_vdb": "./runs/thermo5_open_closure_round2_20261105/system_random_full/build/simv.vdb",
     "same_inputs_raw_adjusted": true,
     "test_vdb_paths": 195,
     "unique_test_vdb_paths": 195,

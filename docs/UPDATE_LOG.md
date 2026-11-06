@@ -1,3 +1,28 @@
+# 2026-11-06 - Thermo5 Branch Consolidation Audit
+
+- Fetched and inventoried all remote/local branches, PR refs, seven worktrees,
+  and the existing stash. Preserved the one dirty full-chain Formal/coverage
+  worktree and the Round 11 stash.
+- Audited PR #27–#39 against PR #41 using exact blob comparisons and per-file
+  reverse-patch checks. All 404 changed paths are present in the candidate
+  tree; evolved files are recorded as context differences, not treated as
+  integrated solely because their paths match. Reviewed parallel PR #36/#37
+  Formal evidence and recorded their INCONCLUSIVE/scoped limits.
+- Reviewed PR #40/#41 source roots, history, GitHub checks and review state.
+  No product RTL, MATLAB, synthesis, or FPGA sources changed. Both heads have
+  passing `hygiene`/`syntax` checks; licensed DV is skipped. PRs remain
+  unmerged pending final post-merge regression.
+- Replaced machine-specific workspace paths in evidence/documentation with
+  repository-relative or generic tool-root references. VDB identities and
+  recorded content hashes were not changed. Cleaned report-header trailing
+  whitespace.
+- Added the branch audit report and machine-readable manifest. Remote branch
+  refs are preserved; this environment lacks an authenticated deletion path.
+- Checks: branch/PR inventory and ancestry audit; exact file/blob and
+  reverse-patch comparison; static credential-marker scan; changed JSON files
+  parse; `git diff --cached --check` passes. No force push or branch deletion
+  was performed.
+
 # 2026-11-06 - Thermo5 TX Final Verification Convergence Round 11
 
 - Published Round 11 code commit `cd9532a7d805f2f60250f2ef687a15711a9c485e` on
@@ -3978,7 +4003,7 @@ distinguishes last successful commit from later untested protocol-reset fix.
   the TSMC28 RVT TT library.  DC loaded the library and reported 839 cells
   with 15 inverter-name matches; this is valid mapping-library evidence.
 - The previously referenced SRAM macro `.db` under
-  `/home/ray/ic/CIMForge/syn/out/pdk_cache/` was not found.  Full macro-aware
+  `an external CIMForge project directory/syn/out/pdk_cache/` was not found.  Full macro-aware
   synthesis remains blocked; standard-cell-only synthesis can proceed now.
 
 ## 2026-09-21 23:58 SGT - Thermo5 routed closure and CDC/serializer verification
@@ -5280,7 +5305,8 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 ## 2026-10-13 10:50 SGT - XPM bit24 local-input restart
 
 - Diagnosis: the first fresh XPM attempt, seed610708, was blocked in WSL
-  `p9_client_rpc` while streaming 2.5 GB of vectors from `/mnt/e`; after47 CPU
+  `p9_client_rpc` while streaming 2.5 GB of vectors from an external mounted
+  drive; after 47 CPU
   seconds it was stopped (exit255), and its partial VDB is explicitly
   excluded. No functional failure was observed.
 - Change/check: copied the eight unchanged oracle `.mem` inputs to
