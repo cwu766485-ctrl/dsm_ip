@@ -114,8 +114,13 @@ Formal remains OPEN. No inconclusive result was promoted to PASS.
 ## Branch and PR disposition
 
 - PR #40 and #41 are merged into `thermo5`.
-- PR #27–#39 were commented as superseded by #40/#41 and closed after the
-  merged-source regression passed.
+- PR #27–#39 were commented as superseded by #40/#41 and closed, not merged,
+  after the merged-source regression passed.
+- Patch audit found no absent paths among 404 touched paths, 278 exact final
+  blobs, and 303/404 per-file reverse-patch checks. The remaining 101 files
+  evolved in later commits and are not mechanically proven equivalent by the
+  original PR patch alone. Their remote refs remain recoverable for deeper
+  review; no historical branch was deleted.
 - Original refs were not deleted; they remain recoverable. The GitHub
   connector available in this environment has no branch-ref deletion
   operation. No force push was performed.
@@ -126,9 +131,11 @@ Formal remains OPEN. No inconclusive result was promoted to PASS.
 
 ## Acceptance decision
 
-The branch consolidation is complete: `thermo5` is the integration baseline,
-PR #40/#41 are merged, all superseded PRs #27–#39 are closed, and no audited
-patch change was dropped. The Linux regressions listed above pass at the
+The integration milestone is complete: `thermo5` is the baseline, PR #40/#41
+are merged, and PR #27–#39 are closed as superseded while their refs remain
+recoverable. The patch audit found no absent paths, but 101 evolved per-file
+changes are not mechanically proven equivalent by the old patches; keep those
+refs available for review. The Linux regressions listed above pass at the
 merged product SHA/content fingerprint. **Digital verification signoff is
 still OPEN** because DUT code coverage is below 100%, 371 waivers are
 unapproved, direct SV scoreboard mutations and some Formal obligations are

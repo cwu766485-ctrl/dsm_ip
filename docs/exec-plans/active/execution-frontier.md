@@ -13,10 +13,12 @@ ref deletion operation.
 The branch/patch audit and final post-merge record are in
 `docs/verification/thermo5-branch-consolidation-audit-20261106.md`,
 `docs/verification/thermo5-branch-consolidation-postmerge-20261106.md`, and
-their adjacent JSON manifests. All audited PR #27–#39 changes are retained in
-the integrated source; parallel PR #36/#37 Formal changes were reviewed with
-their inconclusive/scoped limits preserved. The independent dirty Formal
-worktree and stash are unchanged.
+their adjacent JSON manifests. All 404 paths touched by PR #27–#39 are present
+in the final tree; 278 blobs match exactly and 303/404 reverse-patch checks
+pass. The remaining 101 files evolved and are not mechanically proven by the
+original patches; their refs remain recoverable. Parallel PR #36/#37 Formal
+changes were reviewed with their inconclusive/scoped limits preserved. The
+independent dirty Formal worktree and stash are unchanged.
 
 The requested post-merge Linux matrix passed from the exact product source
 SHA: Generic FIFO and AXI-Lite VCS, System Random 110/110, DPD/Gain/Profile

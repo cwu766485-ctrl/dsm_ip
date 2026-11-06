@@ -337,7 +337,8 @@
     "full-chain q1_tail, DPD Identity and COMMIT lifecycle proofs open",
     "real XPM/GT Wizard simulation not run",
     "Vivado routed timing/PPA/power not run",
-    "physical RF/QAM256 BER not run"
+    "physical RF/QAM256 BER not run",
+    "101 historical per-file patch-context differences are not mechanically proven equivalent; original refs remain recoverable for review"
   ],
   "logs": {
     "generic_suite": {
@@ -399,5 +400,14 @@
     "cwd": "repository root",
     "runs_directory": "runs/thermo5_branch_consolidation_final_20261106",
     "vector_directory": "runs/thermo5_tx_final_verification_r11/baseline/vectors/product"
+  },
+  "branch_patch_reconciliation": {
+    "prs_reviewed": "#27-#39",
+    "changed_paths": 404,
+    "paths_absent_from_final_tree": 0,
+    "exact_final_blob_matches": 278,
+    "per_file_reverse_patch_checks_passed": 303,
+    "per_file_reverse_patch_checks_not_proven": 101,
+    "interpretation": "The 101 non-passing reverse checks are evolved files and are not classified as lost solely from a context mismatch. Their remote PR refs are retained for recovery and further review; no remote branch was deleted."
   }
 }

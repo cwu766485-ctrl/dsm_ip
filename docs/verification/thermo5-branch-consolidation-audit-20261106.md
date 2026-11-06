@@ -127,9 +127,13 @@ physical RF/QAM256 remain separate open items.
 PR #40 merged into `thermo5` as `f8b14df743eeb6facfd0378b402f1670a6cf9b0f`.
 PR #41 was retargeted to the updated `thermo5` and merged as
 `8fddad5ba59814d9a0b95a9d94b88e7036efc16f`. The merge tree is
-`76b082af1c94a1082f3c68cc64fa42c1b63c6838`. The final source tree contains
-the audited changes from PR #27–#39, including the distinct Formal work from
-parallel PRs #36 and #37; their unresolved proof limits remain documented.
+`76b082af1c94a1082f3c68cc64fa42c1b63c6838`. The final tree contains all 404
+paths touched by PR #27–#39, including the distinct Formal files from parallel
+PRs #36 and #37. The patch audit found 278 exact final-blob matches and
+303/404 per-file reverse-patch checks. The remaining 101 files evolved in
+later commits and are not proven equivalent by the original patch check
+alone. Their PR branch refs remain available for recovery and deeper review;
+unresolved Formal limits remain documented.
 
 The complete requested Linux product regression was run from a detached
 worktree at that exact merged SHA. All six suites passed. The 96-file compile
