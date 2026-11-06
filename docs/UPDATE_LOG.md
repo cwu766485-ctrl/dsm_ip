@@ -1,3 +1,49 @@
+# 2026-11-06 - Thermo5 TX Final Verification Convergence Round 11
+
+- Published Round 11 code commit `cd9532a7d805f2f60250f2ef687a15711a9c485e` on
+  `codex/thermo5-final-verification-round11`; its source tree `244b49c4daf1561806d7f02d6dfb560227757571` exactly
+  matches the local simulation commit `d823654cba715e9093bb8cc08e6d819e8ae1365f`. The report and evidence are
+  stacked on PR #40 HEAD
+  `330815a5db5a26af50de81aff0c304dea714ead3`. Confirmed PR #40 includes all
+  255 unique paths touched by PRs #27–#39 within its 266-path diff; it remains
+  Draft/Open and was not merged.
+- Reconciled the previous 195-path / 193-test URG discrepancy: all 193 test
+  entries are present and the other two inputs are design VDBs. The refreshed
+  Raw/Adjusted package uses 449 test VDBs plus one fresh design VDB. The 231
+  retained VDBs match the current 96-file compile-input content fingerprint;
+  218 VDBs came from fresh Round 11 runs.
+- Updated event-based Functional Coverage semantics to use Reset Epoch and
+  Packet ID for Source Gap/FIFO Full/PA Stall and RUN/Prefill/Source Gap, and
+  strict STOP < TLAST < Drain ordering. The cross-packet and TLAST-before-STOP
+  negative checks passed. All seven named scenario crosses are fully hit.
+- Fresh Linux runs passed: Generic FIFO core VCS, AXI-Lite product VCS, 110
+  System Random cases, 60 DPD/Gain/Profile cases, 24 Reset and 24 COMMIT
+  trials, and Python tests 64/64. Frozen product RTL and algorithm were not
+  modified.
+- Refreshed DUT-only Raw and Adjusted URG from the same VDB manifest. Results
+  are Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91112/104480,
+  FSM states 13/13 and transitions 18/22. Raw equals Adjusted because there
+  are zero approved waivers and zero active exclusions. Legal Functional
+  Coverage is 436/436; 371 waiver rows remain pending. The gate remains
+  `RAW_100_OPEN` with 14,135 open code records in 416 tasks.
+- Assertion audit separates legal tests (13 success, zero failures, two
+  uncovered and two without attempts) from two expected-negative VDBs, which
+  have three checker-confirmed assertion failures. The two legal `q1_tail`
+  instances remain unattempted. AXI-Lite config Formal is a focused PASS;
+  counter-guard Formal remains INCONCLUSIVE. Scoped q1_tail and DPD Identity
+  results remain OPEN for Raw/full-chain signoff. Direct SV Unified Scoreboard
+  mutation injection remains OPEN; Python trace mutation checks passed.
+- Added the report, clean-source manifest, itemized VDB merge inventory,
+  functional bin audit/detail, open-bin ledger and grouped tasks under
+  `docs/verification/thermo5-r11/`. Full logs/VDBs/URG reports remain ignored
+  under `runs/`; their hashes are indexed in the Round 11 JSON evidence.
+- Checks: six listed regression suites PASS; current 96 compile-input hashes
+  match; all 21 product RTL hashes match; seven exact cross bin totals verified;
+  Round 10 VDB reconciliation validated; evidence JSON parses; `git diff
+  --check` PASS. No RX, AI-DPD, XPM, GT Wizard, Vivado or physical RF/QAM256
+  run was performed.
+- Report: `docs/verification/thermo5-tx-final-verification-round11-20261106.md`.
+
 # 2026-11-05 17:30 SGT - Refresh TX Raw coverage and audit waiver candidates
 
 - Re-ran URG on the current retained product inventory (195 unique test-VDB

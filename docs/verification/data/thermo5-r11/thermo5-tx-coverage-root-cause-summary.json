@@ -1,0 +1,173 @@
+{
+  "all_rows_have_allowed_status": true,
+  "approved_waivers": 0,
+  "bin_records_by_metric_and_root_cause": {
+    "branch:FIXED_PRODUCT_CONFIGURATION": 21,
+    "branch:GUARDED_ADDRESS_DECODE": 1,
+    "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 89,
+    "branch:PRODUCT_CADENCE_ALIGNMENT": 2,
+    "cond:INTERPOLATOR_EMPTY_OR_BLOCKED": 4,
+    "cond:RESET_RELEASE_OR_STATE_HOLD": 188,
+    "fsm:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 4,
+    "line:CDC_OR_RESIDUAL_STATE": 6,
+    "line:DPD_TAP_HISTORY_CONFIGURATION": 176,
+    "line:FIXED_PRODUCT_CONFIGURATION": 244,
+    "line:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 32,
+    "toggle:CDC_OR_RESIDUAL_STATE": 130,
+    "toggle:COUNTER_HIGH_BITS": 816,
+    "toggle:DATA_VALUE_OR_TOGGLE_STIMULUS": 3262,
+    "toggle:DPD_TAP_HISTORY_CONFIGURATION": 8192,
+    "toggle:FIXED_PRODUCT_CONFIGURATION": 24,
+    "toggle:IDENTITY_DPD_ARITHMETIC": 944
+  },
+  "closure_status_counts": {
+    "OPEN": 14135
+  },
+  "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
+  "diagnostic_product_branch_review": null,
+  "diagnostic_testbench_evidence_sha256": null,
+  "exclusions_applied": 0,
+  "functional_bin_detail_report": {
+    "file": "thermo5-tx-functional-bin-detail.csv",
+    "groups_html_sha256": "d766b163aa26dc3c7fd243bdf186f620e3c4126e4a38e49cdc8fa93b4f000268",
+    "rows_including_existing_urg_model_exclusions": 464,
+    "scoreable_rows": 440,
+    "sha256": "5df7f43ab1b65b6554cab7994376ef7455066bbc5551b5b0b47712b94bf19e8c"
+  },
+  "functional_legally_applicable_positive_bins": {
+    "covered": 436,
+    "expected": 436
+  },
+  "functional_negative_only_semantic_bins": 2,
+  "functional_raw_bins": {
+    "covered": 436,
+    "detail_rows_including_urg_model_excluded": 464,
+    "expected": 440,
+    "includes_generated_cross_bins": true,
+    "uncovered_records": 4,
+    "urg_model_excluded_rows": 24
+  },
+  "interpretation": "Root-cause groups are planning hypotheses. All code gaps remain OPEN until an exact simulator hit or non-vacuous proof is recorded.",
+  "legal_functional_report": "runs/thermo5_tx_final_verification_r11/clean_coverage_449/legal_447/urg",
+  "negative_report": "runs/thermo5_tx_final_verification_r11/clean_coverage_449/expected_negative_2/urg",
+  "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+  "raw_bin_id_collision_extra_rows": 4,
+  "raw_bin_id_collision_groups": 4,
+  "raw_dut_coverage": {
+    "branch": {
+      "covered": 524,
+      "missing": 113,
+      "percent": 82.2606,
+      "total": 637
+    },
+    "cond": {
+      "covered": 657,
+      "missing": 192,
+      "percent": 77.3852,
+      "total": 849
+    },
+    "line": {
+      "covered": 3338,
+      "missing": 458,
+      "percent": 87.9347,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 91112,
+      "missing": 13368,
+      "percent": 87.2052,
+      "total": 104480
+    }
+  },
+  "raw_dut_fsm_gaps": {
+    "exact_bins": [
+      {
+        "bin": "'h2->'h0",
+        "fsm": "rem_count_q",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "kind": "transitions",
+        "source_line": 125
+      },
+      {
+        "bin": "'h4->'h0",
+        "fsm": "rem_count_q",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "kind": "transitions",
+        "source_line": 125
+      },
+      {
+        "bin": "'ha->'h0",
+        "fsm": "rem_count_q",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "kind": "transitions",
+        "source_line": 125
+      },
+      {
+        "bin": "'hc->'h0",
+        "fsm": "rem_count_q",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "kind": "transitions",
+        "source_line": 125
+      }
+    ],
+    "uncovered_state_transition_bins": 4
+  },
+  "raw_report": "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg",
+  "raw_report_sha256": {
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/groups.html": "29d0fdfd765a7a32a0c3bbe2e06c5f430618aebed6ce64c4a584e201e89d6166",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/grp6.html": "1ee8d1d773a95c99ffa90f68365a296b79b1e58510e53b1358b88f8ee63d54a6",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/grp7.html": "880bdb7f5befe726625a43167641cee2558b524dd7a0ef98c3e3c6d22bf686a9",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod1.html": "d71ae54eb781e3b466d213bfbaef748ee5a59be213a9bb0fe63140f7174ae252",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod10.html": "8124fd133d502600639ffcbd788f6d97db729666c1b94eb4700d6953aa1f0b56",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod11.html": "b8c4cbcc9ac7614c58fe2c8b4eda6ce3392cb2ba525b722269f38305be791545",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod13.html": "4dee5462955f47f6c74ad9f940252fac9546f6452c51c0431ba85f75aee7e125",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod14.html": "84a060ed0478e2440a0935719f3565b5771f6b493677db41eebce1e7c257efce",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod16.html": "08df353aadc3f25b7bf7b345298970382e7e35d31537f2f737d8c2931b3ca03e",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod17.html": "0e106fc658a882038f85f1e73bb6102214cb3ae46d5c77d93973fc3ed6424eaf",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod18.html": "c4891379152b35df8bf4391a06f67821359c6a898f2ebbf779c6ccc431a56f13",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod2.html": "ec0ec7fdf829035122813934ba1227d7f5113eb90553798873afce6deb6a6a13",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod20.html": "7457657f8c2dd4b889d3e0c54e383873067ffbac443f665828a8c67b6e602ccd",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod22.html": "79b6c695ebf44a7640afb21c13a2f8740bd7e3fa98304e03242c528087a8be23",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod23.html": "ba40dbabcb13abf3602a17dd6847b1a8b16bfdfbf665ec779c2b67da35511a3b",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod24.html": "5138e321fb43a167737552e757bd0f01b33a909c218df784fec28a87a1e63648",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod3.html": "49a9f56fc749f2d0ffea8e9a9f4c24f96c9627ce8b916d69cbee03ec72e9af99",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod4.html": "77342b7d7fe894fcea26bebe984eef5eae6c68484adb3de8ca0639a4f4574e48",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod6.html": "d5306f98b0d2df70581fa66a4d1478b85c5763ebef9f0572f62a10881d78725a",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod7.html": "80ac2f1ea3cc81d1359f0e4563bc4392e6df5c1a0930bafa7b100c03a6640fbb",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod8.html": "5bc5710b9bbb349c3159ee774047ff51db959c7fdf15aed39bc0cac9530b3f5f",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/mod9.html": "1c0d63d84098d688fcd80d1071223774d0ea76ad203fb53962b5abf87bf4c9f9",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/dual_urg/raw_urg/modlist.html": "8736361aaaa008ca6595fcc11a0284ce51c3a08bd93ee60622705e3f4d46e080",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/expected_negative_2/urg/groups.html": "f8865c436ad19e65fe215cb0b6928209b6d0c566d39985d5c4fd353e2839286b",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/expected_negative_2/urg/grp6.html": "001f413c1e058a27cc298f0509cb6a66cc97939fa163a20282c01bfee8e2df59",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/expected_negative_2/urg/grp7.html": "dbb31ed067017d0d44678ba51f4127b0a6f8842d8c7d07b8ae83f0ae69af87f4",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/legal_447/urg/groups.html": "d766b163aa26dc3c7fd243bdf186f620e3c4126e4a38e49cdc8fa93b4f000268",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/legal_447/urg/grp6.html": "0f42ee5cbf3c324d8e31eb00e8e9688db4332c693a68fc4d1c2d0926f43c0ded",
+    "runs/thermo5_tx_final_verification_r11/clean_coverage_449/legal_447/urg/grp7.html": "44931c7ce99993bf1d122a672c5ecc74f4de1147e51a0784444ddba74988e7eb"
+  },
+  "raw_simulation_source_mismatches": [],
+  "root_cause_task_count": 416,
+  "schema_version": 2,
+  "separately_hash_bound_diagnostic_testbench_mismatches": [],
+  "source_ledger": "runs/thermo5_tx_final_verification_r11/clean_coverage_449/ledger/thermo5-tx-gate3-coverage-ledger.csv",
+  "source_ledger_metric_counts": {
+    "branch": 113,
+    "cond": 192,
+    "fsm": 4,
+    "line": 458,
+    "toggle": 13368
+  },
+  "source_ledger_rows": 14135,
+  "source_ledger_sha256": "1447f9a91dc6e3ac3c8e48641db634aa0b711cefeee71d13cc170caaaa6c7851",
+  "source_manifest_mismatches": [],
+  "source_manifest_sha256": "1b3c0eff1f5967e6bd8102a0f8f1ee330ecaac8608870d0f2809b5eea2fab231",
+  "source_manifest_sha_matches_current_tree": true,
+  "source_product_sha": "08e62a87420ee9a9acce7724d2cca3c909f8cb7265dac22563522ac97a74b300",
+  "task_count_by_metric": {
+    "branch": 44,
+    "cond": 93,
+    "fsm": 1,
+    "line": 110,
+    "toggle": 168
+  },
+  "unique_expression_aware_semantic_bin_ids": 14135
+}

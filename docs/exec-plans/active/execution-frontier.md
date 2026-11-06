@@ -1,61 +1,66 @@
 # Execution frontier
 
-## Current execution state: TX Round 10 Raw / Waiver review (2026-11-05)
+## Current execution state: TX Final Verification Convergence Round 11 (2026-11-06)
 
-Working branch `codex/thermo5-final-integration`, base HEAD before this local
-work `6bef1cbd66a55bbec5601a5d36fa4c86f85bfd26`. This local worktree is dirty
-and uncommitted. Product RTL, the frozen TX algorithm, RX and AI-DPD are
-unchanged.
+Working branch `codex/thermo5-final-verification-round11`; local simulation source commit `d823654cba715e9093bb8cc08e6d819e8ae1365f`; the published code commit
+`cd9532a7d805f2f60250f2ef687a15711a9c485e` has the identical source tree `244b49c4daf1561806d7f02d6dfb560227757571` and is directly stacked
+on PR #40 HEAD `330815a5db5a26af50de81aff0c304dea714ead3`. PR #40 remains
+Draft/Open and unmerged. Its 266 changed paths include all 255 unique paths
+from PRs #27–#39. Product RTL, frozen TX algorithm, RX, and AI-DPD are unchanged.
+
+Product profile: Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, 20-bit state;
+DPD_MAX_TAPS=1 with Identity reset image; AXI-Lite; Generic FIFO. VCS
+V-2023.12-SP1_Full64, URG V-2023.12-SP1, VC Formal V-2023.12-SP2_Full64,
+Python 3.12.13. The 96-file compile-input fingerprint is
+`08e62a87420ee9a9acce7724d2cca3c909f8cb7265dac22563522ac97a74b300`; all
+listed compile files and all 21 Product RTL files match the current source.
 
 Status:
 
-- **P1: CLOSED for the exercised legal paths.** The online Python EF2 sidecar
-  checker passed 178 UVM cases (110 system-random, 60 DPD/gain/profile, 8
-  COMMIT-boundary), with zero lane mismatches. The intentional EF2 mutation
-  was detected. Reset-truncated epochs retain independent trace replay.
-- **P2: CLOSED for the seven named scenario families, not the full Cartesian
-  space.** All seven requested crosses have exact URG counts across Round 1/2:
-  DPD/gain/profile 60/60; COMMIT/boundary/stall 2/2; Reset/pending COMMIT 4/4;
-  STATUS/COMMIT/STOP 1/1; source gap/PA stall/FIFO full 1/1; RUN/prefill/source
-  gap 1/1; STOP/TLAST/Drain 1/1. The 110-case VCS campaign and long STOP/Drain
-  test pass; details are in the Round 2 report.
-- **P3: OPEN.** The Round 10 full-product Raw inventory was regenerated from
-  195 unique existing test-VDB paths plus one design VDB. Product RTL-only
-  results: Line 3317/3796 (87.38%), Condition 631/849 (74.32%), Branch
-  503/637 (78.96%), Toggle 82308/104480 (78.78%), FSM states 13/13 and
-  transitions 15/22 (68.18%). DUT assertions: 13 successes, 2 uncovered,
-  2 without attempts, zero failures. URG records 193 tests for the 195 input
-  VDB paths; reconcile this before final signoff. The merged VDBs are from
-  multiple campaigns; simulation was not rerun for this report.
-- **Waiver review is analysis-only.** A same-input Adjusted URG was produced
-  with 84 exact Condition and 14 exact Branch candidates, giving Condition
-  631/765 (82.48%) and Branch 503/623 (80.74%); Line, Toggle, FSM and
-  Assertions are unchanged. URG score is 77.76% Raw / 79.42% Adjusted.
-  These 98 exclusions are not official approvals. The official 371-row CSV
-  remains PENDING, approved=0 and active exclusions=0; `RAW_100_OPEN` remains.
-  Another 273 candidates remain OPEN: 88 EF2 Branch checksum mismatches, 37
-  Line block-scope issues (a line-only probe dropped 153 denominator bins),
-  141 native-URG mapping gaps, 4 stale Formal source contexts and 3 CDC
-  parent-mapping reviews. Details and hashes are in
-  `docs/verification/thermo5-tx-coverage-waiver-review-round10-20261105.md`
-  and `docs/verification/data/thermo5-tx-coverage-waiver-review-round10-20261105.json`.
-- Fresh legal-metadata Formal proves both `q1_tail` assertion
-  antecedents unreachable in the exact product frame-marker contract with
-  non-vacuous legal witnesses. This is a root-cause disposition, not a waiver
-  or Raw exclusion. Outstanding-counter Formal remains INCONCLUSIVE; full-chain
-  DPD Identity Formal remains INCONCLUSIVE/OPEN. Round 10 numbers supersede
-  the older coverage snapshots only for this stated VDB set; they are not a
-  single-source freshly compiled signoff package.
-- Real XPM, GT Wizard, Vivado PPA/routed timing, and physical RF/QAM256 remain
-  NOT_RUN and outside Linux signoff.
+- **Source and regression baseline: PASS for the stated package.** Fresh Generic
+  FIFO and AXI-Lite product VCS suites passed. System Random passed 110/110;
+  DPD/Gain/Profile 60/60; randomized Reset/COMMIT 24/24 each; Python tests
+  64/64. The previous 195-path/193-test discrepancy is resolved: two inputs
+  were design VDBs, not test VDBs. Current coverage uses 449 test VDBs plus one
+  fresh design VDB. 231 retained test VDBs match the current compile-input
+  fingerprint; 218 test VDBs are from fresh current-source campaigns.
+- **Named Functional Coverage crosses: PASS.** All seven crosses are closed at
+  60/60, 2/2, 4/4, 1/1, 1/1, 1/1 and 1/1. Source-gap/PA-stall/FIFO-full and
+  RUN/prefill/source-gap use `(Epoch, Packet ID)` state. STOP/TLAST/Drain
+  requires strict STOP < accepted TLAST < Drain. Cross-packet and TLAST-before-
+  STOP negative checks passed. Legal applicable bins are 436/436; 16/16 groups
+  report 100%.
+- **Unified Scoreboard: PARTIAL.** Source/CDC metadata and indexing, all 32 EF2
+  lanes, configuration event causality, Reset Epoch clearing, and drain checks
+  are implemented/exercised. Offline Python mutation tests pass for missing,
+  duplicate, reordered, wrong-Frame-ID and early-Apply traces. Direct SV
+  Unified Scoreboard mutation injection remains OPEN.
+- **DUT Code Coverage: OPEN.** Same-manifest Raw and Adjusted are identical:
+  Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91112/104480,
+  FSM states 13/13 and transitions 18/22. 14,135 records remain OPEN across
+  416 root-cause tasks. Waivers: 371 PENDING, 0 APPROVED, 0 rejected, 0 active
+  exclusions. Gate remains `RAW_100_OPEN`.
+- **Assertions/Formal: OPEN.** Legal-only URG: 13 successes, zero failures, two
+  uncovered and two without attempts. Both no-attempt properties are the
+  centered interpolator `q1_tail` assertion at line 310. Expected-negative
+  URG separately records three checker-confirmed RTL assertion failures.
+  Focused AXI-Lite cfg Formal passes 4/4 assertions with zero assumptions and
+  black boxes; outstanding-counter assertions/target Covers remain
+  INCONCLUSIVE. Scoped `q1_tail` and DPD Identity evidence does not close Raw
+  bins or prove the full chain. No INCONCLUSIVE result is waived.
+- **Outside Linux / NOT_RUN:** real XPM and GT Wizard simulation, Vivado routed
+  timing/PPA/power, physical RF and QAM256 BER.
 
-Round 2 scenario report and source/tool/run hashes:
-`docs/verification/thermo5-tx-open-closure-round2-20261105.md` and
-`docs/verification/data/thermo5-tx-open-closure-round2-20261105.json`.
-The Round 2 scenario result remains separate from this Round 10 coverage
-merge. Next Linux work is to reconcile the VDB/test count, close reachable
-code bins, resolve/decompose the counter and DPD Identity proof roots, and
-obtain independent review for any official waiver approval.
+Round 11 report and machine-readable source, VDB, coverage, Formal, assertion,
+waiver, and log-hash evidence:
+`docs/verification/thermo5-tx-final-verification-round11-20261106.md` and
+`docs/verification/data/thermo5-r11/thermo5-tx-final-verification-round11-20261106.json`.
+Raw logs, VDBs, and full URG trees remain under ignored `runs/`.
+
+Next: publish the Round 11 Draft PR stacked on PR #40; continue direct SV
+scoreboard mutation checks, reachable code-bin closure, counter guard Formal,
+full-chain DPD Identity Formal, and independent review of any exact waiver
+candidate. Do not call this a final Linux, FPGA, or physical signoff.
 
 ## Previous execution snapshot: TX final integration and staged Oracle (2026-11-04)
 
