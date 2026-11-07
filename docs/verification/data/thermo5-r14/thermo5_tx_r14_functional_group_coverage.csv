@@ -1,0 +1,17 @@
+group,all_232_covered,all_232_expected,legal_230_covered,legal_230_expected,negative_only_covered,negative_only_expected,all_232_score_percent,legal_230_score_percent,report_page
+thermo5_sku_uvm_pkg::thermo5_axil_monitor::read_cg,11,11,11,11,0,11,100.0,100.0,grp6.html
+thermo5_sku_uvm_pkg::thermo5_axil_monitor::reset_cg,2,2,2,2,2,2,100.0,100.0,grp9.html
+thermo5_sku_uvm_pkg::thermo5_axil_monitor::write_cg,18,18,18,18,5,18,100.0,100.0,grp8.html
+thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::commit_boundary_stall_cg,6,6,6,6,0,0,100.0,100.0,grp10.html
+thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::random_cfg_cg,72,72,72,72,0,0,100.0,100.0,grp14.html
+thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::status_commit_stop_cg,4,4,4,4,0,0,100.0,100.0,grp12.html
+thermo5_sku_uvm_pkg::thermo5_sku_axil_reset_pending_commit_test::reset_pending_cg,9,9,9,9,0,0,100.0,100.0,grp3.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg,8,8,7,8,6,8,100.0,87.5,grp15.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg,34,34,34,34,12,34,100.0,100.0,grp2.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg,8,8,8,8,5,8,100.0,100.0,grp4.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::run_prefill_gap_cg,4,4,4,4,0,4,100.0,100.0,grp13.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg,20,20,19,20,17,20,100.0,95.0,grp11.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_gap_pa_fifo_cg,4,4,4,4,0,4,100.0,100.0,grp5.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg,6,6,6,6,0,6,100.0,100.0,grp0.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_tlast_drain_cg,4,4,4,4,0,4,100.0,100.0,grp1.html
+thermo5_sku_uvm_pkg::thermo5_sku_coverage::transaction_event_cg,10,10,10,10,8,10,100.0,100.0,grp7.html
