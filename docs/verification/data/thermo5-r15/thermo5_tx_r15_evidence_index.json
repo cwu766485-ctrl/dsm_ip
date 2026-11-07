@@ -1,0 +1,59 @@
+{
+  "active_exclusions": 0,
+  "active_tap_candidate_count": 120,
+  "approved_waivers": 0,
+  "campaign_sha256": "c02af45f49eb9d68fd376a32b7a6556079d46d85967e42c4d0eb0615e9caa49e",
+  "compact_vdb_manifest_sha256": "eb5b3cf3849462c42ac70599e9e55153037c81c5aebd1a93faf49c6c7c20697c",
+  "compile_fingerprint": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "exact_hit_delta_sha256": "dce1de2e22561fdb8a380307639816344c46284617a89e3ebd40586dee83837e",
+  "exact_remaining_ledger_sha256": "130fcbde6a2646c2f6172c5da13bd06b3cac412e97ece9df41d78bdb9e8cd048",
+  "focused_test_matrix_sha256": "f893cafce8e896cdebd25eed8eb4132cfcf9ff1bab598c7a7e9d9157335e7e3e",
+  "formal_counter_result": "SEE_COUNTER_UNBOUNDED_RUN",
+  "formal_matrix_sha256": "de1dfb00a899e8a5373b925db092a709362c189cf583f15bbc33d12fbeb07b86",
+  "new_exact_raw_toggle_hits": 784,
+  "pair1_candidate_count": 8192,
+  "pair1_candidate_ledger_sha256": "7c4ed3a1be90c3ab3f2c2a41830aa8655871a742864fae43ffeeca197a1fe5c9",
+  "product_configuration_fingerprint": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "product_rtl_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "product_source_sha": "6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5",
+  "raw_adjusted_vdb_manifest_sha256": "548b143f1d1c45355a8810c65027da22ccdf9aa5eefe3f17aa756d77366d0bb4",
+  "raw_coverage": {
+    "branch": {
+      "covered": 524,
+      "missing": 113,
+      "percent": 82.2606,
+      "total": 637
+    },
+    "condition": {
+      "covered": 657,
+      "missing": 192,
+      "percent": 77.3852,
+      "total": 849
+    },
+    "fsm_state": {
+      "covered": 13,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 13
+    },
+    "fsm_transition": {
+      "covered": 22,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 22
+    },
+    "line": {
+      "covered": 3338,
+      "missing": 458,
+      "percent": 87.9347,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 92072,
+      "missing": 12408,
+      "percent": 88.124,
+      "total": 104480
+    }
+  },
+  "remaining_raw_code_bin_records": 13171
+}

@@ -1,0 +1,86 @@
+{
+  "checker_failures": 0,
+  "pattern_count": 8,
+  "patterns": [
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "214eb1001bc4c9d79e844858f7ab60458a5f879714b11358207e008ff78e4386",
+      "pattern": "zero",
+      "result": "PASS",
+      "seed": 610720,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "c986786dc5cf8e2d4775c0a7964b5854d0f57fb386f122016bf87440c77d97b1"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "d6bec77eb733b242c2caa70bc828f8180784691dff5dd97066f0d80eefb4464b",
+      "pattern": "positive_fullscale",
+      "result": "PASS",
+      "seed": 610721,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "78389bbd2ba4d22a9fab2a345e73acbf5b5f1b575034b13ee89a00d47288ba8a"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "ec05a5294273dd91a8d6c6129fcba24c2a7f125fe55150369a3a78bddfb5b600",
+      "pattern": "negative_fullscale",
+      "result": "PASS",
+      "seed": 610722,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "bae8cc9ec62fb9b197f2790abcfe8056863a997b0ca87097635f6d0491cce1c5"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "21310ca792d5d5014d8040983daa0a23631d989faaa3a6d3846b8f0ba1fbf214",
+      "pattern": "alternating",
+      "result": "PASS",
+      "seed": 610723,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "8bb90e4b8e05aaacb380ded5b9a123b364bcf3943780737e978d6990af34967c"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "ac01132e30816f300dd95dc233b3eebd96f44a3cc3087e04f50d7d62b5e1f44f",
+      "pattern": "impulse",
+      "result": "PASS",
+      "seed": 610724,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "683ea85e1f0c0ab4198ecf8be5ea6d9392ad123cf7f278a33957c9ceb45ce100"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "3ff6affbe35719b4390080f4075e5730c8c8f18ae4e8947714cff80f404c9e49",
+      "pattern": "ramp",
+      "result": "PASS",
+      "seed": 610725,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "ccaf800c9255766f236462114e03051951f4e6ca71e2bc819c24137820ccbae1"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "4a587f734f84fd84c3a2a56f6954aafab331e57a71590416eb3d06f7ebef66fe",
+      "pattern": "prbs",
+      "result": "PASS",
+      "seed": 610726,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "7a1feb0917e17792ca6ce65b8486eae03760de5ed4dd57145ea25ca7b8a740d4"
+    },
+    {
+      "checker": "UVM four-plane bit-true scoreboard; Python vector oracle",
+      "log_sha256": "3cc47a76a61129003245ee9e40226ab511f600dd4492fdc06b77659007207720",
+      "pattern": "quantizer_tie",
+      "result": "PASS",
+      "seed": 610727,
+      "vdb_file_count": 13,
+      "vdb_tree_sha256": "569d8bb00bd6f17b58ba3ceb0c5cb2ef871f99d28987d3b3a3fcdd6f06e906b9"
+    }
+  ],
+  "raw_line_condition_branch_delta": {
+    "branch": 0,
+    "condition": 0,
+    "line": 0
+  },
+  "raw_toggle_delta": 784,
+  "raw_toggle_hit_bin_count": 784,
+  "source_revision": "6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5"
+}

@@ -1,6 +1,18 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Round 14 targeted coverage and Linux signoff (2026-11-07)
+## Current execution state: Thermo5 TX Round 15 coverage-directed signoff closure (2026-11-07)
+
+Round 15 review branch `codex/thermo5-round15-coverage-closure` starts from the merged PR #44 product-source commit `6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5`. Product configuration remains Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 / 20-bit, DPD_MAX_TAPS=1 Identity reset image, AXI-Lite, Generic FIFO. Product RTL aggregate SHA-256 is `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`; the 95-source compile fingerprint is `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`.
+
+Fresh Round 15 Raw and zero-exclusion Adjusted URG use the same 1-design/240-test VDB snapshot, manifest SHA-256 `548b143f1d1c45355a8810c65027da22ccdf9aa5eefe3f17aa756d77366d0bb4`. Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480; FSM states 13/13 and transitions 22/22. Eight legal bit-true data patterns added 784 exact Toggle hits; 13,171 code bins remain open. No waiver is approved and no exclusion is active, so Raw equals official Adjusted. Detailed report and machine evidence are in `docs/verification/thermo5-tx-round15-coverage-directed-signoff-20261107.md` and `docs/verification/data/thermo5-r15/`.
+
+Round 14 Generic/AXI-Lite regressions, 110 system-random cases, 60 DPD/Gain/Profile cases, 24+24 randomized Reset/COMMIT cases, Python reference 64/64, hardware utilities 47/47, scoreboard mutations 6/6, and functional 218/218 are carried forward on unchanged product RTL; they were not all rerun in Round 15. Round 15's eight data tests, focused AXI register test, and corrected outstanding-boundary test passed. A first exploratory 64-beat outstanding test failed TLAST contract and was excluded from the formal VDB set.
+
+Current Formal: Pair-1 DPD leaf proof 64/64 properties PASS with nonempty activity Covers, but the 8,192-bin exact waiver package awaits independent review; Active-Tap proof is INCONCLUSIVE. Counter carry lemma is proven but gives no product runtime bound. AXI outstanding guard remains INCONCLUSIVE. EF2 config, frame-tail and scoped CDC properties pass, but candidate mapping/reviewer status remains open where noted. Full-chain DPD Identity remains INCONCLUSIVE (Round 14 carry-forward); legal product `q1_tail` assertions still have no legal attempts; end-to-end COMMIT lifecycle is open.
+
+**Decision: Linux DV signoff OPEN (`RAW_100_OPEN`).** Next: independently review exact waiver packages and mappings; target the 113 Branch/192 Condition bins with tests that produce measured Raw hits; then continue Line/Toggle closure and required Formal/Assertion work. Do not approve candidates automatically or apply exclusions before independent review. FPGA/XPM/GT/Vivado/physical QAM256 remain not run.
+
+## Previous execution state: Thermo5 TX Round 14 targeted coverage and Linux signoff (2026-11-07)
 
 PR #42 and PR #43 are integrated into `thermo5` as `42960c12cc381a7c58dddc501d4a851bbead13ec` and `253268f38783c37b3bbb19479654b236fff3f732`. Round 14 was run on tested product source `f22dad56f7cd56e94158cb86cdad04e3d11e489d` in `/tmp/dsm_ip_thermo5_round14`; PR #44 (`codex/thermo5-round14-coverage-closure`) is the open draft review branch. The current product compile fingerprint is `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`; RTL aggregate SHA-256 is `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`. No RTL, frozen algorithm, product parameter, VDB input set, or coverage denominator changed.
 

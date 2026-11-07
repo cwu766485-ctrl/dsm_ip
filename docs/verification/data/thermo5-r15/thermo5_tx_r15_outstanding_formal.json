@@ -1,0 +1,73 @@
+{
+  "assertions": {
+    "a_no_counter_saturation_guard": "inconclusive",
+    "a_no_counter_underflow_guard": "inconclusive",
+    "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+    "a_outstanding_within_product_capacity": "inconclusive",
+    "a_pa_valid_has_outstanding_word": "inconclusive"
+  },
+  "assumptions": 1,
+  "console_sha256": "dec292c40daf46a2ba237443dac17add00c4c2f443570c4f1407913c6c0cd64e",
+  "covers": {
+    "c_arbitrary_source_bubble": "covered",
+    "c_core_accept": "covered",
+    "c_counter_saturation_guard": "inconclusive",
+    "c_counter_underflow_guard": "inconclusive",
+    "c_output_accept": "covered",
+    "c_source_accept": "covered"
+  },
+  "decision": "INCONCLUSIVE; guard Covers also inconclusive; no bin is waived.",
+  "duration_seconds": 326.01,
+  "errors": [],
+  "expectation_mismatches": [
+    "a_outstanding_not_greater_than_pipeline_slots: expected proven, got inconclusive",
+    "a_outstanding_within_product_capacity: expected proven, got inconclusive",
+    "a_pa_valid_has_outstanding_word: expected proven, got inconclusive",
+    "a_no_counter_saturation_guard: expected proven, got inconclusive",
+    "a_no_counter_underflow_guard: expected proven, got inconclusive",
+    "c_counter_saturation_guard: expected a resolved reachability result, got inconclusive",
+    "c_counter_underflow_guard: expected a resolved reachability result, got inconclusive"
+  ],
+  "full_local_manifest": "runs/thermo5_round15_6b0d7c4/formal/outstanding/formal_manifest.json",
+  "maximum_non_vacuous_goal_count": 4,
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset": "Identity",
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "state_bits": 20,
+    "step": 5120
+  },
+  "properties_sha256": "b7fa7f7ac48784ad6b50e73c7f208b9dc82b7e01902486491a1dbace108abcf0",
+  "property_scope": {
+    "clock_period_units": {
+      "axil_clk": 35,
+      "core_clk": 16,
+      "source_clk": 28
+    },
+    "environment_assumptions": 1,
+    "maximum_pa_stall": null,
+    "maximum_source_gap": null,
+    "output_backpressure": "arbitrary per-plane PA ready",
+    "product_configuration": {
+      "dpd": "identity",
+      "dpd_max_taps": 1,
+      "fifo": "Generic",
+      "interpolation": "Centered-Cubic x2+x2",
+      "step": 5120,
+      "tidsm_order": 2
+    },
+    "source_driver": "legal 32-beat AXIS packet; arbitrary source bubbles; valid held while stalled",
+    "target_bins": [
+      "TXB-e99262dd92665c3b9ea8",
+      "TXB-c16debdf7d9cbab220ac"
+    ]
+  },
+  "schema_version": 1,
+  "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+  "source_head": "6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5",
+  "status": "INCONCLUSIVE",
+  "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+}
