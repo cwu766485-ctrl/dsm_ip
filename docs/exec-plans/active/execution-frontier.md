@@ -1,5 +1,50 @@
 # Execution frontier
 
+## Current execution state: Thermo5 TX Round 14 — integration and baseline in progress (2026-11-07)
+
+The requested order is PR #42, then PR #43, followed by a single-source
+regression and refreshed Raw URG baseline. Neither PR has been merged yet.
+
+- PR #42 (`codex/thermo5-r12-waiver-whatif`) is Draft/Open against `thermo5`
+  at base `73577475230a9c4e51273ac7071437f0a7373d48`; head is
+  `644458deaf7481673c80177f1621efbff9252419`. Its 54-file diff contains no
+  product RTL. It adds verification tests/checkers and Round 12 evidence. GitHub
+  reports no CI statuses and no submitted reviews.
+- PR #43 (`codex/thermo5-round13-closure`) is Draft/Open stacked on PR #42;
+  head is `89d81f39dd600a47f2be64f255086ea481e22d0b`. Its 13-file diff adds
+  the Round 13 audit, report, and manifest. It has no CI statuses or submitted
+  reviews. The branch is mergeable against its current base.
+- The Round 13 pre-merge product source remains the same compile source
+  `a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0`, fingerprint
+  `9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a`, and
+  Centered-Cubic x2+x2 / EF2 ORDER=2, STEP=5120, 20-bit / one-tap Identity DPD /
+  AXI-Lite / Generic FIFO configuration. All 97 source inputs and 3,040 files
+  across one Design plus 232 Test VDBs were previously hash-verified.
+- Pre-merge checks on this checkout: Python hardware/coverage unit suite 47/47
+  PASS; direct SystemVerilog Unified Scoreboard mutation test 6/6 injected
+  faults detected with zero unexpected UVM errors/fatals. The Round 13 audit
+  generator was exercised end-to-end against the same source/VDB manifests and
+  now reports the later successful VCS/URG evidence while retaining the first
+  failed Formal attempt as a separate historical record.
+- A first VCS invocation explicitly set `VCS_ARCH_OVERRIDE=linux` and failed
+  before compile because that architecture directory does not exist. The
+  documented environment without this override passed `vcs -ID`; the mutation
+  regression then compiled and passed. The failed invocation is not a test
+  failure or design result.
+- Current Round 13 official coverage is carry-forward until Round 14 regenerates
+  it: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91288/104480,
+  FSM states 13/13 and transitions 22/22. Raw equals Adjusted; approved waivers
+  and exclusions are both zero. This is not 100% code coverage or signoff.
+
+**Next:** finish the final PR diff/evidence review, mark PR #42 ready and merge
+it under the explicit Round 14 integration request; retarget PR #43 to `thermo5`,
+review its final delta, and merge it. Then freeze the merged source/config/tool
+manifest, run the required product regressions, regenerate Raw URG using only
+matching VDBs, and record exact per-bin deltas. Keep all waiver approvals
+pending independent review; no Raw or Adjusted denominator changes are allowed.
+
+## Previous execution state: Thermo5 TX Linux DV Final Signoff Round 13 (2026-11-07)
+
 ## Current execution state: Thermo5 TX Linux DV Final Signoff Round 13 (2026-11-07)
 
 Working checkout: branch `codex/thermo5-round13-closure`, HEAD

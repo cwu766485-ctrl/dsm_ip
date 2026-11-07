@@ -27,6 +27,7 @@ WHATIF = ROOT / "docs/verification/data/thermo5-r12-whatif-20261106"
 ROUND12_REPORT = ROOT / "docs/verification/thermo5-tx-linux-final-closure-round12-20261106.md"
 WHATIF_REPORT = ROOT / "docs/verification/thermo5-tx-round12-waiver-what-if-20261106.md"
 FORMAL_ATTEMPT = ROOT / "runs/thermo5_r13_axil_cfg_reproof/formal_manifest.json"
+FINAL_SIGNOFF = ROOT / "docs/verification/data/thermo5-r13/thermo5_tx_r13_final_coverage_manifest.json"
 
 
 def sha256(path: Path) -> str:
@@ -103,6 +104,45 @@ def verify_vdb_manifest(manifest: dict[str, Any]) -> dict[str, int]:
     }
 
 
+def summarize_final_tool_status(signoff: dict[str, Any]) -> dict[str, str]:
+    """Summarize the later Round 13 evidence without reviving the initial failure."""
+    environment = signoff.get("environment", {})
+    regression = signoff.get("regression", {})
+    coverage = signoff.get("raw_adjusted", {})
+    formal_reproofs = signoff.get("current_source_formal_reproofs", [])
+    formal_open = signoff.get("formal_open", {})
+
+    vcs_pass = bool(environment.get("vcs")) and all(
+        regression.get(key) == "PASS"
+        for key in ("generic_centered_ef2", "axil_product")
+    )
+    urg_pass = (
+        bool(environment.get("urg"))
+        and coverage.get("same_vdb_manifest") is True
+        and bool(coverage.get("raw_urg_log_sha256"))
+        and bool(coverage.get("adjusted_urg_log_sha256"))
+    )
+    proven_reproofs = sum(
+        "PROVEN" in str(item.get("result", "")).upper()
+        for item in formal_reproofs
+    )
+    if proven_reproofs and formal_open:
+        formal_status = (
+            f"PARTIAL_{proven_reproofs}_CURRENT_SOURCE_REPROOFS;"
+            f" {len(formal_open)}_REQUIRED_OBLIGATIONS_OPEN"
+        )
+    elif proven_reproofs:
+        formal_status = f"PARTIAL_{proven_reproofs}_CURRENT_SOURCE_REPROOFS"
+    else:
+        formal_status = "OPEN_NO_CURRENT_SOURCE_REPROOF_RECORDED"
+
+    return {
+        "vcs_r13": "PASS_TARGETED_PRODUCT_REGRESSIONS" if vcs_pass else "OPEN_OR_INCOMPLETE",
+        "urg_r13": "PASS_SAME_MANIFEST_RAW_AND_ADJUSTED" if urg_pass else "OPEN_OR_INCOMPLETE",
+        "formal_r13": formal_status,
+    }
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
     with path.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields, extrasaction="ignore", lineterminator="\n")
@@ -147,6 +187,7 @@ def main() -> int:
     source_manifest = read_json(source_manifest_path)
     compile_manifest = read_json(compile_manifest_path)
     vdb_manifest = read_json(vdb_manifest_path)
+    final_signoff = read_json(FINAL_SIGNOFF) if FINAL_SIGNOFF.is_file() else None
     candidate_rows = read_csv(candidate_path)
     metrics_rows = read_csv(metrics_path)
     waiver_rows = read_csv(waivers_path)
@@ -164,6 +205,10 @@ def main() -> int:
             f"Source hashes mismatch: source={source_mismatches[:3]}, "
             f"compile={compile_mismatches[:3]}"
         )
+    if final_signoff and final_signoff.get("product_source_compile_fingerprint") != (
+        "9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a"
+    ):
+        raise ValueError("Final Round 13 signoff manifest has a different product compile fingerprint")
     vdb_verification = verify_vdb_manifest(vdb_manifest)
 
     candidate_classes = Counter(row["classification"] for row in candidate_rows)
@@ -341,6 +386,8 @@ def main() -> int:
     }
     if formal_attempt:
         pair_inputs["round13_formal_attempt_manifest"] = FORMAL_ATTEMPT
+    if final_signoff:
+        pair_inputs["round13_final_signoff_manifest"] = FINAL_SIGNOFF
 
     baseline = {
         "schema_version": 1,
@@ -387,15 +434,17 @@ def main() -> int:
             "historical_urg": "V-2023.12-SP1 (Round 12 recorded)",
             "vc_formal_installed": "V-2023.12-SP2_Full64",
             "host_kernel": platform.release(),
-            "vcs_r13": "BLOCKED_UNSUPPORTED_WSL2_KERNEL",
-            "urg_r13": "NOT_RUN_VCS_HOST_INCOMPATIBILITY",
-            "formal_r13": (
-                "FAILED_TO_START_VCS_READER" if formal_attempt else "NOT_RUN"
+            **summarize_final_tool_status(final_signoff or {}),
+            "status_evidence_manifest": (
+                str(FINAL_SIGNOFF.relative_to(ROOT)) if final_signoff else None
             ),
-            "formal_attempt_exit_code": formal_attempt.get("exit_code") if formal_attempt else None,
-            "formal_attempt_errors": formal_attempt.get("errors", []) if formal_attempt else [],
-            "formal_attempt_manifest": str(FORMAL_ATTEMPT.relative_to(ROOT)) if formal_attempt else None,
-            "formal_attempt_manifest_sha256": formal_attempt_sha,
+            "status_evidence_manifest_sha256": (
+                sha256(FINAL_SIGNOFF) if final_signoff else None
+            ),
+            "initial_formal_attempt_exit_code": formal_attempt.get("exit_code") if formal_attempt else None,
+            "initial_formal_attempt_errors": formal_attempt.get("errors", []) if formal_attempt else [],
+            "initial_formal_attempt_manifest": str(FORMAL_ATTEMPT.relative_to(ROOT)) if formal_attempt else None,
+            "initial_formal_attempt_manifest_sha256": formal_attempt_sha,
         },
         "coverage": {
             "baseline_round": 12,

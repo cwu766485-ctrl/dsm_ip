@@ -6345,3 +6345,29 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added docs/verification/thermo5-tx-linux-final-signoff-round13-20261107.md, the complete compact VDB/source evidence index docs/verification/data/thermo5-r13/thermo5_tx_r13_final_coverage_manifest.json, and the 369-row current waiver review docs/verification/data/thermo5-r13/thermo5_tx_r13_final_waiver_reproof_review.csv. Added a superseding-status note to the initial Round 13 report and refreshed this execution frontier.
 - Checks: current-source hash validation 97/97; VDB file validation 3040/3040; Raw/Adjusted report generation PASS; Generic and AXI-Lite VCS regressions PASS; Python tests 64/64 and 45/45; direct SV mutation 6/6; four focused Formal candidate proofs PASS; git diff --check and artifact schema/count checks are recorded in the final report.
 - Final status remains OPEN (RAW_100_OPEN): no approved Waiver, 13,955 Raw uncovered bins, two legal q1_tail assertion attempts missing, counter/DPD Formal inconclusive. No RTL or frozen algorithm changed. XPM, GT Wizard, Vivado, FPGA, physical RF, and QAM256 signoff remain unrun. No commit, push, or merge was performed.
+## 2026-11-07 — Thermo5 Round 14 integration preflight
+
+- Audited the dependency chain for PR #42 and PR #43. PR #42 contains no product
+  RTL changes; PR #43 is stacked on PR #42. Both are still Draft/Open, and
+  GitHub currently reports no CI statuses or submitted reviews. Neither was
+  merged during this preflight.
+- Corrected `tools/hw/thermo5_tx_round13_audit.py`: regenerating the Round 13
+  manifest now takes current VCS/URG/Formal status from the final signoff
+  manifest. The initial VC Formal frontend failure remains identified as an
+  initial attempt and is no longer misreported as the final tool status.
+- Added unit tests covering superseding tool evidence and missing-evidence
+  fail-closed behavior.
+- Checks: Python hardware/coverage unittest suite 47/47 PASS; Python bytecode
+  compile PASS; Round 13 audit generator end-to-end PASS with all 97 source
+  inputs and 3,040 VDB files verified; the generated tool summary reports
+  targeted VCS regression PASS, same-manifest Raw/Adjusted URG PASS, and four
+  focused Formal reproofs with three required obligations still open. Temporary
+  validation outputs were removed individually after confirming the exact file
+  inventory.
+- VCS V-2023.12-SP1 `vcs -ID` PASS. The direct SV Unified Scoreboard mutation
+  regression PASS (6/6 fault classes detected, seven expected checker reports,
+  zero unexpected UVM_ERROR/UVM_FATAL). A first invocation with an explicit
+  invalid `VCS_ARCH_OVERRIDE=linux` stopped before compile; it is excluded from
+  regression results.
+- Product RTL, product parameters, official waivers, and URG exclusions remain
+  unchanged. Round 14 full product regression and fresh Raw URG are not yet run.
