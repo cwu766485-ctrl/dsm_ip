@@ -296,8 +296,8 @@ thermo5-tx-agent-vseq-smoke:
 	  UVM_SEED=620301 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
 
 # Direct negative injection into the SV Unified Scoreboard. This is isolated
-# from DUT functional coverage and catches only the six deliberately expected
-# expected checker reports produced by the six mutation cases.
+# from DUT functional coverage and checks the seven expected checker reports
+# produced by the six mutation cases (the early-apply mutation raises two).
 thermo5-unified-scoreboard-mutation-vcs:
 	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_COVERAGE=0 \
 	  THERMO5_USE_AXIL=0 THERMO5_DPD_MAX_TAPS=1 \

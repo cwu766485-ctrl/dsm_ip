@@ -1,0 +1,278 @@
+{
+  "coverage": {
+    "active_exclusions": 0,
+    "approved_waivers": 0,
+    "baseline_round": 12,
+    "exact_open_bins": 13594,
+    "official_adjusted_is_raw": true,
+    "open_bins_by_metric": {
+      "branch": 12,
+      "cond": 84,
+      "line": 306,
+      "toggle": 13192
+    },
+    "raw_and_adjusted_round12": {
+      "branch": {
+        "raw_covered": 524,
+        "raw_missing": 113,
+        "raw_percent": 82.2606,
+        "raw_total": 637,
+        "whatif_covered": 524,
+        "whatif_exact_bins_excluded": 101,
+        "whatif_missing": 12,
+        "whatif_percent": 97.7612,
+        "whatif_total": 536
+      },
+      "cond": {
+        "raw_covered": 657,
+        "raw_missing": 192,
+        "raw_percent": 77.3852,
+        "raw_total": 849,
+        "whatif_covered": 657,
+        "whatif_exact_bins_excluded": 108,
+        "whatif_missing": 84,
+        "whatif_percent": 88.664,
+        "whatif_total": 741
+      },
+      "fsm_states": {
+        "raw_covered": 13,
+        "raw_missing": 0,
+        "raw_percent": 100.0,
+        "raw_total": 13,
+        "whatif_covered": 13,
+        "whatif_exact_bins_excluded": 0,
+        "whatif_missing": 0,
+        "whatif_percent": 100.0,
+        "whatif_total": 13
+      },
+      "fsm_transitions": {
+        "raw_covered": 22,
+        "raw_missing": 0,
+        "raw_percent": 100.0,
+        "raw_total": 22,
+        "whatif_covered": 22,
+        "whatif_exact_bins_excluded": 0,
+        "whatif_missing": 0,
+        "whatif_percent": 100.0,
+        "whatif_total": 22
+      },
+      "line": {
+        "raw_covered": 3338,
+        "raw_missing": 458,
+        "raw_percent": 87.9347,
+        "raw_total": 3796,
+        "whatif_covered": 3338,
+        "whatif_exact_bins_excluded": 152,
+        "whatif_missing": 306,
+        "whatif_percent": 91.6026,
+        "whatif_total": 3644
+      },
+      "toggle": {
+        "raw_covered": 91288,
+        "raw_missing": 13192,
+        "raw_percent": 87.3737,
+        "raw_total": 104480,
+        "whatif_covered": 91288,
+        "whatif_exact_bins_excluded": 0,
+        "whatif_missing": 13192,
+        "whatif_percent": 87.3737,
+        "whatif_total": 104480
+      }
+    },
+    "round13_adjusted_recomputed": false,
+    "round13_raw_recomputed": false,
+    "whatif_is_not_signoff": true
+  },
+  "created_utc": "2026-11-06T16:01:09+00:00",
+  "generated_artifacts": {
+    "thermo5_tx_r13_active_taps_exact_bins.csv.gz": {
+      "path": "docs/verification/data/thermo5-r13/thermo5_tx_r13_active_taps_exact_bins.csv.gz",
+      "sha256": "afb1c2dbf28aa406bd417d1928a6363eda4dfa983c661468552d28a2f9829adb",
+      "size_bytes": 9865
+    },
+    "thermo5_tx_r13_exact_bin_disposition.csv.gz": {
+      "path": "docs/verification/data/thermo5-r13/thermo5_tx_r13_exact_bin_disposition.csv.gz",
+      "sha256": "845f04330c71f8ee9466eac65b5d4993ecef4a57ec761107ecc90d2ecc9526de",
+      "size_bytes": 856308
+    },
+    "thermo5_tx_r13_pair1_exact_bins.csv.gz": {
+      "path": "docs/verification/data/thermo5-r13/thermo5_tx_r13_pair1_exact_bins.csv.gz",
+      "sha256": "5c90a6dbb6dcca6004c6d953a4360a29061196bf0f094511c0d227be3c35d123",
+      "size_bytes": 505285
+    },
+    "thermo5_tx_r13_waiver_candidate_review.csv": {
+      "path": "docs/verification/data/thermo5-r13/thermo5_tx_r13_waiver_candidate_review.csv",
+      "sha256": "985abec2e6318a0779e2f225412763c267f53d1cf3bd6d510a9c86c7f8c76b78",
+      "size_bytes": 404871
+    }
+  },
+  "github": {
+    "pr_base": "thermo5",
+    "pr_head_sha": "644458deaf7481673c80177f1621efbff9252419",
+    "pr_review_count": 0,
+    "pr_state": "OPEN_DRAFT_NOT_MERGED",
+    "pr_status_checks": [],
+    "pr_url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/42",
+    "repository": "cwu766485-ctrl/dsm_ip",
+    "starting_pr": 42
+  },
+  "input_artifacts": {
+    "candidate_audit": {
+      "path": "docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_candidate_audit.csv",
+      "sha256": "a5d6e30958cd54f0d13c8960810436a268e64a152960a2cdc7035c449d33dce8"
+    },
+    "compile_manifest": {
+      "path": "docs/verification/data/thermo5-r12/thermo5-tx-product-compile-manifest.json",
+      "sha256": "048118a1289f2a9c25f6757dfe114fdcedb20fa8858615dbeb479a05ff7f4675"
+    },
+    "exact_whatif_open_bins": {
+      "path": "docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_remaining_exact_uncovered_bins.csv.gz",
+      "sha256": "1d6a20177f37808eb5ede4e1056265cf2747064ec31775378d8dc2636a7f0112"
+    },
+    "official_waivers": {
+      "path": "docs/verification/thermo5_tx_waivers.csv",
+      "sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830"
+    },
+    "raw_vs_whatif_metrics": {
+      "path": "docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_raw_vs_whatif_metrics.csv",
+      "sha256": "b305cb732cb74d66832ed49a6941694b69e8ca5f77f1c2a8f63b5df426a798d5"
+    },
+    "resolved_raw_hits": {
+      "path": "docs/verification/data/thermo5-r12/thermo5-tx-waivers-resolved-by-raw-hit.csv",
+      "sha256": "b66ea8360077e362632d1083fbdfeb193a37dbef93d88ea3ac21dc26054fe6d5"
+    },
+    "round12_signoff_report": {
+      "path": "docs/verification/thermo5-tx-linux-final-closure-round12-20261106.md",
+      "sha256": "f34a7c0c67b196042ef37474bcad787c3eeb9c34a00779b41c4846a9689e770a"
+    },
+    "round12_whatif_report": {
+      "path": "docs/verification/thermo5-tx-round12-waiver-what-if-20261106.md",
+      "sha256": "a7e85e6be4098c3b6b633d8b0370c8d675d149fdaa6b4040397c15d74a7acbc0"
+    },
+    "round13_formal_attempt_manifest": {
+      "path": "runs/thermo5_r13_axil_cfg_reproof/formal_manifest.json",
+      "sha256": "8183b69dc10393c4821ee7a49f53dde3a186de2fcb5c54dd96d15f06e25f9b25"
+    },
+    "source_manifest": {
+      "path": "docs/verification/data/thermo5-r12/thermo5-tx-product-source-manifest.json",
+      "sha256": "8d69f1bd189642b3e2bdc34fa0bb3559e5108cee21fc8f8a14e9d89778aac5a7"
+    },
+    "vdb_manifest": {
+      "path": "docs/verification/data/thermo5-r12/thermo5-tx-vdb-manifest.json",
+      "sha256": "5f0a8b256e1c656758f6eca7f28414dac91eedce2a0d2f8474242f5fae04a0d9"
+    }
+  },
+  "integrity": {
+    "compile_manifest_hash_mismatches": 0,
+    "compile_manifest_inputs": 97,
+    "round12_vdb_set_reused_without_modification": true,
+    "round13_urg_report_created": false,
+    "round13_vcs_vdb_created": false,
+    "source_manifest_hash_mismatches": 0,
+    "source_manifest_inputs": 97,
+    "vdbs": {
+      "file_count": 3040,
+      "mismatched_file_count": 0,
+      "missing_file_count": 0,
+      "test_vdb_count": 232,
+      "vdb_count_including_design": 233,
+      "verified_bytes": 3286141
+    }
+  },
+  "product": {
+    "compile_defines": [
+      "+define+THERMO5_AXIL_CONTROL",
+      "+define+THERMO5_CENTERED_CUBIC",
+      "+define+THERMO5_TIDSM_ORDER=2",
+      "+define+THERMO5_STEP=5120",
+      "+define+THERMO5_DPD_MAX_TAPS=1"
+    ],
+    "compile_fingerprint": "9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a",
+    "compile_top": "thermo5_sku_uvm_tb",
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "product_source_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+    "state_bits": 20,
+    "step": 5120
+  },
+  "repository": {
+    "branch": "codex/thermo5-round13-closure",
+    "commit_sha": "644458deaf7481673c80177f1621efbff9252419",
+    "integrated_thermo5_base": "73577475230a9c4e51273ac7071437f0a7373d48",
+    "tree_sha": "42d415f6f81c089585c6de11637e739fcc7e78fa",
+    "worktree_dirty": true,
+    "worktree_status": [
+      "M docs/UPDATE_LOG.md",
+      " M docs/exec-plans/active/execution-frontier.md",
+      " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_candidate_audit.csv",
+      " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_github_local_waiver_diff.csv",
+      " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_raw_vs_whatif_metrics.csv",
+      " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_remaining_root_cause_summary.csv",
+      " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_toggle_root_cause_audit.csv",
+      " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_toggle_signal_groups.csv",
+      " M docs/verification/data/thermo5-r12/thermo5-tx-waivers-resolved-by-raw-hit.csv",
+      " M dv/uvm/sim/Makefile",
+      "?? docs/verification/data/thermo5-r13/",
+      "?? docs/verification/thermo5-tx-final-coverage-closure-round13-20261107.md",
+      "?? tools/hw/thermo5_tx_round13_audit.py"
+    ]
+  },
+  "round": 13,
+  "round13_disposition": {
+    "active_tap_toggle_bins": 120,
+    "fixed_config_status": "WAIVER_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
+    "fixed_config_total": 8312,
+    "formal_status": "OPEN_VCS_READER_UNSUPPORTED_ON_CURRENT_WSL2_KERNEL",
+    "other_exact_bin_status": "OPEN",
+    "pair1_toggle_bins": 8192,
+    "signoff": "OPEN_NOT_SIGNED_OFF"
+  },
+  "schema_version": 1,
+  "tools": {
+    "formal_attempt_errors": [
+      "VC Formal did not produce properties.txt and setup.txt",
+      "a_bvalid_clears_pending: expected proven, got None",
+      "a_coeff_read_default_unreachable: expected proven, got None",
+      "a_line88_tuple_unreachable: expected proven, got None",
+      "a_write_case_default_unreachable: expected proven, got None",
+      "c_coeff_read_transaction: expected covered, got None",
+      "c_coeff_read_default_arm_unreachable: expected uncoverable, got None",
+      "c_line88_tuple_unreachable: expected uncoverable, got None",
+      "c_write_case_default_unreachable: expected uncoverable, got None",
+      "zero black-box evidence missing",
+      "expected three non-vacuous AXI-Lite assertions",
+      "VC Formal exit code 112"
+    ],
+    "formal_attempt_exit_code": 112,
+    "formal_attempt_manifest": "runs/thermo5_r13_axil_cfg_reproof/formal_manifest.json",
+    "formal_attempt_manifest_sha256": "8183b69dc10393c4821ee7a49f53dde3a186de2fcb5c54dd96d15f06e25f9b25",
+    "formal_r13": "FAILED_TO_START_VCS_READER",
+    "historical_urg": "V-2023.12-SP1 (Round 12 recorded)",
+    "historical_vcs": "V-2023.12-SP1_Full64 (Round 12 recorded)",
+    "host_kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "python": "3.12.13",
+    "urg_r13": "NOT_RUN_VCS_HOST_INCOMPATIBILITY",
+    "vc_formal_installed": "V-2023.12-SP2_Full64",
+    "vcs_r13": "BLOCKED_UNSUPPORTED_WSL2_KERNEL"
+  },
+  "waivers": {
+    "active_exclusion_count": 0,
+    "candidate_classification": {
+      "ELIGIBLE": 361,
+      "NEEDS_REPROOF": 4,
+      "UNRESOLVED": 4
+    },
+    "independent_approval_count": 0,
+    "local_only_rows": [],
+    "local_round12_candidates": 369,
+    "official_only_raw_hit_rows": [
+      "W-75530ed17d5b396a4e9b",
+      "W-d7cb262894a5aae016b6"
+    ],
+    "official_rows": 371
+  }
+}

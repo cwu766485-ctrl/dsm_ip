@@ -1,3 +1,38 @@
+# 2026-11-07 00:00 SGT - Thermo5 Final Coverage Closure Round 13 audit
+
+- Audited PR #42 (`644458deaf7481673c80177f1621efbff9252419`) against the
+  integrated `thermo5` base and bound the Round 12 product source/config to
+  97/97 current input hashes and all 233 manifested VDBs. No new Round 13 VDB
+  or URG report was produced; Round 12 results are explicitly carry-forward.
+- Added a deterministic source/VDB/waiver audit utility and row-level review
+  package for 369 candidates. Reconciled the two official-only waiver IDs to
+  already-covered Raw bins. No Reviewer approval, official waiver, or Exclusion
+  was fabricated or activated.
+- Classified the 13,594 What-if-open exact bins. Enumerated 8,192 DPD pair-1
+  and 120 active-tap toggle candidates with per-bin records; they remain
+  unapproved static-configuration candidates. Grouped the other 5,282 bins by
+  root cause and added exact Branch IDs, Condition/Line/Toggle closure counts,
+  and required next actions in the Round 13 report.
+- Attempted AXI-Lite config Formal at the current product source. VC Formal's
+  VCS reader rejected the WSL2 kernel before design elaboration; no properties
+  or setup report was generated. Formal remains OPEN, not proven.
+- Changed files: Round 13 report, Round 13 audit utility/data, execution
+  frontier, this log, and a Makefile comment clarifying the seven expected
+  reports from six mutation cases. No product RTL, test behavior, product
+  parameters, official waiver CSV, official `.el`, or VDB was changed.
+  Existing seven line-ending checkout differences in Round 12 CSV evidence
+  were preserved.
+- Checks: source/compile input hashes 97/97; VDB content manifest 233/233
+  (3,040 files); waiver IDs 371/369 reconciled; exact inventory 13,594
+  reconciled; Python reference 64/64; coverage-tool tests 41/41; audit utility
+  compiled and ran. VCS/URG full regression and Round 13 coverage rerun were
+  unavailable because Synopsys VCS rejects kernel
+  `6.6.87.2-microsoft-standard-WSL2`.
+- Remaining limitations: PR #42 is Draft/Open without CI/review; all official
+  waivers remain pending, official Adjusted equals Raw, 13,955 Raw bins remain
+  open; counter/commit/full-chain DPD Formal and two `q1_tail` attempts remain
+  open; FPGA/GT/physical RF signoff not performed.
+
 # 2026-11-06 20:59 SGT - Thermo5 Round 12 waiver What-if coverage audit
 
 - Compared the current GitHub `thermo5` waiver CSV (371 rows, Git blob SHA
@@ -6299,3 +6334,40 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   elastic FIFOs and DPD metadata pipeline; audit those product connections
   before approving a waiver. Other code-coverage roots and the two outstanding
   counter guards remain OPEN/INCONCLUSIVE.
+
+## 2026-11-07 — Thermo5 TX Linux final signoff Round 13 update
+
+- Rechecked the Round 13 checkout and corrected the earlier environment conclusion: VCS V-2023.12-SP1, URG V-2023.12-SP1, and VC Formal V-2023.12-SP2 all ran successfully in Rocky 8.10 / WSL2. The existing product compile source is a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0, with product fingerprint 9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a; all 97 compile-input file hashes match the current checkout.
+- Revalidated the homogeneous coverage set of one Design VDB plus 232 Test VDBs. All 3,040 VDB file hashes match. Regenerated Raw and official Adjusted URG from this identical manifest. Branch is 524/637, Condition 657/849, Line 3338/3796, Toggle 91288/104480; FSM states 13/13 and transitions 22/22. There are 13,955 uncovered Raw code bins. Raw equals official Adjusted because 0 waivers are approved and 0 Exclusions are active.
+- Fresh current-source Generic Centered-Cubic/EF2 and AXI-Lite product regressions passed. System random 110/110, legal DPD/gain/profile 60/60, COMMIT boundary with PA stall 2/2, reset-pending-COMMIT 8/8, direct SystemVerilog scoreboard mutation 6/6, Python reference model 64/64, and hardware/coverage utilities 45/45 passed. Separate current-build VDBs were not mixed into the official same-manifest coverage report.
+- Reproved four waiver candidates with current-source focused VC Formal harnesses. The assertions are proven with positive legal activity witnesses as documented, but exact URG mapping and independent approval remain pending. The other 361 candidates remain pending independent review; four centered-interpolator candidates remain unresolved. No waiver approval or Exclusion was generated.
+- Legal-only assertion URG has 13 successes, 0 failures, and two product q1_tail properties without attempts. Three expected-negative assertion failures remain isolated in the negative-only report. Outstanding-counter and full-chain DPD Identity Formal remain INCONCLUSIVE.
+- Added docs/verification/thermo5-tx-linux-final-signoff-round13-20261107.md, the complete compact VDB/source evidence index docs/verification/data/thermo5-r13/thermo5_tx_r13_final_coverage_manifest.json, and the 369-row current waiver review docs/verification/data/thermo5-r13/thermo5_tx_r13_final_waiver_reproof_review.csv. Added a superseding-status note to the initial Round 13 report and refreshed this execution frontier.
+- Checks: current-source hash validation 97/97; VDB file validation 3040/3040; Raw/Adjusted report generation PASS; Generic and AXI-Lite VCS regressions PASS; Python tests 64/64 and 45/45; direct SV mutation 6/6; four focused Formal candidate proofs PASS; git diff --check and artifact schema/count checks are recorded in the final report.
+- Final status remains OPEN (RAW_100_OPEN): no approved Waiver, 13,955 Raw uncovered bins, two legal q1_tail assertion attempts missing, counter/DPD Formal inconclusive. No RTL or frozen algorithm changed. XPM, GT Wizard, Vivado, FPGA, physical RF, and QAM256 signoff remain unrun. No commit, push, or merge was performed.
+## 2026-11-07 — Thermo5 Round 14 integration preflight
+
+- Audited the dependency chain for PR #42 and PR #43. PR #42 contains no product
+  RTL changes; PR #43 is stacked on PR #42. Both are still Draft/Open, and
+  GitHub currently reports no CI statuses or submitted reviews. Neither was
+  merged during this preflight.
+- Corrected `tools/hw/thermo5_tx_round13_audit.py`: regenerating the Round 13
+  manifest now takes current VCS/URG/Formal status from the final signoff
+  manifest. The initial VC Formal frontend failure remains identified as an
+  initial attempt and is no longer misreported as the final tool status.
+- Added unit tests covering superseding tool evidence and missing-evidence
+  fail-closed behavior.
+- Checks: Python hardware/coverage unittest suite 47/47 PASS; Python bytecode
+  compile PASS; Round 13 audit generator end-to-end PASS with all 97 source
+  inputs and 3,040 VDB files verified; the generated tool summary reports
+  targeted VCS regression PASS, same-manifest Raw/Adjusted URG PASS, and four
+  focused Formal reproofs with three required obligations still open. Temporary
+  validation outputs were removed individually after confirming the exact file
+  inventory.
+- VCS V-2023.12-SP1 `vcs -ID` PASS. The direct SV Unified Scoreboard mutation
+  regression PASS (6/6 fault classes detected, seven expected checker reports,
+  zero unexpected UVM_ERROR/UVM_FATAL). A first invocation with an explicit
+  invalid `VCS_ARCH_OVERRIDE=linux` stopped before compile; it is excluded from
+  regression results.
+- Product RTL, product parameters, official waivers, and URG exclusions remain
+  unchanged. Round 14 full product regression and fresh Raw URG are not yet run.
