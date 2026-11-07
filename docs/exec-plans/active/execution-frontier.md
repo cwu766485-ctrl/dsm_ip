@@ -1,5 +1,45 @@
 # Execution frontier
 
+## Current execution state: Thermo5 TX Final Coverage Closure Round 13 (2026-11-07)
+
+Round 13 starts from PR #42 head `644458deaf7481673c80177f1621efbff9252419`
+against integrated `thermo5` base `73577475230a9c4e51273ac7071437f0a7373d48`.
+The product RTL source SHA is `a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0`;
+compile fingerprint `9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a`.
+Product profile remains Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 /
+20-bit, DPD_MAX_TAPS=1 with Identity reset image, AXI-Lite, Generic FIFO.
+All 97 source/compile input hashes and all 233 Round 12 VDB manifests were
+verified. These VDBs are carried-forward Round 12 evidence; Round 13 created no
+new VDB or URG report.
+
+The exact What-if-open inventory contains 13,594 bins: 12 Branch, 84 Condition,
+306 Line, 13,192 Toggle. The audit classifies 8,312 Toggle bins (8,192 DPD
+pair-1 + 120 active-tap) as static-configuration waiver candidates pending
+current-source proof/review; no official waiver is approved and no Exclusion is
+active. The other 5,282 What-if-open bins remain OPEN. Official Raw/Adjusted
+remain the Round 12 values: Branch 524/637, Condition 657/849, Line 3338/3796,
+Toggle 91288/104480; FSM 13/13 states and 22/22 transitions. No Round 13 URG
+rerun occurred, so these are not Round 13 coverage results.
+
+PR #42 remains Draft/Open, with no CI statuses or reviews. Seven checkout CSV
+differences are line-ending-only (`git diff --ignore-space-at-eol` is empty)
+and remain unstaged. Current VCS rejects
+the host kernel `6.6.87.2-microsoft-standard-WSL2` as unsupported; the attempted
+VC Formal config run failed before design elaboration because its VCS reader
+failed. Formal status is NOT PROVEN / OPEN, not proof failure or pass. Python
+reference tests passed 64/64 and coverage-tool unit tests passed 41/41; those do
+not exercise the DUT. No Linux, FPGA, GT, or physical signoff is granted.
+
+Detailed report and machine evidence:
+`docs/verification/thermo5-tx-final-coverage-closure-round13-20261107.md` and
+`docs/verification/data/thermo5-r13/`. Preserve the seven CRLF/LF checkout
+mismatches in the Round 12 evidence CSVs; do not stage them as Round 13 edits.
+Next: use a supported VCS host to run a clean same-SHA VCS/URG package; re-prove
+the four stale candidates; review the four interpolation cases and 8,312 exact
+fixed-config candidates; then close reachable bins with legal targeted tests
+and independent checkers. Keep PR #42 unmerged until its verification and
+review gates pass.
+
 ## Current execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
 
 Latest integrated `thermo5` base is `73577475230a9c4e51273ac7071437f0a7373d48`;

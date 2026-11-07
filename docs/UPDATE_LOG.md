@@ -1,3 +1,38 @@
+# 2026-11-07 00:00 SGT - Thermo5 Final Coverage Closure Round 13 audit
+
+- Audited PR #42 (`644458deaf7481673c80177f1621efbff9252419`) against the
+  integrated `thermo5` base and bound the Round 12 product source/config to
+  97/97 current input hashes and all 233 manifested VDBs. No new Round 13 VDB
+  or URG report was produced; Round 12 results are explicitly carry-forward.
+- Added a deterministic source/VDB/waiver audit utility and row-level review
+  package for 369 candidates. Reconciled the two official-only waiver IDs to
+  already-covered Raw bins. No Reviewer approval, official waiver, or Exclusion
+  was fabricated or activated.
+- Classified the 13,594 What-if-open exact bins. Enumerated 8,192 DPD pair-1
+  and 120 active-tap toggle candidates with per-bin records; they remain
+  unapproved static-configuration candidates. Grouped the other 5,282 bins by
+  root cause and added exact Branch IDs, Condition/Line/Toggle closure counts,
+  and required next actions in the Round 13 report.
+- Attempted AXI-Lite config Formal at the current product source. VC Formal's
+  VCS reader rejected the WSL2 kernel before design elaboration; no properties
+  or setup report was generated. Formal remains OPEN, not proven.
+- Changed files: Round 13 report, Round 13 audit utility/data, execution
+  frontier, this log, and a Makefile comment clarifying the seven expected
+  reports from six mutation cases. No product RTL, test behavior, product
+  parameters, official waiver CSV, official `.el`, or VDB was changed.
+  Existing seven line-ending checkout differences in Round 12 CSV evidence
+  were preserved.
+- Checks: source/compile input hashes 97/97; VDB content manifest 233/233
+  (3,040 files); waiver IDs 371/369 reconciled; exact inventory 13,594
+  reconciled; Python reference 64/64; coverage-tool tests 41/41; audit utility
+  compiled and ran. VCS/URG full regression and Round 13 coverage rerun were
+  unavailable because Synopsys VCS rejects kernel
+  `6.6.87.2-microsoft-standard-WSL2`.
+- Remaining limitations: PR #42 is Draft/Open without CI/review; all official
+  waivers remain pending, official Adjusted equals Raw, 13,955 Raw bins remain
+  open; counter/commit/full-chain DPD Formal and two `q1_tail` attempts remain
+  open; FPGA/GT/physical RF signoff not performed.
+
 # 2026-11-06 20:59 SGT - Thermo5 Round 12 waiver What-if coverage audit
 
 - Compared the current GitHub `thermo5` waiver CSV (371 rows, Git blob SHA
