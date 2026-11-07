@@ -1,44 +1,58 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Final Coverage Closure Round 13 (2026-11-07)
+## Current execution state: Thermo5 TX Linux DV Final Signoff Round 13 (2026-11-07)
 
-Round 13 starts from PR #42 head `644458deaf7481673c80177f1621efbff9252419`
-against integrated `thermo5` base `73577475230a9c4e51273ac7071437f0a7373d48`.
-The product RTL source SHA is `a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0`;
-compile fingerprint `9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a`.
-Product profile remains Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 /
-20-bit, DPD_MAX_TAPS=1 with Identity reset image, AXI-Lite, Generic FIFO.
-All 97 source/compile input hashes and all 233 Round 12 VDB manifests were
-verified. These VDBs are carried-forward Round 12 evidence; Round 13 created no
-new VDB or URG report.
+Working checkout: branch `codex/thermo5-round13-closure`, HEAD
+`fd65aae8fead67b736205610e59d1f706088774a`. Product compile-source commit
+`a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0`, fingerprint
+`9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a`.
+Configuration remains Centered-Cubic x2+x2, EF2 ORDER=2 / STEP=5120 /
+20-bit, DPD_MAX_TAPS=1 / Identity reset, AXI-Lite, Generic FIFO. Current
+checkout revalidates all 97 compile-input hashes (0 mismatch). The same
+homogeneous official coverage input is 1 Design VDB + 232 Test VDBs; all 3,040
+VDB files match their manifest.
 
-The exact What-if-open inventory contains 13,594 bins: 12 Branch, 84 Condition,
-306 Line, 13,192 Toggle. The audit classifies 8,312 Toggle bins (8,192 DPD
-pair-1 + 120 active-tap) as static-configuration waiver candidates pending
-current-source proof/review; no official waiver is approved and no Exclusion is
-active. The other 5,282 What-if-open bins remain OPEN. Official Raw/Adjusted
-remain the Round 12 values: Branch 524/637, Condition 657/849, Line 3338/3796,
-Toggle 91288/104480; FSM 13/13 states and 22/22 transitions. No Round 13 URG
-rerun occurred, so these are not Round 13 coverage results.
+VCS V-2023.12-SP1_Full64, URG V-2023.12-SP1, VC Formal V-2023.12-SP2, and
+Python 3.12.13 are operational under Rocky 8.10 / WSL2. Fresh Generic
+Centered-Cubic/EF2 and AXI-Lite product regressions passed. System random
+110/110, DPD/gain/profile 60/60, COMMIT-boundary/PA-stall 2/2,
+reset-pending-COMMIT 8/8, direct SV scoreboard mutations 6/6, Python model
+64/64, and hardware utilities 45/45 passed. These fresh build VDBs are kept
+separate from official coverage; the Round 12 232-test VDB set is same-source
+carry-forward evidence, not a claim that all 232 tests were freshly rerun.
 
-PR #42 remains Draft/Open, with no CI statuses or reviews. Seven checkout CSV
-differences are line-ending-only (`git diff --ignore-space-at-eol` is empty)
-and remain unstaged. Current VCS rejects
-the host kernel `6.6.87.2-microsoft-standard-WSL2` as unsupported; the attempted
-VC Formal config run failed before design elaboration because its VCS reader
-failed. Formal status is NOT PROVEN / OPEN, not proof failure or pass. Python
-reference tests passed 64/64 and coverage-tool unit tests passed 41/41; those do
-not exercise the DUT. No Linux, FPGA, GT, or physical signoff is granted.
+Raw and official Adjusted URG were regenerated on the same validated VDB
+manifest. Raw=Adjusted because approved Waivers=0 and Exclusions=0:
+Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91288/104480;
+FSM states 13/13, transitions 22/22. There are 13,955 Raw uncovered code bins.
+A historical analysis-only What-if with 361 candidate exclusions leaves
+13,594 open bins; it is not official Adjusted. Exact Raw inventory:
+`docs/verification/data/thermo5-r12/thermo5-tx-coverage-open-bins.csv.gz`.
 
-Detailed report and machine evidence:
-`docs/verification/thermo5-tx-final-coverage-closure-round13-20261107.md` and
-`docs/verification/data/thermo5-r13/`. Preserve the seven CRLF/LF checkout
-mismatches in the Round 12 evidence CSVs; do not stage them as Round 13 edits.
-Next: use a supported VCS host to run a clean same-SHA VCS/URG package; re-prove
-the four stale candidates; review the four interpolation cases and 8,312 exact
-fixed-config candidates; then close reachable bins with legal targeted tests
-and independent checkers. Keep PR #42 unmerged until its verification and
-review gates pass.
+Four stale candidate properties have fresh current-source focused Formal
+results PROVEN, but exact URG mapping and independent reviewer approval remain
+pending. 361 other candidates remain pending review; four interpolator
+candidates remain unresolved. No exclusion is active. Outstanding-counter
+Formal remains INCONCLUSIVE; full-chain DPD Identity remains INCONCLUSIVE; two
+legal `q1_tail` assertions at centered interpolator stages 1 and 2 remain
+without legal attempts. Legal-only assertion URG has 13 successes and zero
+failures; expected-negative assertion failures are isolated.
+
+**Decision: Linux DV / Code Coverage signoff OPEN (RAW_100_OPEN).** Strict 100%
+Adjusted coverage is not achieved. No product RTL or frozen algorithm changed.
+Real XPM, GT Wizard, Vivado timing/PPA, FPGA, board/RF, and physical QAM256
+signoff remain NOT RUN.
+
+Detailed report:
+`docs/verification/thermo5-tx-linux-final-signoff-round13-20261107.md`.
+Machine-readable source/VDB/formal/regression and log-hash index:
+`docs/verification/data/thermo5-r13/thermo5_tx_r13_final_coverage_manifest.json`.
+Candidate review with current-source proof hashes:
+`docs/verification/data/thermo5-r13/thermo5_tx_r13_final_waiver_reproof_review.csv`.
+The initial Round 13 snapshot below has been superseded where it described the
+tool environment and current run status; it remains as historical context.
+
+## Superseded execution snapshot: Thermo5 TX Final Coverage Closure Round 13 (2026-11-07)
 
 ## Current execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
 

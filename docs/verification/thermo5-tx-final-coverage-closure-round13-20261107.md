@@ -1,5 +1,15 @@
 # Thermo5 TX Final Coverage Closure — Round 13
 
+> **Final Round 13 status update (2026-11-07):** This file preserves the
+> initial audit snapshot below. Its initial statement that VCS/URG/VC Formal
+> could not run is superseded. The tools have since run successfully; the
+> same-manifest Raw/Adjusted URG report was regenerated and current-source
+> Formal reproofs were completed for four candidates. See the current report
+> [`thermo5-tx-linux-final-signoff-round13-20261107.md`](thermo5-tx-linux-final-signoff-round13-20261107.md)
+> and manifest [`thermo5_tx_r13_final_coverage_manifest.json`](data/thermo5-r13/thermo5_tx_r13_final_coverage_manifest.json).
+> The final decision remains OPEN: no Waiver is approved, Raw equals official
+> Adjusted, and required assertion/Formal/code-coverage items remain open.
+
 **Disposition: OPEN — NOT SIGNED OFF.** This report records the Round 13 audit and the Linux work that could be completed on the current WSL Rocky environment. It does not convert What-if exclusions into approved waivers, and it does not treat an unavailable Formal run as proof.
 
 ## 1. Baseline and PR #42 Review
