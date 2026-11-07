@@ -99,8 +99,9 @@ def main() -> int:
         errors.append("Formal setup reported nonzero clock/reset/loop/multidriver checks")
     if not re.search(r"Number of Black-Box Instances\s*=\s*0\b", console):
         errors.append("zero black-box evidence missing")
-    if not re.search(r"# non_vacuous\s*:\s*3\b", properties):
-        errors.append("expected three non-vacuous AXI-Lite assertions")
+    non_vacuous = re.search(r"# non_vacuous\s*:\s*(\d+)\b", properties)
+    if not non_vacuous or int(non_vacuous[1]) < 3:
+        errors.append("expected at least three non-vacuous AXI-Lite assertions")
     if "SVA goal(s) have been marked trivially proven/uncoverable" in console:
         errors.append("Formal marked a goal as tautological; it cannot support this reachability audit")
     if exit_code != 0:
@@ -121,7 +122,7 @@ def main() -> int:
         "assertions": assertions,
         "covers": covers,
         "assumption_count": 0,
-        "non_vacuous_assertion_count": 3,
+        "non_vacuous_assertion_count": int(non_vacuous[1]) if non_vacuous else 0,
         "black_box_instances": 0 if "Number of Black-Box Instances = 0" in console else None,
         "setup_sha256": sha(setup_path) if setup_path.exists() else None,
         "properties_sha256": sha(prop_path) if prop_path.exists() else None,

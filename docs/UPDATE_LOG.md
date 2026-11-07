@@ -1,3 +1,13 @@
+# 2026-11-07 — Thermo5 Round 15 coverage-directed closure
+
+- Audited GitHub PR #44 and confirmed it is merged as product-source commit `6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5`. Frozen Centered-Cubic/EF2/DPD/AXI-Lite/Generic-FIFO RTL and compile fingerprint are unchanged.
+- Regenerated a homogeneous one-design/240-test Raw and zero-exclusion Adjusted URG run from the same stable VDB manifest. VDB manifest SHA-256: `548b143f1d1c45355a8810c65027da22ccdf9aa5eefe3f17aa756d77366d0bb4`.
+- Added eight legal, four-plane bit-true data patterns. They produced 784 exact Raw Toggle-bin hits and resolved 40 root-cause task groups; Raw coverage is Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM states 13/13, transitions 22/22. Raw equals official Adjusted because approved Waivers=0 and exclusions=0; 13,171 code bins remain open.
+- Added current-source DPD Pair-1 structural Formal harness and an exact 8,192-bin review ledger. The proof is scoped and non-vacuous, but independent approval is pending; 120 Active-Tap candidates remain inconclusive/open. No `.el` exclusion or approval was created.
+- Reproved several configuration/CDC properties and recorded scope/mapping limits in the Formal matrix. AXI outstanding-counter guards remain inconclusive; full-chain DPD Identity and legal product `q1_tail` attempts remain open. Counter carry proof does not establish system runtime limits.
+- Added the Round 15 signoff report, exact remaining-bin ledger, updated root-cause tasks, candidate review statuses, Raw delta and VDB evidence index. Full regression results from Round 14 are labeled carried-forward; a fresh full product regression was not run in Round 15.
+- Checks: Python 3.12 `py_compile` for changed evidence/Formal utilities; evidence generator on the fixed Round 14-before / Round 15-after URG reports; `git diff --check`. All passed. Full Linux DV signoff remains OPEN (`RAW_100_OPEN`). Real XPM, GT, Vivado and physical QAM256 signoff were not run.
+
 # 2026-11-07 17:30 SGT - Thermo5 Round 14 targeted coverage and signoff evidence
 
 - Completed the fresh Round 14 product regression, homogeneous 1-design/232-test VDB coverage run, separate legal/expected-negative functional-group URG runs, AXI-Lite focused Formal, scoped Formal, and direct scoreboard mutation checks on tested product source `f22dad56f7cd56e94158cb86cdad04e3d11e489d`.

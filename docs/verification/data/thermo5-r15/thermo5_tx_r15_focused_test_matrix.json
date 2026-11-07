@@ -1,0 +1,49 @@
+{
+  "product_source_sha": "6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5",
+  "round": 15,
+  "schema_version": 1,
+  "tests": [
+    {
+      "checker_notes": "48 read checks, 52 write-response checks, zero predictor mismatches and empty transaction queues.",
+      "command": "/tmp/dsm_ip_thermo5_round14/runs/thermo5_round14_253268f/system_random_round13_seedset/build/simv +UVM_TESTNAME=thermo5_sku_axil_register_access_test +UVM_VERBOSITY=UVM_LOW +VEC_DIR=/tmp/dsm_ip_thermo5_round14/runs/uvm_thermo5_i2_d1/vectors +ntb_random_seed=155022 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_round15_6b0d7c4/directed/axil_register_access/register_access_clean.vdb -no_save -l runs/thermo5_round15_6b0d7c4/directed/axil_register_access/run_clean.log",
+      "log_path": "runs/thermo5_round15_6b0d7c4/directed/axil_register_access/run_clean.log",
+      "log_sha256": "db14cab39dd446a55ba6e9fef9db7ac9b8d27c17d7d9deea6c1b88f3d3025cfe",
+      "official_raw_vdb_input": false,
+      "seed": 155022,
+      "status": "PASS",
+      "test": "axil_register_access",
+      "vdb_file_count": 13,
+      "vdb_path": "runs/thermo5_round15_6b0d7c4/directed/axil_register_access/register_access_clean.vdb",
+      "vdb_total_bytes": 11770,
+      "vdb_tree_sha256": "b9f027907a94c6f2b3a95354acffe0f61935553c9136382745cdd0b77ca41485"
+    },
+    {
+      "checker_notes": "64 source beats, 112 output words, max outstanding 28, zero guard hits, bit-true queue drained.",
+      "command": "/tmp/dsm_ip_thermo5_round14/runs/thermo5_round14_253268f/system_random_round13_seedset/build/simv +UVM_TESTNAME=thermo5_sku_axil_outstanding_bounds_test +UVM_VERBOSITY=UVM_LOW +VEC_DIR=runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/vectors +ntb_random_seed=151002 +CORE_WORDS=112 +PACKET_BEATS=32 +THERMO5_TRACE_JSONL=runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/trace_pass.jsonl -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/outstanding_pass.vdb -no_save -l runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/run_pass.log",
+      "log_path": "runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/run_pass.log",
+      "log_sha256": "1a2cdaa8ca1934214b6d0db2460aba5e61f66077137a7cf921f794fbc40cb806",
+      "official_raw_vdb_input": false,
+      "seed": 151002,
+      "status": "PASS",
+      "test": "outstanding_bounds_corrected",
+      "vdb_file_count": 13,
+      "vdb_path": "runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/outstanding_pass.vdb",
+      "vdb_total_bytes": 12523,
+      "vdb_tree_sha256": "b21c009f16e612b2185ac84e71df678bed43b39ed2c0ed32d5c520d6a8965e78"
+    },
+    {
+      "checker_notes": "UVM fatal: one TLAST observed where the test's two-packet contract expected two; corrected seed 151002 uses 32-beat packets.",
+      "command": "/tmp/dsm_ip_thermo5_round14/runs/thermo5_round14_253268f/system_random_round13_seedset/build/simv +UVM_TESTNAME=thermo5_sku_axil_outstanding_bounds_test +UVM_VERBOSITY=UVM_LOW +VEC_DIR=runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/vectors +ntb_random_seed=151001 +CORE_WORDS=112 +PACKET_BEATS=64 +THERMO5_TRACE_JSONL=runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/trace.jsonl -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/outstanding.vdb -l runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/run.log",
+      "log_path": "runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/run.log",
+      "log_sha256": "1935b128d6e4bb870fdf5643becba7fad6c9195789e62bd538658427db0ca062",
+      "official_raw_vdb_input": false,
+      "seed": 151001,
+      "status": "FAIL_EXPLORATORY_EXCLUDED",
+      "test": "outstanding_bounds_exploratory_bad_tlast",
+      "vdb_file_count": 13,
+      "vdb_path": "runs/thermo5_round15_6b0d7c4/directed/outstanding_bounds/outstanding.vdb",
+      "vdb_total_bytes": 12558,
+      "vdb_tree_sha256": "c7ecf35969a74793b227d8d220ae43088085d786296d0e7387ddd10edd041cc2"
+    }
+  ]
+}
