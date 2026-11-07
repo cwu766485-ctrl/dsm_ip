@@ -1,3 +1,33 @@
+# 2026-11-07 17:30 SGT - Thermo5 Round 14 targeted coverage and signoff evidence
+
+- Completed the fresh Round 14 product regression, homogeneous 1-design/232-test VDB coverage run, separate legal/expected-negative functional-group URG runs, AXI-Lite focused Formal, scoped Formal, and direct scoreboard mutation checks on tested product source `f22dad56f7cd56e94158cb86cdad04e3d11e489d`.
+- Recorded legal-applicable functional coverage as 218/218 and expected-negative-only bins separately as 2/2. Combined report is 220/220 across 16 groups; this does not fold negative-only bins into a legal test pass.
+- Reconfirmed Raw=official Adjusted because there are zero independently approved waivers and zero active exclusions: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 91288/104480; FSM states 13/13 and transitions 22/22. Exact open count is 13,955 and the code gate remains `RAW_100_OPEN`.
+- Added the Round 14 signoff report and machine-readable evidence package. Added a 21-file product RTL elaboration audit; configuration-inactive shared files are retained and are not removed from source or treated as URG exclusions. Corrected the machine-readable coverage summary field mapping after audit; underlying URG values and VDBs are unchanged.
+- Formal disposition remains OPEN for full-chain DPD Identity, AXI outstanding-counter guard, and legal product `q1_tail` attempts. Waiver candidates remain pending independent review; no reviewer or approval was fabricated.
+- No RTL, product parameters, tests, coverage denominators, VDB set, or official exclusion file changed. Linux DV final signoff remains OPEN. Real XPM, GT Wizard, integrated CDC/RDC, Vivado timing/PPA, board/RF and physical QAM256 remain outside this run.
+- Checks: machine manifests and JSON/CSV evidence cross-checked; 21 RTL audit rows equal the compile-manifest RTL set; Raw and Adjusted summary arithmetic matches; all report VDB and source hashes remain bound to the frozen product source. No new simulation/formal regression was needed for this documentation/evidence-index correction.
+
+# 2026-11-07 00:00 SGT - Thermo5 Round 14 integration and clean baseline
+
+- Merged PR #42 into `thermo5` as `42960c12cc381a7c58dddc501d4a851bbead13ec`,
+  then retargeted and merged PR #43 as
+  `253268f38783c37b3bbb19479654b236fff3f732`. The published target HEAD is
+  `253268f38783c37b3bbb19479654b236fff3f732`.
+- Created an isolated Round 14 worktree at
+  `/tmp/dsm_ip_thermo5_round14`; preserved the original checkout and its
+  existing line-ending-only CSV changes.
+- Confirmed the PR #42/#43 diff contains no product RTL changes. Previous
+  Round 13 VDB/coverage figures are carry-forward only and are not represented
+  as a fresh Round 14 result.
+- Checks so far: pre-merge Python hardware/coverage utilities 47/47 PASS;
+  direct SV scoreboard mutation regression detected all six injected fault
+  classes. Post-merge product regressions and Raw URG have not yet run.
+- Remaining: freeze merged compile inputs and tool versions; run the product
+  regression and targeted scenarios; regenerate a homogeneous Raw URG; continue
+  exact-bin, waiver-review, and Formal closure. Waivers remain unapproved and
+  Linux DV signoff remains OPEN.
+
 # 2026-11-07 00:00 SGT - Thermo5 Final Coverage Closure Round 13 audit
 
 - Audited PR #42 (`644458deaf7481673c80177f1621efbff9252419`) against the

@@ -1,0 +1,49 @@
+{
+  "assertions": {
+    "a_bvalid_clears_pending": "proven",
+    "a_coeff_read_default_unreachable": "proven",
+    "a_line88_tuple_unreachable": "proven",
+    "a_write_case_default_unreachable": "proven"
+  },
+  "assumption_count": 0,
+  "black_box_instances": 0,
+  "command": [
+    "vcf",
+    "-batch",
+    "-fmode",
+    "FPV",
+    "-f",
+    "/tmp/dsm_ip_thermo5_round14/dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl"
+  ],
+  "console_sha256": "a42267afb33b93293b9145e09e3639f39a50de72e1cc38567abbe6e8c4b1db50",
+  "covers": {
+    "c_coeff_read_default_arm_unreachable": "uncoverable",
+    "c_coeff_read_transaction": "covered",
+    "c_line88_tuple_unreachable": "uncoverable",
+    "c_write_case_default_unreachable": "uncoverable"
+  },
+  "cwd": "/tmp/dsm_ip_thermo5_round14/runs/thermo5_round14_253268f/formal_axil_cfg",
+  "duration_seconds": 49.69,
+  "errors": [],
+  "exit_code": 0,
+  "non_vacuous_assertion_count": 3,
+  "product_configuration": {
+    "AXIL": true,
+    "MAX_TAPS": 1
+  },
+  "properties_sha256": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
+  "schema_version": 1,
+  "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+  "source": {
+    "git_revision": "f22dad56f7cd56e94158cb86cdad04e3d11e489d",
+    "git_status": [],
+    "source_sha256": {
+      "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+      "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+      "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+    },
+    "worktree_dirty": false
+  },
+  "status": "PASS",
+  "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+}

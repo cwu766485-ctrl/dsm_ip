@@ -1,0 +1,431 @@
+{
+  "schema_version": 1,
+  "status": "LINUX_DV_SIGNOFF_OPEN",
+  "decision": "NOT_SIGNED_OFF",
+  "repository": "cwu766485-ctrl/dsm_ip",
+  "target_branch": "thermo5",
+  "review_branch": "codex/thermo5-round14-coverage-closure",
+  "source_head": "f22dad56f7cd56e94158cb86cdad04e3d11e489d",
+  "thermo5_base": "253268f38783c37b3bbb19479654b236fff3f732",
+  "pr": {
+    "number": 44,
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/44",
+    "state": "OPEN_DRAFT"
+  },
+  "integrated_prs": [
+    {
+      "number": 42,
+      "merge_sha": "42960c12cc381a7c58dddc501d4a851bbead13ec"
+    },
+    {
+      "number": 43,
+      "merge_sha": "253268f38783c37b3bbb19479654b236fff3f732"
+    }
+  ],
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "state_bits": 20,
+    "step": 5120
+  },
+  "source_and_compile": {
+    "compiled_repository_sources": 95,
+    "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "filelist_sha256": "3605407edad33e8f806a5c6c9a78f553df08f3f09551d18284194ef931aedc85",
+    "coverage_hierarchy_sha256": "1b01e3c9a7c86a189660dcb0529369dc8ef4d1ff535ebbdb619e5d7c5651c5fa",
+    "product_rtl_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "source_delta_product_rtl_from_r12": 0,
+    "dirty_at_measurement": false
+  },
+  "tools": {
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "python": "Python 3.12.13",
+    "urg": "URG V-2023.12-SP1",
+    "vc_formal": "VC Formal V-2023.12-SP2",
+    "vcs": "VCS V-2023.12-SP1_Full64"
+  },
+  "regression": {
+    "generic_centered_cubic_ef2": "PASS",
+    "axil_product": "PASS",
+    "system_random": {
+      "status": "PASS",
+      "cases": 110,
+      "random_seeds": 100,
+      "long_seeds": 10,
+      "seed_base": 1044100
+    },
+    "dpd_gain_profile": {
+      "status": "PASS",
+      "cases": 60,
+      "seed_base": 930000
+    },
+    "randomized_reset_commit": {
+      "status": "PASS",
+      "reset_cases": 24,
+      "commit_cases": 24,
+      "schedule_seed": 20261103
+    },
+    "additional_current_schedule": {
+      "status": "PASS",
+      "reset_cases": 24,
+      "commit_cases": 24,
+      "schedule_seed": 20261107
+    },
+    "commit_boundary_pa_stall": {
+      "status": "PASS",
+      "cases": 2
+    },
+    "reset_pending_commit": {
+      "status": "PASS",
+      "cases": 8
+    },
+    "extra_directed": [
+      "reset_release_source seed=610713 PASS",
+      "reset_sweep seed=610802 PASS",
+      "graceful_stop seed=1046112 PASS",
+      "EF2 corner seed=271031 PASS"
+    ],
+    "python_reference": "PASS 64/64",
+    "python_hw_coverage": "PASS 47/47",
+    "unified_scoreboard_sv_mutation": "PASS 6/6 faults detected"
+  },
+  "functional_coverage": {
+    "all_campaigns": {
+      "covered": 220,
+      "expected": 220,
+      "groups": 16,
+      "percent": 100.0
+    },
+    "legal_only_raw": {
+      "covered": 218,
+      "expected": 220,
+      "groups": 16,
+      "percent": 99.0909,
+      "open_bins": [
+        "source_cg.cp_packet_quanta.malformed_early (0)",
+        "core_cg.cp_illegal.bad_frame (0)"
+      ]
+    },
+    "legal_applicable": {
+      "covered": 218,
+      "expected": 218,
+      "percent": 100.0
+    },
+    "expected_negative_only_bins": {
+      "malformed_early": 1,
+      "bad_frame": 49
+    },
+    "negative_checker": "Both negative tests pass expected-error/reset recovery; isolated separately from legal success."
+  },
+  "system_crosses": {
+    "DPD x Gain x Profile": "60/60 PASS",
+    "COMMIT x frame-boundary apply x PA-stall": "2/2 PASS",
+    "Reset x pending COMMIT": "4/4 PASS",
+    "STATUS x COMMIT x STOP": "1/1 PASS",
+    "Source-gap x PA-stall x FIFO-full": "1/1 PASS",
+    "RUN x prefill x source-gap": "1/1 PASS",
+    "STOP < accepted TLAST < Drain": "positive records observed (2), PASS"
+  },
+  "code_coverage": {
+    "vdb_manifest": "docs/verification/data/thermo5-r14/thermo5_tx_r14_vdb_manifest.json",
+    "vdb_manifest_sha256": "436edee82b59d3fd6bf2d82ba2f529c87623910f14109216c79075c259538443",
+    "test_vdb_count": 232,
+    "design_vdb_count": 1,
+    "vdb_file_count": 3040,
+    "raw_adjusted_same_input": true,
+    "approved_waivers": 0,
+    "active_exclusions": 0,
+    "official_el_sha256": "57d1f80c4862394d1a6e0fb0c12ed1ba57543d3b8e6d1ab8e9dfc452cc78c858",
+    "metrics_raw": {
+      "line": {
+        "covered": 3338,
+        "total": 3796,
+        "missing": 458,
+        "percent": 87.9347
+      },
+      "cond": {
+        "covered": 657,
+        "total": 849,
+        "missing": 192,
+        "percent": 77.3852
+      },
+      "toggle": {
+        "covered": 91288,
+        "total": 104480,
+        "missing": 13192,
+        "percent": 87.3737
+      },
+      "branch": {
+        "covered": 524,
+        "total": 637,
+        "missing": 113,
+        "percent": 82.2606
+      }
+    },
+    "metrics_adjusted": {
+      "line": {
+        "covered": 3338,
+        "total": 3796,
+        "missing": 458,
+        "percent": 87.9347
+      },
+      "cond": {
+        "covered": 657,
+        "total": 849,
+        "missing": 192,
+        "percent": 77.3852
+      },
+      "toggle": {
+        "covered": 91288,
+        "total": 104480,
+        "missing": 13192,
+        "percent": 87.3737
+      },
+      "branch": {
+        "covered": 524,
+        "total": 637,
+        "missing": 113,
+        "percent": 82.2606
+      }
+    },
+    "raw_open_bin_count": 13955,
+    "raw_exact_open_bin_ledger": "docs/verification/data/thermo5-r12/thermo5-tx-coverage-open-bins.csv.gz",
+    "raw_exact_open_bin_ledger_sha256": "75f9a0c36a33da65d354d96e0f62497e74d5bcafb98dc4857cf5d95a620efa9d",
+    "raw_ledger_source_hash_revalidation": {
+      "rows": 13955,
+      "unique_source_files": 11,
+      "hash_mismatches": 0,
+      "note": "Every uncovered row source file hash rechecked against current checkout; current Raw metric counts equal the ledger metric totals."
+    },
+    "no_net_urg_bin_delta_vs_r13": true,
+    "raw_urg_log_sha256": "bf6f28bda966aff98de085149dfcf82482cea9e7baf705f2ba6538cac6dc6be3",
+    "adjusted_urg_log_sha256": "05e2968853a32e2103e3c4e15a49980d53b3a630fb41fa1b08a03c5a21614989",
+    "report_manifest_sha256": "9dc098017feb8bfa9c78c5cd3b38648d20872401850def142f329e8c250fd91c",
+    "raw_summary_sha256": "ac627581bebac89b6eedc2cbb2d3192052dabb4bf2aee22ed35569b7deb2533b"
+  },
+  "waivers": {
+    "official_rows_remote": 371,
+    "local_candidates": 369,
+    "remote_only_resolved_raw_hits": [
+      "W-75530ed17d5b396a4e9b",
+      "W-d7cb262894a5aae016b6"
+    ],
+    "classification_counts": {
+      "ELIGIBLE": 361,
+      "NEEDS_REPROOF": 4,
+      "UNRESOLVED": 4
+    },
+    "approved": 0,
+    "rejected": 0,
+    "active_exclusions": 0,
+    "policy": "No reviewer identity/approval was fabricated; current proofs remain analysis evidence only."
+  },
+  "formal": {
+    "axil_cfg": {
+      "status": "PASS",
+      "assertions_proven": {
+        "a_bvalid_clears_pending": "proven",
+        "a_coeff_read_default_unreachable": "proven",
+        "a_line88_tuple_unreachable": "proven",
+        "a_write_case_default_unreachable": "proven"
+      },
+      "assumption_count": 0,
+      "black_box_instances": 0,
+      "non_vacuous_assertion_count": 3,
+      "covers": {
+        "c_coeff_read_default_arm_unreachable": "uncoverable",
+        "c_coeff_read_transaction": "covered",
+        "c_line88_tuple_unreachable": "uncoverable",
+        "c_write_case_default_unreachable": "uncoverable"
+      },
+      "log_sha256": "a42267afb33b93293b9145e09e3639f39a50de72e1cc38567abbe6e8c4b1db50",
+      "waiver_state": "PENDING independent review and exact approved mapping"
+    },
+    "scoped_jobs": {
+      "counter": {
+        "status": "PASS",
+        "assertions": [
+          [
+            "proven",
+            "thermo5_counter_gap_harness.a_count_matches_acceptances"
+          ],
+          [
+            "proven",
+            "thermo5_counter_gap_harness.g_budget.a_budget_bound"
+          ],
+          [
+            "proven",
+            "thermo5_counter_gap_harness.g_budget.a_high_bits_zero_in_budget"
+          ]
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_counter_gap_harness.c_accept"
+          ],
+          [
+            "covered",
+            "thermo5_counter_gap_harness.c_count_changes"
+          ],
+          [
+            "covered",
+            "thermo5_counter_gap_harness.c_stall"
+          ],
+          [
+            "covered",
+            "thermo5_counter_gap_harness.c_stall_recovery"
+          ]
+        ],
+        "log_sha256": "c824fcb41ccaae288b5b3d26498b0d040414a0cbfa39b52ec9178393dcc625e3"
+      },
+      "identity": {
+        "status": "FAIL",
+        "assertions": [
+          [
+            "proven",
+            "thermo5_identity_harness.a_valid_latency"
+          ]
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_identity_harness.c_max_endpoint"
+          ],
+          [
+            "covered",
+            "thermo5_identity_harness.c_min_endpoint"
+          ],
+          [
+            "covered",
+            "thermo5_identity_harness.c_recovery"
+          ],
+          [
+            "covered",
+            "thermo5_identity_harness.c_stall"
+          ]
+        ],
+        "log_sha256": "665a3b59fe2c782a5fa51209e435bece9082d944867fa32b498dfc9b8671289b"
+      },
+      "frame_tail_legal_metadata": {
+        "status": "PASS",
+        "assertions": [
+          [
+            "proven",
+            "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context"
+          ],
+          [
+            "proven",
+            "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context"
+          ]
+        ],
+        "covers": [
+          [
+            "uncoverable",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"
+          ],
+          [
+            "uncoverable",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"
+          ]
+        ],
+        "log_sha256": "d6ae5a5ee34b1bab69214b8e4ce633293b863bdeb803aedb011cab7f490651da"
+      },
+      "ef2_product_params": {
+        "status": "PASS",
+        "assertions": [
+          [
+            "proven",
+            "thermo5_ef2_product_params_harness.a_product_pair_lookahead_disabled"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_product_params_harness.a_product_parameter_guard_inactive"
+          ]
+        ],
+        "covers": [
+          [
+            "uncoverable",
+            "thermo5_ef2_product_params_harness.c_invalid_parameter_guard"
+          ],
+          [
+            "uncoverable",
+            "thermo5_ef2_product_params_harness.c_pair_lookahead_arm_enabled"
+          ]
+        ],
+        "log_sha256": "cfa2198ffc998d8f7a576e3b3779f81232a03c3e22b456fd2f052d187aca7ba6"
+      }
+    },
+    "outstanding_axi_counter": "OPEN / INCONCLUSIVE from prior focused run; current scoped counter proof concerns DPD source-gap budget, not AXI outstanding counter.",
+    "full_chain_dpd_identity": "OPEN / INCONCLUSIVE: valid latency proven; identity payload and saturation-related assertions inconclusive at depth 147; activity covers reached.",
+    "q1_tail": "OPEN: both legal product assertions uncovered with zero attempts; negative suite deliberately trips both."
+  },
+  "dead_code_audit": {
+    "product_rtl_files": 21,
+    "remove_candidates": 0,
+    "refactor_candidates": 0,
+    "configuration_inactive_but_retained": [
+      "dsm_frame_power_ctrl.sv (no instance in current product hierarchy; retained)",
+      "dsm_xpm_async_fifo.sv (Generic backend selected; retained XPM variant)",
+      "dpd_vector_elastic_buffer.sv (not instantiated in current product hierarchy; retained)",
+      "dsm_interp_x2_polyphase_vector.sv (Centered-Cubic selected; retained alternate)",
+      "tid32_cartesian_fs4_gt_tx.sv (EF2 top selected; retained non-EF2 variant)",
+      "tid32_thermo5_axis_frontend_tx.sv (AXI-Lite top selected; retained non-AXI-Lite top)"
+    ],
+    "configuration_formal": "EF2 product parameter PAIR_LOOKAHEAD=0 and legal parameter guard inactive proved; candidate-arm covers uncoverable.",
+    "active_or_partially_elaborated_files": 15,
+    "configuration_inactive_retained_files": 6,
+    "audit_csv": "docs/verification/data/thermo5-r14/thermo5_tx_r14_dead_code_audit.csv",
+    "audit_csv_sha256": "979ff60ec78809d43f8ba21d3b94a1b08b508829d97470d077f12999a73d756c"
+  },
+  "signoff": {
+    "functional": "PASS for legal-applicable and expected-negative bins separately; all 16 covergroups, legal applicability 218/218",
+    "code_coverage": "OPEN RAW_100_OPEN; Raw equals official Adjusted; 13,955 bins remain",
+    "formal_assertion": "OPEN; legal assertion failures 0; two q1_tail properties without legal attempts; full-chain DPD and outstanding AXI counter formal open",
+    "linux_dv": "NOT SIGNED OFF",
+    "fpga_physical": "NOT RUN: real XPM, GT Wizard, integrated CDC/RDC, Vivado PPA/timing, board RF/QAM256"
+  },
+  "evidence": {
+    "thermo5_tx_r14_axil_cfg_formal_manifest.json": "7bd255cd3c2cb12bb1c027919f01588b70e18a300ca3ba90f0cd9028e2e4e972",
+    "thermo5_tx_r14_code_coverage_report_manifest.json": "9dc098017feb8bfa9c78c5cd3b38648d20872401850def142f329e8c250fd91c",
+    "thermo5_tx_r14_dead_code_audit.csv": "979ff60ec78809d43f8ba21d3b94a1b08b508829d97470d077f12999a73d756c",
+    "thermo5_tx_r14_functional_group_coverage.csv": "b9bcfb0d63f5d24fc526047208e5a0c765031105743c2cbc8c3643509f987533",
+    "thermo5_tx_r14_functional_group_manifest.json": "55b4e8032db406dcfa7df55521f939e1a189853b1d6c8702544582350af45706",
+    "thermo5_tx_r14_raw_assertions.csv": "4438e7a09b262cf0cdb42f58512505c91364fbfc9689a861865a8243ae6658ae",
+    "thermo5_tx_r14_raw_branch_arms.csv": "47182c95eecfb59da819bae123b99831f1b0c0a85a5fbec2ef91a7a67b7f3161",
+    "thermo5_tx_r14_raw_code_summary.json": "123039d07db56af2ad64f5d115886386d023ae59669cf5f1056c4bc5d9974330",
+    "thermo5_tx_r14_raw_denominators.csv": "765403647d8625f0cd57766a7052b4d2979392d885c75d7b339f0dc290699e85",
+    "thermo5_tx_r14_raw_fsm_denominators.csv": "2aeef565f88590340135f61ac3c824ed6b2076bb584e068f573d494340966bdb",
+    "thermo5_tx_r14_raw_line_gaps.csv": "43f83694aaf200c30312773abb75ad585007cb4dcd5ff889c88da3f5320cfb93",
+    "thermo5_tx_r14_scoped_formal_summary.json": "f96dd76ab37e2cc0078a546b4fa9409b3dff7f9b168f7b4e908e3a43e87af07f",
+    "thermo5_tx_r14_vdb_manifest.json": "436edee82b59d3fd6bf2d82ba2f529c87623910f14109216c79075c259538443",
+    "thermo5-tx-round14-targeted-coverage-signoff-20261107.md": "e9c0b9ed023978466465850849e3647c356fcee931b1755220913e368dc275b5"
+  }
+}
