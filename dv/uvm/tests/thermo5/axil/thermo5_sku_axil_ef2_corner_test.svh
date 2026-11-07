@@ -23,7 +23,12 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
     bit candidate;
     candidate=0;
     while (!candidate) begin
-      @(negedge vif.core_clk);
+      // Sample just after the active edge so the request reaches the sole
+      // PA_READY driver before its next falling-edge update. Sampling at the
+      // falling edge races the driver's NBA update and can let a one-cycle
+      // clamp candidate transfer before backpressure takes effect.
+      @(posedge vif.core_clk);
+      #1ps;
       candidate=(vif.pa_valid==4'hf) &&
                 (positive ? (|vif.ef2_pos_clamp_candidate) :
                             (|vif.ef2_neg_clamp_candidate));
@@ -64,7 +69,10 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
     bit state_at_rail;
     state_at_rail=0;
     while (!state_at_rail) begin
-      @(negedge vif.core_clk);
+      // As above, sample before the driver's following falling-edge update
+      // so the rail state is held before the next EF2 transfer can advance.
+      @(posedge vif.core_clk);
+      #1ps;
       state_at_rail=(vif.pa_valid==4'hf) && (|vif.ef2_state_at_rail);
     end
     env.pa_sink.set_ready(4'h0);

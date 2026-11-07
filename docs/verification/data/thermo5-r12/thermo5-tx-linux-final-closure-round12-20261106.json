@@ -1,0 +1,434 @@
+{
+  "code_coverage": {
+    "active_exclusion_count": 0,
+    "adjusted": {
+      "branch": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "cond": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "line": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 91288,
+        "missing": 13192,
+        "percent": 87.3737,
+        "total": 104480
+      }
+    },
+    "aggregate_urg_score_percent": 86.94,
+    "exclusions_applied": false,
+    "fsm_states": "13/13",
+    "fsm_transitions": "22/22",
+    "gate": "RAW_100_OPEN",
+    "open_exact_code_records": 13955,
+    "open_records_by_metric": {
+      "branch": 113,
+      "condition": 192,
+      "line": 458,
+      "toggle": 13192
+    },
+    "raw": {
+      "branch": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "cond": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "line": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 91288,
+        "missing": 13192,
+        "percent": 87.3737,
+        "total": 104480
+      }
+    },
+    "root_cause_tasks": 415,
+    "same_input_vdb_list": true,
+    "task_count_discrepancy": "OPEN; not assumed to be resolved",
+    "task_count_reference_in_plan": 416,
+    "tasks_by_metric": {
+      "branch": 44,
+      "condition": 93,
+      "line": 110,
+      "toggle": 168
+    }
+  },
+  "date_local": "2026-11-06",
+  "formal": {
+    "axil_outstanding_counter": {
+      "assertions": {
+        "a_no_counter_saturation_guard": "inconclusive",
+        "a_no_counter_underflow_guard": "inconclusive",
+        "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+        "a_outstanding_within_product_capacity": "inconclusive",
+        "a_pa_valid_has_outstanding_word": "inconclusive"
+      },
+      "console_sha256": "ccfd76b98b2d18d2b63760c2e07f2b94d98c8bc457a038f7b1f81adabdc235d5",
+      "covers": {
+        "c_arbitrary_source_bubble": "covered",
+        "c_core_accept": "covered",
+        "c_counter_saturation_guard": "inconclusive",
+        "c_counter_underflow_guard": "inconclusive",
+        "c_output_accept": "covered",
+        "c_source_accept": "covered"
+      },
+      "duration_seconds": 291.97,
+      "properties_sha256": "5b0fe1f7554ae5d93ce0e5acbcb539dde9c69bef98b210cc2f504aee0f6340ca",
+      "scope": {
+        "clock_period_units": {
+          "axil_clk": 35,
+          "core_clk": 16,
+          "source_clk": 28
+        },
+        "environment_assumptions": 1,
+        "maximum_pa_stall": null,
+        "maximum_source_gap": null,
+        "output_backpressure": "arbitrary per-plane PA ready",
+        "product_configuration": {
+          "dpd": "identity",
+          "dpd_max_taps": 1,
+          "fifo": "Generic",
+          "interpolation": "Centered-Cubic x2+x2",
+          "step": 5120,
+          "tidsm_order": 2
+        },
+        "source_driver": "legal 32-beat AXIS packet; arbitrary source bubbles; valid held while stalled",
+        "target_bins": [
+          "TXB-e99262dd92665c3b9ea8",
+          "TXB-c16debdf7d9cbab220ac"
+        ]
+      },
+      "status": "INCONCLUSIVE"
+    },
+    "commit_pending_apply_ack_done": "OPEN",
+    "dpd_identity_local": {
+      "composed_assertion_count": 4,
+      "composed_assertions": {
+        "thermo5_dpd_identity_stall_harness.a_no_saturation": {
+          "qualifier": "",
+          "state": "proven"
+        },
+        "thermo5_dpd_identity_stall_harness.a_output_i": {
+          "qualifier": "(non_vacuous)",
+          "state": "proven"
+        },
+        "thermo5_dpd_identity_stall_harness.a_output_q": {
+          "qualifier": "(non_vacuous)",
+          "state": "proven"
+        },
+        "thermo5_dpd_identity_stall_harness.a_saturation_count_zero": {
+          "qualifier": "",
+          "state": "proven"
+        }
+      },
+      "composed_cover_count": 4,
+      "composed_covers": {
+        "thermo5_dpd_identity_stall_harness.c_max_endpoint": {
+          "qualifier": "(depth=12)",
+          "state": "covered"
+        },
+        "thermo5_dpd_identity_stall_harness.c_min_endpoint": {
+          "qualifier": "(depth=12)",
+          "state": "covered"
+        },
+        "thermo5_dpd_identity_stall_harness.c_recovery": {
+          "qualifier": "(depth=14)",
+          "state": "covered"
+        },
+        "thermo5_dpd_identity_stall_harness.c_stall": {
+          "qualifier": "(depth=12)",
+          "state": "covered"
+        }
+      },
+      "evidence_sha256": "004cfb7441bb7f302ff6df3bf3a7aabd2c98d7d691b8cdad40e72f5031bc944a",
+      "explicit_exclusions": [
+        "AXI shadow/commit",
+        "mailbox transfer",
+        "CDC",
+        "pending/active epoch",
+        "full TX chain",
+        "physical RF"
+      ],
+      "scope": {
+        "claim": "local one-tap Identity DPD I/Q output equals accepted input at 11-cycle pipeline latency, with no output saturation or nonzero saturation counter",
+        "configuration": "MAX_TAPS=1, USE_EXTERNAL_TAPS=1, active_taps=1, Q14 c1 unity, c3/c5 zero",
+        "dut": "rtl/dpd/dpd_memory_poly.v / dpd_memory_poly",
+        "exclusions": [
+          "AXI shadow/commit",
+          "mailbox transfer",
+          "CDC",
+          "pending/active epoch",
+          "full TX chain",
+          "physical RF"
+        ],
+        "interface_model": "valid pipeline with output backpressure; source holds in_valid and I/Q while blocked"
+      },
+      "status": "PASS_SCOPED_DPD_IDENTITY_OUTPUT_UNDER_STALL"
+    },
+    "dpd_input_counter_budget": {
+      "assertions": [
+        [
+          "proven",
+          "thermo5_counter_gap_harness.a_count_matches_acceptances"
+        ],
+        [
+          "proven",
+          "thermo5_counter_gap_harness.g_budget.a_budget_bound"
+        ],
+        [
+          "proven",
+          "thermo5_counter_gap_harness.g_budget.a_high_bits_zero_in_budget"
+        ]
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_accept"
+        ],
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_count_changes"
+        ],
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_stall"
+        ],
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_stall_recovery"
+        ]
+      ],
+      "scope": "MAX_TAPS=1 identity; at most 2072 accepted inputs per reset epoch",
+      "status": "PASS",
+      "summary_sha256": "b0bb478c060d607649ebeb3f51ca0303ad666a98d277f91446bac29c881001ad"
+    },
+    "full_chain_dpd_identity": "OPEN; local DPD block proof excludes AXI config/mailbox/CDC",
+    "q1_tail_instances": "OPEN; two legal assertion instances have no attempts"
+  },
+  "functional": {
+    "expected_negative_assertions": {
+      "checker_confirmed_failures": 3,
+      "kept_separate_from_legal_regression": true
+    },
+    "groups": {
+      "commit_boundary_stall_cg": "12/12",
+      "core_cg": "14/14",
+      "ef2_cg": "68/68",
+      "plane_atomic_cg": "16/16",
+      "random_cfg_cg": "144/144",
+      "read_cg": "22/22",
+      "reset_cg": "4/4",
+      "reset_pending_cg": "18/18",
+      "run_prefill_gap_cg": "8/8",
+      "source_cg": "38/38",
+      "source_gap_pa_fifo_cg": "8/8",
+      "status_commit_stop_cg": "8/8",
+      "stop_restart_cg": "12/12",
+      "stop_tlast_drain_cg": "8/8",
+      "transaction_event_cg": "20/20",
+      "write_cg": "36/36"
+    },
+    "legal_applicable_bins": {
+      "covered": 436,
+      "percent": 100.0,
+      "total": 436,
+      "uncovered": 0
+    },
+    "legal_assertions": {
+      "failures": 0,
+      "success": 13,
+      "uncovered": 2,
+      "uncovered_properties": [
+        "stage1 q1_tail",
+        "stage2 q1_tail"
+      ],
+      "without_attempts": 2
+    },
+    "negative_cross_semantics": {
+      "events_split_across_packets_do_not_hit_source_gap_fifo_pa_cross": "PASS",
+      "tlast_before_stop_does_not_hit_stop_before_tlast_cross": "PASS"
+    },
+    "system_crosses": {
+      "commit_boundary_pa_stall": "2/2",
+      "dpd_gain_input_profile": "60/60",
+      "reset_pending_commit": "4/4",
+      "run_prefill_source_gap": "1/1",
+      "source_gap_fifo_full_pa_stall": "1/1",
+      "status_commit_stop": "1/1",
+      "stop_tlast_drain": "1/1"
+    },
+    "unified_scoreboard_mutations": {
+      "detected": "6/6",
+      "log_sha256": "e032fe3c2a64db1b9240396f15f9b486b6381465ef8469527461f935f7116294",
+      "mutations": [
+        "lost_cdc_transaction",
+        "duplicate_source_transaction",
+        "reordered_transactions",
+        "wrong_frame_id",
+        "apply_without_prior_commit",
+        "ef2_data_corruption"
+      ],
+      "seed": 610501,
+      "uncaught_uvm_error": 0,
+      "uncaught_uvm_fatal": 0
+    }
+  },
+  "key_artifacts_sha256": {
+    "docs/verification/data/thermo5-r12/thermo5-tx-adjusted-coverage-summary.json": "527ee80d8d6f986f5c7314831ed3be9293dc8ea10542228e8db928a5456f76d8",
+    "docs/verification/data/thermo5-r12/thermo5-tx-approved.el": "57d1f80c4862394d1a6e0fb0c12ed1ba57543d3b8e6d1ab8e9dfc452cc78c858",
+    "docs/verification/data/thermo5-r12/thermo5-tx-coverage-gate-result.json": "f92b2e2f3b3d91b0eeab996d86e020f2411eb34d4ea30a152b3b8a3babb0787d",
+    "docs/verification/data/thermo5-r12/thermo5-tx-coverage-open-bins.csv.gz": "75f9a0c36a33da65d354d96e0f62497e74d5bcafb98dc4857cf5d95a620efa9d",
+    "docs/verification/data/thermo5-r12/thermo5-tx-coverage-root-cause-tasks.csv": "43d4d55504a0e29c2d744d4ebdb5f6ee2ac28861ae26a063bbfc67c1708c5bb9",
+    "docs/verification/data/thermo5-r12/thermo5-tx-dpd-identity-formal.json": "004cfb7441bb7f302ff6df3bf3a7aabd2c98d7d691b8cdad40e72f5031bc944a",
+    "docs/verification/data/thermo5-r12/thermo5-tx-functional-bin-detail.csv": "bd5c03c3eaebcc06ddb8dd963bf18d10c0de3bc242b8b3261370e3329895764f",
+    "docs/verification/data/thermo5-r12/thermo5-tx-legal-assertion-summary.json": "7bdf5876adb0956372af5f94e904d5dc91d7966ebcb95536084dc47935b7a248",
+    "docs/verification/data/thermo5-r12/thermo5-tx-negative-assertion-summary.json": "70d8c065b1f712fc502625fed6e54da3a3e0409bf4d74ffd2371bf38d6097945",
+    "docs/verification/data/thermo5-r12/thermo5-tx-product-compile-manifest.json": "048118a1289f2a9c25f6757dfe114fdcedb20fa8858615dbeb479a05ff7f4675",
+    "docs/verification/data/thermo5-r12/thermo5-tx-product-source-manifest.json": "8d69f1bd189642b3e2bdc34fa0bb3559e5108cee21fc8f8a14e9d89778aac5a7",
+    "docs/verification/data/thermo5-r12/thermo5-tx-raw-adjusted-report-manifest.json": "079c4ad88935c98d96c0ef96e734f1a1c5c34f0cb914c7ebe46af5885480fbf7",
+    "docs/verification/data/thermo5-r12/thermo5-tx-raw-coverage-summary.json": "e86097c69fec8107ba9d02134243acf46d3d5e1ba397357ab2538a16b64bf8c4",
+    "docs/verification/data/thermo5-r12/thermo5-tx-vdb-manifest.json": "5f0a8b256e1c656758f6eca7f28414dac91eedce2a0d2f8474242f5fae04a0d9",
+    "docs/verification/data/thermo5-r12/thermo5-tx-waiver-candidate-audit.json": "9ef5056c84e09fe39034efd9907cd4e36fb0315ffad163e365c85e61b5b5c944",
+    "docs/verification/data/thermo5-r12/thermo5-tx-waiver-candidate-input-manifest.json": "29190d4be8abea3103c70f2f8658d41b89ba3c7a5f26dbf75b542f5cb1c56f1e",
+    "docs/verification/data/thermo5-r12/thermo5-tx-waiver-pipeline-audit.json": "f5dabb6d5eb50b7c978cbc6530d26a5e23202d099170ab65bb2d2dde176796d3",
+    "docs/verification/data/thermo5-r12/thermo5-tx-waivers-resolved-by-raw-hit.csv": "b66ea8360077e362632d1083fbdfeb193a37dbef93d88ea3ac21dc26054fe6d5",
+    "docs/verification/thermo5-tx-linux-final-closure-round12-20261106.md": "f34a7c0c67b196042ef37474bcad787c3eeb9c34a00779b41c4846a9689e770a",
+    "docs/verification/thermo5_tx_waivers.csv": "d8b4e060abe042ddf4c21c39bec4ec811567f50f7a69398784e24f9a02216c47",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/dpd_matrix/summary.json": "d5a634478813d3a9e184154f49b3332d6b078d2ed922e55b1b90645be7f4668e",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/final_waiver_rebind_20261106_final/adjusted_urg.log": "e89eedb3c9cff78935d26302b8dc1c09a6db89976abd3e9bb68b9ca8f1a3768d",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/final_waiver_rebind_20261106_final/dual_urg_wrapper.log": "027cc1088f3104405b2560bb09cccdef95da26ea734460126a20cfcfbd930f12",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/final_waiver_rebind_20261106_final/raw_urg.log": "ffc2e7fe1da91945094af726a07dce5b7a509dd8e60a174417b6b4ec0fa2c612",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/formal_round12_axil_outstanding/formal_manifest.json": "8bd143b14a204a7a78ccfae8d7ab9204e43564cc398ca1f8869eede02177699f",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/formal_round12_counter/formal_summary.json": "b0bb478c060d607649ebeb3f51ca0303ad666a98d277f91446bac29c881001ad",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/formal_round12_dpd_identity_stall_clean/run_result.json": "43f947993001813814bab0174c2d8772344682cd328a91692cfca570af3bebcf",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/formal_round12_dpd_identity_stall_clean/vcf.log": "ccc115b75180953330ec47cdd2db8465ae36bcdc6963fcd76f6f58fd7e1dd639",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/product_vdb_manifest.json": "c7720b23f1b07e1a3255f2ff1e60c67a4a18f563af6506cbc97fbd58ac55d560",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/python_tests.log": "fda01934586166388369c1174f99a748be2cb5670ec4bc0ecf598472075acc65",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/randomized_control/summary.json": "31cf4b25235bda2b738cc5ba81c4f3b9b2cab47bc32371ecf7c4cd47826219dd",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/scoreboard_mutation/unified_scoreboard_mutation.log": "e032fe3c2a64db1b9240396f15f9b486b6381465ef8469527461f935f7116294",
+    "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/system_random/summary.json": "79dc801374d685bcf8096b5eacf02f853b02f8d4f8fe0b2ae25bd03ca9aa94f4",
+    "tools/hw/tests/test_thermo5_tx_waiver_candidate_audit.py": "ed1d71fb3957123e453a5a0f8bb08117a10f5a1ab5dde2774f070a58e1565b7e",
+    "tools/hw/thermo5_tx_product_compile_manifest.py": "a290e4689113a2245a348ac46ae2a701f8e198ba00bc319daca4c0c6a3103c7d",
+    "tools/hw/thermo5_tx_waiver_candidate_audit.py": "60684c8504c951b751dbcf322e06659798df9ba6f5f02fcbb9b22107c12e8513"
+  },
+  "physical_scope": {
+    "board_rf": "NOT_RUN",
+    "gt_wizard": "NOT_RUN",
+    "integrated_cdc_rdc": "NOT_RUN",
+    "physical_qam256_ber": "NOT_RUN",
+    "real_xpm": "NOT_RUN",
+    "vivado_routed_ppa_timing_power": "NOT_RUN"
+  },
+  "regression": {
+    "all_expected_queues_empty": true,
+    "all_vdb_tests_pass": true,
+    "campaign_counts": {
+      "axil_directed": 9,
+      "axil_lifecycle": 5,
+      "dpd_gain_profile": 60,
+      "randomized_control": 48,
+      "system_random": 110
+    },
+    "expected_negative_test_vdb_count": 2,
+    "generic_fifo_core_only": "PASS, separate non-AXI configuration; excluded from product VDB merge",
+    "legal_test_vdb_count": 230,
+    "product_test_vdb_count": 232,
+    "python_tests": "64/64 PASS"
+  },
+  "report": "docs/verification/thermo5-tx-linux-final-closure-round12-20261106.md",
+  "schema_version": 1,
+  "signoff": {
+    "fpga_physical_signoff": "NOT_RUN",
+    "full_linux_dv_signoff": "NOT_SIGNED",
+    "functional_dv_signoff": "PASS_FOR_GATE1_CRITERIA_WITH_Q1_TAIL_ASSERTION_GAPS_LISTED",
+    "gate1_functional": "PASS",
+    "gate2_code_coverage": "OPEN",
+    "gate3_waivers": "OPEN",
+    "gate4_formal_assertion": "OPEN"
+  },
+  "source": {
+    "branch": "codex/thermo5-linux-dv-signoff-closure",
+    "compile_fingerprint": "9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a",
+    "compile_fingerprint_type": "product_configuration_fingerprint from same-input Raw/Adjusted URG manifest",
+    "compile_input_count": 97,
+    "compile_manifest": "docs/verification/data/thermo5-r12/thermo5-tx-product-compile-manifest.json",
+    "compile_manifest_sha256": "048118a1289f2a9c25f6757dfe114fdcedb20fa8858615dbeb479a05ff7f4675",
+    "configuration": {
+      "control": "AXI-Lite",
+      "dpd_max_taps": 1,
+      "dpd_reset_image": "Identity",
+      "ef2_order": 2,
+      "fifo": "Generic",
+      "interpolation": "Centered-Cubic x2+x2",
+      "state_bits": 20,
+      "step": 5120
+    },
+    "defines": [
+      "+define+THERMO5_AXIL_CONTROL",
+      "+define+THERMO5_CENTERED_CUBIC",
+      "+define+THERMO5_TIDSM_ORDER=2",
+      "+define+THERMO5_STEP=5120",
+      "+define+THERMO5_DPD_MAX_TAPS=1"
+    ],
+    "integrated_thermo5_base_sha": "73577475230a9c4e51273ac7071437f0a7373d48",
+    "product_rtl_files_compared_with_thermo5": 21,
+    "product_rtl_match": "PASS",
+    "product_rtl_sha_mismatches": [],
+    "repository": "cwu766485-ctrl/dsm_ip",
+    "source_manifest": "docs/verification/data/thermo5-r12/thermo5-tx-product-source-manifest.json",
+    "source_manifest_sha256": "8d69f1bd189642b3e2bdc34fa0bb3559e5108cee21fc8f8a14e9d89778aac5a7",
+    "tested_source_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+    "verification_commits_ahead_of_base": [
+      "15052d55756ecc6af91ed6a51a603e18e565f838",
+      "69d815f8f2041c6bfb933d2e4a70dcfc6422ae28",
+      "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0"
+    ],
+    "worktree_clean_at_vcs_compile": true
+  },
+  "tools": {
+    "os": "Rocky Linux 8.10 on WSL2",
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1",
+    "vc_formal": "V-2023.12-SP2_Full64",
+    "vcs": "V-2023.12-SP1_Full64"
+  },
+  "waivers": {
+    "active_exclusions": false,
+    "approved": 0,
+    "candidate_dispositions": {
+      "CONFIG_UNREACHABLE": 361,
+      "FORMAL_UNREACHABLE": 4,
+      "UNRESOLVED": 4
+    },
+    "current_candidates": 369,
+    "el_active_directive_count": 0,
+    "historical_pending_count": 371,
+    "independent_reviewer_approval": false,
+    "pending": 369,
+    "rejected": 0,
+    "resolved_by_current_raw_hit": 2
+  }
+}

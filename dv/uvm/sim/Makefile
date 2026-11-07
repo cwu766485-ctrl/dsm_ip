@@ -128,6 +128,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-config-vcs-run thermo5-axil-graceful-stop-vcs-run thermo5-axil-register-access-vcs-run \
         thermo5-axil-stop-restart-vcs-run \
         thermo5-tx-agent-vseq-smoke \
+        thermo5-unified-scoreboard-mutation-vcs \
         thermo5-tx-system-random \
         thermo5-tx-random-dpd-matrix \
         thermo5-tx-commit-boundary-stall \
@@ -293,6 +294,21 @@ thermo5-tx-agent-vseq-smoke:
 	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 \
 	  THERMO5_TESTNAME=thermo5_sku_axil_virtual_sequence_smoke_test \
 	  UVM_SEED=620301 THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+
+# Direct negative injection into the SV Unified Scoreboard. This is isolated
+# from DUT functional coverage and catches only the six deliberately expected
+# expected checker reports produced by the six mutation cases.
+thermo5-unified-scoreboard-mutation-vcs:
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_COVERAGE=0 \
+	  THERMO5_USE_AXIL=0 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_CENTERED_CUBIC=1 THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120
+	@cd $(ROOT) && $(THERMO5_OUT)/simv \
+	  +UVM_TESTNAME=thermo5_unified_scoreboard_mutation_test \
+	  +ntb_random_seed=610501 \
+	  -l $(THERMO5_OUT)/unified_scoreboard_mutation.log
+	@grep -q 'THERMO5_UNIFIED_SCOREBOARD_MUTATION_PASS' $(THERMO5_OUT)/unified_scoreboard_mutation.log
+	@grep -q 'UVM_ERROR *: *0' $(THERMO5_OUT)/unified_scoreboard_mutation.log
+	@grep -q 'UVM_FATAL *: *0' $(THERMO5_OUT)/unified_scoreboard_mutation.log
 
 thermo5-tx-system-random:
 	@$(PYTHON) $(UVM_ROOT)/sim/run_thermo5_system_random.py \

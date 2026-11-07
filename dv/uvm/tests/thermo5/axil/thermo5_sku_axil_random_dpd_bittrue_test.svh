@@ -340,6 +340,9 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
             end
             if (!drain_complete)
               `uvm_fatal("RANDOM_DPD_DRAIN","Product STOP did not reach drained idle")
+            if (!env.unified_scoreboard.check_expected_queues_drained("random-dpd-matrix"))
+              `uvm_fatal("RANDOM_DPD_EXPECTED_QUEUE",
+                "Independent expectations remained after randomized DPD STOP/drain")
             if (commit_issued && stop_issued && status_checked)
               status_commit_stop_cg.sample(commit_issued,stop_issued,status_checked);
             else

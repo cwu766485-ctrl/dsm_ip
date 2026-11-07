@@ -1,0 +1,149 @@
+{
+  "all_rows_have_allowed_status": true,
+  "approved_waivers": 0,
+  "bin_records_by_metric_and_root_cause": {
+    "branch:FIXED_PRODUCT_CONFIGURATION": 21,
+    "branch:GUARDED_ADDRESS_DECODE": 1,
+    "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 89,
+    "branch:PRODUCT_CADENCE_ALIGNMENT": 2,
+    "cond:INTERPOLATOR_EMPTY_OR_BLOCKED": 4,
+    "cond:RESET_RELEASE_OR_STATE_HOLD": 188,
+    "line:CDC_OR_RESIDUAL_STATE": 6,
+    "line:DPD_TAP_HISTORY_CONFIGURATION": 176,
+    "line:FIXED_PRODUCT_CONFIGURATION": 244,
+    "line:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 32,
+    "toggle:CDC_OR_RESIDUAL_STATE": 130,
+    "toggle:COUNTER_HIGH_BITS": 640,
+    "toggle:DATA_VALUE_OR_TOGGLE_STIMULUS": 3262,
+    "toggle:DPD_TAP_HISTORY_CONFIGURATION": 8192,
+    "toggle:FIXED_PRODUCT_CONFIGURATION": 24,
+    "toggle:IDENTITY_DPD_ARITHMETIC": 944
+  },
+  "closure_status_counts": {
+    "OPEN": 13955
+  },
+  "collision_resolution": "All source rows retained; Condition expression/subexpression restored from Raw URG; semantic IDs include exact expression text.",
+  "diagnostic_product_branch_review": null,
+  "diagnostic_testbench_evidence_sha256": null,
+  "exclusions_applied": 0,
+  "functional_bin_detail_report": {
+    "file": "thermo5-tx-functional-bin-detail.csv",
+    "groups_html_sha256": "cedc298d4360e0a5d0048658354671e949ebfd47f916f7bf6e8d5ecdc965cafd",
+    "rows_including_existing_urg_model_exclusions": 464,
+    "scoreable_rows": 440,
+    "sha256": "bd5c03c3eaebcc06ddb8dd963bf18d10c0de3bc242b8b3261370e3329895764f"
+  },
+  "functional_legally_applicable_positive_bins": {
+    "covered": 436,
+    "expected": 436
+  },
+  "functional_negative_only_semantic_bins": 2,
+  "functional_raw_bins": {
+    "covered": 436,
+    "detail_rows_including_urg_model_excluded": 464,
+    "expected": 440,
+    "includes_generated_cross_bins": true,
+    "uncovered_records": 4,
+    "urg_model_excluded_rows": 24
+  },
+  "interpretation": "Root-cause groups are planning hypotheses. All code gaps remain OPEN until an exact simulator hit or non-vacuous proof is recorded.",
+  "legal_functional_report": "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/legal_230",
+  "negative_report": "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/expected_negative_2",
+  "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1 identity; AXI-Lite product; Generic FIFO",
+  "raw_bin_id_collision_extra_rows": 4,
+  "raw_bin_id_collision_groups": 4,
+  "raw_dut_coverage": {
+    "branch": {
+      "covered": 524,
+      "metric": "branch",
+      "missing": 113,
+      "ownership": "PROJECT_RTL",
+      "percent": 82.2606,
+      "total": 637
+    },
+    "cond": {
+      "covered": 657,
+      "metric": "cond",
+      "missing": 192,
+      "ownership": "PROJECT_RTL",
+      "percent": 77.3852,
+      "total": 849
+    },
+    "line": {
+      "covered": 3338,
+      "metric": "line",
+      "missing": 458,
+      "ownership": "PROJECT_RTL",
+      "percent": 87.9347,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 91288,
+      "metric": "toggle",
+      "missing": 13192,
+      "ownership": "PROJECT_RTL",
+      "percent": 87.3737,
+      "total": 104480
+    }
+  },
+  "raw_dut_fsm_gaps": {
+    "exact_bins": [],
+    "uncovered_state_transition_bins": 0
+  },
+  "raw_report": "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg",
+  "raw_report_sha256": {
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/groups.html": "29d0fdfd765a7a32a0c3bbe2e06c5f430618aebed6ce64c4a584e201e89d6166",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/grp6.html": "ab391b78a2e3f36e036ac44c9cec6c851dadbf4bfcce58673a8843793c6ca166",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/grp7.html": "cf920c5f54ef73e7bc55343c4c661ec0036d89980374698d366a835fb6f34e33",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod1.html": "4fb4041fa9366716e159823a694661931b0aec4a05102eb8b475965bcb64a38a",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod10.html": "c9bbb85ce5871c380975a83082edb7620e4a2e9162de4d8ec8553c083a3ddef6",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod11.html": "b8c4cbcc9ac7614c58fe2c8b4eda6ce3392cb2ba525b722269f38305be791545",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod13.html": "123dbbf341784127cb2962f50e7335474e3c90c05b31dc236681019826145ac6",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod14.html": "84a060ed0478e2440a0935719f3565b5771f6b493677db41eebce1e7c257efce",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod16.html": "08df353aadc3f25b7bf7b345298970382e7e35d31537f2f737d8c2931b3ca03e",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod17.html": "0e106fc658a882038f85f1e73bb6102214cb3ae46d5c77d93973fc3ed6424eaf",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod18.html": "3b89f2ee3f49487598a38ccd26ea614f556c4bee985f160daeb1e2e35b45f4c4",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod2.html": "077178c3391a6b4dbc871386516599b23bfadda0d9155de8b218ab92eafe0034",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod20.html": "409be7a62a776f267d938b49502c63a4de2be3544f600ad0fede864a708355d6",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod22.html": "55821bad0f6e8243b9eab237d2ac46c2aea6dd52911f863ec3cb6b49c00f3681",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod23.html": "ba40dbabcb13abf3602a17dd6847b1a8b16bfdfbf665ec779c2b67da35511a3b",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod24.html": "f9368e09ce01a7953d14f19c9fefd7488603f54939ca3c6b25f49e48d07df9b8",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod3.html": "49a9f56fc749f2d0ffea8e9a9f4c24f96c9627ce8b916d69cbee03ec72e9af99",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod4.html": "77342b7d7fe894fcea26bebe984eef5eae6c68484adb3de8ca0639a4f4574e48",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod6.html": "ffcfc893fefb873318fb3c14e4ab2d2d30f101383dee72cb9f867abeb3300e08",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod7.html": "e8e6b0e2c59f4b2a49e27c9eb55fcd46c300e40231793ae1cdbe2be924eba043",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod8.html": "5bc5710b9bbb349c3159ee774047ff51db959c7fdf15aed39bc0cac9530b3f5f",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/mod9.html": "8737d1cbeadd6df7b2b05ee36624bae395a1ab6410e408200617807a6dfd835f",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/current_raw_adjusted_232_dut_hier_valid_el/raw_urg/modlist.html": "e99d541e000a2ed74b12f846e9141ec2961c7e3378c84fd043c0325217507a1d",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/expected_negative_2/groups.html": "5eec635ca5622581fed19b659aa60b157a866456060127d931cbf68a503ffd00",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/expected_negative_2/grp6.html": "d46120f8961a1660950232a0d9c0b06e3638aa2b6cc4be6207e2668327d47633",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/expected_negative_2/grp7.html": "5c34c9178a0834c772e6dfa6206bd4632358c044120c6aeefbf5defcb27bab13",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/legal_230/groups.html": "cedc298d4360e0a5d0048658354671e949ebfd47f916f7bf6e8d5ecdc965cafd",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/legal_230/grp6.html": "ab391b78a2e3f36e036ac44c9cec6c851dadbf4bfcce58673a8843793c6ca166",
+    "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/legal_230/grp7.html": "b4458292e1fb79a078b57f38a08a5dec4900048db89a8acfe93a7a5853778812"
+  },
+  "raw_simulation_source_mismatches": [],
+  "root_cause_task_count": 415,
+  "schema_version": 2,
+  "separately_hash_bound_diagnostic_testbench_mismatches": [],
+  "source_ledger": "/home/ray/workspace/dsm_ip/runs/thermo5_linux_dv_signoff_gate1/source_a03c2/gap_ledger/thermo5-tx-gate3-coverage-ledger.csv",
+  "source_ledger_metric_counts": {
+    "branch": 113,
+    "cond": 192,
+    "line": 458,
+    "toggle": 13192
+  },
+  "source_ledger_rows": 13955,
+  "source_ledger_sha256": "69d88d0c029d48aabc583384f2428b0e5319a07b79efa4756fe9620675ec9610",
+  "source_manifest_mismatches": [],
+  "source_manifest_sha256": "f0b0f9ba4c3804b6d016b616b5ce54a0bac13646480d61c951b708123d8fe323",
+  "source_manifest_sha_matches_current_tree": true,
+  "source_product_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+  "task_count_by_metric": {
+    "branch": 44,
+    "cond": 93,
+    "line": 110,
+    "toggle": 168
+  },
+  "unique_expression_aware_semantic_bin_ids": 13955
+}

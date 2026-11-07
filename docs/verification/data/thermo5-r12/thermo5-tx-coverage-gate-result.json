@@ -1,0 +1,188 @@
+{
+  "adjusted_coverage": "SEPARATE_URG_FROM_SAME_RAW_VDB_LIST",
+  "adjusted_dut_assertions": {
+    "attempted_denominator": 15,
+    "failures": 0,
+    "percent_of_attempted": 86.6667,
+    "success": 13,
+    "uncovered": 2,
+    "without_attempts": 2
+  },
+  "adjusted_exclusions_applied": false,
+  "adjusted_fsm": {
+    "states": {
+      "covered": 13,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 13
+    },
+    "transitions": {
+      "covered": 22,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 22
+    }
+  },
+  "adjusted_functional_groups": {
+    "commit_boundary_stall_cg": 100.0,
+    "core_cg": 100.0,
+    "ef2_cg": 100.0,
+    "plane_atomic_cg": 100.0,
+    "random_cfg_cg": 100.0,
+    "read_cg": 100.0,
+    "reset_cg": 100.0,
+    "reset_pending_cg": 100.0,
+    "run_prefill_gap_cg": 100.0,
+    "source_cg": 100.0,
+    "source_gap_pa_fifo_cg": 100.0,
+    "status_commit_stop_cg": 100.0,
+    "stop_restart_cg": 100.0,
+    "stop_tlast_drain_cg": 100.0,
+    "transaction_event_cg": 100.0,
+    "write_cg": 100.0
+  },
+  "adjusted_project_rtl": {
+    "branch": {
+      "covered": 524,
+      "missing": 113,
+      "percent": 82.2606,
+      "total": 637
+    },
+    "cond": {
+      "covered": 657,
+      "missing": 192,
+      "percent": 77.3852,
+      "total": 849
+    },
+    "line": {
+      "covered": 3338,
+      "missing": 458,
+      "percent": 87.9347,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 91288,
+      "missing": 13192,
+      "percent": 87.3737,
+      "total": 104480
+    }
+  },
+  "exclusions_applied": false,
+  "functional_group_count": 16,
+  "functional_groups": {
+    "commit_boundary_stall_cg": 100.0,
+    "core_cg": 100.0,
+    "ef2_cg": 100.0,
+    "plane_atomic_cg": 100.0,
+    "random_cfg_cg": 100.0,
+    "read_cg": 100.0,
+    "reset_cg": 100.0,
+    "reset_pending_cg": 100.0,
+    "run_prefill_gap_cg": 100.0,
+    "source_cg": 100.0,
+    "source_gap_pa_fifo_cg": 100.0,
+    "status_commit_stop_cg": 100.0,
+    "stop_restart_cg": 100.0,
+    "stop_tlast_drain_cg": 100.0,
+    "transaction_event_cg": 100.0,
+    "write_cg": 100.0
+  },
+  "functional_product_source_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+  "inputs": {
+    "adjusted_report_manifest": "docs/verification/data/thermo5-r12/thermo5-tx-raw-adjusted-report-manifest.json",
+    "adjusted_summary": "docs/verification/data/thermo5-r12/thermo5-tx-adjusted-coverage-summary.json",
+    "assertion_summary": "docs/verification/data/thermo5-r12/thermo5-tx-legal-assertion-summary.json",
+    "el_file": "docs/verification/data/thermo5-r12/thermo5-tx-approved.el",
+    "functional_bin_detail": "docs/verification/data/thermo5-r12/thermo5-tx-functional-bin-detail.csv",
+    "groups_html": "runs/thermo5_linux_dv_signoff_gate1/source_a03c2/final_waiver_rebind_20261106_final/raw_urg/groups.html",
+    "raw_summary": "docs/verification/data/thermo5-r12/thermo5-tx-raw-coverage-summary.json",
+    "waiver_audit": "docs/verification/data/thermo5-r12/thermo5-tx-waiver-pipeline-audit.json",
+    "waivers_csv": "docs/verification/thermo5_tx_waivers.csv"
+  },
+  "legally_applicable_functional_bins": {
+    "covered": 436,
+    "percent": 100.0,
+    "total": 436,
+    "uncovered": 0
+  },
+  "pending_waiver_count": 369,
+  "raw_dut_assertions": {
+    "attempted_denominator": 15,
+    "failures": 0,
+    "percent_of_attempted": 86.6667,
+    "success": 13,
+    "uncovered": 2,
+    "without_attempts": 2
+  },
+  "raw_exclusions_applied": false,
+  "raw_fsm": {
+    "states": {
+      "covered": 13,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 13
+    },
+    "transitions": {
+      "covered": 22,
+      "missing": 0,
+      "percent": 100.0,
+      "total": 22
+    }
+  },
+  "raw_functional_groups": {
+    "thermo5_sku_uvm_pkg::thermo5_axil_monitor::read_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_axil_monitor::reset_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_axil_monitor::write_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::commit_boundary_stall_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::random_cfg_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::status_commit_stop_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_axil_reset_pending_commit_test::reset_pending_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::run_prefill_gap_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_gap_pa_fifo_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_tlast_drain_cg": 100.0,
+    "thermo5_sku_uvm_pkg::thermo5_sku_coverage::transaction_event_cg": 100.0
+  },
+  "raw_project_rtl": {
+    "branch": {
+      "covered": 524,
+      "missing": 113,
+      "percent": 82.2606,
+      "total": 637
+    },
+    "cond": {
+      "covered": 657,
+      "missing": 192,
+      "percent": 77.3852,
+      "total": 849
+    },
+    "line": {
+      "covered": 3338,
+      "missing": 458,
+      "percent": 87.9347,
+      "total": 3796
+    },
+    "toggle": {
+      "covered": 91288,
+      "missing": 13192,
+      "percent": 87.3737,
+      "total": 104480
+    }
+  },
+  "rejected_waiver_count": 0,
+  "schema_version": 1,
+  "source_manifest": {
+    "audit_tool_count": 5,
+    "base_commit": "73577475230a9c4e51273ac7071437f0a7373d48",
+    "path": "docs/verification/data/thermo5-r12/thermo5-tx-product-compile-manifest.json",
+    "product_source_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+    "sha256": "048118a1289f2a9c25f6757dfe114fdcedb20fa8858615dbeb479a05ff7f4675",
+    "source_file_count": 97
+  },
+  "status": "RAW_100_OPEN",
+  "waiver_count": 0
+}

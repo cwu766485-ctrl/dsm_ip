@@ -1,0 +1,55 @@
+{
+  "status": "WHAT_IF_ONLY_NOT_OFFICIAL_SIGNOFF",
+  "product_source_sha": "a03c2ddf2b997a3aff7ea54acdd2f6e2f6cdcce0",
+  "analysis_repository_head": "98620217e8b752cef165fa0c01512e5c34306aff",
+  "compile_fingerprint": "9f5e2d49d42795bb4b38f62b909cc690dcb726f1217efcdc4cd50029a0d4184a",
+  "tool": "URG V-2023.12-SP1",
+  "metrics": "line+cond+fsm+tgl+branch+assert",
+  "vdb_count": 233,
+  "test_vdb_count": 232,
+  "vdb_path_list_sha256": "58118a7f4172c1098585655eab58712ce3e10443284fc22ad20b09b534cedb7a",
+  "vdb_manifest_sha256": "3de7c1d58c89dac432a6e2a328e255e845047bbe3c0655496de90c4891dc2645",
+  "same_as_round12_manifest": true,
+  "raw_and_adjusted_vdb_paths_identical": true,
+  "analysis_el_sha256": "9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb",
+  "runs": [
+    {
+      "label": "raw",
+      "exit_code": 0,
+      "elapsed_seconds": 1.537,
+      "dashboard_exists": true,
+      "command_sha256": "2aa10807da7c4991fbaf20302b2a7045fc674f1e9113ca7f2e0d147c8991b763",
+      "log_sha256": "94e529a7c1a169054f45e368ebc6fc4df36062eb091ee5c6f10915aa744ba2b8",
+      "warnings": 0,
+      "analysis_el_sha256": null
+    },
+    {
+      "label": "adjusted",
+      "exit_code": 0,
+      "elapsed_seconds": 0.76,
+      "dashboard_exists": true,
+      "command_sha256": "89687c39b56ffc496ae259a169bc186cc0803813282032534a825a70e534b2c5",
+      "log_sha256": "d2bd57eaa37a0490f893874b0a783af9fd5564f2735e21204c3c8da37c8f4461",
+      "warnings": 0,
+      "analysis_el_sha256": "9a4c29b2ec8ac8392057621a0d65f43fdd9a40abdda9140623e9a94702ee7fbb"
+    }
+  ],
+  "coverage": {
+    "raw": {
+      "branch": "524/637",
+      "condition": "657/849",
+      "line": "3338/3796",
+      "toggle": "91288/104480",
+      "fsm_states": "13/13",
+      "fsm_transitions": "22/22"
+    },
+    "whatif_adjusted": {
+      "branch": "524/536",
+      "condition": "657/741",
+      "line": "3338/3644",
+      "toggle": "91288/104480",
+      "fsm_states": "13/13",
+      "fsm_transitions": "22/22"
+    }
+  }
+}

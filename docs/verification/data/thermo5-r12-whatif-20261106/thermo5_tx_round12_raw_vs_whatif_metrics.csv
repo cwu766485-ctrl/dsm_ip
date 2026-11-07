@@ -1,0 +1,7 @@
+metric,raw_covered,raw_total,raw_missing,raw_percent,whatif_covered,whatif_total,whatif_missing,whatif_percent,excluded_exact_bins
+branch,524,637,113,82.2606,524,536,12,97.7612,101
+cond,657,849,192,77.3852,657,741,84,88.664,108
+line,3338,3796,458,87.9347,3338,3644,306,91.6026,152
+toggle,91288,104480,13192,87.3737,91288,104480,13192,87.3737,0
+fsm_states,13,13,0,100.0,13,13,0,100.0,0
+fsm_transitions,22,22,0,100.0,22,22,0,100.0,0

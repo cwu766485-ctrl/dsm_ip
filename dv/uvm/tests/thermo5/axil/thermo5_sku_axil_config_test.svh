@@ -350,6 +350,9 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
           `uvm_fatal("AXIL_CONTROL","run_request did not read back as one")
         axil_write(8'h00,32'd0,0,0,resp);
         if (resp!=2'b00) `uvm_fatal("AXIL_STOP","run_request clear failed after the stream drained")
+        if (!env.unified_scoreboard.check_expected_queues_drained("config-test-stop"))
+          `uvm_fatal("AXIL_CONFIG_EXPECTED_QUEUE",
+            "Independent expectations remained after the config test STOP/drain")
         // Reassert both public resets after traffic and verify the AXI-Lite
         // register bank/mailbox return to documented reset defaults.
         env.control.reset_both();
@@ -652,7 +655,9 @@ class thermo5_sku_axil_reset_release_source_test extends thermo5_sku_axil_produc
 
   virtual function void configure_case();
     super.configure_case();
-    cfg.frame_starts=1;
+    // The shared 56-word Golden vector contains three legal frame-start
+    // markers. Keep the configuration aligned with that immutable vector;
+    // this test exercises one AXIS packet spanning those DSP frames.
     if (cfg.core_words!=56 || cfg.source_beats!=32)
       `uvm_fatal("RESET_EDGE_WORDS",
         "Use CORE_WORDS=56 for one legal 32-beat product packet")

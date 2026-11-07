@@ -1,0 +1,225 @@
+{
+  "assertion_status_counts": {
+    "FAILURE": 3,
+    "SUCCESS": 15,
+    "UNCOVERED": 4,
+    "WITHOUT_ATTEMPTS": 2
+  },
+  "branch_gap_dispositions": {
+    "OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT": 3,
+    "OPEN_PROJECT_BIN_REVIEW": 18,
+    "REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM": 92
+  },
+  "dut_assertion_status_counts": {
+    "FAILURE": 3,
+    "SUCCESS": 13,
+    "UNCOVERED": 2
+  },
+  "exclusions_applied": false,
+  "expected_negative_assertions": [
+    {
+      "assertion": "thermo5_sku_uvm_tb.dut.u_cdc.unnamed$$_1",
+      "attempts": "611",
+      "category": "0",
+      "failures": "1",
+      "incomplete": "0",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "ownership": "PROJECT_RTL_OR_UVM",
+      "severity": "0",
+      "source_file": "/home/ray/workspace/dsm_ip/rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "status": "FAILURE",
+      "successes": "610"
+    },
+    {
+      "assertion": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+      "attempts": "1",
+      "category": "0",
+      "failures": "1",
+      "incomplete": "0",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "ownership": "PROJECT_RTL_OR_UVM",
+      "severity": "0",
+      "source_file": "/home/ray/workspace/dsm_ip/rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+      "status": "FAILURE",
+      "successes": "0"
+    },
+    {
+      "assertion": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1",
+      "attempts": "1",
+      "category": "0",
+      "failures": "1",
+      "incomplete": "0",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "ownership": "PROJECT_RTL_OR_UVM",
+      "severity": "0",
+      "source_file": "/home/ray/workspace/dsm_ip/rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+      "status": "FAILURE",
+      "successes": "0"
+    }
+  ],
+  "fsm_denominators": [
+    {
+      "covered": 3,
+      "fsm": "q_count",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "metric": "states",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 3
+    },
+    {
+      "covered": 5,
+      "fsm": "q_count",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "metric": "transitions",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 5
+    },
+    {
+      "covered": 0,
+      "fsm": "q_count",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "metric": "sequences",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 0
+    },
+    {
+      "covered": 3,
+      "fsm": "q_count",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "metric": "states",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 3
+    },
+    {
+      "covered": 5,
+      "fsm": "q_count",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "metric": "transitions",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 5
+    },
+    {
+      "covered": 0,
+      "fsm": "q_count",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "metric": "sequences",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 0
+    },
+    {
+      "covered": 7,
+      "fsm": "rem_count_q",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "states",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 7
+    },
+    {
+      "covered": 12,
+      "fsm": "rem_count_q",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "transitions",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 12
+    },
+    {
+      "covered": 0,
+      "fsm": "rem_count_q",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "metric": "sequences",
+      "missing": 0,
+      "ownership": "PROJECT_RTL",
+      "total": 0
+    }
+  ],
+  "line_gap_dispositions": {
+    "FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1": 128,
+    "FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH": 48,
+    "OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT": 6,
+    "OPEN_PROJECT_BIN_REVIEW": 32,
+    "REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM": 244
+  },
+  "metrics": [
+    {
+      "covered": 3338,
+      "metric": "line",
+      "missing": 458,
+      "ownership": "PROJECT_RTL",
+      "percent": 87.9347,
+      "total": 3796
+    },
+    {
+      "covered": 657,
+      "metric": "cond",
+      "missing": 192,
+      "ownership": "PROJECT_RTL",
+      "percent": 77.3852,
+      "total": 849
+    },
+    {
+      "covered": 91288,
+      "metric": "toggle",
+      "missing": 13192,
+      "ownership": "PROJECT_RTL",
+      "percent": 87.3737,
+      "total": 104480
+    },
+    {
+      "covered": 524,
+      "metric": "branch",
+      "missing": 113,
+      "ownership": "PROJECT_RTL",
+      "percent": 82.2606,
+      "total": 637
+    },
+    {
+      "covered": 0,
+      "metric": "line",
+      "missing": 0,
+      "ownership": "VENDOR_XPM",
+      "percent": null,
+      "total": 0
+    },
+    {
+      "covered": 0,
+      "metric": "cond",
+      "missing": 0,
+      "ownership": "VENDOR_XPM",
+      "percent": null,
+      "total": 0
+    },
+    {
+      "covered": 0,
+      "metric": "toggle",
+      "missing": 0,
+      "ownership": "VENDOR_XPM",
+      "percent": null,
+      "total": 0
+    },
+    {
+      "covered": 0,
+      "metric": "branch",
+      "missing": 0,
+      "ownership": "VENDOR_XPM",
+      "percent": null,
+      "total": 0
+    }
+  ],
+  "raw_dut": {
+    "assert": "86.67",
+    "branch": "82.26",
+    "cond": "77.39",
+    "fsm": "100.00",
+    "line": "87.93",
+    "score": "86.94",
+    "toggle": "87.37"
+  }
+}
