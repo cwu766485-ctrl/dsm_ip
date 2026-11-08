@@ -2,7 +2,7 @@
 
 ## Current execution state: Thermo5 TX Round 17 approved-exclusion and exact-bin closure (2026-11-08)
 
-Round 17 evidence is on PR #46 (`codex/thermo5-round16-coverage-closure`), head `26088d5a31272568ac48f5cf838fd755751148db`, still open/draft and not merged. Product source remains `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`; the frozen Centered-Cubic x2+x2 / EF2 ORDER=2 / STEP=5120 / 20-bit / DPD_MAX_TAPS=1 Identity / AXI-Lite / Generic FIFO profile and RTL aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003` are unchanged.
+Round 17 evidence is on PR #46 (`codex/thermo5-round16-coverage-closure`), audited head `3205448de89458281fd7ff9e17ff8c4c0fd35ab2`, still open/draft and not merged. Product source remains `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`; the frozen Centered-Cubic x2+x2 / EF2 ORDER=2 / STEP=5120 / 20-bit / DPD_MAX_TAPS=1 Identity / AXI-Lite / Generic FIFO profile and RTL aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003` are unchanged.
 
 Round 17 reconciles the 371-row official waiver inventory to 369 exact current Round 16 open-bin candidates plus two archived Raw hits (`RESOLVED_BY_RAW_HIT`). It also inventories 305 exact Branch/Condition tasks (80 Pair-Look-Ahead candidate bins, 8 additional fixed-parameter candidates, 25 other Branches, 188 reset/state-hold Conditions, and 4 interpolator Conditions). All 369 candidates remain pending; approved waivers and active exclusions remain zero. The malformed Round 15 audit's duplicate/missing IDs are preserved and documented in the Round 17 reconciliation outputs.
 
@@ -12,7 +12,7 @@ No Round 17 VCS regression or URG merge ran. VCS V-2023.12-SP1 rejects WSL2 kern
 
 **Decision: Linux DV signoff OPEN (`RAW_100_OPEN`).** Detailed report: `docs/verification/thermo5-tx-round17-approved-exclusion-exact-bin-closure-20261108.md`; machine evidence and exact ledgers: `docs/verification/data/thermo5-r17/`. Next action: run VCS/URG on a supported licensed Linux EDA host from one frozen SHA and homogeneous VDB set, rebind the 371-row inventory through the unchanged fail-closed pipeline, then continue legal target-bin tests and mandatory Formal/Assertion closure. Keep every unapproved/unproven item OPEN. No FPGA/XPM/GT/Vivado/physical QAM256 signoff is claimed.
 
-PR #46's latest hosted checks: Repository Hygiene PASS; Thermo5 DV syntax/reference job PASS; licensed-DV job SKIPPED; independent PR reviews 0. The PR includes Formal harness/runner and reconciliation-tool changes in addition to evidence, so it is not treated as an audit-evidence-only intermediate merge. Keep it open and do not merge before supported-host VCS/URG evidence and independent review.
+At audited head `3205448`, hosted Repository Hygiene passed (run `42468815736`) and the Thermo5 DV syntax/reference job passed (run `42468815748`); `licensed-dv` was SKIPPED; independent PR reviews remain 0. The PR includes Formal harness/runner and reconciliation-tool changes in addition to evidence, so it is not treated as an audit-evidence-only intermediate merge. Keep it open and do not merge before supported-host VCS/URG evidence and independent review.
 
 ## Previous execution state: Thermo5 TX Round 16 coverage closure (2026-11-08)
 

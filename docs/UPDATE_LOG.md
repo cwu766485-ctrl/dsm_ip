@@ -1,3 +1,18 @@
+# 2026-11-08 17:48 SGT — Thermo5 PR #46 CI follow-up
+
+- Rechecked PR #46 at commit `3205448de89458281fd7ff9e17ff8c4c0fd35ab2`.
+  GitHub Repository Hygiene run `42468815736` passed; Thermo5 DV run
+  `42468815748` passed Python syntax/whitespace and reference-model tests, but
+  skipped its self-hosted `licensed-dv` job. PR review list remains empty.
+- Recorded these exact run IDs in the Round 17 report and execution frontier.
+  The successful hosted jobs are not VCS/URG/Formal product signoff evidence.
+- PR remains Draft/Open on `codex/thermo5-round16-coverage-closure`; no merge
+  to `thermo5` was performed. Gate 0 remains blocked by the local WSL2/VCS
+  kernel incompatibility, and the audit-only intermediate-merge condition is
+  not met because this PR also changes Formal harness/runner code.
+- Checks: read-only GitHub workflow/review status inspection. Product RTL and
+  official coverage/waiver state unchanged.
+
 # 2026-11-08 17:47 SGT — Thermo5 final closure plan pre-merge audit
 
 - Read the user-provided Gate 0–6 final Linux DV closure and merge plan. Preserved
