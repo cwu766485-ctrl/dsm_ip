@@ -57,4 +57,41 @@ module thermo5_identity_lemmas_harness(
     model.expected_valid[5] |-> model.dut.q_s5[0] == model.expected_q[5]);
   a_stage6_q_align: assert property (disable iff (!rst_n)
     model.expected_valid[6] |-> model.dut.q_s6[0] == model.expected_q[6]);
+
+  // Extend the token-indexed reference through the arithmetic stages. The
+  // reference pipeline advances on the DUT ready/valid clock enable, so these
+  // checks retain their meaning during arbitrary output stalls.
+  a_stage7_i_product_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[7] |->
+      model.dut.i_gr_s7[0] == ($signed(model.expected_i[7]) * 64'sd16384) &&
+      model.dut.q_gi_s7[0] == 64'sd0);
+  a_stage7_q_product_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[7] |->
+      model.dut.i_gi_s7[0] == 64'sd0 &&
+      model.dut.q_gr_s7[0] == ($signed(model.expected_q[7]) * 64'sd16384));
+
+  a_stage8_i_term_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[8] |->
+      model.dut.term_i_s8[0] == $signed(model.expected_i[8]));
+  a_stage8_q_term_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[8] |->
+      model.dut.term_q_s8[0] == $signed(model.expected_q[8]));
+
+  a_stage9_i_pair_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[9] |->
+      model.dut.sum_i_pair0_s8 == $signed(model.expected_i[9]) &&
+      model.dut.sum_i_pair1_s8 == 64'sd0);
+  a_stage9_q_pair_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[9] |->
+      model.dut.sum_q_pair0_s8 == $signed(model.expected_q[9]) &&
+      model.dut.sum_q_pair1_s8 == 64'sd0);
+
+  a_stage10_i_sum_and_output_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[10] |->
+      model.dut.sum_i_s9 == $signed(model.expected_i[10]) &&
+      !model.dut.sat_i && i_out == model.expected_i[10]);
+  a_stage10_q_sum_and_output_identity: assert property (disable iff (!rst_n)
+    model.expected_valid[10] |->
+      model.dut.sum_q_s9 == $signed(model.expected_q[10]) &&
+      !model.dut.sat_q && q_out == model.expected_q[10]);
 endmodule
