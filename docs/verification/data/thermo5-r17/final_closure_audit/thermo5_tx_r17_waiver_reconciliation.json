@@ -37,9 +37,9 @@
   "legacy_compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
   "outputs": {
     "branch_condition_ledger_csv": "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_branch_condition_ledger.csv",
-    "branch_condition_ledger_csv_sha256": "af5dfa8713c70e28c32b12b043fe5469420ec5a6e9035b9f8a07a68166a752a1",
+    "branch_condition_ledger_csv_sha256": "22d43a0dae36646cc9a0b05671a447e1c3b5279d08c395f2864cbbe7158dd4ff",
     "waiver_reconciliation_csv": "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_waiver_reconciliation.csv",
-    "waiver_reconciliation_csv_sha256": "e6b4a654ca80b40cf3d70af87a1532970cef3451ff553b32d74c3c4cd6e4a7e6"
+    "waiver_reconciliation_csv_sha256": "8ffaae9c693ad799c9d3a3553d3d7cce732093fd6765082eda7e590e0836127d"
   },
   "pipeline_binding": {
     "approved_exclusions": 0,

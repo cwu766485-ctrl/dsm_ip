@@ -1,3 +1,34 @@
+# 2026-11-08 — Thermo5 post-merge audit artifact normalization
+
+- Normalized generated Round 17 audit CSV line endings to the repository LF
+  policy by setting the reconciliation writer's explicit line terminator.
+- Re-ran the read-only reconciliation against the same compile-parent manifest,
+  Raw/Adjusted URG report and 551-Test VDB manifest. Candidate counts and
+  coverage dispositions did not change; refreshed CSV and evidence-manifest
+  hashes to match the normalized files.
+- Checks: current-chain reconciliation PASS, exact generated ledger hashes,
+  Python syntax and JSON/CSV/gzip parsing, plus `git diff --check`.
+- No RTL, Product VDB, Formal result, Waiver decision or coverage denominator
+  changed. Linux DV signoff remains OPEN.
+
+# 2026-11-08 — Thermo5 PR #46 intermediate integration
+
+- Merged PR #46 into `thermo5` at `76f485d370c89493c46098b142ffad64544b2cfc`
+  after the local intermediate-scope review. PR #46 records verification and
+  audit evidence only; it does not represent final Linux DV signoff.
+- Kept the execution frontier aligned to the merged repository state. Raw
+  Code Coverage remains Branch 524/637, Condition 657/849, Line 3338/3796,
+  Toggle 92072/104480, with 13,171 exact uncovered bins, zero approved
+  Waivers and zero applied Exclusions. Formal/Assertion and final signoff
+  remain OPEN.
+- Checks: GitHub merge result confirmed; workflow syntax/reference checks and
+  repository hygiene passed; the hosted licensed-DV job was skipped. The
+  current-source local VCS/URG/Formal evidence is documented in the Round 17
+  report and remains scoped as recorded there.
+- Remaining: full-chain DPD Identity, Outstanding Counter, Active-Tap COMMIT,
+  COMMIT lifecycle, legal product `q1_tail`, exact-bin Waiver review and
+  reachable coverage closure. XPM/GT/Vivado/FPGA/RF checks remain NOT RUN.
+
 # 2026-11-08 — Thermo5 Round 17 final closure root-cause audit
 
 - Audited the five DPD Identity properties individually. The original VC Formal

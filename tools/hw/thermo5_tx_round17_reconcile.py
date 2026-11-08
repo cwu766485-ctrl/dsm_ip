@@ -331,12 +331,12 @@ def audit(out_dir: Path, current_compile_parent_path: Path, current_report_path:
     out_dir.mkdir(parents=True, exist_ok=True)
     reconciliation_path = out_dir / "thermo5_tx_r17_waiver_reconciliation.csv"
     with reconciliation_path.open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(audit_rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(audit_rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(audit_rows)
     priority_path = out_dir / "thermo5_tx_r17_branch_condition_ledger.csv"
     with priority_path.open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=list(priority_rows[0]))
+        writer = csv.DictWriter(stream, fieldnames=list(priority_rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(priority_rows)
 

@@ -13,7 +13,7 @@
     "pair1_formal_manifest": "cd73bcdc6be9b6ca9b6a0b13245100d176e17f813fd0c601e293d5e6fdcf318d",
     "pair1_formal_properties": "5858856248a95d42354a2da44767e7d97619f5c88f16071b72ef6a9f4b264ed2",
     "raw_assertion_inventory.csv": "aa302bdd03ea59fd8a2a876485bc4506836d2220e1a18344232e32552d31366c",
-    "reconcile_script.py": "65eb3955b76e9adb5772e5cf8b253316cfd15a4ee31ea85c5f93181abd367e99",
+    "reconcile_script.py": "d1c1c5f7a55496140590f024675dc5827e451c6c5d0849d7c2164969983fb1ab",
     "thermo5-tx-final-closure-round17-20261108.md": "47abcb74e50f50c48dbcc1f88a9bf2466132a3ebb6dd3edb975b956d15386705",
     "thermo5-tx-r17-wsl-vcs-reverification-20261108.md": "878fdf9d446fa4db93ce4aaf63d3ef925d576f4f363bc3a3ac94ec93b6611a08"
   },
@@ -96,8 +96,8 @@
     "vcs": "V-2023.12-SP1_Full64"
   },
   "waivers": {
-    "audit_csv_sha256": "e6b4a654ca80b40cf3d70af87a1532970cef3451ff553b32d74c3c4cd6e4a7e6",
-    "audit_json_sha256": "57a33733935c2dfd555ea9aca4bb2402706615ab2fc7ab4f071cd5c2eff832fe",
+    "audit_csv_sha256": "8ffaae9c693ad799c9d3a3553d3d7cce732093fd6765082eda7e590e0836127d",
+    "audit_json_sha256": "daa0871fb02c498ab04c6a284d1fd92e0acc1f61d6e17ec8276d47db0e9f6503",
     "candidate_exact_open_bin_match_count": 369,
     "eligible": 361,
     "exclusions": 0,
