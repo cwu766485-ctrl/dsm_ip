@@ -1,3 +1,28 @@
+# 2026-11-08 17:47 SGT — Thermo5 final closure plan pre-merge audit
+
+- Read the user-provided Gate 0–6 final Linux DV closure and merge plan. Preserved
+  the original workspace without edits; it has seven pre-existing modified
+  Round 12 What-if CSV files. All work remains in the isolated PR #46 worktree.
+- Re-audited PR #46 at head `26088d5a31272568ac48f5cf838fd755751148db`
+  against `thermo5` `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`: 26 changed
+  paths, 3 commits ahead, no product RTL/parameter/algorithm changes. It does
+  change the Formal harness/runner and Round 17 reconciliation utility as well
+  as reports and evidence, so it is not classified as evidence-only.
+- GitHub reports no independent reviews. Repository Hygiene workflow
+  `42464831307` passed; Thermo5 DV workflow `42464831299` passed the syntax and
+  reference-model job but skipped `licensed-dv`. Therefore it provides no VCS,
+  URG, regression, VDB, or coverage evidence. PR #46 remains Draft/Open and is
+  not merged under the plan's audit-only intermediate-merge exception.
+- Gate 0 remains blocked locally: VC Formal license works and its scoped
+  current-source results are recorded, but VCS V-2023.12-SP1 rejects the WSL2
+  kernel and URG cannot initialize. No new Raw/Adjusted coverage or complete
+  product regression is claimed; Round 16 metrics remain carry-forward,
+  waivers/exclusions remain 0/0, and Linux DV signoff remains OPEN.
+- Checks: GitHub PR file inventory, base/head comparison, reviews and latest
+  workflow jobs inspected; original workspace status confirmed and preserved.
+  No product RTL, parameters, regressions, VDBs, official Waivers, or `.el`
+  exclusions changed. No merge was performed.
+
 # 2026-11-08 16:42 SGT — Thermo5 Round 17 license recovery and Formal reproof
 
 - Resumed Round 17 after the user restored the VC Formal license. VC Formal
