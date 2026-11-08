@@ -16,6 +16,8 @@ module thermo5_identity_lemmas_harness(
     model.dut.tap_enable_s4[0] |-> model.dut.c3r_r2_s4[0]==0 && model.dut.c3i_r2_s4[0]==0);
   a_gain_identity: assert property (disable iff(!rst_n)
     model.dut.tap_enable_s5[0] |-> model.dut.gain_re_s5[0]==64'sd16384 && model.dut.gain_im_s5[0]==0);
+  a_gain_identity_s6: assert property (disable iff(!rst_n)
+    model.dut.tap_enable_s6[0] |-> model.dut.gain_re_s6[0]==64'sd16384 && model.dut.gain_im_s6[0]==0);
   a_product_i: assert property (disable iff(!rst_n)
     model.dut.tap_enable_s7[0] |-> model.dut.i_gr_s7[0] inside {[-64'sd536870912:64'sd536854528]} && model.dut.q_gi_s7[0]==0);
   a_product_q: assert property (disable iff(!rst_n)
@@ -69,6 +71,8 @@ module thermo5_identity_lemmas_harness(
     model.expected_valid[7] |->
       model.dut.i_gi_s7[0] == 64'sd0 &&
       model.dut.q_gr_s7[0] == ($signed(model.expected_q[7]) * 64'sd16384));
+  a_stage7_valid_align: assert property (disable iff (!rst_n)
+    model.expected_valid[7] == model.dut.tap_enable_s7[0]);
 
   a_stage8_i_term_identity: assert property (disable iff (!rst_n)
     model.expected_valid[8] |->
