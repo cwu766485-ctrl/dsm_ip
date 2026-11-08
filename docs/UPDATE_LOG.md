@@ -1,3 +1,26 @@
+# 2026-11-08 — Thermo5 scoped Formal follow-up
+
+- With VC Formal V-2023.12-SP2 available, ran nine targeted jobs on source
+  revision `e5437af88232a743e6097f1d50734152683db933`, whose Product RTL hash
+  matches the prior VCS/URG run. The 32-bit DPD counter transition harness
+  passed 35 assertions and 4 Covers. CDC residual/data-empty/end, EF2 pair and
+  product-parameter, and frame-tail legal-metadata/reset jobs passed within
+  their recorded scopes.
+- The batch overall result is FAIL because the standalone DPD Identity
+  arithmetic job returned only `a_valid_latency` as PROVEN out of five required
+  assertions. The payload identity/saturation assertions remain OPEN; four
+  endpoint/stall/recovery Covers were reached. This harness assumes legal
+  payload stability under backpressure and does not prove the configured full
+  TX chain. Formal Cover results did not alter URG coverage or waiver state.
+- Updated the Round 17 report, machine evidence/hash manifest, execution
+  frontier, and this log. No RTL, UVM test or product parameter changed. Formal
+  intermediate files remain ignored under `runs/` and are not committed.
+- Checks: VC Formal nine-job runner, property/result JSON inspection, source
+  SHA and log-hash capture, JSON parse and `git diff --check`.
+- Remaining: full Linux DV signoff OPEN; DPD Identity, product Outstanding
+  Counter, COMMIT lifecycle and product `q1_tail` obligations remain open;
+  13,171 DUT bins remain, with 0 approved Waivers and 0 applied Exclusions.
+
 # 2026-11-08 — Thermo5 Round 17 WSL VCS reverification
 
 - Rechecked tools in Rocky 8.10 / WSL2 and corrected the previous blocker

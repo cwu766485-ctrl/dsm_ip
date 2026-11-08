@@ -12,6 +12,8 @@ Raw and zero-exclusion Adjusted URG were regenerated from the same manifest: one
 
 The Formal smoke does not close AXI outstanding-counter saturation/underflow, full-chain DPD Identity, COMMIT lifecycle, or the two legal product `q1_tail` obligations. Aggregate DUT Assertion status is 13 SUCCESS / 3 FAILURE / 2 UNCOVERED; the failures require property-level classification despite legal regressions passing. No Waiver was approved, no `.el` exclusion applied, and no XPM/GT Wizard, Vivado timing/PPA, FPGA, RF or physical QAM256 validation ran.
 
+A 9-job scoped VC Formal batch also ran at docs-only HEAD `e5437af88232a743e6097f1d50734152683db933` with the same RTL hashes. The unbounded 32-bit DPD counter transition harness passed 35 assertions and 4 Covers; CDC residual/data-empty/end, EF2 pair/product-parameter, and frame-tail metadata/reset jobs passed within their harness scopes. The DPD Identity job returned only 1/5 required assertions PROVEN and failed the runner gate; its arithmetic identity claim remains OPEN. No Formal Cover was added to URG. Exact job statuses, property lists and log hashes are in the current Round 17 evidence manifest.
+
 **Decision: full Linux DV signoff remains OPEN (`RAW_100_OPEN`).** PR #46 remains Draft/Open and unmerged. Next: review the updated report and exact ledger, resolve property-level Assertion results and mandatory Formal, then close reachable code bins or obtain independent exact-bin Waiver approvals through the fail-closed pipeline. Do not report FPGA/physical signoff.
 
 Machine evidence/hash inventory: `docs/verification/data/thermo5-r17/thermo5_tx_r17_wsl_vcs_reverification.json`. Run outputs remain ignored under `runs/thermo5_r16_gate1_20261108/` in the isolated worktree.

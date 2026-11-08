@@ -88,6 +88,7 @@
     "coverage_prep/zero_approved_waiver_audit.json": "f5ca0394a593425f0751e6f35c5458df7875eaa798a3b7015bd1d573a215c70d",
     "dpd_matrix.log": "ce7aacac41db4968037b9701166c9c36a6e6adf6913589ad02ebedaf9e6d9d1a",
     "dpd_matrix_campaign/dpd_matrix/summary.json": "7fb7c001d33f005068da77e0544b854691fd77fc9311515c9b5e890821c9b36d",
+    "formal_closure/formal_summary.json": "cf4470f0a2cb543a96b2416a0df4579acb82a5726b65d302214c6e74cf967852",
     "formal_smoke.log": "93bb8a777401ad232d215a1af71776bdcc2319be3e960775b2afc27e752ee214",
     "formal_smoke/formal_summary.json": "13c3e6df9a9b8ea0c42b3daf25d11ed4e04f0b78727b68a9405fe3ad86df902d",
     "generic_regression.log": "d498ca19a8d5241f3d5aa6508437671c42a1b017bb983c315efa33f45fa49563",
@@ -106,6 +107,651 @@
     "system_random/summary.json": "7a819b499639e3635c83e53870088df329fb31a89aa1369e5aef5357d499d5b5",
     "urg_version.log": "d63c059ce2e098d4f99fa6671721933984ce7ed2c7ba29a18eb0626476892bf8",
     "vcs_id.log": "cfeb2af0af874e4e0cc371b64522e3c02149e853bac288f1aa2c6d8a90678fab"
+  },
+  "formal_closure_campaign": {
+    "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs counter_unbounded identity cdc_residual cdc_data_empty cdc_end_branch ef2_pair ef2_product_params frame_tail_legal_metadata frame_tail_reset_condition --out-dir runs/thermo5_r16_gate1_20261108/formal_closure",
+    "configuration": {
+      "formal_harness_channels": {
+        "ef2_pair": 2
+      },
+      "input_domain": "all signed-16 values",
+      "input_width_bits": 16,
+      "pair_transfer_composition": "The two-sample formal transfer repeats 16 times in the 32-sample VCS miter.",
+      "product_pair_lookahead_default": false,
+      "proof_core": "thermo5_ef2",
+      "sample_order": "chronological",
+      "state_width_bits": 20
+    },
+    "does_not_add_urg_coverage_hits": true,
+    "errors": [
+      "identity: assertion/cover/vacuity/setup gate failed"
+    ],
+    "formal_summary_sha256": "cf4470f0a2cb543a96b2416a0df4579acb82a5726b65d302214c6e74cf967852",
+    "jobs": [
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.a_count_matches_acceptances"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.a_hold"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.a_increment"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[0].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[10].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[11].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[12].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[13].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[14].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[15].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[16].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[17].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[18].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[19].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[1].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[20].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[21].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[22].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[23].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[24].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[25].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[26].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[27].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[28].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[29].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[2].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[30].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[31].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[3].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[4].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[5].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[6].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[7].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[8].a_bit_transition"
+          ],
+          [
+            "proven",
+            "thermo5_counter_unbounded_harness.model.g_unbounded.g_bit[9].a_bit_transition"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_counter_unbounded_harness.model.c_accept"
+          ],
+          [
+            "covered",
+            "thermo5_counter_unbounded_harness.model.c_count_changes"
+          ],
+          [
+            "covered",
+            "thermo5_counter_unbounded_harness.model.c_stall"
+          ],
+          [
+            "covered",
+            "thermo5_counter_unbounded_harness.model.c_stall_recovery"
+          ]
+        ],
+        "duration_seconds": 22.66,
+        "evidence_sha256": {
+          "console.log": "d1da84046bf223050263af06776451e55857da7319b1301ec315ee5f6f6e27b1",
+          "vcf.log": "bf34123137e099126ce12a2e10bb55c56dcd776d2a4e138c166922483b1edb47"
+        },
+        "exit_code": 0,
+        "name": "counter_unbounded",
+        "reported_proven_assertions": 35,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_identity_harness.a_valid_latency"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_identity_harness.c_max_endpoint"
+          ],
+          [
+            "covered",
+            "thermo5_identity_harness.c_min_endpoint"
+          ],
+          [
+            "covered",
+            "thermo5_identity_harness.c_recovery"
+          ],
+          [
+            "covered",
+            "thermo5_identity_harness.c_stall"
+          ]
+        ],
+        "duration_seconds": 307.75,
+        "evidence_sha256": {
+          "console.log": "8a706a7bfe90ac8040959d6464da75f1d2dcd0e363a2a24481b89c57c061ef18",
+          "vcf.log": "a158662e514691ebd61ec0f093791c9f48fa4d8615cf18047f5a42b834231148"
+        },
+        "exit_code": 0,
+        "name": "identity",
+        "reported_proven_assertions": 1,
+        "status": "FAIL"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_axis_stable"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_frame_marker_has_valid"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_residual_bound"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_residual_even"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_residual_legal"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_unused_residual_i_zero"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_residual_harness.a_unused_residual_q_zero"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.c_core_accept"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.c_core_stall"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[0].c_residual"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[1].c_residual"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[2].c_residual"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[3].c_residual"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[4].c_residual"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[5].c_residual"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_residual_harness.g_residual[6].c_residual"
+          ]
+        ],
+        "duration_seconds": 47.46,
+        "evidence_sha256": {
+          "console.log": "36a3fe07f62b172f5d518468161461468df9667f6d8bef8c843202196b89486e",
+          "vcf.log": "373d2645fdb1fbe8e5cc2d94f30c56ff03fd2e0f1fa540124b26a0f64af4592a"
+        },
+        "exit_code": 0,
+        "name": "cdc_residual",
+        "reported_proven_assertions": 7,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_cdc_data_empty_harness.a_empty_excludes_valid"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_data_empty_harness.a_nonempty_implies_valid"
+          ],
+          [
+            "proven",
+            "thermo5_cdc_data_empty_harness.a_public_empty_uses_all_stages"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_cdc_data_empty_harness.c_core_data_empty"
+          ],
+          [
+            "uncoverable",
+            "thermo5_cdc_data_empty_harness.c_exact_raw_bin"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_data_empty_harness.c_fifo_nonempty_valid"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_data_empty_harness.c_source_accept"
+          ]
+        ],
+        "duration_seconds": 22.9,
+        "evidence_sha256": {
+          "console.log": "655eee9a63c07bb85e2042cecc9b83a2cdfb0337d218f68262ab021a20f0c7dc",
+          "vcf.log": "c8e897cae5d4a8b7bf995fa385449b30df793d0779127c90822e0ffc1dca4501"
+        },
+        "exit_code": 0,
+        "name": "cdc_data_empty",
+        "reported_proven_assertions": 3,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_cdc_end_branch_harness.c_completed_legal_frame"
+          ],
+          [
+            "uncoverable",
+            "thermo5_cdc_end_branch_harness.c_immediate_end_arm"
+          ],
+          [
+            "covered",
+            "thermo5_cdc_end_branch_harness.c_product_end_branch_context"
+          ]
+        ],
+        "duration_seconds": 23.46,
+        "evidence_sha256": {
+          "console.log": "a3e34cdd06fcf7f800ced8540f2bbaa5c16556b2f6f8635e2df4cdb6d057feb1",
+          "vcf.log": "ca58c0c91f408d333926e0c11c09e266c0d482290f5a3f4c840bcd5777246725"
+        },
+        "exit_code": 0,
+        "name": "cdc_end_branch",
+        "reported_proven_assertions": 1,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_candidate_bounds"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_candidate_no_wrap"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_ready_equivalent"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_sample0_quantizers_equivalent"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_sample1_quantizers_equivalent"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_state_equivalent"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_pair_equiv_harness.a_valid_equivalent"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_ef2_pair_equiv_harness.c_back_to_back_accept"
+          ],
+          [
+            "covered",
+            "thermo5_ef2_pair_equiv_harness.c_gt_stall"
+          ],
+          [
+            "covered",
+            "thermo5_ef2_pair_equiv_harness.c_gt_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_ef2_pair_equiv_harness.c_input_accepted"
+          ]
+        ],
+        "duration_seconds": 67.89,
+        "evidence_sha256": {
+          "console.log": "f63ecc3b510fb5c4b495a35340e7c9ac61c36c54d226a7fcdcc0c15b1cfe57d9",
+          "vcf.log": "5a07c2d2fe989732074de5b6128dfb5160b06f70c0913ea9d963b326f2fffa9f"
+        },
+        "exit_code": 0,
+        "name": "ef2_pair",
+        "reported_proven_assertions": 7,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_ef2_product_params_harness.a_product_pair_lookahead_disabled"
+          ],
+          [
+            "proven",
+            "thermo5_ef2_product_params_harness.a_product_parameter_guard_inactive"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "uncoverable",
+            "thermo5_ef2_product_params_harness.c_invalid_parameter_guard"
+          ],
+          [
+            "uncoverable",
+            "thermo5_ef2_product_params_harness.c_pair_lookahead_arm_enabled"
+          ]
+        ],
+        "duration_seconds": 17.3,
+        "evidence_sha256": {
+          "console.log": "51a44ca241324f44934ef7333b3c8f142cf415a1ae32175157a8baa5eab37183",
+          "vcf.log": "35ba2f4d5ed56e68afcedb0d4752d2ea29df95a41e554d7ac9ed24dfb3f06bcf"
+        },
+        "exit_code": 0,
+        "name": "ef2_product_params",
+        "reported_proven_assertions": 2,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context"
+          ],
+          [
+            "proven",
+            "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "uncoverable",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"
+          ],
+          [
+            "uncoverable",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"
+          ]
+        ],
+        "duration_seconds": 21.61,
+        "evidence_sha256": {
+          "console.log": "05a5387f3cb65bdd4ecea273202e5b9e160342351d7d517f0770c293996325eb",
+          "vcf.log": "e0a4360f7c7b6354a1fb81c078cc615f90f71d18f3290d5c0a9067ff21942a06"
+        },
+        "exit_code": 0,
+        "name": "frame_tail_legal_metadata",
+        "reported_proven_assertions": 2,
+        "status": "PASS"
+      },
+      {
+        "assertions": [
+          [
+            "proven",
+            "thermo5_frame_tail_reset_condition_harness.a_append_reset_empty"
+          ],
+          [
+            "proven",
+            "thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "covered",
+            "thermo5_frame_tail_reset_condition_harness.c_append_queue_nonempty"
+          ],
+          [
+            "uncoverable",
+            "thermo5_frame_tail_reset_condition_harness.c_append_reset_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_reset_condition_harness.c_append_reset_empty"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_reset_condition_harness.c_append_runtime_reset"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_reset_condition_harness.c_plain_queue_nonempty"
+          ],
+          [
+            "uncoverable",
+            "thermo5_frame_tail_reset_condition_harness.c_plain_reset_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_reset_condition_harness.c_plain_reset_empty"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_reset_condition_harness.c_plain_runtime_reset"
+          ]
+        ],
+        "duration_seconds": 18.09,
+        "evidence_sha256": {
+          "console.log": "6c09d5b3dccd9b87e67c50e97fcec8c728628116ef17437abc88465b0076b80c",
+          "vcf.log": "b03a04d5718faf4be0ef1a6cc05a7e12dde0dafdeeb032aeafa4f404b0e929d8"
+        },
+        "exit_code": 0,
+        "name": "frame_tail_reset_condition",
+        "reported_proven_assertions": 2,
+        "status": "PASS"
+      }
+    ],
+    "overall_status": "FAIL",
+    "rtl_source_sha256": {
+      "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+      "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "e6ce40e4c6384beccd0a3f40e765ae24425f1c4833859ad591c6895c05fa72d5",
+      "dv/uvm/formal/thermo5_cdc_data_empty_harness.sv": "f52c1e1f7bfdfb408610f3de97f5576939fa57617bbb2be2e84e2c6e345cb054",
+      "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+      "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+      "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+      "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+      "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+      "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+      "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+      "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+      "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+      "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+      "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+      "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+      "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+      "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+      "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+      "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+      "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+      "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+    },
+    "scope": {
+      "cdc_data_empty": "Production 14:8 CDC with exact Generic FIFO configuration and registered legal AXIS source. Targets Raw condition TXB-3b8b5df27b5b204fbb04 at core_data_empty line 113; requires source/FIFO activity and core_data_empty witnesses while the exact condition Cover is uncoverable.",
+      "cdc_end_branch": "Exact product 14:8 CDC gearbox and Generic FIFO; legal 32-beat AXIS packets; prove line-210 immediate frame-end arm unreachable and require legal frame-end context Cover",
+      "cdc_residual": "production generic FIFO CDC; exact 7:4 scaled clock periods; constructed registered legal AXIS source; no runtime assumptions on DUT state",
+      "counter": "MAX_TAPS=1 identity; at most 2072 accepted inputs per reset epoch",
+      "ef2_pair": "Relational proof of exact pairwise look-ahead against scalar EF2 for arbitrary signed-16 input, stalls, and state saturation; product parameter remains disabled",
+      "ef2_product_params": "Exact W=16, CHANNELS=32 product EF2 parameter elaboration; prove PAIR_LOOKAHEAD=0 and legal parameter guard, while requiring corresponding candidate arms to be uncoverable",
+      "frame_tail_legal_metadata": "Exact centered-cubic product stage geometries and legal frame-marker schedules: stage 1 accepts 7 vectors of 8 lanes per 56-sample DSP frame, with frame_start on each frame and TLAST/frame_end only on vector 56 of an eight-frame, 448-sample packet. Stage 2 accepts 8 vectors of 16 lanes per DSP frame, with the final synthetic tail tagged end/tail. The two production interpolator RTL stages are directly composed with ready/valid backpressure. Intermediate elastic FIFOs and DPD are omitted; this result alone does not disposition Raw URG bins.",
+      "frame_tail_reset_condition": "Exact product interpolation geometries. Initial boot reset is followed by an unconstrained runtime reset request sampled only on the inactive clock edge. The harness requires nonempty queue and runtime-reset witnesses, proves queue empty while reset is active, and targets only reset-low operands of line 309.",
+      "reset": "runtime reset changes only on falling edge; active-edge collisions excluded"
+    },
+    "source_revision": "e5437af88232a743e6097f1d50734152683db933",
+    "source_worktree_clean": true
   },
   "open_items": [
     "13,171 DUT code bins remain uncovered; no official approved Waiver or Exclusion exists.",

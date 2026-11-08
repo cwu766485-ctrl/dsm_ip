@@ -122,6 +122,22 @@ Coverage evidence identifiers:
 
 ## 5. Formal, Waiver and remaining closure
 
+The available VC Formal license was also used for a targeted 9-job current-source batch at docs-only source HEAD `e5437af88232a743e6097f1d50734152683db933` (same Product RTL aggregate hash as above). The runner's overall status is **FAIL** because the DPD Identity job did not meet its assertion gate; this batch does not sign off the required end-to-end obligations.
+
+| Formal job | Result | Evidence scope / disposition |
+|---|---|---|
+| DPD sample counter, unbounded transition harness | PASS | 35/35 assertions and 4/4 activity Covers; verifies the local 32-bit DPD counter transition relation, not product Outstanding Counter capacity, reachable high-bit toggles, or URG hits |
+| DPD Identity arithmetic harness | **FAIL / OPEN** | Only `a_valid_latency` returned PROVEN (1/5 required assertions); the Identity payload and saturation assertions did not return PROVEN. Four endpoint/stall/recovery Covers hit; the harness assumes payload stability during backpressure and is not the full configured product chain |
+| CDC residual | PASS | 7/7 assertions, 9/9 activity Covers |
+| CDC data-empty | PASS | 3/3 assertions; 3 Covers hit and the exact raw-bin Cover is uncoverable in this harness |
+| CDC end branch | PASS | 1/1 assertion; legal frame Covers hit and the immediate-end target arm is uncoverable in this product geometry |
+| EF2 pair equivalence | PASS | 7/7 assertions, 4/4 Covers; this is a candidate helper proof, not an enabled product architecture |
+| EF2 fixed product parameters | PASS | 2/2 assertions; Pair-Look-Ahead and invalid-parameter guard Covers are unreachable at the frozen parameters |
+| Frame-tail legal metadata | PASS | 2/2 assertions; active-bin Covers are uncoverable under the isolated stage geometry |
+| Frame-tail reset condition | PASS | 2/2 assertions; 6/8 reset/activity Covers hit, with the reset-low target bins uncoverable in this harness |
+
+All jobs reported zero black-box instances. These local Formal Covers do not become URG Code Coverage hits or Waiver approvals. The `q1_tail` product assertions still require legal product attempts or a reviewed full-path proof; stage-local metadata/reset evidence does not close them. Machine property results and per-job console/VCF log hashes are in the updated evidence JSON.
+
 The reset-only Formal smoke is current-source and non-blackboxed within its harness. It proves three reset properties and reaches four reset activity covers. One collision cover is reported uncoverable under the harness contract; it is not converted into a product waiver. This smoke does not close outstanding-counter saturation/underflow, full-chain DPD Identity, COMMIT → Pending → Apply → ACK → DONE, or the two legal product `q1_tail` obligations.
 
 No independent Waiver approval was added. No official `.el` exclusion was generated or applied. The 371-item official waiver reconciliation and prior candidate evidence remain pending their exact-bin mapping, current-source evidence review and independent approval. In particular, do not interpret this zero-exclusion Adjusted report as an approved-waiver report.
