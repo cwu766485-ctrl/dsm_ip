@@ -1,0 +1,161 @@
+{
+  "schema": "thermo5_tx_r17_identity_formal_followup",
+  "date": "2026-11-08",
+  "source": {
+    "git_head_at_run": "7708d0eb9a2128942ff802202c0d1716c8c11f8b",
+    "branch": "codex/thermo5-round17-formal-closure",
+    "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "identity_harness_sha256_at_run": "23f39a286ae6248d06311f934f35e57d0118a8c16edf97b3d2692a475e013133",
+    "product_rtl_changed": false,
+    "product_configuration_changed": false
+  },
+  "tool": "VC Formal V-2023.12-SP2, linux64",
+  "formal_command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_convergence.py --job identity --out-dir runs/codex_round17_identity_alignment_lemmas_20261108 --auto-lemmas",
+  "identity_runner": {
+    "vcf_exit_code": 0,
+    "runner_status": "INCONCLUSIVE_OR_FAIL",
+    "duration_seconds": 206.63,
+    "black_box_instances": 0,
+    "sat_counterexample": false,
+    "main_assertions": [
+      {
+        "property": "a_identity_payload",
+        "current_result": "INCONCLUSIVE",
+        "current_depth": 94,
+        "current_engine_id": "NOT_REPORTED_PER_PROPERTY",
+        "prior_engine_id": "b8",
+        "reason": "Arbitrary-stall output payload equality remains bounded after data/valid alignment lemmas."
+      },
+      {
+        "property": "a_no_saturation_i",
+        "current_result": "INCONCLUSIVE",
+        "current_depth": 94,
+        "current_engine_id": "NOT_REPORTED_PER_PROPERTY",
+        "prior_engine_id": "b8",
+        "reason": "Signed I-path arithmetic range/saturation proof remains bounded; no counterexample."
+      },
+      {
+        "property": "a_no_saturation_q",
+        "current_result": "INCONCLUSIVE",
+        "current_depth": 94,
+        "current_engine_id": "NOT_REPORTED_PER_PROPERTY",
+        "prior_engine_id": "b6",
+        "reason": "Signed Q-path arithmetic range/saturation proof remains bounded; no counterexample."
+      },
+      {
+        "property": "a_saturation_count_zero",
+        "current_result": "INCONCLUSIVE",
+        "current_depth": 94,
+        "current_engine_id": "NOT_REPORTED_PER_PROPERTY",
+        "prior_engine_id": "b6",
+        "reason": "Depends on proving both I/Q saturation predicates false for all legal accepted payloads under stalls."
+      },
+      {
+        "property": "a_valid_latency",
+        "current_result": "PROVEN",
+        "current_depth": null,
+        "current_engine_id": "NOT_REPORTED_PER_PROPERTY",
+        "prior_engine_id": "e1",
+        "reason": "Valid pipeline latency matches the independent expected-valid model."
+      }
+    ],
+    "cover_results": {
+      "minimum_endpoint": "COVERED",
+      "maximum_endpoint": "COVERED",
+      "stall": "COVERED",
+      "stall_recovery": "COVERED"
+    },
+    "console_sha256": "e5382c3382605fc65871040bcd9ca03e6a6d7c5de9273ead255e8ad127a0cb28",
+    "properties_sha256": "bef9cadb8c63abf6c216cbcb1bf25eda2b97f15518bf3c3c114339a4b090e5fe",
+    "engine_id_note": "The fresh per-property report did not expose engine IDs. Prior IDs are taken from the preserved Round 17 per-property engine evidence; they are not claimed as fresh-run engine selections."
+  },
+  "alignment_decomposition": {
+    "stage_alignment_properties": 14,
+    "stage_alignment_proven": 14,
+    "stage_alignment_non_vacuous": 14,
+    "promotion_rounds": 2,
+    "additional_gain_identity_lemma": "PROVEN in promotion round 2",
+    "total_independently_proven_and_promoted_lemmas": 19,
+    "composed_remaining_assertions": {
+      "proven": 1,
+      "inconclusive": 12,
+      "failed": 0
+    },
+    "remaining_inconclusive_depths": {
+      "a_identity_payload": 114,
+      "a_no_saturation_i": 114,
+      "a_no_saturation_q": 114,
+      "a_saturation_count_zero": 114,
+      "a_pair_i": 216,
+      "a_pair_q": 216,
+      "a_product_i": 215,
+      "a_product_q": 215,
+      "a_sum_i": 320,
+      "a_sum_q": 320,
+      "a_term_i": 320,
+      "a_term_q": 320
+    },
+    "covers": "4/4 covered; min/max endpoint, stall, recovery",
+    "promotion_log_sha256": "7d729ae6d0e1f510ffb1314b69d81aede12f26f6fd45875eb671aa2caa87d3eb",
+    "base_properties_sha256": "dbb24625eea0cce2c5bb8b734cc026dfbae2288b01f968e6356cf4afc0c166b1",
+    "composed_properties_sha256": "73394bd95c97399c0228d0afe8016ae6b03c3f70e6ff89c3e7b1912bb9569225",
+    "console_sha256": "4af5b24aeef4dd9f792e3c584407a3b16e82aa8f290afa9c5085c4954e6351ec",
+    "setup_sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+  },
+  "other_required_formal": {
+    "outstanding_counter": {
+      "status": "OPEN_INCONCLUSIVE",
+      "assertions": 5,
+      "guard_covers": 2,
+      "counterexamples": 0,
+      "console_sha256": "7e08bf23bcbb1b84ad7e611d50fa20bbeda57619c4527e33fbf0594498ff13a9",
+      "properties_sha256": "f139e766986ebb8ec80d40711199969be29547d64a849f9669db56c8c65b1e8a"
+    },
+    "pair1_fixed_tap": {
+      "status": "PROVEN_SCOPED_PENDING_INDEPENDENT_REVIEW",
+      "properties_proven": 64,
+      "activity_covers": 2,
+      "properties_sha256": "5858856248a95d42354a2da44767e7d97619f5c88f16071b72ef6a9f4b264ed2"
+    },
+    "dpd_identity_arbitrary_stall_leaf": {
+      "status": "PROVEN_SCOPED",
+      "composed_assertions_proven": 4,
+      "activity_covers": 4,
+      "full_chain": false,
+      "evidence_sha256": "f0456d3d68a0359e74b9248e232226f5f67b30ab90aef004e9a493df9afb1c5c"
+    },
+    "active_tap_commit": "OPEN: 4/6 assertions proven, 2 inconclusive; commit activity covers inconclusive",
+    "commit_lifecycle": "OPEN: no end-to-end COMMIT/Pending/Apply/ACK/STATUS proof",
+    "q1_tail": "OPEN: negative early-TLAST failures are expected; no legal product attempts; metadata-only proof is not full-chain composition"
+  },
+  "coverage_and_waiver": {
+    "official_round17_vdb_manifest_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+    "official_urg_report_manifest_sha256": "8dde1764a8a697be66859d8c8dda5671c77bd3bc1546ee29a18d3936152d92df",
+    "official_approved_waivers": 0,
+    "official_exclusions": 0,
+    "raw_adjusted": "same Round 17 manifest; no exclusion; Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480; 13,171 exact open bins",
+    "new_551_vdb_urg_rerun": "NOT_RUN: complete Round 17 VDB input trees and report database are not present in this isolated checkout; no replacement coverage result is inferred from the one-test smoke VDB."
+  },
+  "smoke": {
+    "source_sha": "7708d0eb9a2128942ff802202c0d1716c8c11f8b",
+    "test": "thermo5_sku_axil_register_access_test, seed 611108",
+    "vcs_result": "PASS; UVM_ERROR=0; UVM_FATAL=0",
+    "urg_result": "PASS; one Design VDB + one Test VDB",
+    "manifest_sha256": "a1ec3010687ef0e5d7a8ea40142c6db3d49982ef735e4861e892feb0085ba63a",
+    "compile_log_sha256": "fc79a65a2687c291ddf8fe3e1a7253eab5033dcb34f87838669761d16b8093d8",
+    "simulation_log_sha256": "333b9068efbe56667ccfb4fc63a1672a489eadade492a3372a3b14705399073c",
+    "urg_log_sha256": "8929c05669f4289617b594d3597de936adc9d6d1bff3e55cb7b75b5d56637b5d",
+    "signoff_scope": "Smoke only; not the full product regression or 551-Test VDB coverage merge."
+  },
+  "assertion_audit": {
+    "dut_failure_rows": 3,
+    "unique_dut_properties_in_failure_rows": 3,
+    "dut_uncovered_rows": 2,
+    "overlap": "Both uncovered rows are the two q1_tail properties also counted among the three expected-negative DUT failure rows.",
+    "cdc_failure": "rem_count_q==0 assertion at dsm_axis14_to_core8_cdc.sv:262; expected-negative illegal-frame tests; recovery checked.",
+    "q1_tail_failures": "Stage 1 and stage 2 assertions at dsm_interp_x2_centered_cubic_vector.sv:310; illegal early TLAST seed 420102; recovery checked.",
+    "legal_successful_attempts_for_q1_tail": 0,
+    "uvm_library_without_attempts": 2
+  },
+  "decision": "OPEN_NO_FINAL_LINUX_DV_SIGNOFF"
+}

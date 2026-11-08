@@ -42,11 +42,19 @@ Two decomposition attempts were run without weakening the assertions:
 
 No Assertion was edited to weaken its meaning. The full configured TX chain, including coefficient shadow/COMMIT, CDC and frame-boundary application, is not proven by these leaf harnesses.
 
+### Current-source Formal follow-up on `thermo5` HEAD `7708d0e`
+
+The monolithic five-property runner was rerun with VC Formal V-2023.12-SP2 on the current `thermo5` HEAD before the alignment Lemmas were added. Its raw property states are `a_identity_payload` INCONCLUSIVE (depth 94), `a_no_saturation_i` INCONCLUSIVE (94), `a_no_saturation_q` INCONCLUSIVE (94), `a_saturation_count_zero` INCONCLUSIVE (94), and `a_valid_latency` PROVEN. The run had no failed goal or SAT counterexample, four of four endpoint/stall/recovery Covers were reached, and zero black boxes. The fresh per-property output did not expose engine IDs. The `b8`, `b8`, `b6`, `b6`, and `e1` labels in the table above come from the preserved earlier engine report, not from this fresh rerun.
+
+To decompose the arbitrary-stall proof without weakening its claims, the Formal Harness now contains 14 independent data/valid alignment Lemmas covering I/Q at stages S0–S6. All 14 were non-vacuous and PROVEN. The automatic assume-guarantee runner then proved and promoted the gain-identity Lemma, for 19 independently proven intermediate Lemmas in total. In the remaining composed goals, valid latency is PROVEN; payload identity, both no-saturation properties, saturation-count-zero, and eight product/term/pair/sum arithmetic properties remain INCONCLUSIVE. The four endpoint/stall/recovery Covers remain COVERED. This narrows the unresolved proof to arithmetic under arbitrary stalls; it does not close Identity or authorize a Waiver.
+
+The run command, exact Harness hash, property depths, engine-source caveat, and raw log/property SHA-256 values are in [the machine-readable Formal follow-up](data/thermo5-r17/final_closure_audit/thermo5_tx_r17_identity_formal_followup.json). A separate VCS/URG smoke on HEAD `7708d0e` passed AXI-Lite register access and URG report generation for one Test VDB only. It is not a replacement for the 551-Test-VDB official coverage set or a full product regression. The official Round 17 Raw/zero-exclusion Adjusted numbers therefore remain the last same-manifest result; no Waiver is approved and no `.el` is active.
+
 ## 3. Other required Formal obligations
 
 | Obligation | Current result | Evidence and remaining limit |
 |---|---|---|
-| Outstanding Counter saturation/underflow and capacity | **OPEN / INCONCLUSIVE** | Five product properties and two guard Covers were previously INCONCLUSIVE. A later retry left no final property report/manifest; it is not counted. The separate DPD 32-bit counter transition proof does not prove the AXI Outstanding Counter. |
+| Outstanding Counter saturation/underflow and capacity | **OPEN / INCONCLUSIVE** | Fresh current-source run: five product properties and both guard Covers INCONCLUSIVE; activity Covers for source/core/output and arbitrary source bubble are COVERED. No SAT counterexample; exact manifest and log hashes are in the Formal follow-up JSON. |
 | COMMIT lifecycle | **OPEN** | No composed proof of Shadow → COMMIT → CDC Pending → DPD Frame Boundary → Active Epoch → ACK → STATUS/DONE. Directed and randomized tests pass but do not replace this proof. |
 | Active-Tap product configuration | **OPEN / runner FAIL** | Four AXI-Lite assertions prove; `a_active_taps_one` (depth 3) and `a_pending_taps_one` (depth 2) are INCONCLUSIVE. Legal/reject-commit Covers are INCONCLUSIVE at depth 3. No assumptions or black boxes; only 2 assertions are counted non-vacuous, below the runner gate. |
 | Pair-1 fixed tap | **PROVEN in scoped harness; review pending** | 64/64 lane assertions and 2/2 activity Covers prove for sixteen `MAX_TAPS=1` production DPD lanes with reset as the only assumption and arbitrary `out_ready`. The harness does not compose AXI-Lite COMMIT, RUN/STOP or the whole TX configuration path. |
