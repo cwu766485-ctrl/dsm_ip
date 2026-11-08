@@ -20,7 +20,11 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-from tools.hw.thermo5_tx_waiver_pipeline import _configuration_fingerprint
+from tools.hw.thermo5_tx_waiver_pipeline import (
+    _configuration_fingerprint,
+    _safe_repo_file,
+    _verify_audit_tools,
+)
 
 
 OFFICIAL = "docs/verification/thermo5_tx_waivers.csv"
@@ -67,7 +71,91 @@ def source_hashes(value: str) -> dict[str, str]:
     return result
 
 
-def audit(out_dir: Path) -> dict:
+def _command_vdbs(command: list[str]) -> list[str]:
+    return [item for item in command if item.endswith(".vdb")]
+
+
+def _audit_current_coverage_chain(compile_manifest: dict, compile_parent_path: Path,
+                                  report_path: Path, vdb_path: Path) -> dict:
+    """Validate the current source/config/VDB/URG binding without rerunning URG."""
+    compile_parent = json.loads(compile_parent_path.read_text(encoding="utf-8"))
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    vdb_manifest = json.loads(vdb_path.read_text(encoding="utf-8"))
+
+    # These are separate canonical hash schemas. The product compile
+    # fingerprint is copied into the URG report; the waiver audit fingerprint
+    # binds candidate-audit inputs. Comparing them directly caused a false
+    # mismatch in the older Round 17 reconciliation.
+    compile_fingerprint = compile_parent.get("compile_fingerprint_sha256")
+    report_fingerprint = report.get("product_configuration_fingerprint")
+    if not compile_fingerprint or compile_fingerprint != report_fingerprint:
+        raise ValueError("current URG report does not match product compile fingerprint")
+    if (compile_fingerprint != compile_parent.get("compile", {}).get("source_fingerprint_sha256")
+            or compile_manifest.get("source_file_sha256")
+            != compile_parent.get("source_file_sha256")):
+        raise ValueError("current coverage chain differs from the audited product compile snapshot")
+    stale_sources = []
+    for relative, expected in compile_parent.get("source_file_sha256", {}).items():
+        source_path = _safe_repo_file(ROOT, relative, "compiled source")
+        if sha256(source_path) != expected:
+            stale_sources.append(relative)
+    if stale_sources:
+        raise ValueError(f"compiled source hashes are stale: {stale_sources[:5]}")
+    _verify_audit_tools(compile_manifest, ROOT)
+
+    raw_vdbs = _command_vdbs(report.get("raw_command", []))
+    adjusted_vdbs = _command_vdbs(report.get("adjusted_command", []))
+    inventory = [vdb_manifest.get("design", {}).get("path")]
+    inventory.extend(test.get("path") for test in vdb_manifest.get("tests", []))
+    canonical_vdb_sha = hashlib.sha256(
+        json.dumps(vdb_manifest, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    if not raw_vdbs or raw_vdbs != adjusted_vdbs or raw_vdbs != inventory:
+        raise ValueError("Raw, Adjusted and VDB manifest input lists differ")
+    if report.get("vdb_manifest") != vdb_manifest:
+        raise ValueError("URG report embeds a different VDB manifest")
+    if (report.get("vdb_manifest_sha256") != canonical_vdb_sha
+            or report.get("post_vdb_manifest_sha256") != canonical_vdb_sha):
+        raise ValueError("URG report VDB manifest fingerprint is stale")
+    common = report.get("common_inputs", {})
+    if common.get("design_vdb") != inventory[0] or common.get("test_vdbs") != inventory[1:]:
+        raise ValueError("URG common-input inventory differs from VDB manifest")
+    if report.get("raw_summary") != report.get("adjusted_summary"):
+        raise ValueError("Raw and Adjusted summaries differ")
+    if report.get("approved_waiver_count") != 0 or report.get("adjusted_exclusions_applied"):
+        raise ValueError("current baseline unexpectedly has approved exclusions")
+
+    return {
+        "status": "PASS_SAME_SOURCE_CONFIG_VDBS_RAW_AND_ZERO_EXCLUSION_ADJUSTED",
+        "coverage_source_revision": report.get("source_revision"),
+        "product_base_source_sha": compile_parent.get("product_source_sha"),
+        "product_rtl_aggregate_sha256": compile_parent.get("product_rtl_aggregate_sha256"),
+        "product_compile_fingerprint_sha256": compile_fingerprint,
+        "source_hash_map_match": True,
+        "compiled_source_count_checked": len(compile_parent.get("source_file_sha256", {})),
+        "waiver_audit_configuration_fingerprint_sha256": _configuration_fingerprint(compile_manifest),
+        "fingerprint_note": (
+            "Product compile and waiver-audit fingerprints use different canonical "
+            "schemas and must not be compared for equality."
+        ),
+        "design_vdb_count": 1,
+        "test_vdb_count": len(vdb_manifest.get("tests", [])),
+        "raw_adjusted_vdb_lists_equal": True,
+        "raw_adjusted_summaries_equal": True,
+        "approved_waivers": 0,
+        "active_exclusions": 0,
+        "vdb_manifest_canonical_sha256": canonical_vdb_sha,
+        "compile_parent_manifest_sha256": sha256(compile_parent_path),
+        "compile_audit_manifest_sha256": sha256(ROOT / R17_COMPILE),
+        "vdb_manifest_file_sha256": sha256(vdb_path),
+        "urg_report_manifest_sha256": sha256(report_path),
+        "raw_summary": report["raw_summary"],
+        "adjusted_summary": report["adjusted_summary"],
+    }
+
+
+def audit(out_dir: Path, current_compile_parent_path: Path, current_report_path: Path,
+          current_vdb_path: Path) -> dict:
     inputs = {name: ROOT / name for name in (
         OFFICIAL, R15_AUDIT, R16_REVIEW, R16_GAPS, R16_BRANCHES,
         RAW_HITS, R16_SOURCE, R16_SUMMARY, R16_FORMAL, R17_COMPILE,
@@ -75,6 +163,14 @@ def audit(out_dir: Path) -> dict:
     for path in inputs.values():
         if not path.is_file():
             raise ValueError(f"required evidence is missing: {path.relative_to(ROOT)}")
+    for path in (current_compile_parent_path, current_report_path, current_vdb_path):
+        if not path.is_file():
+            raise ValueError(f"current coverage-chain input is missing: {path}")
+
+    compile_manifest = json.loads(inputs[R17_COMPILE].read_text(encoding="utf-8"))
+    current_chain = _audit_current_coverage_chain(
+        compile_manifest, current_compile_parent_path, current_report_path, current_vdb_path
+    )
 
     official = rows(inputs[OFFICIAL])
     r15 = rows(inputs[R15_AUDIT])
@@ -85,7 +181,6 @@ def audit(out_dir: Path) -> dict:
     source = json.loads(inputs[R16_SOURCE].read_text(encoding="utf-8"))
     summary = json.loads(inputs[R16_SUMMARY].read_text(encoding="utf-8"))
     formal = json.loads(inputs[R16_FORMAL].read_text(encoding="utf-8"))
-    compile_manifest = json.loads(inputs[R17_COMPILE].read_text(encoding="utf-8"))
 
     official_by_id = {row["waiver_id"]: row for row in official}
     review_by_id = {row["waiver_id"]: row for row in review}
@@ -254,7 +349,7 @@ def audit(out_dir: Path) -> dict:
     candidates = [row for row in audit_rows if row["r17_disposition"] == "PENDING_CANDIDATE"]
     evidence = {
         "schema": "thermo5_tx_round17_waiver_reconciliation",
-        "status": "RECONCILED_DATA_ONLY_PIPELINE_NOT_REGENERATED",
+        "status": "CURRENT_R17_RAW_RECONCILED_WAIVERS_PENDING_INDEPENDENT_REVIEW",
         "source_head": source.get("base_commit"),
         "product_rtl_sha256": source.get("product_rtl_aggregate_sha256"),
         "legacy_compile_fingerprint_sha256": source.get("compile_fingerprint_sha256"),
@@ -311,12 +406,17 @@ def audit(out_dir: Path) -> dict:
             "round16_coverage_summary_sha256": sha256(inputs[R16_SUMMARY]),
             "round16_formal_matrix_sha256": sha256(inputs[R16_FORMAL]),
             "round16_report_fingerprint": source.get("compile_fingerprint_sha256"),
-            "round17_compile_manifest_fingerprint": _configuration_fingerprint(compile_manifest),
+            "round17_coverage_chain": current_chain,
+            "round17_current_compile_parent_manifest_sha256": sha256(current_compile_parent_path),
+            "round17_current_urg_report_manifest_sha256": sha256(current_report_path),
+            "round17_current_vdb_manifest_file_sha256": sha256(current_vdb_path),
             "historical_compile_manifest_sha256": sha256(inputs[R17_COMPILE]),
-            "fingerprint_match": source.get("compile_fingerprint_sha256") == _configuration_fingerprint(compile_manifest),
-            "urg_rerun": "BLOCKED: installed VCS/URG reports unsupported WSL2 kernel; no Round 17 Raw/Adjusted report generated",
+            "fingerprint_match": current_chain["status"].startswith("PASS_"),
+            "fingerprint_comparison_note": current_chain["fingerprint_note"],
+            "urg_rerun": current_chain["status"],
             "official_candidate_audit_generated": False,
             "approved_exclusions": 0,
+            "independent_reviewer_approval": "NONE_RECORDED",
         },
         "outputs": {
             "waiver_reconciliation_csv": reconciliation_path.relative_to(ROOT).as_posix(),
@@ -334,9 +434,13 @@ def audit(out_dir: Path) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument("--current-compile-parent-manifest", type=Path, required=True)
+    parser.add_argument("--current-urg-report", type=Path, required=True)
+    parser.add_argument("--current-vdb-manifest", type=Path, required=True)
     args = parser.parse_args()
     try:
-        result = audit(args.out_dir.resolve())
+        result = audit(args.out_dir.resolve(), args.current_compile_parent_manifest.resolve(),
+                       args.current_urg_report.resolve(), args.current_vdb_manifest.resolve())
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
         parser.exit(2, f"ROUND17_RECONCILIATION_ERROR: {exc}\n")
     print(json.dumps({

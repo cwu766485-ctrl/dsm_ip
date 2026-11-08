@@ -111,7 +111,7 @@ The fresh Raw and Adjusted URG reports consumed the same validated input snapsho
 
 There are 13,171 remaining Branch + Condition + Line + Toggle bins. Approved Waivers: 0. Applied Exclusions: 0. The new 189 current-source Test VDBs produced **zero additional exact DUT code hits** versus the 362-Test-VDB baseline. Their functional, transaction, oracle and mutation results still stand; they do not reduce the remaining code-coverage ledger. `Adjusted` here means a same-input report with no approved exclusions applied; it is numerically identical to Raw and is not a waiver signoff.
 
-The aggregate DUT assertion report has 13 `SUCCESS`, 3 `FAILURE`, and 2 `UNCOVERED` statuses. The legal regression suites passed their checkers, while negative tests deliberately exercise defensive assertions; the three aggregate failures still require property-level review before any overall Assertion PASS can be claimed. The two uncovered product `q1_tail` properties remain open.
+The aggregate DUT assertion report has 13 `SUCCESS`, 3 `FAILURE`, and 2 `UNCOVERED` statuses. The Round 17 property audit traced the three Failure rows to expected negative frame tests. The two `q1_tail` properties also appear as Uncovered because no legal successful attempts were recorded; these rows overlap and represent three unique DUT assertion properties. This classification does not constitute overall Assertion PASS; product `q1_tail` and mandatory Formal remain open. Exact tests, instances, source lines and evidence are in `thermo5-tx-final-closure-round17-20261108.md`.
 
 Coverage evidence identifiers:
 
@@ -142,13 +142,13 @@ The reset-only Formal smoke is current-source and non-blackboxed within its harn
 
 No independent Waiver approval was added. No official `.el` exclusion was generated or applied. The 371-item official waiver reconciliation and prior candidate evidence remain pending their exact-bin mapping, current-source evidence review and independent approval. In particular, do not interpret this zero-exclusion Adjusted report as an approved-waiver report.
 
-Still open:
+Still open (see the Round 17 final closure report for the property-level audit):
 
 1. 13,171 DUT code bins remain open, including 113 Branch, 192 Condition, 458 Line and 12,408 Toggle bins.
 2. Outstanding counter Formal is INCONCLUSIVE/OPEN; full-chain DPD Identity and the COMMIT lifecycle are OPEN.
-3. Two product `q1_tail` assertions still lack legal attempts. Aggregate assertion statuses include three failures from the combined coverage set that must be classified property by property.
+3. Two product `q1_tail` assertions still lack legal successful attempts; the three combined-report Failure rows are classified as expected-negative-only, while full product Assertion signoff remains open.
 4. No actual XPM FIFO, GT Wizard, integrated physical CDC/RDC, Vivado timing/PPA, board, RF, or physical QAM256 BER validation ran.
 
-**Signoff decision:** VCS/URG availability is PASS. The listed Linux regressions, Python oracle suite, mutation suite and reset Formal smoke PASS within their stated scopes. Full Linux DV / code-coverage / required-Formal signoff remains **OPEN**. This is not FPGA, GT, timing, RF or physical signoff. PR #46 remains Draft/Open and unmerged.
+**Signoff decision:** VCS/URG availability is PASS. The listed Linux regressions, Python oracle suite, mutation suite and reset Formal smoke PASS within their stated scopes. Full Linux DV / code-coverage / required-Formal signoff remains **OPEN**. This is not FPGA, GT, timing, RF or physical signoff. PR #46 remains Draft/Open and unmerged. The current reconciliation binds the official 371 Waiver IDs to the Round 17 source/compile/VDB/URG chain, classifies 2 Raw-hit IDs and leaves 369 candidates pending; no approval or exclusion was applied.
 
 Machine-readable run and evidence hashes: [`thermo5_tx_r17_wsl_vcs_reverification.json`](data/thermo5-r17/thermo5_tx_r17_wsl_vcs_reverification.json). Full run artifacts remain in the ignored `runs/thermo5_r16_gate1_20261108/` directory in the isolated worktree.

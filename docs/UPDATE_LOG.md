@@ -1,3 +1,37 @@
+# 2026-11-08 — Thermo5 Round 17 final closure root-cause audit
+
+- Audited the five DPD Identity properties individually. The original VC Formal
+  run has one PROVEN latency assertion and four bounded/INCONCLUSIVE payload or
+  saturation assertions, with no SAT counterexample. Added and indexed scoped
+  no-stall and compositional results without weakening assertions; arbitrary
+  stall payload/saturation remains OPEN.
+- Classified the aggregate three DUT URG Failure rows and two overlapping
+  Uncovered rows against exact test logs. All three Failure rows are expected
+  in illegal-frame negative tests with negative checker/reset recovery PASS;
+  both `q1_tail` legal-success counts remain zero. The scoped legal metadata
+  proof is not treated as full-DUT proof or waiver approval.
+- Reconciled the official 371 unique Waiver IDs against the current Raw report:
+  two bins are `RESOLVED_BY_RAW_HIT`, 369 remain pending (361 ELIGIBLE, four
+  NEEDS_REPROOF, four UNRESOLVED), with zero reviewer approvals and zero
+  exclusions. Corrected the audit tool's false fingerprint comparison between
+  different canonical schemas, and required source/compile/VDB/URG inputs to
+  bind exactly.
+- Rebound the 8,192 Pair-1 Toggle review rows to the current 551-Test VDB
+  manifest. Exact current Raw-bin and source-hash matches are checked; all
+  rows remain pending independent review and no `.el` was generated.
+- Updated the Round 17 closure report, Formal/Assertion matrix, assertion
+  disposition table, Pair-1 current-binding ledger, execution frontier and
+  evidence hashes. No product RTL, frozen algorithm, test set or coverage
+  denominator changed; no broad random seed campaign was started.
+- Checks: Python 3.12 syntax check, current source/compile/VDB/URG reconciliation,
+  exact Pair-1 ID/hash audit, Formal/Assertion artifact hash audit, fail-closed
+  fingerprint mutation check, JSON/CSV/gzip validation, and `git diff --check`.
+- Remaining: full-chain DPD Identity, Outstanding Counter, Active-Tap
+  configuration, COMMIT lifecycle and full product `q1_tail` proof are OPEN;
+  13,171 code bins remain, 369 Waiver candidates and Pair-1 candidates require
+  independent review, and Approved Exclusions remain zero. Full Linux DV
+  signoff is OPEN (`RAW_100_OPEN`); XPM/GT/Vivado/FPGA/RF are not signed off.
+
 # 2026-11-08 — Thermo5 scoped Formal follow-up
 
 - With VC Formal V-2023.12-SP2 available, ran nine targeted jobs on source

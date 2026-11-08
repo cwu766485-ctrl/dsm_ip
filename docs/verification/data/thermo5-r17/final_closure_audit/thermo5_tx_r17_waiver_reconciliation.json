@@ -1,0 +1,496 @@
+{
+  "code_coverage_open": {
+    "branch_condition_buckets": {
+      "CONDITION_ROOT_CAUSE_REVIEW": 192,
+      "FIXED_PARAMETER_CANDIDATE": 8,
+      "OPEN_EXACT_BRANCH": 25,
+      "PAIR_LOOKAHEAD_HELPER_CANDIDATE": 80
+    },
+    "branch_condition_root_causes": {
+      "branch:FIXED_PRODUCT_CONFIGURATION": 21,
+      "branch:GUARDED_ADDRESS_DECODE": 1,
+      "branch:LEGAL_STIMULUS_OR_CHECKER_REVIEW": 89,
+      "branch:PRODUCT_CADENCE_ALIGNMENT": 2,
+      "cond:INTERPOLATOR_EMPTY_OR_BLOCKED": 4,
+      "cond:RESET_RELEASE_OR_STATE_HOLD": 188
+    },
+    "by_metric": {
+      "branch": 113,
+      "cond": 192,
+      "line": 458,
+      "toggle": 12408
+    },
+    "total_exact_bins": 13171
+  },
+  "input_sha256": {
+    "docs/verification/data/thermo5-r12/thermo5-tx-waivers-resolved-by-raw-hit.csv": "b66ea8360077e362632d1083fbdfeb193a37dbef93d88ea3ac21dc26054fe6d5",
+    "docs/verification/data/thermo5-r15/thermo5_tx_r15_waiver_review.csv": "e17ca676ea9c0d3c3e3cb5c451cfea6768e98a688b84f41aa1db3c87bb45d99c",
+    "docs/verification/data/thermo5-r16/thermo5_tx_r16_branch_rootcause_review.csv": "0b6e55cc756f4347ab7b1ae7058382197d060ae90e4dbaddf7933fb82cefb742",
+    "docs/verification/data/thermo5-r16/thermo5_tx_r16_coverage_summary.json": "8a955f835086de3ca6d73529488784a7cdb50754546c17f384f1495957ff3e90",
+    "docs/verification/data/thermo5-r16/thermo5_tx_r16_exact_remaining_bins.csv.gz": "26626500992ec055ae67dd0665b6603c43e939f4c461ec88e0b7a8bf2d09047b",
+    "docs/verification/data/thermo5-r16/thermo5_tx_r16_formal_matrix.json": "467caeb1c4c6df421405fed80ec2d49e7ed5a6c7ec42b59de12fc6daf51c5ca6",
+    "docs/verification/data/thermo5-r16/thermo5_tx_r16_source_manifest.json": "d40e50cb5232e91411fe5e668660e49a7a0e323b5e7c186c0ce9e932ef561cca",
+    "docs/verification/data/thermo5-r16/thermo5_tx_r16_waiver_review.csv": "34bb9c111764c66aa70932c2a394acceee0db88bc684961e6d418823fd7ee241",
+    "docs/verification/data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json": "94d819034da5f5517338f773381690bd9fb609beecd228e397a5c370958f9489",
+    "docs/verification/thermo5_tx_waivers.csv": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830"
+  },
+  "legacy_compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "outputs": {
+    "branch_condition_ledger_csv": "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_branch_condition_ledger.csv",
+    "branch_condition_ledger_csv_sha256": "af5dfa8713c70e28c32b12b043fe5469420ec5a6e9035b9f8a07a68166a752a1",
+    "waiver_reconciliation_csv": "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_waiver_reconciliation.csv",
+    "waiver_reconciliation_csv_sha256": "e6b4a654ca80b40cf3d70af87a1532970cef3451ff553b32d74c3c4cd6e4a7e6"
+  },
+  "pipeline_binding": {
+    "approved_exclusions": 0,
+    "fingerprint_comparison_note": "Product compile and waiver-audit fingerprints use different canonical schemas and must not be compared for equality.",
+    "fingerprint_match": true,
+    "historical_compile_manifest_sha256": "94d819034da5f5517338f773381690bd9fb609beecd228e397a5c370958f9489",
+    "independent_reviewer_approval": "NONE_RECORDED",
+    "official_candidate_audit_generated": false,
+    "official_csv_sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830",
+    "r15_refresh_csv_sha256": "e17ca676ea9c0d3c3e3cb5c451cfea6768e98a688b84f41aa1db3c87bb45d99c",
+    "raw_hit_archive_sha256": "b66ea8360077e362632d1083fbdfeb193a37dbef93d88ea3ac21dc26054fe6d5",
+    "round16_branch_review_sha256": "0b6e55cc756f4347ab7b1ae7058382197d060ae90e4dbaddf7933fb82cefb742",
+    "round16_clean_review_sha256": "34bb9c111764c66aa70932c2a394acceee0db88bc684961e6d418823fd7ee241",
+    "round16_coverage_summary_sha256": "8a955f835086de3ca6d73529488784a7cdb50754546c17f384f1495957ff3e90",
+    "round16_formal_matrix_sha256": "467caeb1c4c6df421405fed80ec2d49e7ed5a6c7ec42b59de12fc6daf51c5ca6",
+    "round16_gap_ledger_sha256": "26626500992ec055ae67dd0665b6603c43e939f4c461ec88e0b7a8bf2d09047b",
+    "round16_report_fingerprint": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "round16_source_manifest_sha256": "d40e50cb5232e91411fe5e668660e49a7a0e323b5e7c186c0ce9e932ef561cca",
+    "round17_coverage_chain": {
+      "active_exclusions": 0,
+      "adjusted_summary": {
+        "dut_assertions": {
+          "FAILURE": 3,
+          "SUCCESS": 13,
+          "UNCOVERED": 2
+        },
+        "fsm": [
+          {
+            "covered": 3,
+            "metric": "states",
+            "total": 3
+          },
+          {
+            "covered": 5,
+            "metric": "transitions",
+            "total": 5
+          },
+          {
+            "covered": 0,
+            "metric": "sequences",
+            "total": 0
+          },
+          {
+            "covered": 3,
+            "metric": "states",
+            "total": 3
+          },
+          {
+            "covered": 5,
+            "metric": "transitions",
+            "total": 5
+          },
+          {
+            "covered": 0,
+            "metric": "sequences",
+            "total": 0
+          },
+          {
+            "covered": 7,
+            "metric": "states",
+            "total": 7
+          },
+          {
+            "covered": 12,
+            "metric": "transitions",
+            "total": 12
+          },
+          {
+            "covered": 0,
+            "metric": "sequences",
+            "total": 0
+          }
+        ],
+        "metrics": {
+          "branch": {
+            "covered": 524,
+            "missing": 113,
+            "total": 637
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 192,
+            "total": 849
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 458,
+            "total": 3796
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 12408,
+            "total": 104480
+          }
+        }
+      },
+      "approved_waivers": 0,
+      "compile_audit_manifest_sha256": "94d819034da5f5517338f773381690bd9fb609beecd228e397a5c370958f9489",
+      "compile_parent_manifest_sha256": "d815447c35abfbca8cc40849b4d24af4acaab13fff49f2fd962b9ed3d8300c6a",
+      "compiled_source_count_checked": 97,
+      "coverage_source_revision": "4d92ecb8467b095b50478065e29e9646f2cff27e",
+      "design_vdb_count": 1,
+      "fingerprint_note": "Product compile and waiver-audit fingerprints use different canonical schemas and must not be compared for equality.",
+      "product_base_source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+      "product_compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+      "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+      "raw_adjusted_summaries_equal": true,
+      "raw_adjusted_vdb_lists_equal": true,
+      "raw_summary": {
+        "dut_assertions": {
+          "FAILURE": 3,
+          "SUCCESS": 13,
+          "UNCOVERED": 2
+        },
+        "fsm": [
+          {
+            "covered": 3,
+            "metric": "states",
+            "total": 3
+          },
+          {
+            "covered": 5,
+            "metric": "transitions",
+            "total": 5
+          },
+          {
+            "covered": 0,
+            "metric": "sequences",
+            "total": 0
+          },
+          {
+            "covered": 3,
+            "metric": "states",
+            "total": 3
+          },
+          {
+            "covered": 5,
+            "metric": "transitions",
+            "total": 5
+          },
+          {
+            "covered": 0,
+            "metric": "sequences",
+            "total": 0
+          },
+          {
+            "covered": 7,
+            "metric": "states",
+            "total": 7
+          },
+          {
+            "covered": 12,
+            "metric": "transitions",
+            "total": 12
+          },
+          {
+            "covered": 0,
+            "metric": "sequences",
+            "total": 0
+          }
+        ],
+        "metrics": {
+          "branch": {
+            "covered": 524,
+            "missing": 113,
+            "total": 637
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 192,
+            "total": 849
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 458,
+            "total": 3796
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 12408,
+            "total": 104480
+          }
+        }
+      },
+      "source_hash_map_match": true,
+      "status": "PASS_SAME_SOURCE_CONFIG_VDBS_RAW_AND_ZERO_EXCLUSION_ADJUSTED",
+      "test_vdb_count": 551,
+      "urg_report_manifest_sha256": "8dde1764a8a697be66859d8c8dda5671c77bd3bc1546ee29a18d3936152d92df",
+      "vdb_manifest_canonical_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+      "vdb_manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+      "waiver_audit_configuration_fingerprint_sha256": "f0ef176a049ec16e14c7302dd3493d05c3ba8395dc5a7c44eb34ba2c99b0a0fa"
+    },
+    "round17_current_compile_parent_manifest_sha256": "d815447c35abfbca8cc40849b4d24af4acaab13fff49f2fd962b9ed3d8300c6a",
+    "round17_current_urg_report_manifest_sha256": "8dde1764a8a697be66859d8c8dda5671c77bd3bc1546ee29a18d3936152d92df",
+    "round17_current_vdb_manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+    "urg_rerun": "PASS_SAME_SOURCE_CONFIG_VDBS_RAW_AND_ZERO_EXCLUSION_ADJUSTED"
+  },
+  "product_rtl_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "r15_refresh_defects": {
+    "candidate_audit_refs_in_official_csv": {
+      "docs/verification/data/thermo5-tx-waiver-review-round9/thermo5-tx-waiver-candidate-audit.json": 371
+    },
+    "candidate_audit_shas_in_official_csv": {
+      "9716b1027b4b3851c7c88b7c7edfe53cef9cca4d24864323f700c18cc20906fe": 371
+    },
+    "duplicate_ids": [
+      "W-92ac451faeb760079ca8",
+      "W-cd4717ad916b9979a47a"
+    ],
+    "interpretation": "Historical refresh CSV is preserved; Round 17 emits a normalized reconciliation artifact rather than rewriting historical evidence.",
+    "missing_official_ids": [
+      "W-75530ed17d5b396a4e9b",
+      "W-d7cb262894a5aae016b6",
+      "W-f4e9c70e66ecbf5e4ca2"
+    ],
+    "rows": 370,
+    "unique_ids": 368
+  },
+  "raw_hit_bins": [
+    {
+      "bin": "75530ed17d5b396a4e9b",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "metric": "line",
+      "raw_hit": "HIT 1/1; missing=0",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_line": "142",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "waiver_id": "W-75530ed17d5b396a4e9b"
+    },
+    {
+      "bin": "d7cb262894a5aae016b6",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+      "metric": "branch",
+      "raw_hit": "HIT 7/7; missing=0",
+      "source_file": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "source_line": "135",
+      "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "waiver_id": "W-d7cb262894a5aae016b6"
+    }
+  ],
+  "round16_coverage": {
+    "branch": {
+      "approved_adjusted": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      }
+    },
+    "condition": {
+      "approved_adjusted": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      }
+    },
+    "fsm_state": {
+      "approved_adjusted": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      }
+    },
+    "fsm_transition": {
+      "approved_adjusted": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      }
+    },
+    "line": {
+      "approved_adjusted": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      }
+    },
+    "toggle": {
+      "approved_adjusted": {
+        "covered": 92072,
+        "missing": 12408,
+        "percent": 88.124,
+        "total": 104480
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 92072,
+        "missing": 12408,
+        "percent": 88.124,
+        "total": 104480
+      }
+    }
+  },
+  "round16_formal": {
+    "axi_outstanding_counter": {
+      "assertions": {
+        "a_no_counter_saturation_guard": "inconclusive",
+        "a_no_counter_underflow_guard": "inconclusive",
+        "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+        "a_outstanding_within_product_capacity": "inconclusive",
+        "a_pa_valid_has_outstanding_word": "inconclusive"
+      },
+      "console_sha256": "1d96c5c3c23f2d905916c1bf5fbb9a6596282d6c8f0f2ad6f66e5f8ccd9abd8d",
+      "covers": {
+        "c_arbitrary_source_bubble": "covered",
+        "c_core_accept": "covered",
+        "c_counter_saturation_guard": "inconclusive",
+        "c_counter_underflow_guard": "inconclusive",
+        "c_output_accept": "covered",
+        "c_source_accept": "covered"
+      },
+      "disposition": "OPEN_INCONCLUSIVE",
+      "duration_seconds": 309.17,
+      "formal_manifest_sha256": "cc48beaba4f056882b8879d14ba91d8c3f7eda7f79bd2bc726e076489d1767c2",
+      "status": "INCONCLUSIVE"
+    },
+    "commit_lifecycle": {
+      "note": "Existing directed/randomized tests pass; no complete end-to-end proof composes all listed stages.",
+      "required_sequence": "Shadow -> COMMIT -> CDC Pending -> DPD Frame Boundary -> Active Epoch -> ACK -> STATUS/DONE",
+      "status": "OPEN"
+    },
+    "dpd_identity_full_chain": {
+      "exit_code": 0,
+      "run_result_sha256": "0cd7897f2c292a8669ec6bf0c5f08da6109482eed50feac6cc0978ea41b4ae29",
+      "scope": "Current run is output-under-stall leaf proof; AXI shadow/commit/mailbox/CDC/full TX chain omitted. Full-chain identity remains OPEN.",
+      "source_git_revision": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+      "status": "INCONCLUSIVE_SCOPED_LEAF_ONLY",
+      "timeout": false
+    },
+    "ef2_product_parameters": {
+      "assertions": [
+        [
+          "proven",
+          "thermo5_ef2_product_params_harness.a_product_pair_lookahead_disabled"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_product_params_harness.a_product_parameter_guard_inactive"
+        ]
+      ],
+      "black_box_instances": [
+        "0"
+      ],
+      "configuration": {
+        "CHANNELS": 32,
+        "PAIR_LOOKAHEAD": 0,
+        "W": 16,
+        "parameter_override": "Parent omits PAIR_LOOKAHEAD; RTL default is 0"
+      },
+      "covers": [
+        [
+          "uncoverable",
+          "thermo5_ef2_product_params_harness.c_invalid_parameter_guard"
+        ],
+        [
+          "uncoverable",
+          "thermo5_ef2_product_params_harness.c_pair_lookahead_arm_enabled"
+        ]
+      ],
+      "formal_summary_sha256": "71decfd3ff7e0657ba905c24f56894736f769057ef46c7397625a2d8531ef8b6",
+      "notes": "Current-source exact product parameter proof: PAIR_LOOKAHEAD=0 and legal parameter guard inactive; corresponding cover witnesses are uncoverable. This does not automatically exclude any URG bin; exact mapping and independent review remain required.",
+      "scope": "Exact W=16, CHANNELS=32 product EF2 parameter elaboration; prove PAIR_LOOKAHEAD=0 and legal parameter guard, while requiring corresponding candidate arms to be uncoverable",
+      "status": "PASS"
+    },
+    "pair1": {
+      "covers": {
+        "c_product_input_accept": "covered",
+        "c_product_output_transfer": "covered"
+      },
+      "exact_toggle_bins_mapped": 8192,
+      "formal_manifest_sha256": "cd73bcdc6be9b6ca9b6a0b13245100d176e17f813fd0c601e293d5e6fdcf318d",
+      "limitations": "No RUN/STOP or AXI-Lite COMMIT interface in harness; compile-time MAX_TAPS is static and property holds for arbitrary active_taps/out_ready, but product-level configuration and all state transitions are not composed in this proof.",
+      "properties": 64,
+      "properties_sha256": "5858856248a95d42354a2da44767e7d97619f5c88f16071b72ef6a9f4b264ed2",
+      "reset_constraint_only": true,
+      "scope": "Sixteen production dpd_memory_poly lanes, MAX_TAPS=1, arbitrary input/coefficient/tap-enable data and arbitrary backpressure; proves four Pair-1 accumulator nodes per lane are zero.",
+      "status": "PROVEN_SCOPED_PENDING_INDEPENDENT_REVIEW"
+    },
+    "q1_tail": {
+      "note": "The corrected EF2 corner UVM test passes but did not trigger either product q1_tail assertion; legal attempt remains OPEN.",
+      "product_properties": [
+        {
+          "attempts": 0,
+          "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+          "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310"
+        },
+        {
+          "attempts": 0,
+          "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+          "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310"
+        }
+      ],
+      "single_test_urg_assert_report": "thermo5_round16_fe315ca/targeted_ef2_corner/single_urg/asserts.html",
+      "status": "OPEN_NO_LEGAL_ATTEMPTS",
+      "targeted_ef2_corner_vdb": "thermo5_round16_fe315ca/targeted_ef2_corner/ef2_corner_fixed.vdb"
+    }
+  },
+  "schema": "thermo5_tx_round17_waiver_reconciliation",
+  "source_head": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "status": "CURRENT_R17_RAW_RECONCILED_WAIVERS_PENDING_INDEPENDENT_REVIEW",
+  "waiver_counts": {
+    "active_exclusions": 0,
+    "candidate_classes": {
+      "ELIGIBLE": 361,
+      "NEEDS_REPROOF": 4,
+      "UNRESOLVED": 4
+    },
+    "clean_round16_candidates": 369,
+    "official_rows": 371,
+    "official_unique_ids": 371,
+    "pending_approved": 0,
+    "pending_candidate_rows": 369,
+    "resolved_by_raw_hit": 2
+  }
+}

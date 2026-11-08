@@ -1,0 +1,174 @@
+{
+  "active_tap_axi_lite": {
+    "assertions": {
+      "a_active_taps_one": "INCONCLUSIVE depth 3",
+      "a_bvalid_clears_pending": "PROVEN",
+      "a_coeff_read_default_unreachable": "PROVEN",
+      "a_line88_tuple_unreachable": "PROVEN",
+      "a_pending_taps_one": "INCONCLUSIVE depth 2",
+      "a_write_case_default_unreachable": "PROVEN"
+    },
+    "assumptions": 0,
+    "blackboxes": 0,
+    "covers": {
+      "c_coeff_read_default_arm_unreachable": "UNCOVERABLE",
+      "c_coeff_read_transaction": "COVERED",
+      "c_legal_tap_commit_apply": "INCONCLUSIVE depth 3",
+      "c_line88_tuple_unreachable": "UNCOVERABLE",
+      "c_reject_illegal_tap_commit": "INCONCLUSIVE depth 3",
+      "c_write_case_default_unreachable": "UNCOVERABLE",
+      "c_write_illegal_tap_value": "COVERED"
+    },
+    "manifest_sha256": "aafafb13c94d9c04a571459b7dd5d08ddf57a75f33a9a736d9b4f96f1edf3303",
+    "non_vacuous_assertions": 2,
+    "properties_sha256": "8a2e746822f707294114cc9a68126a08e790a20228edfd6429d0c8b8f300f54e",
+    "status": "FAIL_OPEN"
+  },
+  "commit_lifecycle": {
+    "evidence": "Directed and randomized simulation pass; no composed end-to-end formal property.",
+    "required_order": "Shadow -> COMMIT -> CDC Pending -> DPD Frame Boundary -> Active Epoch -> ACK -> STATUS/DONE",
+    "status": "OPEN"
+  },
+  "date": "2026-11-08",
+  "decision": "OPEN_NO_FINAL_FORMAL_SIGNOFF",
+  "ef2_fixed_parameters": {
+    "assertions": "2/2 proven",
+    "configuration": {
+      "CHANNELS": 32,
+      "PAIR_LOOKAHEAD": 0,
+      "W": 16
+    },
+    "covers": "2 fixed-incompatible arms uncoverable",
+    "note": "Does not itself approve any URG exclusion.",
+    "status": "PROVEN_SCOPED_PENDING_BIN_MAPPING_REVIEW"
+  },
+  "final_scope_open": [
+    "Full-chain DPD Identity under arbitrary stall",
+    "Product Outstanding Counter guards and capacity",
+    "Composed COMMIT lifecycle",
+    "Active-tap commit/apply invariants",
+    "Full DUT q1_tail proof or approved replacement",
+    "Independent waiver reviewer approval",
+    "Final adjusted regression/URG"
+  ],
+  "identity_decomposition": [
+    {
+      "assertions": "5/5 proven",
+      "covers": "3/3 covered",
+      "job": "identity_nostall",
+      "manifest_sha256": "9caa27e70cb74cb05d73e823bb462491e65da080d84a5f00ec980a22f9c084a5",
+      "properties_sha256": "71d2da99c052849a63bf9ca8d8dda6ee9ba973f727143581a4b626373220e22a",
+      "scope": "1-tap identity leaf, fixed identity coefficients, out_ready=1/no backpressure, reset-only constraint.",
+      "status": "PASS_SCOPED"
+    },
+    {
+      "assertions": "6/18 proven; 12 inconclusive",
+      "covers": "4/4 covered; payload-stability assumption non-vacuous",
+      "job": "identity_lemmas",
+      "manifest_sha256": "9244b91b475299daa1be5f117818b9e1162de8470d0148368d58b44e94222a3c",
+      "properties_sha256": "84a050c4aa330d21b44e60a312c7fa0407cd53301626665090f835111f245837",
+      "scope": "arbitrary stall; payload/saturation depth 88; pair/product/term/sum range claims mostly depth 193-258; no SAT counterexample.",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "assertions": "5/18 proven; 13 inconclusive",
+      "covers": "4/4 covered; non-vacuity 9/9",
+      "job": "identity_compositional",
+      "manifest_sha256": "2bb773de73561f2c50a5f6754261db5acb54af1bf5d13e7787cd33118bde4616",
+      "properties_sha256": "e2551223bbc0126b2da1c8b73903bdb655826c69342229a8f2500ab079432b36",
+      "scope": "compositional trial; gain claim regressed to inconclusive depth 289; stall-case payload and saturation remain OPEN.",
+      "status": "INCONCLUSIVE"
+    }
+  ],
+  "identity_original_evidence": {
+    "assumption": "asm_payload_stable non-vacuous; stall cover reached; harness is not composed with AXIL/CDC/full TX chain",
+    "engines_sha256": "51c9ee76e392e9c7c6a8a6a690b9ff6305f6b449f02e8c96ff9262db33c88244",
+    "properties_sha256": "69f0197753fd5e9d82016c98cd4304c5cef7a4aade7ffcc83a317382a6b553d7",
+    "run_summary_sha256": "cf4470f0a2cb543a96b2416a0df4579acb82a5726b65d302214c6e74cf967852"
+  },
+  "identity_original_five_assertions": [
+    {
+      "counterexample": false,
+      "depth": 221,
+      "engine": "b8",
+      "non_vacuous": true,
+      "property": "a_identity_payload",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "counterexample": false,
+      "depth": 221,
+      "engine": "b8",
+      "property": "a_no_saturation_i",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "counterexample": false,
+      "depth": 2569,
+      "engine": "b6",
+      "property": "a_no_saturation_q",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "counterexample": false,
+      "depth": 2569,
+      "engine": "b6",
+      "property": "a_saturation_count_zero",
+      "status": "INCONCLUSIVE"
+    },
+    {
+      "counterexample": false,
+      "depth": 1611,
+      "engine": "e1",
+      "property": "a_valid_latency",
+      "status": "PROVEN"
+    }
+  ],
+  "outstanding_counter": {
+    "formal_matrix_sha256": "467caeb1c4c6df421405fed80ec2d49e7ed5a6c7ec42b59de12fc6daf51c5ca6",
+    "guard_covers": {
+      "c_counter_saturation_guard": "INCONCLUSIVE",
+      "c_counter_underflow_guard": "INCONCLUSIVE"
+    },
+    "interpretation": "No counterexample established; guard/capacity properties remain open.",
+    "new_retry": "INCOMPLETE_NO_FINAL_PROPERTIES_MANIFEST",
+    "partial_retry_console_sha256": "db420a92ffb1c3688a2382d2e681c224da9ca65e989f44196aa1c42253c070ed",
+    "prior_formal_status": "INCONCLUSIVE",
+    "properties": {
+      "a_no_counter_saturation_guard": "INCONCLUSIVE",
+      "a_no_counter_underflow_guard": "INCONCLUSIVE",
+      "a_outstanding_not_greater_than_pipeline_slots": "INCONCLUSIVE",
+      "a_outstanding_within_product_capacity": "INCONCLUSIVE",
+      "a_pa_valid_has_outstanding_word": "INCONCLUSIVE"
+    }
+  },
+  "pair1_fixed_tap": {
+    "assertions": "64/64 proven",
+    "covers": "2/2 covered",
+    "formal_manifest_sha256": "cd73bcdc6be9b6ca9b6a0b13245100d176e17f813fd0c601e293d5e6fdcf318d",
+    "properties_sha256": "5858856248a95d42354a2da44767e7d97619f5c88f16071b72ef6a9f4b264ed2",
+    "scope": "16 product DPD lanes, MAX_TAPS=1, arbitrary data/coefficient/tap-enable and arbitrary out_ready; four Pair-1 accumulator nodes per lane proven zero. Reset-only assumption. AXIL COMMIT/RUN-STOP/CDC/full configuration lifecycle excluded.",
+    "status": "PROVEN_SCOPED_PENDING_INDEPENDENT_REVIEW"
+  },
+  "product": {
+    "base_source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+    "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 20-bit; DPD_MAX_TAPS=1 Identity reset; AXI-Lite Generic FIFO",
+    "coverage_source_revision": "4d92ecb8467b095b50478065e29e9646f2cff27e",
+    "formal_harness_checkout_sha": "81416724359d99038e2c36bc07692d8dd44c0c63",
+    "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003"
+  },
+  "q1_tail": {
+    "console_sha256": "05a5387f3cb65bdd4ecea273202e5b9e160342351d7d517f0770c293996325eb",
+    "properties_sha256": "d1cc933cd112c045715a1771f7033956fe615afe9f0421bdb3ab4c8becd15aa9",
+    "rtl_expression": "if (rst_n && q_count==2 && q0_end && !q1_start) assert(q1_tail)",
+    "scoped_formal": "Legal 56-sample stage-metadata properties proven non-vacuously; active-bin covers uncoverable; harness omits intermediate FIFO/DPD/full source chain.",
+    "source": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv:310",
+    "stages": [
+      "g_interp1_centered.u_interp_1",
+      "g_interp2_centered.u_interp_2"
+    ],
+    "status": "OPEN_FOR_FULL_CHAIN_AND_REVIEW"
+  },
+  "schema": "thermo5_tx_r17_formal_assertion_root_cause"
+}

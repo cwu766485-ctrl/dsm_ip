@@ -1,0 +1,113 @@
+{
+  "artifact_sha256": {
+    "axil_cfg_formal_manifest": "aafafb13c94d9c04a571459b7dd5d08ddf57a75f33a9a736d9b4f96f1edf3303",
+    "execution-frontier.md": "a04c98c361a5320c4d442333b319752875ae6321d87dfc4a460443c9dd20504f",
+    "identity_compositional_properties": "e2551223bbc0126b2da1c8b73903bdb655826c69342229a8f2500ab079432b36",
+    "identity_no_stall_properties": "71d2da99c052849a63bf9ca8d8dda6ee9ba973f727143581a4b626373220e22a",
+    "identity_original_engines": "51c9ee76e392e9c7c6a8a6a690b9ff6305f6b449f02e8c96ff9262db33c88244",
+    "identity_original_properties": "69f0197753fd5e9d82016c98cd4304c5cef7a4aade7ffcc83a317382a6b553d7",
+    "legal_frame_metadata_properties": "d1cc933cd112c045715a1771f7033956fe615afe9f0421bdb3ab4c8becd15aa9",
+    "negative_axil_log": "eccd57deb30d5c91c6875ae6d333e91e6c137e6af61891ee845b8b05d2ca1bab",
+    "negative_generic_log": "d498ca19a8d5241f3d5aa6508437671c42a1b017bb983c315efa33f45fa49563",
+    "outstanding_partial_retry_console": "db420a92ffb1c3688a2382d2e681c224da9ca65e989f44196aa1c42253c070ed",
+    "pair1_formal_manifest": "cd73bcdc6be9b6ca9b6a0b13245100d176e17f813fd0c601e293d5e6fdcf318d",
+    "pair1_formal_properties": "5858856248a95d42354a2da44767e7d97619f5c88f16071b72ef6a9f4b264ed2",
+    "raw_assertion_inventory.csv": "aa302bdd03ea59fd8a2a876485bc4506836d2220e1a18344232e32552d31366c",
+    "reconcile_script.py": "65eb3955b76e9adb5772e5cf8b253316cfd15a4ee31ea85c5f93181abd367e99",
+    "thermo5-tx-final-closure-round17-20261108.md": "47abcb74e50f50c48dbcc1f88a9bf2466132a3ebb6dd3edb975b956d15386705",
+    "thermo5-tx-r17-wsl-vcs-reverification-20261108.md": "878fdf9d446fa4db93ce4aaf63d3ef925d576f4f363bc3a3ac94ec93b6611a08"
+  },
+  "checks": {
+    "full_regression_rerun": "NOT_RUN; reused current-source Round 17 regression evidence",
+    "git_diff_check": "PASS",
+    "json_csv_gzip_validation": "PASS",
+    "mutated_compile_fingerprint_rejected_before_output": "PASS",
+    "new_random_seeds": "NOT_RUN",
+    "pair1_mapping_and_pending_state": "PASS",
+    "python_compile": "PASS",
+    "waiver_reconciliation_current_chain": "PASS"
+  },
+  "coverage": {
+    "active_exclusions": 0,
+    "approved_waivers": 0,
+    "design_vdb_count": 1,
+    "exact_uncovered_code_bins": 13171,
+    "metrics": {
+      "branch": "524/637; missing 113",
+      "condition": "657/849; missing 192",
+      "fsm_states": "13/13",
+      "fsm_transitions": "22/22",
+      "line": "3338/3796; missing 458",
+      "toggle": "92072/104480; missing 12408"
+    },
+    "new_exact_hits_in_189_fresh_vdbs": 0,
+    "raw_adjusted_equal": true,
+    "raw_adjusted_same_manifest": true,
+    "test_vdb_carry_forward": 362,
+    "test_vdb_count": 551,
+    "test_vdb_fresh": 189,
+    "urg_report_manifest_sha256": "8dde1764a8a697be66859d8c8dda5671c77bd3bc1546ee29a18d3936152d92df",
+    "vdb_manifest_canonical_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+    "vdb_manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f"
+  },
+  "date": "2026-11-08",
+  "decision": "OPEN_RAW_100_OPEN",
+  "formal_and_assertion": {
+    "active_tap": "4 PROVEN; 2 INCONCLUSIVE; runner FAIL",
+    "assertion_disposition_csv_sha256": "d455214c71ec42f8e02d6291018bb6a6dc68b0f3f6a1827b2f723f94a9d5a0b3",
+    "commit_lifecycle": "OPEN",
+    "identity_no_stall_partition": "5/5 PROVEN; not arbitrary-stall proof",
+    "identity_original": "1/5 PROVEN; 4 INCONCLUSIVE; no SAT counterexample",
+    "matrix_sha256": "8edafd0cd4663188d56158d0a0b9c0f97caf3963ead88a13a2bbdc0b03eb3a0d",
+    "outstanding_counter": "INCONCLUSIVE / OPEN",
+    "q1_tail": "legal metadata-only antecedent proof; full product OPEN",
+    "urg_dut_assertions": "13 SUCCESS / 3 FAILURE / 2 UNCOVERED; q1 Failure and Uncovered rows overlap"
+  },
+  "merge": {
+    "final_signoff": "OPEN; requires separate future closure gate",
+    "merged_at_evidence_capture": false,
+    "pr": 46,
+    "review_submissions_at_evidence_capture": 0,
+    "self_review": "PASS_FOR_INTERMEDIATE_INTEGRATION_ONLY",
+    "state_at_evidence_capture": "OPEN_DRAFT"
+  },
+  "pair1": {
+    "all_current_raw_bins_mapped": true,
+    "current_candidate_rows": 8192,
+    "formal_status": "64/64 PROVEN, 2/2 Covers; scoped, no independent approval",
+    "manifest_sha256": "4191259502316ccc181c9f8974674652804a9ca1f8547b78c52976df3395aab0",
+    "raw_bin_ledger_sha256": "7bad1f487c8b205b832e69595dc0fa2d06a2600a8a4dcbf1b6454f09b4dc9dba",
+    "source_hash_mismatches": 0,
+    "status": "PENDING_INDEPENDENT_REVIEW"
+  },
+  "schema": "thermo5_tx_r17_final_closure_evidence_manifest",
+  "source": {
+    "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "compile_inputs_verified": "95/95",
+    "coverage_source_revision": "4d92ecb8467b095b50478065e29e9646f2cff27e",
+    "formal_harness_checkout_sha": "81416724359d99038e2c36bc07692d8dd44c0c63",
+    "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "thermo5_base_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733"
+  },
+  "tools": {
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1 / CovDB 13.1",
+    "vc_formal": "V-2023.12-SP2",
+    "vcs": "V-2023.12-SP1_Full64"
+  },
+  "waivers": {
+    "audit_csv_sha256": "e6b4a654ca80b40cf3d70af87a1532970cef3451ff553b32d74c3c4cd6e4a7e6",
+    "audit_json_sha256": "57a33733935c2dfd555ea9aca4bb2402706615ab2fc7ab4f071cd5c2eff832fe",
+    "candidate_exact_open_bin_match_count": 369,
+    "eligible": 361,
+    "exclusions": 0,
+    "independent_approvals": 0,
+    "needs_reproof": 4,
+    "official_count": 371,
+    "official_unique_ids": 371,
+    "pending": 369,
+    "resolved_by_raw_hit": 2,
+    "source_hash_match_count": 371,
+    "unresolved": 4
+  }
+}
