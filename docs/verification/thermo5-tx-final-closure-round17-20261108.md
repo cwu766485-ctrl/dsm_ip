@@ -23,6 +23,14 @@ The current-source Generic FIFO and AXI-Lite UVM regressions, System Random 110/
 
 ## 2. DPD Identity Formal root cause
 
+### 2026-11-09 follow-up — staged S7–S10 work remains OPEN
+
+The repository Identity runner was rerun with `--auto-lemmas` against the same product RTL and the current helper harness. VC Formal exited 0, but the runner returned `INCONCLUSIVE_OR_FAIL`: 1/24 final assertions are PROVEN and 23/24 are INCONCLUSIVE, with no SAT counterexample and zero black boxes. Of the five original assertions, `a_valid_latency` is PROVEN; payload identity, I/Q no-saturation and saturation-count-zero are INCONCLUSIVE. The run reached the original four endpoint/stall/recovery Covers.
+
+The runner promoted 19 S0–S6/configuration alignment lemmas and `a_gain_identity`. The following `a_gain_identity_s6` and S7–S10 final properties remained INCONCLUSIVE at depth 244. Separate hand-staged reports show local S7 product/transfer, S8 term, S9 pair and S10 sum/output proofs, but one S7 transfer replay is INCONCLUSIVE at depth 405 and the automatic composition does not reproduce the local results. A separate hand-composed report gives 3/5 original assertions PROVEN and 2/5 INCONCLUSIVE, but it did not bind all imported stage evidence through a fail-closed manifest; it is exploratory, not accepted closure. Five additional stage activity Covers are non-vacuously reached at depths 8–12.
+
+Fresh per-property engine IDs are not exposed by the runner report; historical `b8`/`b6`/`e1` labels remain explicitly historical. The exact assertions, depths, run commands, report hashes, and cover reproduction inputs are in [the Nov 9 machine evidence](data/thermo5-r17/final_closure_audit/thermo5_tx_r17_identity_stage7_to10_formal_followup_20261109.json) and [the Nov 9 Formal report](thermo5-tx-dpd-identity-stage7-10-formal-closure-20261109.md). Therefore DPD Identity remains OPEN and this follow-up does not change the coverage or waiver status below.
+
 The original Identity runner ended **FAIL** because its required assertion gate was not met. It did not report a SAT counterexample. Four properties were bounded without a proof result; the valid-latency property was proven. Engine outcomes are:
 
 | Assertion | Result | Engine | Depth / cause |

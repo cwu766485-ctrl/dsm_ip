@@ -1,0 +1,148 @@
+{
+  "schema": "thermo5_tx_r17_identity_stage7_to10_formal_followup",
+  "date": "2026-11-09",
+  "source": {
+    "local_commit": "c29e76ae153e67c96a5d73642e833b7308bb3c87",
+    "local_tree": "2e4e2f583eba13338171a024b01eca090eaf5e13",
+    "pr_number": 47,
+    "pr_remote_head_before_report": "f6b71c59b812cdc9748bf0ecbb7157fd6a16933b",
+    "pr_remote_tree_before_report": "2e4e2f583eba13338171a024b01eca090eaf5e13",
+    "pr_state": "OPEN_DRAFT",
+    "pr_base": "thermo5",
+    "thermo5_base": "7708d0eb9a2128942ff802202c0d1716c8c11f8b",
+    "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "compile_fingerprint": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "compile_inputs_matched": "95/95",
+    "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 20-bit; DPD_MAX_TAPS=1 Identity reset; AXI-Lite; Generic FIFO",
+    "product_rtl_changed": false,
+    "product_parameters_changed": false
+  },
+  "tool": {
+    "vc_formal": "V-2023.12-SP2 linux64",
+    "platform": "Rocky 8.10 WSL2",
+    "source_harness_sha256": {
+      "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+      "dv/uvm/formal/thermo5_dpd_identity_lemmas_harness.sv": "18a42a6b22c4a2c55f867aeb2468e75ae7cd26a133cd37d13c8ae3f61630e24a"
+    }
+  },
+  "controlling_run": {
+    "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_convergence.py --job identity --out-dir runs/codex_round17_identity_official_auto_lemmas_20261109 --auto-lemmas",
+    "runner_status": "INCONCLUSIVE_OR_FAIL",
+    "runner_exit_code": 1,
+    "vcf_exit_code": 0,
+    "duration_seconds": 194.04285385599906,
+    "black_box_instances": 0,
+    "sat_counterexample": false,
+    "max_effort_warnings": 3,
+    "overall_engine_wall_seconds": 61.79,
+    "overall_engine_peak_memory_mb": 467,
+    "promoted_base_lemmas": 20,
+    "final_assertion_summary": {"total": 24, "proven": 1, "inconclusive": 23, "failed": 0},
+    "final_assertions": {
+      "a_identity_payload": {"status": "INCONCLUSIVE", "depth": 245, "non_vacuous": true, "fresh_engine_id": "NOT_REPORTED"},
+      "a_no_saturation_i": {"status": "INCONCLUSIVE", "depth": 244, "fresh_engine_id": "NOT_REPORTED"},
+      "a_no_saturation_q": {"status": "INCONCLUSIVE", "depth": 244, "fresh_engine_id": "NOT_REPORTED"},
+      "a_saturation_count_zero": {"status": "INCONCLUSIVE", "depth": 244, "fresh_engine_id": "NOT_REPORTED"},
+      "a_valid_latency": {"status": "PROVEN", "depth": null, "fresh_engine_id": "NOT_REPORTED"}
+    },
+    "staged_final_composition": {
+      "a_gain_identity_s6": "INCONCLUSIVE",
+      "a_product_i": "INCONCLUSIVE",
+      "a_product_q": "INCONCLUSIVE",
+      "a_term_i": "INCONCLUSIVE",
+      "a_term_q": "INCONCLUSIVE",
+      "a_sum_i": "INCONCLUSIVE",
+      "a_sum_q": "INCONCLUSIVE",
+      "a_stage7_i_product_transfer": "INCONCLUSIVE",
+      "a_stage7_q_product_transfer": "INCONCLUSIVE",
+      "a_stage7_i_product_identity": "INCONCLUSIVE",
+      "a_stage7_q_product_identity": "INCONCLUSIVE",
+      "a_stage8_i_term_identity": "INCONCLUSIVE",
+      "a_stage8_q_term_identity": "INCONCLUSIVE",
+      "a_stage9_i_pair_identity": "INCONCLUSIVE",
+      "a_stage9_q_pair_identity": "INCONCLUSIVE",
+      "a_stage10_i_sum_and_output_identity": "INCONCLUSIVE",
+      "a_stage10_q_sum_and_output_identity": "INCONCLUSIVE"
+    },
+    "covers": {
+      "c_min_endpoint": {"status": "COVERED", "depth": 12},
+      "c_max_endpoint": {"status": "COVERED", "depth": 12},
+      "c_stall": {"status": "COVERED", "depth": 13},
+      "c_recovery": {"status": "COVERED", "depth": 13}
+    },
+    "files_sha256": {
+      "runs/codex_round17_identity_official_auto_lemmas_20261109/manifest.json": "74a6f3776ba13b743259bbbf0ee393208ca59d9ad4a1ed3336b55821cf6cc5f9",
+      "runs/codex_round17_identity_official_auto_lemmas_20261109/console.log": "e122a0e314ccc9b0ae0b416af8978f54d566c2610487d0fd21a0ae7ccebec765",
+      "runs/codex_round17_identity_official_auto_lemmas_20261109/properties_compositional.txt": "b97afa42e64fdfd872358e45b377ca85253139f8de06bb50941fbf5207140805",
+      "runs/codex_round17_identity_official_auto_lemmas_20261109/properties.txt": "dd305e93247fa5556a72b3f4c64aea2defcbcc0e5b4a6723886d0b8dc7e3c814",
+      "runs/codex_round17_identity_official_auto_lemmas_20261109/promotions.txt": "92ab1e1e0ce5d4618f6094f6865032d542ca258b17b0bba23e194414517b81b8"
+    }
+  },
+  "separate_experiments": {
+    "manual_composed_five_assertion_run": {
+      "result": {
+        "a_identity_payload": "PROVEN",
+        "a_no_saturation_i": "PROVEN",
+        "a_no_saturation_q": "INCONCLUSIVE_DEPTH_499",
+        "a_saturation_count_zero": "PROVEN",
+        "a_valid_latency": "INCONCLUSIVE_DEPTH_499"
+      },
+      "runner_exit_code": 0,
+      "acceptance": "EXPLORATORY_ONLY: staged import set was not bound by a fail-closed property/hash manifest within this run; do not override the controlling runner"
+    },
+    "stage7_transfer_primary_report": {
+      "i_status": "PROVEN",
+      "q_status": "PROVEN",
+      "source_report": "runs/codex_round17_identity_stage7_transfer_20261109/stage7_transfer.txt",
+      "source_report_sha256": "3b15634d02b97b6135357a7b650ff838ee4453dac74c1e647b022faa26d27ee1",
+      "replay_status": "INCONCLUSIVE_DEPTH_405",
+      "replay_report": "runs/codex_round17_identity_stage8_to_stage10_20261109/stage7_transfer.txt",
+      "replay_report_sha256": "e32d2b5ee540e9bd9bad189517d35a1b7a4075d197364a01c6111ac4a4ce9a84",
+      "acceptance": "NOT_CLOSED: proof result not reproduced consistently"
+    },
+    "independent_stage_reports": {
+      "stage7_product_identity": {"result": "2_PROVEN", "sha256": "df8c0dc52051656dc083dbca6321be77f3f28d3196a26ad1286142ebe021ac9a"},
+      "stage8_term_identity": {"result": "2_PROVEN", "sha256": "52964e845d179150d72111dcc90e2199f06cb07b0aab4bf9f1bdf2d498a543d1"},
+      "stage9_pair_identity": {"result": "2_PROVEN", "sha256": "6d78213638ebad946a060c222084bb69c72f00c06220357128827a7220d33d6d"},
+      "stage10_sum_output_identity": {"result": "2_PROVEN", "sha256": "64c60a96be230664fa67a8d126ec1a81011ac0d0dadbd55b07a4cd5f38e2a743"},
+      "acceptance": "Supporting scoped reports only; automatic composition remains INCONCLUSIVE"
+    },
+    "additional_nonvacuous_activity_cover_run": {
+      "status": "PASS",
+      "exit_code": 0,
+      "witnesses": {
+        "c_stage7_transfer_active": 8,
+        "c_stage7_identity_active": 9,
+        "c_stage8_identity_active": 10,
+        "c_stage9_identity_active": 11,
+        "c_stage10_identity_active": 12
+      },
+      "assumptions": ["reset contract", "asm_payload_stable"],
+      "files_sha256": {
+        "runs/codex_round17_identity_activity_witness_check_20261109/harness_activity.sv": "f20c4474977b9e938db79a7379758d91f5feff9f097214b22340f52629d22398",
+        "runs/codex_round17_identity_activity_witness_check_20261109/activity.tcl": "b425df8fcb93bccb9fc0a6b42ef1fc8aaa0fc896824f6aa1ba7d2a5cb85413d7",
+        "runs/codex_round17_identity_activity_witness_check_20261109/activity_witnesses.txt": "119ab3b26eac10c2499292b12b2f761375c957a6c50c786f7b1bd89961daf758",
+        "runs/codex_round17_identity_activity_witness_check_20261109/console.log": "99be8bd3466bc5b22e2f1382ae6f078c05dd7e2943564f4adfb5b3640256f70f"
+      },
+      "archived_reproduction_inputs": {
+        "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_identity_activity_cover_harness_20261109.sv": "f20c4474977b9e938db79a7379758d91f5feff9f097214b22340f52629d22398",
+        "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_identity_activity_cover_20261109.tcl": "b425df8fcb93bccb9fc0a6b42ef1fc8aaa0fc896824f6aa1ba7d2a5cb85413d7"
+      }
+    }
+  },
+  "other_formal_gates": {
+    "outstanding_counter": "OPEN_INCONCLUSIVE; five assertions and two guard Covers remain inconclusive",
+    "commit_lifecycle": "OPEN; no end-to-end lifecycle proof",
+    "active_tap": "OPEN; prior run 4/6 assertions proven, 2 inconclusive; activity Covers inconclusive",
+    "q1_tail": "OPEN; product legal successful attempts remain zero; metadata-only formal scope is insufficient"
+  },
+  "coverage_waiver": {
+    "official_raw_baseline": {"manifest_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509", "design_vdbs": 1, "test_vdbs": 551},
+    "fresh_same_manifest_urg_rerun_this_followup": "NOT_RUN; the full 551-Test-VDB tree and URG database are absent from this isolated checkout",
+    "raw_equals_zero_exclusion_adjusted": true,
+    "covered_over_total": {"branch": "524/637", "condition": "657/849", "line": "3338/3796", "toggle": "92072/104480", "fsm_states": "13/13", "fsm_transitions": "22/22"},
+    "uncovered_code_bins_last_official_manifest": 13171,
+    "official_waivers": {"ids": 371, "resolved_by_raw_hit": 2, "pending_review": 369, "approved": 0, "active_exclusions": 0}
+  },
+  "decision": "OPEN_NO_FINAL_LINUX_DV_SIGNOFF"
+}

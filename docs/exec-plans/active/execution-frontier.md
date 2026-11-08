@@ -1,6 +1,12 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Round 17 final closure audit (2026-11-08)
+## Current execution state: Thermo5 TX Round 17 DPD Identity closure (2026-11-09)
+
+PR #47 remains Draft/Open, based on `thermo5` `7708d0eb9a2128942ff802202c0d1716c8c11f8b`; local source tree `2e4e2f583eba13338171a024b01eca090eaf5e13` matches the remote PR tree. Product RTL hash and parameters are unchanged. The official VC Formal Identity runner (`--auto-lemmas`) reached 1/24 assertions PROVEN, 23 INCONCLUSIVE, 4/4 original Covers, zero black boxes and no SAT counterexample; the runner gate correctly returned INCONCLUSIVE/FAIL. Separate local S7–S10 proofs are not accepted as full composition because a transfer replay was inconclusive and the automatic composition did not reproduce them. New report/evidence: `docs/verification/thermo5-tx-dpd-identity-stage7-10-formal-closure-20261109.md` and `docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_identity_stage7_to10_formal_followup_20261109.json`.
+
+Last same-manifest coverage remains Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM 13/13 states and 22/22 transitions; 13,171 code bins remain open. Waivers: 2 resolved by Raw hit, 369 pending review, 0 approved, 0 exclusions. Full Linux DV signoff remains OPEN. Next work is reproducible staged proof binding and root-cause analysis for q-saturation/arbitrary-stall properties; no new random campaign or official URG merge is justified by this Formal-only update.
+
+## Previous execution state: Thermo5 TX Round 17 final closure audit (2026-11-08)
 
 Latest follow-up is based on `thermo5` HEAD `7708d0eb9a2128942ff802202c0d1716c8c11f8b`; Product RTL and product parameters are unchanged. A new Formal-only Harness change adds 14 S0–S6 I/Q alignment Lemmas. VC Formal proved all 14 non-vacuously and then proved the gain-identity Lemma through staged composition. The final arbitrary-stall payload/no-saturation/saturation-count goals remain INCONCLUSIVE (no SAT counterexample); full-chain Identity stays OPEN. A one-test AXI-Lite register-access VCS/URG smoke passed on this HEAD, but it is not a full regression or the 551-Test official URG rerun. Details: `docs/verification/thermo5-tx-final-closure-round17-20261108.md` and `docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_identity_formal_followup.json`.
 
