@@ -1,0 +1,207 @@
+{
+  "coverage": {
+    "approved_waivers": 0,
+    "coverage_delta_vs_362_test_vdb_baseline": {
+      "new_exact_dut_code_hits": 0
+    },
+    "dut_assertions": {
+      "failure": 3,
+      "success": 13,
+      "uncovered": 2
+    },
+    "exclusions_applied": 0,
+    "fresh_current_source_test_vdb_count": 189,
+    "historical_carry_forward_test_vdb_count": 362,
+    "metrics": {
+      "branch": {
+        "covered": 524,
+        "excluded": 0,
+        "percent": 82.26,
+        "total": 637,
+        "uncovered": 113
+      },
+      "condition": {
+        "covered": 657,
+        "excluded": 0,
+        "percent": 77.39,
+        "total": 849,
+        "uncovered": 192
+      },
+      "fsm_states": {
+        "covered": 13,
+        "excluded": 0,
+        "percent": 100.0,
+        "total": 13,
+        "uncovered": 0
+      },
+      "fsm_transitions": {
+        "covered": 22,
+        "excluded": 0,
+        "percent": 100.0,
+        "total": 22,
+        "uncovered": 0
+      },
+      "line": {
+        "covered": 3338,
+        "excluded": 0,
+        "percent": 87.93,
+        "total": 3796,
+        "uncovered": 458
+      },
+      "toggle": {
+        "covered": 92072,
+        "excluded": 0,
+        "percent": 88.12,
+        "total": 104480,
+        "uncovered": 12408
+      }
+    },
+    "pre_post_vdb_manifest_equal": true,
+    "product_design_vdb_tree_sha256": "662b4f873f12f664fb2ddf22b0d69415952c96d2734814d7a6016ab6f65f50db",
+    "raw_and_adjusted_same_vdb_inputs": true,
+    "raw_equals_zero_exclusion_adjusted": true,
+    "test_vdb_count": 551,
+    "total_uncovered_code_bins": 13171,
+    "vdb_manifest_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509"
+  },
+  "created_utc": "2026-11-08",
+  "decisions": {
+    "fpga_physical_signoff": "NOT_RUN",
+    "full_linux_dv_signoff": "OPEN_RAW_100_OPEN",
+    "functional_linux_dv": "PARTIAL_PASS for listed suites only",
+    "tool_environment_gate": "PASS for VCS/URG 64-bit availability and executed flows"
+  },
+  "environment": {
+    "distribution": "Rocky Linux 8.10 under WSL2",
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1",
+    "urg_mode": "64-bit; invoke with -full64",
+    "vc_formal": "V-2023.12-SP2",
+    "vcs": "V-2023.12-SP1_Full64",
+    "vcs_home": "/opt/Synopsys/vcs/V-2023.12-SP1"
+  },
+  "evidence_root_ignored": "runs/thermo5_r16_gate1_20261108/",
+  "evidence_sha256": {
+    "commit_boundary.log": "e5c9c292d70536ff8e4b8a0fb9633642c1d10958408a39cf65807447b37dcafb",
+    "commit_campaign/commit_boundary_stall/summary.json": "7d4710c34d3c10c3affdf1755e4750881c78243721f35cf4ac3da7ff8d9384f7",
+    "coverage_prep/zero_approved_waiver_audit.json": "f5ca0394a593425f0751e6f35c5458df7875eaa798a3b7015bd1d573a215c70d",
+    "dpd_matrix.log": "ce7aacac41db4968037b9701166c9c36a6e6adf6913589ad02ebedaf9e6d9d1a",
+    "dpd_matrix_campaign/dpd_matrix/summary.json": "7fb7c001d33f005068da77e0544b854691fd77fc9311515c9b5e890821c9b36d",
+    "formal_smoke.log": "93bb8a777401ad232d215a1af71776bdcc2319be3e960775b2afc27e752ee214",
+    "formal_smoke/formal_summary.json": "13c3e6df9a9b8ea0c42b3daf25d11ed4e04f0b78727b68a9405fe3ad86df902d",
+    "generic_regression.log": "d498ca19a8d5241f3d5aa6508437671c42a1b017bb983c315efa33f45fa49563",
+    "product_hier.log": "42c10753f7d2b8ed4a032ba8da4d72007850d659d093555998bab5a062644c1c",
+    "product_regression.log": "bacc2a46210ee5651936396d95ee6fc95afe8c5853daf3e5cb4f2cede26e8798",
+    "python_reference_tests.log": "f6dc0e9360fc9268e6bfea24a88a19345cce135018c28673a38d7ef71abfa251",
+    "raw_adjusted_round17_551/adjusted_inventory/summary.json": "5eed2f9205e1f94418c4a9935e9ef3e9257bf5948832fc57f0c6a25eacb80660",
+    "raw_adjusted_round17_551/raw_inventory/summary.json": "9aff233971abe240e2f6fb86f31db78984a76af6b4031a0bad2def78c8530519",
+    "raw_adjusted_round17_551/report_manifest.json": "8dde1764a8a697be66859d8c8dda5671c77bd3bc1546ee29a18d3936152d92df",
+    "raw_adjusted_round17_551/vdb_manifest.json": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+    "reset_campaign/reset_pending_commit/summary.json": "cc7f36c5a320ddb4408c1f4382cdb1f619448c99ba84151a3bf66eafe40093c6",
+    "reset_pending_commit.log": "c26e8643048986d3b43cc7734f33246caa39688de688cdb10dde1defc65d6859",
+    "scoreboard_mutation.log": "1d72f8f8c6433b3a9e1ea3473a9b2c078e43c77580997d1ce89f27f0763d7fc1",
+    "stop_restart_product.log": "cd6b7e462c50564cfeb34608a26e70ff97979cb022e452697340d5b438f68219",
+    "system_random.log": "fcdeb8fbb683b6e5689e04751118127daaba90344d9389bf27fb46d33bbaeb6d",
+    "system_random/summary.json": "7a819b499639e3635c83e53870088df329fb31a89aa1369e5aef5357d499d5b5",
+    "urg_version.log": "d63c059ce2e098d4f99fa6671721933984ce7ed2c7ba29a18eb0626476892bf8",
+    "vcs_id.log": "cfeb2af0af874e4e0cc371b64522e3c02149e853bac288f1aa2c6d8a90678fab"
+  },
+  "open_items": [
+    "13,171 DUT code bins remain uncovered; no official approved Waiver or Exclusion exists.",
+    "AXI outstanding-counter saturation/underflow remains INCONCLUSIVE/OPEN.",
+    "Full-chain DPD Identity and COMMIT lifecycle Formal remain OPEN.",
+    "Two product q1_tail assertions remain without legal attempts.",
+    "Formal reset smoke has one modeled collision cover marked uncoverable; this is not an approved product exclusion.",
+    "Real XPM, GT Wizard, Vivado timing/PPA, FPGA board, RF and physical QAM256 validation were NOT RUN."
+  ],
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "ef2_order": 2,
+    "ef2_step": 5120,
+    "fifo": "Generic",
+    "interpolator": "Centered-Cubic x2+x2",
+    "reset_dpd_image": "Identity",
+    "state_bits": 20
+  },
+  "purpose": "Round 17 current-source VCS/URG recovery and selected Linux TX reverification",
+  "regressions": [
+    {
+      "name": "Generic FIFO product UVM",
+      "scope": "bit-true, bubble/backpressure, FIFO boundary/empty, reset and expected-negative frame",
+      "status": "PASS"
+    },
+    {
+      "name": "AXI-Lite product UVM",
+      "scope": "register/configuration, coefficient transport, nonlinear-DPD scenario, STOP, reset and boundary tests",
+      "status": "PASS"
+    },
+    {
+      "name": "AXI-Lite product DUT-hierarchy coverage suite",
+      "scope": "product compile and URG merge; 8 test VDBs included",
+      "status": "PASS"
+    },
+    {
+      "cases": 110,
+      "name": "System constrained-random",
+      "oracle": "Python monitor-trace oracle checked every case",
+      "seeds": "720000-720099 plus long seeds 820000-820009",
+      "status": "PASS"
+    },
+    {
+      "cases": 60,
+      "name": "DPD/gain/profile matrix",
+      "oracle": "independent Python oracle",
+      "status": "PASS"
+    },
+    {
+      "cases": 2,
+      "name": "COMMIT boundary x PA stall",
+      "status": "PASS"
+    },
+    {
+      "cases": 8,
+      "cross_bins": 4,
+      "name": "Reset x pending COMMIT",
+      "status": "PASS"
+    },
+    {
+      "name": "STOP/Drain/Restart",
+      "ordered_pa_words_matched": 112,
+      "packets": 2,
+      "status": "PASS"
+    },
+    {
+      "checker_errors_caught": 7,
+      "mutations_detected": 6,
+      "name": "Unified SV scoreboard mutation",
+      "status": "PASS"
+    },
+    {
+      "cases": 64,
+      "name": "Python reference unit tests",
+      "status": "PASS"
+    },
+    {
+      "assertions_proven": 3,
+      "blackbox_instances": 0,
+      "covers_hit": 4,
+      "covers_uncoverable": 1,
+      "name": "VC Formal reset smoke",
+      "scope": "reset harness only; not full product Formal closure",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": 1,
+  "source": {
+    "branch": "codex/thermo5-round16-coverage-closure",
+    "compile_input_files_checked": 95,
+    "compile_input_hash_mismatches": 0,
+    "compile_source_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "tested_head": "4d92ecb8467b095b50478065e29e9646f2cff27e",
+    "thermo5_base": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+    "worktree_clean_at_test_start": true
+  }
+}

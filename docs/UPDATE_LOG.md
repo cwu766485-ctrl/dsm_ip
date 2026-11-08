@@ -1,3 +1,34 @@
+# 2026-11-08 — Thermo5 Round 17 WSL VCS reverification
+
+- Rechecked tools in Rocky 8.10 / WSL2 and corrected the previous blocker
+  diagnosis: VCS V-2023.12-SP1_Full64 and URG V-2023.12-SP1/CovDB 13.1 run in
+  64-bit mode. The earlier URG startup failure came from a default 32-bit
+  support-directory probe; VCS/URG runs use `-full64`. No architecture override
+  was needed.
+- On PR #46 source `4d92ecb8467b095b50478065e29e9646f2cff27e`, reran the listed
+  Generic FIFO, AXI-Lite, System Random (110/110), DPD matrix (60/60),
+  COMMIT/stall (2/2), reset/pending-COMMIT (8/8), STOP/Drain/Restart, scoreboard
+  mutation (6/6), Python reference (64/64), and reset-only Formal smoke checks.
+- Rebuilt Raw and zero-exclusion Adjusted URG using one Design VDB and 551 Test
+  VDBs (362 carry-forward + 189 fresh), with identical pre/post VDB manifest
+  SHA and 95/95 compile-source hashes verified. Coverage is Branch 524/637,
+  Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM states 13/13,
+  transitions 22/22. There are 13,171 uncovered code bins; approved Waivers=0,
+  applied Exclusions=0; the 189 new VDBs added no exact DUT code hits.
+- Added the detailed reverification report and machine-readable evidence/hash
+  manifest; replaced the active execution-frontier status while preserving the
+  old blocker snapshot as historical context. Generated logs/VDBs remain
+  ignored under `runs/` and are not committed. No product RTL or algorithm
+  changed; the original dirty user worktree was not modified.
+- Checks: VCS `-ID` and location, URG `-full64 -version`, product regressions,
+  targeted campaigns, Python tests, reset Formal smoke, same-input URG merge,
+  evidence hash generation, and `git diff --check`.
+- Remaining: Full Linux DV signoff remains OPEN (`RAW_100_OPEN`); 13,171 code
+  bins, zero approved Waivers/exclusions, outstanding-counter and full-chain
+  DPD/COMMIT Formal, two legal `q1_tail` attempts, and property-level audit of
+  three aggregate assertion failures. XPM/GT Wizard, Vivado PPA/timing, FPGA,
+  RF and physical QAM256 validation were not run.
+
 # 2026-11-08 17:48 SGT — Thermo5 PR #46 CI follow-up
 
 - Rechecked PR #46 at commit `3205448de89458281fd7ff9e17ff8c4c0fd35ab2`.

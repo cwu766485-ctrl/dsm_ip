@@ -1,5 +1,13 @@
 # Thermo5 TX Round 17 — Approved Exclusion and Exact-Bin Closure
 
+## Superseding update — WSL VCS/URG recovery (2026-11-08)
+
+The environment and coverage statements in the original snapshot below describe the earlier attempt at PR #46 head `3205448de89458281fd7ff9e17ff8c4c0fd35ab2`; they are historical and superseded. VCS `V-2023.12-SP1_Full64` and URG `V-2023.12-SP1` have now run successfully in this Rocky 8.10 WSL2 environment when invoked in 64-bit mode. The previous “WSL2 kernel rejected” conclusion was incorrect: the failed URG probe selected the default 32-bit support path. No kernel spoofing or `VCS_ARCH_OVERRIDE` was used.
+
+At source HEAD `4d92ecb8467b095b50478065e29e9646f2cff27e`, selected Generic FIFO, AXI-Lite, System Random, DPD matrix, COMMIT/PA-stall, Reset/Pending-COMMIT, STOP/Drain/Restart, scoreboard mutation, Python reference and reset-only Formal checks passed. A new same-input Raw/zero-exclusion Adjusted URG was generated from one current Design VDB and 551 Test VDBs (362 carry-forward plus 189 fresh). It reports Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM states 13/13 and transitions 22/22. The 189 fresh VDBs added no exact DUT code-coverage hits. Waivers approved: 0; exclusions applied: 0; 13,171 code bins remain open.
+
+The detailed current report and command list are `thermo5-tx-r17-wsl-vcs-reverification-20261108.md`; its machine-readable evidence/hash manifest is `data/thermo5-r17/thermo5_tx_r17_wsl_vcs_reverification.json`. The formal, waiver, assertion and physical-validation risks listed there remain open. Linux DV signoff is not complete, and PR #46 remains Draft/Open and unmerged.
+
 **Date:** 2026-11-08
 
 **Review PR:** [#46](https://github.com/cwu766485-ctrl/dsm_ip/pull/46), open and draft
