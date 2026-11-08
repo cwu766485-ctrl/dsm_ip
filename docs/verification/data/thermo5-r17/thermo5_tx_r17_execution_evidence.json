@@ -1,0 +1,441 @@
+{
+  "artifacts": {
+    "audit_probe_manifest": "runs/thermo5_round17/audit_probes/probe_manifest.json (ignored local run evidence)",
+    "branch_condition_ledger": "docs/verification/data/thermo5-r17/thermo5_tx_r17_branch_condition_ledger.csv",
+    "compile_manifest": "docs/verification/data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json",
+    "formal_attempt_manifest": "runs/thermo5_round17/formal_scope/formal_summary.json (ignored local run evidence)",
+    "python_checks_manifest": "runs/thermo5_round17/checks/python_checks_manifest.json (ignored local run evidence)",
+    "reconciliation_json": "docs/verification/data/thermo5-r17/thermo5_tx_r17_waiver_reconciliation.json",
+    "round16_report_manifest": "runs/thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/report_manifest.json (ignored local R16 evidence)",
+    "round16_vdb_manifest": "runs/thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/vdb_manifest.json (ignored local R16 evidence)",
+    "round17_report": "docs/verification/thermo5-tx-round17-approved-exclusion-exact-bin-closure-20261108.md",
+    "tool_smoke_log_manifest": "runs/thermo5_round17/tool_smoke/tool_smoke_manifest.json (ignored local run evidence)",
+    "waiver_reconciliation": "docs/verification/data/thermo5-r17/thermo5_tx_r17_waiver_reconciliation.csv"
+  },
+  "candidate_audit_attempts": [
+    {
+      "argv": [
+        "/usr/bin/python3.12",
+        "tools/hw/thermo5_tx_waiver_pipeline.py",
+        "--waivers-csv",
+        "docs/verification/thermo5_tx_waivers.csv",
+        "--gap-ledger",
+        "docs/verification/data/thermo5-r16/thermo5_tx_r16_exact_remaining_bins.csv.gz",
+        "--compile-manifest",
+        "docs/verification/data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json",
+        "--repo-root",
+        ".",
+        "--el-output",
+        "runs/thermo5_round17/audit_probes/official.el",
+        "--audit-output",
+        "runs/thermo5_round17/audit_probes/official_audit.json"
+      ],
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/official_371.log",
+      "log_sha256": "c79ac074720773a813d0d6522efbdb917213278143b8975a8ca417eae0d6e8e6",
+      "name": "official_371",
+      "output_tail": "THERMO5_TX_WAIVER_AUDIT_ERROR: waiver W-75530ed17d5b396a4e9b maps to 0 current Raw bins\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3.12",
+        "tools/hw/thermo5_tx_waiver_pipeline.py",
+        "--waivers-csv",
+        "runs/thermo5_round17/waiver_rebind/active_369.csv",
+        "--gap-ledger",
+        "docs/verification/data/thermo5-r16/thermo5_tx_r16_exact_remaining_bins.csv.gz",
+        "--compile-manifest",
+        "docs/verification/data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json",
+        "--repo-root",
+        ".",
+        "--el-output",
+        "runs/thermo5_round17/audit_probes/active_369.el",
+        "--audit-output",
+        "runs/thermo5_round17/audit_probes/active_369_audit.json"
+      ],
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/active_369.log",
+      "log_sha256": "bba8e3aa69ffe946b9b2431d0bef70782c15c435de3206653af0b98687b2a4a7",
+      "name": "active_369",
+      "output_tail": "THERMO5_TX_WAIVER_AUDIT_ERROR: candidate audit raw_gap_ledger path differs from CLI input\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3.12",
+        "tools/hw/thermo5_tx_waiver_candidate_audit.py",
+        "--waivers-csv",
+        "runs/thermo5_round17/waiver_rebind/active_369.csv",
+        "--raw-gap-ledger",
+        "docs/verification/data/thermo5-r16/thermo5_tx_r16_exact_remaining_bins.csv.gz",
+        "--compile-manifest",
+        "docs/verification/data/thermo5-r16/thermo5_tx_r16_source_manifest.json",
+        "--report-manifest",
+        "runs/thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/report_manifest.json",
+        "--vdb-manifest",
+        "runs/thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/vdb_manifest.json",
+        "--formal-review",
+        "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
+        "--output",
+        "runs/thermo5_round17/audit_probes/old_candidate_audit.json",
+        "--snapshot-dir",
+        "runs/thermo5_round17/audit_probes/old_snapshots"
+      ],
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/candidate_old_manifest.log",
+      "log_sha256": "2a2a445a8972b45e59cb3453035a2296e83a312ee12cf02de42ff94bfd7dff85",
+      "name": "candidate_old_manifest",
+      "output_tail": "THERMO5_TX_CANDIDATE_AUDIT_ERROR: compile manifest is not a product VCS compile manifest\n"
+    },
+    {
+      "argv": [
+        "/usr/bin/python3.12",
+        "tools/hw/thermo5_tx_waiver_candidate_audit.py",
+        "--waivers-csv",
+        "runs/thermo5_round17/waiver_rebind/active_369.csv",
+        "--raw-gap-ledger",
+        "docs/verification/data/thermo5-r16/thermo5_tx_r16_exact_remaining_bins.csv.gz",
+        "--compile-manifest",
+        "docs/verification/data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json",
+        "--report-manifest",
+        "runs/thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/report_manifest.json",
+        "--vdb-manifest",
+        "runs/thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/vdb_manifest.json",
+        "--formal-review",
+        "docs/verification/data/thermo5-tx-current-source-gaps/thermo5-tx-focused-product-formal-review.json",
+        "--output",
+        "runs/thermo5_round17/audit_probes/structured_candidate_audit.json",
+        "--snapshot-dir",
+        "runs/thermo5_round17/audit_probes/structured_snapshots"
+      ],
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/candidate_structured_manifest.log",
+      "log_sha256": "764db864372aa7e252d70bb0ff36b26f0effba356bc481e29a8111c93d0119d0",
+      "name": "candidate_structured_manifest",
+      "output_tail": "THERMO5_TX_CANDIDATE_AUDIT_ERROR: URG report configuration differs from product compile\n"
+    }
+  ],
+  "checks": {
+    "candidate_audit_regeneration": "BLOCKED: both archived schema and current structured fingerprint/report compatibility probes fail closed",
+    "current_full_formal": "BLOCKED_LICENSE",
+    "current_urg_merge": "NOT_RUN",
+    "current_vcs_regression": "NOT_RUN",
+    "git_diff_check": "PASS",
+    "priority_ledger": "PASS: 305 exact Branch/Condition records, bucket totals 80+8+25 and 188+4",
+    "python_compile": "PASS",
+    "reconciliation_script": "PASS: 371 unique official IDs = 369 current gap candidates + 2 archived Raw hits",
+    "round16_candidate_source_binding": "PASS: 369/369 exact source SHA and gap match",
+    "round17_coverage_delta": "NOT_RUN; zero new VDBs and no new exact coverage hits",
+    "waiver_pipeline_unit_tests": "PASS: 14 tests; no pipeline guard weakened"
+  },
+  "compile_binding": {
+    "compile_log_sha256": "a3ca177e4fca21ba4ac06628175d496638c97bc64aab86d1f62b8e19530fa75d",
+    "compile_manifest": "docs/verification/data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json",
+    "compile_manifest_sha256": "94d819034da5f5517338f773381690bd9fb609beecd228e397a5c370958f9489",
+    "compile_manifest_status": "PASS_STATIC_REBIND_OF_R16_COMPILE_LOG_95_PARSED_PLUS_2_CONTROLLED_INPUTS",
+    "effect": "Candidate Audit correctly rejects the old report manifest; do not rewrite metadata or reuse stale Raw/Adjusted summaries.",
+    "matches": false,
+    "round16_report_fingerprint": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "round17_structured_compile_fingerprint": "f0ef176a049ec16e14c7302dd3493d05c3ba8395dc5a7c44eb34ba2c99b0a0fa",
+    "source_hashes": 97
+  },
+  "coverage_inventory": {
+    "active_exclusion_count": 0,
+    "approved_waiver_count": 0,
+    "current_exact_open": 13171,
+    "raw_and_official_adjusted_latest": "Round 16, same input VDB manifest",
+    "round17_exact_hit_delta": 0,
+    "round17_raw_and_adjusted": "NOT_RUN; last measured R16 figures carried forward only",
+    "round17_vdb_added": 0,
+    "toggle_root_causes": {
+      "CDC_OR_RESIDUAL_STATE": 130,
+      "COUNTER_HIGH_BITS": 640,
+      "DATA_VALUE_OR_TOGGLE_STIMULUS": 2478,
+      "DPD_TAP_HISTORY_CONFIGURATION": 8192,
+      "FIXED_PRODUCT_CONFIGURATION": 24,
+      "IDENTITY_DPD_ARITHMETIC": 944
+    }
+  },
+  "created": "2026-11-08",
+  "decision": "LINUX_DV_SIGNOFF_OPEN_RAW_100_OPEN; R17 data reconciliation PASS, but pipeline audit regeneration and new URG/Formal/VCS closure are blocked by unsupported WSL2 VCS, unavailable Formal license, and a Round16 report/structured compile fingerprint mismatch. No approvals/exclusions and no 100% claim.",
+  "fail_closed_probe": {
+    "candidate_audit": {
+      "error": "URG report configuration differs from product compile",
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/candidate_structured_manifest.log"
+    },
+    "gate": "BLOCKED_NOT_PASS; no checks or failure conditions were removed.",
+    "legacy_round16_compile_manifest": {
+      "error": "compile manifest is not a product VCS compile manifest",
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/candidate_old_manifest.log"
+    },
+    "official_371_input": {
+      "command": "thermo5_tx_waiver_pipeline.py with official 371 CSV + Round16 gap ledger + current structured compile manifest",
+      "error": "W-75530ed17d5b396a4e9b maps to 0 current Raw bins",
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/official_371.log"
+    },
+    "reconciled_369_input": {
+      "command": "thermo5_tx_waiver_pipeline.py with two Raw-hit rows removed + Round16 gap ledger + current structured compile manifest",
+      "error": "candidate audit raw_gap_ledger path differs from CLI input",
+      "exit_code": 3,
+      "log": "runs/thermo5_round17/audit_probes/active_369.log"
+    }
+  },
+  "formal_attempt": {
+    "command": "PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py --jobs counter ef2_product_params --out-dir runs/thermo5_round17/formal_scope",
+    "exit_code": 1,
+    "failure": "VC Static cannot connect to the license server; setup.txt/properties.txt were not produced. No new property is Proven or Inconclusive from this attempt.",
+    "jobs": {
+      "counter": {
+        "console_log_sha256": "e188ba8110a47d9cebcdaf1ec3c156e5bd05b30b7dd1d0e574ec0a319b35432e",
+        "console_log_size_bytes": 1795,
+        "status": "BLOCKED_LICENSE"
+      },
+      "ef2_product_params": {
+        "console_log_sha256": "50eea6f4b68d9a72738fc64809863ba0904bd6c0337fd05f36be2ee4c0affbac",
+        "console_log_size_bytes": 1795,
+        "status": "BLOCKED_LICENSE"
+      }
+    },
+    "status": "BLOCKED_LICENSE",
+    "summary_sha256": "59b01a3c9a72951a505448ad767babe6940af04f02891b8af0a0df0c0fa38dd7"
+  },
+  "hashes": {
+    "audit_probe_manifest_sha256": "2af080356dbaada1447f6137add6c743e0c65e7fcbae64d29b1ab14882ceb563",
+    "branch_condition_ledger_sha256": "af5dfa8713c70e28c32b12b043fe5469420ec5a6e9035b9f8a07a68166a752a1",
+    "compile_parent_manifest_sha256": "d815447c35abfbca8cc40849b4d24af4acaab13fff49f2fd962b9ed3d8300c6a",
+    "python_checks_manifest_sha256": "49a35b20508d553dde7847359a81bcbc0d1c59efc8d90e05ccce3770637b711a",
+    "reconciliation_csv_sha256": "e6b4a654ca80b40cf3d70af87a1532970cef3451ff553b32d74c3c4cd6e4a7e6",
+    "reconciliation_json_sha256": "c2e2fd8999aacb1ffb9b8fc757d0adefa483445a0c150f216ebd475d1eab8334",
+    "reconciliation_tool_sha256": "d3efa6e70b1f7ad39cf11f897a61fddda00296bdd4fa805074d41c77acba7dfd",
+    "round16_report_manifest_sha256": "8745380d90c08e217a1e7bc8f21cd11fec93dc79eeb88f3e091daff7e76f30b3",
+    "round16_runtime_vdb_manifest_sha256": "9ee85229e24c39930539309e80380600184b9057a0e6beb7928430f1eb0133a2",
+    "round17_report_sha256": "101217811d866317e38fffa83258a9bcace5895af0f13358dba8774d91c56944",
+    "static_compile_rebind_manifest_sha256": "94d819034da5f5517338f773381690bd9fb609beecd228e397a5c370958f9489"
+  },
+  "pr46": {
+    "additions": 34443,
+    "base": "thermo5",
+    "base_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+    "changed_files": 15,
+    "deletions": 6,
+    "draft": true,
+    "head_sha": "47979ec0a31bf8fcb9be0d1b66d2f8712e4ece24",
+    "merged": false,
+    "product_source_changes": 0,
+    "review": "Docs/evidence-only; no RTL, testbench or product parameter changes.",
+    "review_files_changed": 15,
+    "round17_head_at_capture": "8587e66478727570640427ce629a1a8290909c26",
+    "state": "OPEN",
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/46"
+  },
+  "product_configuration": {
+    "control": "AXI-Lite",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "fifo": "Generic",
+    "interpolation": "Centered-Cubic x2+x2",
+    "state_bits": 20,
+    "step": 5120
+  },
+  "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "product_source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "python_verification": {
+    "git_diff_check": "PASS",
+    "logs": {
+      "reconcile_py_compile": {
+        "exit_code": 0,
+        "path": "runs/thermo5_round17/checks/reconcile_py_compile.log",
+        "sha256": "4c75e0aec00852446f15774ec1231dfd883b649cb44634dfabea8bf4bd9546d6"
+      },
+      "reconciliation_generator": {
+        "exit_code": 0,
+        "path": "runs/thermo5_round17/checks/reconciliation_generator.log",
+        "sha256": "5ec516a8024631691c844d3fa1d6152d688fa64738b81136edb43474777a74c2"
+      },
+      "waiver_unit_tests": {
+        "exit_code": 0,
+        "path": "runs/thermo5_round17/checks/waiver_unit_tests.log",
+        "sha256": "0c2a2b945301ba1483bbf4f144319eb08c00f5c4a0469c509f795b186fc0b898"
+      }
+    },
+    "py_compile": "PASS",
+    "reconciliation_generator": "PASS",
+    "waiver_pipeline_unit_tests": "14/14 PASS"
+  },
+  "r15_audit_defects": {
+    "candidate_audit_refs_in_official_csv": {
+      "docs/verification/data/thermo5-tx-waiver-review-round9/thermo5-tx-waiver-candidate-audit.json": 371
+    },
+    "candidate_audit_shas_in_official_csv": {
+      "9716b1027b4b3851c7c88b7c7edfe53cef9cca4d24864323f700c18cc20906fe": 371
+    },
+    "duplicate_ids": [
+      "W-92ac451faeb760079ca8",
+      "W-cd4717ad916b9979a47a"
+    ],
+    "interpretation": "Historical refresh CSV is preserved; Round 17 emits a normalized reconciliation artifact rather than rewriting historical evidence.",
+    "missing_official_ids": [
+      "W-75530ed17d5b396a4e9b",
+      "W-d7cb262894a5aae016b6",
+      "W-f4e9c70e66ecbf5e4ca2"
+    ],
+    "rows": 370,
+    "unique_ids": 368
+  },
+  "round": 17,
+  "round16_last_measured_coverage": {
+    "branch": {
+      "approved_adjusted": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      }
+    },
+    "condition": {
+      "approved_adjusted": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      }
+    },
+    "fsm_state": {
+      "approved_adjusted": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      }
+    },
+    "fsm_transition": {
+      "approved_adjusted": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      }
+    },
+    "line": {
+      "approved_adjusted": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      }
+    },
+    "toggle": {
+      "approved_adjusted": {
+        "covered": 92072,
+        "missing": 12408,
+        "percent": 88.124,
+        "total": 104480
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 92072,
+        "missing": 12408,
+        "percent": 88.124,
+        "total": 104480
+      }
+    }
+  },
+  "round17_candidate_reconciliation": {
+    "active_exclusions": 0,
+    "approved": 0,
+    "artifact": "docs/verification/data/thermo5-r17/thermo5_tx_r17_waiver_reconciliation.csv",
+    "artifact_sha256": "e6b4a654ca80b40cf3d70af87a1532970cef3451ff553b32d74c3c4cd6e4a7e6",
+    "class_counts": {
+      "ELIGIBLE": 361,
+      "NEEDS_REPROOF": 4,
+      "UNRESOLVED": 4
+    },
+    "exact_open_bin_matches": 369,
+    "official": 371,
+    "pending_candidates": 369,
+    "resolved_by_raw_hit": 2,
+    "source_sha_exact_matches": 369,
+    "status": "RECONCILED_DATA_ONLY_PIPELINE_NOT_REGENERATED"
+  },
+  "round17_exact_priority_ledger": {
+    "all_r17_test_or_proof_result": "NOT_RUN_IN_ROUND17",
+    "branch_records": 113,
+    "condition_interpolator_empty_blocked": 4,
+    "condition_records": 192,
+    "condition_reset_state_hold": 188,
+    "fixed_parameter_candidate_bins": 8,
+    "other_open_branch_bins": 25,
+    "pair_lookahead_candidate_bins": 80,
+    "path": "docs/verification/data/thermo5-r17/thermo5_tx_r17_branch_condition_ledger.csv",
+    "sha256": "af5dfa8713c70e28c32b12b043fe5469420ec5a6e9035b9f8a07a68166a752a1"
+  },
+  "round17_urg": {
+    "reason": "Installed VCS front end rejects current WSL2 kernel; URG cannot locate VCS support scripts from the failed VCS environment. Round 16 figures are carried as the last measured baseline, not relabeled as Round 17.",
+    "status": "NOT_RUN"
+  },
+  "schema": "thermo5_tx_round17_execution_evidence",
+  "status": "SIGNOFF_OPEN_ENVIRONMENT_BLOCKED",
+  "tool_smoke": {
+    "kernel": "6.6.87.2-microsoft-standard-WSL2",
+    "urg": {
+      "argv": [
+        "/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg",
+        "-version"
+      ],
+      "exit_code": 1,
+      "log": "runs/thermo5_round17/tool_smoke/urg_version.log",
+      "log_sha256": "bd2186c6e7d11b83f1bb80bfac5a4f9c3e90b9578eeed1592f44528216718ae8",
+      "name": "urg_version",
+      "output_tail": "/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg: line 97: [: too many arguments\n ERROR : Cannot find 'vcsMsgReport' script in  at vcs_support@synopsys.com or call 1-800-VERILOG /bin \n Please make sure VCS_HOME is set correctly and continue.. \n"
+    },
+    "vcs": {
+      "argv": [
+        "/opt/Synopsys/vcs/V-2023.12-SP1/bin/vcs",
+        "-ID"
+      ],
+      "exit_code": 1,
+      "log": "runs/thermo5_round17/tool_smoke/vcs_id.log",
+      "log_sha256": "014f33392fd1e9b278321b665ec6e02302e0820ad4545dd0a3ca2718a9225d9d",
+      "name": "vcs_id",
+      "output_tail": "Sorry, Linux version 6.6.87.2-microsoft-standard-WSL2 is not supported\n\n For assistance, please contact technical support\n at vcs_support@synopsys.com or call 1-800-VERILOG \n"
+    }
+  }
+}

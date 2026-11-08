@@ -1,3 +1,14 @@
+# 2026-11-08 — Thermo5 Round 17 exact-bin and waiver audit
+
+- Reviewed PR #46 metadata, changed paths, and patch; it remains draft/open and is documentation/evidence-only. No product RTL, algorithm, parameters, or tests changed.
+- Reconciled the 371 unique official waiver IDs against 369 exact Round 16 open-bin candidates and two archived Raw hits. The two Raw hits are explicitly recorded as `RESOLVED_BY_RAW_HIT`; the 369 candidates remain pending (361 eligible analysis candidates, four needing reproof, four unresolved). No reviewer approval was fabricated.
+- Audited the malformed Round 15 refresh CSV (370 physical rows/368 unique IDs, two duplicate IDs and three missing IDs) and preserved it unchanged. Added a normalized 371-row Round 17 reconciliation record and exact 305-record Branch/Condition task ledger.
+- Preserved source/VDB/URG evidence hashes and recorded the static compile-source rebind. Its fingerprint differs from the Round 16 URG fingerprint, so the fail-closed pipeline is not reported as passing. VCS rejected the WSL2 kernel, URG could not locate the VCS support script, and VC Formal was blocked by license checkout. No new VDB, URG, test, formal proof, waiver approval, or exclusion was produced.
+- Round 16 metrics are carried forward only: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM state 13/13 and transition 22/22; 13,171 exact code bins remain. Linux DV signoff stays OPEN (`RAW_100_OPEN`).
+- Changed files: Round 17 reconciliation utility and machine-readable ledgers/manifests; Round 17 signoff report; execution frontier. No RTL or UVM source changed. Local tool logs/VDBs remain ignored under `runs/`.
+- Checks: reconciliation 371 = 369 + 2; all 369 candidate IDs bind an exact current open bin and source hash; priority ledger contains 113 Branch + 192 Condition records; Python syntax and artifact integrity checks passed; `git diff --check` passed. VCS/URG/Formal outcomes are BLOCKED as detailed in the report.
+- Remaining: supported licensed-host regression and URG; current compile/report/VDB-compatible pipeline audit; independent waiver review; targeted legal bin hits; outstanding-counter, DPD Identity, COMMIT, q1_tail and Active-Tap closure; XPM/GT/Vivado/physical QAM256 outside this Linux run.
+
 # 2026-11-08 13:20 SGT - Thermo5 Round 16 coverage closure evidence
 
 - Audited PR #45 and confirmed it is already merged into `thermo5` at `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`; created an isolated review branch without modifying the user's original dirty workspace.
