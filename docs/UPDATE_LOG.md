@@ -1,3 +1,34 @@
+# 2026-11-08 16:42 SGT — Thermo5 Round 17 license recovery and Formal reproof
+
+- Resumed Round 17 after the user restored the VC Formal license. VC Formal
+  V-2023.12-SP2 now checks out its runtime license; current-source targeted
+  proofs were run and indexed in
+  `docs/verification/data/thermo5-r17/thermo5_tx_r17_license_recovery.json`.
+- Reproved the AXI-Lite write-default branch and three CDC fixed-configuration
+  branch candidates with legal activity Covers and exact source hashes. These
+  four bins remain pending Native URG mapping and independent reviewer
+  approval; no Waiver was approved and no `.el` exclusion was generated.
+- Pair-1 leaf invariants pass for 64 properties / 16 lanes. EF2 pair and static
+  product-parameter proofs, CDC empty relationship, and bounded DPD gap-counter
+  properties also pass in their documented scopes. Outstanding-counter,
+  Active-Tap output, and full-chain DPD Identity remain INCONCLUSIVE or OPEN;
+  product `q1_tail` legal attempts remain unclosed.
+- VCS V-2023.12-SP1 still exits before compile because WSL2 kernel
+  `6.6.87.2-microsoft-standard-WSL2` is unsupported even with
+  `VCS_ARCH_OVERRIDE=linux64`; URG cannot locate its VCS support script after
+  this failure. Thus no Round 17 product regression, VDB, Raw/Adjusted URG, or
+  coverage delta was created. Round 16 metrics remain carry-forward only and
+  Linux DV signoff stays OPEN (`RAW_100_OPEN`).
+- Changed the Round 17 evidence report, formal controller harness/runner,
+  exact Branch/Condition and waiver reconciliation ledgers, execution frontier,
+  and added the license-recovery machine manifest. Product RTL and frozen
+  product parameters are unchanged; no generated logs or VDBs are committed.
+- Checks: Python syntax PASS; 22 waiver-pipeline/candidate-audit/Formal-
+  disposition unit tests PASS; both ledger hashes match the recovery manifest;
+  all 48 referenced Formal artifact hashes validate; waiver and priority
+  ledger counts validate; `git diff --check` PASS. VCS/URG product checks
+  remain BLOCKED as above.
+
 # 2026-11-08 — Thermo5 Round 17 exact-bin and waiver audit
 
 - Reviewed PR #46 metadata, changed paths, and patch; it remains draft/open and is documentation/evidence-only. No product RTL, algorithm, parameters, or tests changed.

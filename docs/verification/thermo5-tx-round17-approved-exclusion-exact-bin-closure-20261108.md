@@ -24,25 +24,22 @@ A static source rebind was made from the archived Round 16 VCS compile log and c
 |---|---|---|
 | VCS V-2023.12-SP1_Full64 `vcs -ID` | **BLOCKED** | Exit 1: installed build rejects WSL2 kernel `6.6.87.2-microsoft-standard-WSL2` as unsupported. Log SHA-256 `014f33392fd1e9b278321b665ec6e02302e0820ad4545dd0a3ca2718a9225d9d`. |
 | URG V-2023.12-SP1 `urg -version` | **BLOCKED** | Exit 1: VCS support script cannot be found after the VCS environment failure. Log SHA-256 `bd2186c6e7d11b83f1bb80bfac5a4f9c3e90b9578eeed1592f44528216718ae8`. |
-| VC Formal V-2023.12-SP2, `counter` and `ef2_product_params` jobs | **BLOCKED_LICENSE** | VC Static could not check out `VC-STATIC-COMPILE`; `setup.txt` and `properties.txt` were not produced. No Round 17 property is Proven or Inconclusive from this attempt. Summary SHA-256 `59b01a3c9a72951a505448ad767babe6940af04f02891b8af0a0df0c0fa38dd7`. |
+| VC Formal V-2023.12-SP2 | **LICENSE RESTORED** | A later checkout succeeded. Current-source targeted proof results, including PASS and INCONCLUSIVE outcomes, are in §11 and the recovery manifest. The initial license failure is retained as historical evidence only. |
 | Round 17 VCS product regression / URG merge | **NOT RUN** | VCS/URG could not start. No Round 17 VDB or coverage delta exists. |
 | Python reconciliation and static checks | **PASS** | 371-ID reconciliation, 305-record priority ledger, Python compile, and `git diff --check`. |
 
-Exact tool commands and log hashes are recorded in `data/thermo5-r17/thermo5_tx_r17_execution_evidence.json`; local raw tool logs remain under ignored `runs/thermo5_round17/`.
+Exact tool commands and the initial attempt hashes are recorded in `data/thermo5-r17/thermo5_tx_r17_execution_evidence.json`. License-recovery commands, result manifests and hashes are in `data/thermo5-r17/thermo5_tx_r17_license_recovery.json`; local raw tool logs remain under ignored `runs/thermo5_round17/`.
 
-Commands executed in this environment:
+VCS/URG retry commands and one representative targeted VC Formal invocation are shown below. The per-run Formal commands, source hashes, result manifests, and artifact hashes are recorded in the license-recovery JSON.
 
 ```bash
-VCS_ARCH_OVERRIDE=linux64 /opt/Synopsys/vcs/V-2023.12-SP1/bin/vcs -ID
-/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -version
+VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 VCS_ARCH_OVERRIDE=linux64 \
+  /opt/Synopsys/vcs/V-2023.12-SP1/bin/vcs -ID
+VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 \
+  /opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -version
 PATH=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin:$PATH \
-  python3.12 dv/uvm/formal/run_thermo5_scoped_formal.py \
-  --jobs counter ef2_product_params --out-dir runs/thermo5_round17/formal_scope
-python3.12 -m unittest discover -s tools/hw/tests \
-  -p 'test_thermo5_tx_waiver*.py' -v
-python3.12 -m py_compile tools/hw/thermo5_tx_round17_reconcile.py
-python3.12 tools/hw/thermo5_tx_round17_reconcile.py \
-  --out-dir docs/verification/data/thermo5-r17
+  python3.12 dv/uvm/formal/run_thermo5_axil_cfg_coverage.py \
+  --out-dir runs/thermo5_round17/retry_license_20261108/axil_cfg_current_source_retry
 ```
 
 ## 3. Last measured Round 16 coverage (carry-forward only)
@@ -92,8 +89,8 @@ Therefore the Round 17 normalized inventory reconciliation **passes**, but regen
 
 | Candidate group | Exact inventory | Existing evidence | Round 17 disposition |
 |---|---:|---|---|
-| DPD Pair-1 Toggle | 8,192 bins / 64 scoped properties | Round 16 leaf proofs are `PROVEN_SCOPED`, with activity covers; proof scope omits AXI-Lite COMMIT/mailbox/CDC and RUN/STOP integration. | Candidate only. No independent approval, official `.el`, or Adjusted exclusion. |
-| EF2 Pair-Look-Ahead branches | 80 bins | Product parameters are ORDER=2 / STEP=5120 / 20-bit; Round 16 static-parameter evidence says the current product default leaves the branch disabled. | Exact configuration candidate only; no new proof or reviewer approval in Round 17. |
+| DPD Pair-1 Toggle | 8,192 bins / 64 scoped properties | Re-run on current product RTL: 64/64 lane invariants proven for `MAX_TAPS=1`; input-accept and output-transfer activity Covers reached. Proof scope still omits AXI-Lite COMMIT/mailbox/CDC and RUN/STOP integration. | Stronger current-source candidate evidence only. No independent approval, official `.el`, or Adjusted exclusion. |
+| EF2 Pair-Look-Ahead branches | 80 bins | Current-source product-parameter proof passes for ORDER=2 / STEP=5120 / 20-bit, with Pair-Look-Ahead disabled and invalid-parameter guard inactive; target Covers are uncoverable in that elaboration. | Exact configuration candidate only; no independent reviewer approval. |
 | Other fixed-parameter branches | 8 bins | Round 16 parameter evidence exists for the relevant product elaboration. | Candidate only; no independent approval or exclusion. |
 | Other legacy candidates | 369 rows total: 361 / 4 / 4 classifications above | Exact source/bin mapping is reconciled; the four historical Formal candidates are not promoted to Round 17 proof results. | All pending. |
 
@@ -107,11 +104,13 @@ No claim is made that local leaf proofs alone justify product-level exclusions t
 |---|---:|---|---|
 | Pair-Look-Ahead helper Branch | 80 | Configuration-inactive candidate; not approved | Preserve exact elaboration evidence, verify per-bin URG mapping and upper product constraints, then independent review. |
 | Other fixed-parameter Branch | 8 | Candidate; not approved | Exact elaborated parameter and source mapping, then independent review. |
-| Remaining Branch | 25 | Open; reachability/test result not updated this round | AXI-Lite address decode, CDC residual/frame end, interpolator empty/blocked/tail, reset hold, cadence and outstanding-counter cases need per-bin legal witness or non-vacuous proof. |
-| Reset release / state hold Condition | 188 | Open; no Round 17 legal witness | Directed reset/enable/stall sequence with independent checker and exact URG hit. |
-| Interpolator empty / blocked Condition | 4 | Open; product reachability unresolved | Legal two-stage frame/tail sequence or source-bound non-vacuous formal proof. |
+| Remaining Branch | 25 | Four have scoped current-source Formal proofs; 21 have no new witness. All remain open pending exact-bin mapping/review or legal stimulus. | AXI-Lite default and three CDC cases have source-bound proofs and positive context Covers; exact native URG mapping and Reviewer approval remain open. Remaining address, interpolator, cadence, and outstanding-counter cases need target evidence. |
+| Reset release / state hold Condition | 188 | Three exact records have scoped Formal target-Cover evidence; all 188 remain open pending mapping/review or legal URG hit. | Includes the Generic-FIFO `core_data_empty` relation and stage-1/stage-2 line-309 reset operands. The reset proofs do not satisfy legal `q1_tail` assertion attempts. |
+| Interpolator empty / blocked Condition | 4 | Open; product-path reachability unresolved | The two-stage legal-metadata proof reaches frame/tail transfers but omits the intervening FIFOs and DPD; no product VDB/URG hit was generated. |
 
-No new test or formal witness ran because VCS and VC Formal could not execute. A test PASS alone would not close these records; the checker and exact URG hit must agree.
+Current-source Formal provides exact, non-vacuous evidence for four former `NEEDS_REPROOF` Branch candidates: AXI-Lite write case default (`W-9010fccd0889b46ea284`), CDC `advance` case default (`W-98a39b6429bbed7c29ad`), CDC `end_remaining` false arm (`W-32b5745433f0ff75d5c2`), and immediate CDC frame-end arm (`W-a9fc97093bdddfb7f5aa`). Their source hashes match the current RTL; legal transaction/frame Covers were reached and each target Cover was reported uncoverable in its scoped proof. All four remain `OPEN_FORMAL_MAPPING_REVIEW`: the new Formal runs do not regenerate URG, prove native-bin identity, or provide independent Reviewer approval. A test PASS alone would not close these records; exact URG mapping and approval are still required.
+
+Additional scoped Formal runs prove the EF2 pair equivalence, product EF2 parameter guards, CDC data-empty relationship, legal frame-tail metadata/reset properties, and the 2072-accepted-input DPD gap-counter bound. Their scope limits are recorded in §11. These proofs do not create URG hits and do not close full-chain `q1_tail`, unrestricted runtime-counter, or product-level DPD Identity obligations.
 
 ## 7. Gate D — Line and Toggle inventory
 
@@ -134,15 +133,16 @@ Counter high-bit coverage is not waived: no product runtime maximum or overflow 
 
 | Property area | Last valid evidence | Round 17 status |
 |---|---|---|
-| Pair-1 leaf invariants | 64/64 scoped properties proven in Round 16; non-empty input/output activity covers | `PROVEN_SCOPED` carry-forward only; no new run and no approved waiver. |
-| EF2 product parameter / Pair-Look-Ahead | Round 16 static configuration proof passed in its stated elaboration scope | `PROVEN_SCOPED` carry-forward; no current Round 17 run; no automatic exclusion. |
-| Outstanding Counter capacity / saturation / underflow | Round 16 was `INCONCLUSIVE` | `OPEN / INCONCLUSIVE`; Round 17 attempt blocked by license, which is not a proof result. |
-| DPD Identity full chain | Leaf proof omits the complete AXI-Lite shadow/COMMIT/mailbox/CDC chain | `OPEN`; no full-chain proof. |
-| COMMIT → Pending → Apply → ACK → STATUS/DONE | Directed/random regressions passed in Round 16; complete composed invariant remains absent | `OPEN`; no new test or proof this round. |
-| Two product `q1_tail` assertions | Round 16 recorded zero legal attempts | `OPEN / WITHOUT_ATTEMPTS`; no Round 17 legal attempt. |
-| Active-Tap configuration | Prior evidence remains unresolved/inconclusive | `OPEN`; no Round 17 run. |
+| Pair-1 leaf invariants | Current-source 64/64 properties proven for 16 lanes; input/output activity Covers hit; no assumptions beyond reset initialization; 0 black boxes | `PROVEN_SCOPED`; exact 8,192-bin URG map and independent waiver review remain open. |
+| EF2 pair equivalence | Current-source 7/7 assertions and 4/4 activity/stall Covers passed | `PROVEN_SCOPED`; the product configuration still disables this candidate architecture. |
+| EF2 product parameter / Pair-Look-Ahead | Current-source parameter proof passed; invalid-parameter and Pair-Look-Ahead Covers uncoverable | `PROVEN_SCOPED`; candidate exclusions remain unapproved. |
+| Outstanding Counter capacity / saturation / underflow | Current-source full wrapper attempt ran 310.73 s; all five assertions and both guard Covers are INCONCLUSIVE | `OPEN / INCONCLUSIVE`; no assumption-based waiver. |
+| DPD Identity | Current-source compositional one-tap output-under-stall proof passed local lemmas/output checks; the separate simple end-to-end identity harness remains INCONCLUSIVE on payload/saturation | Local datapath `PROVEN_SCOPED`; full-chain config/COMMIT/mailbox/CDC Identity remains OPEN. |
+| COMMIT → Pending → Apply → ACK → STATUS/DONE | No complete current-source composition run | `OPEN`; previous directed/random results are carry-forward only. |
+| Two product `q1_tail` assertions | Legal-attempt regressions remain without direct assertion attempts. Scoped legal-metadata proof reaches frame/tail transfers but makes the two target antecedent Covers uncoverable under its stated schedule; reset-condition proof covers reset events and makes reset bins uncoverable | `OPEN / WITHOUT_ATTEMPTS`; these scoped results do not satisfy complete product-path assertion signoff. |
+| Active-Tap configuration | Lean controller run: pending-bank tap invariant proven; invalid tap write, rejected invalid COMMIT, and legal commit/apply Covers reached; active output tap invariant INCONCLUSIVE; 0 assumptions and 0 black boxes | `OPEN / INCONCLUSIVE`; no Active-Tap exclusion or approval. |
 
-VC Formal was attempted for `counter` and `ef2_product_params` but could not check out its compile license. No `INCONCLUSIVE` result is converted to `PROVEN`; no new Formal signoff is claimed.
+VC Formal is operational after license recovery. Results remain separated by scope: no `INCONCLUSIVE` is converted to `PROVEN`, and no proof automatically approves a Waiver or creates an URG hit.
 
 ## 9. Gate F — Linux signoff decision and required next evidence
 
@@ -153,7 +153,7 @@ VC Formal was attempted for `counter` and `ef2_product_params` but could not che
 - Outstanding Counter, full-chain DPD Identity, COMMIT lifecycle, `q1_tail`, and Active-Tap obligations remain open.
 - Real XPM, GT Wizard, integrated CDC/RDC, Vivado timing/PPA, FPGA, board, and physical QAM256 evidence are outside this Linux result and were not run.
 
-**Final decision: NOT SIGNED OFF.** The current measured code coverage is still Round 16 Raw=Adjusted, below 100% for Branch, Condition, Line, and Toggle. No official adjusted 100% claim is supported. Continue on a licensed supported Linux EDA host: regenerate product compile and URG report manifests from one frozen SHA and VDB set, rebind the 371-row inventory (keeping the two Raw-hit IDs as resolved audit records), regenerate the pipeline audit, then proceed with approved exact exclusions and target-bin tests/formal. Keep every unproven or legally reachable bin OPEN.
+**Final decision: NOT SIGNED OFF.** The current measured code coverage is still Round 16 Raw=Adjusted, below 100% for Branch, Condition, Line, and Toggle. No official adjusted 100% claim is supported. VC Formal license is restored, but VCS V-2023.12-SP1 still rejects the WSL2 kernel with the correct `linux64` architecture override, and URG cannot initialize without the VCS support script. A supported Linux EDA host is still required to regenerate product compile and URG report manifests from one frozen SHA and VDB set, rebind the 371-row inventory (keeping the two Raw-hit IDs as resolved audit records), regenerate the pipeline audit, then proceed with exact-bin tests and independent waiver review. Keep every unproven or legally reachable bin OPEN.
 
 ## 10. Round 17 artifact index
 
@@ -166,5 +166,34 @@ VC Formal was attempted for `counter` and `ef2_product_params` but could not che
 | `data/thermo5-r17/thermo5_tx_r17_historical_compile_manifest.json` | Static rebind manifest; fingerprint differs from the Round 16 URG report and is not a current URG-compatible manifest. |
 | `data/thermo5-r17/thermo5_tx_r17_execution_evidence.json` | Tool attempts, exact statuses, hashes, coverage carry-forward, and gate disposition. |
 | `tools/hw/thermo5_tx_round17_reconcile.py` | Read-only inventory reconciliation; it does not alter official waiver state or emit exclusions. |
+| `data/thermo5-r17/thermo5_tx_r17_license_recovery.json` | Current-source VC Formal reruns, WSL2 VCS/URG retry, tool/log hashes, scoped results, and explicit coverage/waiver non-impact. |
+
+License-recovery evidence JSON SHA-256: `0b41803385b28e95a93c5673abf9452d3f8ff3fa57cf3acd5248ad135c0864e1`.
 
 Raw tool logs and VDBs remain in ignored local `runs/` directories. The Round 16 source, coverage, VDB, Formal, regression, and run-log manifests remain under `data/thermo5-r16/`.
+
+## 11. License recovery and current-source Formal reruns
+
+VC Formal V-2023.12-SP2 checked out its runtime license successfully. The successful and inconclusive jobs are bound to product RTL revision `cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410` and per-file SHA-256 manifests. The controlled product source remains `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`, with RTL aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`.
+
+| Run | Result | Scope and disposition |
+|---|---|---|
+| AXI-Lite config default/reachability | PASS, 4/4 assertions; 1 positive read Cover and three target Covers uncoverable; 0 assumptions, 0 black boxes | Current `MAX_TAPS=1` controller module. `W-9010...` target is proven unreachable in its stated write-response/address case scope. |
+| CDC default branch | PASS, 2/2 assertions; legal advance/frame Covers reached; exact default path uncoverable; 0 assumptions, 0 black boxes | Exact Generic-FIFO 14:8 product configuration. `W-98a...` is still pending native URG map and review. |
+| CDC end-remaining branch | PASS, 5/5 assertions; legal 64-beat packet/frame Covers reached; target false arm uncoverable; 0 assumptions, 0 black boxes | Exact legal packet-multiple contract and 14:8 ratio in the harness. `W-32b...` still pending map and review. |
+| CDC immediate end branch | PASS, 1/1 assertion; product end context/completed-frame Covers reached; target arm uncoverable; 0 assumptions, 0 black boxes | Scoped Generic-FIFO CDC. `W-a9f...` still pending map and review. |
+| Outstanding counter | INCONCLUSIVE, 5/5 assertions and two guard Covers inconclusive; source/core/output activity Covers reached | Full wrapper attempt. This is not evidence of unreachability. |
+| Pair-1 | PASS, 64/64 properties across 16 lanes; input-accept/output-transfer Covers reached; reset-only formal constraint; 0 black boxes | Proves Pair-1 accumulators zero under the exact `MAX_TAPS=1` leaf elaboration. Excludes AXI-Lite/COMMIT/CDC/RUN/STOP composition. |
+| EF2 pair equivalence | PASS, 7/7 assertions and 4/4 Covers | Scalar/candidate equivalence for signed-16 inputs and stalls; this is not evidence that the candidate is enabled in the product. |
+| EF2 product parameters | PASS, 2/2 assertions; invalid parameter and Pair-Look-Ahead Covers uncoverable | Proves the current parameter branch in its stated product elaboration. |
+| DPD gap counter | PASS, 3/3 assertions and 4/4 Covers | Bound to at most 2,072 accepted samples/reset epoch; does not prove unrestricted product runtime or AXI outstanding-counter safety. |
+| DPD Identity under stall | PASS, compositional local datapath proof, 41 internal lemmas; endpoint, stall and recovery Covers reached | Proves local one-tap arithmetic/latency/stall behavior. Full chain through shadow/COMMIT/mailbox/CDC/active epoch remains excluded. |
+| Simple DPD Identity chain | INCONCLUSIVE on payload equality and saturation/count properties; endpoint/stall/recovery Covers reached | Local simulation/formal chain only; no full configured TX chain signoff. |
+| Frame-tail legal metadata | PASS, 2/2 assertions; legal frame/tail/output Covers reached; target active-bin Covers uncoverable | Stated two-stage 8-lane/16-lane frame geometry; intervening FIFOs and DPD metadata path omitted. |
+| Frame-tail reset conditions | PASS, 2/2 assertions; runtime reset/queue nonempty/reset-empty Covers reached; reset operand target Covers uncoverable | Does not create legal attempts for the two product `q1_tail` assertions. |
+| CDC data-empty condition | PASS, 3/3 relationship assertions; source/FIFO/public-empty Covers reached; exact raw target Cover uncoverable | Exact Generic-FIFO relationship; keep the raw condition open pending native mapping and independent review. |
+| Active-Tap controller attempt | FAIL-CLOSED / INCONCLUSIVE; pending-bank tap invariant proven, active output invariant unresolved; illegal tap write, rejected COMMIT, and legal commit/apply Covers reached | Current AXI-Lite config with `MAX_TAPS=1`, no environment assumptions, 0 black boxes. Formal runner returns nonzero because the active output property remains open. |
+
+The initial Active-Tap proof also instantiated the 16-lane DPD datapath and enlarged the model without resolving the control properties. The retained lean attempt removes that irrelevant arithmetic cone while hashing the actual wrapper/frontend source files that connect `u_cfg.dpd_active_taps` to the product DPD `active_taps` port. Its remaining INCONCLUSIVE status is reported as OPEN. The exact commands, run paths, property states and SHA-256 digests are in the recovery JSON manifest.
+
+These Formal runs do not create VCS tests, VDBs, URG hits or approved exclusions. Raw/Adjusted numbers remain the Round 16 carry-forward table in §3. All 369 active candidate dispositions remain pending; 0 approved Waivers and 0 active Exclusions remain in force.
