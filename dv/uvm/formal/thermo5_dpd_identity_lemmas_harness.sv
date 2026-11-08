@@ -75,6 +75,16 @@ module thermo5_identity_lemmas_harness(
       model.dut.q_gr_s7[0] == ($signed(model.expected_q[7]) * 64'sd16384));
   a_stage7_valid_align: assert property (disable iff (!rst_n)
     model.expected_valid[7] == model.dut.tap_enable_s7[0]);
+  a_stage7_i_product_transfer: assert property (disable iff (!rst_n)
+    (model.dut.pipe_ce && model.dut.tap_enable_s6[0]) |=>
+      model.dut.i_gr_s7[0] ==
+        ($signed({{48{$past(model.dut.i_s6[0][15])}}, $past(model.dut.i_s6[0])}) <<< 14) &&
+      model.dut.q_gi_s7[0] == 64'sd0);
+  a_stage7_q_product_transfer: assert property (disable iff (!rst_n)
+    (model.dut.pipe_ce && model.dut.tap_enable_s6[0]) |=>
+      model.dut.i_gi_s7[0] == 64'sd0 &&
+      model.dut.q_gr_s7[0] ==
+        ($signed({{48{$past(model.dut.q_s6[0][15])}}, $past(model.dut.q_s6[0])}) <<< 14));
 
   a_stage8_i_term_identity: assert property (disable iff (!rst_n)
     model.expected_valid[8] |->
