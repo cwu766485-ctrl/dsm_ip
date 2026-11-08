@@ -4478,9 +4478,6 @@ distinguishes last successful commit from later untested protocol-reset fix.
   and generated HDL under `tmp/gt_wizard_probe_20260922/` outside the source
   RTL tree.
 - This is an IP-generation/configuration PASS only.  Vendor behavioral GT
-Warning: truncated output (original token count: 6970)
-Total output lines: 160
-
   simulation, package-constrained implementation, PLL/CDR lock, physical
   loopback, BER/BERT, eye, and jitter remain separate gates.
   Changed source/check files are `rtl/axis/dsm_reset_sync.sv`,
@@ -4549,7 +4546,30 @@ Total output lines: 160
 - The generic Gray FIFO and FPGA XPM FIFO asynchronous XSim tests both passed after the change: 112 contiguous complex samples, 14 core words, zero order/frame/gain mismatches, no bubbles, no underflow, and no protocol error.
 - Routed the complete XPM CDC wrapper on `xczu15eg-ffvb1156-2-i` with 125 MHz and 218.75 MHz asynchronous clock groups.  The result passes: WNS `+1.807 ns`, WHS `+0.042 ns`, TNS/THS zero, 896 LUT, 749 FF, 6.5 BRAM tiles, and 0 DSP.  This supersedes the earlier tool-crash-only CDC status; it is fabric/CDC PPA evidence, not a thermo5 frontend or GTH target signoff.
 - Re-ran required project regressions: P0 XSim 7/7 PASS and IP smoke (top, AXI, active reset, BP AXI, DPD v1.1) PASS.  The required baseline DSM OOC run on `xc7z020clg400-1` found 12/14 PASS; `p0_ooc_mb_ef2` fails 100 MHz setup by `-0.093 ns`, and `p0_ooc_mb_mash22` by `-0.688 ns`.  These two independent base-IP timing risks are recorded for follow-up and are not attributed to the CDC wrapper.
-- Remaining limitation: no four-GTH target STA, board loopback/BERT, or physical PA evidence ex…970 tokens truncated…d all seven designs at 65,536 samples with zero mismatch; XSim P0 passed 7/7; IP smoke passed top, AXI, active-reset, BP-AXI, and DPD-v1.1.
+- Remaining limitation: no four-GTH target STA, board loopback/BERT, or physical PA evidence exists.  The next implementation action is the distinct DPD-free thermo5 frontend routed OOC, then the main-path PPA comparison.
+
+## 2026-09-19 - Add FPGA XPM CDC implementation and reproduce tool failure
+
+- Added an FPGA-only `xpm_fifo_async` implementation for the optional `125 MHz / 14-complex AXI-S -> 218.75 MHz / 8-complex` ingress, while retaining the existing Gray-pointer FIFO as the generic RTL reference.  XPM uses a common reset, so source traffic begins only after both clock domains leave reset and the FIFO prefill contract is satisfied.
+- Added an XPM-specific asynchronous-clock XSim and updated the existing CDC test to prefill before enabling the recursive core.  Both generic and XPM tests pass 112 contiguous complex samples through the 14:8 gearbox with no order, frame/gain, bubble, underflow, or protocol mismatch.
+- Repeated the ZU15EG CDC OOC with XPM block memory and the same `AreaOptimized_high` directive as the known-good thermo5 core.  RTL parsing and `synth_design` completed, but Vivado 2024.1 crashed with `EXCEPTION_ACCESS_VIOLATION` while loading part/timing information before checkpoint, utilization, placement, or STA.  No CDC WNS/WHS/resource result is claimed.
+- Added isolated routed XPM probes to distinguish the FIFO primitive from the full wrapper.  Both pass on `xczu15eg-ffvb1156-2-i`: 32-bit FIFO WNS/WHS `+3.250/+0.041 ns`, 0.5 BRAM tile; production-width 465-bit FIFO WNS/WHS `+2.907/+0.039 ns`.  This is valid FIFO PPA evidence, but not full CDC-wrapper timing.
+- Revised the FPGA XPM branch to use the AXI/system reset as its single FIFO reset; `core_aresetn` separately resets the gearbox/consumer, and integration must assert both resets together.  The XPM CDC test remains bit-true.
+- Full CDC OOC remains blocked by intermittent Vivado realtime-helper failures (`rtSynthCleanup.tcl`/`unimacro_vhdl.tcl` reported absent despite existing on disk) or `EXCEPTION_ACCESS_VIOLATION`.  Checks: CDC generic XSim PASS; CDC XPM XSim PASS; project P0 XSim 7/7 PASS; DSM IP smoke (top, AXI, active reset, BP AXI, DPD v1.1) PASS.  Next action is to rerun full CDC OOC in a stable Vivado process or repaired installation before recording full PPA.
+
+## 2026-09-19 - Make thermo5 primary path DPD-free
+
+- Set `tid32_thermo5_frontend_tx` to `BYPASS_DPD=1` by default.  The selected generate branch directly joins the two x2 interpolators, so no memory-DPD module is instantiated or synthesized; coefficient ports remain only as a stable compatibility boundary.
+- Updated the MATLAB oracle and XSim compilation list to exclude the identity-DPD stage and all DPD RTL.  The DPD-free frontend XSim passed 64 ingress words, 2,048 final complex samples, and all four raw planes with zero mismatch.
+- Two fresh ZU15EG OOC attempts failed before HDL elaboration in the Vivado realtime helper (`missing realtime Tcl`, then `rt-undefined`).  No new WNS/WHS or resource result is claimed; the older identity-DPD OOC remains historical evidence only.
+- Next action: repair or isolate the Vivado helper environment, rerun routed DPD-free OOC, then compare thermo3/thermo5 and interpolation choices for PPA.
+
+## 2026-09-19 - Retire unclosed temporal BP/SMASH experiments
+
+- Removed the CRFB-SMASH temporal8/temporal64 prototype and the TID32 MASH1-1 experiment, including their dedicated MATLAB models, vectors, XSim testbenches, and OOC scripts.  They had useful research evidence but did not constitute a deployable 64-lane streaming implementation.
+- Retained scalar BP/EFDSM/MASH IP, the P0 regression set, and the thermo5 frontend.  The behavioural screening script no longer advertises the removed CRFB candidate.
+- Rationale: keep the repository focused on the bit-true, routed thermo5 digital frontend and prevent unclosed experimental temporal chains from being mistaken for a 218.75-MHz implementation.
+- Checks after removal: MATLAB P0 passed all seven designs at 65,536 samples with zero mismatch; XSim P0 passed 7/7; IP smoke passed top, AXI, active-reset, BP-AXI, and DPD-v1.1.
 - Remaining limitation: this cleanup does not create four physical GTH or PA paths; serializer/PA evidence remains simulation-only until board resources exist.
 
 ## 2026-09-19 - Four-path raw serializer loopback contract
