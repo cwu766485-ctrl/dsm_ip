@@ -1,0 +1,84 @@
+{
+  "results": [
+    {
+      "result": "PASS",
+      "run_dir": "runs/thermo5_round16_fe315ca/basic_core_vcs",
+      "scope": "bittrue, bubbles/backpressure, fifo boundary/empty, reset sweep, negative frame",
+      "suite": "Generic FIFO product regression"
+    },
+    {
+      "result": "PASS",
+      "run_dir": "runs/thermo5_round16_fe315ca/axil_product_vcs",
+      "scope": "register access/config, coefficient transport, nonlinear DPD, STOP, reset, boundary tests",
+      "suite": "AXI-Lite product regression"
+    },
+    {
+      "cases": 110,
+      "result": "PASS",
+      "run_dir": "runs/thermo5_round16_fe315ca/system_random",
+      "seeds": "760000-760099, 860000-860009",
+      "suite": "System random"
+    },
+    {
+      "cases": 60,
+      "coverage_merge": "excluded because same prior VDB set already in R15; test results retained",
+      "result": "PASS",
+      "seed_range": "930000-930059",
+      "suite": "DPD/Gain/Profile matrix"
+    },
+    {
+      "cases": 2,
+      "coverage_merge": "included",
+      "result": "PASS",
+      "seeds": "950000-950001",
+      "suite": "Commit boundary / PA stall"
+    },
+    {
+      "cases": 8,
+      "coverage_merge": "included",
+      "result": "PASS",
+      "seeds": "940000-940007",
+      "suite": "Reset / Pending COMMIT"
+    },
+    {
+      "detected": "6/6 fault classes",
+      "result": "PASS",
+      "run_dir": "runs/thermo5_round16_fe315ca/scoreboard_mutation",
+      "suite": "Direct SV unified scoreboard mutation"
+    },
+    {
+      "command": "cd dv/uvm/refmodel/python && python3.12 -m unittest",
+      "result": "PASS",
+      "suite": "Python reference model",
+      "tests": "64/64"
+    },
+    {
+      "coverage_delta": 0,
+      "result": "PASS",
+      "seed": 716001,
+      "suite": "DPD extreme one-tap directed"
+    },
+    {
+      "checked_words": 2072,
+      "coverage_delta": 0,
+      "result": "PASS",
+      "seed": 716002,
+      "suite": "EF2 saturation/corner directed"
+    },
+    {
+      "exit_code": 3,
+      "log": "runs/thermo5_round16_fe315ca/coverage_gate/attempt.log",
+      "reason": "Current official waiver CSV lacks a pipeline-generated audit bound to this source manifest; no Gate PASS claimed.",
+      "result": "BLOCKED_NOT_PASS",
+      "suite": "Fail-closed coverage gate"
+    },
+    {
+      "reason": "wrong test parameter PACKET_BEATS=32; failed accepted packet-length contract; VDB excluded",
+      "result": "FAIL_EXCLUDED",
+      "suite": "Intentional wrong packet-length exploratory test"
+    }
+  ],
+  "round": 16,
+  "schema_version": 1,
+  "source_head": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733"
+}

@@ -1,3 +1,15 @@
+# 2026-11-08 13:20 SGT - Thermo5 Round 16 coverage closure evidence
+
+- Audited PR #45 and confirmed it is already merged into `thermo5` at `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`; created an isolated review branch without modifying the user's original dirty workspace.
+- Froze the Centered-Cubic x2+x2 / EF2 ORDER=2 STEP=5120 / 20-bit / DPD_MAX_TAPS=1 Identity / AXI-Lite / Generic FIFO configuration. Revalidated 95 compile-source hashes and captured a homogeneous 1-design/362-test VDB manifest; the 240 Round 15 VDB trees and all 784 Round 15 Toggle hits are retained.
+- Added Round 16 exact-bin, root-cause, regression, Formal, Pair-1 and waiver audit ledgers. Raw and zero-exclusion Adjusted URG match: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM states 13/13 and transitions 22/22; 13,171 exact code records remain open. The 122 additional test VDBs add zero exact code hits.
+- Revalidated the clean 369-row waiver candidate set (361 analysis, 4 reproof, 4 unresolved) and the separate 8,192-bin / 64-property Pair-1 package. The official CSV still has 371 rows; two map to bins already hit by Raw and need reviewed RESOLVED_BY_RAW_HIT reconciliation. No independent approval exists; no official exclusion was applied.
+- Fail-closed Coverage Gate attempt is BLOCKED / NOT PASS (exit 3): legacy zero-approval audit is not bound to the current official 371-row waiver CSV. No workaround or waiver approval was fabricated. Raw/Adjusted URG remain valid same-input reports, but formal Gate approval remains open.
+- Regression evidence: Generic FIFO and AXI-Lite VCS PASS; System Random 110/110; DPD/Gain/Profile 60/60; COMMIT/PA Stall 2/2; Reset/Pending COMMIT 8/8; direct SV scoreboard mutations 6/6; Python reference 64/64. Outstanding-counter Formal is INCONCLUSIVE; full-chain DPD Identity and COMMIT lifecycle remain OPEN; both legal q1_tail properties have zero attempts.
+- Changed files: Round 16 report and data manifests, active execution frontier, and this update log. No RTL, tests, algorithm, product parameters, VDB, or official `.el` was modified. Detailed regression logs/VDBs remain in ignored `runs/thermo5_round16_fe315ca/` and are indexed by SHA-256.
+- Checks: source hash and exact-bin/waiver mapping audit passed; Raw/Adjusted arithmetic and identical VDB manifest checked; Coverage Gate attempted and correctly failed closed as above; final evidence consistency script passed for all source, bin, waiver, Pair-1, VDB, log and cross-file hashes; `git diff --check` passed.
+- Signoff remains OPEN (`RAW_100_OPEN`). XPM, GT Wizard, Vivado PPA/timing, and physical RF/QAM256 remain NOT RUN.
+
 # 2026-11-07 — Thermo5 Round 15 coverage-directed closure
 
 - Audited GitHub PR #44 and confirmed it is merged as product-source commit `6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5`. Frozen Centered-Cubic/EF2/DPD/AXI-Lite/Generic-FIFO RTL and compile fingerprint are unchanged.
