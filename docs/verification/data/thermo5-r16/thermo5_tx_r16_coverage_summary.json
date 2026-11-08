@@ -1,0 +1,273 @@
+{
+  "active_exclusions": 0,
+  "adjusted_urg_log_sha256": "5a1206b1fbc0f5c806404bcd8393d7c5f2b0d2214288280cd209353d11de21e7",
+  "approved_waivers": 0,
+  "assertion_interpretation": "The 3 aggregate failures are from separately expected-negative VDBs; legal-only assertion regression remains zero unexpected failures from carried-forward test. Two product q1_tail assertions have no legal attempts.",
+  "assertions": {
+    "FAILURE": 3,
+    "SUCCESS": 15,
+    "UNCOVERED": 4,
+    "WITHOUT_ATTEMPTS": 2
+  },
+  "branch_review": {
+    "candidate_exclusions_approved": 0,
+    "exact_branches": 113,
+    "open_exact_bins": 25,
+    "other_fixed_parameter_candidates": 8,
+    "pair_lookahead_helper_bins": 80,
+    "pair_lookahead_review_state": "CONFIGURATION_INACTIVE_CANDIDATE_PENDING_REVIEW"
+  },
+  "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "coverage": {
+    "branch": {
+      "approved_adjusted": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 524,
+        "missing": 113,
+        "percent": 82.2606,
+        "total": 637
+      }
+    },
+    "condition": {
+      "approved_adjusted": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 657,
+        "missing": 192,
+        "percent": 77.3852,
+        "total": 849
+      }
+    },
+    "fsm_state": {
+      "approved_adjusted": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 13,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 13
+      }
+    },
+    "fsm_transition": {
+      "approved_adjusted": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 22,
+        "missing": 0,
+        "percent": 100.0,
+        "total": 22
+      }
+    },
+    "line": {
+      "approved_adjusted": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 3338,
+        "missing": 458,
+        "percent": 87.9347,
+        "total": 3796
+      }
+    },
+    "toggle": {
+      "approved_adjusted": {
+        "covered": 92072,
+        "missing": 12408,
+        "percent": 88.124,
+        "total": 104480
+      },
+      "approved_excluded": 0,
+      "raw": {
+        "covered": 92072,
+        "missing": 12408,
+        "percent": 88.124,
+        "total": 104480
+      }
+    }
+  },
+  "coverage_gate": {
+    "exit_code": 3,
+    "log": "thermo5_round16_fe315ca/coverage_gate/attempt.log",
+    "reason": "Fail-closed gate rejects the legacy zero-approval waiver audit because it is not bound to the current official waiver CSV; the same-input Raw/Adjusted URG report remains valid, but the policy gate itself is not signed off.",
+    "status": "BLOCKED_NOT_PASS"
+  },
+  "coverage_incremental_result": "0 exact bin hits from 122 additional Test VDBs (including the two valid targeted directed VDBs); Raw totals unchanged from R15.",
+  "directed_tests": [
+    {
+      "coverage_delta_exact_bins": 0,
+      "result": "PASS",
+      "seed": 716001,
+      "test": "thermo5_sku_axil_dpd_saturation_bittrue_test",
+      "vdb": "targeted_dpd_saturation/extreme.vdb"
+    },
+    {
+      "accepted_and_checked_words": 2072,
+      "coverage_delta_exact_bins": 0,
+      "result": "PASS",
+      "seed": 716002,
+      "test": "thermo5_sku_axil_ef2_corner_test",
+      "vdb": "targeted_ef2_corner/ef2_corner_fixed.vdb"
+    },
+    {
+      "coverage_eligible": false,
+      "reason": "packet contract requires 1,184 beats; not merged",
+      "result": "FAIL_TIMEOUT_EXCLUDED",
+      "seed": "unsuccessful PACKET_BEATS=32",
+      "test": "thermo5_sku_axil_ef2_corner_test exploratory attempt"
+    }
+  ],
+  "exact_ledger_integrity": {
+    "legacy_bin_id_collision_ids": [
+      "311e197f026146db3b24",
+      "8d9e6e91ab0fe9a07abb",
+      "9c594c34b17b7fdcff4a",
+      "f590f2f86b62a69f82b1"
+    ],
+    "legacy_bin_id_collision_records": 8,
+    "records": 13171,
+    "unique_legacy_bin_ids": 13167,
+    "unique_record_ids": 13171,
+    "unique_semantic_bin_ids": 13171
+  },
+  "functional_coverage": {
+    "groups": [
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_tlast_drain_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_axil_reset_pending_commit_test::reset_pending_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_gap_pa_fifo_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_axil_monitor::read_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::transaction_event_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_axil_monitor::write_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_axil_monitor::reset_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::commit_boundary_stall_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::status_commit_stop_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::run_prefill_gap_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_axil_random_dpd_bittrue_test::random_cfg_cg",
+        "score_percent": "100.00"
+      },
+      {
+        "name": "thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg",
+        "score_percent": "100.00"
+      }
+    ],
+    "legally_applicable_bins": "436/436 (R15 audited legal bin set carried forward; current aggregate URG group report 16/16 at 100%)",
+    "note": "Covergroup percentage alone is not used to claim all Feature Matrix semantics are complete.",
+    "urg_groups": 16,
+    "urg_groups_at_100_percent": 16
+  },
+  "pair1_separate_pending_candidates": 8192,
+  "pathfree_vdb_manifest_sha256": "d457cd7eb89f8e607a3c18be6197d58982afe93186611dd5be9f76ccb60c4e34",
+  "pending_waivers": 369,
+  "product_rtl_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "raw_adjusted_same_input": true,
+  "raw_urg_log_sha256": "523e7611d5dd42f0363bbbfa3cdd1ce6aaf759bbda8b1e1ac322788ba71ccd9c",
+  "rejected_waivers": 0,
+  "report_manifest_sha256": "8745380d90c08e217a1e7bc8f21cd11fec93dc79eeb88f3e091daff7e76f30b3",
+  "root_cause_counts": {
+    "branch": {
+      "FIXED_PRODUCT_CONFIGURATION": 21,
+      "GUARDED_ADDRESS_DECODE": 1,
+      "LEGAL_STIMULUS_OR_CHECKER_REVIEW": 89,
+      "PRODUCT_CADENCE_ALIGNMENT": 2
+    },
+    "cond": {
+      "INTERPOLATOR_EMPTY_OR_BLOCKED": 4,
+      "RESET_RELEASE_OR_STATE_HOLD": 188
+    },
+    "line": {
+      "CDC_OR_RESIDUAL_STATE": 6,
+      "DPD_TAP_HISTORY_CONFIGURATION": 176,
+      "FIXED_PRODUCT_CONFIGURATION": 244,
+      "LEGAL_STIMULUS_OR_CHECKER_REVIEW": 32
+    },
+    "toggle": {
+      "CDC_OR_RESIDUAL_STATE": 130,
+      "COUNTER_HIGH_BITS": 640,
+      "DATA_VALUE_OR_TOGGLE_STIMULUS": 2478,
+      "DPD_TAP_HISTORY_CONFIGURATION": 8192,
+      "FIXED_PRODUCT_CONFIGURATION": 24,
+      "IDENTITY_DPD_ARITHMETIC": 944
+    }
+  },
+  "round": 16,
+  "round15_test_vdbs_preserved": 240,
+  "round16_additional_test_vdbs": 122,
+  "schema_version": 1,
+  "source_head": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "status": "LINUX_DV_SIGNOFF_OPEN_RAW_100_OPEN",
+  "test_vdb_count": 362,
+  "total_uncovered_code_bins": 13171,
+  "vdb_manifest_sha256": "75b83f5b49a6fd180f3485f56066a7325a27825edc78284be2d83d24c6fd6fef",
+  "vdb_source_mismatches": 0
+}

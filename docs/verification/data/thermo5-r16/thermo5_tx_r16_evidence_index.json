@@ -1,0 +1,97 @@
+{
+  "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "coverage_gate_status": "BLOCKED_NOT_PASS",
+  "evidence_files": [
+    {
+      "artifact": "thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/report_manifest.json",
+      "sha256": "8745380d90c08e217a1e7bc8f21cd11fec93dc79eeb88f3e091daff7e76f30b3",
+      "size_bytes": 1260974
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/raw_urg.log",
+      "sha256": "523e7611d5dd42f0363bbbfa3cdd1ce6aaf759bbda8b1e1ac322788ba71ccd9c",
+      "size_bytes": 1277
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/adjusted_urg.log",
+      "sha256": "5a1206b1fbc0f5c806404bcd8393d7c5f2b0d2214288280cd209353d11de21e7",
+      "size_bytes": 1282
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/formal/pair1/formal_manifest.json",
+      "sha256": "cd73bcdc6be9b6ca9b6a0b13245100d176e17f813fd0c601e293d5e6fdcf318d",
+      "size_bytes": 2000
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/formal/pair1/console.log",
+      "sha256": "fa7477339cd74902c8a84bf997c23393171d3ac75a1a968d88f5878c74810536",
+      "size_bytes": 13042
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/formal/axil_outstanding/formal_manifest.json",
+      "sha256": "cc48beaba4f056882b8879d14ba91d8c3f7eda7f79bd2bc726e076489d1767c2",
+      "size_bytes": 4919
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/formal/ef2_product_params/formal_summary.json",
+      "sha256": "71decfd3ff7e0657ba905c24f56894736f769057ef46c7397625a2d8531ef8b6",
+      "size_bytes": 4453
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/formal/dpd_identity_stall/run_result.json",
+      "sha256": "0cd7897f2c292a8669ec6bf0c5f08da6109482eed50feac6cc0978ea41b4ae29",
+      "size_bytes": 489
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/raw_inventory/summary.json",
+      "sha256": "31830563648ddb9dc46f7b702297f6297b242978329009dcbab7c89a157e886b",
+      "size_bytes": 5732
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/coverage_after_ef2_corner_v2/adjusted_inventory/summary.json",
+      "sha256": "1c80210d2d5b594e4d721fd090351563430a424202a01f7995c4cc16e5c1ce68",
+      "size_bytes": 5732
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/targeted_ef2_corner/ef2_corner_fixed.log",
+      "sha256": "2d8374be0ff0aa75decee3e93afd33515abf62833044a2991763347464df72a1",
+      "size_bytes": 5026
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/targeted_dpd_saturation/extreme.log",
+      "sha256": "6c9e2263c0a25565ffc70e9cc3b6612e45b28a3354e214c0b74f3053719c9bc9",
+      "size_bytes": 5935
+    },
+    {
+      "artifact": "thermo5_round16_fe315ca/coverage_gate/attempt.log",
+      "sha256": "c8716111cf44b97b06cfd3893e309c88c68c6799dc4bcc418e968bc954187720",
+      "size_bytes": 72
+    }
+  ],
+  "pathfree_vdb_manifest_sha256": "d457cd7eb89f8e607a3c18be6197d58982afe93186611dd5be9f76ccb60c4e34",
+  "product_rtl_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "report_path": "docs/verification/thermo5-tx-round16-final-coverage-closure-20261108.md",
+  "report_sha256": "3f5e7f6582f44f486191a548a77c73692376c12eaac8b878de73a5f9f0c94ee6",
+  "report_status": "LINUX_DV_SIGNOFF_OPEN_RAW_100_OPEN",
+  "review_status": "All waivers pending independent reviewer; no active exclusion.",
+  "round": 16,
+  "run_log_artifact_count": 978,
+  "run_log_artifact_set_sha256": "d089de226be6b5499f6ac21c51c64a12bdddf3110f74f7b34f1be8f98543fd08",
+  "run_log_manifest_sha256": "0bcd5434a540c2ba84d1a6cb0b3e99facdb9d00589c77b67d1425600aad3b1b2",
+  "schema_version": 1,
+  "source_head": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "tracked_artifact_sha256": {
+    "thermo5_tx_r16_branch_rootcause_review.csv": "0b6e55cc756f4347ab7b1ae7058382197d060ae90e4dbaddf7933fb82cefb742",
+    "thermo5_tx_r16_coverage_summary.json": "8a955f835086de3ca6d73529488784a7cdb50754546c17f384f1495957ff3e90",
+    "thermo5_tx_r16_exact_remaining_bins.csv.gz": "26626500992ec055ae67dd0665b6603c43e939f4c461ec88e0b7a8bf2d09047b",
+    "thermo5_tx_r16_formal_matrix.json": "467caeb1c4c6df421405fed80ec2d49e7ed5a6c7ec42b59de12fc6daf51c5ca6",
+    "thermo5_tx_r16_pair1_waiver_review.csv.gz": "1434946b8e22e02160d583b5a7a114e47cfa21c0df96400c1c5366f8cde0d3aa",
+    "thermo5_tx_r16_regression_matrix.json": "c924e367223c16463f485f3da210c9ec102e9582677d42fc94a4d221742b2b04",
+    "thermo5_tx_r16_run_log_manifest.json": "0bcd5434a540c2ba84d1a6cb0b3e99facdb9d00589c77b67d1425600aad3b1b2",
+    "thermo5_tx_r16_source_manifest.json": "d40e50cb5232e91411fe5e668660e49a7a0e323b5e7c186c0ce9e932ef561cca",
+    "thermo5_tx_r16_vdb_manifest.json": "d457cd7eb89f8e607a3c18be6197d58982afe93186611dd5be9f76ccb60c4e34",
+    "thermo5_tx_r16_waiver_reconciliation.json": "46fa6c03a6f174072772ff513979f4dd457e32203184ffbb9747a602cea79057",
+    "thermo5_tx_r16_waiver_review.csv": "34bb9c111764c66aa70932c2a394acceee0db88bc684961e6d418823fd7ee241"
+  },
+  "vdb_manifest_sha256": "75b83f5b49a6fd180f3485f56066a7325a27825edc78284be2d83d24c6fd6fef"
+}

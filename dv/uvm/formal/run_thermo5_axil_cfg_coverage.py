@@ -16,6 +16,8 @@ import time
 ROOT = Path(__file__).resolve().parents[3]
 SOURCES = (
     "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv",
     "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv",
     "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl",
 )
@@ -24,12 +26,17 @@ EXPECTED_ASSERTIONS = {
     "a_coeff_read_default_unreachable": "proven",
     "a_line88_tuple_unreachable": "proven",
     "a_write_case_default_unreachable": "proven",
+    "a_active_taps_one": "proven",
+    "a_pending_taps_one": "proven",
 }
 EXPECTED_COVERS = {
     "c_coeff_read_transaction": "covered",
     "c_coeff_read_default_arm_unreachable": "uncoverable",
     "c_line88_tuple_unreachable": "uncoverable",
     "c_write_case_default_unreachable": "uncoverable",
+    "c_write_illegal_tap_value": "covered",
+    "c_reject_illegal_tap_commit": "covered",
+    "c_legal_tap_commit_apply": "covered",
 }
 
 
@@ -110,7 +117,12 @@ def main() -> int:
     manifest = {
         "schema_version": 1,
         "status": "PASS" if not errors else "FAIL",
-        "product_configuration": {"MAX_TAPS": 1, "AXIL": True},
+        "product_configuration": {
+            "MAX_TAPS": 1,
+            "AXIL": True,
+            "controller_instance": "thermo5_axi_lite_wrapper.u_cfg",
+            "product_connection": "u_cfg.dpd_active_taps -> u_frontend.g_memory_dpd.u_memory_dpd.active_taps",
+        },
         "source": {"git_revision": revision, "worktree_dirty": bool(git_status),
                    "git_status": git_status, "source_sha256": source_hashes},
         "tool_banner": next((line.strip() for line in console.splitlines()

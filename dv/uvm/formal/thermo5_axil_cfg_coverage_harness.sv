@@ -76,6 +76,26 @@ module thermo5_axil_cfg_coverage_harness (
          dut.write_addr == 8'h2c || dut.write_addr == 8'h30 ||
          dut.write_addr == 8'h34 || dut.write_addr == 8'h38 ||
          dut.write_addr == 8'h3c));
+
+  // MAX_TAPS=1 plus the AXI-Lite commit guard must keep both the configuration
+  // output and the vector-DPD instance input at the one-tap reset value.
+  a_active_taps_one: assert property (@(posedge core_clk) disable iff (!core_rst_n)
+    active_taps == 3'd1);
+  a_pending_taps_one: assert property (@(posedge core_clk) disable iff (!core_rst_n)
+    dut.cfg_pending_valid |-> dut.cfg_pending_core[386:384] == 3'd1);
+  // Non-empty control witnesses cover an attempted illegal tap value, its
+  // rejected COMMIT, and a legal pending configuration at a frame boundary.
+  c_write_illegal_tap_value:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.write_fire && dut.write_resp == 2'b00 &&
+      dut.write_addr == 8'h08 && dut.write_data[2:0] == 3'd7);
+  c_reject_illegal_tap_commit:
+    cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
+      dut.write_fire && dut.write_addr == 8'h00 && dut.write_data[1] &&
+      dut.write_resp == 2'b10);
+  c_legal_tap_commit_apply:
+    cover property (@(posedge core_clk) disable iff (!core_rst_n)
+      dut.cfg_pending_valid && dut.cfg_req_sync2 && dpd_config_boundary);
   c_write_case_default_unreachable:
     cover property (@(posedge axil_clk) disable iff (!axil_rst_n)
       dut.write_fire && dut.write_resp == 2'b00 &&

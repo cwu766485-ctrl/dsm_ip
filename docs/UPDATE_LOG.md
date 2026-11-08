@@ -1,3 +1,185 @@
+# 2026-11-08 — Thermo5 Round 17 final closure root-cause audit
+
+- Audited the five DPD Identity properties individually. The original VC Formal
+  run has one PROVEN latency assertion and four bounded/INCONCLUSIVE payload or
+  saturation assertions, with no SAT counterexample. Added and indexed scoped
+  no-stall and compositional results without weakening assertions; arbitrary
+  stall payload/saturation remains OPEN.
+- Classified the aggregate three DUT URG Failure rows and two overlapping
+  Uncovered rows against exact test logs. All three Failure rows are expected
+  in illegal-frame negative tests with negative checker/reset recovery PASS;
+  both `q1_tail` legal-success counts remain zero. The scoped legal metadata
+  proof is not treated as full-DUT proof or waiver approval.
+- Reconciled the official 371 unique Waiver IDs against the current Raw report:
+  two bins are `RESOLVED_BY_RAW_HIT`, 369 remain pending (361 ELIGIBLE, four
+  NEEDS_REPROOF, four UNRESOLVED), with zero reviewer approvals and zero
+  exclusions. Corrected the audit tool's false fingerprint comparison between
+  different canonical schemas, and required source/compile/VDB/URG inputs to
+  bind exactly.
+- Rebound the 8,192 Pair-1 Toggle review rows to the current 551-Test VDB
+  manifest. Exact current Raw-bin and source-hash matches are checked; all
+  rows remain pending independent review and no `.el` was generated.
+- Updated the Round 17 closure report, Formal/Assertion matrix, assertion
+  disposition table, Pair-1 current-binding ledger, execution frontier and
+  evidence hashes. No product RTL, frozen algorithm, test set or coverage
+  denominator changed; no broad random seed campaign was started.
+- Checks: Python 3.12 syntax check, current source/compile/VDB/URG reconciliation,
+  exact Pair-1 ID/hash audit, Formal/Assertion artifact hash audit, fail-closed
+  fingerprint mutation check, JSON/CSV/gzip validation, and `git diff --check`.
+- Remaining: full-chain DPD Identity, Outstanding Counter, Active-Tap
+  configuration, COMMIT lifecycle and full product `q1_tail` proof are OPEN;
+  13,171 code bins remain, 369 Waiver candidates and Pair-1 candidates require
+  independent review, and Approved Exclusions remain zero. Full Linux DV
+  signoff is OPEN (`RAW_100_OPEN`); XPM/GT/Vivado/FPGA/RF are not signed off.
+
+# 2026-11-08 — Thermo5 scoped Formal follow-up
+
+- With VC Formal V-2023.12-SP2 available, ran nine targeted jobs on source
+  revision `e5437af88232a743e6097f1d50734152683db933`, whose Product RTL hash
+  matches the prior VCS/URG run. The 32-bit DPD counter transition harness
+  passed 35 assertions and 4 Covers. CDC residual/data-empty/end, EF2 pair and
+  product-parameter, and frame-tail legal-metadata/reset jobs passed within
+  their recorded scopes.
+- The batch overall result is FAIL because the standalone DPD Identity
+  arithmetic job returned only `a_valid_latency` as PROVEN out of five required
+  assertions. The payload identity/saturation assertions remain OPEN; four
+  endpoint/stall/recovery Covers were reached. This harness assumes legal
+  payload stability under backpressure and does not prove the configured full
+  TX chain. Formal Cover results did not alter URG coverage or waiver state.
+- Updated the Round 17 report, machine evidence/hash manifest, execution
+  frontier, and this log. No RTL, UVM test or product parameter changed. Formal
+  intermediate files remain ignored under `runs/` and are not committed.
+- Checks: VC Formal nine-job runner, property/result JSON inspection, source
+  SHA and log-hash capture, JSON parse and `git diff --check`.
+- Remaining: full Linux DV signoff OPEN; DPD Identity, product Outstanding
+  Counter, COMMIT lifecycle and product `q1_tail` obligations remain open;
+  13,171 DUT bins remain, with 0 approved Waivers and 0 applied Exclusions.
+
+# 2026-11-08 — Thermo5 Round 17 WSL VCS reverification
+
+- Rechecked tools in Rocky 8.10 / WSL2 and corrected the previous blocker
+  diagnosis: VCS V-2023.12-SP1_Full64 and URG V-2023.12-SP1/CovDB 13.1 run in
+  64-bit mode. The earlier URG startup failure came from a default 32-bit
+  support-directory probe; VCS/URG runs use `-full64`. No architecture override
+  was needed.
+- On PR #46 source `4d92ecb8467b095b50478065e29e9646f2cff27e`, reran the listed
+  Generic FIFO, AXI-Lite, System Random (110/110), DPD matrix (60/60),
+  COMMIT/stall (2/2), reset/pending-COMMIT (8/8), STOP/Drain/Restart, scoreboard
+  mutation (6/6), Python reference (64/64), and reset-only Formal smoke checks.
+- Rebuilt Raw and zero-exclusion Adjusted URG using one Design VDB and 551 Test
+  VDBs (362 carry-forward + 189 fresh), with identical pre/post VDB manifest
+  SHA and 95/95 compile-source hashes verified. Coverage is Branch 524/637,
+  Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM states 13/13,
+  transitions 22/22. There are 13,171 uncovered code bins; approved Waivers=0,
+  applied Exclusions=0; the 189 new VDBs added no exact DUT code hits.
+- Added the detailed reverification report and machine-readable evidence/hash
+  manifest; replaced the active execution-frontier status while preserving the
+  old blocker snapshot as historical context. Generated logs/VDBs remain
+  ignored under `runs/` and are not committed. No product RTL or algorithm
+  changed; the original dirty user worktree was not modified.
+- Checks: VCS `-ID` and location, URG `-full64 -version`, product regressions,
+  targeted campaigns, Python tests, reset Formal smoke, same-input URG merge,
+  evidence hash generation, and `git diff --check`.
+- Remaining: Full Linux DV signoff remains OPEN (`RAW_100_OPEN`); 13,171 code
+  bins, zero approved Waivers/exclusions, outstanding-counter and full-chain
+  DPD/COMMIT Formal, two legal `q1_tail` attempts, and property-level audit of
+  three aggregate assertion failures. XPM/GT Wizard, Vivado PPA/timing, FPGA,
+  RF and physical QAM256 validation were not run.
+
+# 2026-11-08 17:48 SGT — Thermo5 PR #46 CI follow-up
+
+- Rechecked PR #46 at commit `3205448de89458281fd7ff9e17ff8c4c0fd35ab2`.
+  GitHub Repository Hygiene run `42468815736` passed; Thermo5 DV run
+  `42468815748` passed Python syntax/whitespace and reference-model tests, but
+  skipped its self-hosted `licensed-dv` job. PR review list remains empty.
+- Recorded these exact run IDs in the Round 17 report and execution frontier.
+  The successful hosted jobs are not VCS/URG/Formal product signoff evidence.
+- PR remains Draft/Open on `codex/thermo5-round16-coverage-closure`; no merge
+  to `thermo5` was performed. Gate 0 remains blocked by the local WSL2/VCS
+  kernel incompatibility, and the audit-only intermediate-merge condition is
+  not met because this PR also changes Formal harness/runner code.
+- Checks: read-only GitHub workflow/review status inspection. Product RTL and
+  official coverage/waiver state unchanged.
+
+# 2026-11-08 17:47 SGT — Thermo5 final closure plan pre-merge audit
+
+- Read the user-provided Gate 0–6 final Linux DV closure and merge plan. Preserved
+  the original workspace without edits; it has seven pre-existing modified
+  Round 12 What-if CSV files. All work remains in the isolated PR #46 worktree.
+- Re-audited PR #46 at head `26088d5a31272568ac48f5cf838fd755751148db`
+  against `thermo5` `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`: 26 changed
+  paths, 3 commits ahead, no product RTL/parameter/algorithm changes. It does
+  change the Formal harness/runner and Round 17 reconciliation utility as well
+  as reports and evidence, so it is not classified as evidence-only.
+- GitHub reports no independent reviews. Repository Hygiene workflow
+  `42464831307` passed; Thermo5 DV workflow `42464831299` passed the syntax and
+  reference-model job but skipped `licensed-dv`. Therefore it provides no VCS,
+  URG, regression, VDB, or coverage evidence. PR #46 remains Draft/Open and is
+  not merged under the plan's audit-only intermediate-merge exception.
+- Gate 0 remains blocked locally: VC Formal license works and its scoped
+  current-source results are recorded, but VCS V-2023.12-SP1 rejects the WSL2
+  kernel and URG cannot initialize. No new Raw/Adjusted coverage or complete
+  product regression is claimed; Round 16 metrics remain carry-forward,
+  waivers/exclusions remain 0/0, and Linux DV signoff remains OPEN.
+- Checks: GitHub PR file inventory, base/head comparison, reviews and latest
+  workflow jobs inspected; original workspace status confirmed and preserved.
+  No product RTL, parameters, regressions, VDBs, official Waivers, or `.el`
+  exclusions changed. No merge was performed.
+
+# 2026-11-08 16:42 SGT — Thermo5 Round 17 license recovery and Formal reproof
+
+- Resumed Round 17 after the user restored the VC Formal license. VC Formal
+  V-2023.12-SP2 now checks out its runtime license; current-source targeted
+  proofs were run and indexed in
+  `docs/verification/data/thermo5-r17/thermo5_tx_r17_license_recovery.json`.
+- Reproved the AXI-Lite write-default branch and three CDC fixed-configuration
+  branch candidates with legal activity Covers and exact source hashes. These
+  four bins remain pending Native URG mapping and independent reviewer
+  approval; no Waiver was approved and no `.el` exclusion was generated.
+- Pair-1 leaf invariants pass for 64 properties / 16 lanes. EF2 pair and static
+  product-parameter proofs, CDC empty relationship, and bounded DPD gap-counter
+  properties also pass in their documented scopes. Outstanding-counter,
+  Active-Tap output, and full-chain DPD Identity remain INCONCLUSIVE or OPEN;
+  product `q1_tail` legal attempts remain unclosed.
+- VCS V-2023.12-SP1 still exits before compile because WSL2 kernel
+  `6.6.87.2-microsoft-standard-WSL2` is unsupported even with
+  `VCS_ARCH_OVERRIDE=linux64`; URG cannot locate its VCS support script after
+  this failure. Thus no Round 17 product regression, VDB, Raw/Adjusted URG, or
+  coverage delta was created. Round 16 metrics remain carry-forward only and
+  Linux DV signoff stays OPEN (`RAW_100_OPEN`).
+- Changed the Round 17 evidence report, formal controller harness/runner,
+  exact Branch/Condition and waiver reconciliation ledgers, execution frontier,
+  and added the license-recovery machine manifest. Product RTL and frozen
+  product parameters are unchanged; no generated logs or VDBs are committed.
+- Checks: Python syntax PASS; 22 waiver-pipeline/candidate-audit/Formal-
+  disposition unit tests PASS; both ledger hashes match the recovery manifest;
+  all 48 referenced Formal artifact hashes validate; waiver and priority
+  ledger counts validate; `git diff --check` PASS. VCS/URG product checks
+  remain BLOCKED as above.
+
+# 2026-11-08 — Thermo5 Round 17 exact-bin and waiver audit
+
+- Reviewed PR #46 metadata, changed paths, and patch; it remains draft/open and is documentation/evidence-only. No product RTL, algorithm, parameters, or tests changed.
+- Reconciled the 371 unique official waiver IDs against 369 exact Round 16 open-bin candidates and two archived Raw hits. The two Raw hits are explicitly recorded as `RESOLVED_BY_RAW_HIT`; the 369 candidates remain pending (361 eligible analysis candidates, four needing reproof, four unresolved). No reviewer approval was fabricated.
+- Audited the malformed Round 15 refresh CSV (370 physical rows/368 unique IDs, two duplicate IDs and three missing IDs) and preserved it unchanged. Added a normalized 371-row Round 17 reconciliation record and exact 305-record Branch/Condition task ledger.
+- Preserved source/VDB/URG evidence hashes and recorded the static compile-source rebind. Its fingerprint differs from the Round 16 URG fingerprint, so the fail-closed pipeline is not reported as passing. VCS rejected the WSL2 kernel, URG could not locate the VCS support script, and VC Formal was blocked by license checkout. No new VDB, URG, test, formal proof, waiver approval, or exclusion was produced.
+- Round 16 metrics are carried forward only: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM state 13/13 and transition 22/22; 13,171 exact code bins remain. Linux DV signoff stays OPEN (`RAW_100_OPEN`).
+- Changed files: Round 17 reconciliation utility and machine-readable ledgers/manifests; Round 17 signoff report; execution frontier. No RTL or UVM source changed. Local tool logs/VDBs remain ignored under `runs/`.
+- Checks: reconciliation 371 = 369 + 2; all 369 candidate IDs bind an exact current open bin and source hash; priority ledger contains 113 Branch + 192 Condition records; Python syntax and artifact integrity checks passed; `git diff --check` passed. VCS/URG/Formal outcomes are BLOCKED as detailed in the report.
+- Remaining: supported licensed-host regression and URG; current compile/report/VDB-compatible pipeline audit; independent waiver review; targeted legal bin hits; outstanding-counter, DPD Identity, COMMIT, q1_tail and Active-Tap closure; XPM/GT/Vivado/physical QAM256 outside this Linux run.
+
+# 2026-11-08 13:20 SGT - Thermo5 Round 16 coverage closure evidence
+
+- Audited PR #45 and confirmed it is already merged into `thermo5` at `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`; created an isolated review branch without modifying the user's original dirty workspace.
+- Froze the Centered-Cubic x2+x2 / EF2 ORDER=2 STEP=5120 / 20-bit / DPD_MAX_TAPS=1 Identity / AXI-Lite / Generic FIFO configuration. Revalidated 95 compile-source hashes and captured a homogeneous 1-design/362-test VDB manifest; the 240 Round 15 VDB trees and all 784 Round 15 Toggle hits are retained.
+- Added Round 16 exact-bin, root-cause, regression, Formal, Pair-1 and waiver audit ledgers. Raw and zero-exclusion Adjusted URG match: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92072/104480, FSM states 13/13 and transitions 22/22; 13,171 exact code records remain open. The 122 additional test VDBs add zero exact code hits.
+- Revalidated the clean 369-row waiver candidate set (361 analysis, 4 reproof, 4 unresolved) and the separate 8,192-bin / 64-property Pair-1 package. The official CSV still has 371 rows; two map to bins already hit by Raw and need reviewed RESOLVED_BY_RAW_HIT reconciliation. No independent approval exists; no official exclusion was applied.
+- Fail-closed Coverage Gate attempt is BLOCKED / NOT PASS (exit 3): legacy zero-approval audit is not bound to the current official 371-row waiver CSV. No workaround or waiver approval was fabricated. Raw/Adjusted URG remain valid same-input reports, but formal Gate approval remains open.
+- Regression evidence: Generic FIFO and AXI-Lite VCS PASS; System Random 110/110; DPD/Gain/Profile 60/60; COMMIT/PA Stall 2/2; Reset/Pending COMMIT 8/8; direct SV scoreboard mutations 6/6; Python reference 64/64. Outstanding-counter Formal is INCONCLUSIVE; full-chain DPD Identity and COMMIT lifecycle remain OPEN; both legal q1_tail properties have zero attempts.
+- Changed files: Round 16 report and data manifests, active execution frontier, and this update log. No RTL, tests, algorithm, product parameters, VDB, or official `.el` was modified. Detailed regression logs/VDBs remain in ignored `runs/thermo5_round16_fe315ca/` and are indexed by SHA-256.
+- Checks: source hash and exact-bin/waiver mapping audit passed; Raw/Adjusted arithmetic and identical VDB manifest checked; Coverage Gate attempted and correctly failed closed as above; final evidence consistency script passed for all source, bin, waiver, Pair-1, VDB, log and cross-file hashes; `git diff --check` passed.
+- Signoff remains OPEN (`RAW_100_OPEN`). XPM, GT Wizard, Vivado PPA/timing, and physical RF/QAM256 remain NOT RUN.
+
 # 2026-11-07 — Thermo5 Round 15 coverage-directed closure
 
 - Audited GitHub PR #44 and confirmed it is merged as product-source commit `6b0d7c4ac4949fe0fa86af3da345a4e8dbeac7b5`. Frozen Centered-Cubic/EF2/DPD/AXI-Lite/Generic-FIFO RTL and compile fingerprint are unchanged.

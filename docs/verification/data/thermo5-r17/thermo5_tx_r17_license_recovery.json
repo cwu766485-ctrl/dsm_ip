@@ -1,0 +1,988 @@
+{
+  "captured_at_utc": "2026-11-08T08:39:00Z",
+  "coverage": {
+    "active_exclusions": 0,
+    "approved_waivers": 0,
+    "current_round": "Round 16 carry-forward; Round 17 VCS/URG not run",
+    "exact_open_code_bins": 13171,
+    "formal_runs_created_no_urg_hits": true,
+    "gate": "RAW_100_OPEN",
+    "metrics": {
+      "branch": {
+        "adjusted_covered": 524,
+        "adjusted_total": 637,
+        "excluded": 0,
+        "raw_covered": 524,
+        "raw_total": 637,
+        "uncovered": 113
+      },
+      "condition": {
+        "adjusted_covered": 657,
+        "adjusted_total": 849,
+        "excluded": 0,
+        "raw_covered": 657,
+        "raw_total": 849,
+        "uncovered": 192
+      },
+      "fsm_state": {
+        "adjusted_covered": 13,
+        "adjusted_total": 13,
+        "excluded": 0,
+        "raw_covered": 13,
+        "raw_total": 13,
+        "uncovered": 0
+      },
+      "fsm_transition": {
+        "adjusted_covered": 22,
+        "adjusted_total": 22,
+        "excluded": 0,
+        "raw_covered": 22,
+        "raw_total": 22,
+        "uncovered": 0
+      },
+      "line": {
+        "adjusted_covered": 3338,
+        "adjusted_total": 3796,
+        "excluded": 0,
+        "raw_covered": 3338,
+        "raw_total": 3796,
+        "uncovered": 458
+      },
+      "toggle": {
+        "adjusted_covered": 92072,
+        "adjusted_total": 104480,
+        "excluded": 0,
+        "raw_covered": 92072,
+        "raw_total": 104480,
+        "uncovered": 12408
+      }
+    },
+    "new_raw_or_adjusted_coverage_report": false,
+    "raw_equals_official_adjusted": true,
+    "round16_vdb_manifest_sha256": "75b83f5b49a6fd180f3485f56066a7325a27825edc78284be2d83d24c6fd6fef",
+    "round16_vdb_set": "1 Design VDB + 362 Test VDBs",
+    "round17_coverage_delta": "NOT_MEASURED",
+    "round17_new_vdb_count": 0,
+    "whatif_or_official_el_generated": false
+  },
+  "evidence_ledger_sha256": {
+    "branch_condition_ledger_csv": "0fc00db46e87945ee8069095e3d99fa8340f68e50e8024aaa60230fccf3cccff",
+    "pair1_exact_toggle_ledger": "1434946b8e22e02160d583b5a7a114e47cfa21c0df96400c1c5366f8cde0d3aa",
+    "round16_vdb_manifest": "d457cd7eb89f8e607a3c18be6197d58982afe93186611dd5be9f76ccb60c4e34",
+    "waiver_reconciliation_csv": "62d539d6acaa409c53435b8e340b2e3410dcbc7c6b6ae49df60112063bc6e229"
+  },
+  "formal_runs": [
+    {
+      "artifact_sha256": {
+        "console.log": "9d19668b8b565b6d37d1371e039297194d458c0d1bb8f16b4062f836e6d45f3a",
+        "engines.txt": "797770d0f4f6abbcc078dcddc436dcf9a1ca3f352020eef5859987159eb3ddae",
+        "formal_manifest.json": "bd27e7e86afe424d6c8efd67893d449914c8d8bfb02af4edcd57fa1d1fc91ca4",
+        "properties.txt": "60a62ae7104b991d4af29bd3a8216c0a4b6bba1ea3e15beb17273a31dc92f90f",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "442d84670add64e9b68e4f0de9edaa75d4595bcefb06b8d085e75b1f7f178c82"
+      },
+      "assertions": {
+        "a_bvalid_clears_pending": "proven",
+        "a_coeff_read_default_unreachable": "proven",
+        "a_line88_tuple_unreachable": "proven",
+        "a_write_case_default_unreachable": "proven"
+      },
+      "assumptions": 0,
+      "black_box_instances": 0,
+      "covers": {
+        "c_coeff_read_default_arm_unreachable": "uncoverable",
+        "c_coeff_read_transaction": "covered",
+        "c_line88_tuple_unreachable": "uncoverable",
+        "c_write_case_default_unreachable": "uncoverable"
+      },
+      "duration_seconds": 31.77,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/axil_cfg_current_source_retry/formal_manifest.json",
+      "manifest_sha256": "bd27e7e86afe424d6c8efd67893d449914c8d8bfb02af4edcd57fa1d1fc91ca4",
+      "name": "axil_cfg_baseline_current_source",
+      "result_kind": "focused controller proof",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/axil_cfg_current_source_retry",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "74082a80a8ff232eb16996d63f231db07a2c1bd2fd8df48ba7e7c0d75855dc9c",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      },
+      "status": "PASS",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "cdc_default_branch/console.log": "ae29e68d9c78afaf9f682f2ea1d50462b9d97ab1871bfdb3d4ee9b94a0bc3d45",
+        "formal_summary.json": "484b57cb76c03d307afc0d4a5abf3efe5fdb12c3b5b3307ee09cf1e539774f42",
+        "cdc_default_branch/properties.txt": "1c7a3934adbfdff27778d6a139fdf9cfed72a89d0c25f1408e102426eae92fa9",
+        "cdc_default_branch/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "assertions": [
+        [
+          "proven",
+          "thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_default_branch_harness.a_product_residual_legal"
+        ]
+      ],
+      "assumptions": 0,
+      "black_box_instances": [
+        "0"
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_cdc_default_branch_harness.c_completed_legal_frame"
+        ],
+        [
+          "uncoverable",
+          "thermo5_cdc_default_branch_harness.c_exact_default_path"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_default_branch_harness.c_product_advance"
+        ]
+      ],
+      "duration_seconds": 18.71,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/cdc_default_current_source/formal_summary.json",
+      "manifest_sha256": "484b57cb76c03d307afc0d4a5abf3efe5fdb12c3b5b3307ee09cf1e539774f42",
+      "name": "cdc_default_branch",
+      "result_kind": "exact Generic-FIFO CDC 14:8",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/cdc_default_current_source",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.py": "43f829273111832476ff90dd2595686241a6109fcf5724f8e423fe6153619097",
+        "dv/uvm/formal/run_thermo5_cdc_default_branch_fpv.tcl": "41d8c6b4ce408de553dafdb6fde8a785850e49adf332025f9105266f49b8c332",
+        "dv/uvm/formal/thermo5_cdc_default_branch_harness.sv": "1f24962d7d98c5b52505445d415c54c208d5290cfa40b810ea3a2f73ad7373e1",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PASS",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "cdc_end_remaining/console.log": "d065cc8399afc727e8d78eac7afb63c9d5e2301c24f593786f25944377321fbe",
+        "formal_summary.json": "21230283891bfd72275ebe71289761196dddc750827b807c1f283d1d5bee899a",
+        "cdc_end_remaining/properties.txt": "7fcc3cffea55d85c933347daf7814e292932716e62ea6ed1955323f24edd58c3",
+        "cdc_end_remaining/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+      },
+      "assertions": [
+        [
+          "proven",
+          "thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_end_remaining_harness.a_no_product_protocol_error"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_end_remaining_harness.a_product_frame_start_aligned"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_end_remaining_harness.a_product_residual_legal"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_end_remaining_harness.a_source_ready_low_during_internal_reset"
+        ]
+      ],
+      "assumptions": 0,
+      "black_box_instances": [
+        "0"
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_cdc_end_remaining_harness.c_64beat_packet_end"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_end_remaining_harness.c_completed_legal_frame"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_end_remaining_harness.c_legal_end_arm"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_end_remaining_harness.c_product_frame_start_pop"
+        ],
+        [
+          "uncoverable",
+          "thermo5_cdc_end_remaining_harness.c_target_false_arm"
+        ],
+        [
+          "uncoverable",
+          "thermo5_cdc_end_remaining_harness.c_target_false_arm_protocol_clean"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_end_remaining_harness.c_valid_during_internal_source_reset"
+        ]
+      ],
+      "duration_seconds": 35.02,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/cdc_end_remaining_current_source/formal_summary.json",
+      "manifest_sha256": "21230283891bfd72275ebe71289761196dddc750827b807c1f283d1d5bee899a",
+      "name": "cdc_end_remaining_branch",
+      "result_kind": "legal packet/frame contract",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/cdc_end_remaining_current_source",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_end_remaining_fpv.py": "24dc5171c6bda8dd1538c73c8326326438374cacf666d5c4803de1fe68c7f0a8",
+        "dv/uvm/formal/run_thermo5_cdc_end_remaining_fpv.tcl": "bafbbd40b48f44dd10d1e64317543f0eb05b80db5bcbfa6886a902de58f5af4f",
+        "dv/uvm/formal/thermo5_cdc_end_remaining_harness.sv": "164c51fe09afbaf09e97a5717880c09289658893b5ecfb95f93d7ac03a0f5075",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+      },
+      "status": "PASS_PROVEN_UNREACHABLE",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "formal_summary.json": "1e6c6efadc00c6a9accdb447e2882e6af6625334c51a0c6be34dd1ff6d670b4e"
+      },
+      "assertions": [
+        [
+          "proven",
+          "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable"
+        ]
+      ],
+      "assumptions": null,
+      "black_box_instances": [
+        "0"
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_cdc_end_branch_harness.c_completed_legal_frame"
+        ],
+        [
+          "uncoverable",
+          "thermo5_cdc_end_branch_harness.c_immediate_end_arm"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_end_branch_harness.c_product_end_branch_context"
+        ]
+      ],
+      "duration_seconds": 19.01,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/scoped_cdc_end_branch_current_source/formal_summary.json",
+      "manifest_sha256": "1e6c6efadc00c6a9accdb447e2882e6af6625334c51a0c6be34dd1ff6d670b4e",
+      "name": "cdc_immediate_end_branch",
+      "result_kind": "scoped current-source proof",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/scoped_cdc_end_branch_current_source",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "e6ce40e4c6384beccd0a3f40e765ae24425f1c4833859ad591c6895c05fa72d5",
+        "dv/uvm/formal/thermo5_cdc_data_empty_harness.sv": "f52c1e1f7bfdfb408610f3de97f5576939fa57617bbb2be2e84e2c6e345cb054",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+        "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+        "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+        "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+        "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+        "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+        "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+      },
+      "status": "PASS",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "console.log": "fa7526f02325511847c72a93cf96c41da79f247d7dd3f815d4effbfe3d0cbd6a",
+        "engines.txt": "53cbf99c26d355a285e05ad15c0b0773526f582811acb87932fcd0fd53326da0",
+        "formal_manifest.json": "bd3d90afb7836461ec001fea9f2a0474caaf2a3630a2472f0b915e0eae9e309e",
+        "properties.txt": "87f39a59a67256626db7fcbd83a10c8b15644a27ce5c34f2bb84e6fe5992724e",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "0d97167239850b0b33d67469bc58695656024cdecf789c009ea4014bd009f437"
+      },
+      "assertions": {
+        "a_no_counter_saturation_guard": "inconclusive",
+        "a_no_counter_underflow_guard": "inconclusive",
+        "a_outstanding_not_greater_than_pipeline_slots": "inconclusive",
+        "a_outstanding_within_product_capacity": "inconclusive",
+        "a_pa_valid_has_outstanding_word": "inconclusive"
+      },
+      "assumptions": null,
+      "black_box_instances": null,
+      "covers": {
+        "c_arbitrary_source_bubble": "covered",
+        "c_core_accept": "covered",
+        "c_counter_saturation_guard": "inconclusive",
+        "c_counter_underflow_guard": "inconclusive",
+        "c_output_accept": "covered",
+        "c_source_accept": "covered"
+      },
+      "duration_seconds": 310.73,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/axil_outstanding_current_source/formal_manifest.json",
+      "manifest_sha256": "bd3d90afb7836461ec001fea9f2a0474caaf2a3630a2472f0b915e0eae9e309e",
+      "name": "axil_outstanding_counter",
+      "result_kind": "full product-wrapper attempt",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/axil_outstanding_current_source",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_outstanding_fpv.py": "c90e4f330f3d8cbeb6725529b0f6870e8a978dc840dbbb12ec2a1664375ac662",
+        "dv/uvm/formal/run_thermo5_axil_outstanding_fpv.tcl": "49ae05c9a0c6ad12464eab073a09b475146dd89febcd4bba7c9699e5f90db1d6",
+        "dv/uvm/formal/thermo5_axil_outstanding_harness.sv": "234319c7784f5229afd64ab00f1b97de93757714487778b827f25c465248fbd7",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+        "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+        "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/interp/dsm_interp_x2_polyphase_vector.sv": "74dac42f69e8c8e5e859d3afddf9facaa66439398967984f1bc3001588977309",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+        "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+      },
+      "status": "INCONCLUSIVE",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "console.log": "515e42c10580fd1df06b7e20f8ac267f6bc91ecee7c78eef3a0ce237359d37ee",
+        "engines.txt": "800b5ffc8fb638477e5c782b67cac39198a69ec6e6c385c71428d9db5856e778",
+        "formal_manifest.json": "1b88320b11104176eddfbdedf95efc4d3ae5806a66a27c9cb704683f3fc9b59b",
+        "properties.txt": "5858856248a95d42354a2da44767e7d97619f5c88f16071b72ef6a9f4b264ed2",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "8913b96188edb8659612fa9f56a506c606fac3cab8e5cab1260da58d12c783a8"
+      },
+      "assertions": {},
+      "assumptions": null,
+      "black_box_instances": null,
+      "covers": {
+        "c_product_input_accept": "covered",
+        "c_product_output_transfer": "covered"
+      },
+      "duration_seconds": 19.15,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/dpd_pair1_current_source/formal_manifest.json",
+      "manifest_sha256": "1b88320b11104176eddfbdedf95efc4d3ae5806a66a27c9cb704683f3fc9b59b",
+      "name": "dpd_pair1",
+      "result_kind": "MAX_TAPS=1 leaf, 16 lanes",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/dpd_pair1_current_source",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_dpd_pair1_fpv.py": "f6d260834d47078d54ee6c231a140bfd5684a062f7eb2ad6467d78aacdc48832",
+        "dv/uvm/formal/run_thermo5_dpd_pair1_fpv.tcl": "d1054600bc9a979b1cba0ccc1f86303a925e5fabeab0fe50d64950707c8490d0",
+        "dv/uvm/formal/thermo5_dpd_pair1_harness.sv": "00fa76f5e50863148fb6b40b0ee3a5690f78685d3b1adb54ad16f134232504dd",
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+        "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a"
+      },
+      "status": "PASS",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "formal_summary.json": "432eb49173ed20709ffd9c1358a2096c7accacbb04cb566800b400fea5ec5137"
+      },
+      "assertions": [
+        [
+          "proven",
+          "thermo5_counter_gap_harness.a_count_matches_acceptances"
+        ],
+        [
+          "proven",
+          "thermo5_counter_gap_harness.g_budget.a_budget_bound"
+        ],
+        [
+          "proven",
+          "thermo5_counter_gap_harness.g_budget.a_high_bits_zero_in_budget"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_product_params_harness.a_product_pair_lookahead_disabled"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_product_params_harness.a_product_parameter_guard_inactive"
+        ]
+      ],
+      "assumptions": null,
+      "black_box_instances": [
+        "0"
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_accept"
+        ],
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_count_changes"
+        ],
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_stall"
+        ],
+        [
+          "covered",
+          "thermo5_counter_gap_harness.c_stall_recovery"
+        ],
+        [
+          "uncoverable",
+          "thermo5_ef2_product_params_harness.c_invalid_parameter_guard"
+        ],
+        [
+          "uncoverable",
+          "thermo5_ef2_product_params_harness.c_pair_lookahead_arm_enabled"
+        ]
+      ],
+      "duration_seconds": 51.269999999999996,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/formal_scope_retry1/formal_summary.json",
+      "manifest_sha256": "432eb49173ed20709ffd9c1358a2096c7accacbb04cb566800b400fea5ec5137",
+      "name": "scoped_counter_and_ef2_product_params",
+      "result_kind": "scoped jobs",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/formal_scope_retry1",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "e6ce40e4c6384beccd0a3f40e765ae24425f1c4833859ad591c6895c05fa72d5",
+        "dv/uvm/formal/thermo5_cdc_data_empty_harness.sv": "f52c1e1f7bfdfb408610f3de97f5576939fa57617bbb2be2e84e2c6e345cb054",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+        "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+        "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+        "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+        "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+        "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+        "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+      },
+      "status": "PASS",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "formal_summary.json": "81b863822d0ad9936a65ef9cb722ab71d65902a25ed446c0fa57b9dccef3c29c"
+      },
+      "assertions": [
+        [
+          "proven",
+          "thermo5_identity_harness.a_valid_latency"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_candidate_bounds"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_candidate_no_wrap"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_ready_equivalent"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_sample0_quantizers_equivalent"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_sample1_quantizers_equivalent"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_state_equivalent"
+        ],
+        [
+          "proven",
+          "thermo5_ef2_pair_equiv_harness.a_valid_equivalent"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_reset_condition_harness.a_append_reset_empty"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_data_empty_harness.a_empty_excludes_valid"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_data_empty_harness.a_nonempty_implies_valid"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_data_empty_harness.a_public_empty_uses_all_stages"
+        ]
+      ],
+      "assumptions": null,
+      "black_box_instances": [
+        "0"
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_identity_harness.c_max_endpoint"
+        ],
+        [
+          "covered",
+          "thermo5_identity_harness.c_min_endpoint"
+        ],
+        [
+          "covered",
+          "thermo5_identity_harness.c_recovery"
+        ],
+        [
+          "covered",
+          "thermo5_identity_harness.c_stall"
+        ],
+        [
+          "covered",
+          "thermo5_ef2_pair_equiv_harness.c_back_to_back_accept"
+        ],
+        [
+          "covered",
+          "thermo5_ef2_pair_equiv_harness.c_gt_stall"
+        ],
+        [
+          "covered",
+          "thermo5_ef2_pair_equiv_harness.c_gt_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_ef2_pair_equiv_harness.c_input_accepted"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_append_queue_nonempty"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_reset_condition_harness.c_append_reset_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_append_reset_empty"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_append_runtime_reset"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_queue_nonempty"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_reset_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_reset_empty"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_runtime_reset"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_data_empty_harness.c_core_data_empty"
+        ],
+        [
+          "uncoverable",
+          "thermo5_cdc_data_empty_harness.c_exact_raw_bin"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_data_empty_harness.c_fifo_nonempty_valid"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_data_empty_harness.c_source_accept"
+        ]
+      ],
+      "duration_seconds": 445.61,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/scoped_safety_current_source/formal_summary.json",
+      "manifest_sha256": "81b863822d0ad9936a65ef9cb722ab71d65902a25ed446c0fa57b9dccef3c29c",
+      "name": "scoped_ef2_frame_tail_cdc_safety",
+      "result_kind": "scoped jobs; overall FAIL due identity job",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/scoped_safety_current_source",
+      "runner_errors": [
+        "identity: assertion/cover/vacuity/setup gate failed"
+      ],
+      "runner_exit_status": "NONZERO_FAIL_CLOSED",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+        "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "e6ce40e4c6384beccd0a3f40e765ae24425f1c4833859ad591c6895c05fa72d5",
+        "dv/uvm/formal/thermo5_cdc_data_empty_harness.sv": "f52c1e1f7bfdfb408610f3de97f5576939fa57617bbb2be2e84e2c6e345cb054",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+        "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+        "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+        "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+        "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+        "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+        "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+        "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+        "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+        "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+      },
+      "status": "FAIL",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": false
+    },
+    {
+      "artifact_sha256": {
+        "engines.txt": "55d9667e23fce9e5cd47bf06c196f5bb3bb6080fcaff958f035ed0e3db45464f",
+        "promoted_lemmas.txt": "0d5f8d3f2e81f424a040e077dd6fdea479f80dfa0c41767654cd1d5d1cc20bcd",
+        "properties_base.txt": "0a73af21edc150ca66371fd4a30cdf0f3893270f56ce705072bdce6cbce227f8",
+        "properties_composed.txt": "aa62a9ab3c8cb8584f8b688ce1cc8c08bed63dc8d1fe00465a0fe2c173885f94",
+        "run_result.json": "793be198133186695675b7da55a39bb9cbc798278ae7f4265c02e55933d6a1f5",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "52b13d49f296647dc6f559b1dc43af0c28df5873d781e515b212649e82785337"
+      },
+      "assertions": {},
+      "assumptions": null,
+      "black_box_instances": null,
+      "covers": {},
+      "duration_seconds": null,
+      "git_revision": null,
+      "manifest": "runs/thermo5_round17/retry_license_20261108/dpd_identity_stall_current_source/thermo5_dpd_identity_stall_audit.json",
+      "manifest_sha256": "89ede1699d5f953d330aa6de6da52712cef0cdf10f178844fa5453b77b626302",
+      "name": "dpd_identity_under_stall",
+      "result_kind": "local compositional datapath proof",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/dpd_identity_stall_current_source",
+      "runner_errors": [],
+      "runner_exit_status": "ZERO_PASS",
+      "source_sha256": {},
+      "status": "PASS_SCOPED_DPD_IDENTITY_OUTPUT_UNDER_STALL",
+      "tool": null,
+      "worktree_dirty_at_run": null
+    },
+    {
+      "artifact_sha256": {
+        "console.log": "634d3d07d73bfc70ffbe167eb2577d879b3dd011cb3d7efa788f2e653409ba36",
+        "engines.txt": "3e8b549a1d6f3d729f3e96d3b1c78cbc0f7bf35d6837e14d147213d27ac6999f",
+        "formal_manifest.json": "f912d00b1c605353a4c36be5d317d3f0f9530e723b41ff52f9ff3990246ad704",
+        "properties.txt": "e43a04d7c6ddb7b1778e21a94d12632df478f36aa370bd4f88e20907a7e5cbcc",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "4025500fbd4b10c241839478e98fe3b78112540c13a429642939b1554fbf0d75"
+      },
+      "assertions": {
+        "a_active_taps_one": "inconclusive",
+        "a_bvalid_clears_pending": "proven",
+        "a_coeff_read_default_unreachable": "proven",
+        "a_line88_tuple_unreachable": "proven",
+        "a_pending_taps_one": "proven",
+        "a_write_case_default_unreachable": "proven"
+      },
+      "assumptions": 0,
+      "black_box_instances": 0,
+      "covers": {
+        "c_coeff_read_default_arm_unreachable": "uncoverable",
+        "c_coeff_read_transaction": "covered",
+        "c_legal_tap_commit_apply": "covered",
+        "c_line88_tuple_unreachable": "uncoverable",
+        "c_reject_illegal_tap_commit": "covered",
+        "c_write_case_default_unreachable": "uncoverable",
+        "c_write_illegal_tap_value": "covered"
+      },
+      "duration_seconds": 296.32,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/axil_cfg_active_taps_lean_current_source/formal_manifest.json",
+      "manifest_sha256": "f912d00b1c605353a4c36be5d317d3f0f9530e723b41ff52f9ff3990246ad704",
+      "name": "axil_active_taps_lean",
+      "result_kind": "fail-closed tap-control probe",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/axil_cfg_active_taps_lean_current_source",
+      "runner_errors": [
+        "a_active_taps_one: expected proven, got inconclusive"
+      ],
+      "runner_exit_status": "NONZERO_FAIL_CLOSED",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "a2f0c6e8f43cdab0fcd17f7f6c87e348d06f1e75f8dd86d22b39e312b0704379",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "af1007e4fa66b48cefc7e16f118e99597b43ca2bc595deba3e27033510c52a3d",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d"
+      },
+      "status": "FAIL",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": true
+    },
+    {
+      "artifact_sha256": {
+        "console.log": "e2d46764a3f8aff9da47b9ae5b80027a278a7e74f63a52f3859d47457d3d61af",
+        "engines.txt": "3fd1578404df968231794f4b7412ed85f977050b0b3457908e422fb4ed5042c9",
+        "formal_manifest.json": "5a5964d4ef36ddc6768219c4037573a73b29f622b1bd46d251d390eef83afc07",
+        "properties.txt": "d351321d2607d22a59a8c1dbc473f5210c46989b7b0f74e6738ca2c42f7a02fd",
+        "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+        "vcf.log": "8c3104555e508931d03ac20a461ad2902ae24ed61e67cc97b35e9270ab4e6cc9"
+      },
+      "assertions": {
+        "a_active_taps_one": "inconclusive",
+        "a_bvalid_clears_pending": "proven",
+        "a_coeff_read_default_unreachable": "proven",
+        "a_line88_tuple_unreachable": "proven",
+        "a_pending_taps_one": "inconclusive",
+        "a_product_dpd_taps_one": "inconclusive",
+        "a_write_case_default_unreachable": "proven"
+      },
+      "assumptions": 0,
+      "black_box_instances": null,
+      "covers": {
+        "c_coeff_read_default_arm_unreachable": "uncoverable",
+        "c_coeff_read_transaction": "covered",
+        "c_legal_tap_commit_apply": "covered",
+        "c_line88_tuple_unreachable": "uncoverable",
+        "c_reject_illegal_tap_commit": "inconclusive",
+        "c_write_case_default_unreachable": "uncoverable",
+        "c_write_illegal_tap_value": "covered"
+      },
+      "duration_seconds": 589.67,
+      "git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+      "manifest": "runs/thermo5_round17/retry_license_20261108/axil_cfg_active_taps_current_source/formal_manifest.json",
+      "manifest_sha256": "5a5964d4ef36ddc6768219c4037573a73b29f622b1bd46d251d390eef83afc07",
+      "name": "axil_active_taps_initial_full_datapath",
+      "result_kind": "superseded experiment; unnecessary DPD cone",
+      "run_directory": "runs/thermo5_round17/retry_license_20261108/axil_cfg_active_taps_current_source",
+      "runner_errors": [
+        "a_active_taps_one: expected proven, got inconclusive",
+        "a_pending_taps_one: expected proven, got inconclusive",
+        "a_product_dpd_taps_one: expected proven, got inconclusive",
+        "c_reject_illegal_tap_commit: expected covered, got inconclusive",
+        "zero black-box evidence missing",
+        "expected at least six non-vacuous AXI-Lite/DPD assertions"
+      ],
+      "runner_exit_status": "NONZERO_FAIL_CLOSED",
+      "source_sha256": {
+        "dv/uvm/formal/run_thermo5_axil_cfg_coverage.tcl": "f4cf5cb6c6adb26a6c876d7f3fb2d0a4e5b207b6f47c845dff0194ee78827b70",
+        "dv/uvm/formal/thermo5_axil_cfg_coverage_harness.sv": "c38bf8131acbeda4e14ca1c504143cc14308b6a6dd21fe64ba57007ae306ea5c",
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+      },
+      "status": "FAIL",
+      "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+      "worktree_dirty_at_run": true
+    }
+  ],
+  "regression": {
+    "formal_is_not_a_coverage_hit": true,
+    "new_urg": "NOT_RUN_URG_BLOCKED",
+    "product_vcs": "NOT_RUN_VCS_BLOCKED"
+  },
+  "repository": "cwu766485-ctrl/dsm_ip",
+  "review_pr": 46,
+  "schema_version": 1,
+  "signoff": {
+    "decision": "NOT_SIGNED_OFF",
+    "fpga_xpm_gt_vivado_rf_qam256": "NOT_RUN",
+    "linux_dv": "OPEN"
+  },
+  "smoke_checks": [
+    {
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 VCS_ARCH_OVERRIDE=linux64 /opt/Synopsys/vcs/V-2023.12-SP1/bin/vcs -ID",
+      "exit_code": 1,
+      "log": "runs/thermo5_round17/retry_license_20261108/vcs_linux64_smoke.log",
+      "log_sha256": "014f33392fd1e9b278321b665ec6e02302e0820ad4545dd0a3ca2718a9225d9d",
+      "name": "vcs_linux64_smoke",
+      "status": "BLOCKED_UNSUPPORTED_WSL2_KERNEL"
+    },
+    {
+      "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 VCS_ARCH_OVERRIDE=linux64 /opt/Synopsys/vcs/V-2023.12-SP1/bin/urg -version",
+      "exit_code": 1,
+      "log": "runs/thermo5_round17/retry_license_20261108/urg_linux64_smoke.log",
+      "log_sha256": "bd2186c6e7d11b83f1bb80bfac5a4f9c3e90b9578eeed1592f44528216718ae8",
+      "name": "urg_linux64_smoke",
+      "status": "BLOCKED_VCS_SUPPORT_SCRIPT_UNAVAILABLE"
+    }
+  ],
+  "source": {
+    "formal_git_revision": "cc77a9e8e512bfa718ee3f67d4ed9ff6aaba0410",
+    "formal_harness_changes_present_at_last_run": true,
+    "product_configuration": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE=20; 32 chronological lanes; DPD_MAX_TAPS=1; Identity reset image; AXI-Lite; Generic FIFO",
+    "product_rtl_modified": false,
+    "product_rtl_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "product_source_commit": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733"
+  },
+  "target_branch": "thermo5",
+  "tools": {
+    "platform": "Rocky-8.10 on WSL2; Linux kernel 6.6.87.2-microsoft-standard-WSL2",
+    "python": "3.12",
+    "urg": "V-2023.12-SP1; invocation blocked because VCS support script could not be located after VCS startup rejection",
+    "vc_formal": "V-2023.12-SP2 linux64; compile/runtime license checkout succeeded",
+    "vcs": "V-2023.12-SP1_Full64; invocation blocked by unsupported WSL2 kernel 6.6.87.2-microsoft-standard-WSL2 even with VCS_ARCH_OVERRIDE=linux64"
+  },
+  "waiver_reconciliation": {
+    "analysis_only_el_generated": false,
+    "candidate_classification": {
+      "eligible": 361,
+      "needs_reproof": 4,
+      "unresolved": 4
+    },
+    "clean_candidate_rows": 369,
+    "current_source_reproofs": [
+      {
+        "closure_state": "OPEN_FORMAL_MAPPING_REVIEW",
+        "exact_bin_id": "9010fccd0889b46ea284",
+        "formal_disposition": "PROVEN_UNREACHABLE_IN_SCOPED_CURRENT_SOURCE_PROOF",
+        "formal_run": "axil_cfg_baseline_current_source",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+        "line": 246,
+        "metric": "branch",
+        "official_exclusion": false,
+        "reviewer_approval": null,
+        "semantic_bin_id": "TXB-3df5f13a8d51ee9bdea5",
+        "source": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+        "waiver_id": "W-9010fccd0889b46ea284"
+      },
+      {
+        "closure_state": "OPEN_FORMAL_MAPPING_REVIEW",
+        "exact_bin_id": "98a39b6429bbed7c29ad",
+        "formal_disposition": "PROVEN_UNREACHABLE_IN_SCOPED_CURRENT_SOURCE_PROOF",
+        "formal_run": "cdc_default_branch",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "line": 141,
+        "metric": "branch",
+        "official_exclusion": false,
+        "reviewer_approval": null,
+        "semantic_bin_id": "TXB-0260d31bb5bee4f1a4c6",
+        "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        "source_sha256": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "waiver_id": "W-98a39b6429bbed7c29ad"
+      },
+      {
+        "closure_state": "OPEN_FORMAL_MAPPING_REVIEW",
+        "exact_bin_id": "32b5745433f0ff75d5c2",
+        "formal_disposition": "PROVEN_UNREACHABLE_IN_SCOPED_CURRENT_SOURCE_PROOF",
+        "formal_run": "cdc_end_remaining_branch",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "line": 146,
+        "metric": "branch",
+        "official_exclusion": false,
+        "reviewer_approval": null,
+        "semantic_bin_id": "TXB-85afd49f35a994cc290c",
+        "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        "source_sha256": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "waiver_id": "W-32b5745433f0ff75d5c2"
+      },
+      {
+        "closure_state": "OPEN_FORMAL_MAPPING_REVIEW",
+        "exact_bin_id": "a9fc97093bdddfb7f5aa",
+        "formal_disposition": "PROVEN_UNREACHABLE_IN_SCOPED_CURRENT_SOURCE_PROOF",
+        "formal_run": "cdc_immediate_end_branch",
+        "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+        "line": 215,
+        "metric": "branch",
+        "official_exclusion": false,
+        "reviewer_approval": null,
+        "semantic_bin_id": "TXB-7ea7a7506f13f31ca4a9",
+        "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        "source_sha256": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "waiver_id": "W-a9fc97093bdddfb7f5aa"
+      }
+    ],
+    "independently_approved": 0,
+    "official_exclusions_active": 0,
+    "official_inventory_rows": 371,
+    "raw_hit_rows_resolved": 2
+  }
+}
