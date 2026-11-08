@@ -17,7 +17,9 @@ module thermo5_identity_lemmas_harness(
   a_gain_identity: assert property (disable iff(!rst_n)
     model.dut.tap_enable_s5[0] |-> model.dut.gain_re_s5[0]==64'sd16384 && model.dut.gain_im_s5[0]==0);
   a_gain_identity_s6: assert property (disable iff(!rst_n)
-    model.dut.tap_enable_s6[0] |-> model.dut.gain_re_s6[0]==64'sd16384 && model.dut.gain_im_s6[0]==0);
+    (model.dut.pipe_ce && model.dut.tap_enable_s5[0]) |=>
+      model.dut.tap_enable_s6[0] &&
+      model.dut.gain_re_s6[0]==64'sd16384 && model.dut.gain_im_s6[0]==0);
   a_product_i: assert property (disable iff(!rst_n)
     model.dut.tap_enable_s7[0] |-> model.dut.i_gr_s7[0] inside {[-64'sd536870912:64'sd536854528]} && model.dut.q_gi_s7[0]==0);
   a_product_q: assert property (disable iff(!rst_n)
