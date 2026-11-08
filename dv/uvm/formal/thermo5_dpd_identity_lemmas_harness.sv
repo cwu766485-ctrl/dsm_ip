@@ -89,9 +89,9 @@ module thermo5_identity_lemmas_harness(
   a_stage10_i_sum_and_output_identity: assert property (disable iff (!rst_n)
     model.expected_valid[10] |->
       model.dut.sum_i_s9 == $signed(model.expected_i[10]) &&
-      !model.dut.sat_i && i_out == model.expected_i[10]);
+      !model.dut.sat_i && model.i_out == model.expected_i[10]);
   a_stage10_q_sum_and_output_identity: assert property (disable iff (!rst_n)
     model.expected_valid[10] |->
       model.dut.sum_q_s9 == $signed(model.expected_q[10]) &&
-      !model.dut.sat_q && q_out == model.expected_q[10]);
+      !model.dut.sat_q && model.q_out == model.expected_q[10]);
 endmodule
