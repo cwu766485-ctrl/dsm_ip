@@ -1,3 +1,32 @@
+# 2026-11-09 — Thermo5 Round 19 non-counter coverage and counter-cost review
+
+- Preserved the complete Round 18 554-Test VDB fingerprint set and merged 21
+  qualifying Round 19 Test VDBs. The targeted legal one-tap DPD counter stream
+  added 64 exact Raw Toggle hits (32 sample-count, 32 saturation-count); the
+  requested 263 non-counter bins received no exact hit and remain OPEN.
+- Generated Raw and strict Analysis-only What-if URG reports on the same
+  1-Design/575-Test input. Raw equals Official Adjusted because approvals and
+  active exclusions remain zero. What-if leaves 1,193 bins and is not official
+  signoff.
+- Audited the compile-parent variance: the 21 new Test VDBs share a parent
+  tree distinct from the frozen Round 18 Design VDB. A diagnostic Raw/What-if
+  URG pair with that parent as Design produced identical metrics and ordered
+  test-inventory hashes; the primary coverage result remains bound to the
+  frozen Round 18 Design VDB. The variance and both fingerprints are recorded
+  in the evidence manifest.
+- Added exact 64-hit, 263 non-counter residual, 1,193 What-if residual, and 930
+  counter-transition/cost ledgers, plus the Round 19 report and deterministic
+  evidence generator. The 371 official Waiver IDs remain 2 raw-hit-resolved,
+  369 pending, 0 approved; the source CSV's `review_status` remains PENDING on
+  all 371 rows, and no official exclusion was generated.
+- Checks: generator `py_compile` and evidence regeneration PASS; all ledger
+  row counts and unique Semantic Bin IDs reconcile; report/artifact SHA-256
+  values verify; primary and alternate-Design Raw/What-if URG metrics match;
+  `git diff --check` PASS. Product RTL was unchanged.
+- Full Product Regression and Formal were not rerun. The interpolator
+  Empty/Blocked probe timed out before drain; inherited URG DUT assertions
+  remain 13 SUCCESS, 3 FAILURE, 2 UNCOVERED. Linux DV signoff remains OPEN.
+
 # 2026-11-09 — Thermo5 Round 18 directed counter and exact coverage closure
 
 - Added a legal AXI-Lite one-tap DPD saturation campaign with an independent Python per-lane oracle. The targeted VCS test passed on 65,632 output words / 1,172 legal frames; all 16 sample and saturation counters matched Python, four PA planes were bit-true, queues drained, and early/final underflow were zero. A post-drain settled STATUS read also exercised the independent Active/Draining predictor (one stable comparison after two synchronization-window reads).
