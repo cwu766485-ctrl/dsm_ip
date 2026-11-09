@@ -5,6 +5,7 @@ class thermo5_sku_axil_packet_vseq extends uvm_sequence #(uvm_sequence_item);
   `uvm_declare_p_sequencer(thermo5_sku_virtual_sequencer)
   int unsigned prefill_beats;
   int unsigned random_gap_max_cycles;
+  int random_gap_probability_percent = -1;
   int unsigned packet_beats = 32;
 
   function new(string name="thermo5_sku_axil_packet_vseq");
@@ -62,6 +63,7 @@ class thermo5_sku_axil_packet_vseq extends uvm_sequence #(uvm_sequence_item);
     source_seq.mark_last=1;
     source_seq.packet_beats=packet_beats;
     source_seq.random_gap_max_cycles=random_gap_max_cycles;
+    source_seq.random_gap_probability_percent=random_gap_probability_percent;
     // Random bubbles stay in the pre-RUN prefill. A separate bounded gap at
     // the prefill boundary is observed while the accepted FIFO backlog is
     // consumed after RUN, giving the temporal cross a deterministic witness.

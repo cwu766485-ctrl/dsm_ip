@@ -1,59 +1,61 @@
 # Execution frontier
 
-## Current execution state: Thermo5 Round 19 non-counter coverage closure (2026-11-09)
+## Current execution state: Thermo5 Round 20 exact-bin closure (2026-11-09)
 
-Review branch `codex/thermo5-round19-non-counter-coverage` starts from source
-base `d1b0944470f245bfe6fa63ceb7b29c8ad004119f`; the tested Product RTL source
-remains `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`, with aggregate RTL SHA-256
-`fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003` and
-compile fingerprint `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`.
-No Product RTL or frozen algorithm changed.
+Review branch `codex/thermo5-round20-exact-bin-closure` starts at PR #49 base
+`49b9121a860c6b85057047c7696876df7f6cd740`. Product RTL is unchanged at
+`fe315cabf058dd184b6d94ffa4ed3b5fb9916733` / aggregate SHA-256
+`fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`.
+Product configuration remains Centered-Cubic x2+x2, EF2 ORDER=2 STEP=5120,
+20-bit state, 32 chronological lanes, DPD_MAX_TAPS=1 Identity reset, AXI-Lite,
+Generic FIFO.
 
-Round 19 preserves the exact Round 18 554-Test VDB set and adds 21 qualifying
-VDBs. The resulting set is 1 Design + 575 Tests. It adds 64 Raw Toggle hits
-(32 `sample_count`, 32 `saturation_count`); Branch, Condition, Line and the
-148 targeted non-counter Toggle bins gained zero exact hits. The requested
-263 non-counter bins remain OPEN (6 Branch, 84 Condition, 25 Line, 148 Other
-Toggle). Strict Analysis-only What-if leaves 1,193 bins: 6 Branch, 84
-Condition, 25 Line, 1,078 Toggle; it is not official Adjusted coverage.
+Added optional source bubble probability and 32/64/96-beat packet selection to
+the existing random packet test. The default path preserves legacy uniform
+random-gap behavior. Replayed 21 R19 scenarios with the R20 compile and ran
+five focused scenarios; all 26 VCS tests passed. The focused interpolator
+seeds used PA stall/source-bubble probability 25% and packet lengths 32/64/96;
+AXI-Lite register and legal CDC frame-end/drain checks passed. The DPD
+saturation replay passed where its oracle applies. The combined Raw URG exact
+delta was zero for Branch, Condition, Line, and Toggle; the 263 non-counter
+targets remain open.
 
-Raw and zero-exclusion Official Adjusted remain Branch 524/637, Condition
-657/849, Line 3338/3796, Toggle 92632/104480. The official 371-ID Waiver
-reconciliation remains 2 `RESOLVED_BY_RAW_HIT`, 369 pending review (367
-matched to the previous candidate set, 2 outside it), 0 APPROVED, and zero
-active exclusions. The source CSV's raw `review_status` still reads PENDING
-for all 371 rows; no reviewer decision was fabricated. The 930 remaining
-counter bins are reachable under the
-32-bit modulo contract; top-bit product-level exercises project to about 23.81
-CPU days (`sample_count`) and 32.31 CPU days (`saturation_count`, measured
-lane-15 rate). No counter scope exclusion is applied.
+Fresh same-input URG results: Raw = zero-approved Official Adjusted = Branch
+524/637, Condition 657/849, Line 3338/3796, Toggle 92632/104480. Strict
+Analysis-only What-if maps one additional exact AXI-Lite default-response
+Branch, leaving 1,192 bins (5 Branch, 84 Condition, 25 Line, 1,078 Toggle).
+That one-bin exclusion is supported by a source-matching, zero-assumption,
+zero-black-box prior Formal result but has no independent Reviewer approval;
+official approvals/exclusions remain zero. The 371 official Waiver IDs remain
+present (2 semantically Raw-hit-resolved, 369 pending review).
 
-The 21 new Test VDBs share compile-parent tree SHA-256
-`33cbac8aa113aaad104f68cf42a19528113faa6e818244c4da6a32aecf1c9b37`, which
-differs from the frozen Round 18 URG Design VDB tree. A diagnostic Raw/strict
-What-if URG pair using that parent as Design, with the same ordered 575 tests,
-produced identical metrics and test-inventory hashes. The primary result stays
-bound to the frozen Round 18 Design VDB; the provenance variance is documented
-in the Round 19 report and manifest.
+The R20 VDB manifest records the refreshed fingerprints: all 26 standalone
+VDBs share the current Design VDB parent; the frozen Round 18 aggregate still
+has a Round 16 parent. Thus the URG results are diagnostic and the aggregate
+must be rebuilt/replayed before homogeneous final signoff. URG logs have zero
+warning/error/mapping/checksum/scope diagnostics. Inherited Assertions remain
+15 success, 3 failure, 4 uncovered, 2 without attempts (overlapping groups).
+Full Product Regression and Formal were not rerun. The 930 Counter bins stay
+in scope, with a reviewed acceptance proposal still open. **Coverage and Linux
+DV signoff remain OPEN.**
 
-The contributing targeted VCS scenarios passed; the interpolator
-Empty/Blocked probe timed out before drain and is excluded, not a reachability
-proof. Full Product Regression and Formal were not rerun. Inherited URG DUT
-assertion status remains 13 SUCCESS, 3 FAILURE, 2 UNCOVERED. **Coverage and
-Linux DV signoff remain OPEN.**
+Evidence: `docs/verification/thermo5-tx-exact-bin-closure-round20-20261109.md`
+and `docs/verification/data/thermo5-r20/`, including the exact 263-bin, 1,192-
+bin, and 930-Counter ledgers, test matrix, VDB manifest, and URG evidence.
 
-Evidence: `docs/verification/thermo5-tx-final-code-coverage-round19-20261109.md`
-and `docs/verification/data/thermo5-r19/`. The exact source/test VDB
-fingerprints, URG invocations/log hashes, counter hit and remaining-bin
-ledgers, and report hashes are in
-`thermo5_tx_r19_final_evidence_manifest.json.gz`.
+Next: submit as an independent review PR stacked on PR #49. Do not merge,
+approve the Analysis-only candidate, or claim signoff. Before official
+closure, rebuild the frozen aggregate with the current parent; obtain real
+Waiver approval; close exact remaining bins, Formal/Assertion, and full
+regression obligations.
 
-Next: submit this verification-only evidence for independent review against
-`thermo5`; do not activate Waivers or claim final signoff. Resume targeted
-closure only against exact remaining Bin IDs, and keep Formal/Assertion and
-full regression obligations separate from Code Coverage.
+## Previous execution state: Thermo5 Round 19 non-counter coverage closure (2026-11-09)
 
-## Current execution state: Thermo5 Round 18 targeted coverage closure (2026-11-09)
+The Round 19 report remains at
+`docs/verification/thermo5-tx-final-code-coverage-round19-20261109.md` and is
+superseded for current status by the Round 20 report above.
+
+## Previous execution state: Thermo5 Round 18 targeted coverage closure (2026-11-09)
 
 Review branch `codex/thermo5-round18-final-coverage-closure` starts at PR #47 source `f9275273ef2137c5c181cb5395cdd9f706dd4b90`; Product RTL remains unchanged at aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`. Product compile fingerprint is `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`.
 
@@ -67,7 +69,7 @@ Evidence/report: `docs/verification/thermo5-tx-final-code-coverage-round18-20261
 
 Next: publish this evidence as an independent-review PR targeting `thermo5`; do not mark final signoff or activate Waivers without real Reviewer approval. After review, target the 115 control bins and counter/data toggle groups by Exact Bin, rerun Formal/Assertion obligations, then perform a clean final product regression and official Raw/Approved Adjusted URG.
 
-## Current execution state: Thermo5 Round 17 final residual review (2026-11-09)
+## Previous execution state: Thermo5 Round 17 final residual review (2026-11-09)
 
 The final residual review is documented in `docs/verification/thermo5-tx-r17-final-residual-coverage-review-20261109.md`. It strictly applied all 2,448 new EF2/Active-Tap exact candidates in Analysis-only URG. On the frozen 1-Design +551-Test input, the combined What-if residual is 1,766 bins; two directed UVM Test VDBs added 66 exact Raw Toggle hits, leaving 1,700 bins on the 1-Design +553-Test incremental set. The full ledgers and input/log hashes are in `docs/verification/data/thermo5-r17/analysis_only/round17_supplemental_urg_evidence.json`.
 
@@ -207,7 +209,7 @@ tool environment and current run status; it remains as historical context.
 
 ## Superseded execution snapshot: Thermo5 TX Final Coverage Closure Round 13 (2026-11-07)
 
-## Current execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
+## Previous execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
 
 Latest integrated `thermo5` base is `73577475230a9c4e51273ac7071437f0a7373d48`;
 the tested closure branch is `codex/thermo5-linux-dv-signoff-closure` at
@@ -424,7 +426,7 @@ scenario pairing, then continue exact-bin coverage/Formal/waiver review. The
 source-level status and evidence index are in
 `docs/verification/thermo5-tx-final-integration-20261104.md`.
 
-## Current execution state: TX UVM observation event bus (2026-11-04)
+## Previous execution state: TX UVM observation event bus (2026-11-04)
 
 Started from PR #38 head `184c68b6d704998f5126a75a8f86d7577bb69a1a` on the
 independent branch `codex/thermo5-tx-platform-observation`. Implementation
@@ -616,7 +618,7 @@ the frozen TX algorithm.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 
-## Current execution state: Thermo5 TX branch consolidation and cleanup (2026-11-02)
+## Previous execution state: Thermo5 TX branch consolidation and cleanup (2026-11-02)
 
 TX Coverage Closure Round 1 (PR #24) and System UVM Phase 0–2 (PR #25) have
 both been merged into `thermo5`. PR #24 merged at

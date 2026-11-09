@@ -5,6 +5,8 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_random_packet_test)
 
   int unsigned random_gap_max_cycles;
+  int random_gap_probability_percent;
+  int unsigned packet_beats;
   int unsigned prefill_beats;
   int unsigned expected_last_count;
   bit expect_no_pa_stall;
@@ -15,10 +17,16 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
 
   virtual function void configure_case();
     super.configure_case();
-    if (cfg.core_words!=56 && cfg.core_words!=112)
-      `uvm_fatal("RANDOM_WORDS","System random test supports 56 or 112 output words")
+    if (cfg.core_words!=56 && cfg.core_words!=112 && cfg.core_words!=168)
+      `uvm_fatal("RANDOM_WORDS","System random test supports 56, 112, or 168 output words")
     cfg.frame_starts=(cfg.core_words/56)*3;
-    expected_last_count=cfg.source_beats/32;
+    packet_beats=32;
+    void'($value$plusargs("PACKET_BEATS=%d",packet_beats));
+    if (packet_beats<32 || packet_beats%32!=0 ||
+        (cfg.source_beats%packet_beats)!=0)
+      `uvm_fatal("RANDOM_PACKET_BEATS",
+        "Packet length must be a supported multiple of 32 that divides source beats")
+    expected_last_count=cfg.source_beats/packet_beats;
     cfg.pa_sink_active=UVM_ACTIVE;
     cfg.random_pa_ready=1'b1;
     cfg.manual_pa_ready=1'b0;
@@ -30,7 +38,11 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
     expect_no_pa_stall=$test$plusargs("THERMO5_EXPECT_NO_PA_STALL");
     void'($value$plusargs("THERMO5_RANDOM_PA_STALL_PERCENT=%d",cfg.pa_stall_percent));
     void'($value$plusargs("THERMO5_RANDOM_SOURCE_GAP_MAX=%d",random_gap_max_cycles));
-    if (cfg.pa_stall_percent>80 || random_gap_max_cycles>8)
+    random_gap_probability_percent=-1;
+    void'($value$plusargs("THERMO5_RANDOM_SOURCE_BUBBLE_PERCENT=%d",
+                          random_gap_probability_percent));
+    if (cfg.pa_stall_percent>80 || random_gap_max_cycles>8 ||
+        random_gap_probability_percent>80)
       `uvm_fatal("RANDOM_LIMIT","Random PA stall/gap setting exceeds the qualified bound")
     if (prefill_beats>=cfg.source_beats)
       `uvm_fatal("RANDOM_PREFILL","Prefill must remain shorter than the complete packet")
@@ -43,7 +55,8 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
     vseq=thermo5_sku_axil_packet_vseq::type_id::create("random_packet_vseq");
     vseq.prefill_beats=prefill_beats;
     vseq.random_gap_max_cycles=random_gap_max_cycles;
-    vseq.packet_beats=32;
+    vseq.random_gap_probability_percent=random_gap_probability_percent;
+    vseq.packet_beats=packet_beats;
     vseq.start(env.virtual_sequencer);
 
     source_beats=env.source.monitor.accepted_beats;
@@ -102,8 +115,9 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
         $sformatf("packet-scoped cross requires one epoch/packet with source gap, FIFO full, and PA stall; split_packet_records=%0d",
           env.coverage.split_packet_cross_count()))
     `uvm_info("SKU_PASS",
-      $sformatf("THERMO5_TX_RANDOM_PACKET_PASS source=%0d PA=%0d TLAST=%0d source_stall=%0d PA_stall=%0d FIFO_full=%0d",
+      $sformatf("THERMO5_TX_RANDOM_PACKET_PASS source=%0d PA=%0d TLAST=%0d packet_beats=%0d source_bubble_percent=%0d source_stall=%0d PA_stall=%0d FIFO_full=%0d",
         source_beats,env.scoreboard.checked,expected_last_count,
+        packet_beats,random_gap_probability_percent,
         env.source.monitor.stall_cycles,env.monitor.stall_cycles,
         env.coverage.fifo_full_cycles),UVM_NONE)
     phase.drop_objection(this);
