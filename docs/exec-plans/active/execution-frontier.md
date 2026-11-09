@@ -1,6 +1,10 @@
 # Execution frontier
 
-## Current execution state: Thermo5 Round 17 precise exclusion What-if (2026-11-09)
+## Current execution state: Thermo5 Round 17 remaining-bin review package (2026-11-09)
+
+A focused report now inventories the 4,214 exact bins left after the Analysis-only What-if URG: `docs/verification/thermo5-tx-r17-remaining-uncovered-bin-report-20261109.md`. It lists every remaining Branch, Condition, and Line semantic ID and groups all 4,086 Toggle bins into 426 signal/source-position groups. The full per-bin identities remain in `analysis_only/round17_exact_whatif_remaining_bins.csv.gz`.
+
+The 4,214 count is the What-if residual only. Since independent Waiver approvals and official Exclusions remain zero, official Raw/Adjusted still has 13,171 uncovered code bins. This documentation update adds no run, test hit, Formal proof, or waiver approval. PR #47 remains Draft/Open; Linux DV signoff remains OPEN.
 
 PR #47 (`codex/thermo5-round17-formal-closure`) remains an open review branch targeting `thermo5`; this update is an intermediate coverage-analysis result, not final signoff. The VDB source checkout was `17b88280e98096469a57ba51df5b17d53194911a`; Product source SHA in the compile manifest is `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`, product RTL aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`, and compile fingerprint `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`. The same frozen manifest supplied 1 Design VDB + 551 Test VDBs; all 552 tree fingerprints matched before/after execution.
 

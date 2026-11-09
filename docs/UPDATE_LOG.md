@@ -1,3 +1,10 @@
+# 2026-11-09 — Thermo5 Round 17 remaining uncovered-bin report
+
+- Added `docs/verification/thermo5-tx-r17-remaining-uncovered-bin-report-20261109.md`, a focused inventory of the 4,214 bins left by the same-VDB Analysis-only What-if URG run. It includes exact Branch/Condition/Line IDs, toggle signal-group counts, per-source breakdown, the 13 unresolved candidate mappings, and a targeted closure order.
+- Linked the focused report from the full Round 17 What-if report and updated the execution frontier. The report distinguishes the 4,214 What-if remaining bins from the 13,171 official Raw/zero-exclusion Adjusted gap.
+- Verification: generated report reconciles to the committed exact-bin ledger and portable execution evidence (4,214 unique IDs; Branch 15, Condition 84, Line 29, Toggle 4,086; 426 toggle groups); Markdown whitespace and repository diff checks passed.
+- No RTL, product configuration, VDB, Formal result, waiver approval, or official exclusion changed. Linux DV signoff remains OPEN.
+
 # 2026-11-09 11:41 +08:00 — Thermo5 Round 17 precise exclusion What-if execution
 
 - Added fail-closed native-bin mapping and same-manifest URG execution tools; recorded five Analysis-only `.el` batches, exact candidate execution dispositions, official Waiver reconciliation, compressed VDB manifest and portable evidence JSON.

@@ -4,6 +4,8 @@
 **Review branch:** `codex/thermo5-round17-formal-closure`
 **Purpose:** Execute exact, analysis-only URG exclusions against the frozen Round 17 Product VDB set and measure the actual What-if Adjusted report.
 
+For a focused review of the bins still open after the Analysis-only What-if run, see [Round 17 Remaining Uncovered Bin Report](thermo5-tx-r17-remaining-uncovered-bin-report-20261109.md). It inventories all remaining Branch, Condition, and Line IDs and groups the Toggle gaps by exact signal/source position.
+
 ## Decision
 
 The same-input URG run applied **8,721 candidates as direct, unique native URG bins**. A further **236 candidate lines had no standalone native object** in URG's template, but were marked excluded as exact associated line effects of mapped native exclusions; the runner compared all 429 excluded `(instance, source line)` pairs against the candidate source-line set and found **zero unexpected and zero missing line bins**. **13 candidates remain OPEN** because their native branch/line mapping is complex or ambiguous.
