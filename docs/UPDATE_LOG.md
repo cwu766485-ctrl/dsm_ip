@@ -1,3 +1,54 @@
+# 2026-11-09 09:53 +08:00 — Thermo5 exact-bin static reachability review refresh
+
+- Reclassified every row in the 13,171-bin Round 17 uncovered ledger using the
+  actual nested branch `source_position` (not the enclosing procedural-block
+  line). Added explicit product parameter/topology results for the DPD tap
+  guards, EF2 interpolator parameter checks, stage-2 tail-disabled paths, and
+  the stage-1 tail metadata tie-off.
+- Current classes: 138 `STATIC_UNREACHABLE`, 8,832
+  `CONFIG_UNREACHABLE`, 2 `DEFENSIVE_NEGATIVE_ONLY`, 4,199 `UNKNOWN`.
+  There are zero established `TRUE_DEAD_CODE`, `REACHABLE_UNTESTED`, or
+  reproducible `TOOL_OR_MAPPING_ISSUE` records. All 8,970 candidates remain
+  unapproved; formal approvals and official Exclusions remain zero.
+- Extended each CSV row with a human-readable rationale, source trace refs,
+  and trace-completeness status. Pair-1 exact semantic IDs still match all
+  8,192 rows in the current-Raw review ledger.
+- Official same-manifest Raw/zero-exclusion Adjusted remains the last recorded
+  result: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle
+  92072/104480, FSM state 13/13 and transition 22/22. The arithmetic scenario
+  with all 8,970 candidates excluded leaves 4,201 bins, but actual What-if URG
+  remains NOT RUN and no `.el` was generated.
+- VCS startup probes exited 1 before compile: default mapping selected missing
+  `linux/bin/vcs1`; `VCS_ARCH_OVERRIDE=linux64` reported the WSL2 kernel as
+  unsupported. The URG version probe exited 1 during VCS_HOME helper lookup.
+  Logs and SHA-256 hashes are recorded in the review report under ignored
+  `runs/thermo5_static_reachability_20261109/`. No directed simulation,
+  Formal run, or new coverage hit is claimed.
+- Checks: ledger builder PASS (97/97 compile-parent source hashes; 13,171/13,171
+  ledger source hashes; 8,192/8,192 Pair-1 IDs); review/candidate/open row and
+  class totals checked; `git diff --check` PASS. No RTL, compile parameter,
+  Formal harness, waiver status, or URG denominator changed. Linux DV signoff
+  remains OPEN.
+
+# 2026-11-09 09:37 +08:00 — Thermo5 Round 17 static reachability audit
+
+- Added a reproducible Python ledger builder and exact-bin CSVs for all 13,171
+  carried uncovered records, 8,950 unapproved structural/configuration
+  candidates, and 4,221 rows that remain open without an exclusion.
+- Added `docs/verification/thermo5-tx-static-reachability-review-20261109.md`
+  with the per-metric classification, DPD/EF2/CDC/GT/frame-gain source audit,
+  Raw results, What-if limitation, and minimum next closure actions.
+- Updated the execution frontier. No product RTL, algorithm, parameter,
+  Formal harness, official Waiver, Exclusion, or denominator changed.
+- Checks: `python3.12 tools/hw/build_thermo5_static_reachability_review.py`
+  regenerated 13,171 rows and verified 97/97 compile-parent source hashes;
+  candidate and remaining-open CSV counts and output SHA-256 values matched
+  the generated manifest; `git diff --check` passed.
+- VCS, URG, and VC Formal were not run. The exact Round 17 one-Design/551-Test
+  VDB set is unavailable in this checkout/workspace and the matching GitHub
+  workflow runs have no artifacts. Actual What-if Adjusted URG remains NOT RUN;
+  all candidate reviewer fields remain empty and no Exclusion is active.
+
 # 2026-11-09 — Thermo5 Round 17 DPD Identity staged-proof follow-up
 
 - Ran the repository VC Formal Identity runner with `--auto-lemmas` on the
