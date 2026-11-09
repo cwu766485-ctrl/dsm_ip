@@ -1,3 +1,12 @@
+# 2026-11-09 11:41 +08:00 — Thermo5 Round 17 precise exclusion What-if execution
+
+- Added fail-closed native-bin mapping and same-manifest URG execution tools; recorded five Analysis-only `.el` batches, exact candidate execution dispositions, official Waiver reconciliation, compressed VDB manifest and portable evidence JSON.
+- Ran fresh Raw URG and five strict exclusion batches plus the combined strict What-if URG on the same 1-Design/551-Test VDB set. All 552 VDB tree hashes matched before/after; URG diagnostics were zero. Of 8,970 candidates, 8,721 were direct native mappings, 236 exact associated line effects were checked against the report, and 13 mapping gaps remain OPEN.
+- Actual Raw → Analysis-only What-if: Branch 524/637 → 524/539; Condition 657/849 → 657/741; Line 3338/3796 → 3338/3367; Toggle 92072/104480 → 92072/96158. Remaining code bins: 4,214. FSM unchanged at 13/13 states and 22/22 transitions.
+- Official inventory remains 2 Raw-hit-resolved, 369 pending, 0 approved and 0 exclusions. No official `.el` was generated; Linux DV signoff remains OPEN. Full report: `docs/verification/thermo5-tx-r17-precise-exclusions-whatif-20261109.md`.
+- Normalized generated `.el` EOF whitespace, strengthened the runner to reject changed covered-bin counts, and repeated Raw, all five strict batches and combined strict URG against the same manifest; coverage and candidate dispositions were unchanged. Final evidence binds the normalized files and final run hashes.
+- Checks: artifact hashes/counts, `python3.12 -m py_compile` for both tools, and `git diff --check`. No RTL, product parameter, Formal harness or VDB input changed.
+
 # 2026-11-09 09:53 +08:00 — Thermo5 exact-bin static reachability review refresh
 
 - Reclassified every row in the 13,171-bin Round 17 uncovered ledger using the

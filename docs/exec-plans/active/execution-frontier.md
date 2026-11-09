@@ -1,6 +1,16 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Round 17 static reachability audit (2026-11-09)
+## Current execution state: Thermo5 Round 17 precise exclusion What-if (2026-11-09)
+
+PR #47 (`codex/thermo5-round17-formal-closure`) remains an open review branch targeting `thermo5`; this update is an intermediate coverage-analysis result, not final signoff. The VDB source checkout was `17b88280e98096469a57ba51df5b17d53194911a`; Product source SHA in the compile manifest is `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`, product RTL aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`, and compile fingerprint `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`. The same frozen manifest supplied 1 Design VDB + 551 Test VDBs; all 552 tree fingerprints matched before/after execution.
+
+Fresh Raw URG and combined `-excl_strict` Analysis-only What-if URG completed with zero diagnostics. From 8,970 candidates, 8,721 map directly to a unique native URG bin; 236 additional candidate lines have no standalone template object but were verified as exact associated source-line effects in the URG report; 13 remain OPEN due 9 complex branch mappings and 4 ambiguous line mappings. The actual What-if report is Branch 524/539 (97.2171%), Condition 657/741 (88.6640%), Line 3338/3367 (99.1387%), Toggle 92072/96158 (95.7507%); 4,214 code bins remain. FSM is 13/13 states and 22/22 transitions. Full per-bin evidence and log hashes are in `docs/verification/thermo5-tx-r17-precise-exclusions-whatif-20261109.md` and `docs/verification/data/thermo5-r17/analysis_only/`.
+
+Official Waiver inventory remains 371 IDs: 2 resolved by current Raw hits, 369 pending review, 0 independent approvals and 0 official exclusions. Analysis `.el` files do not change official status. No product RTL, algorithm, parameter, Formal harness, or VDB changed. This run makes no new simulation/Formal claims. Linux DV signoff remains OPEN.
+
+Next: independently review candidate evidence before any official exclusion; investigate all 13 native mapping gaps; close the 4,214 actual remaining Raw/What-if bins with exact witnesses or reviewed evidence. Do not broaden `.el` scope, claim 100%, or treat Analysis-only output as official Adjusted Coverage.
+
+## Previous execution state: Thermo5 TX Round 17 static reachability audit (2026-11-09)
 
 PR #47 remains Draft/Open against `thermo5` (base `7708d0eb9a2128942ff802202c0d1716c8c11f8b`). This review started from local PR commit `a33894e445df07c91899bc76104ffb39a8a656e9`; Product RTL is unchanged at aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`, compile fingerprint `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`, and 97/97 source hashes match the compile-parent manifest.
 

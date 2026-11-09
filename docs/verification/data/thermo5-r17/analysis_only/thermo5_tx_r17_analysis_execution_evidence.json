@@ -1,0 +1,349 @@
+{
+  "analysis_only": true,
+  "artifacts": {
+    "docs/verification/data/thermo5-r17/analysis_only/round17_candidate_exclusion_execution.csv.gz": "f3eff6da3fe1bffa538ade380065904ccd0c484264194061b1f2b55a1ff9a051",
+    "docs/verification/data/thermo5-r17/analysis_only/round17_exact_whatif_remaining_bins.csv.gz": "439afbeaea3c45ea367afac7833a8b7103ecb2b653e66d686376a4c49c9858f4",
+    "docs/verification/data/thermo5-r17/analysis_only/round17_official_waiver_reconciliation.csv": "432081c7a11b01eb28b58cb688a66c42e764f521cb6dac2e7f60eafd3fe84e99",
+    "docs/verification/data/thermo5-r17/analysis_only/thermo5_tx_r17_input_vdb_manifest.json.gz": "60c15a64cba00a0b243af7c5142d0a6153d61299155429cf9c65678dc67fdbae"
+  },
+  "candidate_execution": {
+    "direct_native_exact_count": 8721,
+    "effective_exact_candidate_excluded_count": 8957,
+    "official_approval_count": 0,
+    "official_exclusion_count": 0,
+    "official_waiver_reconciliation": {
+      "PENDING_MATCHED_TO_8970_CANDIDATE_SET": 367,
+      "PENDING_NOT_IN_8970_CANDIDATE_SET": 2,
+      "RESOLVED_BY_RAW_HIT": 2
+    },
+    "open_native_mapping_count": 13,
+    "urg_associated_exact_line_count": 236
+  },
+  "candidate_ledger_sha256": "393eacac224826d73958eeffb05ae7476d392d90f181962f947c118143a0d5a6",
+  "combined_whatif": {
+    "candidate_count": 8970,
+    "command_template": "urg1 -full64 -dir <Design VDB> <551 Test VDBs> -elfilelist <analysis_only/round17_all_candidate_batches.elfilelist> -excl_strict -format both",
+    "diagnostic_count": 0,
+    "direct_native_match_count": 8721,
+    "effective_exact_candidate_excluded_count": 8957,
+    "exact_line_bin_unexpected_count": 0,
+    "exact_line_bins_excluded": 429,
+    "log_path": "runs/thermo5_r17_native_analysis_20261109_final_release/combined_whatif/urg.log",
+    "log_sha256": "d04741cb10192f963646ebf29cda1a7fe4125ea84fa9ca1978d1a44a84d77890",
+    "metric_exclusions": {
+      "branch": 98,
+      "cond": 108,
+      "line": 429,
+      "toggle": 8322
+    },
+    "metrics": {
+      "branch": {
+        "covered": 524,
+        "missing": 15,
+        "total": 539
+      },
+      "cond": {
+        "covered": 657,
+        "missing": 84,
+        "total": 741
+      },
+      "line": {
+        "covered": 3338,
+        "missing": 29,
+        "total": 3367
+      },
+      "toggle": {
+        "covered": 92072,
+        "missing": 4086,
+        "total": 96158
+      }
+    },
+    "remaining_code_bins": {
+      "branch": 15,
+      "cond": 84,
+      "line": 29,
+      "toggle": 4086
+    },
+    "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/combined_whatif/report"
+  },
+  "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "created_unix_time": 1794195691,
+  "full_local_execution_manifest_path": "runs/thermo5_r17_native_analysis_20261109_final_release/analysis_execution_manifest.json",
+  "full_local_execution_manifest_sha256": "e30c0a51e9d04631129ef6cde1c15ef28492f22b255c40b0f76d976eca97a20b",
+  "groups": {
+    "A_DPD_PAIR1": {
+      "candidate_count": 8192,
+      "coverage": {
+        "branch": {
+          "covered": 524,
+          "missing": 113,
+          "total": 637
+        },
+        "cond": {
+          "covered": 657,
+          "missing": 192,
+          "total": 849
+        },
+        "line": {
+          "covered": 3338,
+          "missing": 458,
+          "total": 3796
+        },
+        "toggle": {
+          "covered": 92072,
+          "missing": 4216,
+          "total": 96288
+        }
+      },
+      "diagnostic_count": 0,
+      "direct_native_match_by_metric": {
+        "branch": 0,
+        "cond": 0,
+        "line": 0,
+        "toggle": 8192
+      },
+      "direct_native_match_count": 8192,
+      "line_effect_exact_match_count": 0,
+      "line_effect_unexpected_count": 0,
+      "log_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_0_a_dpd_pair1/urg.log",
+      "log_sha256": "284fdc28cb7c91a397416cc89585ece6f58f625e5b4a0e237190d1d037c9c806",
+      "remaining_candidate_count": 0,
+      "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_0_a_dpd_pair1/report",
+      "urg_effective_excluded_by_metric": {
+        "branch": 0,
+        "cond": 0,
+        "line": 0,
+        "toggle": 8192
+      }
+    },
+    "B_EF2_FIXED_PARAMETERS": {
+      "candidate_count": 436,
+      "coverage": {
+        "branch": {
+          "covered": 524,
+          "missing": 25,
+          "total": 549
+        },
+        "cond": {
+          "covered": 657,
+          "missing": 84,
+          "total": 741
+        },
+        "line": {
+          "covered": 3338,
+          "missing": 218,
+          "total": 3556
+        },
+        "toggle": {
+          "covered": 92072,
+          "missing": 12408,
+          "total": 104480
+        }
+      },
+      "diagnostic_count": 0,
+      "direct_native_match_by_metric": {
+        "branch": 88,
+        "cond": 108,
+        "line": 88,
+        "toggle": 0
+      },
+      "direct_native_match_count": 284,
+      "line_effect_exact_match_count": 240,
+      "line_effect_unexpected_count": 0,
+      "log_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_1_b_ef2_fixed_parameters/urg.log",
+      "log_sha256": "db7da5e35fda5c5c480badb76a3f8eef28a96633a3a7ce190412a7a67a1d704c",
+      "remaining_candidate_count": 0,
+      "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_1_b_ef2_fixed_parameters/report",
+      "urg_effective_excluded_by_metric": {
+        "branch": 88,
+        "cond": 108,
+        "line": 240,
+        "toggle": 0
+      }
+    },
+    "C_DPD_TAP_HISTORY": {
+      "candidate_count": 176,
+      "coverage": {
+        "branch": {
+          "covered": 524,
+          "missing": 113,
+          "total": 637
+        },
+        "cond": {
+          "covered": 657,
+          "missing": 192,
+          "total": 849
+        },
+        "line": {
+          "covered": 3338,
+          "missing": 282,
+          "total": 3620
+        },
+        "toggle": {
+          "covered": 92072,
+          "missing": 12408,
+          "total": 104480
+        }
+      },
+      "diagnostic_count": 0,
+      "direct_native_match_by_metric": {
+        "branch": 0,
+        "cond": 0,
+        "line": 96,
+        "toggle": 0
+      },
+      "direct_native_match_count": 96,
+      "line_effect_exact_match_count": 176,
+      "line_effect_unexpected_count": 0,
+      "log_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_2_c_dpd_tap_history/urg.log",
+      "log_sha256": "25cb495956e8cbf3d023f1944c0e2280bf5fb1bcae4a622f9113d4c0fe2fe2f8",
+      "remaining_candidate_count": 0,
+      "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_2_c_dpd_tap_history/report",
+      "urg_effective_excluded_by_metric": {
+        "branch": 0,
+        "cond": 0,
+        "line": 176,
+        "toggle": 0
+      }
+    },
+    "D_CDC_RESIDUAL": {
+      "candidate_count": 137,
+      "coverage": {
+        "branch": {
+          "covered": 524,
+          "missing": 113,
+          "total": 637
+        },
+        "cond": {
+          "covered": 657,
+          "missing": 192,
+          "total": 849
+        },
+        "line": {
+          "covered": 3338,
+          "missing": 453,
+          "total": 3791
+        },
+        "toggle": {
+          "covered": 92072,
+          "missing": 12278,
+          "total": 104350
+        }
+      },
+      "diagnostic_count": 0,
+      "direct_native_match_by_metric": {
+        "branch": 0,
+        "cond": 0,
+        "line": 2,
+        "toggle": 130
+      },
+      "direct_native_match_count": 132,
+      "line_effect_exact_match_count": 5,
+      "line_effect_unexpected_count": 0,
+      "log_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_3_d_cdc_residual/urg.log",
+      "log_sha256": "1fa6748427a31c8a5650f6c65ea272af47e94481b26d51639b5e919766097e4e",
+      "remaining_candidate_count": 2,
+      "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_3_d_cdc_residual/report",
+      "urg_effective_excluded_by_metric": {
+        "branch": 0,
+        "cond": 0,
+        "line": 5,
+        "toggle": 130
+      }
+    },
+    "E_OTHER_PARAMETERS": {
+      "candidate_count": 29,
+      "coverage": {
+        "branch": {
+          "covered": 524,
+          "missing": 103,
+          "total": 627
+        },
+        "cond": {
+          "covered": 657,
+          "missing": 192,
+          "total": 849
+        },
+        "line": {
+          "covered": 3338,
+          "missing": 450,
+          "total": 3788
+        },
+        "toggle": {
+          "covered": 92072,
+          "missing": 12408,
+          "total": 104480
+        }
+      },
+      "diagnostic_count": 0,
+      "direct_native_match_by_metric": {
+        "branch": 10,
+        "cond": 0,
+        "line": 7,
+        "toggle": 0
+      },
+      "direct_native_match_count": 17,
+      "line_effect_exact_match_count": 8,
+      "line_effect_unexpected_count": 0,
+      "log_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_4_e_other_parameters/urg.log",
+      "log_sha256": "0d116c5aaae0f4a3a11be29e56eb6a75fe4cb185f3b48f47f1b0da6623bda8ff",
+      "remaining_candidate_count": 11,
+      "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/batch_4_e_other_parameters/report",
+      "urg_effective_excluded_by_metric": {
+        "branch": 10,
+        "cond": 0,
+        "line": 8,
+        "toggle": 0
+      }
+    }
+  },
+  "mapping_tool_sha256": "b3978fe31d5aaab2f72b4f9c93382f2367b2dcfda4e6fe32149a73be8effb465",
+  "native_mapping_manifest_sha256": "9d7d483a5d99c640c5487414457d694c7e92d52cce96e2274966acbb2f456475",
+  "official_approval_count": 0,
+  "product_source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "raw": {
+    "log_path": "runs/thermo5_r17_native_analysis_20261109_final_release/raw_urg/urg.log",
+    "log_sha256": "9871f4b268481b1bd5cfd8f0705d4b178cb7ab64d62127e98c4dcd6d4e2282d4",
+    "metrics": {
+      "branch": {
+        "covered": 524,
+        "missing": 113,
+        "total": 637
+      },
+      "cond": {
+        "covered": 657,
+        "missing": 192,
+        "total": 849
+      },
+      "line": {
+        "covered": 3338,
+        "missing": 458,
+        "total": 3796
+      },
+      "toggle": {
+        "covered": 92072,
+        "missing": 12408,
+        "total": 104480
+      }
+    },
+    "report_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_native_analysis_20261109_final_release/raw_urg/report"
+  },
+  "review_status": "PENDING_INDEPENDENT_REVIEW",
+  "runner_sha256": "c58ff4bdb858c47526cb5c614e0f555d68d9cdf411f4dac7c0554fb508cafd7b",
+  "schema": "thermo5_tx_round17_analysis_only_urg_execution_v1",
+  "signoff_status": "OPEN_NOT_OFFICIAL_SIGNOFF",
+  "source_head_for_vdb": "17b88280e98096469a57ba51df5b17d53194911a",
+  "urg_binary": "/opt/Synopsys/vcs/V-2023.12-SP1/linux64/bin/urg1",
+  "urg_version": "URG Version V-2023.12-SP1                       Copyright (c) 1991 -  Synopsys, Inc.",
+  "vdb_design_count": 1,
+  "vdb_manifest_canonical_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+  "vdb_manifest_compressed_sha256": "60c15a64cba00a0b243af7c5142d0a6153d61299155429cf9c65678dc67fdbae",
+  "vdb_manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+  "vdb_manifest_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r17_precise_exclusion_20261109_raw_retry2/input_vdb_manifest.json",
+  "vdb_test_count": 551,
+  "vdb_tree_fingerprint_validation": {
+    "after_count": 552,
+    "before_count": 552,
+    "mismatches": 0
+  }
+}

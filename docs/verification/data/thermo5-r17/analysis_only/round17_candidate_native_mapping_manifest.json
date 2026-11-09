@@ -1,0 +1,69 @@
+{
+  "active_official_exclusion_count": 0,
+  "analysis_only": true,
+  "candidate_count": 8970,
+  "candidate_csv_sha256": "11e4fed459654acca7414c311c81367b273dcc5547ddbbd771c0befb76028d68",
+  "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "compile_manifest_sha256": "d815447c35abfbca8cc40849b4d24af4acaab13fff49f2fd962b9ed3d8300c6a",
+  "group_counts": {
+    "A_DPD_PAIR1": {
+      "candidate_count": 8192,
+      "el_sha256": "7a3387e5807dc15f45e9d2b54e2fa4df0be9179d1858957d6e77bef4ec98bd70",
+      "native_mapped_count": 8192,
+      "unmapped_count": 0
+    },
+    "B_EF2_FIXED_PARAMETERS": {
+      "candidate_count": 436,
+      "el_sha256": "6543e6070147fe03695c9d348fa518da16f8b44af1fe74df2833898a8682cc65",
+      "native_mapped_count": 284,
+      "unmapped_count": 152
+    },
+    "C_DPD_TAP_HISTORY": {
+      "candidate_count": 176,
+      "el_sha256": "5b916f0540faa7cef13d0cacfc93702b1aed01ea3664db23b6f370a32dad073e",
+      "native_mapped_count": 96,
+      "unmapped_count": 80
+    },
+    "D_CDC_RESIDUAL": {
+      "candidate_count": 137,
+      "el_sha256": "15fc67dfa2ea54424c6d1a438d4489b5c2af7e29d570a6bff4f0a0bf27a57ed6",
+      "native_mapped_count": 132,
+      "unmapped_count": 5
+    },
+    "E_OTHER_PARAMETERS": {
+      "candidate_count": 29,
+      "el_sha256": "efd4d6475dcd6aa85605de56be02ad2ab45ff5f920f27aaa18c3c2ea728445b5",
+      "native_mapped_count": 17,
+      "unmapped_count": 12
+    }
+  },
+  "mapped_exact_native_bin_count": 8721,
+  "mapping_ledger_sha256": "393eacac224826d73958eeffb05ae7476d392d90f181962f947c118143a0d5a6",
+  "mapping_status_counts": {
+    "MAPPED_EXACT_NATIVE_BIN": 8721,
+    "NATIVE_MAPPING_AMBIGUOUS": 4,
+    "NATIVE_MAPPING_COMPLEX_BRANCH_BIN": 9,
+    "NATIVE_OBJECT_NOT_FOUND": 236
+  },
+  "native_template_sha256": {
+    "branch": "e3be546f3b2e1eccd3bcc900878f1b271d559e35bd2365cc41d10f535bfb5eb3",
+    "cond": "59a92b82f14ad6e69dc0d726d4d013a17d83dd5b622d857d8ec9273855dec412",
+    "line": "67699c8582d8e00605e9b1818f76063eff3864b15b17c622e2b79d2d48151282",
+    "toggle": "4d7683780581b1fbcf7efeec7fd1aef97e66e4f63c2c4ac25c22c300c2bd2f3f"
+  },
+  "official_approval": "PENDING_INDEPENDENT_REVIEW",
+  "official_waiver_csv_sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830",
+  "official_waiver_id_count": 371,
+  "review_csv_sha256": "c6678af52b912f336097cdf6b6dba53c8f91372e6c7bcaf3294db1ebb90b734d",
+  "schema": "thermo5_tx_round17_native_analysis_exclusion_mapping_v1",
+  "source_sha256_checked": 97,
+  "unmapped_count": 249,
+  "vdb_design_count": 1,
+  "vdb_manifest_canonical_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+  "vdb_manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+  "vdb_manifest_path": "runs/thermo5_r17_precise_exclusion_20261109_raw_retry2/input_vdb_manifest.json",
+  "vdb_run_manifest_path": "runs/thermo5_r17_precise_exclusion_20261109_raw_retry2/run_manifest.json",
+  "vdb_run_manifest_sha256": "af646aa0ee0329d1518b63a94ef865a27e3512de85abdf0128c5ab188d14b67e",
+  "vdb_test_count": 551,
+  "waiver_approval_count": 0
+}
