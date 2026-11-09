@@ -1,0 +1,626 @@
+{
+  "base_551_vdb_input": {
+    "design_vdb_count": 1,
+    "manifest_canonical_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+    "manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+    "run_manifest_sha256": "ea749c8421c798bc8792a9f17359339b4e75a4d7048c85e32c5a3dbbcdb11ac1",
+    "scenarios": {
+      "active_taps_only": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 113,
+            "percent": 82.260597,
+            "total": 637
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 192,
+            "percent": 77.385159,
+            "total": 849
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 458,
+            "percent": 87.934668,
+            "total": 3796
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 12288,
+            "percent": 88.225374,
+            "total": 104360
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 0,
+          "cond": 0,
+          "line": 0,
+          "toggle": 120
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "eb25b9d6572b844bc69a5119620ef353229e3f8f962b02cb7802e643d02a092d"
+      },
+      "ef2_pair_qone_only": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 113,
+            "percent": 82.260597,
+            "total": 637
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 192,
+            "percent": 77.385159,
+            "total": 849
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 458,
+            "percent": 87.934668,
+            "total": 3796
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 10080,
+            "percent": 90.132352,
+            "total": 102152
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 0,
+          "cond": 0,
+          "line": 0,
+          "toggle": 2328
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "a76366ec9d442019109907fa7fea98e1b049db24fc9f1953bb59c668420edb72"
+      },
+      "legacy_8957": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 4086,
+            "percent": 95.750744,
+            "total": 96158
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 8322
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "ae2b1eb36976a017ea8836e97732dedb841381d47096247fafb5f1a60b300691"
+      },
+      "legacy_plus_active": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 3966,
+            "percent": 95.870385,
+            "total": 96038
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 8442
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "db23bf553ac9e9fbba71356aaeaff009842339075def6f8c0940501ebba5ebe3"
+      },
+      "legacy_plus_all": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 1638,
+            "percent": 98.252054,
+            "total": 93710
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 10770
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "b50ab14aa76b8a88b3a0e8a14969cdcd72b37265a0c5443d8508b1c34d2a73ee"
+      },
+      "legacy_plus_ef2": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 1758,
+            "percent": 98.126399,
+            "total": 93830
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 10650
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "d5b15f7791e2caac1a294505c5813a395267cf871d9c619e9cbda979f596b373"
+      },
+      "raw": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 113,
+            "percent": 82.260597,
+            "total": 637
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 192,
+            "percent": 77.385159,
+            "total": 849
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 458,
+            "percent": 87.934668,
+            "total": 3796
+          },
+          "toggle": {
+            "covered": 92072,
+            "missing": 12408,
+            "percent": 88.124043,
+            "total": 104480
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 0,
+          "cond": 0,
+          "line": 0,
+          "toggle": 0
+        },
+        "strict_exclusion": false,
+        "urg_log_sha256": "6fc747e182b174c38e662ad13e9a8e6947e0484d3ce69626dba29e7babdcef52"
+      }
+    },
+    "test_vdb_count": 551,
+    "tree_mismatches_before_after": 0
+  },
+  "candidate_review": {
+    "551_vdb_candidate_ledger_path": "docs/verification/data/thermo5-r17/analysis_only/round17_residual_fixed_config_candidates.csv.gz",
+    "551_vdb_candidate_ledger_sha256": "1a4b1314da7ee22847fbe4aee6c4ad42a16e020f37ae29afa091e6c9c0724bc2",
+    "active_tap_el_sha256": "b27fde8cb56019fb98127ac174ba6435e690a3d790fef5ba9722112fe62e9195",
+    "batch_count": {
+      "DPD_ACTIVE_TAPS_MAX1": 120,
+      "EF2_PAIR_LOOKAHEAD_ZERO": 2328
+    },
+    "candidate_ledger_path": "docs/verification/data/thermo5-r17/analysis_only/round17_fixed_config_candidates_extended_553_vdb.csv.gz",
+    "candidate_ledger_sha256": "ff12d384e27813b9a093ff9eac6bd8e34e386cb49d1f8ba6996757c9a2afd3b0",
+    "ef2_el_sha256": "9198fadfa82bb3b2bf6332be5c938b15f7c0594275b428aeed11695a16e4d354",
+    "exact_native_tuple_overlap_with_official_371_inventory": 0,
+    "native_mapped_exact_count": 2448,
+    "native_tuple_unique": true,
+    "new_candidate_count": 2448,
+    "official_approval_count": 0,
+    "official_exclusion_count": 0,
+    "overlap_with_367_existing_official_semantic_mappings": 0,
+    "review_status": "PENDING_INDEPENDENT_REVIEW",
+    "semantic_ids_unique": true,
+    "strict_analysis_only_excluded_count": 2448
+  },
+  "counter_scope": {
+    "machine_record_path": "docs/verification/data/thermo5-r17/analysis_only/round17_counter_product_coverage_scope.csv",
+    "sample_count": "Internal diagnostic counter, not product-top/AXI-Lite exposed; included in current DUT URG. Reset 0, increments on accepted valid, natural unsigned modulo-2^32 wrap. 576 bit-direction bins for bits 14..31 remain open; no lifetime bound proves them unreachable.",
+    "saturation_count": "Internal diagnostic counter, not product-top/AXI-Lite exposed; included in current DUT URG. Reset 0, increments on final-stage saturation, natural unsigned modulo-2^32 wrap. 848 bit-direction bins remain open; legal coefficient/input reachability is unresolved.",
+    "scope_exclusion_approved": false
+  },
+  "directed_tests": [
+    {
+      "cdc_words": 8232,
+      "core_words": 8232,
+      "dsp_observations": 8243,
+      "early_underflow_observations": 0,
+      "ef2_words": 8232,
+      "late_underflow_observations": 70,
+      "log_sha256": "f739930d83bbc4829a011adc0172e7dd09454bab6a3122cfa9f5192a7653d523",
+      "pa_words": 8232,
+      "predictor_mismatches": 0,
+      "result": "PASS",
+      "seed": 271030,
+      "source_beats": 4704,
+      "test": "thermo5_sku_axil_config_test",
+      "uvm_warning_error_fatal": 0
+    },
+    {
+      "decerr": 7,
+      "log_sha256": "f0210f58bb35af5f474bd2e5d7e1e2d0bfb18eab3b67dcac5524a834707e02ea",
+      "predictor_mismatches": 0,
+      "register_reads": 51,
+      "register_writes": 56,
+      "result": "PASS",
+      "seed": 271032,
+      "slverr": 3,
+      "test": "thermo5_sku_axil_register_access_test",
+      "uvm_warning_error_fatal": 0
+    }
+  ],
+  "evidence_files": {
+    "analysis_runner_sha256": "3c6d7829cdd16464ac0c1e638d14d7c2f1dfdfedd2756d8fa4546d26f44527de",
+    "counter_scope_csv_sha256": "d89fbb56d4ac0067e741f4fad9310acb71b1b94484c9410b57996fe8a359c4ac",
+    "coverage_report": "docs/verification/thermo5-tx-r17-final-residual-coverage-review-20261109.md",
+    "final_report_sha256": "411ec722fd37b2853d86715037fd54dd9b15327fde88654ad53b424685fdb438",
+    "supplemental_runner_sha256": "9d79bdc1476fc20f0e5299d291f2c4092efa93774949d8110be21cf4b7aa82eb",
+    "uvm_test_source_sha256": "8ef3161ffd879a0f059d9b54246625349b2975c1c198e044f12f020e012aab72"
+  },
+  "exact_raw_hits": {
+    "hit_delta_by_class": {
+      "sample_count_bits_12_13_across_16_lanes_both_directions": 64,
+      "shadow_taps_bit_1_both_directions": 2
+    },
+    "ledger_path": "docs/verification/data/thermo5-r17/analysis_only/round17_directed_target_exact_bin_results.csv.gz",
+    "ledger_sha256": "d71edd9319fb8421293fee4d87300cf67385902b4b626d97f81c6885c1040290",
+    "new_exact_hit_count": 66
+  },
+  "exact_remaining_bins": {
+    "551_ledger_path": "docs/verification/data/thermo5-r17/analysis_only/round17_residual_exact_whatif_remaining_bins.csv.gz",
+    "551_ledger_sha256": "513f4fe7c4b2d24000e53fcc6c35c494b6236fcde4c920e6c12e363dfcdc5f5a",
+    "553_ledger_path": "docs/verification/data/thermo5-r17/analysis_only/round17_post_directed_whatif_remaining_bins.csv.gz",
+    "553_ledger_sha256": "bd192903764ecb6e4b26bed8697563c5fe79707aa8ab987664cc87697f77b58b",
+    "remaining_rows_all_open": true,
+    "review_class_counts": {
+      "CONFIG_UNREACHABLE": 10,
+      "DEFENSIVE_NEGATIVE_ONLY": 2,
+      "STATIC_UNREACHABLE": 3,
+      "UNKNOWN": 1685
+    },
+    "same_551_by_metric": {
+      "branch": 15,
+      "cond": 84,
+      "line": 29,
+      "toggle": 1638
+    },
+    "same_551_test_vdb_count": 1766,
+    "supplemented_553_by_metric": {
+      "branch": 15,
+      "cond": 84,
+      "line": 29,
+      "toggle": 1572
+    },
+    "supplemented_553_test_vdb_count": 1700
+  },
+  "formal": {
+    "open_obligations_remain": true,
+    "rerun_this_round": false,
+    "result": "NOT_RUN_IN_THIS_RESIDUAL_COVERAGE_STEP"
+  },
+  "generated_date": "2026-11-09",
+  "official_waiver_inventory": {
+    "path": "docs/verification/thermo5_tx_waivers.csv",
+    "review_status_counts": {
+      "PENDING": 371
+    },
+    "round17_reconciliation_status_counts": {
+      "PENDING_MATCHED_TO_8970_CANDIDATE_SET": 367,
+      "PENDING_NOT_IN_8970_CANDIDATE_SET": 2,
+      "RESOLVED_BY_RAW_HIT": 2
+    },
+    "rows": 371,
+    "source_file_sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830",
+    "unique_ids": 371
+  },
+  "product": {
+    "candidate_source_sha256": {
+      "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+      "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+      "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+      "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+      "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+      "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d"
+    },
+    "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+    "configuration": "Centered-Cubic x2+x2; EF2 ORDER=2, STEP=5120, STATE_BITS=20; 32 chronological lanes; DPD_MAX_TAPS=1, Identity reset image; AXI-Lite; Generic FIFO",
+    "rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+    "source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+    "supplemental_uvm_source_sha256": "8ef3161ffd879a0f059d9b54246625349b2975c1c198e044f12f020e012aab72"
+  },
+  "review_branch": "codex/thermo5-round17-formal-closure",
+  "schema": "thermo5_tx_r17_final_residual_coverage_evidence_v1",
+  "signoff": "OPEN; Analysis-only What-if is not official Adjusted Coverage or Linux DV signoff",
+  "source_checkout_head_before_report_commit": "26035728751a821f60ae2f267736be0cbed97756",
+  "status": "ANALYSIS_ONLY_NOT_OFFICIAL_SIGNOFF",
+  "strict_urg_audit": {
+    "assertion_counts": {
+      "FAILURE": 3,
+      "SUCCESS": 13,
+      "UNCOVERED": 2
+    },
+    "checksum_or_scope_or_mapping_warnings": 0,
+    "diagnostics": 0,
+    "fsm_unchanged_by_exclusions": true,
+    "mode": "-excl_strict for all Analysis-only scenarios",
+    "official_adjusted_unchanged_from_raw": true,
+    "raw_covered_numerators_preserved_by_exclusions": true
+  },
+  "supplemental_553_vdb_input": {
+    "added_test_vdb_count": 2,
+    "added_test_vdbs": [
+      {
+        "basename": "cov_thermo5_sku_axil_config_test_seed271030.vdb",
+        "tree_bytes": 12633,
+        "tree_file_count": 13,
+        "tree_sha256": "252e59a2fce21256a80aebbea03b77723753a8b44646223aa51a677841f82aca"
+      },
+      {
+        "basename": "cov_thermo5_sku_axil_register_access_test_seed271032.vdb",
+        "tree_bytes": 11843,
+        "tree_file_count": 13,
+        "tree_sha256": "25fe344881a5014abf56a17147eb3597bb838e59567dfab77e5c5f24c1c8888b"
+      }
+    ],
+    "design_vdb_count": 1,
+    "manifest_canonical_sha256": "3a94a52a55549dfc85d63e06e1012244d14dfa13757cf2d6504a06b0327a7ff4",
+    "manifest_file_sha256": "b093efb2140adb6faaba6a2669c113ecad8f72bba120e8d572872b446d40c43f",
+    "run_manifest_sha256": "a3d785c14ef2f0b5bef1d2fcb2ce925311f9940b648920961e12625104ae518f",
+    "scenarios": {
+      "legacy_8957": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92138,
+            "missing": 4020,
+            "percent": 95.819381,
+            "total": 96158
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 8322
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "5b0c90d792d2a7636b720fe9f72444f8f96113acf670d49c53c93138fae3ed0b"
+      },
+      "legacy_plus_active": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92138,
+            "missing": 3900,
+            "percent": 95.939107,
+            "total": 96038
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 8442
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "67c2141533c1bf3e716bdcf452f6eff48477e4e833653baaa90b058bb46f8bb1"
+      },
+      "legacy_plus_all": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92138,
+            "missing": 1572,
+            "percent": 98.322484,
+            "total": 93710
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 10770
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "9ec2f7949b419d8f3fcdef9f614d67d052e5e0eb73710e68b21627159bb68ade"
+      },
+      "legacy_plus_ef2": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 15,
+            "percent": 97.217069,
+            "total": 539
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 84,
+            "percent": 88.663968,
+            "total": 741
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 29,
+            "percent": 99.138699,
+            "total": 3367
+          },
+          "toggle": {
+            "covered": 92138,
+            "missing": 1692,
+            "percent": 98.196739,
+            "total": 93830
+          }
+        },
+        "excluded_bins_by_metric": {
+          "branch": 98,
+          "cond": 108,
+          "line": 429,
+          "toggle": 10650
+        },
+        "strict_exclusion": true,
+        "urg_log_sha256": "38f2cc7e7cd309e28cf0ecb4b9e3e5a733b3c79b406372b7d657006e5ecc7618"
+      },
+      "raw": {
+        "coverage": {
+          "branch": {
+            "covered": 524,
+            "missing": 113,
+            "percent": 82.260597,
+            "total": 637
+          },
+          "cond": {
+            "covered": 657,
+            "missing": 192,
+            "percent": 77.385159,
+            "total": 849
+          },
+          "line": {
+            "covered": 3338,
+            "missing": 458,
+            "percent": 87.934668,
+            "total": 3796
+          },
+          "toggle": {
+            "covered": 92138,
+            "missing": 12342,
+            "percent": 88.187213,
+            "total": 104480
+          }
+        },
+        "excluded_bins_by_metric": {},
+        "strict_exclusion": false,
+        "urg_log_sha256": "adc9c5be0f57f7063cfcce82f091119952b23603b43dd786aa2223ff641a1a84"
+      }
+    },
+    "test_vdb_count": 553,
+    "total_vdb_tree_count_including_design": 554,
+    "tree_fingerprint_mismatches": 0,
+    "tree_fingerprints_unchanged_before_after": true
+  },
+  "tools": {
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1 Full64",
+    "vcs": "V-2023.12-SP1 Full64"
+  }
+}
