@@ -1,0 +1,8 @@
+root_cause_group,candidate_count,native_metric_counts,round18_exact_application_count,review_status,approved_count,approval_reference,package
+A_DPD_PAIR1,8192,"{""branch"": 0, ""cond"": 0, ""line"": 0, ""toggle"": 8192}",8192,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/a_dpd_pair1_review.csv.gz
+B_EF2_FIXED_PARAMETERS,436,"{""branch"": 88, ""cond"": 108, ""line"": 240, ""toggle"": 0}",436,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/b_ef2_fixed_parameters_review.csv.gz
+C_DPD_TAP_HISTORY,176,"{""branch"": 0, ""cond"": 0, ""line"": 176, ""toggle"": 0}",176,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/c_dpd_tap_history_review.csv.gz
+D_CDC_RESIDUAL,137,"{""branch"": 2, ""cond"": 0, ""line"": 5, ""toggle"": 130}",137,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/d_cdc_residual_review.csv.gz
+E_OTHER_PARAMETERS,29,"{""branch"": 17, ""cond"": 0, ""line"": 12, ""toggle"": 0}",29,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/e_other_parameters_review.csv.gz
+F_R17_EF2_PAIR_QONE,2328,"{""branch"": 0, ""cond"": 0, ""line"": 0, ""toggle"": 2328}",2328,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/f_r17_ef2_pair_qone_review.csv.gz
+G_R17_DPD_ACTIVE_TAPS,120,"{""branch"": 0, ""cond"": 0, ""line"": 0, ""toggle"": 120}",120,PENDING_INDEPENDENT_REVIEW,0,,waiver_groups/g_r17_dpd_active_taps_review.csv.gz

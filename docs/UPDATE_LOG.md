@@ -1,3 +1,12 @@
+# 2026-11-09 — Thermo5 Round 18 directed counter and exact coverage closure
+
+- Added a legal AXI-Lite one-tap DPD saturation campaign with an independent Python per-lane oracle. The targeted VCS test passed on 65,632 output words / 1,172 legal frames; all 16 sample and saturation counters matched Python, four PA planes were bit-true, queues drained, and early/final underflow were zero. A post-drain settled STATUS read also exercised the independent Active/Draining predictor (one stable comparison after two synchronization-window reads).
+- The 553-to-554 Test-VDB Raw comparison produced 430 new exact Toggle hits (80 `sample_count`, 350 `saturation_count`, zero other). The counter targets now have 80/576 sample-count and 350/848 saturation-count directions hit; 496 and 498 remain respectively. All 148 other data Toggle bins remain open.
+- Reran same-input Raw, zero-Waiver Official Adjusted, and strict Analysis-only What-if URG on both 553-Test and 554-Test manifests. After exact repair of 9 Branch and 4 parameter-guard Line native mappings, What-if has 6 Branch, 84 Condition, 25 Line, and 1,142 Toggle bins open (1,257 total). Covered numerators, FSM, and Assertion counts were unchanged by exclusion. No URG mapping/scope/checksum warnings were emitted.
+- Added grouped 11,418-bin independent-review packages, the preserved 371-row Waiver reconciliation, exact counter/control/other-toggle ledgers, portable VDB/URG evidence manifest, and `thermo5-tx-final-code-coverage-round18-20261109.md`.
+- Official Waiver approvals and active Exclusions remain zero; Official Adjusted still equals Raw. No true dead code was established or removed. Full product regression and Formal were not run; 3 Assertion failures and 2 uncovered Assertions remain in the inherited URG summary. Linux DV and Code Coverage signoff remain OPEN.
+- Checks: directed VCS/UVM test PASS; Python reference suite 66/66; hardware/coverage tool suite 47/47; Python compile checks PASS; `git diff --check` PASS. No product RTL or product parameter changed.
+
 # 2026-11-09 — Thermo5 Round 17 remaining uncovered-bin report
 
 - Added `docs/verification/thermo5-tx-r17-remaining-uncovered-bin-report-20261109.md`, a focused inventory of the 4,214 bins left by the same-VDB Analysis-only What-if URG run. It includes exact Branch/Condition/Line IDs, toggle signal-group counts, per-source breakdown, the 13 unresolved candidate mappings, and a targeted closure order.

@@ -1,0 +1,104 @@
+{
+  "approved_count": 0,
+  "candidate_count": 11418,
+  "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "counter_target_results": {
+    "sample_count": {
+      "hit": 80,
+      "remaining": 496,
+      "target": 576
+    },
+    "saturation_count": {
+      "hit": 350,
+      "remaining": 498,
+      "target": 848
+    }
+  },
+  "files": {
+    "counter_high_bit_exact_results_1424.csv.gz": {
+      "bytes": 81422,
+      "sha256": "5428d300f4d1f9d0bf5346cd359590d8e97ccbf4a0aa3220f9470295ce91df17"
+    },
+    "exact_remaining_control_bins_115.csv.gz": {
+      "bytes": 11932,
+      "sha256": "36a0273a0367430878433507f275879fd210855b5077fc0f17b25679c6c7bb5f"
+    },
+    "official_waiver_reconciliation_371.csv": {
+      "bytes": 409175,
+      "sha256": "432081c7a11b01eb28b58cb688a66c42e764f521cb6dac2e7f60eafd3fe84e99"
+    },
+    "other_toggle_remaining_148.csv.gz": {
+      "bytes": 10955,
+      "sha256": "5ef19ab831fa2d0ec97e6b327072efe4e536f5aad872ca9641c589d2bb6af3ac"
+    },
+    "waiver_groups/a_dpd_pair1_review.csv.gz": {
+      "bytes": 514386,
+      "sha256": "a2c814853558e1d178a3626efc9f2b52612cee8a21f18cc4e29f173f6a263cb2"
+    },
+    "waiver_groups/b_ef2_fixed_parameters_review.csv.gz": {
+      "bytes": 41769,
+      "sha256": "b6e783ca68cb69c555086bd6fa558ccb1656867209b08040666a57ad20047996"
+    },
+    "waiver_groups/c_dpd_tap_history_review.csv.gz": {
+      "bytes": 11983,
+      "sha256": "e37f8be0f7dd4fb19c434fcf9ace9d00ff220132ad9c0e9a0c9719249b2f0ba8"
+    },
+    "waiver_groups/d_cdc_residual_review.csv.gz": {
+      "bytes": 11413,
+      "sha256": "aa7817b8b3a23a0887048d1dde5644628b62acfb89c28101dc548466c38d0aaf"
+    },
+    "waiver_groups/e_other_parameters_review.csv.gz": {
+      "bytes": 5700,
+      "sha256": "8c546ae01343c521113ca69ca0b006e1a1c276206c367bbd30847c5a93d07bb0"
+    },
+    "waiver_groups/f_r17_ef2_pair_qone_review.csv.gz": {
+      "bytes": 188681,
+      "sha256": "6ce063e655b744b34e5f7a53363a5a7bf1033b36fe4eae93d042f1ef723f37cf"
+    },
+    "waiver_groups/g_r17_dpd_active_taps_review.csv.gz": {
+      "bytes": 10609,
+      "sha256": "b0ced2e318ec85b1bd17b57e20e8605b946c995504689a4eb3f1d83643fec807"
+    },
+    "waiver_review_package_index.csv": {
+      "bytes": 1296,
+      "sha256": "76b3da87bf0091404075aeca7e1d6b4ff932bcd791f1020b528b3b7f0925db26"
+    }
+  },
+  "official_raw_hit_preserved_count": 2,
+  "official_waiver_count": 371,
+  "official_waiver_status_counts": {
+    "PENDING_MATCHED_TO_8970_CANDIDATE_SET": 367,
+    "PENDING_NOT_IN_8970_CANDIDATE_SET": 2,
+    "RESOLVED_BY_RAW_HIT": 2
+  },
+  "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "product_source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "remaining_control_count": 115,
+  "remaining_exact_bin_count": 1257,
+  "remaining_other_toggle_count": 148,
+  "reviewer_decision": "PENDING_INDEPENDENT_REVIEW",
+  "schema": "thermo5_tx_r18_review_packages_v1",
+  "strict_analysis_only_excluded_count": 11418,
+  "whatif_urg_metrics": {
+    "branch": {
+      "covered": 524,
+      "missing": 6,
+      "total": 530
+    },
+    "cond": {
+      "covered": 657,
+      "missing": 84,
+      "total": 741
+    },
+    "line": {
+      "covered": 3338,
+      "missing": 25,
+      "total": 3363
+    },
+    "toggle": {
+      "covered": 92568,
+      "missing": 1142,
+      "total": 93710
+    }
+  }
+}

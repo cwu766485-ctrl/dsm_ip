@@ -2,6 +2,11 @@
 // The model advances on monitor write-fire events, not the later B response.
 class thermo5_axil_register_predictor extends uvm_component;
   `uvm_component_utils(thermo5_axil_register_predictor)
+  // STATUS reflects core lifecycle state after run/active synchronizers
+  // crossing source, core, and AXI clock domains. Keep lifecycle bits masked
+  // for a conservative bounded settling window; control/status bits 2:0 stay
+  // independently checked on every read.
+  localparam int unsigned STATUS_SYNC_SETTLE_CYCLES = 12;
   uvm_analysis_imp_src#(thermo5_source_item,thermo5_axil_register_predictor) source_imp;
   uvm_analysis_imp_pa#(thermo5_pa_word,thermo5_axil_register_predictor) pa_imp;
   uvm_analysis_imp_axil_fire#(thermo5_axil_item,thermo5_axil_register_predictor) write_fire_imp;
@@ -246,15 +251,15 @@ class thermo5_axil_register_predictor extends uvm_component;
     stable=1;
     if (run_request_model) begin
       active=1;
-      stable=(cycle >= run_request_cycle_model + 4);
+      stable=(cycle >= run_request_cycle_model + STATUS_SYNC_SETTLE_CYCLES);
     end else if (ever_run_model && !drain_output_complete_model) begin
       active=1;
       draining=1;
-      stable=(cycle >= stop_request_cycle_model + 4);
+      stable=(cycle >= stop_request_cycle_model + STATUS_SYNC_SETTLE_CYCLES);
     end else if (ever_run_model) begin
       active=0;
       draining=0;
-      stable=(cycle >= drain_complete_cycle_model + 4);
+      stable=(cycle >= drain_complete_cycle_model + STATUS_SYNC_SETTLE_CYCLES);
     end
     return {draining,active};
   endfunction

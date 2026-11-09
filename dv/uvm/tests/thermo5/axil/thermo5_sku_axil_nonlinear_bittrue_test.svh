@@ -1,7 +1,5 @@
 // Full-chain oracle test for a non-identity polynomial DPD image. Run with
-// centered-cubic RTL and Python vectors generated using --dpd-profile
-// nonlinear_test. CORE_WORDS=56 covers one short packet; 112 covers two
-// consecutive one-quantum packets with independent centered-FIR frame tails.
+// centered-cubic RTL and matching Python-generated vectors.
 class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear_dpd_test;
   `uvm_component_utils(thermo5_sku_axil_nonlinear_bittrue_test)
 
@@ -11,12 +9,19 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
     super.new(name,parent);
   endfunction
 
+  virtual function bit allow_extended_frame_count();
+    return 0;
+  endfunction
+
   virtual function void configure_case();
     int packet_beats;
     super.configure_case();
     cfg.expect_pa=1;
     cfg.frame_starts=cfg.core_words/56;
-    if ((cfg.core_words!=56) && (cfg.core_words!=112))
+    if (cfg.core_words<56 || (cfg.core_words%56)!=0)
+      `uvm_fatal("NONLINEAR_WORDS","CORE_WORDS must be a positive multiple of 56")
+    if (!allow_extended_frame_count() &&
+        (cfg.core_words!=56) && (cfg.core_words!=112))
       `uvm_fatal("NONLINEAR_WORDS","Use CORE_WORDS=56 or CORE_WORDS=112")
     packet_beats=0;
     void'($value$plusargs("PACKET_BEATS=%d",packet_beats));
@@ -87,7 +92,14 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
     bit [31:0] rdata;
     bit [386:0] expected_cfg_payload;
     bit drain_complete;
+    int unsigned stream_timeout_cycles, overall_timeout_cycles, drain_polls;
     expected_cfg_payload=configured_payload();
+    stream_timeout_cycles=12000;
+    overall_timeout_cycles=20000;
+    if (allow_extended_frame_count()) begin
+      stream_timeout_cycles+=2*cfg.core_words;
+      overall_timeout_cycles+=3*cfg.core_words;
+    end
     phase.raise_objection(this);
     fork
       begin
@@ -117,7 +129,20 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
             axil_write(8'h00,32'h1,0,0,resp);
             if (resp!=2'b00) `uvm_fatal("AXIL_RUN","RUN request failed")
             `uvm_info("AXIL_NONLINEAR_PROGRESS","RUN asserted",UVM_LOW)
-            for (int cycles=0; cycles<12000 && !scenario_stream_complete(); cycles++)
+            // Stop ingress as soon as the complete packet stream is accepted.
+            // Keeping RUN asserted until the much larger PA stream finishes
+            // creates a finite-source starvation window unrelated to DPD
+            // saturation and obscures the intended graceful-drain contract.
+            for (int cycles=0; cycles<stream_timeout_cycles &&
+                 env.source.monitor.accepted_beats<cfg.source_beats; cycles++)
+              @(posedge vif.core_clk);
+            if (env.source.monitor.accepted_beats!=cfg.source_beats)
+              `uvm_fatal("AXIL_NONLINEAR_SOURCE_TIMEOUT",
+                $sformatf("accepted %0d/%0d source beats before STOP",
+                  env.source.monitor.accepted_beats,cfg.source_beats))
+            axil_write(8'h00,32'd0,0,0,resp);
+            if (resp!=2'b00) `uvm_fatal("AXIL_STOP","RUN clear failed after source packet completion")
+            for (int cycles=0; cycles<stream_timeout_cycles && !scenario_stream_complete(); cycles++)
               @(posedge vif.core_clk);
             if (!scenario_stream_complete())
               `uvm_fatal("AXIL_NONLINEAR_TIMEOUT","Nonlinear bit-true stream did not complete")
@@ -127,17 +152,30 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
             `uvm_info("AXIL_NONLINEAR_PROGRESS","DPD configuration acknowledgement completed",UVM_LOW)
             if (vif.cfg_active_payload!==expected_cfg_payload)
               `uvm_fatal("AXIL_NONLINEAR_ACTIVE","Active nonlinear DPD image did not match the programmed image")
-
-            axil_write(8'h00,32'd0,0,0,resp);
-            if (resp!=2'b00) `uvm_fatal("AXIL_STOP","RUN clear failed after packet completion")
+            if (vif.underflow || env.coverage.underflow_before_last_source!=0)
+              `uvm_fatal("AXIL_NONLINEAR_UNDERFLOW",
+                $sformatf("underflow=%0b early_underflow=%0d",vif.underflow,
+                  env.coverage.underflow_before_last_source))
             drain_complete=0;
-            for (int polls=0; polls<1000 && !drain_complete; polls++) begin
+            for (drain_polls=0; drain_polls<1000 && !drain_complete; drain_polls++) begin
               axil_read(8'h04,rdata,resp);
               if (resp!=2'b00) `uvm_fatal("AXIL_STATUS","Could not read drain status")
               drain_complete=(rdata[4:3]==2'b00);
             end
             if (!drain_complete)
               `uvm_fatal("AXIL_DRAIN_TIMEOUT","Frontend did not finish nonlinear packet drain")
+            $display("THERMO5_DPD_DRAIN_STATUS_CLEAR status=%08x polls=%0d",
+              rdata,drain_polls);
+            // Exercise the independently predicted lifecycle bits after the
+            // core-to-AXI synchronizer has had time to settle. Drain polling
+            // above checks the externally visible completion condition; this
+            // read also makes the predictor's active/draining comparison live.
+            repeat(16) @(posedge env.axil.monitor.vif.aclk);
+            axil_read(8'h04,rdata,resp);
+            if (resp!=2'b00 || rdata[4:3]!=2'b00)
+              `uvm_fatal("AXIL_STATUS_SETTLED",
+                $sformatf("settled STATUS must be inactive: resp=%b status=%08x",resp,rdata))
+            $display("THERMO5_AXIL_STATUS_SETTLED_CHECK status=%08x",rdata);
             if (!env.unified_scoreboard.check_expected_queues_drained("nonlinear-bittrue"))
               `uvm_fatal("AXIL_NONLINEAR_EXPECTED_QUEUE",
                 "Independent expectations remained after nonlinear STOP/drain")
@@ -146,7 +184,7 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
         join
       end
       begin
-        repeat(20000) @(posedge vif.core_clk);
+        repeat(overall_timeout_cycles) @(posedge vif.core_clk);
         `uvm_fatal("TIMEOUT","Thermo5 nonlinear bit-true test timeout")
       end
     join_any
