@@ -15,6 +15,7 @@ from dsm_refmodel.thermo5 import (
     nonlinear_test_dpd_coefficients,
     nonlinear_test_dpd_coefficients_4tap,
     one_tap_complex_coefficients,
+    centered_cubic_dpd_saturation_by_lane,
     write_vectors,
 )
 
@@ -172,6 +173,29 @@ class Thermo5ReferenceTests(unittest.TestCase):
         output, _, _ = apply_memory_polynomial(
             [(16384, 0), (0, 0)], nonlinear, 2)
         self.assertEqual(output[1], (1152, 0))
+
+    def test_memory_polynomial_exposes_per_sample_saturation_without_api_regression(self):
+        coefficients = one_tap_complex_coefficients(c1_re_q14=0x7FFF)
+        samples = [(32767, 0), (-32768, 0)]
+        legacy = apply_memory_polynomial(samples, coefficients, 1)
+        detailed = apply_memory_polynomial(
+            samples, coefficients, 1, return_saturation_flags=True)
+        self.assertEqual(len(legacy), 3)
+        self.assertEqual(detailed[:3], legacy)
+        self.assertEqual(detailed[2], 2)
+        self.assertEqual(detailed[3], [True, True])
+
+    def test_centered_cubic_dpd_saturation_oracle_reports_independent_lane_counts(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=56, seed=180018, profile="range_stress",
+            frame_start_words=(1,), frame_gains=(1 << 14,))
+        lane_counts = centered_cubic_dpd_saturation_by_lane(
+            i_words, q_words, starts, gains,
+            one_tap_complex_coefficients(c1_re_q14=0x7FFF),
+            dpd_active_taps=1, lanes=16)
+        self.assertEqual(len(lane_counts), 16)
+        self.assertTrue(all(count >= 0 for count in lane_counts))
+        self.assertGreater(sum(lane_counts), 0)
 
     def test_centered_frontend_non_linear_dpd_changes_bit_true_output(self):
         i_words, q_words, starts, gains = generate_source_vectors(

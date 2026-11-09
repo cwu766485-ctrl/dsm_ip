@@ -1,5 +1,19 @@
 # Execution frontier
 
+## Current execution state: Thermo5 Round 18 targeted coverage closure (2026-11-09)
+
+Review branch `codex/thermo5-round18-final-coverage-closure` starts at PR #47 source `f9275273ef2137c5c181cb5395cdd9f706dd4b90`; Product RTL remains unchanged at aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`. Product compile fingerprint is `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`.
+
+A legal AXI-Lite non-Identity one-tap DPD saturation test passed on 65,632 output words and 1,172 56-word frames. The independent Python oracle matched all 16 lane sample/saturation counters, all four PA planes were bit-true, queues drained, and early/final underflow were zero. A post-drain STATUS read checked the independently predicted lifecycle bits after the settling window. The 553→554 Test-VDB Raw delta is 430 exact Toggle hits: 80 sample-count, 350 saturation-count, zero other.
+
+Actual Full64 URG was rerun on the same VDB manifests for Raw, zero-Waiver Official Adjusted, and strict Analysis-only What-if with 11,405 and 11,418 candidates. Official remains Raw because approvals=0 and exclusions=0: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle 92568/104480. After exact mapping of 9 Branch and 4 Line candidates, Analysis-only What-if leaves 1,257 bins (Branch 6, Condition 84, Line 25, Toggle 1,142). It is not official signoff.
+
+Review packets retain all 371 official Waiver IDs (367 matched pending, 2 pending outside the old set, 2 resolved by Raw hit) and group 11,418 candidates by seven root causes. No candidate is approved. There are 115 remaining non-toggle bins (113 UNKNOWN, 2 DEFENSIVE_NEGATIVE), 496 sample-count counter toggle directions, 498 saturation-count directions, and 148 other data toggle directions. The two 32-bit counters stay in scope; no product-lifetime bound supports excluding their high bits. No dead RTL was established or removed.
+
+Evidence/report: `docs/verification/thermo5-tx-final-code-coverage-round18-20261109.md` and `docs/verification/data/thermo5-r18/`. Python reference suite is 66/66, hardware/coverage tool suite 47/47, and targeted VCS test PASS. Full product regression and Formal were not run; the inherited URG assertion summary still has 3 FAILURE and 2 UNCOVERED. **Coverage and Linux DV signoff remain OPEN.**
+
+Next: publish this evidence as an independent-review PR targeting `thermo5`; do not mark final signoff or activate Waivers without real Reviewer approval. After review, target the 115 control bins and counter/data toggle groups by Exact Bin, rerun Formal/Assertion obligations, then perform a clean final product regression and official Raw/Approved Adjusted URG.
+
 ## Current execution state: Thermo5 Round 17 final residual review (2026-11-09)
 
 The final residual review is documented in `docs/verification/thermo5-tx-r17-final-residual-coverage-review-20261109.md`. It strictly applied all 2,448 new EF2/Active-Tap exact candidates in Analysis-only URG. On the frozen 1-Design +551-Test input, the combined What-if residual is 1,766 bins; two directed UVM Test VDBs added 66 exact Raw Toggle hits, leaving 1,700 bins on the 1-Design +553-Test incremental set. The full ledgers and input/log hashes are in `docs/verification/data/thermo5-r17/analysis_only/round17_supplemental_urg_evidence.json`.

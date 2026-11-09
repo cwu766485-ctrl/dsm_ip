@@ -168,7 +168,8 @@ def _centered_cubic_x2_with_future(samples, future=()):
     return output
 
 
-def apply_memory_polynomial(samples, coefficients, active_taps=None, history=()):
+def apply_memory_polynomial(samples, coefficients, active_taps=None, history=(),
+                            return_saturation_flags=False):
     """Apply the RTL's scalar equivalent memory-polynomial DPD.
 
     Coefficients are signed Q2.14 lists keyed by ``c1_re``, ``c1_im``,
@@ -190,6 +191,7 @@ def apply_memory_polynomial(samples, coefficients, active_taps=None, history=())
     prior.extend([(0, 0)] * (max_taps - 1 - len(prior)))
     output = []
     saturation_count = 0
+    saturation_flags = []
 
     for current in samples:
         current = tuple(map(int, current))
@@ -213,11 +215,15 @@ def apply_memory_polynomial(samples, coefficients, active_taps=None, history=())
         low, high = -(1 << 15), (1 << 15) - 1
         clipped_i = min(max(gain_re_sum, low), high)
         clipped_q = min(max(gain_im_sum, low), high)
-        saturation_count += int(clipped_i != gain_re_sum or clipped_q != gain_im_sum)
+        saturated = clipped_i != gain_re_sum or clipped_q != gain_im_sum
+        saturation_count += int(saturated)
+        saturation_flags.append(bool(saturated))
         output.append((clipped_i, clipped_q))
         if max_taps > 1:
             prior = [current] + prior[:max_taps - 2]
 
+    if return_saturation_flags:
+        return output, prior, saturation_count, saturation_flags
     return output, prior, saturation_count
 
 
@@ -502,6 +508,68 @@ def run_centered_cubic_ef2_inputs(i_words, q_words, frame_starts, frame_gains,
             ef2_words.append((tuple(sample[0] for sample in block),
                               tuple(sample[1] for sample in block)))
     return ef2_words
+
+
+def centered_cubic_dpd_saturation_by_lane(i_words, q_words, frame_starts,
+                                          frame_gains, dpd_coefficients,
+                                          dpd_active_taps=1,
+                                          dpd_configs_by_frame=None,
+                                          lanes=16):
+    """Predict one-tap DPD output-saturation events for each packed lane.
+
+    The returned counts follow the same frame gain, centered-cubic first-stage
+    output, and lookahead-tail sequence used by ``run_centered_cubic_ef2_inputs``.
+    Each consecutive group of ``lanes`` samples is one vector transaction, so
+    sample index modulo ``lanes`` selects the independently monitored RTL
+    counter. No DUT internal value participates in this prediction.
+    """
+    count = len(i_words)
+    if count != len(q_words) or count != len(frame_starts) or count != len(frame_gains):
+        raise ValueError("I/Q and frame metadata word counts must match")
+    if lanes < 1:
+        raise ValueError("lanes must be positive")
+    if dpd_coefficients is None:
+        raise ValueError("DPD coefficients are required for saturation prediction")
+    starts = [index for index, flag in enumerate(frame_starts) if flag]
+    if not starts or starts[0] != 0:
+        starts.insert(0, 0)
+    if any(index % 7 for index in starts):
+        raise ValueError("centered-cubic frame starts must align to 7-word TID quanta")
+    boundaries = starts + [count]
+    dpd_history = ()
+    lane_counts = [0] * lanes
+    for frame_index in range(len(starts)):
+        first_word, end_word = boundaries[frame_index:frame_index + 2]
+        if (end_word - first_word) % 7:
+            raise ValueError("centered-cubic frame lengths must be a multiple of 7 words")
+        gain = int(frame_gains[first_word])
+        frame_i = [value for word in i_words[first_word:end_word] for value in word]
+        frame_q = [value for word in q_words[first_word:end_word] for value in word]
+        gained_i, gained_q = apply_q14_gain(frame_i, frame_q, gain)
+        source = list(zip(gained_i, gained_q))
+        stage1_real = _centered_cubic_x2_with_future(source)
+        tail_mid = _centered_cubic_midpoint(source[-1], (0, 0), (0, 0), (0, 0))
+        tail = [(0, 0)] * lanes
+        tail[1 if lanes > 1 else 0] = tail_mid
+        frame_coefficients = dpd_coefficients
+        frame_active_taps = dpd_active_taps
+        if dpd_configs_by_frame is not None:
+            if frame_index >= len(dpd_configs_by_frame):
+                raise ValueError("DPD config count must cover every frame")
+            frame_config = dpd_configs_by_frame[frame_index]
+            if frame_config is not None:
+                frame_coefficients = frame_config["coefficients"]
+                frame_active_taps = frame_config["active_taps"]
+        _, dpd_history, _, flags = apply_memory_polynomial(
+            stage1_real + tail, frame_coefficients,
+            active_taps=frame_active_taps, history=dpd_history,
+            return_saturation_flags=True)
+        if len(flags) % lanes:
+            raise ValueError("DPD frame including tail must contain complete lane vectors")
+        for sample_index, saturated in enumerate(flags):
+            if saturated:
+                lane_counts[sample_index % lanes] += 1
+    return lane_counts
 
 
 def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
