@@ -1,3 +1,107 @@
+# 2026-11-09 — Thermo5 Round 17 remaining uncovered-bin report
+
+- Added `docs/verification/thermo5-tx-r17-remaining-uncovered-bin-report-20261109.md`, a focused inventory of the 4,214 bins left by the same-VDB Analysis-only What-if URG run. It includes exact Branch/Condition/Line IDs, toggle signal-group counts, per-source breakdown, the 13 unresolved candidate mappings, and a targeted closure order.
+- Linked the focused report from the full Round 17 What-if report and updated the execution frontier. The report distinguishes the 4,214 What-if remaining bins from the 13,171 official Raw/zero-exclusion Adjusted gap.
+- Verification: generated report reconciles to the committed exact-bin ledger and portable execution evidence (4,214 unique IDs; Branch 15, Condition 84, Line 29, Toggle 4,086; 426 toggle groups); Markdown whitespace and repository diff checks passed.
+- No RTL, product configuration, VDB, Formal result, waiver approval, or official exclusion changed. Linux DV signoff remains OPEN.
+
+# 2026-11-09 11:41 +08:00 — Thermo5 Round 17 precise exclusion What-if execution
+
+- Added fail-closed native-bin mapping and same-manifest URG execution tools; recorded five Analysis-only `.el` batches, exact candidate execution dispositions, official Waiver reconciliation, compressed VDB manifest and portable evidence JSON.
+- Ran fresh Raw URG and five strict exclusion batches plus the combined strict What-if URG on the same 1-Design/551-Test VDB set. All 552 VDB tree hashes matched before/after; URG diagnostics were zero. Of 8,970 candidates, 8,721 were direct native mappings, 236 exact associated line effects were checked against the report, and 13 mapping gaps remain OPEN.
+- Actual Raw → Analysis-only What-if: Branch 524/637 → 524/539; Condition 657/849 → 657/741; Line 3338/3796 → 3338/3367; Toggle 92072/104480 → 92072/96158. Remaining code bins: 4,214. FSM unchanged at 13/13 states and 22/22 transitions.
+- Official inventory remains 2 Raw-hit-resolved, 369 pending, 0 approved and 0 exclusions. No official `.el` was generated; Linux DV signoff remains OPEN. Full report: `docs/verification/thermo5-tx-r17-precise-exclusions-whatif-20261109.md`.
+- Normalized generated `.el` EOF whitespace, strengthened the runner to reject changed covered-bin counts, and repeated Raw, all five strict batches and combined strict URG against the same manifest; coverage and candidate dispositions were unchanged. Final evidence binds the normalized files and final run hashes.
+- Checks: artifact hashes/counts, `python3.12 -m py_compile` for both tools, and `git diff --check`. No RTL, product parameter, Formal harness or VDB input changed.
+
+# 2026-11-09 09:53 +08:00 — Thermo5 exact-bin static reachability review refresh
+
+- Reclassified every row in the 13,171-bin Round 17 uncovered ledger using the
+  actual nested branch `source_position` (not the enclosing procedural-block
+  line). Added explicit product parameter/topology results for the DPD tap
+  guards, EF2 interpolator parameter checks, stage-2 tail-disabled paths, and
+  the stage-1 tail metadata tie-off.
+- Current classes: 138 `STATIC_UNREACHABLE`, 8,832
+  `CONFIG_UNREACHABLE`, 2 `DEFENSIVE_NEGATIVE_ONLY`, 4,199 `UNKNOWN`.
+  There are zero established `TRUE_DEAD_CODE`, `REACHABLE_UNTESTED`, or
+  reproducible `TOOL_OR_MAPPING_ISSUE` records. All 8,970 candidates remain
+  unapproved; formal approvals and official Exclusions remain zero.
+- Extended each CSV row with a human-readable rationale, source trace refs,
+  and trace-completeness status. Pair-1 exact semantic IDs still match all
+  8,192 rows in the current-Raw review ledger.
+- Official same-manifest Raw/zero-exclusion Adjusted remains the last recorded
+  result: Branch 524/637, Condition 657/849, Line 3338/3796, Toggle
+  92072/104480, FSM state 13/13 and transition 22/22. The arithmetic scenario
+  with all 8,970 candidates excluded leaves 4,201 bins, but actual What-if URG
+  remains NOT RUN and no `.el` was generated.
+- VCS startup probes exited 1 before compile: default mapping selected missing
+  `linux/bin/vcs1`; `VCS_ARCH_OVERRIDE=linux64` reported the WSL2 kernel as
+  unsupported. The URG version probe exited 1 during VCS_HOME helper lookup.
+  Logs and SHA-256 hashes are recorded in the review report under ignored
+  `runs/thermo5_static_reachability_20261109/`. No directed simulation,
+  Formal run, or new coverage hit is claimed.
+- Checks: ledger builder PASS (97/97 compile-parent source hashes; 13,171/13,171
+  ledger source hashes; 8,192/8,192 Pair-1 IDs); review/candidate/open row and
+  class totals checked; `git diff --check` PASS. No RTL, compile parameter,
+  Formal harness, waiver status, or URG denominator changed. Linux DV signoff
+  remains OPEN.
+
+# 2026-11-09 09:37 +08:00 — Thermo5 Round 17 static reachability audit
+
+- Added a reproducible Python ledger builder and exact-bin CSVs for all 13,171
+  carried uncovered records, 8,950 unapproved structural/configuration
+  candidates, and 4,221 rows that remain open without an exclusion.
+- Added `docs/verification/thermo5-tx-static-reachability-review-20261109.md`
+  with the per-metric classification, DPD/EF2/CDC/GT/frame-gain source audit,
+  Raw results, What-if limitation, and minimum next closure actions.
+- Updated the execution frontier. No product RTL, algorithm, parameter,
+  Formal harness, official Waiver, Exclusion, or denominator changed.
+- Checks: `python3.12 tools/hw/build_thermo5_static_reachability_review.py`
+  regenerated 13,171 rows and verified 97/97 compile-parent source hashes;
+  candidate and remaining-open CSV counts and output SHA-256 values matched
+  the generated manifest; `git diff --check` passed.
+- VCS, URG, and VC Formal were not run. The exact Round 17 one-Design/551-Test
+  VDB set is unavailable in this checkout/workspace and the matching GitHub
+  workflow runs have no artifacts. Actual What-if Adjusted URG remains NOT RUN;
+  all candidate reviewer fields remain empty and no Exclusion is active.
+
+# 2026-11-09 — Thermo5 Round 17 DPD Identity staged-proof follow-up
+
+- Ran the repository VC Formal Identity runner with `--auto-lemmas` on the
+  current PR #47 source tree. The VCF process completed with zero black boxes
+  and no SAT counterexample; the runner returned `INCONCLUSIVE_OR_FAIL` because
+  23 of 24 final assertions remained inconclusive. `a_valid_latency` is proven
+  and the four endpoint/stall/recovery Covers are reached.
+- Recorded individual original-property status, engine-ID reporting limits,
+  timeout warnings, local S7–S10 proof reports and the S7 transfer replay
+  discrepancy. Exploratory hand-composed results are not used to close the
+  automatic proof gate.
+- Archived the five stage-activity Cover harness/TCL inputs and added a compact
+  machine-readable evidence summary and Formal report.
+- Checks: repository Formal runner (expected gate exit 1), JSON parse,
+  `git diff --check`. No product RTL, algorithm, parameter, coverage database,
+  Waiver approval or Exclusion changed. Linux DV signoff remains OPEN.
+
+# 2026-11-08 — Thermo5 Round 17 Identity Formal decomposition follow-up
+
+- Added 14 non-vacuous I/Q data-alignment assertions for DPD pipeline stages
+  S0–S6 to the existing Identity Formal Harness. VC Formal V-2023.12-SP2
+  proved all 14; staged composition also proved the gain-identity Lemma.
+- The final arbitrary-stall composition still leaves payload identity, I/Q
+  no-saturation, saturation-count-zero, and eight intermediate arithmetic
+  assertions INCONCLUSIVE. No SAT counterexample or black box was reported;
+  this is not a full-chain Identity signoff.
+- Recorded the five original Identity property states/engine-source caveat,
+  current Formal depths, log/property hashes, Outstanding Counter result,
+  exact URG assertion classification, and the limitation that no new 551-VDB
+  URG run was possible from the one-test smoke database.
+- Checks: VC Formal run with staged lemma promotion (206.63 s; runner
+  INCONCLUSIVE as expected), AXI-Lite register-access VCS/URG smoke PASS,
+  targeted waiver/formal Python tests 22/22 PASS, JSON validation and
+  `git diff --check`.
+- Product RTL, product parameters, Raw coverage, Waiver approvals, and URG
+  Exclusions are unchanged. Linux DV final signoff remains OPEN.
+
 # 2026-11-08 — Thermo5 post-merge audit artifact normalization
 
 - Normalized generated Round 17 audit CSV line endings to the repository LF
@@ -6624,3 +6728,12 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   regression results.
 - Product RTL, product parameters, official waivers, and URG exclusions remain
   unchanged. Round 14 full product regression and fresh Raw URG are not yet run.
+
+## 2026-11-09 13:24 SGT — Thermo5 Round 17 final residual coverage review
+
+- Audited and applied 2,448 additional EF2 fixed-parameter and DPD Active-Tap candidate Toggle bins through exact native URG mappings and `-excl_strict`. The paired 2,144 EF2 pair bins, 184 fixed `q_one_check` bins, and 120 Active-Tap bins were all accepted by strict Analysis-only URG with no checksum, mapping, or scope diagnostics. Candidate status remains pending independent review; official approvals and Exclusions remain zero.
+- Ran all five Raw/What-if URG scenarios against the unchanged frozen input of one Design VDB plus 551 Test VDBs, then reran the scenarios with two targeted same-product tests for an incremental 553-Test comparison. The 551-Test combined What-if leaves 1,766 bins; two directed tests added 66 exact Raw Toggle hits, and the 553-Test combined What-if leaves 1,700 bins (Branch 15, Condition 84, Line 29, Toggle 1,572). Exact bin ledgers, candidate mappings, counter scope, URG/test log hashes, and VDB fingerprints are documented in the final residual report and adjacent evidence files.
+- Added an AXI-Lite directed check proving illegal `shadow_taps=2` remains software-writable/readable, COMMIT returns SLVERR, and active tap count stays one. The test intentionally excludes the writable shadow register from the 120 Active-Tap candidates. Added timeout scaling to support the targeted 8,232-word source stream. No product RTL, algorithm, or parameter changed.
+- Counter review confirms `sample_count` and `saturation_count` are per-lane internal diagnostic outputs, unconnected at the vector wrapper and not exposed by the product top, but still included in the DUT-only denominator. Their current arithmetic wraps modulo 2^32. The sample-count high bits are not waived without a runtime bound; saturation-count reachability remains open. No scope Exclusion was approved.
+- Checks: VCS V-2023.12-SP1 Full64 targeted config stream and AXI-Lite register-access tests PASS with zero UVM warning/error/fatal and zero predictor mismatch; Python 3.12.13 strict URG runner completed all scenarios; Exact Raw hit delta verified as 66; Python syntax and report/ledger integrity checks are recorded in this PR. FSM remained 13/13 states and 22/22 transitions; URG assertion rows remain 13 SUCCESS, 3 FAILURE, 2 UNCOVERED. Full product regression and Formal were not rerun.
+- Signoff remains OPEN. The 1,700 remaining bins are all OPEN in the What-if and official inventories; the 371-row official waiver CSV remains unchanged with zero approval and zero active official Exclusion. Real XPM/GT Wizard, Vivado timing/PPA, FPGA, RF, and physical QAM256 signoff are outside this run.

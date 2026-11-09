@@ -1,0 +1,82 @@
+{
+  "approved_waivers": 0,
+  "candidate_csv_sha256": "11e4fed459654acca7414c311c81367b273dcc5547ddbbd771c0befb76028d68",
+  "compile_fingerprint_sha256": "e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7",
+  "compile_manifest": "docs/verification/data/thermo5-r17/thermo5_tx_r17_compile_parent_manifest.json",
+  "compile_manifest_sha256": "d815447c35abfbca8cc40849b4d24af4acaab13fff49f2fd962b9ed3d8300c6a",
+  "compile_source_hash_mismatches": 0,
+  "compile_source_hashes_checked": 97,
+  "compiled_product_source_sha": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "configuration_unreachable_candidate_rows": 8832,
+  "coverage_evidence": "docs/verification/data/thermo5-r17/final_closure_audit/thermo5_tx_r17_final_closure_evidence_manifest.json",
+  "coverage_evidence_sha256": "7f9f0da436dfe9f090608c9b11354d6945b037215cc3170a870c6a6664a2950a",
+  "current_product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "design_vdb_count": 1,
+  "exact_manifest_bound_vdb_files_found": false,
+  "generator_sha256": "f1aa7eac01763fc7aad202c3ca713bcc6ec1607fd2e15f968b0bafcb842a00aa",
+  "ledger_to_compile_source_hash_mismatches": 0,
+  "legacy_short_bin_id_collision_rows": 8,
+  "legacy_short_bin_id_unique_count": 13167,
+  "metric_review_class_counts": {
+    "branch": {
+      "CONFIG_UNREACHABLE": 104,
+      "DEFENSIVE_NEGATIVE_ONLY": 1,
+      "STATIC_UNREACHABLE": 3,
+      "UNKNOWN": 5
+    },
+    "cond": {
+      "CONFIG_UNREACHABLE": 108,
+      "UNKNOWN": 84
+    },
+    "line": {
+      "CONFIG_UNREACHABLE": 428,
+      "DEFENSIVE_NEGATIVE_ONLY": 1,
+      "STATIC_UNREACHABLE": 5,
+      "UNKNOWN": 24
+    },
+    "toggle": {
+      "CONFIG_UNREACHABLE": 8192,
+      "STATIC_UNREACHABLE": 130,
+      "UNKNOWN": 4086
+    }
+  },
+  "official_exclusions_applied": 0,
+  "pair1_review_ledger_exact_id_match_count": 8192,
+  "remaining_open_csv_sha256": "facaa35ae1174ff259b21ef56d4647217cfe0fc98646b7162f1707d08bb9d034",
+  "remaining_open_rows_without_candidate_exclusion": 4201,
+  "review_class_counts": {
+    "CONFIG_UNREACHABLE": 8832,
+    "DEFENSIVE_NEGATIVE_ONLY": 2,
+    "STATIC_UNREACHABLE": 138,
+    "UNKNOWN": 4199
+  },
+  "review_csv_sha256": "c6678af52b912f336097cdf6b6dba53c8f91372e6c7bcaf3294db1ebb90b734d",
+  "review_group_counts": {
+    "CDC_14_TO_8_END_ARITHMETIC": 4,
+    "CDC_EARLY_TLAST_NEGATIVE_ONLY": 2,
+    "CDC_RESIDUAL_INVARIANT": 133,
+    "DPD_CONFIG_MAX_TAPS_GUARD": 2,
+    "DPD_PAIR1_ZERO": 8192,
+    "DPD_TAP_HISTORY_MAX_TAPS1": 176,
+    "EF2_INVALID_PARAMETER_GUARD": 8,
+    "EF2_PAIR_LOOKAHEAD_DISABLED": 428,
+    "FRAME_GAIN_HOLD_STATE_DEFAULT": 1,
+    "GT_EQUAL_WIDTH_BOUNDARY": 8,
+    "INTERPOLATOR_HOLD_STATE_PARAMETER": 2,
+    "INTERPOLATOR_PARAMETER_GUARD": 8,
+    "INTERPOLATOR_STAGE1_TAIL_TIED_LOW": 1,
+    "INTERPOLATOR_STAGE2_TAIL_DISABLED": 5,
+    "PRODUCT_DPD_MAX_TAPS_GUARD": 2,
+    "UNKNOWN_REMAINDER": 4199
+  },
+  "schema": "thermo5_static_reachability_review_v1",
+  "source_bin_rows": 13171,
+  "source_ledger": "docs/verification/data/thermo5-r16/thermo5_tx_r16_exact_remaining_bins.csv.gz",
+  "source_ledger_sha256": "26626500992ec055ae67dd0665b6603c43e939f4c461ec88e0b7a8bf2d09047b",
+  "static_unreachable_candidate_rows": 138,
+  "test_vdb_count": 551,
+  "unique_semantic_bin_ids": 13171,
+  "urg_report_manifest_sha256": "8dde1764a8a697be66859d8c8dda5671c77bd3bc1546ee29a18d3936152d92df",
+  "vdb_manifest_sha256": "e0f306b30b206df08b6c37991c940d855e4e03d0659640d38c066b4b6897b509",
+  "what_if_urg_status": "NOT_RUN_EXACT_VDB_SET_UNAVAILABLE"
+}

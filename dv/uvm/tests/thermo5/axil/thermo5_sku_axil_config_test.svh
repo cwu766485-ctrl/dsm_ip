@@ -177,6 +177,30 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
     axil_write(8'h04,32'h4,0,1,resp);
     if (resp!=2'b00) `uvm_fatal("AXIL_W1C","STATUS W1C write failed")
 
+    // Shadow TAPS remains software-writable even when MAX_TAPS=1. Preserve
+    // that behavior in coverage: the illegal value must read back, its COMMIT
+    // must be rejected, and the active product image must remain one tap.
+    axil_write(8'h08,32'd2,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_TAPS_MIDRANGE","Shadow tap value 2 was not writable")
+    axil_read(8'h08,rdata,resp);
+    if (resp!=2'b00 || rdata[2:0]!=3'd2)
+      `uvm_fatal("AXIL_TAPS_MIDRANGE_READBACK","Illegal shadow tap value did not read back")
+    axil_write(8'h00,32'h2,0,0,resp);
+    if (resp!=2'b10) `uvm_fatal("AXIL_TAPS_MIDRANGE_COMMIT","Tap value 2 was not rejected by COMMIT")
+    axil_read(8'h04,rdata,resp);
+    if (resp!=2'b00 || rdata[2:0]!=3'b100 || rdata[4:3]!=2'b00 ||
+        vif.dpd_active_taps!==3'd1)
+      `uvm_fatal("AXIL_TAPS_MIDRANGE_ACTIVE",
+        $sformatf("Rejected tap count changed active image or STATUS: active=%0d status=%08x",
+          vif.dpd_active_taps,rdata))
+    axil_write(8'h04,32'h4,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_TAPS_MIDRANGE_W1C","Could not clear rejected tap error")
+    axil_write(8'h08,32'd0,0,0,resp);
+    if (resp!=2'b00) `uvm_fatal("AXIL_TAPS_MIDRANGE_RESTORE","Could not restore shadow tap value")
+    axil_read(8'h08,rdata,resp);
+    if (resp!=2'b00 || rdata[2:0]!=3'd0)
+      `uvm_fatal("AXIL_TAPS_MIDRANGE_RESTORE_READBACK","Restored shadow tap value mismatch")
+
     axil_write(8'h08,32'd5,0,0,resp);
     if (resp!=2'b00) `uvm_fatal("AXIL_TAPS_UPPER","Upper-bound tap shadow write failed")
     axil_write(8'h00,32'h2,0,0,resp);
@@ -239,9 +263,17 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
     bit [386:0] expected_cfg_payload;
     int unsigned expected_active_taps;
     int unsigned pa_stall_cycles;
+    int unsigned stream_timeout_cycles;
+    int unsigned test_timeout_cycles;
     expected_active_taps=configured_active_taps();
     expected_cfg_payload=configured_payload();
     pa_stall_cycles=4;
+    stream_timeout_cycles=10000;
+    test_timeout_cycles=20000;
+    if (stream_timeout_cycles < 8*cfg.core_words)
+      stream_timeout_cycles=8*cfg.core_words;
+    if (test_timeout_cycles < stream_timeout_cycles+10000)
+      test_timeout_cycles=stream_timeout_cycles+10000;
     void'($value$plusargs("AXIL_PA_STALL_CYCLES=%d",pa_stall_cycles));
     if (pa_stall_cycles<4 || pa_stall_cycles>4096)
       `uvm_fatal("AXIL_PA_STALL_ARGUMENT",
@@ -330,7 +362,7 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
           `uvm_fatal("AXIL_PAYLOAD_ATOMIC",$sformatf("Active payload mismatch got=%097x expected=%097x",
                     vif.cfg_active_payload,expected_cfg_payload))
 
-        for (int cycles=0; cycles<10000 && !scenario_stream_complete(); cycles++)
+        for (int cycles=0; cycles<stream_timeout_cycles && !scenario_stream_complete(); cycles++)
           @(posedge vif.core_clk);
         if (!scenario_stream_complete())
           `uvm_fatal("AXIL_STREAM_TIMEOUT","AXI-Lite-controlled bit-true stream did not drain")
@@ -375,7 +407,7 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
         join
       end
       begin
-        repeat(20000) @(posedge vif.core_clk);
+        repeat(test_timeout_cycles) @(posedge vif.core_clk);
         `uvm_fatal("TIMEOUT","Thermo5 AXI-Lite config test timeout")
       end
     join_any
