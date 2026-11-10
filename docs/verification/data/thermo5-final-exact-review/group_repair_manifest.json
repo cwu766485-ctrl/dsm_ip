@@ -1,0 +1,20 @@
+{
+  "rows": 11419,
+  "unique_ids": 11419,
+  "repaired_root_cause_groups": 2448,
+  "source_ledger": "docs/verification/data/thermo5-r17/analysis_only/round17_residual_fixed_config_candidates.csv.gz",
+  "source_ledger_sha256": "1a4b1314da7ee22847fbe4aee6c4ad42a16e020f37ae29afa091e6c9c0724bc2",
+  "groups": {
+    "A_DPD_PAIR1": 8192,
+    "B_EF2_FIXED_PARAMETERS": 436,
+    "C_DPD_TAP_HISTORY": 176,
+    "D_CDC_RESIDUAL": 137,
+    "E_OTHER_PARAMETERS": 29,
+    "F_EF2_PAIR_LOOKAHEAD_ZERO": 2328,
+    "G_DPD_ACTIVE_TAPS_MAX1": 120,
+    "H_AXIL_DEFAULT": 1
+  },
+  "approvals": 0,
+  "official_exclusions": 0,
+  "scope_change": false
+}

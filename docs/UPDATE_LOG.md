@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-11-10 — Final exact review and DPD invalid proof
+
+- Repaired2448 historical group cells without changing candidate scope/IDs.
+- Resolved24 native expression ambiguities;223 exact mappings,8 unresolved.
+- Added DPD arbitrary-coefficient invalid-zero harness and fail-closed staged
+  Tcl;10 base lemmas proven,2 composed assertions proven,target uncoverable.
+- New16 pending candidates;125 candidates/106 unresolved technical rows.
+- Preston assigned Reviewer,not approval;930 counters/official exclusions OPEN.
+- URG delta0; retained586-Test baseline. Code/full DV signoff OPEN.
+
 ## 2026-11-10 — Consolidation and homogeneous coverage baseline
 
 - Deleted37 verified contained/merged branches; archived13 diverged heads and

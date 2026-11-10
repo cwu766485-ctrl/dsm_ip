@@ -1,5 +1,23 @@
 # Execution frontier
 
+## Current execution state: Final exact review; approvals pending (2026-11-10)
+
+Frozen635be68/586-Test baseline unchanged. Repaired2448 historical root-cause
+cells with source-batch ID checks; all11419 IDs/other fields and371 Waiver IDs
+preserved. Fixed24 expression/subexpression native ambiguities:223 exact,
+8 unresolved. Preston assigned Reviewer; no actual approval/product-owner
+counter decision supplied. Official Adjusted remains Raw.
+
+New DPD Formal:10 independent internal lemmas proven; gated promotion proves
+Invalid sum zero/no-saturation; target cover uncoverable,2 positive covers hit.
+16 DPD rows become pending candidates:125 candidates/106 OPEN technical rows.
+No URG delta; What-if1161 and all930 counters OPEN. First blackbox/source-list
+attempt discarded; monolithic timeout and session-lock failures recorded.
+Code Coverage/Full Linux DV signoff OPEN. Short-term task PR for Preston;
+merge/delete only after review. Evidence: thermo5-final-exact-review.md.
+
+## Previous execution state
+
 ## Current execution state: Consolidated thermo5; final coverage OPEN (2026-11-10)
 
 PR #49/#50/#51 merged in dependency order. Verified product SHA:
