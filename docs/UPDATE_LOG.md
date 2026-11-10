@@ -1,5 +1,17 @@
 # Update Log
 
+## 2026-11-10 07:11 UTC — Exact queue replacement closure
+
+- Added strict two-stage exact-event gate to frame-replacement UVM test and
+  a deterministic public-input runner. Product RTL/parameters unchanged.
+- Eleven-cycle packet-boundary gap: both stages single-entry pop/push,
+  independent four-plane oracle/counters/drain/VCD PASS. Strict compile and
+  runner replay PASS; three actual same-input incremental URG reports PASS.
+- Delta +2 Branch/+14 Line/+2 Condition. What-if OPEN 1161 = 231+930.
+- Gap12 failed with real underflow; gap10 missed target; neither merged.
+- Full regression/Formal not rerun; independent approvals, homogeneous
+  final replay, Code Coverage and Full Linux DV signoff remain OPEN.
+
 ## 2026-11-10 — Round 21 address-return exact closure
 
 - Added two checked public AXI-Lite writes to the focused register test and

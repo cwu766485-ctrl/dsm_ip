@@ -2,6 +2,18 @@
 
 ## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
 
+Latest queue milestone: eleven source-clock gap cycles before packet beat 32
+produce legal single-entry pop+push in BOTH stages. Strict UVM event checks,
+four-plane independent oracle, counters, drain and VCD PASS. Actual URG delta
++2 Branch/+14 Line/+2 Condition. Incremental Raw 526/637 Branch, 664/849 Cond,
+3352/3796 Line, 92640/104480 Toggle. What-if OPEN 1161 = 231 non-counter +930
+counter. Approvals/exclusions=0. Gap12 real-underflow failure excluded; gap10
+functional PASS/target miss excluded. New strict runner checked. Product RTL
+unchanged; final homogeneous replay and independent approvals still required.
+Evidence: docs/verification/thermo5-round21-single-replacement-closure.md.
+Counts in earlier entries below are historical incremental/baseline results.
+
+
 Latest follow-up: one focused AXI-Lite address-return test adds eight exact
 Toggle hits, with checked DECERR/OKAY and VCD witness. Incremental Raw Toggle
 92640/104480; What-if OPEN 1179 = 249 non-counter + 930 counter. Approved=0.

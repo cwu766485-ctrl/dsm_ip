@@ -1,0 +1,54 @@
+{
+  "date_utc": "2026-11-10 07:11",
+  "exact_new_hits": {
+    "branch": 2,
+    "cond": 2,
+    "line": 14,
+    "toggle": 0
+  },
+  "whatif_remaining": 1161,
+  "non_counter_remaining": 231,
+  "counter_remaining": 930,
+  "approvals": 0,
+  "official_exclusions": 0,
+  "rtl_changed": false,
+  "homogeneous_final_signoff": false,
+  "full_regression_rerun": false,
+  "tests": {
+    "gap10": "PASS_TARGET_MISS_NOT_MERGED",
+    "gap12": "FAIL_REAL_UNDERFLOW_NOT_MERGED",
+    "gap11": "PASS_BOTH_STAGE_EXACT_EVENTS",
+    "strict_gap11": "PASS",
+    "runner_check": "PASS"
+  },
+  "merged_test": "runs/queue_boundary/strict/pass.vdb",
+  "design": "runs/queue_boundary/strict/simv.vdb",
+  "baseline_aggregate": "runs/address_return/incremental_raw/urg.vdb",
+  "artifacts": {
+    "runs/queue_boundary/strict/compile.log": "4c384e812695e432b0459cdb9603fcecc4560620d1d690f2dc317c5ec9ef1972",
+    "runs/queue_boundary/strict/pass.log": "53243559063abe66d2bb729005feb95477ace4945ed52a76176b664810324469",
+    "runs/queue_boundary/strict/witness.vcd": "ffa7002ed5da37a6bb85673c6481c38b1918f0489f51e0bf93f7319cdb685b45",
+    "runs/queue_boundary/strict/raw/urg.log": "bba06d3cb26abe3af55b3856aaa1c20b7fac555e33a468912a04164bd2878680",
+    "runs/queue_boundary/strict/approved_adjusted/urg.log": "d7d388f13a0a4c4641d0549b9eef51ce7e5a2119c615beced37f6eb414f4fde0",
+    "runs/queue_boundary/strict/whatif/urg.log": "fb25005305ef607c6c740d440e7a3df6954273f644fc98e901cb255dfaf6cb3e",
+    "runs/queue_boundary/gap12.log": "b8c7428fd77093fe2ba2996081850d847aa88fff95de237365b021665e1f3e95",
+    "runs/queue_boundary/gap10.log": "8e861c6dc44b366e0f5cba802d63635395826851c6e2a84a2345984e7f67de03",
+    "runs/queue_boundary/runner_console.log": "e631510c3965c8e6cc8511b1841fc436d763fdffad23daeb15f75d1fa0e13ad1"
+  },
+  "changed_source_hashes": {
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_frame_replacement_test.svh": "8d63ce958307684f04148dc3490bbfd9f16fe3b8d535800bcf3b25978a77d1be",
+    "dv/uvm/sim/run_thermo5_single_replacement.sh": "0f346730b131931b6764808c327d7c4fcb5c57700cb9e91067b2fb61a6ca6703"
+  },
+  "files": {
+    "docs/verification/data/thermo5-r21/queue_boundary/approved_adjusted_command.json": "3ea05b02f07e449876d69b053a5ff2f434fccc1ba2bb15b6a116230cae5d3a5d",
+    "docs/verification/data/thermo5-r21/queue_boundary/raw_summary.json": "4da20949a05267052df7d4f22ed0f6d4473926800cee7230c3b107d34dbfb4bb",
+    "docs/verification/data/thermo5-r21/queue_boundary/whatif_command.json": "2029b06b6aa3c053d28619a364db71f97d6845a1def8ec7718c589662262ebff",
+    "docs/verification/data/thermo5-r21/queue_boundary/compile_command.json": "ec0415657767428f4fbd76c61d0bee7ce4d388bc6b0de9a4b7c353e5d3640533",
+    "docs/verification/data/thermo5-r21/queue_boundary/remaining_non_counter_231.csv": "2c207abdb8c4483ac12c5e141b50be71c35bfcf90f7fc4aa6152ad8ebc9e3a74",
+    "docs/verification/data/thermo5-r21/queue_boundary/exact_hits.json": "c005f1f95b9f46cbc67dbc5be6aca56560fa2fb7049b27c29e80cb9da01d74f9",
+    "docs/verification/data/thermo5-r21/queue_boundary/raw_command.json": "ad340d31800a2a2692f0a9066ff7e3b2b2a50ea56cdecb5667bf70e388311923",
+    "docs/verification/data/thermo5-r21/queue_boundary/whatif_summary.json": "36ba56c43d61e8dd544fb60ece12d582f1d331fdbfe70582863898e635bc30ef",
+    "docs/verification/data/thermo5-r21/queue_boundary/witness.json": "e3a6acffaf6bdb491383202464432058453e39dcea957ba683182e551eba36b2",
+    "docs/verification/data/thermo5-r21/queue_boundary/approved_adjusted_summary.json": "4da20949a05267052df7d4f22ed0f6d4473926800cee7230c3b107d34dbfb4bb"
+  }
+}

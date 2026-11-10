@@ -1,0 +1,19 @@
+[
+  "/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg",
+  "-full64",
+  "-dir",
+  "runs/address_return/incremental_raw/urg.vdb",
+  "runs/queue_boundary/strict/simv.vdb",
+  "runs/queue_boundary/strict/pass.vdb",
+  "-format",
+  "both",
+  "-report",
+  "runs/queue_boundary/strict/whatif/report",
+  "-dbname",
+  "runs/queue_boundary/strict/whatif/urg.vdb",
+  "-log",
+  "runs/queue_boundary/strict/whatif/urg.log",
+  "-elfilelist",
+  "/tmp/dsm_ip_round21_resume/runs/final_urg/analysis.elfilelist",
+  "-excl_strict"
+]
