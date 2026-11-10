@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-11-10 — Blocked-B exact root cause and remaining inventory
+
+- Added legal blocked-B / next-AW/W protocol/readback sequence to register test.
+- Compile/test PASS; all three incremental URG deltas zero. No seed expansion.
+- Current-source exact line93 Formal: 1 assertion proven non-vacuously, two
+  covers hit, one uncoverable; reset constraints and block scope recorded.
+- Added native exact pending-review packet; no official exclusion/approval.
+- Generated local Chinese file/bit/tuple inventory under ignored runs; 231
+  non-counter plus 930 counters remain. Final homogeneous signoff OPEN.
+
 ## 2026-11-10 07:11 UTC — Exact queue replacement closure
 
 - Added strict two-stage exact-event gate to frame-replacement UVM test and

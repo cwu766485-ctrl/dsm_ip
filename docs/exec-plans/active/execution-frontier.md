@@ -2,6 +2,14 @@
 
 ## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
 
+Blocked-B follow-up: directed register protocol/readback PASS, actual delta 0.
+Exact line93 Formal proves the missing tuple unreachable (1 non-vacuous
+assertion, 2 positive covers, 1 uncoverable cover; reset constraints recorded).
+Native Condition21/vector011 bound; still PENDING independent approval.
+No official exclusion; What-if remains 1161. Chinese local inventory is under
+runs/coverage_status_zh/. See thermo5-round21-bstall-exact-review.md.
+
+
 Latest queue milestone: eleven source-clock gap cycles before packet beat 32
 produce legal single-entry pop+push in BOTH stages. Strict UVM event checks,
 four-plane independent oracle, counters, drain and VCD PASS. Actual URG delta
