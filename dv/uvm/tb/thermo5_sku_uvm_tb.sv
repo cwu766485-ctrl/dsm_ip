@@ -36,6 +36,17 @@ module thermo5_sku_uvm_tb;
   logic src_clk=0, core_clk=0;
   logic axil_clk=0;
   logic axil_rst_n;
+`ifdef THERMO5_CENTERED_CUBIC
+  initial begin : p_optional_coverage_witness
+    string witness_path;
+    if ($value$plusargs("THERMO5_WITNESS_VCD=%s",witness_path)) begin
+      $dumpfile(witness_path);
+      $dumpvars(0,dut.u_frontend.g_interp1_centered.u_interp_1);
+      $dumpvars(0,dut.u_frontend.g_interp2_centered.u_interp_2);
+      $dumpvars(0,dut.u_frontend.g_memory_dpd.u_memory_dpd);
+    end
+  end
+`endif
   initial begin
     int unsigned source_phase_ps;
     source_phase_ps=0;

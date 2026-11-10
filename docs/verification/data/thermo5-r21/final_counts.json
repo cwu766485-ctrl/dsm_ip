@@ -1,0 +1,12 @@
+{
+  "raw_missing": 12606,
+  "whatif_missing": 1187,
+  "raw_new_condition_hits": 5,
+  "non_counter_open": 257,
+  "counter_open": 930,
+  "analysis_candidates": 11419,
+  "approved_exclusions": 0,
+  "approved_exceptions": 0,
+  "approved_waivers": 0,
+  "official_waiver_ids": 371
+}

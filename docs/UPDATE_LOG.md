@@ -1,3 +1,19 @@
+# Update Log
+
+## 2026-11-10 17:05 Asia/Singapore — Round 21 root-cause closure
+
+- Changed UVM optional VCD hook; added deterministic I/Q-only vector generator,
+  exact expression/VCD checker, inherited-test replay utility and counter block
+  test/runner. Product RTL and algorithm unchanged.
+- Added Round 21 report, exact-bin review tables, candidate/Waiver links,
+  counter acceptance and queue analysis, source/VDB/log fingerprints.
+- Actual increment: five Condition bins; non-counter What-if 262 -> 257.
+- Checks: 580 inherited + four focused product runs (one oracle repair), counter
+  carry/wrap/reset/hold PASS, scoped Formal 2 jobs PASS, Python model 66/66,
+  hardware tool tests 48/48, five URG reports. Legal/negative assertions separated.
+- Remaining: 1,187 What-if bins, independent approvals, full-chain proofs;
+  no official exclusions or exceptions. GitHub authentication pending at upload.
+
 # 2026-11-09 — Thermo5 Round 20 exact-bin closure result
 
 - Added focused constrained-random source-bubble and packet-length controls

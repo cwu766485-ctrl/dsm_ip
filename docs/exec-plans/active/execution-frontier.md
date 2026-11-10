@@ -1,5 +1,36 @@
 # Execution frontier
 
+## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
+
+PR #50 base 818e1de. Five exact DPD Condition bins gained legal I-only/Q-only
+witnesses; Condition Raw is 662/849. Product RTL/configuration unchanged.
+All inherited 580 scenarios are rebuilt with one current compile parent;
+four focused scenarios complete the 584-Test baseline. Legal and four expected-
+negative inputs are separated for assertion reporting. One missing old oracle
+file was reconstructed independently; its first failure is retained.
+
+Raw/zero-approved Adjusted: Branch 524/637, Condition 662/849, Line 3338/3796,
+Toggle 92632/104480; FSM 13/13 states and 22/22 transitions. What-if retains
+1,187 open bins: 257 non-counter and 930 Counter. Approved exclusions and
+exceptions=0. The 11,419 analysis candidates remain pending independent review.
+Counter arithmetic (31 carry boundaries, wrap, async reset, hold) passes at
+block level; deposited registers never contribute product toggle coverage.
+Two scoped q1_tail metadata/reset Formal jobs PASS; full-chain transfer remains
+open. Legal assertions: 13 success, zero failures, two q1_tail without attempts.
+Combined three failures are confined to expected-negative runs.
+
+Evidence: docs/verification/thermo5-tx-root-cause-closure-round21-20261110.md
+and docs/verification/data/thermo5-r21/. Review proposals cover the AXI-Lite
+Branch, four MAX_TAPS=1 Lines, and counter system acceptance. No reviewer has
+approved them. PR #49 -> #50 -> Round 21 review order remains required.
+
+Next: obtain real independent approval; map the four DPD Lines to native
+exclusion objects before activation; close the remaining queue/handshake and
+counter/formal obligations. Publish branch when GitHub authentication is
+available. Never call this final signoff. XPM/GT/FPGA/board/RF remain outside scope.
+
+## Previous execution state
+
 ## Current execution state: Thermo5 Round 20 exact-bin closure (2026-11-09)
 
 Review branch `codex/thermo5-round20-exact-bin-closure` starts at PR #49 base

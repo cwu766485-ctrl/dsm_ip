@@ -1,0 +1,47 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 2
+     - # proven       : 2
+
+   > Vacuity
+     - # found        : 3
+     - # non_vacuous  : 3
+
+   > Cover
+     - # found        : 8
+     - # covered      : 6
+     - # uncoverable  : 2
+
+   > Constraint
+     - # found        : 2
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 2
+     [   0] proven                   (non_vacuous)  -  thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context
+     [   1] proven                   (non_vacuous)  -  thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context
+
+   > Cover
+     # Cover: 8
+     [   3] uncoverable                             -  thermo5_frame_tail_legal_metadata_harness.c_append_active_bin
+     [   4] covered     (depth=6)                   -  thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer
+     [   5] covered     (depth=63)                  -  thermo5_frame_tail_legal_metadata_harness.c_append_packet_end
+     [   6] covered     (depth=11)                  -  thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start
+     [   7] covered     (depth=13)                  -  thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer
+     [   8] uncoverable                             -  thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin
+     [   9] covered     (depth=8)                   -  thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer
+     [  10] covered     (depth=15)                  -  thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed
+
+   > Constraint
+     # Constraint: 2
+     [   2] constrained              (non_vacuous)  -  thermo5_frame_tail_legal_metadata_harness.asm_source_valid_stable
+     [  11] constrained                             -  constant_11 - rst_n==1
+
+
+
