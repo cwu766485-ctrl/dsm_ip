@@ -9,6 +9,7 @@ class thermo5_source_sequence extends uvm_sequence#(thermo5_source_item);
   int gap_before_beat = -1;
   int unsigned gap_cycles = 0;
   int unsigned random_gap_max_cycles = 0;
+  int random_gap_probability_percent = -1;
   int unsigned random_gap_limit_beats = '1;
   logic [15:0] i_mem[], q_mem[], frame_mem[], gain_mem[];
   function new(string name = "thermo5_source_sequence"); super.new(name); endfunction
@@ -35,8 +36,19 @@ class thermo5_source_sequence extends uvm_sequence#(thermo5_source_item);
                (mark_last && (beat==beat_count-1)) ||
                (beat==force_early_tlast_beat);
       tr.valid_gap_cycles=(beat==gap_before_beat) ? gap_cycles : 0;
-      if (random_gap_max_cycles!=0 && beat<random_gap_limit_beats)
-        tr.valid_gap_cycles=$urandom_range(0,random_gap_max_cycles);
+      if (random_gap_max_cycles!=0 && beat<random_gap_limit_beats) begin
+        if (random_gap_probability_percent < 0) begin
+          // Preserve the historical uniform [0,max] gap behavior unless a
+          // probability is explicitly requested by a focused campaign.
+          tr.valid_gap_cycles=$urandom_range(0,random_gap_max_cycles);
+        end else begin
+          if (random_gap_probability_percent > 100)
+            `uvm_fatal("SOURCE_GAP_PROBABILITY",
+              "Source bubble probability must be in the range 0..100 percent")
+          if ($urandom_range(0,99) < random_gap_probability_percent)
+            tr.valid_gap_cycles=$urandom_range(1,random_gap_max_cycles);
+        end
+      end
       tr.frame_start=frame_mem[core_word][0] || (illegal_frame && beat==1);
       tr.frame_gain=gain_mem[core_word];
       for (int lane=0;lane<14;lane++) begin

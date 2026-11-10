@@ -1,3 +1,35 @@
+# 2026-11-09 — Thermo5 Round 20 exact-bin closure result
+
+- Added focused constrained-random source-bubble and packet-length controls
+  (32/64/96 beats) to the existing AXI-Lite packet test, preserving the
+  historical random-gap behavior when the new probability plusarg is unset.
+- Replayed 21 R19 scenarios with the current R20 compile and ran five focused
+  interpolator, AXI-Lite and CDC scenarios. All 26 VCS runs passed; Python
+  oracle status was 23 PASS, 2 NOT_RUN, and 1 NOT_APPLICABLE. The combined
+  Raw URG gained zero exact Branch, Condition, Line, or Toggle hits.
+- Re-ran same-input Raw, zero-approved Official Adjusted, and strict
+  Analysis-only URG. Official remains equal to Raw: Branch 524/637,
+  Condition 657/849, Line 3338/3796, Toggle 92632/104480. Analysis-only
+  applies 11,419 exact candidates and leaves 1,192 bins; it is not official.
+- One AXI-Lite default-address Branch is supported by a current-source,
+  zero-assumption/zero-black-box Formal result and was applied only to the
+  What-if `.el`; independent review is pending. The official Waiver inventory
+  retains all 371 IDs (2 Raw-hit-resolved, 369 semantically pending, 0
+  approved, 0 active exclusions).
+- Corrected the Round 20 VDB manifest with re-observed tree hashes and compile
+  parent signatures. The 26 standalone R20 VDBs match the current Design VDB
+  parent; the frozen Round 18 554-test aggregate remains tied to the Round 16
+  parent, so the combined coverage set is not a homogeneous final signoff
+  baseline. The stale prior fingerprint claims are retained for audit.
+- Added exact 263-bin, 1,192-bin, and 930-counter ledgers, test matrix,
+  evidence manifest, and `thermo5-tx-exact-bin-closure-round20-20261109.md`.
+- Checks: compile PASS; 26/26 targeted/replayed VCS tests PASS; three final
+  URG runs PASS on identical ordered VDB inputs with zero diagnostic lines;
+  VDB parent/fingerprint audit, JSON/CSV counts, manifest hashes and
+  `git diff --check` PASS. Full Product Regression and Formal were not rerun.
+  Three URG assertion failures and four uncovered properties remain. Coverage
+  and Linux DV signoff remain OPEN; no Product RTL or algorithm changed.
+
 # 2026-11-09 — Thermo5 Round 19 non-counter coverage and counter-cost review
 
 - Preserved the complete Round 18 554-Test VDB fingerprint set and merged 21

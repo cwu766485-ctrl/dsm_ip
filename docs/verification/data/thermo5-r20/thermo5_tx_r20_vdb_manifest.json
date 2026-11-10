@@ -1,0 +1,549 @@
+{
+  "baseline_product_commit": "49b9121a860c6b85057047c7696876df7f6cd740",
+  "design_compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+  "design_vdb": {
+    "artifact": "runs/thermo5_r20_exact_bin_20261109/build/simv.vdb",
+    "compile_input_manifest_sha256": "e825c86e1e703d58d86a1719010ec889fe8ea41278a5d0e1af0d2ba2f816fd4c",
+    "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+    "observed_tree": {
+      "file_count": 24,
+      "total_bytes": 223455,
+      "tree_sha256": "16a2fe3132662275aab0e012bdb021c9ce8362d40f03c981ca6254648666215a"
+    },
+    "revalidated_after_final_urg": true,
+    "vcm_arguments_relative_path": "snps/coverage/db/auxiliary/vcmArguments.xml"
+  },
+  "ordered_test_vdb_observation_manifest_sha256": "8b7bf22e380c4d55a6faf847e14f806d6bb94acd4f75a2c8d638710afa291354",
+  "prior_ordered_test_manifest_sha256": "6f90791dbfb28ba2f0f7c18548604fbfa90834acffe65a2771ef0aed9f3ed20d",
+  "product_config": "Centered-Cubic x2+x2; EF2 ORDER=2 STEP=5120 STATE_BITS=20; DPD_MAX_TAPS=1 Identity reset; AXI-Lite; Generic FIFO",
+  "provenance_audit": {
+    "frozen_aggregate_parent_mismatch": true,
+    "frozen_round18_aggregate_compile_parent_signature_sha256": "28feda897345c31af70f8d6f88284c44fadea8f234980304d74fb4f69985219f",
+    "observed_fingerprints_revalidated_after_final_urg": true,
+    "r20_design_and_26_standalone_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+    "r20_standalone_test_vdb_count": 26,
+    "r20_standalone_test_vdbs_matching_current_design_parent": 26,
+    "stale_prior_manifest_claim_count": 27,
+    "status": "OPEN_MIXED_PARENT_FROZEN_ROUND18_AGGREGATE_REMAINS_ROUND16_PARENT; all 26 R20 standalone VDBs match the current design parent; rebuild/replay frozen aggregate before homogeneous signoff",
+    "strict_homogeneous_single_compile_parent": false
+  },
+  "schema": "thermo5_tx_round20_vdb_manifest_v2",
+  "test_vdb_count": 27,
+  "test_vdbs": [
+    {
+      "artifact": "external:round18_frozen_554_aggregate",
+      "compile_parent_class": "round16_compile_parent",
+      "compile_parent_matches_r20_design": false,
+      "compile_parent_signature_sha256": "28feda897345c31af70f8d6f88284c44fadea8f234980304d74fb4f69985219f",
+      "local_observation_path": "/home/ray/workspace/dsm_ip_thermo5_latest_20261108/runs/thermo5_r18_counter_20261109_06/urg/test_vdbs_554/raw/urg.vdb",
+      "observed_tree": {
+        "file_count": 49,
+        "total_bytes": 272805,
+        "tree_sha256": "cfc005637c95543129e1f12447236463a9e76a25ef0049f72a0994fdc2c7b717"
+      },
+      "ordinal": 0,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "1e8f0b3b18474b57b9db7d3185919c160e3fcf4d4892464f591585b024eec267",
+      "revalidated_after_final_urg": true,
+      "role": "frozen_round18_554_test_aggregate",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/01_thermo5_sku_axil_random_packet_test_seed190024.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/01_thermo5_sku_axil_random_packet_test_seed190024.vdb",
+      "observed_tree": {
+        "file_count": 8,
+        "total_bytes": 7964,
+        "tree_sha256": "ee1f20b7398f2715e42744634f1ce492222ec8b9c6174cf12121519e5d098c62"
+      },
+      "ordinal": 1,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "e1aa4f6a26842080e4bcf5668a6c544c60e8531244b2588e614db74fbd4b411b",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/02_thermo5_sku_axil_random_packet_test_seed190025.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/02_thermo5_sku_axil_random_packet_test_seed190025.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12779,
+        "tree_sha256": "6cedaef0e2348532964da26cb028ba239f266f4fa1481092f6fb86fdb4e23318"
+      },
+      "ordinal": 2,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "dcbf695257e1fdd17e8488bc79fa8f2af266c5e300834faf89989395a845b2ef",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/03_thermo5_sku_axil_dpd_saturation_bittrue_test_seed190031.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/03_thermo5_sku_axil_dpd_saturation_bittrue_test_seed190031.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 13238,
+        "tree_sha256": "752b13d45152c5a91fc77c72601fc005ace38bcc62b1b46473487969ec3b826a"
+      },
+      "ordinal": 3,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "867d3cf55e6293c809f50a3375b42cac54c54866f40e7348201157561b61fe6f",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/04_thermo5_sku_axil_frame_replacement_test_seed190042.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/04_thermo5_sku_axil_frame_replacement_test_seed190042.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12609,
+        "tree_sha256": "ae50ab68140ce816e7237215d1ce7a205a232f6b0ab1dcfaba5649d1d4ddd104"
+      },
+      "ordinal": 4,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "2062f37713b38bdddec392195198d8fdce168720ffbde44a26a74448730a9982",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/05_thermo5_sku_axil_dpd_saturation_bittrue_test_seed190019.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/05_thermo5_sku_axil_dpd_saturation_bittrue_test_seed190019.vdb",
+      "observed_tree": {
+        "file_count": 8,
+        "total_bytes": 7951,
+        "tree_sha256": "55e13ce425f4802d1a2dc11b9dacc8830e32d96159ffc5ca68c96bb80f33ee1f"
+      },
+      "ordinal": 5,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "caa1de4ad5d2c335150ac998df0f913cbe2872e4d95ef08e72f4fc1d12f45767",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/06_thermo5_sku_axil_frame_replacement_test_seed190043.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/06_thermo5_sku_axil_frame_replacement_test_seed190043.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12643,
+        "tree_sha256": "d695c65b9833c0b359d38459aefad41eab660cd32f70fa5d971c17f6606acf51"
+      },
+      "ordinal": 6,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "64eea358b149ec500548317eb528d50c91b6168abea888ec8410fb9707237db7",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/07_thermo5_sku_axil_frame_replacement_test_seed190044.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/07_thermo5_sku_axil_frame_replacement_test_seed190044.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12643,
+        "tree_sha256": "e174d6d74f19c2aa5d2f54f110c6de5e8b79cd4934b0d661704b8c978a7b88d4"
+      },
+      "ordinal": 7,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "e3b00dfca94ce07b18dca8e4062e8d690310532c95ed8bc03eff9f99033bb4e5",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/08_thermo5_sku_axil_frame_replacement_test_seed190045.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/08_thermo5_sku_axil_frame_replacement_test_seed190045.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12637,
+        "tree_sha256": "851c722ee46d110fb85574626c561454557a59e9a42f1ea5e4781ccddef8ee6a"
+      },
+      "ordinal": 8,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "d3e2d49cde02969b0bae6c4ce8f78ce75811e316a04290ceb9dd25d58c594541",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/09_thermo5_sku_axil_frame_replacement_test_seed190046.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/09_thermo5_sku_axil_frame_replacement_test_seed190046.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12638,
+        "tree_sha256": "5af4e502f5af42938f01ba3d8c1a64cfebf9ca6dfd9bfd8700aa7fcafd80009e"
+      },
+      "ordinal": 9,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "053453c2de4bdbb9051d4f9c3cf09f70a50e33ed8990bd0ad31482f8ac1e12b7",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/10_thermo5_sku_axil_frame_replacement_test_seed190047.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/10_thermo5_sku_axil_frame_replacement_test_seed190047.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12638,
+        "tree_sha256": "ea735bcaf600e154c416ac6977cd89fc503ada5e814287d6869215af225e34c8"
+      },
+      "ordinal": 10,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "4e9fb61e6958a87db6ae7f7fbf2e5047e29e76f5f5dc3767d7b59bde448a6de8",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/11_thermo5_sku_axil_frame_replacement_test_seed190048.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/11_thermo5_sku_axil_frame_replacement_test_seed190048.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12648,
+        "tree_sha256": "c3294a2c13dc0d46a720648bba4d35c9e470d72be5864e53449ae4cf397da64a"
+      },
+      "ordinal": 11,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "2da94650dec8e18ced0b22771d484aca044145b581505859b3760a0f337dfff5",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/12_thermo5_sku_axil_frame_replacement_test_seed190049.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/12_thermo5_sku_axil_frame_replacement_test_seed190049.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12647,
+        "tree_sha256": "da9777392c46ac1eb50d9b05a569813f3d12d63cf1b957683f88590dd727ae33"
+      },
+      "ordinal": 12,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "1b7988ed0d5ec16bc2760b28f6dec1514ee35fbbb39dcc476c88ed8e86e1f464",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/13_thermo5_sku_axil_frame_replacement_test_seed190050.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/13_thermo5_sku_axil_frame_replacement_test_seed190050.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12642,
+        "tree_sha256": "f69f05fb546562b0d450d9f0405a2eda741296736489770512cfd0ccb0853ab5"
+      },
+      "ordinal": 13,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "218b3043e5781fe804c77a2444f99a918394be778781bef24f27e0d77da78ba6",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/14_thermo5_sku_axil_frame_replacement_test_seed190051.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/14_thermo5_sku_axil_frame_replacement_test_seed190051.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12640,
+        "tree_sha256": "18a63f70798f5d1d6b0a8d60d1a5298eaaab97147ef16168f7272a0d88d4ff6e"
+      },
+      "ordinal": 14,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "41784b0ee2422f3639a4dc81fbdef7b02480445eec0231bbfad885ff10563ea9",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/15_thermo5_sku_axil_frame_replacement_test_seed190052.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/15_thermo5_sku_axil_frame_replacement_test_seed190052.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12640,
+        "tree_sha256": "75986c025778ac1dde7acb348fd6574e3d44492383b6b2269e63a9e197491087"
+      },
+      "ordinal": 15,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "4656f6b628c71ba94ddeafd77f766e5284418c8d7bd3ea0b23d9df227f073dc4",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/16_thermo5_sku_axil_frame_replacement_test_seed190053.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/16_thermo5_sku_axil_frame_replacement_test_seed190053.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12641,
+        "tree_sha256": "6ee1dee1614c59c13d12ad5e578fbac6627af74b6af2bceb8d291ebb31213ac5"
+      },
+      "ordinal": 16,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "eac33391308eaefe94d349408024f2e61a67589d3a690b9cd4057b8b1f0f8a86",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/17_thermo5_sku_axil_frame_replacement_test_seed190054.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/17_thermo5_sku_axil_frame_replacement_test_seed190054.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12654,
+        "tree_sha256": "95958b722f881f59ac164c9f6f1e2404b762d3ead1d9da2377a8c50f5f6184fd"
+      },
+      "ordinal": 17,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "0f862135d3f427993e139f8e7fcb2badbad13f803bb4f1ded4f11733d72ad646",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/18_thermo5_sku_axil_frame_replacement_test_seed190055.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/18_thermo5_sku_axil_frame_replacement_test_seed190055.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12654,
+        "tree_sha256": "54318c2baeaefc00adfc63a11237eaa25d6954dbaa9498cc33ce1548ba2144d8"
+      },
+      "ordinal": 18,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "63d8ba124bf3bbd89bd169f681311125ba79192fa4859dfeaf853fced009614f",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/19_thermo5_sku_axil_frame_replacement_test_seed190056.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/19_thermo5_sku_axil_frame_replacement_test_seed190056.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12645,
+        "tree_sha256": "3461deeea460b5ad967fac95786c134b57df9b718c1e5e34500442e64365ce8a"
+      },
+      "ordinal": 19,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "8f4adf2b4164e801584ecdab0c8fa701411836638bb2e27ffe5c33a62524d5c9",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/20_thermo5_sku_axil_frame_replacement_test_seed190057.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/20_thermo5_sku_axil_frame_replacement_test_seed190057.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12645,
+        "tree_sha256": "b8a643f5e9fac9f5ec0d30d9a5aca14d0cca4fd4165271bca8378ec8d1c024b1"
+      },
+      "ordinal": 20,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "00e33c8279b412be7c4409156f562d4c072191220f03dbb7844d43485c7a2037",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/21_thermo5_sku_axil_frame_replacement_test_seed190058.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/r19_replay/vdb/21_thermo5_sku_axil_frame_replacement_test_seed190058.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12646,
+        "tree_sha256": "817a1e29398215bbd05b7afb9f5e7f0db223d242c2b8f7714d0198d24fa68cd6"
+      },
+      "ordinal": 21,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "b87e766d26eaab8e69bb4b9a346414df5d735c3a717db82e6bf471df5d0ed4be",
+      "revalidated_after_final_urg": true,
+      "role": "r20_replayed_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/vdb/interpolator_beats32.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/vdb/interpolator_beats32.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12735,
+        "tree_sha256": "9b8fc5bfc64a14ba78abb250dbd4732bccd030e5ffee530cbac8824586925df0"
+      },
+      "ordinal": 22,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "2ac39a98bdb60d869ea33aa163feae9d8695f8074380c8f5f526ae13f1de4c5e",
+      "revalidated_after_final_urg": true,
+      "role": "r20_targeted_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/vdb/interpolator_beats64.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/vdb/interpolator_beats64.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12731,
+        "tree_sha256": "1ece0bb6af237ea395feea5293a33462ead40a5e304d55a09d19f62375951f6b"
+      },
+      "ordinal": 23,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "8f12f0f68ac0ac98bfc447d5b7574dcc59dd55e8724f0bff753d8a98daacd8c2",
+      "revalidated_after_final_urg": true,
+      "role": "r20_targeted_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/vdb/interpolator_beats96.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/vdb/interpolator_beats96.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12794,
+        "tree_sha256": "33269ffc8007fca816eb2a22b8bfa1fcc2d2cd572fee03c9c5e5491376994be0"
+      },
+      "ordinal": 24,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "1c0baf671390f24704d8973efb315c6f44afa11bc693095c074820ecabe5cd4b",
+      "revalidated_after_final_urg": true,
+      "role": "r20_targeted_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/vdb/axil_register_access.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/vdb/axil_register_access.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 11826,
+        "tree_sha256": "b7d6f62045e9941e02660076d44425f4721dfb34634542c2e8e3f2eede301787"
+      },
+      "ordinal": 25,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "c1243cd69d25fe6520e7829db59fc8b0d7e126d462fbb5ef59339c000e8c6df4",
+      "revalidated_after_final_urg": true,
+      "role": "r20_targeted_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    },
+    {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/vdb/cdc_end_remaining_pass.vdb",
+      "compile_parent_class": "r20_design_compile_parent",
+      "compile_parent_matches_r20_design": true,
+      "compile_parent_signature_sha256": "67a273471bf3bf4325c3b632d5976bfdb52277d412d5e6a661a02f633956a8e8",
+      "local_observation_path": "runs/thermo5_r20_exact_bin_20261109/vdb/cdc_end_remaining_pass.vdb",
+      "observed_tree": {
+        "file_count": 13,
+        "total_bytes": 12592,
+        "tree_sha256": "705c30b51e735c0f739308a794474df241ab6378cb8c1c491266e88fedaf9510"
+      },
+      "ordinal": 26,
+      "prior_manifest_claim_disposition": "STALE_CLAIM_REPLACED_BY_OBSERVED_FINGERPRINT",
+      "prior_manifest_claim_matched_observed": false,
+      "prior_manifest_claimed_tree_sha256": "d40b5e60c0b7cdafdb47e5669d03be818b13e47455cbc6c12847aa1c62731884",
+      "revalidated_after_final_urg": true,
+      "role": "r20_targeted_test",
+      "vcm_arguments_relative_path": "snps/coverage/db/testdata/test/vcmArguments.xml"
+    }
+  ],
+  "tool": "VCS V-2023.12-SP1_Full64; URG V-2023.12-SP1 Full64",
+  "vdb_observation_date": "2026-11-09"
+}

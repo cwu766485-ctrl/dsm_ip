@@ -1,0 +1,353 @@
+{
+  "analysis_only_exclusion": {
+    "exact_bin_id": "TXB-3df5f13a8d51ee9bdea5",
+    "file": "docs/verification/data/thermo5-r20/analysis_only/r20_axil_default_false_branch_analysis_only.el",
+    "native_bins_excluded": 1,
+    "review": "PENDING_INDEPENDENT_REVIEW",
+    "sha256": "d13b89a25269380a741e363514f2b7fbc36aafe30f3307a1d44d10e7f1a37109",
+    "urg_strict": true,
+    "warnings": 0
+  },
+  "assertion_urg": {
+    "failure": 3,
+    "failure_properties": [
+      "thermo5_sku_uvm_tb.dut.u_cdc.unnamed$$_1",
+      "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+      "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+    ],
+    "properties": 19,
+    "success": 15,
+    "uncovered": 4,
+    "uncovered_properties": [
+      "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+      "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1",
+      "uvm_pkg.uvm_reg_map::do_read",
+      "uvm_pkg.uvm_reg_map::do_write"
+    ],
+    "without_attempts": 2
+  },
+  "axil_default_branch_formal_evidence": {
+    "assumption_count": 0,
+    "black_box_instances": 0,
+    "current_rtl_source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+    "formal_rtl_source_sha256": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+    "formal_tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+    "manifest": "docs/verification/data/thermo5-r14/thermo5_tx_r14_axil_cfg_formal_manifest.json",
+    "manifest_sha256": "7bd255cd3c2cb12bb1c027919f01588b70e18a300ca3ba90f0cd9028e2e4e972",
+    "property": "a_write_case_default_unreachable",
+    "review": "TECHNICALLY_REPRODUCIBLE_SOURCE_BINDING; INDEPENDENT_REVIEW_PENDING; analysis-only exclusion only",
+    "source_git_revision": "f22dad56f7cd56e94158cb86cdad04e3d11e489d",
+    "source_hash_matches_current": true,
+    "source_worktree_dirty": false,
+    "status": "proven"
+  },
+  "base_commit": "49b9121a860c6b85057047c7696876df7f6cd740",
+  "changed_uvm_source_sha256": {
+    "dv/uvm/sequences/thermo5/thermo5_sku_virtual_sequence.svh": "28c520d07152fe5f4c9d406cf4d571bef8a9110dec1ec0d72c384aa161661fc4",
+    "dv/uvm/sequences/thermo5/thermo5_source_sequence.svh": "c3b83e010803d912794e39b8f7feeb6c2bb2ca5d51e7115bfc07ab65a9319326",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_random_packet_test.svh": "44825ca2727125357f0948e61da2a7feaf5b2e30551af01fc4e3bb56ea607acb"
+  },
+  "compile": {
+    "command": "Command: vcs -full64 -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L -timescale=1ns/1ps  -f /home/ray/workspace/dsm_ip_thermo5_round20_20261109/dv/uvm/sim/thermo5_sku_filelist.f  +define+THERMO5_AXIL_CONTROL +define+THERMO5_CENTERED_CUBIC +define+THERMO5_TIDSM_ORDER=2  +define+THERMO5_STEP=5120 +define+THERMO5_DPD_MAX_TAPS=1 -top thermo5_sku_uvm_tb  -Mdir=/home/ray/workspace/dsm_ip_thermo5_round20_20261109/runs/thermo5_r20_exact_bin_20261109/build/csrc  -cm line+cond+fsm+tgl+branch+assert -cm_hier /home/ray/workspace/dsm_ip_thermo5_round20_20261109/dv/uvm/sim/thermo5_product_dut_coverage.hier  -debug_access+all -o /home/ray/workspace/dsm_ip_thermo5_round20_20261109/runs/thermo5_r20_exact_bin_20261109/build/simv ",
+    "coverage_hierarchy_sha256": "1b01e3c9a7c86a189660dcb0529369dc8ef4d1ff535ebbdb619e5d7c5651c5fa",
+    "filelist_sha256": "3605407edad33e8f806a5c6c9a78f553df08f3f09551d18284194ef931aedc85",
+    "local_parsed_source_count": 95,
+    "log": "runs/thermo5_r20_exact_bin_20261109/build/compile.log",
+    "log_sha256": "df61e94cf41f42dad16a7555de81c18613082f05994a1889a990fb95bb2dd332",
+    "source_input_manifest_sha256": "e825c86e1e703d58d86a1719010ec889fe8ea41278a5d0e1af0d2ba2f816fd4c",
+    "status": "PASS",
+    "tool": "VCS V-2023.12-SP1_Full64",
+    "vendor_parsed_source_count": 150
+  },
+  "counter_decision": {
+    "acceptance": "OPEN; propose block-level arithmetic proof plus independently reviewed system coverage acceptance exception; no denominator reduction",
+    "max_bit_cpu_days_projection": {
+      "sample_count": 23.8089,
+      "saturation_count": 32.3124
+    },
+    "sample_count_open_toggle_bins": 464,
+    "saturation_count_open_toggle_bins": 466,
+    "scope": "retained in DUT-only URG; internal 32-bit diagnostic outputs, unconnected by 16-lane wrapper",
+    "system_level_exclusion": "none"
+  },
+  "coverage": {
+    "analysis_only_whatif_11418": {
+      "branch": {
+        "covered": 524,
+        "remaining": 6,
+        "total": 530
+      },
+      "condition": {
+        "covered": 657,
+        "remaining": 84,
+        "total": 741
+      },
+      "line": {
+        "covered": 3338,
+        "remaining": 25,
+        "total": 3363
+      },
+      "toggle": {
+        "covered": 92632,
+        "remaining": 1078,
+        "total": 93710
+      }
+    },
+    "analysis_only_whatif_11419": {
+      "branch": {
+        "covered": 524,
+        "excluded": 108,
+        "remaining": 5,
+        "total": 529
+      },
+      "condition": {
+        "covered": 657,
+        "excluded": 108,
+        "remaining": 84,
+        "total": 741
+      },
+      "fsm": {
+        "states_covered": 13,
+        "states_total": 13,
+        "transitions_covered": 22,
+        "transitions_total": 22
+      },
+      "line": {
+        "covered": 3338,
+        "excluded": 433,
+        "remaining": 25,
+        "total": 3363
+      },
+      "toggle": {
+        "covered": 92632,
+        "excluded": 10770,
+        "remaining": 1078,
+        "total": 93710
+      }
+    },
+    "counter_after_whatif_open": 930,
+    "new_analysis_only_excluded_bin": "TXB-3df5f13a8d51ee9bdea5",
+    "non_counter_after_whatif_open": 262,
+    "non_counter_raw_open": 263,
+    "official_adjusted": {
+      "branch": {
+        "covered": 524,
+        "total": 637,
+        "uncovered": 113
+      },
+      "condition": {
+        "covered": 657,
+        "total": 849,
+        "uncovered": 192
+      },
+      "fsm": {
+        "states_covered": 13,
+        "states_total": 13,
+        "transitions_covered": 22,
+        "transitions_total": 22
+      },
+      "line": {
+        "covered": 3338,
+        "total": 3796,
+        "uncovered": 458
+      },
+      "toggle": {
+        "covered": 92632,
+        "total": 104480,
+        "uncovered": 11848
+      }
+    },
+    "raw": {
+      "branch": {
+        "covered": 524,
+        "total": 637,
+        "uncovered": 113
+      },
+      "condition": {
+        "covered": 657,
+        "total": 849,
+        "uncovered": 192
+      },
+      "fsm": {
+        "states_covered": 13,
+        "states_total": 13,
+        "transitions_covered": 22,
+        "transitions_total": 22
+      },
+      "line": {
+        "covered": 3338,
+        "total": 3796,
+        "uncovered": 458
+      },
+      "toggle": {
+        "covered": 92632,
+        "total": 104480,
+        "uncovered": 11848
+      }
+    },
+    "raw_exact_bin_delta": {
+      "branch": 0,
+      "condition": 0,
+      "line": 0,
+      "toggle": 0
+    },
+    "raw_uncovered_total": 12611
+  },
+  "coverage_run_status": "Raw/zero-approved Official Adjusted/strict Analysis-only URG completed; mixed compile-parent aggregate means final homogeneous signoff baseline remains OPEN",
+  "final_rebound_urg": {
+    "analysis_only_11419": {
+      "dashboard_artifact": "runs/thermo5_r20_exact_bin_20261109/urg/r20_final_rebound/analysis_11419/report/dashboard.txt",
+      "dashboard_sha256": "fc64056a293b6551e4ff3693601d7261d1c38ee7ee7c7db7f0903bfeff97804a",
+      "diagnostic_line_count": 0,
+      "diagnostic_lines": [],
+      "log_artifact": "runs/thermo5_r20_exact_bin_20261109/urg/r20_final_rebound/analysis_11419/urg.log",
+      "log_sha256": "b168d3e18a5fc1de6c47ae383ce6078fb69a21c8e8fe6088d0a62f004c82faf7",
+      "number_of_tests": 27,
+      "urg_version": "V-2023.12-SP1 Full64"
+    },
+    "coverage_exact_delta_from_R19": {
+      "branch": 0,
+      "condition": 0,
+      "line": 0,
+      "toggle": 0
+    },
+    "official_zero_approved": {
+      "dashboard_artifact": "runs/thermo5_r20_exact_bin_20261109/urg/r20_final_rebound/official_zero_approved/report/dashboard.txt",
+      "dashboard_sha256": "77d59bd9f5aed9e0a3c3c5e58aa2627223dee9e555cd68edbed1bb1eb2fe51ed",
+      "diagnostic_line_count": 0,
+      "diagnostic_lines": [],
+      "log_artifact": "runs/thermo5_r20_exact_bin_20261109/urg/r20_final_rebound/official_zero_approved/urg.log",
+      "log_sha256": "0920f58fcc86c9fe232ce3ed1bb01b3e289db1aa033d79911a67f4a12377d4e8",
+      "number_of_tests": 27,
+      "urg_version": "V-2023.12-SP1 Full64"
+    },
+    "ordered_test_vdb_observation_manifest_sha256": "8b7bf22e380c4d55a6faf847e14f806d6bb94acd4f75a2c8d638710afa291354",
+    "raw": {
+      "dashboard_artifact": "runs/thermo5_r20_exact_bin_20261109/urg/r20_final_rebound/raw/report/dashboard.txt",
+      "dashboard_sha256": "c193c0f355db912e668091bfeee0af34d1914e7cf008c1ad9cea7a253abc2b3f",
+      "diagnostic_line_count": 0,
+      "diagnostic_lines": [],
+      "log_artifact": "runs/thermo5_r20_exact_bin_20261109/urg/r20_final_rebound/raw/urg.log",
+      "log_sha256": "66fa9b6ad28c563d9c613dc39c75d05d961fc314429ed4fef3320e75e11c5fcc",
+      "number_of_tests": 27,
+      "urg_version": "V-2023.12-SP1 Full64"
+    },
+    "same_ordered_inputs": true,
+    "vdb_manifest": "docs/verification/data/thermo5-r20/thermo5_tx_r20_vdb_manifest.json",
+    "vdb_manifest_sha256": "74ca4ccecfcd71bb06ac1c446dcefdd25bea68f934ba911a104f15119e95effa"
+  },
+  "formal_status": "NOT_RUN_ROUND20; prior outstanding-counter, DPD full-chain, commit lifecycle, and legal q1_tail obligations remain open",
+  "frozen_aggregate_parent_mismatch": true,
+  "logs": {
+    "compile": {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/build/compile.log",
+      "sha256": "df61e94cf41f42dad16a7555de81c18613082f05994a1889a990fb95bb2dd332"
+    },
+    "official_zero_approved_urg": {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/urg/closure_after_directed/official_adjusted_zero_approved/urg.log",
+      "sha256": "f3e950341dd745acbbea6f2d0637931179740ffe039949a63837486a5e5cb9e6"
+    },
+    "raw_urg": {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/urg/closure_after_directed/raw/urg.log",
+      "sha256": "70f0d15052ab1f5e15947fdb74c77fb5306941231881285f7235573475ca7e85"
+    },
+    "whatif_11418_urg": {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/urg/closure_after_directed/analysis_whatif/urg.log",
+      "sha256": "0f18ac31c82413517cc867f4aa0bb4858cf9ed2c8ce3fedcf5726f4edd345a30"
+    },
+    "whatif_11419_command": {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/urg/whatif_plus_axil_portable/command.txt",
+      "sha256": "164a6e818d346a67373de4f7a9ee0886aad465de0e2b78e2f4cecd55d00fdb09"
+    },
+    "whatif_11419_urg": {
+      "artifact": "runs/thermo5_r20_exact_bin_20261109/urg/whatif_plus_axil_portable/urg.log",
+      "sha256": "0cc448e46c7fcf434ccd22e682fd1b8951caf6f01b5bf7739c1860d98d730f82"
+    }
+  },
+  "official_waiver_inventory": {
+    "active_exclusions": 0,
+    "approved": 0,
+    "file": "docs/verification/thermo5_tx_waivers.csv",
+    "note": "No reviewer identity or approval reference was fabricated; official adjusted equals Raw.",
+    "resolved_by_raw_hit": 2,
+    "rows": 371,
+    "semantically_pending_review": 369,
+    "sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830",
+    "source_csv_review_status_pending_rows": 371
+  },
+  "product_configuration": {
+    "clocks": "unchanged product clocks",
+    "dpd_max_taps": 1,
+    "dpd_reset_image": "Identity",
+    "ef2_order": 2,
+    "ef2_state_bits": 20,
+    "ef2_step": 5120,
+    "fifo": "Generic",
+    "interfaces": "AXI-Lite / AXIS",
+    "interpolator": "Centered-Cubic x2+x2"
+  },
+  "product_rtl_aggregate_sha256": "fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003",
+  "product_rtl_source_commit": "fe315cabf058dd184b6d94ffa4ed3b5fb9916733",
+  "r20_campaign_summary": {
+    "counter_toggle_open": 930,
+    "coverage_gate": "OPEN",
+    "dpd_condition_matrix_newly_run": false,
+    "full_linux_dv_signoff": "OPEN",
+    "internal_vcd_target_witnesses": 0,
+    "new_analysis_only_exact_bins_applied": 1,
+    "non_counter_analysis_only_open": 262,
+    "non_counter_raw_open": 263,
+    "official_approved_exclusions": 0,
+    "python_oracle_not_applicable": 1,
+    "python_oracle_not_run": 2,
+    "python_oracle_pass": 23,
+    "raw_exact_target_bin_hits": 0,
+    "vcs_pass": 26,
+    "vcs_tests": 26
+  },
+  "recomputed_rtl_filelist_sha256": "da0a5794c8455b5a1519baa1edcc6852290bb1bf3c7a6eab034b38691bbb60d1",
+  "review_artifact_sha256": {
+    "analysis_only/r20_all_candidate_batches_plus_axil_bin.elfilelist": "0857932c2cd5beaf298b4772b466063bb9d88cf0a55aed188a5710946147efac",
+    "analysis_only/r20_axil_default_false_branch_analysis_only.el": "d13b89a25269380a741e363514f2b7fbc36aafe30f3307a1d44d10e7f1a37109",
+    "thermo5-tx-exact-bin-closure-round20-20261109.md": "3931ef85aaa06917eec70b2e38450efeb7f0fc85e80551bab5b7660a84c3e6b9",
+    "thermo5_tx_r20_analysis_whatif_remaining_1192.csv.gz": "6a427a2acc7a0823625b6df81ca51d9bdecd697805eb73ec1844c963801084d2",
+    "thermo5_tx_r20_counter_remaining_930.csv.gz": "46f01736e7d1b2c332bd9e4614071c33212a23dfb8cb695c2519dffa35fdda7a",
+    "thermo5_tx_r20_non_counter_status_263.csv.gz": "87601e751145ab0c371779d7e7e3c52264626715d9f8aa2144fe57a76b600673",
+    "thermo5_tx_r20_test_results.csv": "aabbccdecd8594ce4ab76ad8bab9170dd4cd2846f1aea79b3f9248cfdb7b0ea0"
+  },
+  "schema": "thermo5_tx_round20_exact_bin_closure_evidence_v1",
+  "source_checkout_commit_at_test_time": "49b9121a860c6b85057047c7696876df7f6cd740",
+  "status": "COVERAGE_SIGNOFF_OPEN_LINUX_DV_SIGNOFF_OPEN",
+  "test_results": {
+    "artifact": "docs/verification/data/thermo5-r20/thermo5_tx_r20_test_results.csv",
+    "current_compile_vcs_pass": 26,
+    "full_product_regression": "NOT_RUN",
+    "mutation": "NOT_RUN",
+    "new_exact_target_hits": 0,
+    "python_oracle_pass": 23,
+    "python_oracle_unavailable_or_not_run": 2,
+    "sha256": "aabbccdecd8594ce4ab76ad8bab9170dd4cd2846f1aea79b3f9248cfdb7b0ea0"
+  },
+  "test_vdb_entries": 27,
+  "tested_worktree_patch": "three UVM sequence/test files listed in the Round20 report; exact file hashes below",
+  "tools": {
+    "python": "3.12.13",
+    "urg": "V-2023.12-SP1 Full64",
+    "vc_formal": "NOT_RUN_ROUND20",
+    "vcs": "V-2023.12-SP1_Full64"
+  },
+  "vdb_manifest": "docs/verification/data/thermo5-r20/thermo5_tx_r20_vdb_manifest.json",
+  "vdb_manifest_sha256": "8a3fde806294f98ca754a06ae7254260f01fd0d8718ac3046b005243aa92d4ed",
+  "waiver_state": {
+    "approved": 0,
+    "new_candidate_status": "ANALYSIS_ONLY_PENDING_INDEPENDENT_REVIEW",
+    "official_exclusions": 0,
+    "official_inventory_count": 371,
+    "pending_independent_review": 369,
+    "raw_hit_resolved": 2,
+    "waiver_csv": {
+      "artifact": "docs/verification/thermo5_tx_waivers.csv",
+      "sha256": "abd8a9b83440af5f27d2a2b22bff2fc170368c76697d0866fb06af1687e66830"
+    }
+  }
+}
