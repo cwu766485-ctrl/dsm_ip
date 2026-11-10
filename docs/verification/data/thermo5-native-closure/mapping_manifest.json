@@ -1,0 +1,485 @@
+{
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "integration_pr": 52,
+  "integration_sha": "c98cd5199cc07ba10e30c4b6c9a31307ffd9795c",
+  "mapping_resolved": 8,
+  "unresolved_native_objects": 0,
+  "shared_block_scope_review_required": 5,
+  "candidate_semantic_dedup": {
+    "historical": 11419,
+    "new": 141,
+    "overlap": 0,
+    "union": 11560
+  },
+  "approved_exclusions": 0,
+  "accepted_exceptions": 0,
+  "counter_open": 930,
+  "official_adjusted_equals_raw": true,
+  "actual_urg_delta": {
+    "line": 0,
+    "condition": 0,
+    "branch": 0,
+    "toggle": 0
+  },
+  "mappings": [
+    {
+      "semantic_bin_id": "TXB-2630d236b14544679aef",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd",
+      "native_object": {
+        "kind": "line",
+        "block_id": 5,
+        "checksum": "4199965830",
+        "signature": "lane_i_taps[(((lane * MAX_TAPS) + tap) * W)+:W] = history_i[((tap - lane) - 1)];",
+        "statement_lines": [
+          61,
+          62
+        ],
+        "statement_ids": [
+          "5",
+          "6"
+        ],
+        "selected_line": 62,
+        "metric_checksum": "133083909",
+        "scope_rule": "Shared block: approval must cover every listed statement; no standalone companion-line exclusion.",
+        "other_statement_approval": "PENDING: review all companion statements before activating shared Block"
+      },
+      "companion_semantic_ids": [
+        "TXB-2630d236b14544679aef",
+        "TXB-85e4dc08ceaaa6cb3089"
+      ]
+    },
+    {
+      "semantic_bin_id": "TXB-85afd49f35a994cc290c",
+      "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+      "native_object": {
+        "kind": "branch",
+        "id": "0",
+        "checksum": "1959897721",
+        "vector_id": "4",
+        "encoded_vector": "0-------------------01011--10",
+        "metric_checksum": "3627519779",
+        "expression_tree": [
+          {
+            "totalbranches": "-1",
+            "id": "122",
+            "index": "1",
+            "parent_bit": "0",
+            "exprstr": "(!c_rst_n)",
+            "file_id": "156",
+            "true_clause_line": "123",
+            "false_clause_line": "138",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "138",
+            "index": "3",
+            "parent_bit": "2",
+            "exprstr": "((core_valid && core_ready) && core_frame_start)",
+            "file_id": "156",
+            "true_clause_line": "139",
+            "false_clause_line": "139",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "141",
+            "index": "5",
+            "parent_bit": "2",
+            "exprstr": "advance",
+            "file_id": "156",
+            "true_clause_line": "142",
+            "false_clause_line": "242",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "145",
+            "index": "6",
+            "parent_bit": "5",
+            "exprstr": "((rem_count_q >= CORE_LANES) && end_pending_q)",
+            "file_id": "156",
+            "true_clause_line": "146",
+            "false_clause_line": "153",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "146",
+            "index": "7",
+            "parent_bit": "6",
+            "exprstr": "(end_remaining_q <= CORE_LANES)",
+            "file_id": "156",
+            "true_clause_line": "147",
+            "false_clause_line": "151",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "5",
+            "id": "154",
+            "index": "10",
+            "parent_bit": "5",
+            "exprstr": "rem_count_q",
+            "file_id": "156"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "180",
+            "index": "14",
+            "parent_bit": "13",
+            "exprstr": "fifo_rd_valid",
+            "file_id": "156",
+            "true_clause_line": "181",
+            "false_clause_line": "227",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "4",
+            "id": "181",
+            "index": "15",
+            "parent_bit": "14",
+            "exprstr": "rem_count_q",
+            "file_id": "156"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "214",
+            "index": "19",
+            "parent_bit": "14",
+            "exprstr": "fifo_frame_end",
+            "file_id": "156",
+            "true_clause_line": "215",
+            "false_clause_line": "223",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "215",
+            "index": "20",
+            "parent_bit": "19",
+            "exprstr": "((rem_count_q + SRC_LANES) <= CORE_LANES)",
+            "file_id": "156",
+            "true_clause_line": "216",
+            "false_clause_line": "220",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "224",
+            "index": "23",
+            "parent_bit": "14",
+            "exprstr": "(fifo_frame_start && (rem_count_q != 4'b0))",
+            "file_id": "156",
+            "true_clause_line": "225",
+            "false_clause_line": "225",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "231",
+            "index": "26",
+            "parent_bit": "25",
+            "exprstr": "((stream_started_q && (!out_valid_q)) && (!core_drain))",
+            "file_id": "156",
+            "true_clause_line": "232",
+            "false_clause_line": "232",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          }
+        ],
+        "selected_semantic_tuple": "122:0/-/1/1/0/-/-/-/-/-/-/-"
+      }
+    },
+    {
+      "semantic_bin_id": "TXB-9b12c02ba9030d039784",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "native_object": {
+        "kind": "line",
+        "block_id": 47,
+        "checksum": "595236972",
+        "signature": "history_i <= '0;",
+        "statement_lines": [
+          230,
+          231
+        ],
+        "statement_ids": [
+          "98",
+          "99"
+        ],
+        "selected_line": 231,
+        "metric_checksum": "1177502884",
+        "scope_rule": "Shared block: approval must cover every listed statement; no standalone companion-line exclusion.",
+        "other_statement_approval": "PENDING: review all companion statements before activating shared Block"
+      },
+      "companion_semantic_ids": [
+        "TXB-9b12c02ba9030d039784",
+        "TXB-be8f42508812865048fe"
+      ]
+    },
+    {
+      "semantic_bin_id": "TXB-a0aba78f44b5d6586879",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "native_object": {
+        "kind": "line",
+        "block_id": 43,
+        "checksum": "62050017",
+        "signature": "tail_pending_q <= 1'b1;",
+        "statement_lines": [
+          224,
+          225,
+          226
+        ],
+        "statement_ids": [
+          "92",
+          "93",
+          "94"
+        ],
+        "selected_line": 226,
+        "metric_checksum": "1177502884",
+        "scope_rule": "Shared block: approval must cover every listed statement; no standalone companion-line exclusion.",
+        "other_statement_approval": "PENDING: review all companion statements before activating shared Block"
+      },
+      "companion_semantic_ids": [
+        "TXB-a0aba78f44b5d6586879",
+        "TXB-ba8067539d65e06536a5",
+        "TXB-c659ce0f8167f1f726df"
+      ]
+    },
+    {
+      "semantic_bin_id": "TXB-a26f239c3d988ed66b21",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd",
+      "native_object": {
+        "kind": "line",
+        "block_id": 13,
+        "checksum": "959394223",
+        "signature": "history_i[h] <= history_i[(h - LANES)];",
+        "statement_lines": [
+          80,
+          81
+        ],
+        "statement_ids": [
+          "16",
+          "17"
+        ],
+        "selected_line": 81,
+        "metric_checksum": "133083909",
+        "scope_rule": "Shared block: approval must cover every listed statement; no standalone companion-line exclusion.",
+        "other_statement_approval": "PENDING: review all companion statements before activating shared Block"
+      },
+      "companion_semantic_ids": [
+        "TXB-a26f239c3d988ed66b21",
+        "TXB-ba031f7f15eab43758d9"
+      ]
+    },
+    {
+      "semantic_bin_id": "TXB-c16debdf7d9cbab220ac",
+      "instance": "thermo5_sku_uvm_tb.dut",
+      "native_object": {
+        "kind": "branch",
+        "id": "3",
+        "checksum": "2439108191",
+        "vector_id": "4",
+        "encoded_vector": "----010100010",
+        "metric_checksum": "240787270",
+        "expression_tree": [
+          {
+            "totalbranches": "-1",
+            "id": "198",
+            "index": "1",
+            "parent_bit": "0",
+            "exprstr": "(!core_aresetn)",
+            "file_id": "172",
+            "true_clause_line": "199",
+            "false_clause_line": "202",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "3",
+            "id": "202",
+            "index": "3",
+            "parent_bit": "2",
+            "exprstr": "{core_accept, output_accept}",
+            "file_id": "172"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "203",
+            "index": "4",
+            "parent_bit": "3",
+            "exprstr": "(!(&outstanding_words_q))",
+            "file_id": "172",
+            "true_clause_line": "203",
+            "false_clause_line": "203",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "204",
+            "index": "7",
+            "parent_bit": "6",
+            "exprstr": "(outstanding_words_q != 8'b0)",
+            "file_id": "172",
+            "true_clause_line": "204",
+            "false_clause_line": "204",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "208",
+            "index": "10",
+            "parent_bit": "2",
+            "exprstr": "core_enable",
+            "file_id": "172",
+            "true_clause_line": "209",
+            "false_clause_line": "210",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "210",
+            "index": "12",
+            "parent_bit": "11",
+            "exprstr": "(core_tx_active_q && drain_complete)",
+            "file_id": "172",
+            "true_clause_line": "211",
+            "false_clause_line": "211",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          }
+        ],
+        "selected_semantic_tuple": "198:0/2'b01/-/0/-/-"
+      }
+    },
+    {
+      "semantic_bin_id": "TXB-c659ce0f8167f1f726df",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "native_object": {
+        "kind": "line",
+        "block_id": 43,
+        "checksum": "62050017",
+        "signature": "tail_pending_q <= 1'b1;",
+        "statement_lines": [
+          224,
+          225,
+          226
+        ],
+        "statement_ids": [
+          "92",
+          "93",
+          "94"
+        ],
+        "selected_line": 225,
+        "metric_checksum": "1177502884",
+        "scope_rule": "Shared block: approval must cover every listed statement; no standalone companion-line exclusion.",
+        "other_statement_approval": "PENDING: review all companion statements before activating shared Block"
+      },
+      "companion_semantic_ids": [
+        "TXB-a0aba78f44b5d6586879",
+        "TXB-ba8067539d65e06536a5",
+        "TXB-c659ce0f8167f1f726df"
+      ]
+    },
+    {
+      "semantic_bin_id": "TXB-e99262dd92665c3b9ea8",
+      "instance": "thermo5_sku_uvm_tb.dut",
+      "native_object": {
+        "kind": "branch",
+        "id": "3",
+        "checksum": "2439108191",
+        "vector_id": "2",
+        "encoded_vector": "----000010110",
+        "metric_checksum": "240787270",
+        "expression_tree": [
+          {
+            "totalbranches": "-1",
+            "id": "198",
+            "index": "1",
+            "parent_bit": "0",
+            "exprstr": "(!core_aresetn)",
+            "file_id": "172",
+            "true_clause_line": "199",
+            "false_clause_line": "202",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "3",
+            "id": "202",
+            "index": "3",
+            "parent_bit": "2",
+            "exprstr": "{core_accept, output_accept}",
+            "file_id": "172"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "203",
+            "index": "4",
+            "parent_bit": "3",
+            "exprstr": "(!(&outstanding_words_q))",
+            "file_id": "172",
+            "true_clause_line": "203",
+            "false_clause_line": "203",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "204",
+            "index": "7",
+            "parent_bit": "6",
+            "exprstr": "(outstanding_words_q != 8'b0)",
+            "file_id": "172",
+            "true_clause_line": "204",
+            "false_clause_line": "204",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "208",
+            "index": "10",
+            "parent_bit": "2",
+            "exprstr": "core_enable",
+            "file_id": "172",
+            "true_clause_line": "209",
+            "false_clause_line": "210",
+            "type": "0",
+            "is_ternary_leaf_node": "0"
+          },
+          {
+            "totalbranches": "-1",
+            "id": "210",
+            "index": "12",
+            "parent_bit": "11",
+            "exprstr": "(core_tx_active_q && drain_complete)",
+            "file_id": "172",
+            "true_clause_line": "211",
+            "false_clause_line": "211",
+            "type": "1",
+            "is_ternary_leaf_node": "0"
+          }
+        ],
+        "selected_semantic_tuple": "198:0/2'b10/0/-/-/-"
+      }
+    }
+  ],
+  "shape_sha256": {
+    "line.verilog.shape.xml": "7d35bc9ac370fe82abab1e0b8eaf7d523353ebbd74f42e310b00ee712aed73c4",
+    "line.verilog.info.xml": "35f8da721d9c0723f371f54afcd4cead952e9283697583b8d62eb923401b7d9b",
+    "branch.verilog.shape.xml": "add167fdad5607b2fb3069e1cadab9cad15bf15f33a76800714cb632932f2aba",
+    "branch.verilog.info.xml": "24c75bd84246f1c1ce13a27caa87b97f622c33257e47b77cefd002228228cd9c"
+  }
+}

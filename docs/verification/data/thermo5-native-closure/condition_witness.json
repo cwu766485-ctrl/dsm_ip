@@ -1,0 +1,20 @@
+{
+  "semantic_bin_id": "TXB-fe4a2292a0aa4da543b9",
+  "instance": "thermo5_sku_uvm_tb.dut.u_cfg",
+  "line": 333,
+  "native_condition_id": "12",
+  "native_checksum": "650566998",
+  "native_vector": "101",
+  "events": [
+    {
+      "time_ps": 560070,
+      "pre_edge_state": {
+        "cfg_req_sync2": "1",
+        "cfg_pending_valid": "0",
+        "core_clk": "0",
+        "core_aresetn": "1",
+        "dpd_config_boundary": "1"
+      }
+    }
+  ]
+}

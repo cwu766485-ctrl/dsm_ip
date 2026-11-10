@@ -6901,3 +6901,11 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added explicit signed-width bounds and exact16-bin candidate links under thermo5-final-exact-review; technical totals141 candidates/90 OPEN, no approved exclusion or URG increase.
 - Corrected installed-tool report_fml_engines export option in run_thermo5_gap_fpv.tcl; verified with a fresh run.
 - Frozen RTL and 586-Test baseline unchanged. Preston approval, eight native mappings, 90 reachability rows and930 counter scope decisions remain pending. Both signoffs OPEN.
+
+
+## 2026-11-10 21:18 SGT — Boundary COMMIT exact hit and PR52 integration
+
+- Merged reviewed technical PR52 as c98cd519 and deleted its remote task branch; no waiver approval implied.
+- Added optional public-port Identity COMMIT timing and checked runner; actual native Condition12 vector101 adds1 HIT with112-word independent four-plane PASS and VCD560070ps.
+- Resolved8 native objects via same-Design-VDB line membership and flattened vectors; five shared blocks still require all-statement approval.11560 disjoint historical/new candidate IDs; zero official approval/exception.
+- Rebuilt DV-only compile and replayed586 inherited tests plus1 legal target;587 PASS, same VDB parent.48 utility/66 reference tests PASS, five URG views clean. Raw Condition665/849; What-if gaps1160. Both signoffs OPEN;89 technical non-counter rows and930 counter scope decisions unresolved.
