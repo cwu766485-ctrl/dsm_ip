@@ -1,0 +1,14 @@
+
+  Design/Setup analysis results
+  -----------------------------
+
+  Summary
+  -------
+
+  Clock violations                 :    0
+  Glitch violations                :    0
+  Oscillating pure comb. loops     :    0
+  Oscillating latch/ff comb. loops :    0
+  Combinational loops              :    0
+  Multidriven nets                 :    0
+  Multidriven output modports      :    0

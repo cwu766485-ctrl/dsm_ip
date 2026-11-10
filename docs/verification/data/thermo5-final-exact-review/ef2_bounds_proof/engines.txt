@@ -1,0 +1,28 @@
+Summary for verification problem vp1 (id=1) in verification task FPV
+#NumGoals      :    13 
+    #no_status     :     0 
+    #success       :    13 
+    #failed        :     0 
+    #bounded       :     0 
+
+List of goals for verification problem vp1 (id=1) in verification task FPV
+--------------------------------------------------------------------------------------------------------------------------------------------------
+GoalId |     Status | EngName |     Time | SDepth | TDepth |       JobId |  SubType | PropertyName
+--------------------------------------------------------------------------------------------------------------------------------------------------
+     0 |    success |      e1 |       38 |      1 |      - |       8 (c) |        - | thermo5_ef2_stability_harness.a_intermediates_do_not_wrap
+     1 |    success |      e1 |       39 |      1 |      - |      11 (c) |        - | thermo5_ef2_stability_harness.a_intermediates_obey_inductive_bounds
+     2 |    success |      s1 |        0 |      0 |      1 |       5 (c) |  vacuity | thermo5_ef2_stability_harness.a_output_captures_accepted_word
+     3 |    success |      e3 |       39 |      3 |      - |      13 (c) |        - | thermo5_ef2_stability_harness.a_output_captures_accepted_word
+     4 |    success |      s1 |       17 |      0 |      3 |       5 (c) |  vacuity | thermo5_ef2_stability_harness.a_output_stable_when_stalled
+     5 |    success |      e1 |       25 |      7 |      - |      21 (c) |        - | thermo5_ef2_stability_harness.a_output_stable_when_stalled
+     6 |    success |      s1 |        0 |      0 |      1 |       5 (c) |  vacuity | thermo5_ef2_stability_harness.a_state_holds_without_accept
+     7 |    success |      e2 |       30 |      9 |      - |      26 (c) |        - | thermo5_ef2_stability_harness.a_state_holds_without_accept
+     8 |    success |      s1 |        0 |      0 |      1 |       5 (c) |  vacuity | thermo5_ef2_stability_harness.a_state_updates_match_accepted_word
+     9 |    success |      e2 |       26 |      8 |      - |      26 (c) |        - | thermo5_ef2_stability_harness.a_state_updates_match_accepted_word
+    10 |    success |      s1 |       17 |      0 |      3 |       5 (c) |        - | thermo5_ef2_stability_harness.c_gt_stall
+    11 |    success |      s1 |       17 |      0 |      3 |       5 (c) |        - | thermo5_ef2_stability_harness.c_gt_transfer
+    12 |    success |      s1 |        0 |      0 |      1 |       5 (c) |        - | thermo5_ef2_stability_harness.c_input_accepted
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+

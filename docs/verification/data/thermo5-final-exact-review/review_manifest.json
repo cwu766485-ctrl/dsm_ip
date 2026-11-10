@@ -1,0 +1,87 @@
+{
+  "reviewer_assigned": "Preston",
+  "approvals": 0,
+  "product_owner_counter_decision": "NOT_SUPPLIED",
+  "new_exact_hits": 0,
+  "new_formal_candidate_bins": [
+    "TXB-19f4d21d889c1bc2f9e4",
+    "TXB-2a13a9e0cbae6d6c0221",
+    "TXB-2be3fbc912d0d3657002",
+    "TXB-33f998ffd11c9fa2d532",
+    "TXB-4824eabcba7861563ca2",
+    "TXB-4c43ef65894613bf582a",
+    "TXB-50a5665beba084b7b1dc",
+    "TXB-6984135c09f560921045",
+    "TXB-876853420d96f475fcbc",
+    "TXB-a42d9362f0edb908b78f",
+    "TXB-ac77a26f1b5db67a5992",
+    "TXB-b04ec0a0673636cb97a9",
+    "TXB-f4f5dc437ff697b9f097",
+    "TXB-fbc614fb3362b9d74635",
+    "TXB-fdacdc50990c5affa98e",
+    "TXB-ff6abb5b0277d5db673e"
+  ],
+  "dispositions": {
+    "EXCLUSION_CANDIDATE": 141,
+    "OPEN": 90
+  },
+  "native_mapping": {
+    "exact": 223,
+    "unresolved": 8
+  },
+  "counter_open": 930,
+  "whatif_remaining": 1161,
+  "official_adjusted_equals_raw": true,
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "proof_scope": "MAX_TAPS=1 USE_EXTERNAL_TAPS=1; arbitrary coefficients/samples/valid/ready; active_taps=1; initialized reset; only proven lemmas promoted. No URG hit claimed.",
+  "failed_attempts": [
+    "missing dpd_poly.v created invalid blackbox run; discarded",
+    "session-lock attempts did not execute proof",
+    "uncomposed run timed out; inconclusive",
+    "second full proof reproduced final PROVEN results but engine report option failed; runner command corrected and rerun"
+  ],
+  "files": {
+    "docs/verification/data/thermo5-final-exact-review/exact_dispositions_231.csv": "c180e75044d2e139538fb39a9d061ecbd4afccbf54e8ac7acbf23408d19b4de4",
+    "docs/verification/data/thermo5-final-exact-review/group_repair_manifest.json": "cd4402d68840c39ac105e29c7aae371239f956a2179ff2b18b61620c5d82d363",
+    "docs/verification/data/thermo5-final-exact-review/candidate_review_11419.csv.gz": "3149425c4d943f04edee06d8360d55edd882f2e2a1f32f257cef53b2d907193c",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/properties_composed.txt": "cb10fbf52325549d7dae0b9571f1d1140a83445d077b2dfd83d1ec318ce3b7d8",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/properties.txt": "26aca7610f361e607166fa7759e038f9ef2ddd71b689c5adbbb2a5aca1f6d6cf",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/setup.txt": "b4f0a0841e3c614840636747bb352328d1af807c8b488a0e0523d086de94b8c1",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/engines.txt": "591c9f3b7cb0d02692fa5337c9b2b1bceba7674856065f1719eb731605174911",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/engines_composed.txt": "68eb9f8e2c636e05a1b0983356bdbf3880d023a9ebab6e2dc2d204048ed3e780",
+    "docs/verification/data/thermo5-final-exact-review/ef2_bounds_proof/properties.txt": "c19a5c12b0914ecf963ba1652e75826522a7bce496a9e9ad9c375f8e1c40b1bb",
+    "docs/verification/data/thermo5-final-exact-review/ef2_bounds_proof/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "docs/verification/data/thermo5-final-exact-review/ef2_bounds_proof/static_bounds.txt": "d64baeae8ad8f19a9f62204af08f15098e09a6f83ce388eda5807f0c8a2faf59",
+    "docs/verification/data/thermo5-final-exact-review/ef2_bounds_proof/engines.txt": "8b57d8555e39a3abc0385ca765e823c0d594740b16497a47a303705e417a911d"
+  },
+  "harness_sha256": "f8b8bcb44fdb4d3a2f39ed2f1b27a08576f643e85eb5578fc4c782c6e1e8d620",
+  "tcl_sha256": "2679c0f5ec514529252e68680b40f0bfa9cf726c73debae7b75b0b6bb8184143",
+  "verified_runner_log_sha256": "5d5ef0dc89ebd984a661089a324de6f5fd5904b5e8f5f22d7ea4dd08a028ce95",
+  "new_ef2_formal_candidate_bins": [
+    "TXB-392ba3ae7de9fe069a10",
+    "TXB-42f2838cc8238d86b5ee",
+    "TXB-4461b5ba7cd627733c52",
+    "TXB-55f4ab665ef25a637f30",
+    "TXB-63c0f770a0c25eb84a89",
+    "TXB-6556b5e7433ce2fe0a4d",
+    "TXB-65bf7b39856541cbdc11",
+    "TXB-788a3d78ed5bf7b5bd59",
+    "TXB-7951fdc781e1b95cdf4e",
+    "TXB-91ed2770c5230629e5c6",
+    "TXB-c0e51f8911237d59a721",
+    "TXB-c2485c49adf055cce215",
+    "TXB-c77baf835d719f575e4c",
+    "TXB-df54700205fb2ff85d73",
+    "TXB-ec1175422c8383ef4ca2",
+    "TXB-fbade6689703423a0d34"
+  ],
+  "ef2_scope": "W16 CHANNELS32 PAIR_LOOKAHEAD0; arbitrary inputs/ready/valid; reset initialized; six assertions proven, three covers covered; no internal assumptions or force; URG delta0.",
+  "ef2_verified_run": {
+    "exit_status": 0,
+    "result": "PASS",
+    "console_sha256": "1de37654204dd2a640e38a70086d9ade26a31925c8b54d75601568ece728b410",
+    "runner_tcl_sha256": "9a5f62884241e929118bca9f4558fa0c8dc1cd8f610f02657cb744f3f4bfd10c",
+    "harness_sha256": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+    "formal_summary_sha256": "1a38df9b25cc683818b54ddb99b1fc00daae521c3f1246061fb6b1e06f4e244b"
+  }
+}

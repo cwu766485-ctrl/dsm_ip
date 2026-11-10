@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-11-10 — Final exact review and DPD invalid proof
+
+- Repaired2448 historical group cells without changing candidate scope/IDs.
+- Resolved24 native expression ambiguities;223 exact mappings,8 unresolved.
+- Added DPD arbitrary-coefficient invalid-zero harness and fail-closed staged
+  Tcl;10 base lemmas proven,2 composed assertions proven,target uncoverable.
+- New16 pending candidates;125 candidates/106 unresolved technical rows.
+- Preston assigned Reviewer,not approval;930 counters/official exclusions OPEN.
+- URG delta0; retained586-Test baseline. Code/full DV signoff OPEN.
+
 ## 2026-11-10 — Consolidation and homogeneous coverage baseline
 
 - Deleted37 verified contained/merged branches; archived13 diverged heads and
@@ -6883,3 +6893,11 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Counter review confirms `sample_count` and `saturation_count` are per-lane internal diagnostic outputs, unconnected at the vector wrapper and not exposed by the product top, but still included in the DUT-only denominator. Their current arithmetic wraps modulo 2^32. The sample-count high bits are not waived without a runtime bound; saturation-count reachability remains open. No scope Exclusion was approved.
 - Checks: VCS V-2023.12-SP1 Full64 targeted config stream and AXI-Lite register-access tests PASS with zero UVM warning/error/fatal and zero predictor mismatch; Python 3.12.13 strict URG runner completed all scenarios; Exact Raw hit delta verified as 66; Python syntax and report/ledger integrity checks are recorded in this PR. FSM remained 13/13 states and 22/22 transitions; URG assertion rows remain 13 SUCCESS, 3 FAILURE, 2 UNCOVERED. Full product regression and Formal were not rerun.
 - Signoff remains OPEN. The 1,700 remaining bins are all OPEN in the What-if and official inventories; the 371-row official waiver CSV remains unchanged with zero approval and zero active official Exclusion. Real XPM/GT Wizard, Vivado timing/PPA, FPGA, RF, and physical QAM256 signoff are outside this run.
+
+
+## 2026-11-10 04:06 PST — EF2 frozen arithmetic proof review
+
+- Revalidated existing production W16/CHANNELS32 scalar EF2 Formal: six assertions proven, three positive covers reached; arbitrary samples/valid/ready, reset only.
+- Added explicit signed-width bounds and exact16-bin candidate links under thermo5-final-exact-review; technical totals141 candidates/90 OPEN, no approved exclusion or URG increase.
+- Corrected installed-tool report_fml_engines export option in run_thermo5_gap_fpv.tcl; verified with a fresh run.
+- Frozen RTL and 586-Test baseline unchanged. Preston approval, eight native mappings, 90 reachability rows and930 counter scope decisions remain pending. Both signoffs OPEN.
