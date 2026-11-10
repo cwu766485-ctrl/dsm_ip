@@ -1,0 +1,64 @@
+{
+  "status": "REVIEW_ONLY_NO_EXCLUSION",
+  "template_sha256": "71435c02b6ae5c1b8dc7416b3605a5ee226a82e413e2a6a39582dc365aac4c82",
+  "compile_manifest_sha256": "ac24df6808a754821ddf3d4760ae9c24cbebd661a3d7d0891d293dd7f42c15dd",
+  "vdb_manifest_sha256": "074fd2e7fab8d389070d3d0e5557fb07a9b7b623527371a9f9ddf23e251e9460",
+  "records": [
+    {
+      "semantic_bin_id": "TXB-2630d236b14544679aef",
+      "source_file": "rtl/dpd/dpd_vector16_memory_poly.sv",
+      "source_sha256": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+      "source_line": 62,
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd",
+      "parameters": "MAX_TAPS=1; LANES=16; HISTORY=1",
+      "scope_checksum": "CHECKSUM: \"1239750921 133083909\"",
+      "native_directive": "",
+      "mapping_status": "NO_SEPARATE_NATIVE_LINE_OBJECT",
+      "proof": "tap=0 and lane>=0 imply tap<=lane",
+      "approval_status": "PENDING_INDEPENDENT_REVIEW",
+      "official_exclusion": false
+    },
+    {
+      "semantic_bin_id": "TXB-85e4dc08ceaaa6cb3089",
+      "source_file": "rtl/dpd/dpd_vector16_memory_poly.sv",
+      "source_sha256": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+      "source_line": 61,
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd",
+      "parameters": "MAX_TAPS=1; LANES=16; HISTORY=1",
+      "scope_checksum": "CHECKSUM: \"1239750921 133083909\"",
+      "native_directive": "Block 5 \"4199965830\" \"lane_i_taps[(((lane * MAX_TAPS) + tap) * W)+:W] = history_i[((tap - lane) - 1)];\"",
+      "mapping_status": "UNIQUE_NATIVE_BLOCK",
+      "proof": "tap=0 and lane>=0 imply tap<=lane",
+      "approval_status": "PENDING_INDEPENDENT_REVIEW",
+      "official_exclusion": false
+    },
+    {
+      "semantic_bin_id": "TXB-a26f239c3d988ed66b21",
+      "source_file": "rtl/dpd/dpd_vector16_memory_poly.sv",
+      "source_sha256": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+      "source_line": 81,
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd",
+      "parameters": "MAX_TAPS=1; LANES=16; HISTORY=1",
+      "scope_checksum": "CHECKSUM: \"1239750921 133083909\"",
+      "native_directive": "",
+      "mapping_status": "NO_SEPARATE_NATIVE_LINE_OBJECT",
+      "proof": "h=0 and LANES=16 imply h<LANES",
+      "approval_status": "PENDING_INDEPENDENT_REVIEW",
+      "official_exclusion": false
+    },
+    {
+      "semantic_bin_id": "TXB-ba031f7f15eab43758d9",
+      "source_file": "rtl/dpd/dpd_vector16_memory_poly.sv",
+      "source_sha256": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+      "source_line": 80,
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd",
+      "parameters": "MAX_TAPS=1; LANES=16; HISTORY=1",
+      "scope_checksum": "CHECKSUM: \"1239750921 133083909\"",
+      "native_directive": "Block 13 \"959394223\" \"history_i[h] <= history_i[(h - LANES)];\"",
+      "mapping_status": "UNIQUE_NATIVE_BLOCK",
+      "proof": "h=0 and LANES=16 imply h<LANES",
+      "approval_status": "PENDING_INDEPENDENT_REVIEW",
+      "official_exclusion": false
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "s_axil_awaddr": [
+    {
+      "time_ps": 5010000,
+      "bit": 1,
+      "previous": 131,
+      "value": 0
+    },
+    {
+      "time_ps": 5010000,
+      "bit": 7,
+      "previous": 131,
+      "value": 0
+    }
+  ],
+  "write_addr": [
+    {
+      "time_ps": 5010000,
+      "bit": 1,
+      "previous": 131,
+      "value": 0
+    },
+    {
+      "time_ps": 5010000,
+      "bit": 7,
+      "previous": 131,
+      "value": 0
+    }
+  ],
+  "awaddr_q": [
+    {
+      "time_ps": 5015000,
+      "bit": 1,
+      "previous": 131,
+      "value": 0
+    },
+    {
+      "time_ps": 5015000,
+      "bit": 7,
+      "previous": 131,
+      "value": 0
+    }
+  ]
+}

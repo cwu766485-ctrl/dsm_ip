@@ -1,0 +1,34 @@
+Dashboard
+
+Date: Tue Nov 10 09:02:52 2026
+
+User: ray
+
+Version: V-2023.12-SP1
+Command line: urg -full64 -dir /tmp/dsm_ip_round21_resume/runs/product/simv.vdb /tmp/dsm_ip_round21_resume/runs/replay_final/negative/218_thermo5_sku_axil_illegal_frame_test.vdb /tmp/dsm_ip_round21_resume/runs/replay_final/negative/219_thermo5_sku_axil_mailbox_fault_test.vdb /tmp/dsm_ip_round21_resume/runs/replay_final/negative/549_thermo5_sku_axil_illegal_frame_test.vdb /tmp/dsm_ip_round21_resume/runs/replay_final/negative/550_thermo5_sku_axil_mailbox_fault_test.vdb -format both -report /tmp/dsm_ip_round21_resume/runs/final_urg/negative_only/report -dbname /tmp/dsm_ip_round21_resume/runs/final_urg/negative_only/urg.vdb -log /tmp/dsm_ip_round21_resume/runs/final_urg/negative_only/urg.log
+Number of tests: 4
+
+-------------------------------------------------------------------------------
+Total Coverage Summary 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH ASSERT GROUP  
+ 62.80  81.53  53.95  76.99  63.64  55.10  68.42  39.94 
+
+
+-------------------------------------------------------------------------------
+Hierarchical coverage data for top-level instances 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH ASSERT NAME               
+ 67.95  81.53  53.95  76.99  63.64  55.10  76.47 thermo5_sku_uvm_tb 
+  0.00 --     --     --     --     --       0.00 uvm_pkg            
+
+
+-------------------------------------------------------------------------------
+Total Module Definition Coverage Summary 
+SCORE  LINE   COND   TOGGLE FSM    BRANCH ASSERT 
+ 72.23  81.33  65.17  82.81  64.71  64.36  75.00 
+
+
+-------------------------------------------------------------------------------
+Total Groups Coverage Summary 
+SCORE  INST SCORE WEIGHT 
+ 39.94  39.94     1      
+

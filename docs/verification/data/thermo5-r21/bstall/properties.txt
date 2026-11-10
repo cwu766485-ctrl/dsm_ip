@@ -1,0 +1,41 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 1
+     - # proven       : 1
+
+   > Vacuity
+     - # found        : 1
+     - # non_vacuous  : 1
+
+   > Cover
+     - # found        : 3
+     - # covered      : 2
+     - # uncoverable  : 1
+
+   > Constraint
+     - # found        : 2
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 1
+     [  0] proven                   (non_vacuous)  -  thermo5_axil_cfg_line93_harness.a_bvalid_excludes_line93_tuple
+
+   > Cover
+     # Cover: 3
+     [  1] uncoverable                             -  thermo5_axil_cfg_line93_harness.c_line93_uncovered_tuple
+     [  2] covered     (depth=4)                   -  thermo5_axil_cfg_line93_harness.c_write_fire
+     [  3] covered     (depth=4)                   -  thermo5_axil_cfg_line93_harness.c_write_response_active
+
+   > Constraint
+     # Constraint: 2
+     [  4] constrained                             -  constant_4 - axil_rst_n==1
+     [  5] constrained                             -  constant_5 - core_rst_n==1
+
+
+

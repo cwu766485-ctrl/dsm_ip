@@ -1,3 +1,68 @@
+# Update Log
+
+## 2026-11-10 — Round 21 GitHub integration gate
+
+- Verified GitHub authentication and pushed 8a61798 to the existing Round 21
+  branch; created Draft PR #51 on the Round 20 branch, preserving #49/#50/#51.
+- Remote SHA verified. No regressions rerun, merge or signoff PASS.
+
+## 2026-11-10 — Blocked-B exact root cause and remaining inventory
+
+- Added legal blocked-B / next-AW/W protocol/readback sequence to register test.
+- Compile/test PASS; all three incremental URG deltas zero. No seed expansion.
+- Current-source exact line93 Formal: 1 assertion proven non-vacuously, two
+  covers hit, one uncoverable; reset constraints and block scope recorded.
+- Added native exact pending-review packet; no official exclusion/approval.
+- Generated local Chinese file/bit/tuple inventory under ignored runs; 231
+  non-counter plus 930 counters remain. Final homogeneous signoff OPEN.
+
+## 2026-11-10 07:11 UTC — Exact queue replacement closure
+
+- Added strict two-stage exact-event gate to frame-replacement UVM test and
+  a deterministic public-input runner. Product RTL/parameters unchanged.
+- Eleven-cycle packet-boundary gap: both stages single-entry pop/push,
+  independent four-plane oracle/counters/drain/VCD PASS. Strict compile and
+  runner replay PASS; three actual same-input incremental URG reports PASS.
+- Delta +2 Branch/+14 Line/+2 Condition. What-if OPEN 1161 = 231+930.
+- Gap12 failed with real underflow; gap10 missed target; neither merged.
+- Full regression/Formal not rerun; independent approvals, homogeneous
+  final replay, Code Coverage and Full Linux DV signoff remain OPEN.
+
+## 2026-11-10 — Round 21 address-return exact closure
+
+- Added two checked public AXI-Lite writes to the focused register test and
+  included u_cfg in optional VCD capture. Product RTL hashes unchanged.
+- New exact Toggle hits: 8; incremental Raw Toggle 92640/104480; What-if
+  remaining 1179 (249 non-counter + 930 counter). No approvals/exclusions.
+- Checks: compile, focused register simulation, exact URG, VCD transitions,
+  three same-input incremental URG reports and diff whitespace PASS.
+- Initial standalone URG lacked Design VDB; corrected run used matching Design.
+- Full regression/Formal not rerun; homogeneous final replay and signoff OPEN.
+
+## 2026-11-10 06:40 UTC — Round 21 integration review follow-up
+
+- Updated queue/review packet and frontier; added four History-line native
+  mapping records and source/metric grouping of 257 remaining exact bins.
+- Checks: current Raw VDB native URG template extraction PASS; four source
+  hashes match. Two lines have unique Blocks; two companion lines remain OPEN.
+- No regression rerun, new hit, coverage merge, official exclusion or approval.
+- Uploaded a98a32d confirmed. GitHub device login and stacked Draft PR pending;
+  Code Coverage and Full Linux DV signoff remain OPEN.
+
+## 2026-11-10 17:05 Asia/Singapore — Round 21 root-cause closure
+
+- Changed UVM optional VCD hook; added deterministic I/Q-only vector generator,
+  exact expression/VCD checker, inherited-test replay utility and counter block
+  test/runner. Product RTL and algorithm unchanged.
+- Added Round 21 report, exact-bin review tables, candidate/Waiver links,
+  counter acceptance and queue analysis, source/VDB/log fingerprints.
+- Actual increment: five Condition bins; non-counter What-if 262 -> 257.
+- Checks: 580 inherited + four focused product runs (one oracle repair), counter
+  carry/wrap/reset/hold PASS, scoped Formal 2 jobs PASS, Python model 66/66,
+  hardware tool tests 48/48, five URG reports. Legal/negative assertions separated.
+- Remaining: 1,187 What-if bins, independent approvals, full-chain proofs;
+  no official exclusions or exceptions. GitHub authentication pending at upload.
+
 # 2026-11-09 — Thermo5 Round 20 exact-bin closure result
 
 - Added focused constrained-random source-bubble and packet-length controls

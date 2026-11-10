@@ -1,0 +1,46 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 2
+     - # proven       : 2
+
+   > Vacuity
+     - # found        : 2
+     - # non_vacuous  : 2
+
+   > Cover
+     - # found        : 8
+     - # covered      : 6
+     - # uncoverable  : 2
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 2
+     [   0] proven                   (non_vacuous)  -  thermo5_frame_tail_reset_condition_harness.a_append_reset_empty
+     [   1] proven                   (non_vacuous)  -  thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty
+
+   > Cover
+     # Cover: 8
+     [   2] covered     (depth=3)                   -  thermo5_frame_tail_reset_condition_harness.c_append_queue_nonempty
+     [   3] uncoverable                             -  thermo5_frame_tail_reset_condition_harness.c_append_reset_bin
+     [   4] covered     (depth=1)                   -  thermo5_frame_tail_reset_condition_harness.c_append_reset_empty
+     [   5] covered     (depth=4)                   -  thermo5_frame_tail_reset_condition_harness.c_append_runtime_reset
+     [   6] covered     (depth=3)                   -  thermo5_frame_tail_reset_condition_harness.c_plain_queue_nonempty
+     [   7] uncoverable                             -  thermo5_frame_tail_reset_condition_harness.c_plain_reset_bin
+     [   8] covered     (depth=1)                   -  thermo5_frame_tail_reset_condition_harness.c_plain_reset_empty
+     [   9] covered     (depth=4)                   -  thermo5_frame_tail_reset_condition_harness.c_plain_runtime_reset
+
+   > Constraint
+     # Constraint: 1
+     [  10] constrained                             -  constant_10 - boot_n==1
+
+
+

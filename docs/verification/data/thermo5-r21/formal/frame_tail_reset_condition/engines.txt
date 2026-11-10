@@ -1,0 +1,20 @@
+List of goals for verification problem vp1 (id=1) in verification task FPV
+--------------------------------------------------------------------------------------------------------------------------------------------------
+GoalId |     Status | EngName |     Time | SDepth | TDepth |       JobId |  SubType | PropertyName
+--------------------------------------------------------------------------------------------------------------------------------------------------
+     0 |    success |      s1 |        0 |      - |      1 |       7 (c) |  vacuity | thermo5_frame_tail_reset_condition_harness.a_append_reset_empty
+     1 |    success |      t1 |        0 |      - |      - |       2 (c) |        - | thermo5_frame_tail_reset_condition_harness.a_append_reset_empty
+     2 |    success |      s1 |        0 |      - |      1 |       7 (c) |  vacuity | thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty
+     3 |    success |      t1 |        0 |      - |      - |       2 (c) |        - | thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty
+     4 |    success |      s1 |        0 |      - |      3 |       7 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_append_queue_nonempty
+     5 |     failed |      t1 |        0 |      - |      - |       2 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_append_reset_bin
+     6 |    success |      s1 |        0 |      - |      1 |       7 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_append_reset_empty
+     7 |    success |      s1 |        0 |      - |      4 |       7 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_append_runtime_reset
+     8 |    success |      s1 |        0 |      - |      3 |       7 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_plain_queue_nonempty
+     9 |     failed |      t3 |        0 |      - |      - |       6 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_plain_reset_bin
+    10 |    success |      s1 |        0 |      - |      1 |       7 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_plain_reset_empty
+    11 |    success |      s1 |        0 |      - |      4 |       7 (c) |        - | thermo5_frame_tail_reset_condition_harness.c_plain_runtime_reset
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+

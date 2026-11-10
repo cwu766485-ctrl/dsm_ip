@@ -99,6 +99,11 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
                   $sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
                     lane,vif.dpd_sample_count[lane],expected_dpd_words,
                     vif.dpd_saturation_count[lane]))
+            if ((interp1_hits==0 || interp2_hits==0) &&
+                $test$plusargs("THERMO5_REQUIRE_SINGLE_REPLACEMENT"))
+              `uvm_fatal("FRAME_REPLACEMENT_EXACT_MISS",
+                $sformatf("Required exact event missing: stage1=%0d stage2=%0d",
+                  interp1_hits,interp2_hits))
             if (interp1_hits==0 || interp2_hits==0)
               `uvm_info("FRAME_REPLACEMENT_BIN_OPEN",
                 $sformatf("Stream oracle passed but target pop/push remains unhit: stage1=%0d/%0d/%0d stage2=%0d/%0d/%0d run_phase=%0d source_phase=%0d",

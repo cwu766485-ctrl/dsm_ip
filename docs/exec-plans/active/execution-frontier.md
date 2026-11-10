@@ -1,5 +1,78 @@
 # Execution frontier
 
+## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
+
+GitHub integration gate completed: authenticated account verified; 8a61798
+uploaded to codex/thermo5-round21-resume. Draft PR #51 targets
+codex/thermo5-round20-exact-bin-closure, preserving #49 -> #50 -> #51.
+https://github.com/cwu766485-ctrl/dsm_ip/pull/51
+No regression rerun, merge, exclusion approval or signoff change.
+
+
+Blocked-B follow-up: directed register protocol/readback PASS, actual delta 0.
+Exact line93 Formal proves the missing tuple unreachable (1 non-vacuous
+assertion, 2 positive covers, 1 uncoverable cover; reset constraints recorded).
+Native Condition21/vector011 bound; still PENDING independent approval.
+No official exclusion; What-if remains 1161. Chinese local inventory is under
+runs/coverage_status_zh/. See thermo5-round21-bstall-exact-review.md.
+
+
+Latest queue milestone: eleven source-clock gap cycles before packet beat 32
+produce legal single-entry pop+push in BOTH stages. Strict UVM event checks,
+four-plane independent oracle, counters, drain and VCD PASS. Actual URG delta
++2 Branch/+14 Line/+2 Condition. Incremental Raw 526/637 Branch, 664/849 Cond,
+3352/3796 Line, 92640/104480 Toggle. What-if OPEN 1161 = 231 non-counter +930
+counter. Approvals/exclusions=0. Gap12 real-underflow failure excluded; gap10
+functional PASS/target miss excluded. New strict runner checked. Product RTL
+unchanged; final homogeneous replay and independent approvals still required.
+Evidence: docs/verification/thermo5-round21-single-replacement-closure.md.
+Counts in earlier entries below are historical incremental/baseline results.
+
+
+Latest follow-up: one focused AXI-Lite address-return test adds eight exact
+Toggle hits, with checked DECERR/OKAY and VCD witness. Incremental Raw Toggle
+92640/104480; What-if OPEN 1179 = 249 non-counter + 930 counter. Approved=0.
+Product RTL hashes unchanged; DV-only compile differs from frozen aggregate.
+Incremental URG has no mapping diagnostics; homogeneous replay before final
+signoff remains required. Full regression/Formal not rerun. Evidence:
+docs/verification/thermo5-round21-address-return-closure.md. Earlier counts
+below are the preserved homogeneous 584-Test baseline.
+
+
+PR #50 base 818e1de. Five exact DPD Condition bins gained legal I-only/Q-only
+witnesses; Condition Raw is 662/849. Product RTL/configuration unchanged.
+All inherited 580 scenarios are rebuilt with one current compile parent;
+four focused scenarios complete the 584-Test baseline. Legal and four expected-
+negative inputs are separated for assertion reporting. One missing old oracle
+file was reconstructed independently; its first failure is retained.
+
+Raw/zero-approved Adjusted: Branch 524/637, Condition 662/849, Line 3338/3796,
+Toggle 92632/104480; FSM 13/13 states and 22/22 transitions. What-if retains
+1,187 open bins: 257 non-counter and 930 Counter. Approved exclusions and
+exceptions=0. The 11,419 analysis candidates remain pending independent review.
+Counter arithmetic (31 carry boundaries, wrap, async reset, hold) passes at
+block level; deposited registers never contribute product toggle coverage.
+Two scoped q1_tail metadata/reset Formal jobs PASS; full-chain transfer remains
+open. Legal assertions: 13 success, zero failures, two q1_tail without attempts.
+Combined three failures are confined to expected-negative runs.
+
+Evidence: docs/verification/thermo5-tx-root-cause-closure-round21-20261110.md
+and docs/verification/data/thermo5-r21/. Review proposals cover the AXI-Lite
+Branch, four MAX_TAPS=1 Lines, and counter system acceptance. No reviewer has
+approved them. PR #49 -> #50 -> Round 21 review order remains required.
+
+Integration follow-up: uploaded a98a32d verified. Current URG native dump
+identifies Blocks for DPD lines 61/80, but no separate objects for 62/81;
+companion-line mapping stays OPEN. Reviewer addendum includes the queue
+transition table, 257-bin source grouping and assertion/Formal obligations.
+No new hits or approvals from this read-only follow-up.
+
+Next: review Draft #51 after #49/#50; obtain real independent approval and
+resolve native companion-line mapping;
+close the remaining queue/handshake and counter/formal obligations. Never call this final signoff. XPM/GT/FPGA/board/RF remain outside scope.
+
+## Previous execution state
+
 ## Current execution state: Thermo5 Round 20 exact-bin closure (2026-11-09)
 
 Review branch `codex/thermo5-round20-exact-bin-closure` starts at PR #49 base

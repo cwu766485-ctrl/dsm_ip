@@ -1,0 +1,10 @@
+instance,ownership,fsm,metric,total,covered,missing
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,q_count,states,3,3,0
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,q_count,transitions,5,3,2
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,q_count,sequences,0,0,0
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,q_count,states,3,3,0
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,q_count,transitions,5,3,2
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,q_count,sequences,0,0,0
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,rem_count_q,states,7,7,0
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,rem_count_q,transitions,12,8,4
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,rem_count_q,sequences,0,0,0

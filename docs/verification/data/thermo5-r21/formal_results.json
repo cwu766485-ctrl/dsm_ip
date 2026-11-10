@@ -1,0 +1,179 @@
+{
+  "status": "PASS",
+  "source_sha256": {
+    "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+    "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+    "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+    "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+    "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+    "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+    "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+    "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+    "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+    "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+    "dv/uvm/formal/thermo5_cdc_data_empty_harness.sv": "f52c1e1f7bfdfb408610f3de97f5576939fa57617bbb2be2e84e2c6e345cb054",
+    "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+    "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+    "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+    "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+    "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+    "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+    "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+    "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+    "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "e6ce40e4c6384beccd0a3f40e765ae24425f1c4833859ad591c6895c05fa72d5",
+    "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f"
+  },
+  "source": {
+    "git_revision": "818e1de799f9dfa0ccf098da11349d0c95fa34ad",
+    "worktree_dirty": true,
+    "git_status": [
+      " M dv/uvm/tb/thermo5_sku_uvm_tb.sv",
+      "?? dv/uvm/refmodel/python/generate_thermo5_dpd_axis_witness.py",
+      "?? dv/verif/block/dpd/run_memory_poly_counter_contract_vcs.sh",
+      "?? dv/verif/block/dpd/tb/tb_dpd_memory_poly_counter_contract.sv",
+      "?? tools/hw/thermo5_r21_replay.py",
+      "?? tools/hw/thermo5_r21_witness.py"
+    ]
+  },
+  "jobs": [
+    {
+      "kind": "frame_tail_legal_metadata",
+      "top": "thermo5_frame_tail_legal_metadata_harness",
+      "status": "PASS",
+      "argv": [
+        "vcf",
+        "-batch",
+        "-fmode",
+        "FPV",
+        "-f",
+        "/tmp/dsm_ip_round21_resume/dv/uvm/formal/run_thermo5_gap_fpv.tcl"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 58.17,
+      "assertions": [
+        [
+          "proven",
+          "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context"
+        ]
+      ],
+      "covers": [
+        [
+          "uncoverable",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"
+        ]
+      ],
+      "log": "/tmp/dsm_ip_round21_resume/runs/formal_r21_retry/frame_tail_legal_metadata/console.log",
+      "setup": "/tmp/dsm_ip_round21_resume/runs/formal_r21_retry/frame_tail_legal_metadata/setup.txt",
+      "properties": "/tmp/dsm_ip_round21_resume/runs/formal_r21_retry/frame_tail_legal_metadata/properties.txt",
+      "black_box_instances": [
+        "0"
+      ],
+      "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+    },
+    {
+      "kind": "frame_tail_reset_condition",
+      "top": "thermo5_frame_tail_reset_condition_harness",
+      "status": "PASS",
+      "argv": [
+        "vcf",
+        "-batch",
+        "-fmode",
+        "FPV",
+        "-f",
+        "/tmp/dsm_ip_round21_resume/dv/uvm/formal/run_thermo5_gap_fpv.tcl"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 18.69,
+      "assertions": [
+        [
+          "proven",
+          "thermo5_frame_tail_reset_condition_harness.a_append_reset_empty"
+        ],
+        [
+          "proven",
+          "thermo5_frame_tail_reset_condition_harness.a_plain_reset_empty"
+        ]
+      ],
+      "covers": [
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_append_queue_nonempty"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_reset_condition_harness.c_append_reset_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_append_reset_empty"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_append_runtime_reset"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_queue_nonempty"
+        ],
+        [
+          "uncoverable",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_reset_bin"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_reset_empty"
+        ],
+        [
+          "covered",
+          "thermo5_frame_tail_reset_condition_harness.c_plain_runtime_reset"
+        ]
+      ],
+      "log": "/tmp/dsm_ip_round21_resume/runs/formal_r21_retry/frame_tail_reset_condition/console.log",
+      "setup": "/tmp/dsm_ip_round21_resume/runs/formal_r21_retry/frame_tail_reset_condition/setup.txt",
+      "properties": "/tmp/dsm_ip_round21_resume/runs/formal_r21_retry/frame_tail_reset_condition/properties.txt",
+      "black_box_instances": [
+        "0"
+      ],
+      "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+    }
+  ],
+  "errors": [],
+  "scope": {
+    "reset": "runtime reset changes only on falling edge; active-edge collisions excluded",
+    "counter": "MAX_TAPS=1 identity; at most 2072 accepted inputs per reset epoch",
+    "frame_tail_legal_metadata": "Exact centered-cubic product stage geometries and legal frame-marker schedules: stage 1 accepts 7 vectors of 8 lanes per 56-sample DSP frame, with frame_start on each frame and TLAST/frame_end only on vector 56 of an eight-frame, 448-sample packet. Stage 2 accepts 8 vectors of 16 lanes per DSP frame, with the final synthetic tail tagged end/tail. The two production interpolator RTL stages are directly composed with ready/valid backpressure. Intermediate elastic FIFOs and DPD are omitted; this result alone does not disposition Raw URG bins.",
+    "frame_tail_reset_condition": "Exact product interpolation geometries. Initial boot reset is followed by an unconstrained runtime reset request sampled only on the inactive clock edge. The harness requires nonempty queue and runtime-reset witnesses, proves queue empty while reset is active, and targets only reset-low operands of line 309."
+  }
+}
