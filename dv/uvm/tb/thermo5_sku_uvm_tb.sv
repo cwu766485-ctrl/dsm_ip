@@ -44,6 +44,7 @@ module thermo5_sku_uvm_tb;
       $dumpvars(0,dut.u_frontend.g_interp1_centered.u_interp_1);
       $dumpvars(0,dut.u_frontend.g_interp2_centered.u_interp_2);
       $dumpvars(0,dut.u_frontend.g_memory_dpd.u_memory_dpd);
+      $dumpvars(0,dut.u_cfg);
     end
   end
 `endif

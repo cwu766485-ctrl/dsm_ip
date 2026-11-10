@@ -1,5 +1,16 @@
 # Update Log
 
+## 2026-11-10 — Round 21 address-return exact closure
+
+- Added two checked public AXI-Lite writes to the focused register test and
+  included u_cfg in optional VCD capture. Product RTL hashes unchanged.
+- New exact Toggle hits: 8; incremental Raw Toggle 92640/104480; What-if
+  remaining 1179 (249 non-counter + 930 counter). No approvals/exclusions.
+- Checks: compile, focused register simulation, exact URG, VCD transitions,
+  three same-input incremental URG reports and diff whitespace PASS.
+- Initial standalone URG lacked Design VDB; corrected run used matching Design.
+- Full regression/Formal not rerun; homogeneous final replay and signoff OPEN.
+
 ## 2026-11-10 06:40 UTC — Round 21 integration review follow-up
 
 - Updated queue/review packet and frontier; added four History-line native

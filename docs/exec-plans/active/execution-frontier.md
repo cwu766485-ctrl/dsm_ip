@@ -2,6 +2,16 @@
 
 ## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
 
+Latest follow-up: one focused AXI-Lite address-return test adds eight exact
+Toggle hits, with checked DECERR/OKAY and VCD witness. Incremental Raw Toggle
+92640/104480; What-if OPEN 1179 = 249 non-counter + 930 counter. Approved=0.
+Product RTL hashes unchanged; DV-only compile differs from frozen aggregate.
+Incremental URG has no mapping diagnostics; homogeneous replay before final
+signoff remains required. Full regression/Formal not rerun. Evidence:
+docs/verification/thermo5-round21-address-return-closure.md. Earlier counts
+below are the preserved homogeneous 584-Test baseline.
+
+
 PR #50 base 818e1de. Five exact DPD Condition bins gained legal I-only/Q-only
 witnesses; Condition Raw is 662/849. Product RTL/configuration unchanged.
 All inherited 580 scenarios are rebuilt with one current compile parent;
