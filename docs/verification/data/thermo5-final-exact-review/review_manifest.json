@@ -37,18 +37,20 @@
   "failed_attempts": [
     "missing dpd_poly.v created invalid blackbox run; discarded",
     "session-lock attempts did not execute proof",
-    "uncomposed run timed out; inconclusive"
+    "uncomposed run timed out; inconclusive",
+    "second full proof reproduced final PROVEN results but engine report option failed; runner command corrected and rerun"
   ],
   "files": {
     "docs/verification/data/thermo5-final-exact-review/exact_dispositions_231.csv": "93419851c32bc23339e1040b7f4fa3be8a10694cbe70bd777d9c8211f07d660c",
     "docs/verification/data/thermo5-final-exact-review/group_repair_manifest.json": "cd4402d68840c39ac105e29c7aae371239f956a2179ff2b18b61620c5d82d363",
     "docs/verification/data/thermo5-final-exact-review/candidate_review_11419.csv.gz": "3149425c4d943f04edee06d8360d55edd882f2e2a1f32f257cef53b2d907193c",
     "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/properties_composed.txt": "cb10fbf52325549d7dae0b9571f1d1140a83445d077b2dfd83d1ec318ce3b7d8",
-    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/properties.txt": "ca997464a9d351fb5fd98e9460a2b8f4919ebb09c5430d7b264111224427421d",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/properties.txt": "26aca7610f361e607166fa7759e038f9ef2ddd71b689c5adbbb2a5aca1f6d6cf",
     "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/setup.txt": "b4f0a0841e3c614840636747bb352328d1af807c8b488a0e0523d086de94b8c1",
-    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/engines.txt": "a812553bb78d934b4e734540fcf3f75d7efca845c0cdf04fab35ad4e299c98bf",
-    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/engines_composed.txt": "624185f035819dcf025bf9e17f84524a859db68a7e502e47c9a615cddaef4d5e"
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/engines.txt": "591c9f3b7cb0d02692fa5337c9b2b1bceba7674856065f1719eb731605174911",
+    "docs/verification/data/thermo5-final-exact-review/dpd_invalid_proof/engines_composed.txt": "68eb9f8e2c636e05a1b0983356bdbf3880d023a9ebab6e2dc2d204048ed3e780"
   },
   "harness_sha256": "f8b8bcb44fdb4d3a2f39ed2f1b27a08576f643e85eb5578fc4c782c6e1e8d620",
-  "tcl_sha256": "de76e75967c956ea71bf6761e7b32df0abfba4d879052b886107e966df864b60"
+  "tcl_sha256": "2679c0f5ec514529252e68680b40f0bfa9cf726c73debae7b75b0b6bb8184143",
+  "verified_runner_log_sha256": "5d5ef0dc89ebd984a661089a324de6f5fd5904b5e8f5f22d7ea4dd08a028ce95"
 }

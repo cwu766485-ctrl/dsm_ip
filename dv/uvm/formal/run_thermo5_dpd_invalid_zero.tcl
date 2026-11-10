@@ -9,14 +9,14 @@ create_clock clk -period 4.571
 create_reset rst_n -sense low
 sim_run -stable
 sim_save_reset
-set_fml_var fml_max_time 2m
+set_fml_var fml_max_time 30s
 set_fml_var fml_property_time_limit 60s
 set_fml_var fml_max_mem 8GB
 check_fv_setup -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -block
 report_fv_setup -list > $out/setup.txt
 check_fv -block
 report_fv -list > $out/properties.txt
-report_fml_engines -list -no_summary > $out/engines.txt
+report_fml_engines -list > $out/engines.txt
 
 # Promote only lemmas independently proven in the unassumed base run.
 set fd [open $out/properties.txt r]
@@ -30,4 +30,4 @@ foreach name $lemmas {
 foreach name $lemmas {fvassume thermo5_dpd_invalid_zero_harness.$name}
 check_fv -block
 report_fv -list > $out/properties_composed.txt
-report_fml_engines -list -no_summary > $out/engines_composed.txt
+report_fml_engines -list > $out/engines_composed.txt

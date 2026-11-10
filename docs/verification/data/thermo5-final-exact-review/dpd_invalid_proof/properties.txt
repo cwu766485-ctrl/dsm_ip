@@ -33,15 +33,15 @@
      [   5] proven                                  -  thermo5_dpd_invalid_zero_harness.a_enable5
      [   6] proven                                  -  thermo5_dpd_invalid_zero_harness.a_enable6
      [   7] proven                                  -  thermo5_dpd_invalid_zero_harness.a_enable7
-     [   8] inconclusive(depth=60)   (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_no_saturation
+     [   8] inconclusive(depth=26)   (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_no_saturation
      [   9] proven                   (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_pair_zero
-     [  10] inconclusive(depth=60)   (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_sum_zero
+     [  10] inconclusive(depth=26)   (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_sum_zero
      [  11] proven                   (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_term_zero
 
    > Cover
      # Cover: 3
      [  12] covered     (depth=13)                  -  thermo5_dpd_invalid_zero_harness.c_bubble_after_output
-     [  13] inconclusive(depth=60)                  -  thermo5_dpd_invalid_zero_harness.c_invalid_saturation
+     [  13] inconclusive(depth=26)                  -  thermo5_dpd_invalid_zero_harness.c_invalid_saturation
      [  14] covered     (depth=12)                  -  thermo5_dpd_invalid_zero_harness.c_output
 
    > Constraint
