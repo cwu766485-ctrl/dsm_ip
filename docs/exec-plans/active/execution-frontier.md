@@ -1,5 +1,23 @@
 # Execution frontier
 
+## Current execution state: Two legal public-reset Condition hits (2026-11-10)
+
+Frozen product635be68 unchanged. Stalled public-reset test gives native
+Condition19 vector1110 in both interpolators, event VCD548640ps. These are
+reset combinational propagation hits, not stable active-clock handshakes.
+Full post-reset56-word independent four-plane oracle PASS.588/588 uniform
+parent scenarios PASS (584legal/4negative);48 utility tests PASS. Raw=Official:
+Branch526/637,Cond667/849,Line3352/3796,Toggle92640/104480,FSM13/13+22/22.
+What-if1158=228noncounter+930counter. Actual delta+2Condition. Official
+approved/accepted0; technical ledger3HIT/141pending/87unresolved. All five
+URG logs clean. Legal asserts13success/0fail/two q1_tail without attempts;
+combined3 failures only expected-negative. Redundant compile interrupted154
+jobs and changed195 early parents; fixed by freezing compile and replaying
+all affected inputs, failed attempts retained. Preston login/approvals absent.
+Both signoffs OPEN. Evidence: thermo5-stalled-reset-exact-closure.md.
+
+## Previous execution state
+
 ## Current execution state: Legal boundary COMMIT exact hit (2026-11-10)
 
 PR52 merged c98cd519; technical review separate from independent approval;

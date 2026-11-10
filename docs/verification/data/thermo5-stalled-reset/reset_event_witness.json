@@ -1,0 +1,13 @@
+{
+  "semantic_bin_ids": [
+    "TXB-1f1ce5bdcc2c308628e9",
+    "TXB-ab53b1aadded931bc157"
+  ],
+  "event_time_ps": 548640,
+  "event_kind": "EVENT_DRIVEN_ASYNC_RESET_PROPAGATION",
+  "stable_clock_edge_witness": false,
+  "preconditions": "Public PA backpressure0,24 legal source beats,RUN accepted,40 falling core edges after PA valid;common reset asserted via existing BFM.",
+  "native_tuple": "can_emit_head=1,!tail_output=1,out_ready=1,enable=0",
+  "qualification": "VCD ordered value changes and native URG agree; after same timestamp settles can_emit_head0. No active-state handshake claimed.",
+  "source_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66"
+}

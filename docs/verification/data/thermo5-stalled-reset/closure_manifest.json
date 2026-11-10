@@ -1,0 +1,68 @@
+{
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "base_sha": "a6dd883bf46709373e0202e1f0219f5eb0b2c4c0",
+  "new_exact_hits": 2,
+  "raw_missing": 12577,
+  "whatif_missing": 1158,
+  "noncounter_remaining": 228,
+  "counter_open": 930,
+  "technical_dispositions": {
+    "HIT": 3,
+    "EXCLUSION_CANDIDATE": 141,
+    "OPEN": 87
+  },
+  "approved_exact_bins": 0,
+  "accepted_exception_bins": 0,
+  "official_adjusted_equals_raw": true,
+  "regression": {
+    "total": 588,
+    "legal": 584,
+    "expected_negative": 4,
+    "status": "PASS"
+  },
+  "parent_sha256": "fd0832dbb73e50f04f7a9f526240ee995cab4ff97ba7af40c714d5311dd852c3",
+  "uniform_parent": true,
+  "urg_diagnostics": {
+    "raw": [],
+    "approved_adjusted": [],
+    "whatif": [],
+    "legal_raw": [],
+    "negative_only": []
+  },
+  "assertions": {
+    "raw": {
+      "UNCOVERED": 2,
+      "SUCCESS": 13,
+      "FAILURE": 3
+    },
+    "legal_raw": {
+      "UNCOVERED": 2,
+      "SUCCESS": 13,
+      "WITHOUT_ATTEMPTS": 2
+    },
+    "negative_only": {
+      "UNCOVERED": 4,
+      "SUCCESS": 11,
+      "FAILURE": 3,
+      "WITHOUT_ATTEMPTS": 2
+    }
+  },
+  "limitations": [
+    "Two hits are asynchronous reset propagation events, not stable clock-edge tuples",
+    "Preston login/independent decisions absent; no fabricated approval",
+    "154 failed execution attempts and195 stale-parent passes replayed after freezing compile",
+    "Initial retry wrapper failed duplicate keyword fields; corrected plan-only retry succeeds"
+  ],
+  "evidence_sha256": {
+    "runs/queue_witness/reset_compile/simv.vdb/snps/coverage/db/auxiliary/vcmArguments.xml": "fd0832dbb73e50f04f7a9f526240ee995cab4ff97ba7af40c714d5311dd852c3",
+    "runs/queue_witness/reset_compile/command.json": "adbac06afcb9051dad990a9581804d1f97ec81bfa380f9a9c6e979f628a67123",
+    "runs/queue_witness/stalled_reset/test.log": "42877a8281d8366a8ed6be25df68a6e68c79e080c292605008a1c43c8eb87e83",
+    "runs/queue_witness/stalled_reset/witness.vcd": "5e4d7170209a6c6dcfcde71f304575e18c8f70dc1add9ce4629208365b94cbfb",
+    "runs/queue_witness/replay_results.json": "528dd0be31c78545b53864b7b1687d316abe97de8bed6d49f5c53e6e68fb8d3b",
+    "runs/queue_witness/replay_failed_attempt.json": "18c1a0b68df438d39bc84c97d786311cf752bfe24a4e450f9c19706f6150566c",
+    "runs/queue_witness/final_binding.json": "b3f3f87f90edbd9759f9fceafbf6600dacb5ee3892d5c21f581c073b2edf4895",
+    "docs/verification/data/thermo5-stalled-reset/reset_event_witness.json": "8ed395ba334812b137b9b99b124cf5c2eec6d4068db9f9b463535f87bcc06024",
+    "docs/verification/data/thermo5-stalled-reset/exact_dispositions_231.csv": "ac998cc8ef59cde5b708fe2c8f29a20f6ab7c174a777b891312156135dc1d248",
+    "docs/verification/data/thermo5-stalled-reset/coverage_summaries.json": "089fde0a08e527aa52baa917f479d4848981d5bac70e74f59e64360d541caca8"
+  }
+}
