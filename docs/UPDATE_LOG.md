@@ -1,5 +1,11 @@
 # Update Log
 
+## 2026-11-10 — Round 21 GitHub integration gate
+
+- Verified GitHub authentication and pushed 8a61798 to the existing Round 21
+  branch; created Draft PR #51 on the Round 20 branch, preserving #49/#50/#51.
+- Remote SHA verified. No regressions rerun, merge or signoff PASS.
+
 ## 2026-11-10 — Blocked-B exact root cause and remaining inventory
 
 - Added legal blocked-B / next-AW/W protocol/readback sequence to register test.

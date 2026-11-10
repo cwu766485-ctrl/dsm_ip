@@ -2,6 +2,13 @@
 
 ## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
 
+GitHub integration gate completed: authenticated account verified; 8a61798
+uploaded to codex/thermo5-round21-resume. Draft PR #51 targets
+codex/thermo5-round20-exact-bin-closure, preserving #49 -> #50 -> #51.
+https://github.com/cwu766485-ctrl/dsm_ip/pull/51
+No regression rerun, merge, exclusion approval or signoff change.
+
+
 Blocked-B follow-up: directed register protocol/readback PASS, actual delta 0.
 Exact line93 Formal proves the missing tuple unreachable (1 non-vacuous
 assertion, 2 positive covers, 1 uncoverable cover; reset constraints recorded).
@@ -60,8 +67,8 @@ companion-line mapping stays OPEN. Reviewer addendum includes the queue
 transition table, 257-bin source grouping and assertion/Formal obligations.
 No new hits or approvals from this read-only follow-up.
 
-Next: complete GitHub device authorization and create the Draft stacked on
-#50; obtain real independent approval and resolve native companion-line mapping;
+Next: review Draft #51 after #49/#50; obtain real independent approval and
+resolve native companion-line mapping;
 close the remaining queue/handshake and counter/formal obligations. Never call this final signoff. XPM/GT/FPGA/board/RF remain outside scope.
 
 ## Previous execution state
