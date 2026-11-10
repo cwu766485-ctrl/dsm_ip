@@ -1,0 +1,12 @@
+Frozen EF2 scalar arithmetic bounds (W=16, CHANNELS=32, PAIR_LOOKAHEAD=0)
+Input x: [-32768,32767]. Stored/each saturated work error: [-524288,524287].
+u=x+2*e1-e2: [-1605631,1605629]. Conservative U_ABS_BOUND=1605632.
+Q_ONE=32768. e_raw=u>0 ? u-32768 : u+32768.
+Conservative E_RAW_ABS_BOUND=1638400 < signed22 max2097151.
+Intermediate 2*e1 and x+2*e1 also fit signed22. Thus RTL width does not wrap.
+Each lane saturates next error back to signed20 before the next lane.
+Bounds hold for arbitrary signed20 stored states, even without recurrence assumptions.
+Both arithmetic indicators initialize to1; every conditional assignment to0
+contradicts these arithmetic bounds in the scalar arm. No legal clock-edge transition
+in either direction exists. Startup delta-cycle artifacts are not legal witnesses.
+This is a technical candidate argument; independent approval is still required.

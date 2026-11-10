@@ -103,4 +103,4 @@ check_fv_setup -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -bl
 report_fv_setup -list > $out/setup.txt
 check_fv -block
 report_fv -list > $out/properties.txt
-report_fml_engines -list -no_summary > $out/engines.txt
+report_fml_engines -list > $out/engines.txt

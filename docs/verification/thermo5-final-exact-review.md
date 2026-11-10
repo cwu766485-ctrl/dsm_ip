@@ -48,9 +48,8 @@ repair. Actual URG delta=0; the retained frozen same-input reports remain:
 Branch526/637, Condition664/849, Line3352/3796, Toggle92640/104480.
 Official Adjusted equals Raw. Analysis-only What-if remains Branch526/529,
 Condition664/741, Line3352/3363, Toggle92640/93710, with 1,161 gaps.
-The 109 candidate decisions remain pending independent approval; 122
-unresolved non-counter entries and all 930 counters remain OPEN unless a
-subsequent exact proof record explicitly updates their technical disposition.
+The initial 109 candidates remain pending independent approval; the proof
+milestones below update technical dispositions only. All 930 counters stay OPEN.
 No new VCD witness or Exact Hit is claimed by this Formal/metadata update.
 Legal assertions retain zero failures; the prior four expected-negative tests
 remain separately classified. Full Linux DV and Code Coverage Signoff OPEN.
@@ -75,3 +74,29 @@ VCD/URG hit is claimed by this proof. An initial incomplete-source blackbox
 run and two session-lock failures were discarded; an uncomposed proof timed
 out and remains inconclusive. Complete proof reports are under dpd_invalid_proof.
 Code Coverage Signoff OPEN; Full Linux DV Signoff OPEN.
+
+## EF2 arithmetic invariant proof milestone
+
+All four production branches instantiate the same W=16, CHANNELS=32 leaf;
+PAIR_LOOKAHEAD defaults to zero in tid32_thermo5_fs4_multipa_tx. Its source
+SHA-256 matches the earlier proof (852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584).
+Fresh frozen-source Formal independently proves all six assertions and hits
+all three positive covers with arbitrary samples, valid and ready. The only
+constraint is initialized/released reset; no arithmetic invariant is assumed.
+The retained runner export option was corrected for installed VC Formal.
+
+Signed20 error states lie in [-524288,524287]. For signed16 x,
+u=x+2*e1-e2 lies in [-1605631,1605629]. The conservative raw-error bound
+1638400 fits signed22, as do intermediate additions and doubled error.
+Every lane saturates its next state to signed20 before the next lane.
+Therefore neither bounds nor no-wrap indicator can be assigned zero in the
+scalar arm, for arbitrary stored states. Both initialize to one in always_comb.
+Both toggle directions across four instances (16 exact mapped bins) become
+pending candidates. Delta-cycle initialization artifacts are not legal witnesses.
+
+Current technical dispositions: 141 EXCLUSION_CANDIDATE, 90 OPEN. Of the
+original 122 unresolved rows, 32 now have proof-backed candidate evidence.
+Official approved exclusions remain zero; all 231 non-counter bins still
+require either formal approval or actual product hits. Actual URG delta=0.
+No 100% or signoff PASS is claimed. Preston review and counter scope decision
+remain pending. Proof reports and source hashes are under ef2_bounds_proof.

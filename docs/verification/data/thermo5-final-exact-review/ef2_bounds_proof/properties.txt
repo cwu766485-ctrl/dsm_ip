@@ -1,0 +1,44 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 6
+     - # proven       : 6
+
+   > Vacuity
+     - # found        : 4
+     - # non_vacuous  : 4
+
+   > Cover
+     - # found        : 3
+     - # covered      : 3
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 6
+     [  0] proven                                  -  thermo5_ef2_stability_harness.a_intermediates_do_not_wrap
+     [  1] proven                                  -  thermo5_ef2_stability_harness.a_intermediates_obey_inductive_bounds
+     [  2] proven                   (non_vacuous)  -  thermo5_ef2_stability_harness.a_output_captures_accepted_word
+     [  3] proven                   (non_vacuous)  -  thermo5_ef2_stability_harness.a_output_stable_when_stalled
+     [  4] proven                   (non_vacuous)  -  thermo5_ef2_stability_harness.a_state_holds_without_accept
+     [  5] proven                   (non_vacuous)  -  thermo5_ef2_stability_harness.a_state_updates_match_accepted_word
+
+   > Cover
+     # Cover: 3
+     [  6] covered     (depth=3)                   -  thermo5_ef2_stability_harness.c_gt_stall
+     [  7] covered     (depth=3)                   -  thermo5_ef2_stability_harness.c_gt_transfer
+     [  8] covered     (depth=1)                   -  thermo5_ef2_stability_harness.c_input_accepted
+
+   > Constraint
+     # Constraint: 1
+     [  9] constrained                             -  constant_9 - rst_n==1
+
+
+

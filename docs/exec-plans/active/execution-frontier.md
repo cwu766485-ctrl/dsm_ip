@@ -10,7 +10,8 @@ counter decision supplied. Official Adjusted remains Raw.
 
 New DPD Formal:10 independent internal lemmas proven; gated promotion proves
 Invalid sum zero/no-saturation; target cover uncoverable,2 positive covers hit.
-16 DPD rows become pending candidates:125 candidates/106 OPEN technical rows.
+16 DPD rows become pending candidates; fresh EF2 six-assertion/three-cover
+proof plus width bounds adds16 more:141 candidates/90 OPEN technical rows.
 No URG delta; What-if1161 and all930 counters OPEN. First blackbox/source-list
 attempt discarded; monolithic timeout and session-lock failures recorded.
 Code Coverage/Full Linux DV signoff OPEN. Short-term task PR for Preston;
