@@ -1,5 +1,24 @@
 # Execution frontier
 
+## Current execution state: Legal boundary COMMIT exact hit (2026-11-10)
+
+PR52 merged c98cd519; technical review separate from independent approval;
+remote task branch deleted. Frozen product635be68 unchanged. New legal
+Identity COMMIT hits TXB-fe4a2292a0aa4da543b9 (cfg line333 vector101), pre-edge
+VCD560070ps,112-word four-plane oracle PASS. Unified587/587 replay:583 legal,
+4 expected-negative.48 hardware/66 reference tests PASS. Raw=Official:
+Branch526/637,Condition665/849,Line3352/3796,Toggle92640/104480,FSM13/13+22/22.
+What-if remaining1160=230 noncounter+930counter. Actual delta+1 Condition.
+Eight native mappings resolved via VDB statement membership/branch shape;
+five shared block entries require all-member scope approval. Historical11419
+and141 new candidate IDs disjoint,union11560. Official approvals/exceptions0.
+Technical231 ledger:1HIT/141pending/89unresolved. Legal asserts13success,0fail,
+two q1_tail without attempts;3 combined failures confined expected-negative.
+Both signoffs OPEN. Short task PR for code review; approval still separate.
+Evidence: thermo5-native-and-boundary-closure.md and data/thermo5-native-closure.
+
+## Previous execution state
+
 ## Current execution state: Final exact review; approvals pending (2026-11-10)
 
 Frozen635be68/586-Test baseline unchanged. Repaired2448 historical root-cause

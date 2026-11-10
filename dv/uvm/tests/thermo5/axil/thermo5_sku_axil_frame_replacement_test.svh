@@ -126,6 +126,24 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
         join
       end
       begin
+        // Optional identity COMMIT timed against the second legal packet.
+        // The oracle remains unchanged; only the public control port is driven.
+        if ($test$plusargs("THERMO5_BOUNDARY_COMMIT")) begin
+          bit [1:0] commit_resp;
+          int delay_cycles=0;
+          void'($value$plusargs("THERMO5_COMMIT_DELAY_CYCLES=%d",delay_cycles));
+          if (delay_cycles<0 || delay_cycles>64)
+            `uvm_fatal("COMMIT_DELAY","COMMIT delay must be in [0,64]")
+          wait(env.source.monitor.accepted_beats>=32);
+          repeat(delay_cycles) @(posedge vif.core_clk);
+          axil_write(8'h00,32'h3,0,0,commit_resp);
+          if (commit_resp!=2'b00)
+            `uvm_fatal("BOUNDARY_COMMIT","Legal identity COMMIT rejected")
+        end
+        // This auxiliary worker must not terminate the enclosing join_any.
+        forever @(posedge vif.core_clk);
+      end
+      begin
         forever begin
           @(posedge vif.core_clk);
           if (vif.core_rst_n) begin

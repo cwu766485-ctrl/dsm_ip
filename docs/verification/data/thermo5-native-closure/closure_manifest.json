@@ -1,0 +1,61 @@
+{
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "integration_sha": "c98cd5199cc07ba10e30c4b6c9a31307ffd9795c",
+  "new_exact_hits": 1,
+  "exact_hit": "TXB-fe4a2292a0aa4da543b9",
+  "official_dispositions_231": {
+    "HIT": 1,
+    "APPROVED_EXCLUSION": 0,
+    "ACCEPTED_EXCEPTION": 0,
+    "OPEN": 230
+  },
+  "technical_dispositions": {
+    "HIT": 1,
+    "EXCLUSION_CANDIDATE": 141,
+    "OPEN": 89
+  },
+  "counter_open": 930,
+  "raw_remaining": 12579,
+  "whatif_remaining": 1160,
+  "noncounter_whatif_remaining": 230,
+  "covered_code_bins_excluding_fsm": 97183,
+  "fsm_states_hit": 13,
+  "fsm_transitions_hit": 22,
+  "regression": {
+    "existing": 586,
+    "new": 1,
+    "legal": 583,
+    "expected_negative": 4,
+    "status": "PASS"
+  },
+  "parent_sha256": "0d0b09691a772e1ab76e01d893b38a07e84c68d333e70a29035cd9ce85d0ab17",
+  "vdb_parent_uniform": true,
+  "urg_diagnostics": {
+    "raw": [],
+    "approved_adjusted": [],
+    "whatif": [],
+    "legal_raw": [],
+    "negative_only": []
+  },
+  "tools_tests": 48,
+  "reference_tests": 66,
+  "official_approval_references": [],
+  "signoff": {
+    "code": "OPEN",
+    "full_linux_dv": "OPEN"
+  },
+  "evidence_sha256": {
+    "runs/native_closure/compile/simv.vdb/snps/coverage/db/auxiliary/vcmArguments.xml": "0d0b09691a772e1ab76e01d893b38a07e84c68d333e70a29035cd9ce85d0ab17",
+    "runs/native_closure/compile/command.json": "cde39375dae73c59cf23897fe36a281e19d40136abda8767cf3d30154c039c19",
+    "runs/native_closure/boundary_commit_hit/test.log": "ca5d3d8456ea754845ebbf6346ba78781311f06bafafbe380e3c369c81bad9f8",
+    "runs/native_closure/boundary_commit_hit/witness.vcd": "e05837587f11c0848841d2c8d96d40f90daf1d6fb9892aa87638bd27a1180e2b",
+    "runs/native_closure/verified_runner/test.log": "11490358f12b6b297294a1410863423c17c10d06f144fc48152e2b4c2c64c83b",
+    "runs/native_closure/replay_results.json": "4606214afdd3b510cbcd2763d03e77f1f9291f9c7603693b782a6f35b62b162a",
+    "runs/native_closure/final_binding.json": "1d11001d6cd649f141b08b8b572e434f74f0609b25336957cb1e82640d1a5121",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_frame_replacement_test.svh": "76dc08be8bfe9a837390a1937e5fabcf301719c9330bf287e5935ddc6d2ae7bf",
+    "docs/verification/data/thermo5-native-closure/exact_dispositions_231.csv": "51016bb126d00361e74963ccf84b704d7ab8ca7756c24e0ee0c442b2bb8275f1",
+    "docs/verification/data/thermo5-native-closure/coverage_summaries.json": "d68d79033021731fb7c6ad7dba08428d78f2eb8b09575b642883c0328dadd935",
+    "docs/verification/data/thermo5-native-closure/mapping_manifest.json": "5d6695e15e8ea0422b42df6b9a125555294eaa344f0be90a57f111b38e60790c",
+    "docs/verification/data/thermo5-native-closure/condition_witness.json": "d4fa59cec90656bd9ba112d67a9b62c0ffb234f270570312aacd6f93ef784a9c"
+  }
+}
