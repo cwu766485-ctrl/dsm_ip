@@ -1,0 +1,86 @@
+{
+  "schema": "thermo5_consolidation_20261110",
+  "verified_product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "retired_remote_branches": 37,
+  "retained_long_term": [
+    "main",
+    "thermo5",
+    "thermo3",
+    "dsm",
+    "dv-de-portfolio-20261006"
+  ],
+  "archived_legacy_work_branches": 13,
+  "deleted_legacy_diverged": 0,
+  "source_tree_identical_to_pr51": true,
+  "regression": {
+    "tests": 586,
+    "passed": 586,
+    "legal": 582,
+    "expected_negative": 4,
+    "hardware_tool_tests": 48,
+    "reference_model_tests": 66
+  },
+  "native_mapping_counts": {
+    "unique_object_review_required": 199,
+    "ambiguous_open": 24,
+    "missing_open": 8
+  },
+  "noncounter_decisions": {
+    "EXCLUSION_CANDIDATE": 109,
+    "OPEN": 122,
+    "HIT": 0
+  },
+  "approved_exclusions": 0,
+  "counter_exceptions_approved": 0,
+  "counter_open": 930,
+  "code_coverage_signoff": "OPEN",
+  "full_linux_dv_signoff": "OPEN",
+  "remaining_work": [
+    "13 legacy evolved-hunk reviews and any minimal ports",
+    "122 unresolved noncounter reachability obligations",
+    "independent approval for exact candidates and counter scope",
+    "32 non-unique native object mappings"
+  ],
+  "files": {
+    "docs/verification/data/thermo5-consolidation-20261110/open_prs.json": "eb4cbb283eb9b1dc65d979c4b1d96afb315d54282778119ecfc5a96fb2a23ae4",
+    "docs/verification/data/thermo5-consolidation-20261110/candidate_review_refresh.json": "affc774b31a89fe2517cbdc5da6256307935f3b4dc7587fde2206e460ca86fd4",
+    "docs/verification/data/thermo5-consolidation-20261110/diverged_commits_patch_ids.json": "d63bbf766b19269eb76e93b2ddb949dd3a2f092b4dbcd2add26bfd74d62bde95",
+    "docs/verification/data/thermo5-consolidation-20261110/branch_retirement_audit.csv": "54867f84a9b6ba123dbd7762373acb4c208fd412a4a58ea81d10f1f920544550",
+    "docs/verification/data/thermo5-consolidation-20261110/remaining_remote_heads.txt": "6a567c6202ac72f4bfe041ad30258f0d76ac01e8d2bef648921f78d4b9f7b394",
+    "docs/verification/data/thermo5-consolidation-20261110/final_exact_dispositions_231.csv": "a59897befcebb4c0b755e80a6d5b0a34967c5f115fec1da7b092ea2005d22fb9",
+    "docs/verification/data/thermo5-consolidation-20261110/coverage_summaries.json": "aeb7287e701414f6180a86ebe437be426cb6067fe6de542cd7ff177979e19629",
+    "docs/verification/data/thermo5-consolidation-20261110/replay_586.csv": "a77c2418150ebb4a2b4e2f740b6b5f1e1d61beb8455f7106e34f3111af871cd9",
+    "docs/verification/data/thermo5-consolidation-20261110/legacy_branch_decisions.csv": "1a71f5bb24c6c9944d3e86c0690035a4515a10a69cdab4187ea603778c088979",
+    "docs/verification/data/thermo5-consolidation-20261110/legacy_reverse_patch_review.json": "1ea48b88aec2fd9b3b0e5dbc49cdadf782ca037685382da6b5f3999dd412614d",
+    "docs/verification/data/thermo5-consolidation-20261110/legacy_file_review.json": "3ea67a60269eb77ac0cd5d9ffe865b09c1a1fd04edf181e7dcb3f8d8e6c49e9b",
+    "docs/verification/data/thermo5-consolidation-20261110/final_binding.json": "9f28a3f31acbfc3c352739fea17f25a933bb22e8f6dc88fed4b15c2bed4e21b4",
+    "docs/verification/data/thermo5-consolidation-20261110/pr_integration.json": "75f7cfe3a577c5ca50c3f376e6764a02619ac03124d245edfa242601128152c9",
+    "docs/verification/data/thermo5-consolidation-20261110/negative_only/assertions.csv": "4d7f683e6536855b9115ac6d389e40e7dd5ef8970078f8d1e8275457d804396d",
+    "docs/verification/data/thermo5-consolidation-20261110/negative_only/denominators.csv": "6a001b1f2c200a0a5c0bea14ed7f1cdb7f270bf73ad16c2fbed865cc326b60f4",
+    "docs/verification/data/thermo5-consolidation-20261110/negative_only/fsm_denominators.csv": "f927bca2616f72b680648d8bb673810a31bd8cb4365c39e2067a0d96eed15513",
+    "docs/verification/data/thermo5-consolidation-20261110/whatif/assertions.csv": "11428efdfd5b1495218fe270c938133707bd54e588f0953a37b4d961c1351096",
+    "docs/verification/data/thermo5-consolidation-20261110/whatif/denominators.csv": "260bef22dcd8cd85d203ef1390835b9f40eebd153f83f9c68292d1dcda3767fb",
+    "docs/verification/data/thermo5-consolidation-20261110/whatif/fsm_denominators.csv": "5d0b4f114c2fcba2cc84be4c8a051132c5a7a429526370dfc94613c9b46da7cc",
+    "docs/verification/data/thermo5-consolidation-20261110/raw/assertions.csv": "11428efdfd5b1495218fe270c938133707bd54e588f0953a37b4d961c1351096",
+    "docs/verification/data/thermo5-consolidation-20261110/raw/denominators.csv": "84f7df88c10d1115b9d257d16a7201491f7fa495d8ebd3e1c964eee81acda62d",
+    "docs/verification/data/thermo5-consolidation-20261110/raw/fsm_denominators.csv": "5d0b4f114c2fcba2cc84be4c8a051132c5a7a429526370dfc94613c9b46da7cc",
+    "docs/verification/data/thermo5-consolidation-20261110/approved_adjusted/assertions.csv": "11428efdfd5b1495218fe270c938133707bd54e588f0953a37b4d961c1351096",
+    "docs/verification/data/thermo5-consolidation-20261110/approved_adjusted/denominators.csv": "84f7df88c10d1115b9d257d16a7201491f7fa495d8ebd3e1c964eee81acda62d",
+    "docs/verification/data/thermo5-consolidation-20261110/approved_adjusted/fsm_denominators.csv": "5d0b4f114c2fcba2cc84be4c8a051132c5a7a429526370dfc94613c9b46da7cc",
+    "docs/verification/data/thermo5-consolidation-20261110/legal_raw/assertions.csv": "d72a61a0f84c95effed7a5aa39d423ca53fd189ea8adf1d2b5cbb8cd416712a7",
+    "docs/verification/data/thermo5-consolidation-20261110/legal_raw/denominators.csv": "aa0661f11c92a032425f14afac11d65be447833e4c0e9ca24d7c755a4ca1343c",
+    "docs/verification/data/thermo5-consolidation-20261110/legal_raw/fsm_denominators.csv": "5d0b4f114c2fcba2cc84be4c8a051132c5a7a429526370dfc94613c9b46da7cc"
+  },
+  "local_log_hashes": {
+    "runs/consolidation/hardware_tests.log": "d702b0cacd12cb207e9ea3c2576ad0e12e25b6017baaa7501aac24753e39a03a",
+    "runs/consolidation/model_tests.log": "4902886109fa8550f13a80ce824b6316ad49acf416cebc8560425caa7c4ae2f8",
+    "runs/consolidation/model_tests_retry.log": "e28171835874f0a0275031e72ffd8dee19c46e6e2aec73e1d0982ec058fc67e3",
+    "runs/consolidation/final_compile/compile.log": "059a47a3e75876a775ed093b43168e589be6e645baef477cb7f406d47af4f8c4",
+    "runs/consolidation/replay_console.log": "f53e9313e9576cec332b2d9a29fdf8c7874f77f7a5975512ccbbc2d4b53b10b5",
+    "runs/consolidation/urg/raw/urg.log": "91589be850f4002d5446a7f81e39aab6066472f6ae48638aa0dbb4bc11e08b35",
+    "runs/consolidation/urg/approved_adjusted/urg.log": "973c52190b5dbb83009097497f10b547e96381f4cdf59a2c28a09e85b9b3bf89",
+    "runs/consolidation/urg/whatif/urg.log": "f02fcd2097d399e1f0d311fa24f1a47a8316f94c940d93b6c56e1fc92219afae",
+    "runs/consolidation/urg/legal_raw/urg.log": "bbb6385634ce15d03d0a09ed5ec6141b85bc7811e31d8a978d0ba564fc5fff05",
+    "runs/consolidation/urg/negative_only/urg.log": "6ef641796c214e3434b757fd6d0318ce067edd52a00e671d602e869bf7468d13"
+  }
+}

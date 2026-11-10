@@ -1,0 +1,21 @@
+{
+  "candidates": 11419,
+  "unique_ids": 11419,
+  "source_sha_mismatches": [],
+  "root_cause_counts": {
+    "A_DPD_PAIR1": 8192,
+    "B_EF2_FIXED_PARAMETERS": 436,
+    "C_DPD_TAP_HISTORY": 176,
+    "D_CDC_RESIDUAL": 137,
+    "E_OTHER_PARAMETERS": 29,
+    "": 2448,
+    "H_AXIL_DEFAULT": 1
+  },
+  "official_waiver_ids": 371,
+  "unknown_link_ids": [],
+  "approvals": 0,
+  "official_exclusions": 0,
+  "counter_exception_approvals": 0,
+  "status": "PENDING_INDEPENDENT_REVIEW",
+  "limitation": "Source/identity/group audit only; not an independent native directive proof for every candidate."
+}

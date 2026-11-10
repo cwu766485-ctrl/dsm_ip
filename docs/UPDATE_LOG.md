@@ -1,5 +1,16 @@
 # Update Log
 
+## 2026-11-10 — Consolidation and homogeneous coverage baseline
+
+- Deleted37 verified contained/merged branches; archived13 diverged heads and
+  retained them pending evolved-hunk review. Kept five long-term branches.
+- Reviewed/integrated PR49/50/51 in order; product SHA635be68, SIGNOFF_OPEN.
+- Fresh compile/replay586/586 PASS, same-parent VDBs; five URG reports PASS.
+  Hardware48/48, model66/66 PASS after correcting PYTHONPATH setup.
+- Added exact231 dispositions, branch/patch/archive/PR ledgers and candidate
+  source/ID audit.109 candidates,122 OPEN; no approval or extra exact hit.
+- What-if1161 remains;930 counters OPEN; code/full DV signoff OPEN.
+
 ## 2026-11-10 — Round 21 GitHub integration gate
 
 - Verified GitHub authentication and pushed 8a61798 to the existing Round 21

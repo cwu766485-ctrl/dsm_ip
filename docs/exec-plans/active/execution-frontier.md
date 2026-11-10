@@ -1,5 +1,35 @@
 # Execution frontier
 
+## Current execution state: Consolidated thermo5; final coverage OPEN (2026-11-10)
+
+PR #49/#50/#51 merged in dependency order. Verified product SHA:
+635be681046b3ab7d6fdda7f4e9818d7226efd66, tree identical to PR #51.
+37 remote branches deleted after ancestry/SHA/PR checks; 18 remain (five
+long-term +13 legacy diverged). All13 legacy heads have pushed archive tags;
+104/164 source reverse checks pass; evolved hunks remain to review, branches
+retained. No blanket merge or force push.
+
+Fresh unified compile and 586/586 replay PASS (582 legal, four expected-negative),
+one Design/Test compile parent. Raw=zero-approved Adjusted: Branch526/637,
+Cond664/849, Line3352/3796, Toggle92640/104480. Same-input What-if OPEN1161
+=231 non-counter+930 counter. Legal assertions13 success, zero failure, two
+q1_tail without attempts; three combined failures only expected-negative.
+48 hardware /66 reference-model tests PASS. No new seeds or extra exact hits.
+
+231 dispositions:109 EXCLUSION_CANDIDATE,122 OPEN; approvals=0. Native lookup
+199 unique objects needing exact-vector review,24 ambiguous,8 missing.
+11,419 source/ID/link checks pass;2,448 inherited root-cause group cells empty.
+All930 legally reachable counter directions remain OPEN pending scope approval.
+Code Coverage and Full Linux DV signoff OPEN; no official exclusions/exceptions.
+
+Next: review evolved legacy hunks and minimal ports; resolve122 reachability
+and32 native-mapping gaps; obtain real independent approvals. Work from clean
+thermo5 with disposable task branches; no new Round-N branches.
+Evidence: docs/verification/thermo5-consolidation-and-coverage-20261110.md
+and docs/verification/data/thermo5-consolidation-20261110/.
+
+## Previous execution state
+
 ## Current execution state: Thermo5 Round 21 root-cause closure (2026-11-10)
 
 GitHub integration gate completed: authenticated account verified; 8a61798

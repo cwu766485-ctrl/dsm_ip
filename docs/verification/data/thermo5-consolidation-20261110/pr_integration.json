@@ -1,0 +1,32 @@
+[
+  {
+    "baseRefName": "thermo5",
+    "headRefOid": "49b9121a860c6b85057047c7696876df7f6cd740",
+    "mergeCommit": {
+      "oid": "a642e6b658c33741db7f70e209672764565ff932"
+    },
+    "number": 49,
+    "state": "MERGED",
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/49"
+  },
+  {
+    "baseRefName": "thermo5",
+    "headRefOid": "818e1de799f9dfa0ccf098da11349d0c95fa34ad",
+    "mergeCommit": {
+      "oid": "108b8ff3170c2bbcd26fcbe2d7040ddd14cd0288"
+    },
+    "number": 50,
+    "state": "MERGED",
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/50"
+  },
+  {
+    "baseRefName": "thermo5",
+    "headRefOid": "4fcc75b69c61cc23190893ef1e8020477cb9198c",
+    "mergeCommit": {
+      "oid": "635be681046b3ab7d6fdda7f4e9818d7226efd66"
+    },
+    "number": 51,
+    "state": "MERGED",
+    "url": "https://github.com/cwu766485-ctrl/dsm_ip/pull/51"
+  }
+]

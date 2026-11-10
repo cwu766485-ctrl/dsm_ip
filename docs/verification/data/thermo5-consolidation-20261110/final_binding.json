@@ -1,0 +1,10 @@
+{
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "design": "/tmp/dsm_ip_round21_resume/runs/consolidation/final_compile/simv.vdb",
+  "test_count": 586,
+  "legal_count": 582,
+  "negative_count": 4,
+  "homogeneous_parent_sha256": "3101a35f902dcd8a368efc50522c73d6a0ae66d5dbd763a671b5c64fc25fad21",
+  "approved_exclusions": 0,
+  "approved_exceptions": 0
+}
