@@ -6909,3 +6909,11 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added optional public-port Identity COMMIT timing and checked runner; actual native Condition12 vector101 adds1 HIT with112-word independent four-plane PASS and VCD560070ps.
 - Resolved8 native objects via same-Design-VDB line membership and flattened vectors; five shared blocks still require all-statement approval.11560 disjoint historical/new candidate IDs; zero official approval/exception.
 - Rebuilt DV-only compile and replayed586 inherited tests plus1 legal target;587 PASS, same VDB parent.48 utility/66 reference tests PASS, five URG views clean. Raw Condition665/849; What-if gaps1160. Both signoffs OPEN;89 technical non-counter rows and930 counter scope decisions unresolved.
+
+
+## 2026-11-10 23:30 SGT — Public stalled-reset exact hits
+
+- Added minimal legal stalled-reset UVM scenario and checked shell runner; no frozen RTL change.56-word four-plane post-reset oracle PASS.
+- Both interpolators native Condition19 vector1110 gain real URG hits during548640ps public async-reset propagation; explicitly not stable clock-edge tuples.
+- Unified588/588 scenarios PASS after preserving/recovering154 interrupted execution attempts and195 stale-parent jobs.48 hardware utility tests PASS; five same-input URG views clean. Condition667/849,What-if1158 gaps; actual delta2.
+- Candidate approval0/counter exception0;87 technical rows and930 counter directions remain OPEN, two q1_tail assertion attempts/full Formal obligations OPEN. Dense-frame zero-delta tests stopped. No independent Reviewer identity/decision supplied.

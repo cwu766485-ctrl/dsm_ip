@@ -13,6 +13,9 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
         "Use CORE_WORDS=112 for two complete 32-beat packets")
     cfg.expect_pa=1;
     cfg.frame_starts=2;
+    void'($value$plusargs("THERMO5_DIRECTED_FRAME_STARTS=%d",cfg.frame_starts));
+    if (cfg.frame_starts<1 || cfg.frame_starts>16)
+      `uvm_fatal("DIRECTED_FRAMES","Frame-start count must be in [1,16]")
   endfunction
 
   task run_phase(uvm_phase phase);

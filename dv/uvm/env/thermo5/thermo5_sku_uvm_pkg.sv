@@ -82,6 +82,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_axil_reset_pending_commit_test.svh"
   `include "thermo5_sku_axil_illegal_frame_test.svh"
   `include "thermo5_sku_axil_reset_sweep_test.svh"
+  `include "thermo5_sku_axil_stalled_reset_test.svh"
   `include "thermo5_sku_axil_starvation_test.svh"
   `include "thermo5_sku_axil_frame_replacement_test.svh"
   `include "thermo5_sku_axil_outstanding_bounds_test.svh"
