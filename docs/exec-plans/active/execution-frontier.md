@@ -1,5 +1,58 @@
 # Execution frontier
 
+## Current execution state: Thermo5 Round 19 non-counter coverage closure (2026-11-09)
+
+Review branch `codex/thermo5-round19-non-counter-coverage` starts from source
+base `d1b0944470f245bfe6fa63ceb7b29c8ad004119f`; the tested Product RTL source
+remains `fe315cabf058dd184b6d94ffa4ed3b5fb9916733`, with aggregate RTL SHA-256
+`fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003` and
+compile fingerprint `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`.
+No Product RTL or frozen algorithm changed.
+
+Round 19 preserves the exact Round 18 554-Test VDB set and adds 21 qualifying
+VDBs. The resulting set is 1 Design + 575 Tests. It adds 64 Raw Toggle hits
+(32 `sample_count`, 32 `saturation_count`); Branch, Condition, Line and the
+148 targeted non-counter Toggle bins gained zero exact hits. The requested
+263 non-counter bins remain OPEN (6 Branch, 84 Condition, 25 Line, 148 Other
+Toggle). Strict Analysis-only What-if leaves 1,193 bins: 6 Branch, 84
+Condition, 25 Line, 1,078 Toggle; it is not official Adjusted coverage.
+
+Raw and zero-exclusion Official Adjusted remain Branch 524/637, Condition
+657/849, Line 3338/3796, Toggle 92632/104480. The official 371-ID Waiver
+reconciliation remains 2 `RESOLVED_BY_RAW_HIT`, 369 pending review (367
+matched to the previous candidate set, 2 outside it), 0 APPROVED, and zero
+active exclusions. The source CSV's raw `review_status` still reads PENDING
+for all 371 rows; no reviewer decision was fabricated. The 930 remaining
+counter bins are reachable under the
+32-bit modulo contract; top-bit product-level exercises project to about 23.81
+CPU days (`sample_count`) and 32.31 CPU days (`saturation_count`, measured
+lane-15 rate). No counter scope exclusion is applied.
+
+The 21 new Test VDBs share compile-parent tree SHA-256
+`33cbac8aa113aaad104f68cf42a19528113faa6e818244c4da6a32aecf1c9b37`, which
+differs from the frozen Round 18 URG Design VDB tree. A diagnostic Raw/strict
+What-if URG pair using that parent as Design, with the same ordered 575 tests,
+produced identical metrics and test-inventory hashes. The primary result stays
+bound to the frozen Round 18 Design VDB; the provenance variance is documented
+in the Round 19 report and manifest.
+
+The contributing targeted VCS scenarios passed; the interpolator
+Empty/Blocked probe timed out before drain and is excluded, not a reachability
+proof. Full Product Regression and Formal were not rerun. Inherited URG DUT
+assertion status remains 13 SUCCESS, 3 FAILURE, 2 UNCOVERED. **Coverage and
+Linux DV signoff remain OPEN.**
+
+Evidence: `docs/verification/thermo5-tx-final-code-coverage-round19-20261109.md`
+and `docs/verification/data/thermo5-r19/`. The exact source/test VDB
+fingerprints, URG invocations/log hashes, counter hit and remaining-bin
+ledgers, and report hashes are in
+`thermo5_tx_r19_final_evidence_manifest.json.gz`.
+
+Next: submit this verification-only evidence for independent review against
+`thermo5`; do not activate Waivers or claim final signoff. Resume targeted
+closure only against exact remaining Bin IDs, and keep Formal/Assertion and
+full regression obligations separate from Code Coverage.
+
 ## Current execution state: Thermo5 Round 18 targeted coverage closure (2026-11-09)
 
 Review branch `codex/thermo5-round18-final-coverage-closure` starts at PR #47 source `f9275273ef2137c5c181cb5395cdd9f706dd4b90`; Product RTL remains unchanged at aggregate SHA-256 `fc046317c99fe2a89b60f3ddeff1c7a0e178cd1c219349b942b7565fa7cec003`. Product compile fingerprint is `e723c226349f61a5f150e193f578995af02452dcfdea473ac2b79ecfe0eccca7`.
