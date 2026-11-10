@@ -61,3 +61,55 @@ The full CSV includes unresolved preconditions explicitly. UNKNOWN remains OPEN.
 Approval must identify the independent reviewer and reference, exact semantic
 ID/native directive, source SHA, configuration, proof and evidence hashes.
 No Reviewer identity was supplied. Official .el remains unchanged and empty.
+
+## Integration review addendum (2026-11-10 06:40 UTC)
+
+The uploaded source commit is a98a32dd50c86d0005b12b09b1a4f54d7a808cbc.
+A read-only URG `-full64 -dir runs/final_urg/raw/urg.vdb -dump full_exclusions`
+completed successfully; no simulation or coverage merge was rerun.
+`data/thermo5-r21/integration_review/dpd_history_native_review.json` binds
+four source-SHA-checked History lines to the current merged VDB and native
+template hash. Only lines 61 and 80 have individually identified native Blocks
+(5 and 13). Lines 62 and 81 have no separate native object in this dump.
+Do not infer that a Block directive independently excludes each companion Q
+line; that mapping/acceptance remains OPEN. No directive was activated.
+
+| Pre-edge occupancy | pop | push | Next occupancy | Queue action |
+| --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 0 | Hold stale metadata; no valid head |
+| 0 | 0 | 1 | 1 | Load input into q0 |
+| 1 | 0 | 0 | 1 | Hold q0 |
+| 1 | 0 | 1 | 2 | Load input into q1 |
+| 1 | 1 | 0 | 0 | Retire q0 |
+| 1 | 1 | 1 | 1 | Replace q0 directly; exact witness OPEN |
+| 2 | 0 | 0 | 2 | Hold queue; in_ready=0 |
+| 2 | 1 | 0 | 1 | Shift q1 into q0 |
+| 2 | 1 | 1 | 2 | Shift q1; load input into q1 |
+
+Table applies in the active enabled branch. Empty pop and full push without
+pop are prohibited by the combinational equations. Reset/disable overrides
+these updates. Stage 2 can retire a tail without out_ready; distinguish
+`drop_head_tail` from a consumed output handshake. Synthetic tail output
+blocks real-head consumption. Do not require all metadata registers to clear
+when occupancy becomes zero.
+
+`remaining_257_by_source.csv` preserves the exact ID, file, instance, bit or
+truth tuple and current precondition for every OPEN non-counter bin.
+`remaining_groups.json` partitions 138 interpolator and 119 other bins.
+This grouping adds zero exact hits and changes no coverage totals.
+
+| Obligation | Evidence and limitation | Decision |
+| --- | --- | --- |
+| Legal simulation assertions | 13 success, zero failures; q1_tail has no legal attempts | Scoped PASS; q1_tail OPEN |
+| Negative CDC / both q1_tail failures | Confined to four expected-negative scenarios | Expected-negative only |
+| Metadata/reset Formal | Two scoped jobs PASS; FIFO/DPD composition omitted | Product transfer OPEN |
+| DPD Identity arbitrary stalls | Earlier composition incomplete | Full-chain OPEN |
+| Outstanding counter / COMMIT lifecycle | Earlier Formal obligations unresolved | OPEN |
+| Counter arithmetic | Carry/wrap/reset/hold block PASS; deposits block-only | 930 system bins OPEN |
+| Waiver / exception acceptance | No independent reviewer approval | Zero approved exclusions/exceptions |
+| Code Coverage Signoff | 1,187 What-if gaps; Raw gaps 12,606 | OPEN |
+| Full Linux DV Signoff | Requires remaining Formal/assertion scope closure | OPEN |
+
+GitHub CLI device authorization remains pending. #49 and #50 are Draft/Open;
+the Round 21 Draft must target `codex/thermo5-round20-exact-bin-closure`.
+No merge is authorized by the current incomplete signoff evidence.

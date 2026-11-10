@@ -24,10 +24,15 @@ and docs/verification/data/thermo5-r21/. Review proposals cover the AXI-Lite
 Branch, four MAX_TAPS=1 Lines, and counter system acceptance. No reviewer has
 approved them. PR #49 -> #50 -> Round 21 review order remains required.
 
-Next: obtain real independent approval; map the four DPD Lines to native
-exclusion objects before activation; close the remaining queue/handshake and
-counter/formal obligations. Publish branch when GitHub authentication is
-available. Never call this final signoff. XPM/GT/FPGA/board/RF remain outside scope.
+Integration follow-up: uploaded a98a32d verified. Current URG native dump
+identifies Blocks for DPD lines 61/80, but no separate objects for 62/81;
+companion-line mapping stays OPEN. Reviewer addendum includes the queue
+transition table, 257-bin source grouping and assertion/Formal obligations.
+No new hits or approvals from this read-only follow-up.
+
+Next: complete GitHub device authorization and create the Draft stacked on
+#50; obtain real independent approval and resolve native companion-line mapping;
+close the remaining queue/handshake and counter/formal obligations. Never call this final signoff. XPM/GT/FPGA/board/RF remain outside scope.
 
 ## Previous execution state
 

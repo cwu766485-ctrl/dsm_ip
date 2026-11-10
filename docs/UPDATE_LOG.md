@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-11-10 06:40 UTC — Round 21 integration review follow-up
+
+- Updated queue/review packet and frontier; added four History-line native
+  mapping records and source/metric grouping of 257 remaining exact bins.
+- Checks: current Raw VDB native URG template extraction PASS; four source
+  hashes match. Two lines have unique Blocks; two companion lines remain OPEN.
+- No regression rerun, new hit, coverage merge, official exclusion or approval.
+- Uploaded a98a32d confirmed. GitHub device login and stacked Draft PR pending;
+  Code Coverage and Full Linux DV signoff remain OPEN.
+
 ## 2026-11-10 17:05 Asia/Singapore — Round 21 root-cause closure
 
 - Changed UVM optional VCD hook; added deterministic I/Q-only vector generator,
