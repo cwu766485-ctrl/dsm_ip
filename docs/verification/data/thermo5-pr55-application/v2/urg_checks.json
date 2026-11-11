@@ -1,0 +1,38 @@
+{
+  "raw": {
+    "metric_delta": {
+      "line": 0,
+      "cond": 0,
+      "toggle": 0,
+      "branch": 0
+    },
+    "diagnostics": 0,
+    "same_frozen589_plus_directed": true,
+    "command_sha256": "fe50175e42149a270f9e4cc14c54b83915c052c6c23c1afce72c5bb135c5f30b",
+    "urg_log_sha256": "d1010bda0fee9032b58f5bc3defa2df62c435dedd556e4947320b87d135aebab"
+  },
+  "approved_adjusted": {
+    "metric_delta": {
+      "line": 0,
+      "cond": 0,
+      "toggle": 0,
+      "branch": 0
+    },
+    "diagnostics": 0,
+    "same_frozen589_plus_directed": true,
+    "command_sha256": "dc0de1a34845c58afa88b62a19512d660a0b51ee3851ee5fd0ff25b8ab36f9b6",
+    "urg_log_sha256": "c1eeb80d00b8c00e40289c05b25e8ddb4036933f38bd40e10cfbd6cf40e79e41"
+  },
+  "whatif": {
+    "metric_delta": {
+      "line": 0,
+      "cond": 0,
+      "toggle": 0,
+      "branch": 0
+    },
+    "diagnostics": 0,
+    "same_frozen589_plus_directed": true,
+    "command_sha256": "bbcb16ebd75a07a96ac4711c37240abea6258704865d6dd864be21b3ec87050e",
+    "urg_log_sha256": "05b3828d27646e35cc782bc820a7106146080ddb053e54f25f1f8b3153a38952"
+  }
+}

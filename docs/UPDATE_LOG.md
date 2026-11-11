@@ -1,3 +1,17 @@
+## 2026-11-11 20:50 Asia/Singapore — Thermo5 DV v2 execution
+
+- Added source-bound mailbox/gain Formal harnesses and exact six-bin pending
+  review supplement (five new proofs plus reused DPD proof), preserving frozen RTL.
+- Added one reproducible non-identity COMMIT/stall directed scenario and
+  independent packet/epoch window validation; CDC/EF2/PA trace oracle PASS56words.
+- Updated exact87 triage and590 scenario event/checker inventory; parsed actual
+  packet/epoch audits. New cross window1; new Exact Hit/approval/exception0.
+- Three same-parent URG reports unchanged, zero diagnostics.57utility checks PASS.
+- 48 technical bins,11599 pending candidates,930 counters remain officially OPEN;
+  no new exclusions applied. Full token/reset composition and independent
+  approvals remain blockers; Code Coverage/Full Linux DV signoffs OPEN.
+- Evidence and reproduction: docs/verification/thermo5-pr55-v2-execution.md.
+
 ## 2026-11-11 Asia/Singapore — Thermo5 DV convergence v2 Gate0
 
 - Added exact54 triage and589 scenario inventory with packet/epoch evidence,

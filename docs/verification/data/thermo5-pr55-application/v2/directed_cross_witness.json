@@ -1,0 +1,112 @@
+{
+  "status": "PASS",
+  "epoch": 0,
+  "packet_id": 0,
+  "window": "single packet: first source beat through drained idle",
+  "simultaneous_boundary_stall": false,
+  "events": {
+    "commit_response": {
+      "seq": 49,
+      "type": "axil_write_response",
+      "epoch": 0,
+      "event_cycle": 82,
+      "time_ns": 815.0,
+      "txn_id": 14,
+      "addr": "0x00",
+      "resp": 0
+    },
+    "response": {
+      "seq": 19,
+      "type": "axil_write_response",
+      "epoch": 0,
+      "event_cycle": 22,
+      "time_ns": 215.0,
+      "txn_id": 2,
+      "addr": "0x10",
+      "resp": 0
+    },
+    "pending": {
+      "seq": 48,
+      "type": "config_pending",
+      "epoch": 0,
+      "axil_cycle": 80,
+      "time_ns": 802.386,
+      "commit_id": 1
+    },
+    "boundary": {
+      "seq": 65,
+      "type": "frame_boundary",
+      "epoch": 0,
+      "axil_cycle": 89,
+      "time_ns": 893.826,
+      "frame_id": 0,
+      "config_pending": true
+    },
+    "ack": {
+      "seq": 68,
+      "type": "config_ack_core",
+      "epoch": 0,
+      "axil_cycle": 90,
+      "time_ns": 898.398
+    },
+    "done": {
+      "seq": 108,
+      "type": "commit_done",
+      "epoch": 0,
+      "axil_cycle": 97,
+      "time_ns": 965.0
+    },
+    "stall": {
+      "seq": 115,
+      "type": "pa_stall",
+      "epoch": 0,
+      "axil_cycle": 97,
+      "time_ns": 971.55,
+      "ready": "0x0"
+    },
+    "drain": {
+      "seq": 338,
+      "type": "stop_state",
+      "epoch": 0,
+      "axil_cycle": 135,
+      "time_ns": 1346.454,
+      "run": false,
+      "active": false,
+      "draining": false
+    },
+    "coeff": {
+      "seq": 14,
+      "type": "axil_write_fire",
+      "epoch": 0,
+      "event_cycle": 19,
+      "time_ns": 185.0,
+      "txn_id": 2,
+      "addr": "0x10",
+      "data": "0x00003cfe",
+      "strb": "0xf"
+    },
+    "commit": {
+      "seq": 45,
+      "type": "axil_write_fire",
+      "epoch": 0,
+      "event_cycle": 79,
+      "time_ns": 785.0,
+      "txn_id": 14,
+      "addr": "0x00",
+      "data": "0x00000002",
+      "strb": "0xf"
+    }
+  },
+  "oracle_command": [
+    "/usr/bin/python3.12",
+    "/tmp/dsm_ip_round21_resume/dv/uvm/refmodel/python/check_thermo5_monitor_trace.py",
+    "/tmp/dsm_ip_round21_resume/runs/dv_convergence_v2/nonidentity_commit_stall/test.jsonl"
+  ],
+  "evidence_sha256": {
+    "test.jsonl": "2b0160c0a1412fb673bc8165cd88751ce5aaf0c3fcce0d6cfe3edb01b1524d84",
+    "test.log": "bb543bbec66031b0086c5150ba46ff3dcd9d5d960dc9a02be32dc4b676e519ac",
+    "oracle.log": "be4a6e39e3fa146af470fc22fbebda16f965a248cac9a03fc4af5d323b04cbe4",
+    "plan.json": "995b994316658e10c28a2f500713a1fe5f80ae92fe5d74de5475143933ceaca4",
+    "result.json": "d87e8a959f7fdbbb091f04562bbfeb520905e051767383d009a7b1d961675280"
+  }
+}

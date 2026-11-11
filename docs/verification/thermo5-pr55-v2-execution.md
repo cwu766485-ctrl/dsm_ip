@@ -1,79 +1,159 @@
-# Thermo5 TX DV Convergence v2 — Gate 0 baseline
+# Thermo5 DV convergence v2 execution evidence
 
-2026-11-11 Asia/Singapore. Product SHA `635be681046b3ab7d6fdda7f4e9818d7226efd66`.
-PR55 branch latest `7b0c59c9bac857ff780b7ef9a9da668dc945527e`; base thermo5
-`02b5c95`. This document records execution status for the v2 plan; it does not
-promote technical evidence to approval.
+2026-11-11 Asia/Singapore. Frozen product SHA:
+`635be681046b3ab7d6fdda7f4e9818d7226efd66`; no product RTL changes.
+Base `thermo5`: `02b5c95c8463827691e4eb95e245b6ca600a6543`.
+This short task is stacked on PR55 HEAD `e781c329e20d5607daa9c5378f63dd8c4989012f`.
+Neither PR is automatically merged. Technical proof is not independent approval.
 
-## Baseline inventory
+## Measured results
 
-`data/thermo5-pr55-application/v2/coverage_exact_triage_v2.csv` contains all54
-current non-counter technical OPEN rows, with exact semantic ID, source/native
-mapping inherited from `remaining54.csv`, RTL instance/expression, predecessor
-obligation, Formal/VCS evidence state, actual URG delta and decision. All54 are
-UNRESOLVED until exact legal reachability or source-bound proof is established. None are
-PROVEN_UNREACHABLE, CONFIG_UNREACHABLE, APPROVED_EXCLUSION or ACCEPTED_SCOPE_EXCEPTION.
-The 930 counter directions remain a separate product-scope decision.
+- One new licensed directed scenario PASS, using the existing compiled product,
+  existing non-identity vectors and fixed seed930000. No random search.
+- Independent Python trace oracle PASS: 56 CDC words,56 EF2 words,56 four-plane
+  PA words, frame0 applied configuration, zero underflow.
+- One new validated single-packet COMMIT/non-identity/boundary/PA-stall window.
+  It is **not** a simultaneous boundary/stall event.
+- New Formal: five assertions PROVEN/non-vacuous, five exact target covers
+  UNCOVERABLE, five positive covers COVERED, zero blackboxes/setup violations.
+- Rebound the existing DPD ready proof to matching source hashes and parameters.
+  Its separate payload-hold assertion remains INCONCLUSIVE.
+- Original54 technical targets: six PROVEN_UNREACHABLE pending review;
+  48 UNRESOLVED. No approved exclusions or accepted scope exceptions.
+- Actual new Exact URG HIT: **0**. No further seed expansion.
+- Utility checks:57/57 PASS. Existing589 regression results retained; only the
+  new directed scenario was executed, not another full590-test regression.
 
-`system_scenario_inventory_v2.csv` inventories all589 verified scenarios:
-585 legal and4 expected-negative; all PASS under the single frozen compile parent.
-Each row retains stimulus argv, packet/reset epoch status, checker, VDB and event
-trace location. Three focused public tests are appended with VCD/oracle evidence.
-This is an inventory, not a synthetic Cross hit; packet-level crosses must use
-same packet and epoch IDs.
+## Exact ledger and proof scope
 
-Raw = Official Approved Adjusted (zero approved `.el`): Branch526/637,
-Condition667/849, Line3352/3796, Toggle92640/104480, FSM13/13 states and22/22
-transitions. Existing analysis-only What-if (all174 candidates) is Branch526/528,
-Condition667/713, Line3352/3352, Toggle92640/93576: 984 missing =54 non-counter
-+930 counter. New Exact HIT0, approved exclusion0, accepted exception0.
+`data/thermo5-pr55-application/v2/coverage_exact_triage_v2.csv` preserves all87
+input IDs: the33 already-reviewed CONFIG_UNREACHABLE candidates, six additional
+PROVEN_UNREACHABLE candidates,48 UNRESOLVED. All87 remain officially OPEN.
+The prior33 were not reclassified. Every record retains native vector and
+checksum, source expression, instance and historical provenance; the v2
+product-SHA field identifies the current frozen source.
 
-## Exact root-cause status
+`v2/supplemental_review6.csv` supplies six exact pending decisions:
 
-- DPD line93 has an existing vector-ready Formal harness ; the prior AXI-Lite line93 proof concerns a different module and must
-  not be transferred to this DPD bin. Existing DPD result provenance is still
-  being located; no proof status is inferred. No exclusion is inferred from a test miss.
-- CDC `core_data_empty` has a product-shaped Generic FIFO invariant harness
-  (`thermo5_cdc_data_empty_harness.sv`). Its assertions are useful predecessor
-  checks, but no fresh PASS is claimed in this sprint; a raw tuple combining
-  empty and valid must be checked at the sampling/delta-cycle boundary.
-- AXI-Lite line333 boundary tuple remains UNRESOLVED: prior legal
-  COMMIT test hit a different tuple. A new test is justified only after exact
-  mailbox request/pending/boundary predecessor reconstruction.
-- Gain six tuples remain timing-context questions because registered valid
-  masks metadata, while empty FIFO outputs may retain storage values.
-- Interpolator 22 tuples remain grouped by q_count/q0/q1 metadata, tail and
-  reset/event context. Prior ready-tail reset passed its independent oracle but
-  added URG delta0; no new seed sweep is justified.
-- TX/Outstanding remains open. The weighted model gives conditional real-slot
-  capacity28, while full RTL refinement, DPD lockstep and STOP/reset conservation
-  are unproven. Previous capacity Formal was INCONCLUSIVE at depth51; it is not
-  repeated.
+| Root cause | Exact targets | Evidence |
+|---|---|---|
+| DPD output empty implies ready | TXB-33613a1855fcc02e8ef4; line93 tuple0/1 | Existing source-matched PROVEN assertion, target UNCOVERABLE, four positive covers |
+| Mailbox pending implies synchronized request | TXB-a8041f215017e6e9b5f5; line333 tuple0/1/1 | New PROVEN assertion, target UNCOVERABLE; pending/apply/return-idle positive covers |
+| Registered gain metadata implies corresponding valid | Lines112,113,123,124 tuple0/1; four exact IDs in supplemental CSV | Four PROVEN assertions, four UNCOVERABLE targets; live-metadata and invalid-input positive covers |
 
-`remaining54.csv` and v2 triage preserve Exact IDs; no random miss is called
-unreachable. Existing Formal status in `runs/formal_r21_retry/formal_summary.json`
-remains explicit: proven assertions and uncoverable covers are scoped to their
-harness assumptions and omitted datapath, not whole-product signoff.
+These targets are procedural expressions evaluated at active clock edges
+outside reset. Formal initializes from saved reset and constrains reset high
+thereafter. Repeated common-reset epochs require composition; no arbitrary
+independent-domain reset signoff is inferred. Mailbox external inputs and frame
+boundary are unconstrained. Gain parameters match the product: W16,LANES8,
+GAIN_W16,GAIN_FRAC14,HOLD_STATE_ON_DISABLE0; input sidebands are unconstrained.
 
-## System Cross inventory boundary
+Gain lines136/137 remain unresolved at product level: the invalid-input metadata
+combination is COVERED in the local overapproximation. A local proof cannot
+exclude those bins without upstream FIFO composition.
 
-The current coverage component records packet and epoch identifiers and has
-same-packet crosses for source-gap/PA-stall/FIFO-full, run-prefill/source-gap,
-and STOP/TLAST/drain. The 589-row inventory records actual evidence. Missing
-crosses still require dedicated same-epoch stimuli and independent checkers:
-COMMIT×non-identity DPD×boundary×PA stall; reset×pending COMMIT×EF2 state×stall;
-long packet×STOP×drain; AW/W/B backpressure; STATUS W1C/error/read; and
-RUN/STOP/restart expected-negative. No cross is marked covered from unrelated
-rows.
+The existing CDC FIFO proof's RTL/harness hashes match. Its runner differs only
+in removal of the engine report's `-no_summary` option. The historical clocked
+proof does not close continuous-expression event/delta sampling; all seven CDC
+technical targets remain unresolved. Historical raw logs are referenced by the
+committed audit hashes; this sprint did not rerun that proof or claim a fresh
+DPD/CDC Formal run. See `formal_reuse_binding.json` and `new_formal_results.json`.
+Formal warnings are retained in the latter; selected setup checks are clean.
 
-## CI and signoff
+Remaining48: Interpolator22,CDC7,Gain2,TX Top15,Frontend2. Interpolator
+continuous expressions need predecessor/event/reset reasoning; clock-only
+contradictions cannot justify their removal. Outstanding's conditional28-slot
+model lacks complete RTL real/synthetic-token refinement. Its previous
+INCONCLUSIVE capacity harness was not rerun. The two q1_tail assertion
+antecedents remain full-product obligations; scoped omitted-datapath proofs
+are not promoted to full-product PASS.
 
-Licensed VCS/URG evidence is available for the frozen parent and 589 scenarios.
-GitHub syntax/hygiene checks are not licensed DV. No new licensed regression was
-needed because this v2 execution changed only triage/inventory tooling and did
-not change RTL, tests or compile inputs. Utility suite remains 49/49 PASS.
+## Scenario inventory and new window
+
+`v2/system_scenario_inventory_v2.csv` inventories590 actual results:
+586 legal,4 expected-negative. It retains actual stimulus commands, log hashes,
+VDBs, trace paths and observed checker pass messages. Three focused historical
+commands are recovered from their Test VDBs, not inferred from scenario names.
+All legal logs have zero UVM errors/fatals and no assertion error messages.
+
+Packet audits are parsed only from actual event messages with integrity PASS;
+report-count summary lines do not count. `packet_epoch_cross_evidence.json`
+retains epoch/packet keys per scenario. Observed existing records include330
+same-packet gap/FIFO-full/PA-stall windows,330 run/prefill/gap windows and four
+ordered STOP/TLAST/drain windows. These are event records, not new URG hits.
+Other requested crosses remain unverified unless explicit evidence is present;
+a test name alone is not coverage.
+
+New scenario589 reuses scenario110's attenuation C1=15614 Q2.14, the existing
+32-beat packet/vector set and fixed seed. Only the existing directed
+`THERMO5_REQUIRE_COMMIT_BOUNDARY_STALL` control is added. Existing source,
+PA-sink, AXI-Lite and control ownership is unchanged. Expected output56 words;
+existing20000-core-cycle watchdog, transaction scoreboard, EF2 reference,
+configuration/status predictor and drained-expectation checks all pass.
+
+The independent window checker requires one complete32-beat packet and one
+reset epoch; accepted non-identity coefficient programming; successful COMMIT;
+pending→boundary→ack→DONE; real PA stall after boundary; then drained idle.
+It rejects reset joins, other-epoch stalls, multiple-packet ambiguity, rejected
+writes and identity coefficients. The independent trace oracle checks the
+actual CDC/EF2/PA data and applied configuration, independently of test names.
+
+Measured events (ns, recorder epoch0/packet0): pending802.386,
+boundary893.826,ack898.398,DONE965.000,PA stall971.550,
+drained idle1346.454. This is a packet-lifetime cross, not overlapping boundary
+and stall. The measured window and evidence hashes are in
+`v2/directed_cross_witness.json`. No VCD/Exact Hit is claimed for this cross.
+Other requested timing-window crosses still need equivalent instrumentation
+and checker evidence; this sprint does not claim Gate2/3 complete.
+
+## Same-parent licensed URG
+
+Parent: `runs/rtl_invariants/compile2/simv.vdb`.
+Compile argument SHA256:
+`421a36094a493a2345eff8f165a44197bff12bbcf32a09963a61628353bf599e`.
+All589 prior Test VDBs plus the one directed Test VDB are used for each view.
+The new Test VDB's native siminfo binds to the same compiled executable.
+
+| Metric | Raw = Official Adjusted | Analysis-only What-if |
+|---|---:|---:|
+| Branch |526/637|526/528|
+| Condition |667/849|667/713|
+| Line |3352/3796|3352/3352|
+| Toggle |92640/104480|92640/93576|
+| FSM states / transitions |13/13;22/22|13/13;22/22|
+
+Three URG reports ran successfully under `runs/dv_convergence_v2/`.
+No URG warning/error/checksum/mapping diagnostic; covered counts and denominators
+are unchanged from the corresponding589-input views. Exact-hit delta0.
+Raw/Official still have12577 unclosed bins; existing What-if has984.
+The six new technical candidates are **not applied**, even to this What-if.
+There is no new official `.el` or denominator change.
+
+Existing11593 candidate IDs are preserved; supplemental six IDs are disjoint,
+so11599 candidates now await independent review. Original371 Waiver references
+remain in the unchanged historical index. Approved count0, accepted exceptions0.
+The930 diagnostic-counter directions remain OPEN pending product-owner scope
+acceptance; independent32-bit block arithmetic evidence is retained and is not
+product URG coverage. No counter width or frozen RTL is changed.
+
+## Reproduction and review
+
+From this worktree, with the frozen compiled inputs and authorized licenses:
+
+```bash
+python3.12 tools/hw/thermo5_v2_commit_stall.py --out runs/dv_convergence_v2/nonidentity_commit_stall --execute
+THERMO5_FORMAL_REPO="$PWD" THERMO5_FORMAL_OUT="$PWD/runs/dv_convergence_v2/mailbox_formal" /opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf -batch -fmode FPV -f dv/uvm/formal/run_thermo5_mailbox_boundary_v2.tcl
+THERMO5_FORMAL_REPO="$PWD" THERMO5_FORMAL_OUT="$PWD/runs/dv_convergence_v2/gain_formal" /opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf -batch -fmode FPV -f dv/uvm/formal/run_thermo5_gain_metadata_v2.tcl
+python3.12 tools/hw/thermo5_v2_urg.py --execute
+python3.12 tools/hw/thermo5_v2_formal_results.py
+python3.12 tools/hw/thermo5_coverage_exact_triage_v2.py --out docs/verification/data/thermo5-pr55-application/v2
+python3.12 -m unittest discover -s tools/hw/tests
+```
+
+No tool install, source recompilation or algorithm regeneration is required by
+these changes. Review must independently confirm proof/reset/configuration
+scope, exact native vectors and the distinction between packet-window and
+simultaneous crosses. Independent approval and product-scope decisions remain
+outstanding; no Codex decision substitutes for them.
 
 **Code Coverage Signoff: OPEN. Full Linux DV Signoff: OPEN.**
-Formal INCONCLUSIVE/TIMEOUT/untriggered assertions remain OPEN. No official
-exclusion is active; all 11,593 candidates remain PENDING and 930 Counter
-Directions remain OPEN pending product owner scope decision.

@@ -1,0 +1,66 @@
+{
+  "mailbox": {
+    "properties": {
+      "a_pending_requires_request": "proven",
+      "c_apply": "covered",
+      "c_exact_line333": "uncoverable",
+      "c_pending": "covered",
+      "c_return_to_idle": "covered"
+    },
+    "nonvacuous_assertions": 1,
+    "blackboxes": 0,
+    "setup_violations": 0,
+    "reset_scope": "Saved common-reset initialization; rst_n constrained1 thereafter; arbitrary external traffic; no protocol/boundary assumptions. Repeated reset effects require epoch composition.",
+    "source_sha256": {
+      "dv/uvm/formal/thermo5_mailbox_boundary_v2_harness.sv": "6c4698fce8401e6394718f590a16967fadc25b639b22eb90f7ce796c5f29a441",
+      "dv/uvm/formal/run_thermo5_mailbox_boundary_v2.tcl": "c8ac43fc60152215ed9b1a0bc9668543c5837d16c8505eb5fed1310f753c3c01",
+      "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7"
+    },
+    "artifacts": {
+      "runs/dv_convergence_v2/mailbox_formal/properties.txt": "39acd1f2230c36717bdc9066da620bd40b151607cd009544eeb61b147cd212f7",
+      "runs/dv_convergence_v2/mailbox_formal/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "runs/dv_convergence_v2/mailbox_formal/engines.txt": "2a3ff55863a0c8616f2c26d2e97b7eec3b22bfa746bb529119235c3b6a8069af",
+      "runs/dv_convergence_v2/mailbox_formal.stdout": "2bf381b623620a2b3f5cb1b9bfa8a79ff26fbfeb3ae711166f0d6efeae4eb2cd"
+    },
+    "tool_warnings": [
+      "Warning-[SM_IGN_INITIAL] Ignoring Initial block",
+      "[Warning] CLOCK_W_PERIOD_ADJUST: Clock timescale adjusted 100x to avoid fractional clock periods.",
+      "[Warning] POTENTIAL_SETUP_ISSUES: There are potential setup issues. Please run check_fv_setup to confirm.",
+      "[Warning] LEARNED_DATA_NOT_FOUND: No existing learned data found in 'thermo5_mailbox_boundary_v2_harness_learn_dir'"
+    ],
+    "product_parameters": "MAX_TAPS=1; clocks14:8; tx_active/draining unrestricted"
+  },
+  "gain": {
+    "properties": {
+      "a_s0_end_valid": "proven",
+      "a_s0_start_valid": "proven",
+      "a_s1_end_valid": "proven",
+      "a_s1_start_valid": "proven",
+      "c_invalid_input_metadata": "covered",
+      "c_line112": "uncoverable",
+      "c_line113": "uncoverable",
+      "c_line123": "uncoverable",
+      "c_line124": "uncoverable",
+      "c_live_metadata": "covered"
+    },
+    "nonvacuous_assertions": 4,
+    "blackboxes": 0,
+    "setup_violations": 0,
+    "reset_scope": "Saved common-reset initialization; rst_n constrained1 thereafter; arbitrary external traffic; no protocol/boundary assumptions. Repeated reset effects require epoch composition.",
+    "source_sha256": {
+      "dv/uvm/formal/thermo5_gain_metadata_v2_harness.sv": "ea5df366c8476d506b924844ff49e1eb6cd6961641727f0c6382fce7bd9ae33a",
+      "dv/uvm/formal/run_thermo5_gain_metadata_v2.tcl": "5c0e549dcfae32785aff5998775ee56f84d04bc58d57b069f1647f9812a68a61",
+      "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7"
+    },
+    "artifacts": {
+      "runs/dv_convergence_v2/gain_formal/properties.txt": "d03218bab7fecc4d8e80a094c444596f79f59766666d165795aaeb33788f6a57",
+      "runs/dv_convergence_v2/gain_formal/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "runs/dv_convergence_v2/gain_formal/engines.txt": "94f78948e56ebfaf008f425419b98fc3463da8c6188aca3636bf2ea932be64b9",
+      "runs/dv_convergence_v2/gain_formal.stdout": "5a9712a992868909d846f072d4d8f15929b89389b39975c67c879cafe54f69d1"
+    },
+    "tool_warnings": [
+      "[Warning] LEARNED_DATA_NOT_FOUND: No existing learned data found in 'thermo5_gain_metadata_v2_harness_learn_dir'"
+    ],
+    "product_parameters": "W=16 LANES=8 GAIN_W=16 GAIN_FRAC=14 HOLD_STATE_ON_DISABLE=0"
+  }
+}
