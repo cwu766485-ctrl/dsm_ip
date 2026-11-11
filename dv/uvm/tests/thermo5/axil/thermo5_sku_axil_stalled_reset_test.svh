@@ -13,7 +13,9 @@ class thermo5_sku_axil_stalled_reset_test extends thermo5_sku_axil_base_test;
     wait(vif.src_rst_n && vif.core_rst_n);
     env.pa_sink.set_ready(tail_reset ? 4'hf : 4'h0);
     fork
-      send_source(tail_reset ? 16 : 24);
+      begin
+        send_source(24);
+      end
       begin
         wait(env.source.monitor.accepted_beats>=16);
         axil_write(8'h00,32'h1,0,0,resp);
@@ -28,7 +30,7 @@ class thermo5_sku_axil_stalled_reset_test extends thermo5_sku_axil_base_test;
         if (!uvm_hdl_read("thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.tail_output",tail_output) ||
             !uvm_hdl_read("thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1.out_ready",tail_ready))
           `uvm_fatal("TAIL_RESET_OBSERVE","Cannot observe target tail handshake")
-        stalled=(tail_output===1 && tail_ready===1);
+        stalled=(tail_output[0]===1'b1 && tail_ready[0]===1'b1);
       end else stalled=vif.pa_valid==4'hf && vif.pa_ready==0;
     end
     if(!stalled) `uvm_fatal("STALL_RESET_TARGET","Requested public-reset precondition not reached")

@@ -1,5 +1,22 @@
 # Execution frontier
 
+## Current execution state: Licensed589-test closure validation; zero exact delta (2026-11-11)
+
+PR55 optional tail-reset target fixed: inspect HDL bit0,24-beat legal prefix.
+Target347472ps, public reset,56-word four-plane oracle PASS; strict runnerPASS.
+Two initial target failures retained; root cause full-width HDL vector compare.
+Frozen635be68 unchanged. One frozen compile,589/589 scenarios PASS (585legal,
+4negative). Raw=Official Branch526/637,Cond667/849,Line3352/3796,Toggle92640/104480;
+What-if unchanged1158. Exact delta0,official approved/accepted0;87 stillOPEN.
+Test native siminfo identifies same executable; Test VDB auxiliary file absent,
+initial binding attempt fixed before URG. Five URG logs clean. Legal asserts
+13success/0fail/two without attempts;combined3 failures only negative.48utility
+checksPASS. New33 candidates pending,54 unresolved; no seed expansion.
+Code Coverage/Full Linux DV OPEN. Update PR55 for external technical review;
+no reviewer approval inferred, no official.el. Evidence: thermo5-rtl-grounded-closure.md.
+
+## Previous execution state
+
 ## Current execution state: RTL invariants reviewed; licensed execution blocked (2026-11-11)
 
 Base02b5c95; frozen635be68 unchanged. Exact87-row review adds33 pending technical

@@ -3,6 +3,47 @@
 2026-11-11 10:15 Asia/Singapore. Base:02b5c95. Frozen product:
 635be681046b3ab7d6fdda7f4e9818d7226efd66. Product RTL unchanged.
 
+## Restored-license execution result (2026-11-11 10:35 Asia/Singapore)
+
+License restored; isolated VCS compile PASS. The optional ready-tail reset test
+now observes HDL signal bit0 rather than comparing the entire uvm_hdl_data_t
+vector. Both earlier failed target attempts remain in ignored runs; the actual
+root cause was full-width comparison, not absence of the tail event. Prefix
+uses24 accepted legal beats. Target reached347472ps; public reset follows;
+56-word independent four-plane oracle PASS, UVM error/fatal0. Strict optional
+shell runner also PASS. The new target adds **zero** Exact URG bins; no further
+seed expansion is performed.
+
+Final compile frozen before589 scenarios (586 replay +boundary COMMIT +legacy
+stalled reset +ready-tail reset): **589/589 PASS**,585 legal/4 expected-negative.
+Test siminfo records point to the same executable; Design VDB parent hash is
+in final_binding.json. Test VDBs do not copy auxiliary/vcmArguments.xml, so no
+per-test auxiliary-hash equality is claimed. The first binding script expected
+that nonexistent copy and failed before URG; corrected binding checks native
+siminfo provenance plus frozen compile and URG diagnostics. All five URG views
+PASS, zero warning/error/mismatch/checksum diagnostics.48 utility tests PASS.
+Raw/Official/What-if values in the table below are freshly regenerated and
+unchanged. Legal assertions13 SUCCESS/0 FAILURE/two without attempts; combined
+3 failures confined to4 expected-negative tests. Raw missing12577;
+What-if1158. All87 officially OPEN; new approved exclusions/exceptions0.
+Product RTL is unchanged. No independent approval exists; PR remains open for
+review, not coverage signoff.
+
+Reproduce the focused scenario with explicit runner variables:
+
+```bash
+THERMO5_SIMV="$PWD/runs/rtl_invariants/compile2/simv" \
+THERMO5_VECTORS=/path/to/independent56word_vectors \
+THERMO5_OUT="$PWD/runs/ready_tail_validation" \
+THERMO5_RESET_AT_READY_TAIL=1 bash dv/uvm/sim/run_thermo5_stalled_reset.sh
+```
+
+Latest Design VDB:`runs/rtl_invariants/compile2/simv.vdb`; latest reports:
+`runs/rtl_invariants/urg/{raw,approved_adjusted,whatif,legal_raw,negative_only}/report`.
+Tracked coverage_summaries.json, final_binding.json, ready_tail_witness.json and
+manifest.json bind the result. Remaining reachability/approval work below is
+still valid. Earlier blocked execution is retained as historical evidence.
+
 ## Actual result and execution blocker
 
 New product Exact URG HIT: **0**. Independently approved exclusions: **0**.

@@ -6,10 +6,10 @@
   "approved_exclusions": 0,
   "officially_closed_of87": 0,
   "official_open_of87": 87,
-  "compile_exit": 255,
-  "compile_failure": "VCS license server connection failed",
-  "regression_run": false,
-  "urg_rerun": false,
+  "compile_exit": 0,
+  "compile_failure": null,
+  "regression_run": true,
+  "urg_rerun": true,
   "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
   "base_sha": "02b5c95c8463827691e4eb95e245b6ca600a6543",
   "utility_tests": {
@@ -23,5 +23,28 @@
     "docs/verification/data/thermo5-rtl-invariants/residual_invariant.json": "3dd76f95681fcfa8d5bbabf98245a6d64c9484562d392d834720e477c8ad77f8",
     "docs/verification/data/thermo5-rtl-invariants/interpolator_condition_groups.json": "d0d0046171d7573823010613f8063b8f3e6f3f6564590da3d9a6ddf73ba830cb",
     "runs/rtl_invariants/compile/command.json": "fa3e34d58d303670e0c0aeda83e523cbef121143aa2e948de14040b253a2c94c"
+  },
+  "regression": {
+    "total": 589,
+    "legal": 585,
+    "expected_negative": 4,
+    "passed": 589
+  },
+  "failed_attempts": [
+    "ready_tail",
+    "ready_tail2"
+  ],
+  "actual_failure_root_cause": "Full-width uvm_hdl_data_t comparison did not isolate valid signal bit0; fixed bit-select comparison",
+  "compile_parent_evidence": "Test siminfo cmdline references one frozen executable; Test VDB has no copied auxiliary vcmArguments.xml. Design VDB fingerprint and URG checksum diagnostics checked.",
+  "restored_execution_sha256": {
+    "runs/rtl_invariants/compile2/command.json": "145c78194092915a82a33641a439ccf649d220ae6ed010a593edd799e1913fb6",
+    "runs/rtl_invariants/compile2/recompile3.stdout": "61bf03506e01e4e166b772ab6ac68fab3701e8f0dbdb589328750c273085dab1",
+    "runs/rtl_invariants/compile2/simv.vdb/snps/coverage/db/auxiliary/vcmArguments.xml": "421a36094a493a2345eff8f165a44197bff12bbcf32a09963a61628353bf599e",
+    "runs/rtl_invariants/replay_results.json": "31fbc63626bb87209f78a98a6ca5cbe49b47f3e32e91f778342622e768443f73",
+    "runs/rtl_invariants/ready_tail3/test.log": "67ca0a54081c0cc3172f2a103aff83ae958f5dc64db7daac83c26d5bf259a922",
+    "runs/rtl_invariants/ready_tail3/witness.vcd": "752e187b450610c9d024eaadaa7a628ce89c75f7956be1fa30a0c139a288dca6",
+    "runs/rtl_invariants/stalled_reset3/test.log": "797c38e18373f5d4c313b961001516e835d1c2e9c9ebe2f41d66160a7fd32c8c",
+    "runs/rtl_invariants/final_binding.json": "30e7e41dc783038b83f33d5c5c27b011061b1952506a38374252881f365bdb3b",
+    "runs/rtl_invariants/runner.stdout": "325e0314c3a7acb07ea0e25782e987de72e02e0d6b7500f3d7a583014deaacd6"
   }
 }

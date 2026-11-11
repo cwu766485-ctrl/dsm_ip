@@ -1,3 +1,15 @@
+## 2026-11-11 10:35 Asia/Singapore — License-restored exact-target validation
+
+- Fixed optional UVM ready-tail target: read signal bit0 from HDL vector;
+  retain24-beat prefix. Added shell opt-in; frozen RTL unchanged.
+- VCS compile PASS;589/589 unified scenarios PASS (585legal/4negative),48utility
+  testsPASS,strict runnerPASS. Target347472ps and full56-word oracle verified.
+- Raw/Official/What-if URG regenerated; no exact delta, no tool diagnostics.
+  All87 remainOPEN;33 proposed candidates pending;930counterOPEN;both signoffsOPEN.
+- Retain2 target misses and initial binding-file error; no failed VDB accepted.
+  Updated closure evidence, hashes, frontier. Independent approval absent;
+  PR55 requires external review; no automatic waiver or merge/signoff assertion.
+
 ## 2026-11-11 10:15 Asia/Singapore — RTL-grounded closure, execution blocked
 
 - Changed: optional public-reset target in stalled-reset UVM test; executable
