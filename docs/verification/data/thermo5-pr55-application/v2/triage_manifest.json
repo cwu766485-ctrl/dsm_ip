@@ -1,0 +1,14 @@
+{
+  "remaining54": 54,
+  "states": {
+    "REACHABLE_UNTESTED": 10,
+    "UNRESOLVED": 44
+  },
+  "scenarios": 589,
+  "scenario_pass": 589,
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "counter_930_separate": true,
+  "approved": 0,
+  "new_hit": 0,
+  "actual_urg_delta": 0
+}
