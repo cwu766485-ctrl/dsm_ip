@@ -19,17 +19,17 @@ def main():
   sid=r['source_bin_id'];src=byid.get(r['source_bin_id']) or next((x for x in open87 if x['semantic_bin_id']==r.get('semantic_bin_id')),None)
   inst=r['instance'];loc=r['source_location'];metric=r['metric'];state='UNRESOLVED';action='KEEP_OPEN';evidence=''
   if 'u_memory_dpd' in inst:
-   state='REACHABLE_UNTESTED';action='REUSE_FORMAL_NO_REPEAT';evidence='Existing vector-ready Formal target line93 remains exact; no prior PASS for target tuple.'
+   state='UNRESOLVED';action='REUSE_FORMAL_NO_REPEAT';evidence='Existing vector-ready Formal target line93 remains exact; no prior PASS for target tuple.'
   elif 'u_cdc' in inst and ('113:' in loc):
    state='UNRESOLVED';action='FORMAL_OR_EVENT_ANALYSIS';evidence='Generic FIFO empty/valid invariant harness exists; exact raw tuple with empty and valid is contradictory in settled RTL but delta-cycle proof pending.'
   elif 'u_cfg' in inst:
-   state='REACHABLE_UNTESTED';action='DIRECTED_COMMIT_TIMING';evidence='Request/pending/boundary synchronizer tuple requires four-phase mailbox timing; prior boundary COMMIT hit was different tuple.'
+   state='UNRESOLVED';action='DIRECTED_COMMIT_TIMING';evidence='Request/pending/boundary synchronizer tuple requires four-phase mailbox timing; prior boundary COMMIT hit was different tuple.'
   elif 'u_frame_gain' in inst:
    state='UNRESOLVED';action='PREDECESSOR_ANALYSIS';evidence='Valid masks metadata update; stale FIFO metadata while empty remains possible only under timing context.'
   elif 'u_interp_' in inst:
    state='UNRESOLVED';action='QUEUE_RESET_EVENT_ANALYSIS';evidence='q_count/q0/q1 metadata and async reset predecessor required; prior ready-tail reset had URG delta0.'
   elif metric in ('toggle','branch') and inst.endswith('.dut'):
-   state='REACHABLE_UNTESTED';action='WEIGHTED_TOKEN_PROOF_OR_WITNESS';evidence='Weighted model conditional capacity28; full RTL refinement OPEN, no exclusion from max28 observation.'
+   state='UNRESOLVED';action='WEIGHTED_TOKEN_PROOF_OR_WITNESS';evidence='Weighted model conditional capacity28; full RTL refinement OPEN, no exclusion from max28 observation.'
   elif 'u_frontend' in inst:
    state='UNRESOLVED';action='LEGAL_SIDE_BAND_ANALYSIS';evidence='Frontend metadata/constant paths require exact consumer and valid context.'
   rows.append({**r,'v2_status':state,'v2_action':action,'v2_evidence':evidence,'v2_formal_or_vcs_witness':'NONE','v2_actual_urg_delta':'0','v2_approval':'PENDING'})

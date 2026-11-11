@@ -10,9 +10,8 @@ promote technical evidence to approval.
 `data/thermo5-pr55-application/v2/coverage_exact_triage_v2.csv` contains all54
 current non-counter technical OPEN rows, with exact semantic ID, source/native
 mapping inherited from `remaining54.csv`, RTL instance/expression, predecessor
-obligation, Formal/VCS evidence state, actual URG delta and decision. Ten are
-REACHABLE_UNTESTED (DPD line93, AXIL boundary, TX/Outstanding);44 are
-UNRESOLVED (CDC, Gain, Interpolator, Frontend and remaining TX tuples). None are
+obligation, Formal/VCS evidence state, actual URG delta and decision. All54 are
+UNRESOLVED until exact legal reachability or source-bound proof is established. None are
 PROVEN_UNREACHABLE, CONFIG_UNREACHABLE, APPROVED_EXCLUSION or ACCEPTED_SCOPE_EXCEPTION.
 The 930 counter directions remain a separate product-scope decision.
 
@@ -31,14 +30,14 @@ Condition667/713, Line3352/3352, Toggle92640/93576: 984 missing =54 non-counter
 
 ## Exact root-cause status
 
-- DPD line93 has an existing vector-ready Formal harness and prior line93 Formal
-  evidence; it is not rerun here because the same target was already
-  inconclusive/uncoverable. No exclusion is inferred from a test miss.
+- DPD line93 has an existing vector-ready Formal harness ; the prior AXI-Lite line93 proof concerns a different module and must
+  not be transferred to this DPD bin. Existing DPD result provenance is still
+  being located; no proof status is inferred. No exclusion is inferred from a test miss.
 - CDC `core_data_empty` has a product-shaped Generic FIFO invariant harness
   (`thermo5_cdc_data_empty_harness.sv`). Its assertions are useful predecessor
   checks, but no fresh PASS is claimed in this sprint; a raw tuple combining
   empty and valid must be checked at the sampling/delta-cycle boundary.
-- AXI-Lite line333 boundary tuple remains REACHABLE_UNTESTED: prior legal
+- AXI-Lite line333 boundary tuple remains UNRESOLVED: prior legal
   COMMIT test hit a different tuple. A new test is justified only after exact
   mailbox request/pending/boundary predecessor reconstruction.
 - Gain six tuples remain timing-context questions because registered valid

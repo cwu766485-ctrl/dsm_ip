@@ -1,8 +1,7 @@
 {
   "remaining54": 54,
   "states": {
-    "REACHABLE_UNTESTED": 10,
-    "UNRESOLVED": 44
+    "UNRESOLVED": 54
   },
   "scenarios": 589,
   "scenario_pass": 589,
