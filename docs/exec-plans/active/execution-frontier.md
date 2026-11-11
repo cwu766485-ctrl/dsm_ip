@@ -1,5 +1,22 @@
 # Execution frontier
 
+## Current execution state: PR55 exact analysis application; approvalsOPEN (2026-11-11)
+
+Input36c2839 preserved33 technical decisions. Fresh native dump from frozen589
+VDB set verifies30 directives/33semanticIDs:23parameter+10legal CDC. Strict URG
+exact deltas7Line/11Cond/14Toggle/1Branch,zero lost covered,zero diagnostics.
+Shared Block47 covers230/231;Block43 covers224/225/226,complete membership.
+Combined analysis What-if1125=195noncounter+930counter; Raw/Official unchanged
+12577open. Candidate index11593unique=11419+141+33,allPENDING,no overlap.
+Formal capacity29 retry INCONCLUSIVE depth51,4min;other goalsNOT_RUN,restricted
+RUN harness not full STOP/reset proof.54 remain technicallyOPEN,87 officially
+OPEN. NewHIT/approved/exception0;no seed expansion,no official.el. Existing589
+regression/48utilityPASS;no executable/source change,no regression rerun.
+Code Coverage/Full Linux DV OPEN. PR55 awaits actual independent review;
+never use What-if delta as official closure. Evidence: thermo5-pr55-exact-application.md.
+
+## Previous execution state
+
 ## Current execution state: Licensed589-test closure validation; zero exact delta (2026-11-11)
 
 PR55 optional tail-reset target fixed: inspect HDL bit0,24-beat legal prefix.
