@@ -1,0 +1,92 @@
+{
+  "overlap": {
+    "packet_id": 0,
+    "epoch": 0,
+    "source_beats": 64,
+    "pa_words": 112,
+    "drained_ns": 1012.698,
+    "boundary_ns": 651.51,
+    "simultaneous_pa_stall_ns": 651.51,
+    "old_pa_accepted": 40,
+    "old_words_outstanding": 16,
+    "ack_ns": 656.082,
+    "cfg_vcd_preedge_tuple": "111",
+    "evidence_sha256": {
+      "runs/dv_convergence_v3/overlap/test.log": "69d983880c425b6c18e06f4a2ca40b7f12f2d95525df084797c9aaffae2cbabd",
+      "runs/dv_convergence_v3/overlap/test.jsonl": "c75330c8253a891c438d270bb97d0f2fe288159f3bec294bdb3d1e299d60f3ff",
+      "runs/dv_convergence_v3/overlap/test.vcd": "578aa6cbcfc0d574ef075074297dbc69a8561eaf02e59efa87f604b6abe479ee",
+      "runs/dv_convergence_v3/overlap/oracle.log": "6cdb9a043e3b1f891850766a9b793587c318fe1c12ad8a3b3e92a432bac696db",
+      "runs/dv_convergence_v3/overlap/plan.json": "52faec2913907bc0e0c47c07ba9a72973ece68ca498903103ceac75258121eae",
+      "runs/dv_convergence_v3/overlap/result.json": "039e813ce7ff7f6d92c2727c19a1dd48495374d6c54c0c4beb2305cd6abaeea4"
+    },
+    "oracle_summary": "epoch=0 data=PASS CDC_words=112 EF2_words=112 PA_words=112 applied_config_frames=[1] underflow_events=0\nTRACE_ORACLE=PASS CDC_words=112 EF2_words=112 PA_words=112 underflow_events=0\nTRACE_CLASSIFICATION=PASS_NO_UNDERFLOW\n"
+  },
+  "long64": {
+    "packet_id": 0,
+    "epoch": 0,
+    "source_beats": 64,
+    "pa_words": 112,
+    "drained_ns": 944.118,
+    "stop_ns": 368.046,
+    "accepted_beats_at_stop": 24,
+    "tlast_ns": 684.0,
+    "partial_stall_first_ns": 692.658,
+    "partial_stall_last_ns": 720.09,
+    "partial_stall_cycles": 7,
+    "evidence_sha256": {
+      "runs/dv_convergence_v3/long64/test.log": "0aa192dbeb32ea0129d9d69978656b6cc2450f3c03e8027d8644b011f2df569b",
+      "runs/dv_convergence_v3/long64/test.jsonl": "726c32d7798267aa91efceaa0e244c8289cf4c1bd714da36e7e964a4848dcf78",
+      "runs/dv_convergence_v3/long64/test.vcd": "a801dc8a5f01a83f4d57c334fb57a94241fe35b6fab8c22a456514cd2fb4f41d",
+      "runs/dv_convergence_v3/long64/oracle.log": "ce0b530a11ef656ad9de4ed6bffd5f7a3a972205384cd0b71c47df24f6e7cd45",
+      "runs/dv_convergence_v3/long64/plan.json": "aa5c6328635b27aa6b456a92c1658d8dbfe5a3463757dcd52828490c58d44d4f",
+      "runs/dv_convergence_v3/long64/result.json": "0a400c76399323869bcc252baa9fe0d8a2a38dba13744d8ae58ba148ff20d9b0"
+    },
+    "oracle_summary": "epoch=0 data=PASS CDC_words=112 EF2_words=112 PA_words=112 applied_config_frames=[] underflow_events=0\nTRACE_ORACLE=PASS CDC_words=112 EF2_words=112 PA_words=112 underflow_events=0\nTRACE_CLASSIFICATION=PASS_NO_UNDERFLOW\n"
+  },
+  "long96": {
+    "packet_id": 0,
+    "epoch": 0,
+    "source_beats": 96,
+    "pa_words": 168,
+    "drained_ns": 1200.15,
+    "stop_ns": 368.046,
+    "accepted_beats_at_stop": 24,
+    "tlast_ns": 940.0,
+    "partial_stall_first_ns": 948.69,
+    "partial_stall_last_ns": 976.122,
+    "partial_stall_cycles": 7,
+    "evidence_sha256": {
+      "runs/dv_convergence_v3/long96/test.log": "46be8b21dc761504b221086d0891276c79d11d7869e6d6bf448adc10039c18b6",
+      "runs/dv_convergence_v3/long96/test.jsonl": "27bdeab2263fba58a2e2dc9b72f012653541322c1c790098f4c429a0d346b93f",
+      "runs/dv_convergence_v3/long96/test.vcd": "6cd8eebd9d95337518b41f90e9b66fbded1b0fd6a5d3056c085116f5b526123b",
+      "runs/dv_convergence_v3/long96/oracle.log": "01db6e88d00e5a3768ac0023d328e98dfbbdf3508c58751c025559d689420e48",
+      "runs/dv_convergence_v3/long96/plan.json": "b4b9e2e21a1a0b30af55ef27bb6a5f6f766e36a4ea56758c1ef7b0f0f6757955",
+      "runs/dv_convergence_v3/long96/result.json": "e33d0ce95b1248ac7411a35dce9a03a63f4188659896d79a0cfe8a5224cd71d4"
+    },
+    "oracle_summary": "epoch=0 data=PASS CDC_words=168 EF2_words=168 PA_words=168 applied_config_frames=[] underflow_events=0\nTRACE_ORACLE=PASS CDC_words=168 EF2_words=168 PA_words=168 underflow_events=0\nTRACE_CLASSIFICATION=PASS_NO_UNDERFLOW\n"
+  },
+  "reset": {
+    "epoch": 0,
+    "pending_ns": 482.346,
+    "reset_observed_ns": 505.206,
+    "last_stalled_core_edge_ns": 500.634,
+    "postreset_epoch": 1,
+    "postreset_pa_words": 56,
+    "ef2_zero_mask": "0",
+    "branch0_ef2_state": [
+      -29277,
+      13350,
+      -21848,
+      -28560
+    ],
+    "evidence_sha256": {
+      "runs/dv_convergence_v3/reset/test.log": "1f0c7762c9dbde2163fd32eb9daa681dadd92455df1e63522b314d896aa639f4",
+      "runs/dv_convergence_v3/reset/test.jsonl": "aae4ba2db9ab0541ad6fbd78980385d20b6dc5646798794575b4b1e1e00c6c1f",
+      "runs/dv_convergence_v3/reset/test.vcd": "00e10ae175e99ba62ca8bfe2ad30b0a3fed1d10e2d11bfba68ad2928eb214d1a",
+      "runs/dv_convergence_v3/reset/oracle.log": "3cb135be9589dba3d4d077bd099ec78aa7a8458e62b1740eaf2ac89b1751af03",
+      "runs/dv_convergence_v3/reset/plan.json": "dfcac7900c2895f4d478de36543e105c147cdf7d83d16facfe52eb1890bc11b1",
+      "runs/dv_convergence_v3/reset/result.json": "31738abb4fa5f9e2d5ef9cbdff184aef3c8c97554d41137451f6026349806ca3"
+    },
+    "oracle_summary": "epoch=0 data=PASS CDC_words=28 EF2_words=2 PA_words=0 applied_config_frames=[] underflow_events=0\nepoch=0 reset_terminated=true reset_discarded_model_words=42\nepoch=1 data=PASS CDC_words=56 EF2_words=56 PA_words=56 applied_config_frames=[] underflow_events=0\nTRACE_ORACLE=PASS CDC_words=84 EF2_words=58 PA_words=56 underflow_events=0\nTRACE_CLASSIFICATION=PASS_NO_UNDERFLOW\n"
+  }
+}

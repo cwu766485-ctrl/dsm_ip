@@ -1,5 +1,22 @@
 # Execution frontier
 
+## Current execution state: DV v3 P0 execution complete (2026-11-11)
+
+Frozen635be68 byte-identical. Four fixed P0s PASS:old40/56 output at651.510ns
+boundary/pending/PA-stall conjunction;long64/96 STOP<TLAST<drain with7partial
+stall edges each;reset pending/nonzero EF2/stalled PA plus postreset56words.
+Independent CDC/EF2/four-plane trace oracles PASS.590inventory=>472recorded
+signatures/118duplicates/47missing traces;330gap windows preserved,no seed search.
+Final DV compile required;590replay+4P0=594PASS(590legal/4negative),sameparent.
+Five URG views clean;Raw/Official/What-if unchanged,Exactdelta0.48technicalOPEN,
+11599pending,930counterOPEN;newapproval/exception0. No new Formal hypothesis,
+no inconclusive rerun;Outstanding/q1_tail fullproduct obligationsOPEN.
+Two overlap scheduling failures retained and corrected at driver sampling edge.
+Short task Review PR stacks on56;no automatic merge. Both signoffsOPEN.
+Evidence:thermo5-dv-convergence-v3.md and data/thermo5-dv-v3/.
+
+## Previous execution state
+
 ## Current execution state: DV v2 directed cross and exact Formal (2026-11-11)
 
 Frozen635be68 unchanged. New non-identity COMMIT/boundary/PA-stall single-packet

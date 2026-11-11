@@ -87,4 +87,6 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_axil_frame_replacement_test.svh"
   `include "thermo5_sku_axil_outstanding_bounds_test.svh"
   `include "thermo5_sku_low_power_drain_test.svh"
+  `include "thermo5_sku_axil_p0_overlap_test.svh"
+  `include "thermo5_sku_axil_p0_reset_test.svh"
 endpackage

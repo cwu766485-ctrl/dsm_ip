@@ -1,0 +1,5 @@
+scenario,priority,status,expected_words,source_packet_beats,target_cross,oracle,watchdog_core_cycles,exact_urg_delta,witness
+overlap,P0,PASS,112,64,overlap,CDC_EF2_FOUR_PA_PLANES_PASS,20000,0 (same-parent594 URG;no new exact hit),actual_event_witness.json#overlap
+long64,P0,PASS,112,64,long,CDC_EF2_FOUR_PA_PLANES_PASS,12000,0 (same-parent594 URG;no new exact hit),actual_event_witness.json#long64
+long96,P0,PASS,168,96,long,CDC_EF2_FOUR_PA_PLANES_PASS,12000,0 (same-parent594 URG;no new exact hit),actual_event_witness.json#long96
+reset,P0,PASS,56,32,reset,CDC_EF2_FOUR_PA_PLANES_PASS,20000,0 (same-parent594 URG;no new exact hit),actual_event_witness.json#reset

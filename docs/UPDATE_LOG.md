@@ -1,3 +1,19 @@
+## 2026-11-11 — Thermo5 DV v3 P0 execution
+
+- Added two localized UVM overlap/reset classes, package includes, P0 vector and
+  runner scripts, actual event/epoch witness checks and inventory dedup tooling.
+- Four licensed P0s PASS; independent CDC/EF2/four-plane trace oracles PASS.
+  Real boundary/pending/old-data/PA-stall intersection is651.510ns. Long64/96
+  drain and reset pending/nonzero EF2/stall witnessed. Product RTL unchanged.
+- Replayed existing590 scenarios on final DV compile:594/594 total results PASS,
+  with590legal/4expected-negative. Five same-parent URG views clean,Exactdelta0.
+- Preserved330 existing gap windows; no seed expansion.48technical,11599pending
+  candidates,930counter directions remain officiallyOPEN. No new Formal or
+  waiver approval; code/full DV signoffsOPEN. Failed setup attempts retained.
+- Checks:65hardware utility tests and66Python reference tests PASS; shell/Python
+  syntax and whitespace checks PASS.
+- Evidence/reproduction: docs/verification/thermo5-dv-convergence-v3.md.
+
 ## 2026-11-11 20:50 Asia/Singapore — Thermo5 DV v2 execution
 
 - Added source-bound mailbox/gain Formal harnesses and exact six-bin pending
