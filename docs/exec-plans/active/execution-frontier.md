@@ -1,5 +1,20 @@
 # Execution frontier
 
+## Current execution state: DV v2 directed cross and exact Formal (2026-11-11)
+
+Frozen635be68 unchanged. New non-identity COMMIT/boundary/PA-stall single-packet
+window passes licensed UVM and independent56-word CDC/EF2/four-plane oracle.
+Existing589 results retained +one directed=590 inventory, not a full rerun.
+Fresh mailbox/gain Formal:5 nonvacuous PROVEN,5 target UNCOVERABLE,5 positive
+covers,0 blackboxes/setup violations; reused source-bound DPD proof.54 targets
+now6 pending proven/48 unresolved,not official closure.11599 pending candidates;
+930 counter OPEN. Raw/Official/What-if rebuilt sameparent590,delta0,no diagnostics.
+57utilityPASS. No seed expansion; Outstanding full refinement/q1_tail remainOPEN.
+Separate stacked short-task PR for independent review; no auto merge/deletion.
+Both signoffsOPEN. Evidence: thermo5-pr55-v2-execution.md and v2 manifest.
+
+## Previous execution state
+
 ## Current execution state: DV convergence v2 Gate0 inventory (2026-11-11)
 
 PR55 latest7b0c59c; frozen635be68 unchanged. Generated v2 exact triage for54

@@ -1,13 +1,42 @@
 {
   "remaining54": 54,
+  "reviewed87": 87,
   "states": {
-    "UNRESOLVED": 54
+    "UNRESOLVED": 48,
+    "PROVEN_UNREACHABLE": 6,
+    "CONFIG_UNREACHABLE": 33
   },
-  "scenarios": 589,
-  "scenario_pass": 589,
+  "scenarios": 590,
+  "observed_same_packet_cross": {
+    "gap_fifo_pa_same_packet": 330,
+    "run_prefill_gap_same_packet": 330,
+    "stop_tlast_drain_ordered_same_packet": 4
+  },
+  "scenario_pass": 590,
   "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
   "counter_930_separate": true,
   "approved": 0,
   "new_hit": 0,
-  "actual_urg_delta": 0
+  "actual_urg_delta": 0,
+  "pending_exclusion_candidates": 11599,
+  "existing_candidates": 11593,
+  "new_technical_candidates_pending": 6,
+  "formal_new_assertions_proven_nonvacuous": 5,
+  "formal_new_exact_covers_uncoverable": 5,
+  "new_verified_cross_windows": 1,
+  "official_remaining_open": 12577,
+  "counter930": "OPEN;no accepted product-scope decision",
+  "product_compile_parent_sha256": "421a36094a493a2345eff8f165a44197bff12bbcf32a09963a61628353bf599e",
+  "evidence_sha256": {
+    "docs/verification/data/thermo5-pr55-application/v2/formal_reuse_binding.json": "014af3ae30511997fd477bc2cce8a0e62acd1d54408f41adc41bc40822e78fdc",
+    "docs/verification/data/thermo5-pr55-application/v2/urg_checks.json": "17c55e4ab0b7db310f3a3e00e06d10b3b773716d2488d0ded4a35567611c105e",
+    "docs/verification/data/thermo5-pr55-application/v2/packet_epoch_cross_evidence.json": "8c85134858b7c966be443d97dd2d16848539a5be17df26d0687f6137c1ea2905",
+    "docs/verification/data/thermo5-pr55-application/v2/coverage_exact_triage_v2.csv": "ddf668af2c5ca0eab9f5f92953faa831452b3f2337197a7b4ba3fa5d079e4f9b",
+    "docs/verification/data/thermo5-pr55-application/v2/directed_cross_witness.json": "6def9ac82f3ab72ab47e7c923a563855c59625b9bf92639212f4c75b924e3263",
+    "docs/verification/data/thermo5-pr55-application/v2/new_formal_results.json": "f09c7b76b2c38d26e6075ce804b79dcc96fd44bc544dfa865e26b7a2f47f82ab",
+    "docs/verification/data/thermo5-pr55-application/v2/system_scenario_inventory_v2.csv": "bb2ed756ad470cb7893645442527dc131ca37ff368ad4f150d3e169946c0e14e",
+    "docs/verification/data/thermo5-pr55-application/v2/supplemental_review6.csv": "8b82c549edfdc9081e1c9e2ca38969d804e2ca0c38fc0ff911a42fefe1dce4e2",
+    "docs/verification/data/thermo5-pr55-application/v2/vdb_manifest_590.json": "07fb5daeeb42f8fbc8cdac5a2401e3c0673386b44bf53da4b7292f071d691b37",
+    "docs/verification/data/thermo5-pr55-application/v2/coverage_summaries_590.json": "d6e816e09f4de62b8df52ca7f065bae634c4381af7d3da3382f067ee1c306a26"
+  }
 }
