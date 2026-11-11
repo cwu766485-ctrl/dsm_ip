@@ -1,5 +1,26 @@
 # Execution frontier
 
+## Current execution state: RTL invariants reviewed; licensed execution blocked (2026-11-11)
+
+Base02b5c95; frozen635be68 unchanged. Exact87-row review adds33 pending technical
+candidates (requested22 plus11 constant-dependent Conditions),54 unresolved;
+all87 officially OPEN. Existing11560 candidates preserved. CDC source-reviewed
+control abstraction exhausts89states/299transitions: legal end_remaining0/8;
+arbitrary-TLAST counterexamples retained. Not an RTL equivalence/Formal PASS.
+Prepared read-only-observed/public-reset-at-ready-tail test; isolated VCS
+compile exits255, license service unreachable. No new HIT, approval, exception,
+regression or URG result. Latest measured588-test baseline unchanged. Outstanding
+29-slot capacity count needs real-word/tail conservation proof; guards stayOPEN.
+Counter optionA retention recommended; optionB future parameter ECO only.
+Preston confirmed owner/login cwu766485-ctrl, same PR author; no independent
+approval. Code Coverage/Full Linux DV OPEN. Short task PR remains Draft pending
+licensed compile/witness/URG and external review; do not merge unvalidated DV.
+Evidence: docs/verification/thermo5-rtl-grounded-closure.md.
+Next: restore authorized license service, validate prepared directed target;
+obtain independent exact-scope decisions. No random-seed expansion.
+
+## Previous execution state
+
 ## Current execution state: Two legal public-reset Condition hits (2026-11-10)
 
 Frozen product635be68 unchanged. Stalled public-reset test gives native

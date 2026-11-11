@@ -1,3 +1,19 @@
+## 2026-11-11 10:15 Asia/Singapore — RTL-grounded closure, execution blocked
+
+- Changed: optional public-reset target in stalled-reset UVM test; executable
+  CDC residual invariant utility; exact87-row review, expression groups,
+  manifest, closure note and execution frontier.
+- Reason: examine22 priority bins and remaining control tuples against frozen
+  RTL without changing product parameters or applying unapproved exclusions.
+- Checks: source hashes verified for87 rows; CDC89-state/299-transition legal
+  abstraction and arbitrary-TLAST counterexamples PASS; Python compile and
+  diff whitespace checks PASS. VCS compile attempted, exit255 due unavailable
+  license server. No new simulator/URG/Formal PASS or coverage delta claimed.
+- Limitations:33 new pending candidates,54 technically unresolved; all87 remain
+  officially OPEN. New optional DV path unvalidated; Draft only. Owner Preston
+  is author account, not an independent approval. Counter930 staysOPEN; both
+  signoffsOPEN. Existing588-test results inherited unchanged.
+
 # Update Log
 
 ## 2026-11-10 — Final exact review and DPD invalid proof
