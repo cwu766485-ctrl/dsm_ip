@@ -136,8 +136,10 @@ def inventory(report):
                             branches.append(dict(instance=instance, ownership=audit.ownership(instance),
                                 line=line, decisions='/'.join(cells[:-1]), predicates='; '.join(predicates),
                                 status=cells[-1], disposition=disposition(instance, 'branch', line)))
-    if not denominators or not lines or not branches:
-        raise RuntimeError('Incomplete denominator/line/branch inventory')
+    if not denominators:
+        raise RuntimeError('Incomplete denominator inventory')
+    # A fully covered/excluded metric has no red gap records. Reconciliation
+    # below still rejects missing detail whenever the denominator has gaps.
     # Ensure no raw line bin disappeared during extraction.
     if sum(r['missing'] for r in lines) != sum(r['missing'] for r in denominators if r['metric']=='line'):
         by_detail=Counter()
@@ -215,7 +217,8 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     totals, lines, branches = inventory(args.report)
     for name, rows in (('denominators', totals), ('line_gaps', lines), ('branch_arms', branches)):
-        audit.write_csv(args.out/(name+'.csv'), list(rows[0]), rows)
+        fields = list(rows[0]) if rows else (['instance','ownership','line','decisions','predicates','status','disposition'] if name == 'branch_arms' else ['instance','ownership','line','missing','statement','disposition'])
+        audit.write_csv(args.out/(name+'.csv'), fields, rows)
     fsms=fsm_inventory(args.report)
     if fsms: audit.write_csv(args.out/'fsm_denominators.csv',list(fsms[0]),fsms)
     assertions=audit.assertion_rows(args.report/'asserts.html')

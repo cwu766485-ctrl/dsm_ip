@@ -40,9 +40,10 @@ def metrics(p):
 
 def main():
     rows=[x for x in csv.DictReader((ROOT/'docs/verification/data/thermo5-rtl-invariants/open87_review.csv').open()) if x['technical_decision']=='EXCLUSION_CANDIDATE']
+    previous=[r for r in csv.DictReader((ROOT/'docs/verification/data/thermo5-stalled-reset/exact_dispositions_231.csv').open()) if r['final_disposition']=='EXCLUSION_CANDIDATE']
     mapping=json.loads((DATA/'native33.json').read_text());assert len({x['semantic_bin_id'] for x in mapping})==33
     checks={}
-    for view,base,selected in [('parameter','raw',[r for r in rows if r['review_batch']!='LEGAL_FRAME_RESIDUAL_EIGHT']),('legal33','legal_raw',rows),('all33_diagnostic','raw',rows),('combined_whatif','whatif',rows)]:
+    for view,base,selected in [('parameter','raw',[r for r in rows if r['review_batch']!='LEGAL_FRAME_RESIDUAL_EIGHT']),('legal33','legal_raw',rows),('all33_diagnostic','raw',rows),('combined_whatif','whatif',rows),('previous141','raw',previous),('all174','raw',rows+previous),('full_whatif','whatif',rows+previous)]:
         report=ROOT/f'runs/pr55_exact/{view}/report';baseline=ROOT/f'runs/rtl_invariants/urg/{base}'
         expected_lines={(r['instance'],int(r['exact_urg_bin'].split(':')[0])) for r in selected if r['metric']=='line'}
         delta_lines=line_excluded_bins(report)-line_excluded_bins(baseline/'report');assert delta_lines==expected_lines,(view,delta_lines^expected_lines)
@@ -78,5 +79,5 @@ def main():
         for r in items:pack.append({'semantic_bin_id':r['semantic_bin_id'],'population':population,'metric':r['metric'],'instance':r['instance'],'source_file':r['source_file'],'source_sha256':r['source_file_sha256'],'record_reference':('docs/verification/data/thermo5-final-exact-review/candidate_review_11419.csv.gz' if population=='historical11419' else 'docs/verification/data/thermo5-stalled-reset/exact_dispositions_231.csv' if population=='previous141' else 'docs/verification/data/thermo5-rtl-invariants/open87_review.csv'),'reviewer':'UNASSIGNED_INDEPENDENT','decision':'PENDING','approval_reference':'','official_waiver_ids':r.get('official_waiver_ids','')})
     with gzip.open(DATA/'approval_index_11593.csv.gz','wt',newline='') as f:w=csv.DictWriter(f,pack[0]);w.writeheader();w.writerows(pack)
     (DATA/'application_checks.json').write_text(json.dumps({'views':checks,'deduplicated_candidates':11593,'approved':0,'accepted_exceptions':0,'new_hits':0,'open87_official':87,'technical_unresolved':54},indent=2)+'\n')
-    print('PASS:33 exact analysis effects;23 static/10 legal-only;11593 unique pending IDs;no lost hits')
+    print('PASS:174 exact analysis effects;11593 unique pending IDs;no lost hits')
 if __name__=='__main__':main()
