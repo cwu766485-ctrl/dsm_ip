@@ -1,0 +1,45 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 4
+     - # proven       : 4
+
+   > Vacuity
+     - # found        : 3
+     - # non_vacuous  : 3
+
+   > Cover
+     - # found        : 5
+     - # covered      : 3
+     - # uncoverable  : 2
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 4
+     [  0] proven                                  -  thermo5_gain_fifo_v5_harness.a_fifo_capacity
+     [  1] proven                   (non_vacuous)  -  thermo5_gain_fifo_v5_harness.a_fifo_empty_meta
+     [  2] proven                   (non_vacuous)  -  thermo5_gain_fifo_v5_harness.a_gain_end_operand
+     [  3] proven                   (non_vacuous)  -  thermo5_gain_fifo_v5_harness.a_gain_start_operand
+
+   > Cover
+     # Cover: 5
+     [  4] covered     (depth=1)                   -  thermo5_gain_fifo_v5_harness.c_empty_enabled
+     [  5] uncoverable                             -  thermo5_gain_fifo_v5_harness.c_line136_missing
+     [  6] uncoverable                             -  thermo5_gain_fifo_v5_harness.c_line137_missing
+     [  7] covered     (depth=2)                   -  thermo5_gain_fifo_v5_harness.c_live_end
+     [  8] covered     (depth=2)                   -  thermo5_gain_fifo_v5_harness.c_live_start
+
+   > Constraint
+     # Constraint: 1
+     [  9] constrained                             -  constant_9 - rst_n==1
+
+
+

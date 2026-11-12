@@ -137,3 +137,43 @@ validated PASS; clean-checkpoint rerun is required. Broad source-frame contract
 proof did not finish within this ECO's bounded run and remains OPEN. Initial
 VC Formal cwd session-lock failures are environment failures; retries run in
 separate directories. No existing session lock was removed.
+
+## Exact reproduction
+
+Source ECO checkpoint:`c787891a2688a43aacdd387381542a3ab66b4d07`.
+Later commits add evidence/reproduction only. Raw source/fixture/report hashes
+are in data/thermo5-cdc-rootfix/evidence_manifest.json.
+
+```bash
+PYTHON=/tmp/nmaforge_arch_v2_py312/bin/python \
+SPYGLASS_BIN=/opt/Synopsys/spyglass/V-2023.12-SP1/SPYGLASS_HOME/bin/sg_shell \
+VCF_BIN=/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf \
+bash tools/hw/thermo5_rootfix_reproduce.sh
+make -C dv/uvm/sim thermo5-axil-product-vcs-regression \
+ PYTHON=/tmp/nmaforge_arch_v2_py312/bin/python \
+ URG=/opt/Synopsys/vcs/V-2023.12-SP1/bin/urg \
+ THERMO5_OUT=$PWD/runs/cdc_rootfix/product \
+ THERMO5_VECTORS=$PWD/runs/cdc_rootfix/vectors
+make -C dv/uvm/sim thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+ THERMO5_DPD_MAX_TAPS=1 THERMO5_OUT=$PWD/runs/cdc_rootfix/product \
+ THERMO5_VECTORS=$PWD/runs/cdc_rootfix/vectors \
+ THERMO5_TESTNAME=thermo5_sku_axil_reset_sweep_test UVM_SEED=610802 \
+ THERMO5_EXTRA_ARGS=+THERMO5_TRACE_JSONL=$PWD/runs/cdc_rootfix/reset_trace.jsonl
+/tmp/nmaforge_arch_v2_py312/bin/python \
+ dv/uvm/refmodel/python/check_thermo5_monitor_trace.py \
+ runs/cdc_rootfix/reset_trace.jsonl
+```
+
+First generate56-word vectors with generate_thermo5_frontend_vectors.py:
+seed610216,centered_cubic,order2,step5120,frame-start1,15,36,
+frame-gains16384,14336,12288 (exact generator options in existing commands.md).
+FIFO skew: compile top tb_thermo5_generic_fifo_skew_epochs with
+rtl/axis/dsm_reset_sync.sv,rtl/axis/dsm_async_fifo.sv and its checked-in TB,
+then run simv -no_save. Component reset test uses its existing TB similarly.
+XSim/Vivado model validation NOT_RUN (Linux VCS path used); XPM remains outside
+this Generic-only proof. Utility67tests complete (one skipped).
+
+Final broad source-frame bound: no-early-TLAST INCONCLUSIVE depth312; legal
+packet/source covers hit, malformed target INCONCLUSIVE depth324. No retry
+without a new hypothesis. This does not invalidate the narrower7/7 source
+register properties, but prevents a whole protocol signoff claim.
