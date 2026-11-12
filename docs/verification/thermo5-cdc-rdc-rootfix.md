@@ -182,3 +182,11 @@ All104post-ECO root groups have an explicit evidence-scope and remaining-proof
 entry in rdc_root_dispositions.csv, sum10519records, every status OPEN_NO_WAIVER.
 No blanket inference converts a class proof into approval of every path.
 Draft review PR:[#62](https://github.com/cwu766485-ctrl/dsm_ip/pull/62).
+
+Clean-start identity/stall retry completed its engine run, but the strict audit
+returned OPEN because report-only commits advanced HEAD during execution
+(`Formal run revision does not match the current source commit`). It is not
+counted as a validated PASS and is not retried a third time. Actual DPD RTL
+was unchanged; source-bound narrower epoch/alignment proofs remain as listed.
+The audit failure is preserved in the evidence manifest. XSim and PowerShell
+are absent from PATH, so the required Windows XSim check is NOT_RUN.

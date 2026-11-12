@@ -380,6 +380,27 @@
           "thermo5_source_frame_contract_harness.c_source_accept"
         ]
       ]
+    },
+    "identity_clean_retry": {
+      "status": "OPEN",
+      "reason": "strict source revision mismatch after report-only commits; not counted PASS",
+      "run_result": {
+        "command": [
+          "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+          "-batch",
+          "-fmode",
+          "FPV",
+          "-f",
+          "/tmp/thermo5-cdc-rdc-rootfix/dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.tcl"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "timeout_seconds": 240,
+        "duration_seconds": 155.3,
+        "vcf_resolved_path": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+        "source_git_revision": "4223974d7fcd0bbade7a8538c84bfb41121760b3",
+        "source_worktree_clean_at_start": true
+      }
     }
   },
   "status": "ECO_CANDIDATE_GLOBAL_CDC_RDC_OPEN",
