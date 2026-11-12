@@ -1,3 +1,13 @@
+# Full CDC debug follow-up — 2026-11-12
+
+Full cdc_verify executed:5E35W108I→4E34W109I after explicit clock edges.
+FIFO write-side Gray now PASSED;three short status hold failures and mixed
+FIFO/RUN/prefill convergence remain OPEN,with reset-inactive native traces.
+Clean immutable ec9127e identity/stall FPV audited PASS:41lemmas/4final goals;
+not CDC/repeated-reset proof.Depth16 epoch strengthening inconclusive;no
+waiver or RTL shortcut.70utility tests complete,one skipped.No merge.
+See docs/verification/thermo5-cdc-debug-followup.md for exact evidence.
+
 # CDC/RDC source ECO candidate — 2026-11-12
 
 PR61 c3a84fe baseline audited:10525Ar_resetcross01 records,10506errors;

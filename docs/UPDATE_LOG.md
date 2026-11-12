@@ -1,3 +1,12 @@
+# 2026-11-12 — Full CDC/RDC error debug
+
+Added SGDC clock edges,full cdc_verify replay,source-status counterexample
+extractor and tests,depth16 epoch strengthening goals,and independently
+audited immutable-checkpoint identity/stall proof.Full CDC5E→4E;not signoff.
+Remaining short-pulse/mixed-convergence and RDC obligations stay OPEN.
+No product RTL change,no waiver/URG exclusion,no merge.Commands/results:
+[debug follow-up](verification/thermo5-cdc-debug-followup.md).
+
 ## 2026-11-11 — Thermo5 DV v3 P0 execution
 
 - Added two localized UVM overlap/reset classes, package includes, P0 vector and

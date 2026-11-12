@@ -8,8 +8,9 @@ create_clock rc -period 4.572
 create_reset boot_n -sense low
 sim_run -stable
 sim_save_reset
-set_fml_var fml_max_time 2m
-set_fml_var fml_property_time_limit 60s
+set_fml_var fml_coi_reduction true
+set_fml_var fml_max_time 3m
+set_fml_var fml_property_time_limit 90s
 check_fv_setup -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -block
 report_fv_setup -list > $out/setup.txt
 check_fv -block

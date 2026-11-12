@@ -9,7 +9,7 @@ cd "$root"
 out="$root/runs/cdc_rootfix_replay"
 mkdir -p "$out"
 "$PYTHON" tools/hw/thermo5_rdc_rootcause_audit.py docs/verification/data/thermo5-cdc-phase2/static_messages.csv.gz --out-dir "$out/baseline"
-for pair in setup:cdc/cdc_setup_check cdc:cdc/cdc_verify_struct rdc:rdc/rdc_verify_struct; do
+for pair in setup:cdc/cdc_setup_check cdc:cdc/cdc_verify_struct verify:cdc/cdc_verify rdc:rdc/rdc_verify_struct; do
  name=${pair%%:*};goal=${pair#*:};mkdir -p "$out/$name"
  THERMO5_STATIC_ROOT="$root" THERMO5_STATIC_OUT="$out/$name" THERMO5_STATIC_GOAL="$goal" "$SPYGLASS_BIN" -tcl dv/uvm/static/run_thermo5_axil_cdc.tcl > "$out/$name/console.log" 2>&1
 done

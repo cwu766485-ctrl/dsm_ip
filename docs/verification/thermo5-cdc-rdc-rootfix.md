@@ -43,7 +43,9 @@ Actual SpyGlass V-2023.12-SP1, no waived messages/no rule disabled:
 |RDC structural|10506/15/76|10506/15/70|
 
 Unsynchronized crossings0. Reconvergence5→7; this is **OPEN**, not signoff.
-Existing FIFO Gray encoding check remains DISABLED by original tool setup.
+The original structural goal did not execute the FIFO Gray formal check.
+The later full-goal debug run and open failures are recorded in
+[the follow-up](thermo5-cdc-debug-followup.md).
 Remaining control/data reconvergence and bundled-data stability need explicit
 protocol/metastability assumptions and physical constraints. This ECO closes
 the five combinational fan-in diagnostics, not all CDC obligations.
@@ -190,3 +192,10 @@ counted as a validated PASS and is not retried a third time. Actual DPD RTL
 was unchanged; source-bound narrower epoch/alignment proofs remain as listed.
 The audit failure is preserved in the evidence manifest. XSim and PowerShell
 are absent from PATH, so the required Windows XSim check is NOT_RUN.
+
+## Subsequent full-goal debugging
+
+See [CDC debug follow-up](thermo5-cdc-debug-followup.md). Clock edges and
+identity audit provenance are corrected; full CDC still has four errors.
+The later clean immutable-checkpoint identity run supersedes prior provenance
+failures only in its narrowly audited identity/stall scope. RDC remains OPEN.

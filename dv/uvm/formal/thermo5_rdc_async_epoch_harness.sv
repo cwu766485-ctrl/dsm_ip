@@ -16,6 +16,17 @@ module thermo5_rdc_async_epoch_harness(
  always @(posedge wc or negedge common_n)
   if(!common_n) initialized<=0;
   else if(wn&&wvalid&&ready)initialized[dut.wr_bin_q[3:0]]<=1;
+ // Inductive strengthening: accepted writes initialize a contiguous cyclic
+ // prefix; synchronized pointer observations cannot outrun that frontier.
+ function automatic [4:0] gray2bin(input [4:0] g);
+  integer j; begin gray2bin[4]=g[4];
+  for(j=3;j>=0;j=j-1)gray2bin[j]=gray2bin[j+1]^g[j];end
+ endfunction
+ wire [4:0] observed_wr=gray2bin(dut.wr_gray_rd_sync2_q);
+ a_true_capacity: assert property(@(posedge wc) disable iff(!common_n)
+   wn && rn |-> (5'(dut.wr_bin_q-dut.rd_bin_q) <= 16));
+ a_read_frontier: assert property(@(posedge rc) disable iff(!common_n)
+   rn |-> (5'(observed_wr-dut.rd_bin_q) <= 16));
  a_epoch_initialized: assert property(@(posedge rc) disable iff(!common_n) rn&&valid |-> initialized[dut.rd_bin_q[3:0]]);
  a_no_pop_reset: assert property(@(posedge rc) !rn |-> !dut.rd_pop);
  a_no_push_reset: assert property(@(posedge wc) !wn |-> !dut.wr_push);

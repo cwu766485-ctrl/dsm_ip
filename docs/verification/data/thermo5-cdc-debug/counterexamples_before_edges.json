@@ -1,0 +1,546 @@
+[
+  {
+    "file": "Ac_cdc01a.1.1.vcd",
+    "sha256": "b1df82188ca0a8144dd6ef6ae16d40a8c75059bd40902d852cedf311a1556a45",
+    "timescale": "1ps",
+    "all_resets_observed_held_released": true,
+    "transitions": [
+      {
+        "time": 0,
+        "signal": "wr_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "rd_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "s_axil_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "s_axis_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "draining_status_c",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "prefill_ready_s",
+        "value": "0"
+      },
+      {
+        "time": 11250,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 15750,
+        "signal": "core_tx_active_q",
+        "value": "1"
+      },
+      {
+        "time": 15750,
+        "signal": "tx_active_status_c",
+        "value": "1"
+      },
+      {
+        "time": 20000,
+        "signal": "run_s2",
+        "value": "1"
+      },
+      {
+        "time": 42750,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 44000,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 47250,
+        "signal": "draining_status_c",
+        "value": "1"
+      },
+      {
+        "time": 60750,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 65250,
+        "signal": "draining_status_c",
+        "value": "0"
+      },
+      {
+        "time": 68000,
+        "signal": "run_s2",
+        "value": "1"
+      },
+      {
+        "time": 83250,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 84000,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 87750,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 87750,
+        "signal": "draining_status_c",
+        "value": "1"
+      },
+      {
+        "time": 92250,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 92250,
+        "signal": "draining_status_c",
+        "value": "0"
+      }
+    ],
+    "bounded_status_pulses": [
+      {
+        "signal": "tx_active_status_c",
+        "level": "1",
+        "start": 15750,
+        "end": 92250,
+        "duration": 76500
+      },
+      {
+        "signal": "draining_status_c",
+        "level": "1",
+        "start": 47250,
+        "end": 65250,
+        "duration": 18000
+      },
+      {
+        "signal": "draining_status_c",
+        "level": "0",
+        "start": 65250,
+        "end": 87750,
+        "duration": 22500
+      },
+      {
+        "signal": "draining_status_c",
+        "level": "1",
+        "start": 87750,
+        "end": 92250,
+        "duration": 4500
+      }
+    ],
+    "disposition": "OPEN_REQUIRES_PROTOCOL_REVIEW"
+  },
+  {
+    "file": "Ac_cdc01a.1.2.vcd",
+    "sha256": "072259f107a03134dbe8b36998262caa30191edd144f8e230a8db348a6c391a4",
+    "timescale": "1ps",
+    "all_resets_observed_held_released": true,
+    "transitions": [
+      {
+        "time": 0,
+        "signal": "wr_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "rd_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "s_axil_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "s_axis_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "prefill_ready_s",
+        "value": "0"
+      },
+      {
+        "time": 11250,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 15750,
+        "signal": "core_tx_active_q",
+        "value": "1"
+      },
+      {
+        "time": 15750,
+        "signal": "tx_active_status_c",
+        "value": "1"
+      },
+      {
+        "time": 20000,
+        "signal": "run_s2",
+        "value": "1"
+      },
+      {
+        "time": 33750,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 36000,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 60750,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 65250,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 69750,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 74250,
+        "signal": "core_tx_active_q",
+        "value": "1"
+      },
+      {
+        "time": 74250,
+        "signal": "tx_active_status_c",
+        "value": "1"
+      }
+    ],
+    "bounded_status_pulses": [
+      {
+        "signal": "tx_active_status_c",
+        "level": "1",
+        "start": 15750,
+        "end": 65250,
+        "duration": 49500
+      },
+      {
+        "signal": "tx_active_status_c",
+        "level": "0",
+        "start": 65250,
+        "end": 74250,
+        "duration": 9000
+      }
+    ],
+    "disposition": "OPEN_REQUIRES_PROTOCOL_REVIEW"
+  },
+  {
+    "file": "Ac_cdc01a.2.1.vcd",
+    "sha256": "0b1c655e9b11251f6fece6209200ce3344e28ef0c5fb44f8d0e259e1c501812d",
+    "timescale": "1ps",
+    "all_resets_observed_held_released": true,
+    "transitions": [
+      {
+        "time": 0,
+        "signal": "wr_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "rd_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "s_axil_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "s_axis_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "prefill_ready_s",
+        "value": "0"
+      },
+      {
+        "time": 33750,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 36000,
+        "signal": "run_s2",
+        "value": "1"
+      },
+      {
+        "time": 38250,
+        "signal": "core_tx_active_q",
+        "value": "1"
+      },
+      {
+        "time": 38250,
+        "signal": "tx_active_status_c",
+        "value": "1"
+      },
+      {
+        "time": 83250,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 84000,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 105750,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 110250,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 110250,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 114750,
+        "signal": "core_tx_active_q",
+        "value": "1"
+      },
+      {
+        "time": 114750,
+        "signal": "tx_active_status_c",
+        "value": "1"
+      }
+    ],
+    "bounded_status_pulses": [
+      {
+        "signal": "tx_active_status_c",
+        "level": "1",
+        "start": 38250,
+        "end": 110250,
+        "duration": 72000
+      },
+      {
+        "signal": "tx_active_status_c",
+        "level": "0",
+        "start": 110250,
+        "end": 114750,
+        "duration": 4500
+      }
+    ],
+    "disposition": "OPEN_REQUIRES_PROTOCOL_REVIEW"
+  },
+  {
+    "file": "Ac_conv02.1.1.vcd",
+    "sha256": "b77fc03a1170a7582607da2757cb570ff13fa96ac0437a16178f8e2b35cacf38",
+    "timescale": "1ps",
+    "all_resets_observed_held_released": true,
+    "transitions": [
+      {
+        "time": 0,
+        "signal": "wr_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "rd_gray_q",
+        "value": "00000"
+      },
+      {
+        "time": 0,
+        "signal": "s_axil_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "s_axis_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_aresetn",
+        "value": "1"
+      },
+      {
+        "time": 0,
+        "signal": "core_enable",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "core_tx_active_q",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "run_s2",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "tx_active_status_c",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "prefill_ready_s",
+        "value": "0"
+      },
+      {
+        "time": 11250,
+        "signal": "core_enable",
+        "value": "1"
+      },
+      {
+        "time": 15750,
+        "signal": "core_tx_active_q",
+        "value": "1"
+      },
+      {
+        "time": 15750,
+        "signal": "tx_active_status_c",
+        "value": "1"
+      },
+      {
+        "time": 20000,
+        "signal": "wr_gray_q",
+        "value": "00001"
+      },
+      {
+        "time": 20000,
+        "signal": "run_s2",
+        "value": "1"
+      }
+    ],
+    "bounded_status_pulses": [],
+    "disposition": "OPEN_REQUIRES_PROTOCOL_REVIEW"
+  },
+  {
+    "file": "adv_cdc_init_seq.vcd",
+    "sha256": "9013de9ca4a062c8e5562bdab76d1ee98a60c57d5fc71b8bfdb7f260de345774",
+    "timescale": "1ps",
+    "all_resets_observed_held_released": false,
+    "transitions": [
+      {
+        "time": 0,
+        "signal": "core_aresetn",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "s_axis_aresetn",
+        "value": "0"
+      },
+      {
+        "time": 0,
+        "signal": "s_axil_aresetn",
+        "value": "0"
+      }
+    ],
+    "bounded_status_pulses": [],
+    "disposition": "OPEN_REQUIRES_PROTOCOL_REVIEW"
+  }
+]
