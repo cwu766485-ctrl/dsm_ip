@@ -1,3 +1,7 @@
+# Current execution state: v5 Gain composition proven (2026-11-12)
+
+Frozen RTL unchanged. New actual FIFO->Gain compositional Formal:4 proven,3 nonvacuous,2 target uncoverable,3 positive covers,0 blackboxes/setup violations. Gain2 now PROVEN_UNREACHABLE pending independent approval;46 technical unresolved;new HIT/approval/exception0. Existing11599 candidates preserved;2 new proof targets separate pending.930 counter scope OPEN. P1 crosses not implemented;Outstanding/q1_tail/event semantics OPEN. PR55->56->57 not merged,independent reviews absent. No VDB change/no generic rerun.65 utility PASS. Evidence:docs/verification/thermo5-signoff-v5.md.
+
 # Current execution state: DV v4 exact triage (2026-11-12)
 
 Frozen635be68 unchanged. Re-indexed remaining48 against v3 same-parent594 evidence: 22 Interpolator,7 CDC,2 Gain,2 Frontend,15 TX Top remain OPEN. Existing four P0 functional scenarios retain independent oracle/watchdog PASS but Exact URG delta0. No new Formal run because no new hypothesis; Outstanding/q1_tail and CDC/Gain/TX obligations remain OPEN. Added v4 disposition/matrix/formal/cross/remaining-open/signoff artifacts under docs/verification/data/thermo5-dv-v4. 11599 exclusion candidates pending, approvals0, exceptions0,930 counters OPEN. PR57 remains open; no merge. Both signoffs OPEN.

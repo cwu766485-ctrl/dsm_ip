@@ -1,0 +1,24 @@
+{
+  "candidate_ids": 11599,
+  "approved": 0,
+  "scope_exception_930": "OPEN;legally reachable cumulative counters, separate product-owner decision",
+  "root_cause_counts": {
+    "A_DPD_PAIR1": 8192,
+    "B_EF2_FIXED_PARAMETERS": 436,
+    "C_DPD_TAP_HISTORY": 176,
+    "D_CDC_RESIDUAL": 137,
+    "E_OTHER_PARAMETERS": 29,
+    "F_EF2_PAIR_LOOKAHEAD_ZERO": 2328,
+    "G_DPD_ACTIVE_TAPS_MAX1": 120,
+    "H_AXIL_DEFAULT": 1,
+    "DATA_VALUE_OR_TOGGLE_STIMULUS": 120,
+    "RESET_RELEASE_OR_STATE_HOLD": 17,
+    "LEGAL_STIMULUS_OR_CHECKER_REVIEW": 4,
+    "LEGAL_FRAME_RESIDUAL_EIGHT": 10,
+    "FRONTEND_CONSTANT_METADATA": 6,
+    "INTERP2_APPEND_DISABLED": 11,
+    "INTERP1_ZERO_INPUT_TAIL": 6,
+    "UNRESOLVED": 6
+  },
+  "source_index_sha256": "67437e3de47acbf272d31cbf4bfd8d71f48a3e5fff5e5a2f7bfbba45137209af"
+}
