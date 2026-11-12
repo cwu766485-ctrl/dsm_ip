@@ -1,3 +1,19 @@
+## 2026-11-11 — Thermo5 DV v3 P0 execution
+
+- Added two localized UVM overlap/reset classes, package includes, P0 vector and
+  runner scripts, actual event/epoch witness checks and inventory dedup tooling.
+- Four licensed P0s PASS; independent CDC/EF2/four-plane trace oracles PASS.
+  Real boundary/pending/old-data/PA-stall intersection is651.510ns. Long64/96
+  drain and reset pending/nonzero EF2/stall witnessed. Product RTL unchanged.
+- Replayed existing590 scenarios on final DV compile:594/594 total results PASS,
+  with590legal/4expected-negative. Five same-parent URG views clean,Exactdelta0.
+- Preserved330 existing gap windows; no seed expansion.48technical,11599pending
+  candidates,930counter directions remain officiallyOPEN. No new Formal or
+  waiver approval; code/full DV signoffsOPEN. Failed setup attempts retained.
+- Checks:65hardware utility tests and66Python reference tests PASS; shell/Python
+  syntax and whitespace checks PASS.
+- Evidence/reproduction: docs/verification/thermo5-dv-convergence-v3.md.
+
 ## 2026-11-11 20:50 Asia/Singapore — Thermo5 DV v2 execution
 
 - Added source-bound mailbox/gain Formal harnesses and exact six-bin pending
@@ -6994,3 +7010,10 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Both interpolators native Condition19 vector1110 gain real URG hits during548640ps public async-reset propagation; explicitly not stable clock-edge tuples.
 - Unified588/588 scenarios PASS after preserving/recovering154 interrupted execution attempts and195 stale-parent jobs.48 hardware utility tests PASS; five same-input URG views clean. Condition667/849,What-if1158 gaps; actual delta2.
 - Candidate approval0/counter exception0;87 technical rows and930 counter directions remain OPEN, two q1_tail assertion attempts/full Formal obligations OPEN. Dense-frame zero-delta tests stopped. No independent Reviewer identity/decision supplied.
+
+## 2026-11-12 00:00 SGT — Thermo5 DV convergence v4 triage
+
+- Added v4 exact disposition, directed matrix, Formal result, system cross, remaining-open ledger, and signoff report under `docs/verification/data/thermo5-dv-v4/`.
+- Re-indexed 48 remaining Exact targets against frozen product SHA `635be681046b3ab7d6fdda7f4e9818d7226efd66`; preserved 22 Interpolator, 7 CDC, 2 Gain, 2 Frontend, and 15 TX Top rows as OPEN.
+- Recorded the four existing P0 functional PASS scenarios as zero-Delta Exact URG evidence. No new HIT, official Exclusion, Coverage Exception, Formal PASS, or seed expansion was inferred.
+- Checks: v4 ledger integrity and existing v3 evidence manifests reviewed. Code Coverage and Full Linux DV signoff remain OPEN.

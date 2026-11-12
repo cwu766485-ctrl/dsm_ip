@@ -1,0 +1,9 @@
+{
+  "inputs": 590,
+  "unique_observed_stimulus_signatures": 472,
+  "duplicate_rows": 118,
+  "missing_trace_rows": 47,
+  "old_gap_fifo_pa_records": 330,
+  "repeated_gap_window_tests": 0,
+  "policy": "Equivalence of recorded accepted stimulus/control/responses and observed stalls with timestamps, not proof that all unobserved pin activity is identical. Missing trace stays distinct; preserve all VDBs."
+}
