@@ -1,0 +1,58 @@
+{
+  "schema": "thermo5-dv-system-cross-v4",
+  "inventory": {
+    "input": 590,
+    "distinct_signatures": 472,
+    "duplicates": 118,
+    "missing_trace": 47,
+    "preserved_same_window_records": 330
+  },
+  "existing_p0": 4,
+  "new_cross_closure": 0,
+  "crosses": [
+    {
+      "name": "old_config_pending_commit_frame_boundary_pa_stall",
+      "status": "PASS_FUNCTIONAL",
+      "exact_urg_delta": 0,
+      "evidence": "actual_event_witness.json"
+    },
+    {
+      "name": "long_packet_stop_pa_stall_drain_64_96",
+      "status": "PASS_FUNCTIONAL",
+      "exact_urg_delta": 0,
+      "evidence": "actual_event_witness.json"
+    },
+    {
+      "name": "reset_pending_commit_nonzero_ef2_pa_stall",
+      "status": "PASS_FUNCTIONAL",
+      "exact_urg_delta": 0,
+      "evidence": "actual_event_witness.json"
+    },
+    {
+      "name": "back_to_back_commit_bready_busy",
+      "status": "OPEN",
+      "reason": "No distinct qualified evidence in inventory"
+    },
+    {
+      "name": "stop_pending_commit_restart",
+      "status": "OPEN",
+      "reason": "No distinct qualified evidence in inventory"
+    },
+    {
+      "name": "status_w1c_error_set_read",
+      "status": "OPEN",
+      "reason": "No distinct qualified evidence in inventory"
+    },
+    {
+      "name": "gain_dpd_ef2_saturation",
+      "status": "OPEN",
+      "reason": "No distinct qualified evidence in inventory"
+    },
+    {
+      "name": "fifo_refill_frame_start_backpressure",
+      "status": "OPEN",
+      "reason": "No distinct qualified evidence in inventory"
+    }
+  ],
+  "policy": "Events from different packets/epochs are never combined; PASS_FUNCTIONAL does not imply Exact URG HIT"
+}

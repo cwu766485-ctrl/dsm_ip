@@ -1,3 +1,8 @@
+# Current execution state: DV v4 exact triage (2026-11-12)
+
+Frozen635be68 unchanged. Re-indexed remaining48 against v3 same-parent594 evidence: 22 Interpolator,7 CDC,2 Gain,2 Frontend,15 TX Top remain OPEN. Existing four P0 functional scenarios retain independent oracle/watchdog PASS but Exact URG delta0. No new Formal run because no new hypothesis; Outstanding/q1_tail and CDC/Gain/TX obligations remain OPEN. Added v4 disposition/matrix/formal/cross/remaining-open/signoff artifacts under docs/verification/data/thermo5-dv-v4. 11599 exclusion candidates pending, approvals0, exceptions0,930 counters OPEN. PR57 remains open; no merge. Both signoffs OPEN.
+Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
+
 # Execution frontier
 
 ## Current execution state: DV v3 P0 execution complete (2026-11-11)

@@ -7010,3 +7010,10 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Both interpolators native Condition19 vector1110 gain real URG hits during548640ps public async-reset propagation; explicitly not stable clock-edge tuples.
 - Unified588/588 scenarios PASS after preserving/recovering154 interrupted execution attempts and195 stale-parent jobs.48 hardware utility tests PASS; five same-input URG views clean. Condition667/849,What-if1158 gaps; actual delta2.
 - Candidate approval0/counter exception0;87 technical rows and930 counter directions remain OPEN, two q1_tail assertion attempts/full Formal obligations OPEN. Dense-frame zero-delta tests stopped. No independent Reviewer identity/decision supplied.
+
+## 2026-11-12 00:00 SGT — Thermo5 DV convergence v4 triage
+
+- Added v4 exact disposition, directed matrix, Formal result, system cross, remaining-open ledger, and signoff report under `docs/verification/data/thermo5-dv-v4/`.
+- Re-indexed 48 remaining Exact targets against frozen product SHA `635be681046b3ab7d6fdda7f4e9818d7226efd66`; preserved 22 Interpolator, 7 CDC, 2 Gain, 2 Frontend, and 15 TX Top rows as OPEN.
+- Recorded the four existing P0 functional PASS scenarios as zero-Delta Exact URG evidence. No new HIT, official Exclusion, Coverage Exception, Formal PASS, or seed expansion was inferred.
+- Checks: v4 ledger integrity and existing v3 evidence manifests reviewed. Code Coverage and Full Linux DV signoff remain OPEN.

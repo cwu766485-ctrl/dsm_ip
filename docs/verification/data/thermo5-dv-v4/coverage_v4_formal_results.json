@@ -1,0 +1,33 @@
+{
+  "schema": "thermo5-dv-coverage-v4",
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "new_runs": 0,
+  "results": [
+    {
+      "obligation": "Outstanding weighted token conservation and guard",
+      "status": "INCONCLUSIVE",
+      "evidence": "Prior capacity-28 conditional model; full RTL/reset/STOP refinement unavailable"
+    },
+    {
+      "obligation": "Interpolator q1_tail antecedent reachability",
+      "status": "OPEN",
+      "evidence": "Existing assertions had no legal attempts; no new assumptions introduced"
+    },
+    {
+      "obligation": "CDC FWFT/residual/drain exact tuples",
+      "status": "OPEN",
+      "evidence": "No non-vacuous proof for all seven targets"
+    },
+    {
+      "obligation": "Gain invalid metadata",
+      "status": "OPEN",
+      "evidence": "No proof that invalid tuple is unreachable"
+    },
+    {
+      "obligation": "TX STOP/drain/restart conservation",
+      "status": "OPEN",
+      "evidence": "P0 witness passed functionally; exact guard proof absent"
+    }
+  ],
+  "policy": "INCONCLUSIVE, unattempted, or assumption-dependent results are not PASS"
+}
