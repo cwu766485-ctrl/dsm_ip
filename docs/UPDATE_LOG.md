@@ -1,3 +1,19 @@
+## 2026-11-12 18:54 UTC — Native CDC/RDC error debugging
+
+- Added two self-checking VCS diagnostic tests and reproducible runner under
+  `dv/verif/cdc/`; actual frozen-product prefill delay sensitivity and block
+  mailbox independent-reset contract counterexample reproduced. Common reset
+  recovery PASS. These are diagnostic evidence, not new product URG hits.
+- Added source-bound FIFO reset ownership Formal harness/Tcl: 4 PROVEN,
+  1 payload INCONCLUSIVE, 3 positive covers; arbitrary-bit reference revision
+  advances depth10 to29 without claiming proof. Physical reset timing OPEN.
+- Preserved all10511 native errors in exact root-cause obligation ledger;
+  no waivers, severity edits, SGDC changes or frozen RTL changes.
+- Checks: focused VCS runner2/2PASS; Python3.12 utility65/65PASS; shell syntax
+  and git whitespace PASS. Initial Python3.6 import errors corrected by using
+  documented interpreter. Coverage unchanged; both signoffs OPEN.
+- Evidence and next ECO/contract obligations: `docs/verification/thermo5-cdc-error-debug.md`.
+
 ## 2026-11-11 — Thermo5 DV v3 P0 execution
 
 - Added two localized UVM overlap/reset classes, package includes, P0 vector and
@@ -92,6 +108,20 @@
   signoffsOPEN. Existing588-test results inherited unchanged.
 
 # Update Log
+
+# 2026-11-12 Asia/Singapore — Round 21 coverage and SpyGlass reports
+
+- Added a consolidated Round 21 code-coverage report with the latest 12,580
+  Raw uncovered bins, per-file totals, and links to all exact open ledgers.
+- Added a SpyGlass setup/CDC/RDC error and warning report, including all
+  10,511 errors and 59 warning records through the complete native CSV ledger.
+- Checks: recomputed coverage partitions from the candidate/non-counter/counter
+  ledgers; parsed all 10,812 SpyGlass message rows and reconciled severity and
+  per-goal counts with `results.json`. No RTL, VDB, SGDC, or waiver changed.
+- Limitations: code coverage and static CDC/RDC signoff remain OPEN; What-if
+  candidates remain unapproved and all SpyGlass structural errors remain open.
+- Reports: `docs/verification/thermo5-code-coverage-uncovered-round21-20261112.md`;
+  `docs/verification/thermo5-spyglass-errors-warnings-round21-20261112.md`.
 
 ## 2026-11-10 — Final exact review and DPD invalid proof
 
@@ -7029,3 +7059,9 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added reset synchronizer component test and two fixed product clock-phase reset runner;component25checks and both UVM/independent oracle PASS. FrozenRTL unchanged.
 - Merged594+2 same-parent results into5URGviews,actualDelta0,no metric hit loss/denominator drift/diagnostics.65utilityPASS.
 - XPM unavailable;static probe incomplete(no top);TBreset contract,remaining reset/priority/fault tests and approvals OPEN. No official.el,merge or signoff. See final-cdc-reset report.
+
+## 2026-11-12 SGT — Actual AXIL static CDC/RDC and scoped block witnesses
+
+- Added actual product top SpyGlass config and three-domain SGDC. Setup0E15W,CDC5E29W,RDC10506E15W,no waivers;full native messages/hash retained.
+- New actual config-block DONE/W1C same-edgecrossPASS,DECERR/SLVERR checksPASS;GenericFIFO full/pendingreset/64wordepochrecoveryPASS.65utilityPASS. ProductRTL unchanged,no productURGclaim or replay.
+- XPM model searchblocked,remaining systemtests/violations/approvalsOPEN. See phase2_report.md;bothsignoffsOPEN.

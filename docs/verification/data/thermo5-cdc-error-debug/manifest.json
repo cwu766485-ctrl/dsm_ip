@@ -1,0 +1,82 @@
+{
+  "source_hashes": {
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "d2621fc061bf225bfa04f357a76410b3c9e589016ff70c7d1019dae8970b77a7",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "6585ebf3b19f5313e79b4b1a3483b0c4ca923d4c78c67a67876d1ffae4e61f9d",
+    "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "780130a318b4c4e272c4b95d32749ca669ed51585784fa4cb789bf0c1a584ba7",
+    "dv/uvm/formal/thermo5_fifo_reset_ownership_harness.sv": "9c9c97f7c7ac0cd0b8f00aeddf7915f61e344f5a22138c247419b30587f9deb6",
+    "dv/uvm/formal/run_thermo5_fifo_reset_ownership.tcl": "4949c372418eaf4f078fbb6951d1c70041bb84695a5c9ca26f27c0c2f3788bce",
+    "dv/verif/cdc/tb_thermo5_prefill_cdc_hazard.sv": "dfb18286453d69fcb6bb081e505fb428129961dbdc64aab1246716bad51c7a88",
+    "dv/verif/cdc/tb_thermo5_mailbox_reset_contract.sv": "7d4dc871f621a3a6a50626ea4fe61987b65e287bf18c77ab39b0ecc0f4265ad5"
+  },
+  "input_sha256": "31932974e515c198fbb56083df5b6abca8fb564c416e72d7bc59517c1ade1dd1",
+  "groups": {
+    "COMBINATIONAL_CDC_SOURCE": 5,
+    "ASYNC_FIFO_UNRESET_PAYLOAD": 96,
+    "DPD_UNRESET_PIPELINE": 2680,
+    "GAIN_UNRESET_PIPELINE": 149,
+    "MAILBOX_RESET_EPOCH": 5,
+    "ELASTIC_FIFO_UNRESET_PAYLOAD": 7576
+  },
+  "native_errors": 10511,
+  "approved": 0,
+  "waived": 0,
+  "product_rtl_modified": false,
+  "evidence": {
+    "hazard/compile.log": {
+      "sha256": "4eb407869585c96bf566175e6c85c598fa01818cb869b9b459f2f5158da5832b",
+      "bytes": 5422
+    },
+    "hazard/test.log": {
+      "sha256": "18e9d980afa51daa121cc464ab2deebf980388277eaafc853588113b899c6871",
+      "bytes": 991
+    },
+    "hazard/prefill_hazard.vcd": {
+      "sha256": "03b5cb24cd390ca43472ad8c958297bcc8fa8ab64f03e3499e8fdb191aace409",
+      "bytes": 115855
+    },
+    "mailbox/compile.log": {
+      "sha256": "eaac7fc1609b67d26114fefe62c1531d342245c2594f6ccfb4e245ef67ba78a6",
+      "bytes": 2558
+    },
+    "mailbox/test.log": {
+      "sha256": "9d3663d2cd10020d15038aa56d840e38daa8f7c575a140359a207cb6d08f5f51",
+      "bytes": 991
+    },
+    "mailbox/mailbox_reset.vcd": {
+      "sha256": "f4410be4016f2fcfaf55ecc5ee69f89df2fb31e36fa952b9939afcde48c9382f",
+      "bytes": 12702
+    },
+    "ownership/console.log": {
+      "sha256": "6109495e66effa5b803112c7e17a6ef56423e04dde9a7e0f6c9390d9bb9db028",
+      "bytes": 7652
+    },
+    "ownership/properties.txt": {
+      "sha256": "01c03f643fd6cf23db209fc79bcc89b70558edfab1d61e9d4529c913f748d13b",
+      "bytes": 1384
+    },
+    "ownership/setup.txt": {
+      "sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "bytes": 384
+    },
+    "ownership/engines.txt": {
+      "sha256": "d3334f743005dcca5480a5c537113c757f08076d89bb891cddd0578918f8fe68",
+      "bytes": 2448
+    },
+    "ownership_bit/console.log": {
+      "sha256": "ce47b3d43a34fb88e6b31c10efbc31b94f6a78e1f21c60c94c8836e6e7fd3af1",
+      "bytes": 7518
+    },
+    "ownership_bit/properties.txt": {
+      "sha256": "0ca06b34073df694c5f0bc710b90668afd5b1c55b0365ccfa771a44a779f1968",
+      "bytes": 1491
+    },
+    "ownership_bit/setup.txt": {
+      "sha256": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "bytes": 384
+    },
+    "ownership_bit/engines.txt": {
+      "sha256": "1f501c99e851cd6203466dd026d9208be35ab1c58d438fdd8747585dfeec3496",
+      "bytes": 2448
+    }
+  }
+}

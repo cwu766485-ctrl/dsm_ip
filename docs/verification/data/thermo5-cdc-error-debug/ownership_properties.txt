@@ -1,0 +1,41 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 5
+     - # proven       : 4
+     - # inconclusive : 1
+
+   > Vacuity
+     - # found        : 4
+     - # non_vacuous  : 4
+
+   > Cover
+     - # found        : 3
+     - # covered      : 3
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 5
+     [  0] proven                                  -  thermo5_fifo_reset_ownership_harness.a_capacity
+     [  1] proven                   (non_vacuous)  -  thermo5_fifo_reset_ownership_harness.a_empty_metadata
+     [  2] inconclusive(depth=10)   (non_vacuous)  -  thermo5_fifo_reset_ownership_harness.a_payload
+     [  3] proven                   (non_vacuous)  -  thermo5_fifo_reset_ownership_harness.a_visible_owned
+     [  4] proven                   (non_vacuous)  -  thermo5_fifo_reset_ownership_harness.a_write_free
+
+   > Cover
+     # Cover: 3
+     [  5] covered     (depth=3)                   -  thermo5_fifo_reset_ownership_harness.c_full
+     [  6] covered     (depth=2)                   -  thermo5_fifo_reset_ownership_harness.c_replace
+     [  7] covered     (depth=2)                   -  thermo5_fifo_reset_ownership_harness.c_stall
+
+   > Constraint
+     # Constraint: 1
+     [  8] constrained                             -  constant_8 - rst_n==1

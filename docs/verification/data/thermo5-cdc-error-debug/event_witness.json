@@ -1,0 +1,10 @@
+{
+  "hazard": [
+    "PREFILL_HAZARD_WITNESS time_ps=68000 legal_count=01->10 ideal_gray=01->11 skew_gray_lsb=0 endpoint_lsb=1",
+    "PREFILL_HAZARD_REPRO_PASS no_force=1 actual_source_handshakes=2 illustrative_skew_only=1"
+  ],
+  "mailbox": [
+    "MAILBOX_RESET_CONTRACT_WITNESS time_ps=94000 axil_reset=0 core_reset=1 active_old=2000 mailbox_reset=4000 outside_contract=1",
+    "MAILBOX_RESET_CONTRACT_REPRO_PASS common_epoch_recovery=PASS independent_reset_supported=0"
+  ]
+}

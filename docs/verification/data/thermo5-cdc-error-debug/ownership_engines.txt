@@ -1,0 +1,24 @@
+Summary for verification problem vp1 (id=1) in verification task FPV
+#NumGoals      :    12
+    #no_status     :     0
+    #success       :    11
+    #failed        :     0
+    #bounded       :     1
+
+List of goals for verification problem vp1 (id=1) in verification task FPV
+--------------------------------------------------------------------------------------------------------------------------------------------------
+GoalId |     Status | EngName |     Time | SDepth | TDepth |       JobId |  SubType | PropertyName
+--------------------------------------------------------------------------------------------------------------------------------------------------
+     0 |    success |      e3 |      133 |      3 |      - |       9 (c) |        - | thermo5_fifo_reset_ownership_harness.a_capacity
+     1 |    success |      b8 |        0 |      0 |      1 |       4 (c) |  vacuity | thermo5_fifo_reset_ownership_harness.a_empty_metadata
+     2 |    success |      t1 |        0 |      - |      - |       2 (c) |        - | thermo5_fifo_reset_ownership_harness.a_empty_metadata
+     3 |    success |      b8 |        0 |      1 |      2 |       4 (c) |  vacuity | thermo5_fifo_reset_ownership_harness.a_payload
+     4 |    bounded |      b6 |      215 |     10 |      - |      14 (c) |        - | thermo5_fifo_reset_ownership_harness.a_payload
+     5 |    success |      b8 |        0 |      1 |      2 |       4 (c) |  vacuity | thermo5_fifo_reset_ownership_harness.a_visible_owned
+     6 |    success |      e1 |      155 |     56 |      - |      25 (c) |        - | thermo5_fifo_reset_ownership_harness.a_visible_owned
+     7 |    success |      b8 |        0 |      0 |      1 |       4 (c) |  vacuity | thermo5_fifo_reset_ownership_harness.a_write_free
+     8 |    success |      e1 |      155 |     54 |      - |      28 (c) |        - | thermo5_fifo_reset_ownership_harness.a_write_free
+     9 |    success |      s1 |        1 |      1 |      3 |       5 (c) |        - | thermo5_fifo_reset_ownership_harness.c_full
+    10 |    success |      b8 |        0 |      1 |      2 |       4 (c) |        - | thermo5_fifo_reset_ownership_harness.c_replace
+    11 |    success |      s1 |        0 |      1 |      2 |       5 (c) |        - | thermo5_fifo_reset_ownership_harness.c_stall
+--------------------------------------------------------------------------------------------------------------------------------------------------

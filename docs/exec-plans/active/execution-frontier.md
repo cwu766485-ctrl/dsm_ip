@@ -1,3 +1,21 @@
+# CDC/RDC error debugging — 2026-11-12 18:54 UTC
+
+All10511 native Error messages preserved and grouped:5CDC source-combination,
+7576elasticFIFO/2680DPD/149Gain/96asyncFIFO unreset-payload RDC,5mailbox RDC.
+Actual VCS read-only prefill01->10 skew sensitivity reproduced at68.040ns;
+AXIL-only reset old-pending application reproduced94.001ns OUTSIDE common epoch;
+common reset recovery PASS. Focused runner2/2PASS,65utilityPASS Python3.12
+(initial3.6 import failure retained). New realFIFO Formal4PROVEN/1payload
+INCONCLUSIVE(depth10, then29 with fixed arbitrary bit),3positive covers both.
+No physical RDC waiver/proof implied,all structural messages remainOPEN.
+FrozenRTL/SGDC/VDB untouched;newHIT0/approval0. Source-register ECO and reset
+contract/valid-mask composition still required;no identical proof rerun.
+Evidence:docs/verification/thermo5-cdc-error-debug.md. PR60 remains unmerged.
+
+# CDC/RDC Phase2 actual structural results — 2026-11-12
+
+FrozenRTL unchanged;new task fromPR59. ActualAXIL/MAX_TAPS1/Generic SpyGlass setupPASS0E15W;CDC5E29W;RDC10506E15W;zero waivers,all OPEN. MissingTop fixed;Gray encoding checkdisabled/reset correlation unresolved. VCS block same-edgeDONE/W1C105nsPASS explicitcross100%,DECERR/SLVERR checked;GenericFIFO full/pendingreset/64wordrecoveryPASS independentqueue. These are block evidence,no productHIT/crossclaim,no productcompile/VDBchange. XPM actualmodels missing even /mnt/d/Xilinx/Vivado contains onlycoe.65utilityPASS. Remaining systemconcurrency/negative/staticdispositions OPEN;46technical/930counterOPEN,no approvals/merge. Evidence:docs/verification/data/thermo5-cdc-phase2/phase2_report.md.
+
 # Final CDC/reset partial execution — 2026-11-12
 
 ParentPR58; frozenRTL unchanged. New reset-sync component VCS PASS6epochs/18releases/25checks. Two fixed Generic source/AXIL phase pending-commit/nonzeroEF2/PAstall reset tests PASS independent oracle. Same-parent594+2 incremental596 merge,5URGviews clean,delta0,no hit loss/denominator drift.65utilityPASS. No new approvals/exceptions,46technical unresolved,8proofpending,930counterOPEN. XPM real models not located,NOT_RUN;SpyGlass setup probe failed no-top,static violation countUNKNOWN. TBAXIL single-stage release hardware-contractOPEN. Remaining concurrency/negative/full reset closure not implemented,no integration/signoff. Evidence:docs/verification/data/thermo5-final-cdc-reset/final_signoff_report.md.
@@ -12,6 +30,23 @@ Frozen635be68 unchanged. Re-indexed remaining48 against v3 same-parent594 eviden
 Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
 
 # Execution frontier
+
+# Current execution state: Round 21 coverage and SpyGlass inventories (2026-11-12)
+
+Consolidated the latest Round 21 code-coverage gap inventory and actual
+SpyGlass Phase 2 setup/CDC/RDC messages into two reports. Latest incremental
+Raw/zero-approved Adjusted has 12,580 open code bins (Branch 111, Condition
+185, Line 444, Toggle 11,840); the analysis-only What-if leaves 1,161 and is
+not official. The exact open bin ledgers remain linked from the report.
+
+SpyGlass records 10,511 Errors, 59 Warnings, 242 Info, and zero waivers across
+setup/CDC/RDC. The five CDC glitch errors and all 10,506 RDC reset-crossing
+errors remain open. Reports do not change RTL, VDBs, SGDC, or waiver state;
+Code Coverage, CDC/RDC, and Full Linux DV signoff remain OPEN.
+
+Reports:
+`docs/verification/thermo5-code-coverage-uncovered-round21-20261112.md` and
+`docs/verification/thermo5-spyglass-errors-warnings-round21-20261112.md`.
 
 ## Current execution state: DV v3 P0 execution complete (2026-11-11)
 
