@@ -1,3 +1,17 @@
+# CDC/RDC error debugging — 2026-11-12 18:54 UTC
+
+All10511 native Error messages preserved and grouped:5CDC source-combination,
+7576elasticFIFO/2680DPD/149Gain/96asyncFIFO unreset-payload RDC,5mailbox RDC.
+Actual VCS read-only prefill01->10 skew sensitivity reproduced at68.040ns;
+AXIL-only reset old-pending application reproduced94.001ns OUTSIDE common epoch;
+common reset recovery PASS. Focused runner2/2PASS,65utilityPASS Python3.12
+(initial3.6 import failure retained). New realFIFO Formal4PROVEN/1payload
+INCONCLUSIVE(depth10, then29 with fixed arbitrary bit),3positive covers both.
+No physical RDC waiver/proof implied,all structural messages remainOPEN.
+FrozenRTL/SGDC/VDB untouched;newHIT0/approval0. Source-register ECO and reset
+contract/valid-mask composition still required;no identical proof rerun.
+Evidence:docs/verification/thermo5-cdc-error-debug.md. PR60 remains unmerged.
+
 # CDC/RDC Phase2 actual structural results — 2026-11-12
 
 FrozenRTL unchanged;new task fromPR59. ActualAXIL/MAX_TAPS1/Generic SpyGlass setupPASS0E15W;CDC5E29W;RDC10506E15W;zero waivers,all OPEN. MissingTop fixed;Gray encoding checkdisabled/reset correlation unresolved. VCS block same-edgeDONE/W1C105nsPASS explicitcross100%,DECERR/SLVERR checked;GenericFIFO full/pendingreset/64wordrecoveryPASS independentqueue. These are block evidence,no productHIT/crossclaim,no productcompile/VDBchange. XPM actualmodels missing even /mnt/d/Xilinx/Vivado contains onlycoe.65utilityPASS. Remaining systemconcurrency/negative/staticdispositions OPEN;46technical/930counterOPEN,no approvals/merge. Evidence:docs/verification/data/thermo5-cdc-phase2/phase2_report.md.

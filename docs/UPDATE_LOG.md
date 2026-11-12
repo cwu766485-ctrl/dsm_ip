@@ -1,3 +1,19 @@
+## 2026-11-12 18:54 UTC — Native CDC/RDC error debugging
+
+- Added two self-checking VCS diagnostic tests and reproducible runner under
+  `dv/verif/cdc/`; actual frozen-product prefill delay sensitivity and block
+  mailbox independent-reset contract counterexample reproduced. Common reset
+  recovery PASS. These are diagnostic evidence, not new product URG hits.
+- Added source-bound FIFO reset ownership Formal harness/Tcl: 4 PROVEN,
+  1 payload INCONCLUSIVE, 3 positive covers; arbitrary-bit reference revision
+  advances depth10 to29 without claiming proof. Physical reset timing OPEN.
+- Preserved all10511 native errors in exact root-cause obligation ledger;
+  no waivers, severity edits, SGDC changes or frozen RTL changes.
+- Checks: focused VCS runner2/2PASS; Python3.12 utility65/65PASS; shell syntax
+  and git whitespace PASS. Initial Python3.6 import errors corrected by using
+  documented interpreter. Coverage unchanged; both signoffs OPEN.
+- Evidence and next ECO/contract obligations: `docs/verification/thermo5-cdc-error-debug.md`.
+
 ## 2026-11-11 — Thermo5 DV v3 P0 execution
 
 - Added two localized UVM overlap/reset classes, package includes, P0 vector and
