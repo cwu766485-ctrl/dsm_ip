@@ -1,0 +1,56 @@
+diff --git a/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv b/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
+index 37b8656..f4f3bfa 100644
+--- a/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
++++ b/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
+@@ -85,0 +86,2 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
++  logic ingress_closed_status_s;
++  logic tx_active_status_c, draining_status_c;
+@@ -87 +89 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-  (* ASYNC_REG = "TRUE" *) logic [1:0] prefill_gray_c1, prefill_gray_c2;
++  (* ASYNC_REG = "TRUE" *) logic prefill_ready_c1, prefill_ready_c2;
+@@ -91,2 +93,4 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-  wire logic [1:0] prefill_gray_s = prefill_count_s ^ (prefill_count_s >> 1);
+-  wire logic startup_prefill_done = run_s2_c2 && (prefill_gray_c2 == 2'b11);
++  logic prefill_ready_s;
++  // Only the saturating two-beat predicate is consumed by the core. Register
++  // this single-bit source status instead of crossing a binary-to-Gray cone.
++  wire logic startup_prefill_done = run_s2_c2 && prefill_ready_c2;
+@@ -116,0 +121,2 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
++      prefill_ready_s <= 1'b0;
++      ingress_closed_status_s <= 1'b0;
+@@ -120 +126,3 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-      core_active_s1 <= core_tx_active;
++      core_active_s1 <= tx_active_status_c;
++      prefill_ready_s <= (prefill_count_s == 2);
++      ingress_closed_status_s <= ingress_closed_s;
+@@ -158,2 +166,2 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-      prefill_gray_c1 <= '0;
+-      prefill_gray_c2 <= '0;
++      prefill_ready_c1 <= 1'b0;
++      prefill_ready_c2 <= 1'b0;
+@@ -165,2 +173,2 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-      prefill_gray_c1 <= prefill_gray_s;
+-      prefill_gray_c2 <= prefill_gray_c1;
++      prefill_ready_c1 <= prefill_ready_s;
++      prefill_ready_c2 <= prefill_ready_c1;
+@@ -188 +196 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-      ingress_closed_c1 <= ingress_closed_s;
++      ingress_closed_c1 <= ingress_closed_status_s;
+@@ -214,0 +223,12 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
++  // Cross-domain status has a source flop. Public datapath/run outputs retain
++  // their original cycle semantics; remote status has one source-cycle delay.
++  always_ff @(posedge core_clk or negedge core_aresetn) begin
++    if (!core_aresetn) begin
++      tx_active_status_c <= 1'b0;
++      draining_status_c <= 1'b0;
++    end else begin
++      tx_active_status_c <= core_tx_active;
++      draining_status_c <= core_draining;
++    end
++  end
++
+@@ -228,2 +248,2 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+-    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(core_tx_active),
+-    .core_draining(core_draining), .core_enable(core_enable),
++    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(tx_active_status_c),
++    .core_draining(draining_status_c), .core_enable(core_enable),

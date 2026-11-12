@@ -1,6 +1,32 @@
+## Current execution state: PR #62 ECO revalidation - partial, signoff open (2026-11-12)
+
+Revalidated immutable Draft PR #62 HEAD `ac08611af825586dc378041d2568eb7ee1ea563c`
+in a clean detached checkout. Fresh SpyGlass setup/structural CDC/full CDC/RDC
+and four isolated VC Formal harnesses completed. Setup `0E/15W/65I`, structural
+CDC `0E/27W/101I`, full CDC `4E/34W/109I`, RDC `10506E/15W/70I`, with zero
+waivers. Full CDC retains three `Ac_cdc01a` short-status hold failures and one
+`Ac_conv02` mixed FIFO/RUN/prefill convergence failure. The depth-16 async
+FIFO has three inconclusive assertions and one inconclusive recovery cover.
+
+Fresh hierarchy-scoped VCS product build/regression and nine-reset sweep passed;
+the independent trace oracle passed 206 CDC/101 EF2/91 PA words with zero
+underflow. A legal-only seven-test Raw URG snapshot has 14,972 open bins and
+zero exclusions; it is not the inherited full 594-test baseline. The 12,580
+vs 12,577 inherited discrepancy is narrowed to three Condition hits at metric
+level but remains unreconciled by exact bin ID because source/VDB sets differ.
+Gate 0 full baseline, coverage closure, CDC/RDC closure, complete scenario
+replay, independent approvals, and integrated signoff remain OPEN.
+
+Reports: `docs/verification/baseline_reconciliation.md`,
+`docs/verification/thermo5_verification_signoff_report.md`, and
+`docs/verification/data/thermo5-pr62-signoff/run_manifest.json`.
+No PR was merged. Next: obtain one authorized integrated commit after review,
+then replay the complete legal inventory, regenerate homogeneous Raw/Adjusted/
+What-if URG, and resolve exact Condition IDs and residual CDC/RDC obligations.
+
 # Full CDC debug follow-up — 2026-11-12
 
-Full cdc_verify executed:5E35W108I→4E34W109I after explicit clock edges.
+Full cdc_verify executed:5E35W108I->4E34W109I after explicit clock edges.
 FIFO write-side Gray now PASSED;three short status hold failures and mixed
 FIFO/RUN/prefill convergence remain OPEN,with reset-inactive native traces.
 Clean immutable ec9127e identity/stall FPV audited PASS:41lemmas/4final goals;
