@@ -105,9 +105,8 @@ def main():
         writer.writeheader()
         writer.writerows(result["root_groups"])
     print("CDC glitch errors:", len(result["glitch_targets"]))
-    print("RDC messages:", sum(n for (g, r, s), n in
-          ((k, v) for k, v in ((x["goal"], x["rule"], x["severity"]), x["count"]) for x in result["rule_counts"])
-          if g == "rdc" and r == "Ar_resetcross01"))
+    print("RDC messages:", sum(item["count"] for item in result["rule_counts"]
+          if item["goal"] == "rdc" and item["rule"] == "Ar_resetcross01"))
     for category, count in sorted(result["root_category_counts"].items()):
         print(category, count)
 
