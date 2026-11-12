@@ -31,6 +31,23 @@ Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
 
 # Execution frontier
 
+# Current execution state: Round 21 coverage and SpyGlass inventories (2026-11-12)
+
+Consolidated the latest Round 21 code-coverage gap inventory and actual
+SpyGlass Phase 2 setup/CDC/RDC messages into two reports. Latest incremental
+Raw/zero-approved Adjusted has 12,580 open code bins (Branch 111, Condition
+185, Line 444, Toggle 11,840); the analysis-only What-if leaves 1,161 and is
+not official. The exact open bin ledgers remain linked from the report.
+
+SpyGlass records 10,511 Errors, 59 Warnings, 242 Info, and zero waivers across
+setup/CDC/RDC. The five CDC glitch errors and all 10,506 RDC reset-crossing
+errors remain open. Reports do not change RTL, VDBs, SGDC, or waiver state;
+Code Coverage, CDC/RDC, and Full Linux DV signoff remain OPEN.
+
+Reports:
+`docs/verification/thermo5-code-coverage-uncovered-round21-20261112.md` and
+`docs/verification/thermo5-spyglass-errors-warnings-round21-20261112.md`.
+
 ## Current execution state: DV v3 P0 execution complete (2026-11-11)
 
 Frozen635be68 byte-identical. Four fixed P0s PASS:old40/56 output at651.510ns

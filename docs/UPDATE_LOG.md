@@ -109,6 +109,20 @@
 
 # Update Log
 
+# 2026-11-12 Asia/Singapore — Round 21 coverage and SpyGlass reports
+
+- Added a consolidated Round 21 code-coverage report with the latest 12,580
+  Raw uncovered bins, per-file totals, and links to all exact open ledgers.
+- Added a SpyGlass setup/CDC/RDC error and warning report, including all
+  10,511 errors and 59 warning records through the complete native CSV ledger.
+- Checks: recomputed coverage partitions from the candidate/non-counter/counter
+  ledgers; parsed all 10,812 SpyGlass message rows and reconciled severity and
+  per-goal counts with `results.json`. No RTL, VDB, SGDC, or waiver changed.
+- Limitations: code coverage and static CDC/RDC signoff remain OPEN; What-if
+  candidates remain unapproved and all SpyGlass structural errors remain open.
+- Reports: `docs/verification/thermo5-code-coverage-uncovered-round21-20261112.md`;
+  `docs/verification/thermo5-spyglass-errors-warnings-round21-20261112.md`.
+
 ## 2026-11-10 — Final exact review and DPD invalid proof
 
 - Repaired2448 historical group cells without changing candidate scope/IDs.
