@@ -1,3 +1,11 @@
+# 2026-11-12 SGT - PR #62 ECO revalidation, gates remain open
+
+- Revalidated immutable PR #62 HEAD `ac08611af825586dc378041d2568eb7ee1ea563c` in a clean isolated worktree. Fresh VCS product compile manifest covers 98 parsed local sources plus the filelist and DUT coverage hierarchy; the seven-test legal-only Raw VDB set is source-bound and has zero exclusions.
+- Fresh SpyGlass V-2023.12-SP1: setup 0E/15W/65I, structural CDC 0E/27W/101I, full CDC 4E/34W/109I, RDC 10506E/15W/70I; zero waivers. Full CDC short-status pulse and mixed FIFO/RUN/prefill findings remain open.
+- Fresh VC Formal: source status 7 proven/2 covers; elastic FIFO epoch 4 proven/2 covers; DPD epoch 3 proven/2 covers; async FIFO epoch 4 proven, 3 inconclusive, live-reset cover inconclusive.
+- AXI-Lite product regression, nine-epoch reset sweep, independent trace oracle, and legal-only DUT Raw URG completed. Seven-test smoke Raw leaves 14,972 bins open and is not the 594-test full baseline. The 12,580/12,577 difference is three Condition hits at metric level; exact IDs remain unreconciled across nonhomogeneous source/VDB sets.
+- Added `docs/verification/baseline_reconciliation.md`, `docs/verification/thermo5_verification_signoff_report.md`, source-bound compile/coverage artifacts, the complete per-goal SpyGlass Error/Warning inventory, and a hash-bound run manifest. No RTL changed, no waiver/exclusion was approved, and no PR was merged. Code Coverage, CDC/RDC, and integrated signoff remain OPEN.
+
 # 2026-11-12 — Full CDC/RDC error debug
 
 Added SGDC clock edges,full cdc_verify replay,source-status counterexample

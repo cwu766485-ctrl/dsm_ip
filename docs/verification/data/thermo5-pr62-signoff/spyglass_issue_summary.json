@@ -1,0 +1,47 @@
+{
+  "cdc": {
+    "error": 0,
+    "info": 101,
+    "issue_records": 27,
+    "waived": 0,
+    "warning": 27,
+    "warning_detail": {
+      "ordinary": 23,
+      "synthesis": 4
+    }
+  },
+  "rdc": {
+    "error": 10506,
+    "info": 70,
+    "issue_records": 10521,
+    "waived": 0,
+    "warning": 15,
+    "warning_detail": {
+      "ordinary": 11,
+      "synthesis": 4
+    }
+  },
+  "setup": {
+    "error": 0,
+    "info": 65,
+    "issue_records": 15,
+    "waived": 0,
+    "warning": 15,
+    "warning_detail": {
+      "ordinary": 11,
+      "synthesis": 4
+    }
+  },
+  "total_issue_records": 10601,
+  "verify": {
+    "error": 4,
+    "info": 109,
+    "issue_records": 38,
+    "waived": 0,
+    "warning": 34,
+    "warning_detail": {
+      "ordinary": 30,
+      "synthesis": 4
+    }
+  }
+}
