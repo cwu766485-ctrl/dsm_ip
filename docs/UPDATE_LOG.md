@@ -7017,3 +7017,9 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Re-indexed 48 remaining Exact targets against frozen product SHA `635be681046b3ab7d6fdda7f4e9818d7226efd66`; preserved 22 Interpolator, 7 CDC, 2 Gain, 2 Frontend, and 15 TX Top rows as OPEN.
 - Recorded the four existing P0 functional PASS scenarios as zero-Delta Exact URG evidence. No new HIT, official Exclusion, Coverage Exception, Formal PASS, or seed expansion was inferred.
 - Checks: v4 ledger integrity and existing v3 evidence manifests reviewed. Code Coverage and Full Linux DV signoff remain OPEN.
+
+## 2026-11-12 SGT — Gain FIFO composition closes two technical unknowns
+
+- Added actual FIFO/Gain source-bound Formal harness, runner and Tcl; two fresh executions give4PROVEN/2UNCOVERABLE/3positive covers, zero blackboxes/setup violations. Exact Gain136/137 now proven pending independent approval;46 unresolved.
+- Preserved11599 pending IDs with source/root-cause references; no official exclusions or scope exceptions.930 counters remain OPEN. Frozen RTL diff empty;65utility tests and runner syntax PASS.
+- P1 cross tests, full-chain token proof and independent PR review/integration remain incomplete; no fresh product URG or regression claimed. See thermo5-signoff-v5.md.

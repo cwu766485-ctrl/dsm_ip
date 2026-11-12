@@ -1,0 +1,127 @@
+{
+  "prs": [
+    {
+      "baseRefName": "thermo5",
+      "headRefName": "task/thermo5-rtl-invariants",
+      "headRefOid": "e781c329e20d5607daa9c5378f63dd8c4989012f",
+      "reviews": [],
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-11T12:28:28Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43020593074/job/130522521193",
+          "name": "hygiene",
+          "startedAt": "2026-11-11T12:28:14Z",
+          "status": "COMPLETED",
+          "workflowName": "Repository hygiene"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-11T12:28:37Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43020592844/job/130522519886",
+          "name": "syntax",
+          "startedAt": "2026-11-11T12:28:14Z",
+          "status": "COMPLETED",
+          "workflowName": "Thermo5 digital verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-11T12:28:12Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43020592844/job/130522521953",
+          "name": "licensed-dv",
+          "startedAt": "2026-11-11T12:28:12Z",
+          "status": "COMPLETED",
+          "workflowName": "Thermo5 digital verification"
+        }
+      ],
+      "number": 55,
+      "review_conclusion": "NOT_APPROVED;technical scope review only;no independent reviews present"
+    },
+    {
+      "baseRefName": "task/thermo5-rtl-invariants",
+      "headRefName": "task/thermo5-dv-convergence-v2",
+      "headRefOid": "84aac6bbfc95666ec7c2e312585e7a371488973e",
+      "reviews": [],
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-11T12:47:06Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43023299019/job/130531598885",
+          "name": "hygiene",
+          "startedAt": "2026-11-11T12:46:54Z",
+          "status": "COMPLETED",
+          "workflowName": "Repository hygiene"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-11T12:47:29Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43023299018/job/130531599327",
+          "name": "syntax",
+          "startedAt": "2026-11-11T12:46:55Z",
+          "status": "COMPLETED",
+          "workflowName": "Thermo5 digital verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-11T12:46:53Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43023299018/job/130531601596",
+          "name": "licensed-dv",
+          "startedAt": "2026-11-11T12:46:53Z",
+          "status": "COMPLETED",
+          "workflowName": "Thermo5 digital verification"
+        }
+      ],
+      "number": 56,
+      "review_conclusion": "NOT_APPROVED;technical scope review only;no independent reviews present"
+    },
+    {
+      "baseRefName": "task/thermo5-dv-convergence-v2",
+      "headRefName": "task/thermo5-dv-convergence-v3",
+      "headRefOid": "d672040989fb51c9530737d6ded9a98796df4ae5",
+      "reviews": [],
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T05:00:31Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43158419667/job/130983675192",
+          "name": "hygiene",
+          "startedAt": "2026-11-12T05:00:14Z",
+          "status": "COMPLETED",
+          "workflowName": "Repository hygiene"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T05:00:55Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43158419657/job/130983675337",
+          "name": "syntax",
+          "startedAt": "2026-11-12T05:00:14Z",
+          "status": "COMPLETED",
+          "workflowName": "Thermo5 digital verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T05:00:12Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/cwu766485-ctrl/dsm_ip/actions/runs/43158419657/job/130983677528",
+          "name": "licensed-dv",
+          "startedAt": "2026-11-12T05:00:12Z",
+          "status": "COMPLETED",
+          "workflowName": "Thermo5 digital verification"
+        }
+      ],
+      "number": 57,
+      "review_conclusion": "NOT_APPROVED;technical scope review only;no independent reviews present"
+    }
+  ],
+  "frozen_rtl_diff": "EMPTY",
+  "integration": "NOT_PERFORMED; independent reviews absent; preserve dependency order",
+  "limitations": "Existing test/tool evidence retained; no fresh integrated compile or 594 replay, no integration occurred."
+}
