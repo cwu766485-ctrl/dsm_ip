@@ -1,0 +1,5 @@
+test,implementation,status,evidence,remaining
+reset_sync_component_release,component,PASS,6 epochs/18 releases/25 checks; component_test.log,Not product FIFO/epoch proof
+cdc_pending_commit_reset_phase137_311,generic,PASS,493776ps pending/nonzeroEF2/PAstall;independent oraclePASS,Other reset release orders/full/drain not newly checked
+cdc_pending_commit_reset_phase3999_4999,generic,PASS,498348ps pending/nonzeroEF2/PAstall;independent oraclePASS,No expanded seed search;exactDelta0
+xpm_reset_busy_full_empty_refill_drain,xpm,BLOCKED,Real AMD models not located,Real vendor simulation required

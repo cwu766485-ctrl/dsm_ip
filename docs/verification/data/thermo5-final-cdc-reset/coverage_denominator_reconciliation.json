@@ -1,0 +1,27 @@
+{
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "generic_compile_argument_sha256": "930657751028c5fd28c8999cd6bcdab5c5b81abae42f315fbf2e50b82329b38c",
+  "new_delta": {
+    "raw": {
+      "line": 0,
+      "cond": 0,
+      "toggle": 0,
+      "branch": 0
+    },
+    "approved_adjusted": {
+      "line": 0,
+      "cond": 0,
+      "toggle": 0,
+      "branch": 0
+    },
+    "whatif": {
+      "line": 0,
+      "cond": 0,
+      "toggle": 0,
+      "branch": 0
+    }
+  },
+  "raw_denominator_unchanged": true,
+  "official_equals_raw": true,
+  "xpm": "NOT_MEASURED;no generic formal exclusions reused"
+}

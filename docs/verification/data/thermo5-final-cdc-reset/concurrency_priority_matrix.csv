@@ -1,0 +1,5 @@
+event,rtl,priority,status
+DONE vs STATUS W1C,"thermo5_dpd_axi_lite_cfg.sv:264,291..300",Later NBA assignment cfg_done_q<=1 wins when busy/seen_ack/!ack and W1C coincide,SOURCE_DERIVED_NOT_WITNESSED;SPEC_CONFIRMATION_OPEN
+pending commit boundary,thermo5_dpd_axi_lite_cfg.sv:333,Pending bank used for exact boundary word,EXISTING_P0_PASS;not new collision proof
+back-to-back COMMIT/BREADY/BUSY,thermo5_dpd_axi_lite_cfg.sv,Require exact transaction predecessor,OPEN
+STOP/pending/restart;queue replacement/tail;FIFO edge;gain/DPD/EF2 saturation,product pipeline,Separate packet ordering from same-cycle conflict,OPEN_NEW_QUALIFIED_TESTS_REQUIRED
