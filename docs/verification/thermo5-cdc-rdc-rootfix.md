@@ -177,3 +177,8 @@ Final broad source-frame bound: no-early-TLAST INCONCLUSIVE depth312; legal
 packet/source covers hit, malformed target INCONCLUSIVE depth324. No retry
 without a new hypothesis. This does not invalidate the narrower7/7 source
 register properties, but prevents a whole protocol signoff claim.
+
+All104post-ECO root groups have an explicit evidence-scope and remaining-proof
+entry in rdc_root_dispositions.csv, sum10519records, every status OPEN_NO_WAIVER.
+No blanket inference converts a class proof into approval of every path.
+Draft review PR:[#62](https://github.com/cwu766485-ctrl/dsm_ip/pull/62).
