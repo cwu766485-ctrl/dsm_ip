@@ -1,0 +1,90 @@
+{
+  "setup": {
+    "counts": {
+      "Fatal": 0,
+      "Error": 0,
+      "Warning": 15,
+      "Info": 65
+    },
+    "rules": {
+      "CMD_param03": 2,
+      "DetectTopDesignUnits": 1,
+      "SYNTH_5143": 4,
+      "WRN_1024": 11,
+      "ElabSummary": 1,
+      "Info_Case_Analysis": 1,
+      "Clock_info01": 3,
+      "Clock_info03b": 42,
+      "Clock_info15": 1,
+      "Propagate_Clocks": 3,
+      "Propagate_Resets": 3,
+      "Reset_info01": 6,
+      "Setup_port01": 2
+    }
+  },
+  "cdc": {
+    "counts": {
+      "Fatal": 0,
+      "Error": 0,
+      "Warning": 27,
+      "Info": 101
+    },
+    "rules": {
+      "CMD_param03": 2,
+      "DetectTopDesignUnits": 1,
+      "SYNTH_5143": 4,
+      "WRN_1024": 11,
+      "ElabSummary": 1,
+      "Info_Case_Analysis": 1,
+      "Ac_conv01": 4,
+      "Ac_conv02": 2,
+      "Ac_conv03": 1,
+      "Reset_sync04": 5,
+      "Ac_crossing01": 1,
+      "Ac_sync01": 15,
+      "Ac_sync02": 9,
+      "Ar_sync01": 5,
+      "Ar_syncdeassert01": 5,
+      "Clock_info01": 3,
+      "Clock_info03b": 42,
+      "Clock_info15": 1,
+      "Propagate_Clocks": 3,
+      "Propagate_Resets": 3,
+      "Reset_info01": 6,
+      "Setup_port01": 2,
+      "Setup_quasi_static01": 1
+    }
+  },
+  "rdc": {
+    "counts": {
+      "Fatal": 0,
+      "Error": 10506,
+      "Warning": 15,
+      "Info": 70
+    },
+    "rules": {
+      "CMD_param03": 2,
+      "DetectTopDesignUnits": 1,
+      "SYNTH_5143": 4,
+      "WRN_1024": 11,
+      "ElabSummary": 1,
+      "Info_Case_Analysis": 1,
+      "Ar_resetcross01": 10519,
+      "Ar_resetcross_matrix01": 1,
+      "Clock_info03b": 42,
+      "Clock_info15": 1,
+      "Propagate_Clocks": 3,
+      "Propagate_Resets": 3,
+      "Setup_port01": 2
+    }
+  },
+  "groups": 104,
+  "categories": {
+    "RDC_UNRESET_ASYNC_FIFO_MEMORY_OR_CONTROL": 98,
+    "RDC_DPD_PIPELINE_OR_HISTORY": 2680,
+    "RDC_FRAME_GAIN": 149,
+    "RDC_CONTROL_OR_OTHER": 16,
+    "RDC_UNRESET_ELASTIC_BUFFER_STORAGE": 7576
+  },
+  "rdc_records": 10519
+}
