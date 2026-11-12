@@ -1,0 +1,4 @@
+population,count,index,approval,official_applied
+original11599,11599,thermo5-signoff-v5/approval_batches_11599.csv.gz,PENDING,0
+gain_new2,2,thermo5-signoff-v5/exact_dispositions.csv,PENDING_INDEPENDENT_REVIEW,0
+cumulative_counter930,930,separate product scope decision,OPEN,0

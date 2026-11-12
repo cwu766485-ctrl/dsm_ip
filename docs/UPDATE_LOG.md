@@ -7023,3 +7023,9 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added actual FIFO/Gain source-bound Formal harness, runner and Tcl; two fresh executions give4PROVEN/2UNCOVERABLE/3positive covers, zero blackboxes/setup violations. Exact Gain136/137 now proven pending independent approval;46 unresolved.
 - Preserved11599 pending IDs with source/root-cause references; no official exclusions or scope exceptions.930 counters remain OPEN. Frozen RTL diff empty;65utility tests and runner syntax PASS.
 - P1 cross tests, full-chain token proof and independent PR review/integration remain incomplete; no fresh product URG or regression claimed. See thermo5-signoff-v5.md.
+
+## 2026-11-12 SGT — Generic reset-phase witnesses and same-parent coverage refresh
+
+- Added reset synchronizer component test and two fixed product clock-phase reset runner;component25checks and both UVM/independent oracle PASS. FrozenRTL unchanged.
+- Merged594+2 same-parent results into5URGviews,actualDelta0,no metric hit loss/denominator drift/diagnostics.65utilityPASS.
+- XPM unavailable;static probe incomplete(no top);TBreset contract,remaining reset/priority/fault tests and approvals OPEN. No official.el,merge or signoff. See final-cdc-reset report.

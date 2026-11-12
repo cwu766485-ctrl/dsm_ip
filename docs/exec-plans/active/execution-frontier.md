@@ -1,3 +1,7 @@
+# Final CDC/reset partial execution — 2026-11-12
+
+ParentPR58; frozenRTL unchanged. New reset-sync component VCS PASS6epochs/18releases/25checks. Two fixed Generic source/AXIL phase pending-commit/nonzeroEF2/PAstall reset tests PASS independent oracle. Same-parent594+2 incremental596 merge,5URGviews clean,delta0,no hit loss/denominator drift.65utilityPASS. No new approvals/exceptions,46technical unresolved,8proofpending,930counterOPEN. XPM real models not located,NOT_RUN;SpyGlass setup probe failed no-top,static violation countUNKNOWN. TBAXIL single-stage release hardware-contractOPEN. Remaining concurrency/negative/full reset closure not implemented,no integration/signoff. Evidence:docs/verification/data/thermo5-final-cdc-reset/final_signoff_report.md.
+
 # Current execution state: v5 Gain composition proven (2026-11-12)
 
 Frozen RTL unchanged. New actual FIFO->Gain compositional Formal:4 proven,3 nonvacuous,2 target uncoverable,3 positive covers,0 blackboxes/setup violations. Gain2 now PROVEN_UNREACHABLE pending independent approval;46 technical unresolved;new HIT/approval/exception0. Existing11599 candidates preserved;2 new proof targets separate pending.930 counter scope OPEN. P1 crosses not implemented;Outstanding/q1_tail/event semantics OPEN. PR55->56->57 not merged,independent reviews absent. No VDB change/no generic rerun.65 utility PASS. Evidence:docs/verification/thermo5-signoff-v5.md.

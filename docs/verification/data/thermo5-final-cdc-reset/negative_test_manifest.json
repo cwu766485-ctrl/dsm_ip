@@ -1,0 +1,7 @@
+{
+  "new_negative_tests": 0,
+  "inherited_expected_negative": 4,
+  "negative_urg": "runs/final_cdc_reset/negative_only/report",
+  "new_requested_faults": "NOT_RUN;do not claim inherited four cover all requested fault cases",
+  "mailbox_force": "Only isolated expected-negative suite;none added to legal tests"
+}
