@@ -36,3 +36,6 @@ dv/verif/out_xsim_p0/** linguist-generated=true
 docs/verification/data/thermo5-tx-waiver-review-round*/formal_snapshots/** binary
 docs/verification/data/thermo5-tx-waiver-review-round*/formal-snapshots/** binary
 docs/verification/data/thermo5-tx-waiver-review-round*/snapshots/** binary
+
+# Preserve exact native proof snapshots (including trailing report lines).
+docs/verification/data/thermo5-cdc-debug/*.txt binary
