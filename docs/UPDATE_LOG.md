@@ -7029,3 +7029,9 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added reset synchronizer component test and two fixed product clock-phase reset runner;component25checks and both UVM/independent oracle PASS. FrozenRTL unchanged.
 - Merged594+2 same-parent results into5URGviews,actualDelta0,no metric hit loss/denominator drift/diagnostics.65utilityPASS.
 - XPM unavailable;static probe incomplete(no top);TBreset contract,remaining reset/priority/fault tests and approvals OPEN. No official.el,merge or signoff. See final-cdc-reset report.
+
+## 2026-11-12 SGT — Actual AXIL static CDC/RDC and scoped block witnesses
+
+- Added actual product top SpyGlass config and three-domain SGDC. Setup0E15W,CDC5E29W,RDC10506E15W,no waivers;full native messages/hash retained.
+- New actual config-block DONE/W1C same-edgecrossPASS,DECERR/SLVERR checksPASS;GenericFIFO full/pendingreset/64wordepochrecoveryPASS.65utilityPASS. ProductRTL unchanged,no productURGclaim or replay.
+- XPM model searchblocked,remaining systemtests/violations/approvalsOPEN. See phase2_report.md;bothsignoffsOPEN.

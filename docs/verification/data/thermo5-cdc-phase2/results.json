@@ -1,0 +1,128 @@
+{
+  "setup": {
+    "counts": {
+      "Fatal": 0,
+      "Error": 0,
+      "Warning": 15,
+      "Info": 65
+    },
+    "rule_counts": {
+      "CMD_param03": 2,
+      "DetectTopDesignUnits": 1,
+      "SYNTH_5143": 4,
+      "WRN_1024": 11,
+      "ElabSummary": 1,
+      "Info_Case_Analysis": 1,
+      "Clock_info01": 3,
+      "Clock_info03b": 42,
+      "Clock_info15": 1,
+      "Propagate_Clocks": 3,
+      "Propagate_Resets": 3,
+      "Reset_info01": 6,
+      "Setup_port01": 2
+    },
+    "report_sha256": "8ceadb6e06b2b9d507f8d16c1be383b536035d28c76c1649e7308f9a58091631",
+    "console_sha256": "6b4e596ec43011f7cddce12385ef4f1d5df0364164ffba686ababf437b438b61",
+    "waivers": 0
+  },
+  "cdc": {
+    "counts": {
+      "Fatal": 0,
+      "Error": 5,
+      "Warning": 29,
+      "Info": 101
+    },
+    "rule_counts": {
+      "CMD_param03": 2,
+      "DetectTopDesignUnits": 1,
+      "SYNTH_5143": 4,
+      "WRN_1024": 11,
+      "ElabSummary": 1,
+      "Info_Case_Analysis": 1,
+      "Ac_glitch03": 5,
+      "Ac_coherency06": 4,
+      "Ac_conv01": 3,
+      "Ac_conv02": 2,
+      "Reset_sync04": 5,
+      "Ac_crossing01": 1,
+      "Ac_sync01": 14,
+      "Ac_sync02": 10,
+      "Ar_sync01": 5,
+      "Ar_syncdeassert01": 5,
+      "Clock_info01": 3,
+      "Clock_info03b": 42,
+      "Clock_info15": 1,
+      "Propagate_Clocks": 3,
+      "Propagate_Resets": 3,
+      "Reset_info01": 6,
+      "Setup_port01": 2,
+      "Setup_quasi_static01": 1
+    },
+    "report_sha256": "d5ffdd5244e44d0f9e819c00cc6b98bbd0e09a19d9bb6b37990f3390f8b022b8",
+    "console_sha256": "d28284859047fe347ca032d24ec95540eba1d20d2fbcdbbf85574835771f7ead",
+    "waivers": 0
+  },
+  "rdc": {
+    "counts": {
+      "Fatal": 0,
+      "Error": 10506,
+      "Warning": 15,
+      "Info": 76
+    },
+    "rule_counts": {
+      "CMD_param03": 2,
+      "DetectTopDesignUnits": 1,
+      "SYNTH_5143": 4,
+      "WRN_1024": 11,
+      "ElabSummary": 1,
+      "Info_Case_Analysis": 1,
+      "Ar_resetcross01": 10525,
+      "Ar_resetcross_matrix01": 1,
+      "Clock_info03b": 42,
+      "Clock_info15": 1,
+      "Propagate_Clocks": 3,
+      "Propagate_Resets": 3,
+      "Setup_port01": 2
+    },
+    "report_sha256": "891cf18140a4f00d3bbc0b5e42ba5345153ad54e8621cd39a8b80ab1ce4bcadf",
+    "console_sha256": "199372e1af79f13514410fa8cd91f0b85ebd3f48d186b18f10152ef289a26ea7",
+    "waivers": 0
+  },
+  "block_tests": {
+    "done_w1c": "PASS;105000ps epoch0;actual simultaneous RHS sampled;subsequent clear/readback;DECERR/SLVERR",
+    "generic_fifo": "PASS;full16words/pending_write/reset/discard_old_epoch/64word_continuous_replay",
+    "scope": "BLOCK_ONLY;no product-level cross or URG claim",
+    "watchdogs": "PASS",
+    "log_sha256": {
+      "priority": "e43362704a4d07c898d6902667690064cfa6f291eec368b6d5955bfe03d45f3e",
+      "fifo": "af0522ac48674716887cefa2a4313d5c7948cb5f0d759d6ad2674f6c4ce6047e"
+    }
+  },
+  "xpm": {
+    "status": "BLOCKED_REAL_MODELS_MISSING",
+    "searched": [
+      "/opt",
+      "/usr/local",
+      "/home/ray",
+      "/mnt (recursive file search)",
+      "/mnt/d/Xilinx/Vivado (directory contains dsm_out_bits.coe only)"
+    ],
+    "required": [
+      "data/verilog/src/glbl.v",
+      "data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv",
+      "data/ip/xpm/xpm_memory/hdl/xpm_memory.sv",
+      "data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv"
+    ],
+    "substitute_used": false
+  },
+  "product": {
+    "rtl_diff_frozen": "EMPTY",
+    "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+    "new_product_urg_hits": 0,
+    "new_approved_exclusions": 0,
+    "counter930": "OPEN",
+    "technical46": "OPEN",
+    "coverage": "No new product VDB;retain measured PR59 same-parent596 raw/official/whatif",
+    "static_signoff": "OPEN"
+  }
+}

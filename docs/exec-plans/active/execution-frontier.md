@@ -1,3 +1,7 @@
+# CDC/RDC Phase2 actual structural results — 2026-11-12
+
+FrozenRTL unchanged;new task fromPR59. ActualAXIL/MAX_TAPS1/Generic SpyGlass setupPASS0E15W;CDC5E29W;RDC10506E15W;zero waivers,all OPEN. MissingTop fixed;Gray encoding checkdisabled/reset correlation unresolved. VCS block same-edgeDONE/W1C105nsPASS explicitcross100%,DECERR/SLVERR checked;GenericFIFO full/pendingreset/64wordrecoveryPASS independentqueue. These are block evidence,no productHIT/crossclaim,no productcompile/VDBchange. XPM actualmodels missing even /mnt/d/Xilinx/Vivado contains onlycoe.65utilityPASS. Remaining systemconcurrency/negative/staticdispositions OPEN;46technical/930counterOPEN,no approvals/merge. Evidence:docs/verification/data/thermo5-cdc-phase2/phase2_report.md.
+
 # Final CDC/reset partial execution — 2026-11-12
 
 ParentPR58; frozenRTL unchanged. New reset-sync component VCS PASS6epochs/18releases/25checks. Two fixed Generic source/AXIL phase pending-commit/nonzeroEF2/PAstall reset tests PASS independent oracle. Same-parent594+2 incremental596 merge,5URGviews clean,delta0,no hit loss/denominator drift.65utilityPASS. No new approvals/exceptions,46technical unresolved,8proofpending,930counterOPEN. XPM real models not located,NOT_RUN;SpyGlass setup probe failed no-top,static violation countUNKNOWN. TBAXIL single-stage release hardware-contractOPEN. Remaining concurrency/negative/full reset closure not implemented,no integration/signoff. Evidence:docs/verification/data/thermo5-final-cdc-reset/final_signoff_report.md.
