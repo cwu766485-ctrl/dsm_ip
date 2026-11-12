@@ -36,7 +36,7 @@ def main():
   if p.exists():
    evidence[name]=dict(sha256=digest(p),bytes=p.stat().st_size)
    if p.suffix == '.txt':
-    (OUT/name.replace('/','_')).write_text(p.read_text())
+    (OUT/name.replace('/','_')).write_text('\n'.join(line.rstrip() for line in p.read_text().splitlines()).rstrip()+'\n')
  sources=['rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv','rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv','rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv','dv/uvm/formal/thermo5_fifo_reset_ownership_harness.sv','dv/uvm/formal/run_thermo5_fifo_reset_ownership.tcl','dv/verif/cdc/tb_thermo5_prefill_cdc_hazard.sv','dv/verif/cdc/tb_thermo5_mailbox_reset_contract.sv']
  result=dict(source_hashes={p:digest(ROOT/p) for p in sources},input_sha256=digest(source),groups=dict(Counter(r['root_cause_group'] for r in rows)),native_errors=len(rows),approved=0,waived=0,product_rtl_modified=False,evidence=evidence)
  (OUT/'manifest.json').write_text(json.dumps(result,indent=2)+'\n')

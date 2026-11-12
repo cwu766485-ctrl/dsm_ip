@@ -40,6 +40,3 @@
      # Constraint: 2
      [  5] constrained                             -  thermo5_fifo_reset_ownership_harness.as_bit_constant
      [  9] constrained                             -  constant_9 - rst_n==1
-
-
-

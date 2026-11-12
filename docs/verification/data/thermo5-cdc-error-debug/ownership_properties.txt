@@ -39,6 +39,3 @@
    > Constraint
      # Constraint: 1
      [  8] constrained                             -  constant_8 - rst_n==1
-
-
-

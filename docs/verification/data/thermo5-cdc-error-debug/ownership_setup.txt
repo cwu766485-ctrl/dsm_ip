@@ -12,6 +12,3 @@
   Combinational loops              :    0
   Multidriven nets                 :    0
   Multidriven output modports      :    0
-
-
-
