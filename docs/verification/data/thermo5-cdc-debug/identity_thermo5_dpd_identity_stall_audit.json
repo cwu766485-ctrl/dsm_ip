@@ -1,0 +1,356 @@
+{
+  "audited_at_utc": "2026-11-12T10:49:27.418886+00:00",
+  "coverage_impact": {
+    "code_coverage_delta": "NOT_MEASURED; Formal does not create URG hits",
+    "raw_and_adjusted": {
+      "active_exclusions": 0,
+      "approved_waivers": 0,
+      "branch": "525/637",
+      "condition": "658/849",
+      "fsm_state": "13/13",
+      "fsm_transition": "17/22",
+      "gate": "RAW_100_OPEN",
+      "legal_functional": "392/392",
+      "line": "3351/3796",
+      "toggle": "84340/104480"
+    },
+    "urg_rerun": false
+  },
+  "errors": [],
+  "formal": {
+    "artifact_sha256": {
+      "engines.txt": "98e663493b554ae7a3193816359c5b920e7eec036d9d55d0b069be9b220bf922",
+      "promoted_lemmas.txt": "0d5f8d3f2e81f424a040e077dd6fdea479f80dfa0c41767654cd1d5d1cc20bcd",
+      "properties_base.txt": "330c4b0079e8754a2dd1d53392b7a620fb4f92d22340c0ab14799abf85b62d92",
+      "properties_composed.txt": "aa62a9ab3c8cb8584f8b688ce1cc8c08bed63dc8d1fe00465a0fe2c173885f94",
+      "run_result.json": "f0abb9a14279763750624954fd27dd2d3a788cd2ddfd240bf7c94f5a13cd162d",
+      "setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+      "vcf.log": "366110f72b293a2d9ac9bb29ae3466beb112e6ea7484b00df6b07fbede98c277"
+    },
+    "base_assertions": {
+      "thermo5_dpd_identity_stall_harness.a_coeff0": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_coeff1": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_coeff2": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_coeff3": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_coeff4": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_cross_i7": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_cross_q7": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_gain5": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_gain6": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_gain_c5_zero5": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i0": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i1": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i2": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i3": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i4": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i5": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_i6": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_no_saturation": {
+        "qualifier": "",
+        "state": "inconclusive(depth=381)"
+      },
+      "thermo5_dpd_identity_stall_harness.a_output_i": {
+        "qualifier": "(non_vacuous)",
+        "state": "inconclusive(depth=380)"
+      },
+      "thermo5_dpd_identity_stall_harness.a_output_q": {
+        "qualifier": "(non_vacuous)",
+        "state": "inconclusive(depth=380)"
+      },
+      "thermo5_dpd_identity_stall_harness.a_pair_i9": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_pair_q9": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_prod_i7": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_prod_q7": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q0": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q1": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q2": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q3": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q4": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q5": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_q6": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_saturation_count_zero": {
+        "qualifier": "",
+        "state": "inconclusive(depth=380)"
+      },
+      "thermo5_dpd_identity_stall_harness.a_sum_i10": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_sum_q10": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_term_i8": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_term_q8": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v0": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v1": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v2": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v3": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v4": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v5": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v6": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_v7": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_valid_latency": {
+        "qualifier": "",
+        "state": "proven"
+      }
+    },
+    "base_covers": {
+      "thermo5_dpd_identity_stall_harness.c_max_endpoint": {
+        "qualifier": "(depth=12)",
+        "state": "covered"
+      },
+      "thermo5_dpd_identity_stall_harness.c_min_endpoint": {
+        "qualifier": "(depth=12)",
+        "state": "covered"
+      },
+      "thermo5_dpd_identity_stall_harness.c_recovery": {
+        "qualifier": "(depth=14)",
+        "state": "covered"
+      },
+      "thermo5_dpd_identity_stall_harness.c_stall": {
+        "qualifier": "(depth=12)",
+        "state": "covered"
+      }
+    },
+    "black_box_instances": 0,
+    "commands": [
+      "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+      "-batch",
+      "-fmode",
+      "FPV",
+      "-f",
+      "/tmp/thermo5-rootfix-clean-proof/dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.tcl"
+    ],
+    "composed_assertions": {
+      "thermo5_dpd_identity_stall_harness.a_no_saturation": {
+        "qualifier": "",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_output_i": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_output_q": {
+        "qualifier": "(non_vacuous)",
+        "state": "proven"
+      },
+      "thermo5_dpd_identity_stall_harness.a_saturation_count_zero": {
+        "qualifier": "",
+        "state": "proven"
+      }
+    },
+    "composed_covers": {
+      "thermo5_dpd_identity_stall_harness.c_max_endpoint": {
+        "qualifier": "(depth=12)",
+        "state": "covered"
+      },
+      "thermo5_dpd_identity_stall_harness.c_min_endpoint": {
+        "qualifier": "(depth=12)",
+        "state": "covered"
+      },
+      "thermo5_dpd_identity_stall_harness.c_recovery": {
+        "qualifier": "(depth=14)",
+        "state": "covered"
+      },
+      "thermo5_dpd_identity_stall_harness.c_stall": {
+        "qualifier": "(depth=12)",
+        "state": "covered"
+      }
+    },
+    "compositional_lemmas": [
+      "a_coeff0",
+      "a_coeff1",
+      "a_coeff2",
+      "a_coeff3",
+      "a_coeff4",
+      "a_cross_i7",
+      "a_cross_q7",
+      "a_gain5",
+      "a_gain6",
+      "a_gain_c5_zero5",
+      "a_i0",
+      "a_i1",
+      "a_i2",
+      "a_i3",
+      "a_i4",
+      "a_i5",
+      "a_i6",
+      "a_pair_i9",
+      "a_pair_q9",
+      "a_prod_i7",
+      "a_prod_q7",
+      "a_q0",
+      "a_q1",
+      "a_q2",
+      "a_q3",
+      "a_q4",
+      "a_q5",
+      "a_q6",
+      "a_sum_i10",
+      "a_sum_q10",
+      "a_term_i8",
+      "a_term_q8",
+      "a_v0",
+      "a_v1",
+      "a_v2",
+      "a_v3",
+      "a_v4",
+      "a_v5",
+      "a_v6",
+      "a_v7",
+      "a_valid_latency"
+    ],
+    "duration_seconds": 154.46,
+    "environment_assumptions": [
+      "in_valid and I/Q stable after a cycle where in_valid && !in_ready"
+    ],
+    "exit_code": 0,
+    "formal_directory": "/tmp/thermo5-rootfix-clean-proof/runs/identity_clean312",
+    "run_source_git_revision": "ec9127e28d50eee4a7425b5a24cce3127f01d017",
+    "setup_violations": 0,
+    "tool": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024"
+  },
+  "schema_version": 1,
+  "scope": {
+    "claim": "local one-tap Identity DPD I/Q output equals accepted input at 11-cycle pipeline latency, with no output saturation or nonzero saturation counter",
+    "configuration": "MAX_TAPS=1, USE_EXTERNAL_TAPS=1, active_taps=1, Q14 c1 unity, c3/c5 zero",
+    "dut": "rtl/dpd/dpd_memory_poly.v / dpd_memory_poly",
+    "exclusions": [
+      "AXI shadow/commit",
+      "mailbox transfer",
+      "CDC",
+      "pending/active epoch",
+      "full TX chain",
+      "physical RF"
+    ],
+    "interface_model": "valid pipeline with output backpressure; source holds in_valid and I/Q while blocked"
+  },
+  "sources": {
+    "clean_worktree": true,
+    "git_revision": "ec9127e28d50eee4a7425b5a24cce3127f01d017",
+    "sha256": {
+      "dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.py": "c484ef3ae267420a0ca69444e0e94260ca9ca9ee173d980da367e98e5d523427",
+      "dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.tcl": "67e66d0f27ad6fd9687d3ea53b39dbc296e12b156d52c431632574d3daa43f5e",
+      "dv/uvm/formal/thermo5_dpd_identity_stall_harness.sv": "32480d0de9b91fb1973b76539e4bb6ac9f7275bcf1f92f3eefc5ee7387024125",
+      "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+      "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+      "tools/hw/audit_thermo5_dpd_identity_stall_fpv.py": "7d2f64725e6cefa85d0ba97751d8b4ba25e3e97a061b5a55139e7d18141d16b4"
+    }
+  },
+  "status": "PASS_SCOPED_DPD_IDENTITY_OUTPUT_UNDER_STALL"
+}

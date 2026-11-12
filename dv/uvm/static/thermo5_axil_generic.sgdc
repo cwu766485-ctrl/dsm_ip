@@ -1,7 +1,9 @@
+# Explicit 50% edges are required by cdc_verify timing checks.
+# Clocks remain unrelated; reset correlation is not assumed here.
 current_design tid32_thermo5_axi_lite_axis_frontend_tx
-clock -name s_axil_aclk -domain axil -period 10
-clock -name s_axis_aclk -domain source -period 8
-clock -name core_clk -domain core -period 4.572
+clock -name s_axil_aclk -domain axil -period 10 -edge {0 5}
+clock -name s_axis_aclk -domain source -period 8 -edge {0 4}
+clock -name core_clk -domain core -period 4.572 -edge {0 2.286}
 reset -name s_axil_aresetn -value 0 -async
 reset -name s_axis_aresetn -value 0 -async
 reset -name core_aresetn -value 0 -async

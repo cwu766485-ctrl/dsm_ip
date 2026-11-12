@@ -83,13 +83,17 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   localparam int SOURCE_BEATS_PER_QUANTUM = 32;
   logic [4:0] source_phase_q;
   logic ingress_closed_s;
+  logic ingress_closed_status_s;
+  logic tx_active_status_c, draining_status_c;
   (* ASYNC_REG = "TRUE" *) logic source_error_c1, source_error_c2;
-  (* ASYNC_REG = "TRUE" *) logic [1:0] prefill_gray_c1, prefill_gray_c2;
+  (* ASYNC_REG = "TRUE" *) logic prefill_ready_c1, prefill_ready_c2;
   (* ASYNC_REG = "TRUE" *) logic run_s2_c1, run_s2_c2;
   (* ASYNC_REG = "TRUE" *) logic core_active_s1, core_active_s2;
   logic [1:0] prefill_count_s;
-  wire logic [1:0] prefill_gray_s = prefill_count_s ^ (prefill_count_s >> 1);
-  wire logic startup_prefill_done = run_s2_c2 && (prefill_gray_c2 == 2'b11);
+  logic prefill_ready_s;
+  // Only the saturating two-beat predicate is consumed by the core. Register
+  // this single-bit source status instead of crossing a binary-to-Gray cone.
+  wire logic startup_prefill_done = run_s2_c2 && prefill_ready_c2;
   wire logic source_accept = s_axis_tvalid && s_axis_tready;
   wire logic core_accept = core_valid && core_ready;
   wire logic output_accept = (&pa_valid) && (&pa_ready);
@@ -114,10 +118,14 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
       source_frame_open_q <= 1'b0;
       source_frame_error_q <= 1'b0;
       source_phase_q <= '0;
+      prefill_ready_s <= 1'b0;
+      ingress_closed_status_s <= 1'b0;
     end else begin
       run_s1 <= run_request_async;
       run_s2 <= run_s1;
-      core_active_s1 <= core_tx_active;
+      core_active_s1 <= tx_active_status_c;
+      prefill_ready_s <= (prefill_count_s == 2);
+      ingress_closed_status_s <= ingress_closed_s;
       core_active_s2 <= core_active_s1;
 
       // Accumulate startup prefill before the first RUN. After a completed
@@ -155,15 +163,15 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     if (!core_aresetn) begin
       source_error_c1 <= 1'b0;
       source_error_c2 <= 1'b0;
-      prefill_gray_c1 <= '0;
-      prefill_gray_c2 <= '0;
+      prefill_ready_c1 <= 1'b0;
+      prefill_ready_c2 <= 1'b0;
       run_s2_c1 <= 1'b0;
       run_s2_c2 <= 1'b0;
     end else begin
       source_error_c1 <= source_frame_error_q;
       source_error_c2 <= source_error_c1;
-      prefill_gray_c1 <= prefill_gray_s;
-      prefill_gray_c2 <= prefill_gray_c1;
+      prefill_ready_c1 <= prefill_ready_s;
+      prefill_ready_c2 <= prefill_ready_c1;
       run_s2_c1 <= run_s2;
       run_s2_c2 <= run_s2_c1;
     end
@@ -185,7 +193,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
       ingress_closed_c2 <= 1'b0;
       ingress_closed_c3 <= 1'b0;
     end else begin
-      ingress_closed_c1 <= ingress_closed_s;
+      ingress_closed_c1 <= ingress_closed_status_s;
       ingress_closed_c2 <= ingress_closed_c1;
       ingress_closed_c3 <= ingress_closed_c2;
     end
@@ -212,6 +220,18 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     end
   end
 
+  // Cross-domain status has a source flop. Public datapath/run outputs retain
+  // their original cycle semantics; remote status has one source-cycle delay.
+  always_ff @(posedge core_clk or negedge core_aresetn) begin
+    if (!core_aresetn) begin
+      tx_active_status_c <= 1'b0;
+      draining_status_c <= 1'b0;
+    end else begin
+      tx_active_status_c <= core_tx_active;
+      draining_status_c <= core_draining;
+    end
+  end
+
   assign core_draining = core_tx_active_q && !core_enable;
   assign core_datapath_enable = core_tx_active_q &&
                                 (startup_prefill_done || core_draining);
@@ -225,8 +245,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .s_axil_araddr(s_axil_araddr), .s_axil_arvalid(s_axil_arvalid), .s_axil_arready(s_axil_arready),
     .s_axil_rdata(s_axil_rdata), .s_axil_rresp(s_axil_rresp), .s_axil_rvalid(s_axil_rvalid), .s_axil_rready(s_axil_rready),
     .core_clk(core_clk), .core_aresetn(core_aresetn),
-    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(core_tx_active),
-    .core_draining(core_draining), .core_enable(core_enable),
+    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(tx_active_status_c),
+    .core_draining(draining_status_c), .core_enable(core_enable),
     .run_request(run_request_async),
     .dpd_active_taps(dpd_active_taps), .c1_re(c1_re), .c1_im(c1_im),
     .c3_re(c3_re), .c3_im(c3_im), .c5_re(c5_re), .c5_im(c5_im),

@@ -1,3 +1,26 @@
+# Full CDC debug follow-up — 2026-11-12
+
+Full cdc_verify executed:5E35W108I→4E34W109I after explicit clock edges.
+FIFO write-side Gray now PASSED;three short status hold failures and mixed
+FIFO/RUN/prefill convergence remain OPEN,with reset-inactive native traces.
+Clean immutable ec9127e identity/stall FPV audited PASS:41lemmas/4final goals;
+not CDC/repeated-reset proof.Depth16 epoch strengthening inconclusive;no
+waiver or RTL shortcut.70utility tests complete,one skipped.No merge.
+See docs/verification/thermo5-cdc-debug-followup.md for exact evidence.
+
+# CDC/RDC source ECO candidate — 2026-11-12
+
+PR61 c3a84fe baseline audited:10525Ar_resetcross01 records,10506errors;
+Frontend7576/DPD2680/Gain149/FIFO98/Config12/Top10 exact. Independent ECO
+registers activity/draining/closed sources and uses registered single-bit
+prefill; actual SpyGlass CDC5E29W→0E27W, reconvergence5→7OPEN; RDC10506E
+unchanged,10519records. No waiver/rule disable/URG exclusion. Owner confirms
+common assertion/all3domains, own-clock synchronous release, no runtime
+independent reset. Product VCS/STOPrestart112/reset9epochs+independentOracle
+PASS. Source FPV7/7;Elastic repeat-reset4/4;DPD epoch3/3;Generic async epoch
+4/5 with initialized-read INCONCLUSIVE. Six skew epochs384words PASS does not
+close that proof. Global CDC/RDC remains OPEN; no merge. See rootfix report.
+
 # CDC/RDC Phase2 actual structural results — 2026-11-12
 
 FrozenRTL unchanged;new task fromPR59. ActualAXIL/MAX_TAPS1/Generic SpyGlass setupPASS0E15W;CDC5E29W;RDC10506E15W;zero waivers,all OPEN. MissingTop fixed;Gray encoding checkdisabled/reset correlation unresolved. VCS block same-edgeDONE/W1C105nsPASS explicitcross100%,DECERR/SLVERR checked;GenericFIFO full/pendingreset/64wordrecoveryPASS independentqueue. These are block evidence,no productHIT/crossclaim,no productcompile/VDBchange. XPM actualmodels missing even /mnt/d/Xilinx/Vivado contains onlycoe.65utilityPASS. Remaining systemconcurrency/negative/staticdispositions OPEN;46technical/930counterOPEN,no approvals/merge. Evidence:docs/verification/data/thermo5-cdc-phase2/phase2_report.md.

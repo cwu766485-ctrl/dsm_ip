@@ -1,3 +1,12 @@
+# 2026-11-12 — Full CDC/RDC error debug
+
+Added SGDC clock edges,full cdc_verify replay,source-status counterexample
+extractor and tests,depth16 epoch strengthening goals,and independently
+audited immutable-checkpoint identity/stall proof.Full CDC5E→4E;not signoff.
+Remaining short-pulse/mixed-convergence and RDC obligations stay OPEN.
+No product RTL change,no waiver/URG exclusion,no merge.Commands/results:
+[debug follow-up](verification/thermo5-cdc-debug-followup.md).
+
 ## 2026-11-11 — Thermo5 DV v3 P0 execution
 
 - Added two localized UVM overlap/reset classes, package includes, P0 vector and
@@ -7035,3 +7044,13 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Added actual product top SpyGlass config and three-domain SGDC. Setup0E15W,CDC5E29W,RDC10506E15W,no waivers;full native messages/hash retained.
 - New actual config-block DONE/W1C same-edgecrossPASS,DECERR/SLVERR checksPASS;GenericFIFO full/pendingreset/64wordepochrecoveryPASS.65utilityPASS. ProductRTL unchanged,no productURGclaim or replay.
 - XPM model searchblocked,remaining systemtests/violations/approvalsOPEN. See phase2_report.md;bothsignoffsOPEN.
+
+## 2026-11-12 — CDC/RDC source ECO candidate, Gates1–3
+
+Audited PR61 native10525RDC records and five glitch errors. Registered four
+source-status cones (including single-bit prefill) in AXIL top; no clock/reset
+constraints/waivers/URG exclusions changed. Owner confirms common assertion,
+local synchronous releases, no independent runtime reset. Actual SG CDC5→0E,
+RDC10506Eunchanged. Product VCS/oracle/reset/restart and targeted FPV executed;
+async FIFO epoch proof remains inconclusive. Exact report/reproduction and
+remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.

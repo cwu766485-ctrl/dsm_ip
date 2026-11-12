@@ -1,0 +1,417 @@
+{
+  "rtl_checkpoint": "c787891a2688a43aacdd387381542a3ab66b4d07",
+  "parent": "c3a84fee43630d6155d2b2fe3ebd62d32c68cee0",
+  "tools": {
+    "vcs": "V-2023.12-SP1_Full64",
+    "spyglass": "V-2023.12-SP1",
+    "formal": "V-2023.12-SP2",
+    "python": "3.12.13"
+  },
+  "config": {
+    "top": "tid32_thermo5_axi_lite_axis_frontend_tx",
+    "max_taps": 1,
+    "fifo": "generic depth16",
+    "width": 16,
+    "clocks_ns": [
+      10,
+      8,
+      4.572
+    ],
+    "static_reset": "independent declarations; zero waivers",
+    "supported_reset": "common assertion; synchronized local release; independent runtime reset unsupported"
+  },
+  "source_hashes": {
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "e3948584cc905cacc4788e4f85c203e9bf225e17094599357851785d3cfb109a",
+    "dv/uvm/formal/thermo5_rdc_async_epoch_harness.sv": "46e4fc7327747eae2f196b49da4792df73615a44b95b9a1cc405657fdcfb1723",
+    "dv/uvm/formal/run_thermo5_rdc_async_epoch.tcl": "1d0e0067ff839b92b931f1c06872ae93dbf841a093c1ef04132b02295eed22ea",
+    "dv/uvm/formal/run_thermo5_rdc_fifo_epoch.tcl": "0106df40dd4f297cb6ccd0848fb42840927bd4fa39a5f58d4d14ae00ff748bcb",
+    "dv/uvm/formal/thermo5_rdc_dpd_epoch_harness.sv": "38a0805cb548df610242754a1396003d3a7ada4a1da6c905084c0b5d4c6dc0f4",
+    "dv/uvm/formal/run_thermo5_rdc_dpd_epoch.tcl": "db609e4ffb4a6d9e49934c1c27a4b7f3104bea2ff9c9c84e9f427dc9e76c04b6",
+    "dv/uvm/formal/thermo5_rdc_fifo_epoch_harness.sv": "cb248ba1a9aee16263640d1ffa4dd1c2c5ae3dc452d41e8ea36230e4a1c48746",
+    "dv/uvm/formal/thermo5_cdc_source_status_harness.sv": "1f2b81edf79f54722d5e3d736dfbe637978e2cdd919266318e7a4046f7c15ccd",
+    "dv/uvm/formal/run_thermo5_cdc_source_status.tcl": "341e3a67d78a541a6279b535cc25acfc020abab4abdcd21e7b6768b7f193ebb3",
+    "dv/verif/axis/tb_thermo5_generic_fifo_skew_epochs.sv": "3140031bed76abd95ea97e5034ab6443896ae51ce49bc3ed390ec5a0fa6b9d97"
+  },
+  "checks": {
+    "product": {
+      "log_sha256": "a8158e537ee39f2d9b5d0704914af38c2fb7185c32ff84a2724633dc2d928ab4",
+      "markers": [
+        "UVM_INFO dv/uvm/tests/thermo5/axil/thermo5_sku_axil_boundary_phase_test.svh(135) @ 541782: uvm_test_top [SKU_PASS] THERMO5_AXIL_BOUNDARY_PHASE_UVM_PASS offset=0 aw_gap=0 w_gap=0 gap_beat=-1 gap_cycles=0 start_after_beats=4 commit_on_run=0 commit_after_run_cycles=-1 boundary=external-handshake identity=bittrue",
+        "[CROSS_PACKET_NEGATIVE_PASS]     1",
+        "[SKU_PASS]     1",
+        "THERMO5_PYTHON_VECTORS=PASS",
+        "UVM_INFO dv/uvm/tests/thermo5/axil/thermo5_sku_axil_illegal_frame_test.svh(52) @ 525000: uvm_test_top [SKU_PASS] THERMO5_AXIL_ILLEGAL_FRAME_UVM_PASS sticky error cleared by public reset",
+        "[SKU_PASS]     1",
+        "THERMO5_AXIL_ILLEGAL_FRAME_CHECK_PASS",
+        "  public reset recovery: PASS",
+        "UVM_INFO dv/uvm/tests/thermo5/axil/thermo5_sku_axil_mailbox_fault_test.svh(44) @ 315000: uvm_test_top [SKU_PASS] THERMO5_AXIL_MAILBOX_FAULT_UVM_PASS fault detected and public reset recovered",
+        "[SKU_PASS]     1",
+        "THERMO5_AXIL_PARAMETER_GUARD_PASS expected_errors=2 simulator_exit=0",
+        "THERMO5_AXIL_PRODUCT_COVERAGE_MERGE_PASS report=/tmp/thermo5-cdc-rdc-rootfix/runs/cdc_rootfix/product/product_coverage"
+      ]
+    },
+    "restart": {
+      "log_sha256": "da565f94ff4fe232907c7777d3c3b34915719244efd96e2ab6765e0fda2a9f29",
+      "markers": [
+        "THERMO5_PYTHON_VECTORS=PASS",
+        "UVM_INFO dv/uvm/env/thermo5/thermo5_sku_coverage.svh(347) @ 1270000: uvm_test_top.env.coverage [PACKET_CROSS_AUDIT] epoch=1 packet=0 source_gap=0 fifo_full=1 pa_stall=0 run=1 prefill=1 gap_after_run=0 stop_before_tlast=1 tlast_after_stop=1 drain_after_tlast=1 integrity=PASS",
+        "UVM_INFO dv/uvm/env/thermo5/thermo5_sku_coverage.svh(347) @ 1270000: uvm_test_top.env.coverage [PACKET_CROSS_AUDIT] epoch=1 packet=1 source_gap=0 fifo_full=0 pa_stall=0 run=1 prefill=0 gap_after_run=0 stop_before_tlast=1 tlast_after_stop=1 drain_after_tlast=1 integrity=PASS",
+        "UVM_INFO dv/uvm/env/thermo5/thermo5_sku_coverage.svh(354) @ 1270000: uvm_test_top.env.coverage [PACKET_CROSS_FINALIZE] integrity=PASS packet_records=2 gap_fifo_pa=0 run_prefill_gap=0 stop_tlast_drain=2",
+        "UVM_INFO dv/uvm/tests/thermo5/axil/thermo5_sku_axil_stop_restart_test.svh(140) @ 1270000: uvm_test_top [SKU_PASS] THERMO5_AXIL_STOP_RESTART_UVM_PASS: STOP drained packet 1; packet 2 stayed blocked until RUN restarted; 112 ordered four-plane words matched oracle",
+        "[SKU_PASS]     1"
+      ]
+    },
+    "oracle": {
+      "log_sha256": "317d7e2fa8e97453c45d90627eea2b801913ce2a7a8ecdceb1b8520ab13a439f",
+      "markers": [
+        "epoch=0 data=PASS CDC_words=0 EF2_words=0 PA_words=0 applied_config_frames=[] underflow_events=0",
+        "epoch=1 data=PASS CDC_words=0 EF2_words=0 PA_words=0 applied_config_frames=[] underflow_events=0",
+        "epoch=2 data=PASS CDC_words=0 EF2_words=0 PA_words=0 applied_config_frames=[] underflow_events=0",
+        "epoch=3 data=PASS CDC_words=0 EF2_words=0 PA_words=0 applied_config_frames=[] underflow_events=0",
+        "epoch=4 data=PASS CDC_words=32 EF2_words=11 PA_words=9 applied_config_frames=[] underflow_events=0",
+        "epoch=5 data=PASS CDC_words=30 EF2_words=9 PA_words=7 applied_config_frames=[] underflow_events=0",
+        "epoch=6 data=PASS CDC_words=28 EF2_words=7 PA_words=5 applied_config_frames=[] underflow_events=0",
+        "epoch=7 data=PASS CDC_words=31 EF2_words=10 PA_words=8 applied_config_frames=[] underflow_events=0",
+        "epoch=8 data=PASS CDC_words=29 EF2_words=8 PA_words=6 applied_config_frames=[] underflow_events=0",
+        "epoch=9 data=PASS CDC_words=56 EF2_words=56 PA_words=56 applied_config_frames=[] underflow_events=0",
+        "TRACE_ORACLE=PASS CDC_words=206 EF2_words=101 PA_words=91 underflow_events=0",
+        "TRACE_CLASSIFICATION=PASS_NO_UNDERFLOW"
+      ]
+    },
+    "fifo_skew": {
+      "log_sha256": "b5315f5ad77cb0d2b694dda83ff68c73e3361538f8be552b254d7cf8876904c0",
+      "markers": [
+        "GENERIC_FIFO_SKEW_EPOCH_PASS epochs=6 recovered_words=384 both_release_orders=1 old_epoch_excluded=1 full_pending_reset=6"
+      ]
+    },
+    "reset_sync": {
+      "log_sha256": "2a7f8d8dbd5786c6f8c18ab527eedb1ca59aea9aceca3e85d16536a4027fea87",
+      "markers": [
+        "RESET_RELEASE_CONTRACT_PASS epochs=6 domain_releases=18 checks=25 async_assert=PASS own_clock_two_edge_release=PASS"
+      ]
+    },
+    "utilities": {
+      "log_sha256": "64f31e5870c4f4febebce90ff23d6b49f9e50667c5510a9b54ee22edb42e39a5",
+      "markers": [
+        "Ran 67 tests in 0.626s",
+        "OK (skipped=1)"
+      ]
+    },
+    "formal_status": {
+      "properties_sha256": "d3a45754a354bcfb98c3fbcec5786305b46f8c63b012855a3b9b9ab194e9f1f8",
+      "results": [
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_active_chain"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_closed_source_register"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_drain_source_register"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_prefill_bound"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_prefill_no_early"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_prefill_source_register"
+        ],
+        [
+          "proven",
+          "thermo5_cdc_source_status_harness.a_tx_source_register"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_source_status_harness.c_output"
+        ],
+        [
+          "covered",
+          "thermo5_cdc_source_status_harness.c_prefill"
+        ]
+      ]
+    },
+    "formal_epoch": {
+      "properties_sha256": "d32aca6cd26ecc430db8076a905ecfbd3804195bd15eee4dfd3b060895f3bb4d",
+      "results": [
+        [
+          "falsified",
+          "thermo5_rdc_fifo_epoch_harness.a_capacity"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_fifo_epoch_harness.a_empty_meta"
+        ],
+        [
+          "falsified",
+          "thermo5_rdc_fifo_epoch_harness.a_initialized_only"
+        ],
+        [
+          "falsified",
+          "thermo5_rdc_fifo_epoch_harness.a_reset_empty"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_fifo_epoch_harness.c_reset_live"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_fifo_epoch_harness.c_stall"
+        ]
+      ]
+    },
+    "formal_epoch_retry": {
+      "properties_sha256": "a88b78c27ba51f4e49836b000ab76bc8472a1e4dfedceafd9cd487620c321811",
+      "results": [
+        [
+          "proven",
+          "thermo5_rdc_fifo_epoch_harness.a_capacity"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_fifo_epoch_harness.a_empty_meta"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_fifo_epoch_harness.a_initialized_only"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_fifo_epoch_harness.a_reset_empty"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_fifo_epoch_harness.c_reset_live"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_fifo_epoch_harness.c_stall"
+        ]
+      ]
+    },
+    "formal_dpd": {
+      "properties_sha256": "2f80ee8885d19b0922afb9c68a6bc9e2695df9f973a3b871c2154974e083e6f3",
+      "results": [
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable0"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable1"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable2"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable3"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable4"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable5"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable6"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_enable7"
+        ],
+        [
+          "inconclusive",
+          "thermo5_dpd_invalid_zero_harness.a_invalid_no_saturation"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_invalid_pair_zero"
+        ],
+        [
+          "inconclusive",
+          "thermo5_dpd_invalid_zero_harness.a_invalid_sum_zero"
+        ],
+        [
+          "proven",
+          "thermo5_dpd_invalid_zero_harness.a_invalid_term_zero"
+        ],
+        [
+          "covered",
+          "thermo5_dpd_invalid_zero_harness.c_bubble_after_output"
+        ],
+        [
+          "inconclusive",
+          "thermo5_dpd_invalid_zero_harness.c_invalid_saturation"
+        ],
+        [
+          "covered",
+          "thermo5_dpd_invalid_zero_harness.c_output"
+        ]
+      ]
+    },
+    "formal_dpd_epoch": {
+      "properties_sha256": "82e85038d85701141e229a125d7022c9e7d775db27b63ee088da49b996ae8dda",
+      "results": [
+        [
+          "proven",
+          "thermo5_rdc_dpd_epoch_harness.a_epoch_valid"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_dpd_epoch_harness.a_hold"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_dpd_epoch_harness.a_reset_valid"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_dpd_epoch_harness.c_output"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_dpd_epoch_harness.c_reset_output"
+        ]
+      ]
+    },
+    "formal_async": {
+      "properties_sha256": "c98360f34d4e8fca7a3a7ac773ff4a4fc3c4adbc9655ea31abe3690b26ca9761",
+      "results": [
+        [
+          "inconclusive",
+          "thermo5_rdc_async_epoch_harness.a_epoch_initialized"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_async_epoch_harness.a_no_pop_reset"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_async_epoch_harness.a_no_push_reset"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_async_epoch_harness.a_rgray"
+        ],
+        [
+          "proven",
+          "thermo5_rdc_async_epoch_harness.a_wgray"
+        ],
+        [
+          "inconclusive",
+          "thermo5_rdc_async_epoch_harness.c_live_reset"
+        ],
+        [
+          "covered",
+          "thermo5_rdc_async_epoch_harness.c_transfer"
+        ]
+      ]
+    },
+    "formal_gain": {
+      "properties_sha256": "d62f22d263d500deab078f0da2847e58e15e0776dd7a71b3d0ad35c9fb5e7d91",
+      "results": [
+        [
+          "proven",
+          "thermo5_gain_fifo_v5_harness.a_fifo_capacity"
+        ],
+        [
+          "proven",
+          "thermo5_gain_fifo_v5_harness.a_fifo_empty_meta"
+        ],
+        [
+          "proven",
+          "thermo5_gain_fifo_v5_harness.a_gain_end_operand"
+        ],
+        [
+          "proven",
+          "thermo5_gain_fifo_v5_harness.a_gain_start_operand"
+        ],
+        [
+          "covered",
+          "thermo5_gain_fifo_v5_harness.c_empty_enabled"
+        ],
+        [
+          "uncoverable",
+          "thermo5_gain_fifo_v5_harness.c_line136_missing"
+        ],
+        [
+          "uncoverable",
+          "thermo5_gain_fifo_v5_harness.c_line137_missing"
+        ],
+        [
+          "covered",
+          "thermo5_gain_fifo_v5_harness.c_live_end"
+        ],
+        [
+          "covered",
+          "thermo5_gain_fifo_v5_harness.c_live_start"
+        ]
+      ]
+    },
+    "formal_source": {
+      "properties_sha256": "f862f198f5c48217c8ce77f91dfb5c7516cfb492c8373d5500b504c21d4577ab",
+      "results": [
+        [
+          "inconclusive",
+          "thermo5_source_frame_contract_harness.a_no_early_tlast"
+        ],
+        [
+          "inconclusive",
+          "thermo5_source_frame_contract_harness.c_early_tlast_target"
+        ],
+        [
+          "covered",
+          "thermo5_source_frame_contract_harness.c_legal_packet_end"
+        ],
+        [
+          "covered",
+          "thermo5_source_frame_contract_harness.c_source_accept"
+        ]
+      ]
+    },
+    "identity_clean_retry": {
+      "status": "OPEN",
+      "reason": "strict source revision mismatch after report-only commits; not counted PASS",
+      "run_result": {
+        "command": [
+          "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+          "-batch",
+          "-fmode",
+          "FPV",
+          "-f",
+          "/tmp/thermo5-cdc-rdc-rootfix/dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.tcl"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "timeout_seconds": 240,
+        "duration_seconds": 155.3,
+        "vcf_resolved_path": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+        "source_git_revision": "4223974d7fcd0bbade7a8538c84bfb41121760b3",
+        "source_worktree_clean_at_start": true
+      }
+    }
+  },
+  "status": "ECO_CANDIDATE_GLOBAL_CDC_RDC_OPEN",
+  "approved_rdc_waivers": 0,
+  "urg_exclusions_changed": 0,
+  "scope_limits": [
+    "Async FIFO epoch proof inconclusive",
+    "Reconvergence7 remains open",
+    "Gray encoding tool check disabled inherited",
+    "No physical metastability/MTBF proof",
+    "XPM/XSim not run",
+    "Identity arithmetic run manifest not validated"
+  ]
+}
