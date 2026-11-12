@@ -46,6 +46,3 @@
      [   9] constrained              (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_pair_zero
      [  11] constrained              (non_vacuous)  -  thermo5_dpd_invalid_zero_harness.a_invalid_term_zero
      [  15] constrained                             -  constant_15 - rst_n==1
-
-
-

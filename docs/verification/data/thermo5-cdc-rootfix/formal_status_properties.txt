@@ -39,6 +39,3 @@
    > Constraint
      # Constraint: 1
      [  9] constrained                             -  constant_9 - rst_n==1
-
-
-

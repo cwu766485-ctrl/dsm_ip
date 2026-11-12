@@ -47,6 +47,3 @@
    > Constraint
      # Constraint: 1
      [  15] constrained                             -  constant_15 - rst_n==1
-
-
-

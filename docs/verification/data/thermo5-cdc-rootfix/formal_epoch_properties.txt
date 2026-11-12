@@ -30,6 +30,3 @@
      # Cover: 2
      [  4] covered     (depth=3)                   -  thermo5_rdc_fifo_epoch_harness.c_reset_live
      [  5] covered     (depth=0)                   -  thermo5_rdc_fifo_epoch_harness.c_stall
-
-
-

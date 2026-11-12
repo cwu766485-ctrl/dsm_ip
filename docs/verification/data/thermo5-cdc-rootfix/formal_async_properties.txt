@@ -39,6 +39,3 @@
    > Constraint
      # Constraint: 1
      [  7] constrained                             -  constant_7 - boot_n==1
-
-
-
