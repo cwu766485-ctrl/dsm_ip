@@ -90,6 +90,8 @@ report_clock_interaction -file [file join $out_dir clock_interaction.rpt]
 check_timing -verbose -file [file join $out_dir check_timing.rpt]
 report_route_status -file [file join $out_dir route_status.rpt]
 report_utilization -file [file join $out_dir utilization.rpt]
+report_power -file [file join $out_dir vectorless_power.rpt]
+puts "THERMO5_POWER_ACTIVITY=VIVADO_VECTORLESS_NO_SAIF"
 
 set setup [get_timing_paths -delay_type max -max_paths 1 -quiet]
 set hold [get_timing_paths -delay_type min -max_paths 1 -quiet]

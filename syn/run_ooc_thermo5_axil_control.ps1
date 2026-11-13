@@ -2,12 +2,15 @@ param(
   [ValidateSet('synth','quick','full','timing')][string]$Implementation = 'full',
   [string]$Part = 'xczu15eg-ffvb1156-2-i',
   [double]$CoreMHz = 218.75,
+  [double]$SourceMHz = 125.0,
   [double]$AxilMHz = 100.0,
   [string]$OutDir = '',
   [string]$VivadoBat = 'D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat',
   [ValidateSet('causal','centered-cubic')][string]$Interpolation = 'causal',
   [ValidateSet(1,2)][int]$TidOrder = 1,
-  [ValidateSet(5120,7168)][int]$Step = 7168
+  [ValidateSet(5120)][int]$Step = 5120,
+  [ValidateSet(1)][int]$DpdMaxTaps = 1,
+  [ValidateSet(1)][int]$UseXpmFifo = 1
 )
 
 $ErrorActionPreference = 'Stop'
@@ -25,7 +28,7 @@ $OutDir = (Resolve-Path -LiteralPath $OutDir).Path
 $tcl = Join-Path $repo 'syn\run_ooc_thermo5_axil_control.tcl'
 $log = Join-Path $OutDir 'vivado.log'
 $centered = if ($Interpolation -eq 'centered-cubic') { 1 } else { 0 }
-& $VivadoBat -mode batch -source $tcl -tclargs $Part $CoreMHz $AxilMHz $OutDir $Implementation $centered $TidOrder $Step *> $log
+& $VivadoBat -mode batch -source $tcl -tclargs $Part $SourceMHz $CoreMHz $AxilMHz $OutDir $Implementation $centered $TidOrder $Step $DpdMaxTaps $UseXpmFifo *> $log
 if ($LASTEXITCODE -ne 0) { throw "AXI-Lite wrapper OOC failed; see $log" }
 if ($Implementation -eq 'synth') {
   $checkpoint = Join-Path $OutDir 'synthesized.dcp'
