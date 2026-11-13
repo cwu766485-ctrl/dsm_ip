@@ -21,7 +21,8 @@ module dsm_async_fifo #(
   output wire logic [DATA_W-1:0] rd_data,
   output wire logic              rd_valid,
   input  wire logic              rd_ready,
-  output wire logic              rd_empty
+  output wire logic              rd_empty,
+  output wire logic [ADDR_W:0]    rd_count
 );
   localparam int PTR_W = ADDR_W + 1;
 
@@ -33,6 +34,16 @@ module dsm_async_fifo #(
 
   function automatic logic [PTR_W-1:0] bin2gray(input logic [PTR_W-1:0] value);
     bin2gray = (value >> 1) ^ value;
+  endfunction
+
+  function automatic logic [PTR_W-1:0] gray2bin(input logic [PTR_W-1:0] value);
+    logic [PTR_W-1:0] result;
+    begin
+      result[PTR_W-1] = value[PTR_W-1];
+      for (int bit_idx = PTR_W-2; bit_idx >= 0; bit_idx--)
+        result[bit_idx] = result[bit_idx+1] ^ value[bit_idx];
+      return result;
+    end
   endfunction
 
   wire wr_push = wr_valid && !wr_full_q;
@@ -97,6 +108,7 @@ module dsm_async_fifo #(
   assign rd_valid = !rd_empty_q;
   assign rd_empty = rd_empty_q;
   assign rd_data  = mem[rd_bin_q[ADDR_W-1:0]];
+  assign rd_count = gray2bin(wr_gray_rd_sync2_q) - rd_bin_q;
 
 `ifndef SYNTHESIS
   // Local-domain executable CDC invariants.  Only Gray-coded pointers cross

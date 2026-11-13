@@ -35,6 +35,7 @@ module dsm_axis14_to_core8_cdc #(
   input  wire logic                                  core_drain,
   output wire logic                                  core_valid,
   output wire logic                                  core_data_empty,
+  output wire logic                                  core_prefill_ready,
   input  wire logic                                  core_ready,
   output wire logic signed [CORE_LANES*W-1:0]        core_i_vec,
   output wire logic signed [CORE_LANES*W-1:0]        core_q_vec,
@@ -51,6 +52,7 @@ module dsm_axis14_to_core8_cdc #(
   logic s_rst_n, c_rst_n;
   logic [FIFO_W-1:0] fifo_wr_data, fifo_rd_data;
   logic fifo_wr_ready, fifo_rd_valid, fifo_rd_ready, fifo_rd_empty;
+  logic [FIFO_ADDR_W:0] fifo_rd_count;
   logic signed [SRC_LANES*W-1:0] fifo_i, fifo_q;
   logic fifo_frame_start, fifo_frame_end;
   logic signed [GAIN_W-1:0] fifo_frame_gain;
@@ -85,14 +87,16 @@ module dsm_axis14_to_core8_cdc #(
         .wr_clk(s_axis_aclk), .wr_rst_n(s_axis_aresetn), .wr_data_vec(fifo_wr_data),
         .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
         .rd_clk(core_clk), .rd_rst_n(core_aresetn), .rd_data(fifo_rd_data),
-        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
+        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty),
+        .rd_count(fifo_rd_count)
       );
     end else begin : g_generic_fifo
       dsm_async_fifo #(.DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W)) u_async_fifo (
         .wr_clk(s_axis_aclk), .wr_rst_n(s_rst_n), .wr_data(fifo_wr_data),
         .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
         .rd_clk(core_clk), .rd_rst_n(c_rst_n), .rd_data(fifo_rd_data),
-        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
+        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty),
+        .rd_count(fifo_rd_count)
       );
     end
   endgenerate
@@ -112,6 +116,10 @@ module dsm_axis14_to_core8_cdc #(
   // a graceful-stop controller cannot stop on a transient empty observation.
   assign core_data_empty = fifo_rd_empty && !fifo_rd_valid &&
                            (rem_count_q == 0) && !out_valid_q && !end_pending_q;
+  // The synchronized write pointer is the authoritative read-domain view of
+  // queued source beats. Keep startup qualification inside the FIFO ownership
+  // cone instead of crossing an independent prefill control into rd_empty.
+  assign core_prefill_ready = (fifo_rd_count >= 2);
   assign core_i_vec = out_i_q;
   assign core_q_vec = out_q_q;
   assign core_frame_start = out_frame_start_q;

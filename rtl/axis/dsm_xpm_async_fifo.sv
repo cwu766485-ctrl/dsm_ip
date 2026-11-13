@@ -21,7 +21,8 @@ module dsm_xpm_async_fifo #(
   output wire logic [DATA_W-1:0] rd_data,
   output wire logic              rd_valid,
   input  wire logic              rd_ready,
-  output wire logic              rd_empty
+  output wire logic              rd_empty,
+  output wire logic [ADDR_W:0]    rd_count
 );
   localparam int FIFO_DEPTH = 1 << ADDR_W;
   logic fifo_rst, full, empty, wr_rst_busy, rd_rst_busy;
@@ -72,7 +73,7 @@ module dsm_xpm_async_fifo #(
     .READ_MODE("fwft"),
     .FIFO_READ_LATENCY(0),
     .READ_DATA_WIDTH(DATA_W),
-    .RD_DATA_COUNT_WIDTH(1),
+    .RD_DATA_COUNT_WIDTH(ADDR_W+1),
     .PROG_EMPTY_THRESH(2),
     .DOUT_RESET_VALUE("0"),
     .CDC_SYNC_STAGES(2),
@@ -83,7 +84,7 @@ module dsm_xpm_async_fifo #(
     .full(full), .prog_full(), .wr_data_count(), .overflow(),
     .wr_rst_busy(wr_rst_busy), .almost_full(), .wr_ack(),
     .rd_clk(rd_clk), .rd_en(rd_ready && rd_valid), .dout(rd_data),
-    .empty(empty), .prog_empty(), .rd_data_count(), .underflow(),
+    .empty(empty), .prog_empty(), .rd_data_count(rd_count), .underflow(),
     .rd_rst_busy(rd_rst_busy), .almost_empty(), .data_valid(),
     .injectsbiterr(1'b0), .injectdbiterr(1'b0), .sbiterr(), .dbiterr()
   );

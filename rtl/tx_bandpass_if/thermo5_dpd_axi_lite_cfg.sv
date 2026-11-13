@@ -168,8 +168,7 @@ module thermo5_dpd_axi_lite_cfg #(
         read_data_mux[0] = cfg_busy_q;
         read_data_mux[1] = cfg_done_q;
         read_data_mux[2] = cfg_error_q;
-        // RUN_ACTIVE and DRAINING are synchronized status views of the
-        // core-domain graceful-stop controller.
+        // These are synchronized status levels from the graceful-stop core.
         read_data_mux[3] = tx_active_sync2;
         read_data_mux[4] = draining_sync2;
       end
@@ -225,7 +224,6 @@ module thermo5_dpd_axi_lite_cfg #(
       tx_active_sync2 <= tx_active_sync1;
       draining_sync1 <= core_draining;
       draining_sync2 <= draining_sync1;
-
       if (s_axil_bvalid && s_axil_bready) s_axil_bvalid <= 1'b0;
       if (s_axil_rvalid && s_axil_rready) s_axil_rvalid <= 1'b0;
       if (aw_take) begin
