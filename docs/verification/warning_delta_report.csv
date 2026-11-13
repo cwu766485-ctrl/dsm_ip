@@ -1,0 +1,41 @@
+scope,baseline_native_id,baseline_rule,baseline_severity,candidate_native_id,candidate_rule,candidate_severity,category,disposition,notes
+Full CDC,66A,Ac_cdc01a,Error,,Ac_cdc01a,,Severity cleared; proof open,OPEN,tx_active_status_c to AXI-Lite tx_active_sync1; pulse capture not proven
+Full CDC,669,Ac_cdc01a,Error,,Ac_cdc01a,,Severity cleared; proof open,OPEN,draining_status_c to AXI-Lite draining_sync1; pulse capture not proven
+Full CDC,66C,Ac_cdc01a,Error,,Ac_cdc01a,,Severity cleared; proof open,OPEN,tx_active_status_c to core_active_s1; restart/prefill pulse handling not proven
+Full CDC,654,Ac_conv02,Error,,Ac_conv02,,Severity cleared; proof open,OPEN,mixed FIFO pointer/prefill convergence to rd_empty_next; protocol proof remains open
+Full CDC,66A,Ac_cdc01a,Warning,65A,Ac_cdc01a,Warning,Existing Warning,OPEN,cfg_ack_core bundled-data hold is Partially-Proved
+Full CDC,656,Ac_conv01,Warning,64B,Ac_conv01,Warning,Existing Warning,OPEN,cfg_req_sync1 and run_sync1 converge on cfg_pending_valid
+Full CDC,65A,Ac_conv01,Warning,64E,Ac_conv01,Warning,Existing Warning,OPEN,write pointer and ingress_closed_c1 converge on drain_complete
+Full CDC,653,Ac_conv01,Warning,651,Ac_conv01,Warning,Existing Warning,OPEN,pointer and source_error_c1 converge on core_protocol_error
+Full CDC,660,Ac_conv03,Warning,654,Ac_conv03,Warning,Existing Warning,OPEN,read pointer and run_s1 converge on wr_full_next
+Full CDC,667,Ac_conv03,Warning,657,Ac_conv03,Warning,Existing Warning,OPEN,write pointer and run sync converge on core_datapath_enable
+Full CDC,,Ac_conv02,,646,Ac_conv02,Warning,New/retained partial,OPEN,read pointer convergence to wr_full_next; Gray check Partially-Proved
+Full CDC,,Ac_conv02,,648,Ac_conv02,Warning,New/retained partial,OPEN,write pointer convergence to fifo_rd_count[4]; Gray check Partially-Proved
+Full CDC,,Ac_datahold01a,,65E,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO frame-start metadata sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,662,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO frame-gain metadata sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,663,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO end-pending metadata sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,660,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO I payload sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,661,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO Q payload sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,65C,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO remaining-I payload sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,65D,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO remaining-Q payload sequencing Partially-Proved
+Full CDC,,Ac_datahold01a,,665,Ac_datahold01a,Warning,Retained partial,OPEN,FIFO protocol-error metadata sequencing Partially-Proved
+Full CDC,,Reset_sync04,,85,Reset_sync04,Warning,Reset contract review,OPEN,reset recognized in multiple synchronization paths; not waived
+Full CDC,,Reset_sync04,,83,Reset_sync04,Warning,Reset contract review,OPEN,reset recognized in multiple synchronization paths; not waived
+Full CDC,,Reset_sync04,,82,Reset_sync04,Warning,Reset contract review,OPEN,reset recognized in multiple synchronization paths; not waived
+Full CDC,,Reset_sync04,,86,Reset_sync04,Warning,Reset contract review,OPEN,reset recognized in multiple synchronization paths; not waived
+Full CDC,,Reset_sync04,,84,Reset_sync04,Warning,Reset contract review,OPEN,reset recognized in multiple synchronization paths; not waived
+Setup/Design Read,,SYNTH_5143,SynthesisWarning,F,SYNTH_5143,SynthesisWarning,Tool setup warning,OPEN,gt_tx_user_bridge.sv:19 initial block ignored for synthesis; simulation-only initialization
+Setup/Design Read,,SYNTH_5143,SynthesisWarning,11,SYNTH_5143,SynthesisWarning,Tool setup warning,OPEN,thermo5_dpd_axi_lite_cfg.sv:345 initial block ignored for synthesis; review synthesis intent
+Setup/Design Read,,SYNTH_5143,SynthesisWarning,10,SYNTH_5143,SynthesisWarning,Tool setup warning,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:95 initial block ignored for synthesis; simulation-only initialization
+Setup/Design Read,,SYNTH_5143,SynthesisWarning,12,SYNTH_5143,SynthesisWarning,Tool setup warning,OPEN,tid32_thermo5_axi_lite_axis_frontend_tx.sv:270 initial block ignored for synthesis; review synthesis intent
+Setup/Design Read,0,WRN_1024,Warning,0,WRN_1024,Warning,Signed arithmetic review,OPEN,dpd_memory_poly.v:285 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,9,WRN_1024,Warning,9,WRN_1024,Warning,Signed arithmetic review,OPEN,dsm_frame_gain_vector.sv:128 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,A,WRN_1024,Warning,A,WRN_1024,Warning,Signed arithmetic review,OPEN,dsm_frame_gain_vector.sv:130 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,1,WRN_1024,Warning,1,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:175 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,2,WRN_1024,Warning,2,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:176 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,3,WRN_1024,Warning,3,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:177 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,4,WRN_1024,Warning,4,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:178 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,5,WRN_1024,Warning,5,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:296 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,6,WRN_1024,Warning,6,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:297 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,7,WRN_1024,Warning,7,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:298 signed argument passed to $signed; RTL arithmetic unchanged
+Setup/Design Read,8,WRN_1024,Warning,8,WRN_1024,Warning,Signed arithmetic review,OPEN,tid32_cartesian_ef2_fs4_gt_tx.sv:299 signed argument passed to $signed; RTL arithmetic unchanged

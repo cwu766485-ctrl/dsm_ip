@@ -1,5 +1,56 @@
 ## Current execution state: PR #62 ECO revalidation - partial, signoff open (2026-11-12)
 
+## Current execution state: CDC debug checkpoint and partial UVM recovery (2026-11-13)
+
+Work continued in isolated candidate branch `task/thermo5-cdc-quantified-research`
+at `3b60f37929c23d014ab533ba80099e02f67c3e8d`; immutable PR #62 baseline is
+`ac08611af825586dc378041d2568eb7ee1ea563c` in `/tmp/thermo5-cdc-rdc-rootfix`.
+The IDE checkout is a separate dirty branch and was not modified. Original
+diagnostics, failed UVM timeout logs, SpyGlass reports and native VCDs remain
+preserved. AXI-Lite bit-true testbench control was repaired and replayed with
+the same seed on baseline and candidate: both passed 32 source beats, 56
+four-plane output words, zero UVM errors/fatals and zero underflow. Candidate
+STOP/Restart 112-word test and nine-reset sweep also passed; trace oracle
+passed 206 CDC / 101 EF2 / 91 PA words with no underflow. Full regression is
+not complete.
+
+Candidate Full CDC v6 has zero Error rows; the remaining convergence and data
+hold warnings include Partially-Proved checks and stay OPEN. The old four
+errors are severity-closed in this run, not all formally discharged. Candidate
+RDC v2 is worse by native tally: 10,539 Error / 15 Warning / 67 Info and
+10,549 reset-cross records, versus baseline 10,506 Error / 15 Warning / 70
+Info and 10,519 records. No RDC root is closed; no waiver is approved.
+Async FIFO initialized-epoch and live-reset recovery remain INCONCLUSIVE.
+Full 594-scenario replay, complete negative regression, fresh Raw URG, and
+the requested eight-group A/B provenance are OPEN/NOT_RUN.
+
+Checkpoint reports: `docs/verification/cdc_final_debug_report.md`,
+`rdc_root_closure_report.md`, `warning_delta_report.csv`,
+`uvm_regression_report.md`, `coverage_signoff_report.md`,
+`architecture_ab_comparison.csv`, and `research_ppa_tradeoff_report.md`.
+CSV schemas and source/report hashes validate; 70 thermo5 utility tests pass
+with one skip under Python 3.12. The host `python3` is 3.6 and cannot import
+the project's annotations syntax. No merge or PR integration was performed.
+
+## Current execution state: PR #64 staging changes prepared, publication pending (2026-11-13)
+
+Fetched `integration/thermo5-vivado-ppa-20261113` at
+`3c9d371be89b1fabc8a2afd3ed2628ffbc48d991`; its parent is candidate
+`3b60f37929c23d014ab533ba80099e02f67c3e8d`, so the current review candidate
+can fast-forward without replaying the old PR stack. Source ECO, DV fixes,
+formal/report evidence, A/B artifacts and PPA scripts are being separated into
+reviewable commits on the isolated candidate branch before publication.
+
+Vivado OOC flow now fixes the four-way STEP=5120 comparison to AXI-Lite top,
+`DPD_MAX_TAPS=1`, XPM FIFO, ZU15EG part and 125/218.75/100 MHz clocks. Its
+runner synthesizes all cases before routing from each checkpoint. Vivado
+Windows payload is mounted at `/mnt/d/AMDDesignTools/2026.1/Vivado`, but Linux
+Vivado exits because the `lnx64.o` payload is absent and Windows PowerShell/CMD
+interop is unavailable. Synthesis and routing are therefore NOT_RUN. The new
+flow is not PPA evidence. Tcl completeness and 70 thermo5 utility tests pass;
+no integrated CDC/RDC/full regression signoff is claimed. The requested new
+eight-group raw held-out bundle remains unlocated/NOT_VALIDATED.
+
 Revalidated immutable Draft PR #62 HEAD `ac08611af825586dc378041d2568eb7ee1ea563c`
 in a clean detached checkout. Fresh SpyGlass setup/structural CDC/full CDC/RDC
 and four isolated VC Formal harnesses completed. Setup `0E/15W/65I`, structural

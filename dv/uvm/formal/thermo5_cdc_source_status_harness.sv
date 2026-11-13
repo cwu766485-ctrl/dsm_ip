@@ -91,21 +91,24 @@ module thermo5_cdc_source_status_harness (
     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
   );
 
-  a_tx_source_register: assert property (@(posedge core_clk) disable iff(!rst_n)
-    $past(rst_n) |-> dut.tx_active_status_c == $past(dut.core_tx_active));
-  a_drain_source_register: assert property (@(posedge core_clk) disable iff(!rst_n)
-    $past(rst_n) |-> dut.draining_status_c == $past(dut.core_draining));
   a_closed_source_register: assert property (@(posedge source_clk) disable iff(!rst_n)
     $past(rst_n) |-> dut.ingress_closed_status_s == $past(dut.ingress_closed_s));
-  a_prefill_source_register: assert property (@(posedge source_clk) disable iff(!rst_n)
-    $past(rst_n) |-> dut.prefill_ready_s == $past(dut.prefill_count_s == 2));
-  a_prefill_bound: assert property (@(posedge source_clk) disable iff(!rst_n)
-    dut.prefill_count_s <= 2);
-  a_prefill_no_early: assert property (@(posedge source_clk) disable iff(!rst_n)
-    dut.prefill_ready_s |-> dut.prefill_count_s == 2);
-  a_active_chain: assert property (@(posedge source_clk) disable iff(!rst_n)
-    $past(rst_n) |-> dut.core_active_s2 == $past(dut.core_active_s1));
-  c_prefill: cover property (@(posedge core_clk) disable iff(!rst_n) dut.startup_prefill_done);
+  a_fifo_prefill_threshold: assert property (@(posedge core_clk) disable iff(!rst_n)
+    dut.core_prefill_ready == (dut.u_cdc.fifo_rd_count >= 2));
+  a_startup_gate: assert property (@(posedge core_clk) disable iff(!rst_n)
+    dut.core_datapath_enable |-> (dut.core_prefill_seen_q || dut.core_prefill_ready || dut.core_draining));
+  a_prefill_sticky_while_active: assert property (@(posedge core_clk) disable iff(!rst_n)
+    dut.core_tx_active_q && dut.core_prefill_seen_q && !dut.drain_complete |=> dut.core_prefill_seen_q);
+  a_status_change_starts_hold: assert property (@(posedge core_clk) disable iff(!rst_n)
+    $changed({dut.draining_status_c, dut.tx_active_status_c}) |->
+      dut.status_hold_count_q == 3);
+  a_status_hold_stable: assert property (@(posedge core_clk) disable iff(!rst_n)
+    dut.status_hold_count_q != 0 |=>
+      $stable({dut.draining_status_c, dut.tx_active_status_c}));
+  c_prefill: cover property (@(posedge core_clk) disable iff(!rst_n)
+    dut.core_prefill_ready && dut.core_datapath_enable);
+  c_status_hold: cover property (@(posedge core_clk) disable iff(!rst_n)
+    dut.status_hold_count_q == 3);
   c_output: cover property (@(posedge core_clk) disable iff(!rst_n) |pa_valid);
 endmodule
 `default_nettype wire

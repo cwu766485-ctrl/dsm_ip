@@ -5,6 +5,7 @@ module thermo5_rdc_async_epoch_harness(
 );
  wire common_n=boot_n&&epoch_n;
  wire wn,rn,ready,valid,full,empty;
+ wire [4:0] rd_count;
  wire [7:0] data;
  logic [15:0] initialized;
  dsm_reset_sync ws(.clk(wc),.arst_n(common_n),.srst_n(wn));
@@ -12,7 +13,8 @@ module thermo5_rdc_async_epoch_harness(
  dsm_async_fifo #(.DATA_W(8),.ADDR_W(4)) dut(
  .wr_clk(wc),.wr_rst_n(wn),.wr_data(wdata),.wr_valid(wvalid&&wn),
  .wr_ready(ready),.wr_full(full),.rd_clk(rc),.rd_rst_n(rn),
- .rd_data(data),.rd_valid(valid),.rd_ready(rready&&rn),.rd_empty(empty));
+ .rd_data(data),.rd_valid(valid),.rd_ready(rready&&rn),.rd_empty(empty),
+ .rd_count(rd_count));
  always @(posedge wc or negedge common_n)
   if(!common_n) initialized<=0;
   else if(wn&&wvalid&&ready)initialized[dut.wr_bin_q[3:0]]<=1;
@@ -30,6 +32,7 @@ module thermo5_rdc_async_epoch_harness(
  a_epoch_initialized: assert property(@(posedge rc) disable iff(!common_n) rn&&valid |-> initialized[dut.rd_bin_q[3:0]]);
  a_no_pop_reset: assert property(@(posedge rc) !rn |-> !dut.rd_pop);
  a_no_push_reset: assert property(@(posedge wc) !wn |-> !dut.wr_push);
+ a_read_count_bound: assert property(@(posedge rc) disable iff(!rn) rd_count <= 16);
  a_wgray: assert property(@(posedge wc) disable iff(!wn) $onehot0(dut.wr_gray_next^dut.wr_gray_q));
  a_rgray: assert property(@(posedge rc) disable iff(!rn) $onehot0(dut.rd_gray_next^dut.rd_gray_q));
  c_transfer: cover property(@(posedge rc) rn&&valid&&rready);

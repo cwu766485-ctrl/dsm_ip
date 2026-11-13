@@ -1,0 +1,24 @@
+ M docs/exec-plans/active/execution-frontier.md
+ M dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv
+ M dv/uvm/formal/thermo5_cdc_source_status_harness.sv
+ M dv/uvm/formal/thermo5_rdc_async_epoch_harness.sv
+ M dv/uvm/tests/thermo5/thermo5_sku_base_test.svh
+ M dv/uvm/tests/thermo5/thermo5_sku_bittrue_test.svh
+ M dv/verif/axis/tb_thermo5_generic_fifo_epochs.sv
+ M dv/verif/axis/tb_thermo5_generic_fifo_skew_epochs.sv
+ M dv/verif/reset/tb_thermo5_reset_release_contract.sv
+ M rtl/axis/dsm_async_fifo.sv
+ M rtl/axis/dsm_axis14_to_core8_cdc.sv
+ M rtl/axis/dsm_xpm_async_fifo.sv
+ M rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv
+ M rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
+ M tools/hw/check_thermo5_axil_illegal_frame.py
+?? docs/verification/architecture_ab_comparison.csv
+?? docs/verification/cdc_final_debug_report.md
+?? docs/verification/coverage_signoff_report.md
+?? docs/verification/data/thermo5-cdc-quantified-debug/
+?? docs/verification/rdc_root_closure_report.md
+?? docs/verification/research_ppa_tradeoff_report.md
+?? docs/verification/uvm_regression_report.md
+?? docs/verification/warning_delta_report.csv
+?? elab_summary.rpt
