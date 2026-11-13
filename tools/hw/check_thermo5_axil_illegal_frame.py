@@ -17,9 +17,10 @@ EXPECTED_EVENTS = (
     (
         "cdc_frame_alignment",
         re.compile(
-            r'^"rtl/axis/dsm_axis14_to_core8_cdc\.sv", 262: '
+            r'^Error: "rtl/axis/dsm_axis14_to_core8_cdc\.sv", \d+: '
             r'thermo5_sku_uvm_tb\.dut\.u_cdc\.unnamed\$\$_1: '
-            r"started at \d+ps failed at \d+ps$",
+            r'(?:at time \d+ ps|started at \d+ps failed at \d+ps)$'
+            r'\nDSM frame_start was not aligned to a 56-sample boundary$',
             re.MULTILINE,
         ),
         "DSM frame_start was not aligned to a 56-sample boundary",
@@ -27,9 +28,11 @@ EXPECTED_EVENTS = (
     (
         "centered_cubic_stage1_frame_tail",
         re.compile(
-            r'^"rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", 310: '
+            r'^Error: "rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", \d+: '
             r'thermo5_sku_uvm_tb\.dut\.u_frontend\.g_interp1_centered\.'
-            r'u_interp_1\.unnamed\$\$_1: started at \d+ps failed at \d+ps$',
+            r'u_interp_1\.unnamed\$\$_1: '
+            r'(?:at time \d+ ps|started at \d+ps failed at \d+ps)$'
+            r'\ncentered cubic frame-end vector was followed by same-frame data$',
             re.MULTILINE,
         ),
         "centered cubic frame-end vector was followed by same-frame data",
@@ -37,9 +40,11 @@ EXPECTED_EVENTS = (
     (
         "centered_cubic_stage2_frame_tail",
         re.compile(
-            r'^"rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", 310: '
+            r'^Error: "rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", \d+: '
             r'thermo5_sku_uvm_tb\.dut\.u_frontend\.g_interp2_centered\.'
-            r'u_interp_2\.unnamed\$\$_1: started at \d+ps failed at \d+ps$',
+            r'u_interp_2\.unnamed\$\$_1: '
+            r'(?:at time \d+ ps|started at \d+ps failed at \d+ps)$'
+            r'\ncentered cubic frame-end vector was followed by same-frame data$',
             re.MULTILINE,
         ),
         "centered cubic frame-end vector was followed by same-frame data",

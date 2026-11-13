@@ -2,13 +2,13 @@
 // Real default-depth Generic FIFO. Clock-local reset syncs match product CDC.
 module tb_thermo5_generic_fifo_epochs;
  reg wc=0,rc=0,rst=1,wv=0,rr=0;reg[31:0]wd=0;
- wire ws,rs,wr,full,rv,empty;wire[31:0]rd;
+ wire ws,rs,wr,full,rv,empty;wire[31:0]rd;wire[4:0]rd_count;
  integer received=0,expected=0,epoch=0,full_seen=0;
  always #4 wc=~wc;
  always #2.286 rc=~rc;
  dsm_reset_sync wsync(.clk(wc),.arst_n(rst),.srst_n(ws));
  dsm_reset_sync rsync(.clk(rc),.arst_n(rst),.srst_n(rs));
- dsm_async_fifo #(.DATA_W(32),.ADDR_W(4)) dut(.wr_clk(wc),.wr_rst_n(ws),.wr_data(wd),.wr_valid(wv&&ws),.wr_ready(wr),.wr_full(full),.rd_clk(rc),.rd_rst_n(rs),.rd_data(rd),.rd_valid(rv),.rd_ready(rr&&rs),.rd_empty(empty));
+ dsm_async_fifo #(.DATA_W(32),.ADDR_W(4)) dut(.wr_clk(wc),.wr_rst_n(ws),.wr_data(wd),.wr_valid(wv&&ws),.wr_ready(wr),.wr_full(full),.rd_clk(rc),.rd_rst_n(rs),.rd_data(rd),.rd_valid(rv),.rd_ready(rr&&rs),.rd_empty(empty),.rd_count(rd_count));
  always @(posedge rc) if(rs && rr && rv)begin
   if(rd!==32'h10000000+expected)$fatal(1,"epoch leak/data mismatch epoch%0d index%0d got%h",epoch,expected,rd);
   expected++;received++;
@@ -28,7 +28,7 @@ module tb_thermo5_generic_fifo_epochs;
   #1.137;rst=0;wv=0;epoch++;
   #1ps;if(ws||rs)$fatal(1,"reset sync assertion delayed");
   #40;rst=1;wait(ws&&rs);
-  if(!empty||rv)$fatal(1,"FIFO not empty after reset");
+  if(!empty||rv||rd_count!=0)$fatal(1,"FIFO not empty after reset");
   rr=1;
   for(integer i=0;i<64;i++)push(32'h10000000+i);
   wait(received==64);repeat(6)@(posedge rc);

@@ -2,11 +2,12 @@
 // Component-level evidence only; not a product-level FIFO/epoch oracle.
 module tb_thermo5_reset_release_contract;
   reg [2:0] clk=0, arst=0;
+  reg [2:0] clk_run=3'b111;
   wire [2:0] srst;
   integer checks=0;
-  always #4 clk[0]=~clk[0];
-  always #2.286 clk[1]=~clk[1];
-  always #5 clk[2]=~clk[2];
+  always #4 if (clk_run[0]) clk[0]=~clk[0];
+  always #2.286 if (clk_run[1]) clk[1]=~clk[1];
+  always #5 if (clk_run[2]) clk[2]=~clk[2];
   for(genvar g=0;g<3;g=g+1) begin: domains
     dsm_reset_sync dut(.clk(clk[g]),.arst_n(arst[g]),.srst_n(srst[g]));
   end
@@ -29,6 +30,17 @@ module tb_thermo5_reset_release_contract;
   endtask
   initial begin
     #1; arst=7; #1; assert_all();
+    @(negedge clk[2]); clk_run[2]=1'b0;
+    #1; arst[2]=1'b1;
+    #20;
+    if(srst[2]!==1'b0) $fatal(1,"reset released without local clock edges");
+    clk_run[2]=1'b1;
+    @(posedge clk[2]); #1ps;
+    if(srst[2]!==1'b0) $fatal(1,"reset released on first edge after stopped clock");
+    @(posedge clk[2]); #1ps;
+    if(srst[2]!==1'b1) $fatal(1,"reset did not release on second edge after stopped clock");
+    checks++;
+    assert_all();
     repeat(3) @(negedge clk[0]);
     for(integer epoch=0;epoch<6;epoch++) begin
       for(integer n=0;n<3;n++) begin
