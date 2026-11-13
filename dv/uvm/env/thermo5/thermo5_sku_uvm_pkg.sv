@@ -58,10 +58,10 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_unified_scoreboard_mutation_test.svh"
   `include "thermo5_sku_virtual_sequencer.svh"
   `include "thermo5_sku_env.svh"
+  `include "thermo5_axil_access_sequence.svh"
   `include "thermo5_sku_base_test.svh"
   `include "thermo5_sku_bittrue_test.svh"
   `include "thermo5_sku_corner_tests.svh"
-  `include "thermo5_axil_access_sequence.svh"
   `include "thermo5_sku_virtual_sequence.svh"
   `include "thermo5_sku_axil_config_test.svh"
   `include "thermo5_sku_axil_virtual_sequence_smoke_test.svh"
@@ -87,4 +87,6 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_axil_frame_replacement_test.svh"
   `include "thermo5_sku_axil_outstanding_bounds_test.svh"
   `include "thermo5_sku_low_power_drain_test.svh"
+  `include "thermo5_sku_axil_p0_overlap_test.svh"
+  `include "thermo5_sku_axil_p0_reset_test.svh"
 endpackage

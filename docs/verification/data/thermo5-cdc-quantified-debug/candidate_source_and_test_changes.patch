@@ -1,0 +1,626 @@
+diff --git a/dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv b/dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv
+index 793df3c..fa59c8f 100644
+--- a/dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv
++++ b/dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv
+@@ -58,10 +58,10 @@ package thermo5_sku_uvm_pkg;
+   `include "thermo5_unified_scoreboard_mutation_test.svh"
+   `include "thermo5_sku_virtual_sequencer.svh"
+   `include "thermo5_sku_env.svh"
++  `include "thermo5_axil_access_sequence.svh"
+   `include "thermo5_sku_base_test.svh"
+   `include "thermo5_sku_bittrue_test.svh"
+   `include "thermo5_sku_corner_tests.svh"
+-  `include "thermo5_axil_access_sequence.svh"
+   `include "thermo5_sku_virtual_sequence.svh"
+   `include "thermo5_sku_axil_config_test.svh"
+   `include "thermo5_sku_axil_virtual_sequence_smoke_test.svh"
+diff --git a/dv/uvm/formal/thermo5_cdc_source_status_harness.sv b/dv/uvm/formal/thermo5_cdc_source_status_harness.sv
+index dc18fb2..820fd4e 100644
+--- a/dv/uvm/formal/thermo5_cdc_source_status_harness.sv
++++ b/dv/uvm/formal/thermo5_cdc_source_status_harness.sv
+@@ -91,21 +91,24 @@ module thermo5_cdc_source_status_harness (
+     .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
+   );
+ 
+-  a_tx_source_register: assert property (@(posedge core_clk) disable iff(!rst_n)
+-    $past(rst_n) |-> dut.tx_active_status_c == $past(dut.core_tx_active));
+-  a_drain_source_register: assert property (@(posedge core_clk) disable iff(!rst_n)
+-    $past(rst_n) |-> dut.draining_status_c == $past(dut.core_draining));
+   a_closed_source_register: assert property (@(posedge source_clk) disable iff(!rst_n)
+     $past(rst_n) |-> dut.ingress_closed_status_s == $past(dut.ingress_closed_s));
+-  a_prefill_source_register: assert property (@(posedge source_clk) disable iff(!rst_n)
+-    $past(rst_n) |-> dut.prefill_ready_s == $past(dut.prefill_count_s == 2));
+-  a_prefill_bound: assert property (@(posedge source_clk) disable iff(!rst_n)
+-    dut.prefill_count_s <= 2);
+-  a_prefill_no_early: assert property (@(posedge source_clk) disable iff(!rst_n)
+-    dut.prefill_ready_s |-> dut.prefill_count_s == 2);
+-  a_active_chain: assert property (@(posedge source_clk) disable iff(!rst_n)
+-    $past(rst_n) |-> dut.core_active_s2 == $past(dut.core_active_s1));
+-  c_prefill: cover property (@(posedge core_clk) disable iff(!rst_n) dut.startup_prefill_done);
++  a_fifo_prefill_threshold: assert property (@(posedge core_clk) disable iff(!rst_n)
++    dut.core_prefill_ready == (dut.u_cdc.fifo_rd_count >= 2));
++  a_startup_gate: assert property (@(posedge core_clk) disable iff(!rst_n)
++    dut.core_datapath_enable |-> (dut.core_prefill_seen_q || dut.core_prefill_ready || dut.core_draining));
++  a_prefill_sticky_while_active: assert property (@(posedge core_clk) disable iff(!rst_n)
++    dut.core_tx_active_q && dut.core_prefill_seen_q && !dut.drain_complete |=> dut.core_prefill_seen_q);
++  a_status_change_starts_hold: assert property (@(posedge core_clk) disable iff(!rst_n)
++    $changed({dut.draining_status_c, dut.tx_active_status_c}) |->
++      dut.status_hold_count_q == 3);
++  a_status_hold_stable: assert property (@(posedge core_clk) disable iff(!rst_n)
++    dut.status_hold_count_q != 0 |=>
++      $stable({dut.draining_status_c, dut.tx_active_status_c}));
++  c_prefill: cover property (@(posedge core_clk) disable iff(!rst_n)
++    dut.core_prefill_ready && dut.core_datapath_enable);
++  c_status_hold: cover property (@(posedge core_clk) disable iff(!rst_n)
++    dut.status_hold_count_q == 3);
+   c_output: cover property (@(posedge core_clk) disable iff(!rst_n) |pa_valid);
+ endmodule
+ `default_nettype wire
+diff --git a/dv/uvm/formal/thermo5_rdc_async_epoch_harness.sv b/dv/uvm/formal/thermo5_rdc_async_epoch_harness.sv
+index b5511e2..e0bc365 100644
+--- a/dv/uvm/formal/thermo5_rdc_async_epoch_harness.sv
++++ b/dv/uvm/formal/thermo5_rdc_async_epoch_harness.sv
+@@ -5,6 +5,7 @@ module thermo5_rdc_async_epoch_harness(
+ );
+  wire common_n=boot_n&&epoch_n;
+  wire wn,rn,ready,valid,full,empty;
++ wire [4:0] rd_count;
+  wire [7:0] data;
+  logic [15:0] initialized;
+  dsm_reset_sync ws(.clk(wc),.arst_n(common_n),.srst_n(wn));
+@@ -12,7 +13,8 @@ module thermo5_rdc_async_epoch_harness(
+  dsm_async_fifo #(.DATA_W(8),.ADDR_W(4)) dut(
+  .wr_clk(wc),.wr_rst_n(wn),.wr_data(wdata),.wr_valid(wvalid&&wn),
+  .wr_ready(ready),.wr_full(full),.rd_clk(rc),.rd_rst_n(rn),
+- .rd_data(data),.rd_valid(valid),.rd_ready(rready&&rn),.rd_empty(empty));
++ .rd_data(data),.rd_valid(valid),.rd_ready(rready&&rn),.rd_empty(empty),
++ .rd_count(rd_count));
+  always @(posedge wc or negedge common_n)
+   if(!common_n) initialized<=0;
+   else if(wn&&wvalid&&ready)initialized[dut.wr_bin_q[3:0]]<=1;
+@@ -30,6 +32,7 @@ module thermo5_rdc_async_epoch_harness(
+  a_epoch_initialized: assert property(@(posedge rc) disable iff(!common_n) rn&&valid |-> initialized[dut.rd_bin_q[3:0]]);
+  a_no_pop_reset: assert property(@(posedge rc) !rn |-> !dut.rd_pop);
+  a_no_push_reset: assert property(@(posedge wc) !wn |-> !dut.wr_push);
++ a_read_count_bound: assert property(@(posedge rc) disable iff(!rn) rd_count <= 16);
+  a_wgray: assert property(@(posedge wc) disable iff(!wn) $onehot0(dut.wr_gray_next^dut.wr_gray_q));
+  a_rgray: assert property(@(posedge rc) disable iff(!rn) $onehot0(dut.rd_gray_next^dut.rd_gray_q));
+  c_transfer: cover property(@(posedge rc) rn&&valid&&rready);
+diff --git a/dv/uvm/tests/thermo5/thermo5_sku_base_test.svh b/dv/uvm/tests/thermo5/thermo5_sku_base_test.svh
+index 79c439e..5a080ce 100644
+--- a/dv/uvm/tests/thermo5/thermo5_sku_base_test.svh
++++ b/dv/uvm/tests/thermo5/thermo5_sku_base_test.svh
+@@ -21,6 +21,9 @@ class thermo5_sku_base_test extends uvm_test;
+ `endif
+     cfg.random_pa_ready=$test$plusargs("STRESS_PA_READY");
+     require_signed_extremes=$test$plusargs("EXPECT_SIGNED_EXTREMES");
++`ifdef THERMO5_AXIL_CONTROL
++    cfg.axil_control=1'b1;
++`endif
+   endfunction
+ 
+   function void build_phase(uvm_phase phase);
+@@ -74,6 +77,29 @@ class thermo5_sku_base_test extends uvm_test;
+     seq.start(env.source.sequencer);
+   endtask
+ 
++  task request_stream_enable(bit enable);
++`ifdef THERMO5_AXIL_CONTROL
++    thermo5_axil_access_sequence seq;
++    wait(vif.src_rst_n && vif.core_rst_n);
++    wait(env.axil.monitor.vif.aresetn===1'b1);
++    seq=thermo5_axil_access_sequence::type_id::create("stream_control_write");
++    seq.is_write=1;
++    seq.addr=8'h00;
++    seq.data=enable ? 32'h1 : 32'h0;
++    seq.strb=4'h1;
++    seq.aw_delay=0;
++    seq.w_delay=0;
++    seq.response_delay=2;
++    seq.ready_before_response=0;
++    seq.start(env.axil.sequencer);
++    if (seq.resp!=2'b00)
++      `uvm_fatal("AXIL_RUN",$sformatf("CONTROL.RUN write failed: enable=%0b resp=%0b",enable,seq.resp))
++`else
++    if (enable) env.control.core_on();
++    else env.control.core_off();
++`endif
++  endtask
++
+   task check_full(bit check_event_totals=1);
+     int expected_dpd_words;
+ `ifdef THERMO5_CENTERED_CUBIC
+diff --git a/dv/uvm/tests/thermo5/thermo5_sku_bittrue_test.svh b/dv/uvm/tests/thermo5/thermo5_sku_bittrue_test.svh
+index 91019c2..4170ae5 100644
+--- a/dv/uvm/tests/thermo5/thermo5_sku_bittrue_test.svh
++++ b/dv/uvm/tests/thermo5/thermo5_sku_bittrue_test.svh
+@@ -14,9 +14,15 @@ class thermo5_sku_bittrue_test extends thermo5_sku_base_test;
+           send_source(cfg.source_beats);
+           begin
+             wait(env.source.monitor.accepted_beats>=4);
+-            env.control.core_on();
++            request_stream_enable(1'b1);
++            wait(env.source.monitor.accepted_beats==cfg.source_beats);
++`ifdef THERMO5_AXIL_CONTROL
++            request_stream_enable(1'b0);
++`endif
+             wait(env.scoreboard.checked==cfg.core_words);
+-            env.control.core_off();
++`ifndef THERMO5_AXIL_CONTROL
++            request_stream_enable(1'b0);
++`endif
+             check_full();
+             #1ps;
+             if (env.event_bus.source_beats!=cfg.source_beats ||
+@@ -41,8 +47,30 @@ class thermo5_sku_bittrue_test extends thermo5_sku_base_test;
+         join
+       end
+       begin
+-        repeat(10000+8*cfg.core_words) @(posedge vif.core_clk);
+-        `uvm_fatal("TIMEOUT","Thermo5 full-stream test did not complete")
++        int unsigned cycles;
++        cycles=0;
++        while (cycles < 10000+8*cfg.core_words) begin
++          repeat(1000) @(posedge vif.core_clk);
++          cycles+=1000;
++          `uvm_info("PROGRESS",
++            $sformatf("cycle=%0d source=%0d/%0d checked_source=%0d CDC=%0d DSP=%0d EF2=%0d PA=%0d checked_PA=%0d src_v/r=%b/%b cdc_v/r=%b/%b pa_v/r=%b/%b active/drain=%b/%b underflow/protocol=%b/%b",
++              cycles,env.source.monitor.accepted_beats,cfg.source_beats,
++              env.scoreboard.source_checked,env.event_bus.cdc_words,
++              env.event_bus.dsp_observations,env.event_bus.ef2_words,
++              env.event_bus.pa_words,env.scoreboard.checked,
++              vif.src_valid,vif.src_ready,vif.cdc_core_valid,vif.cdc_core_ready,
++              vif.pa_valid,vif.pa_ready,vif.core_tx_active,vif.core_draining,
++              vif.underflow,vif.protocol_error),UVM_NONE)
++        end
++        `uvm_fatal("TIMEOUT",
++          $sformatf("Thermo5 full-stream test did not complete: source=%0d/%0d checked_source=%0d CDC=%0d DSP=%0d EF2=%0d PA=%0d checked_PA=%0d src_v/r=%b/%b cdc_v/r=%b/%b pa_v/r=%b/%b active/drain=%b/%b underflow/protocol=%b/%b",
++            env.source.monitor.accepted_beats,cfg.source_beats,
++            env.scoreboard.source_checked,env.event_bus.cdc_words,
++            env.event_bus.dsp_observations,env.event_bus.ef2_words,
++            env.event_bus.pa_words,env.scoreboard.checked,
++            vif.src_valid,vif.src_ready,vif.cdc_core_valid,vif.cdc_core_ready,
++            vif.pa_valid,vif.pa_ready,vif.core_tx_active,vif.core_draining,
++            vif.underflow,vif.protocol_error))
+       end
+     join_any
+     disable fork;
+diff --git a/dv/verif/axis/tb_thermo5_generic_fifo_epochs.sv b/dv/verif/axis/tb_thermo5_generic_fifo_epochs.sv
+index c8047eb..421b9bd 100644
+--- a/dv/verif/axis/tb_thermo5_generic_fifo_epochs.sv
++++ b/dv/verif/axis/tb_thermo5_generic_fifo_epochs.sv
+@@ -2,13 +2,13 @@
+ // Real default-depth Generic FIFO. Clock-local reset syncs match product CDC.
+ module tb_thermo5_generic_fifo_epochs;
+  reg wc=0,rc=0,rst=1,wv=0,rr=0;reg[31:0]wd=0;
+- wire ws,rs,wr,full,rv,empty;wire[31:0]rd;
++ wire ws,rs,wr,full,rv,empty;wire[31:0]rd;wire[4:0]rd_count;
+  integer received=0,expected=0,epoch=0,full_seen=0;
+  always #4 wc=~wc;
+  always #2.286 rc=~rc;
+  dsm_reset_sync wsync(.clk(wc),.arst_n(rst),.srst_n(ws));
+  dsm_reset_sync rsync(.clk(rc),.arst_n(rst),.srst_n(rs));
+- dsm_async_fifo #(.DATA_W(32),.ADDR_W(4)) dut(.wr_clk(wc),.wr_rst_n(ws),.wr_data(wd),.wr_valid(wv&&ws),.wr_ready(wr),.wr_full(full),.rd_clk(rc),.rd_rst_n(rs),.rd_data(rd),.rd_valid(rv),.rd_ready(rr&&rs),.rd_empty(empty));
++ dsm_async_fifo #(.DATA_W(32),.ADDR_W(4)) dut(.wr_clk(wc),.wr_rst_n(ws),.wr_data(wd),.wr_valid(wv&&ws),.wr_ready(wr),.wr_full(full),.rd_clk(rc),.rd_rst_n(rs),.rd_data(rd),.rd_valid(rv),.rd_ready(rr&&rs),.rd_empty(empty),.rd_count(rd_count));
+  always @(posedge rc) if(rs && rr && rv)begin
+   if(rd!==32'h10000000+expected)$fatal(1,"epoch leak/data mismatch epoch%0d index%0d got%h",epoch,expected,rd);
+   expected++;received++;
+@@ -28,7 +28,7 @@ module tb_thermo5_generic_fifo_epochs;
+   #1.137;rst=0;wv=0;epoch++;
+   #1ps;if(ws||rs)$fatal(1,"reset sync assertion delayed");
+   #40;rst=1;wait(ws&&rs);
+-  if(!empty||rv)$fatal(1,"FIFO not empty after reset");
++  if(!empty||rv||rd_count!=0)$fatal(1,"FIFO not empty after reset");
+   rr=1;
+   for(integer i=0;i<64;i++)push(32'h10000000+i);
+   wait(received==64);repeat(6)@(posedge rc);
+diff --git a/dv/verif/axis/tb_thermo5_generic_fifo_skew_epochs.sv b/dv/verif/axis/tb_thermo5_generic_fifo_skew_epochs.sv
+index 2704134..6dca5af 100644
+--- a/dv/verif/axis/tb_thermo5_generic_fifo_skew_epochs.sv
++++ b/dv/verif/axis/tb_thermo5_generic_fifo_skew_epochs.sv
+@@ -3,13 +3,13 @@
+ module tb_thermo5_generic_fifo_skew_epochs;
+  reg wc=0,rc=0,rst=1,wv=0,rr=0;reg[31:0]wd=0;
+  reg wa=0,ra=0;
+- wire ws,rs,wr,full,rv,empty;wire[31:0]rd;
++ wire ws,rs,wr,full,rv,empty;wire[31:0]rd;wire[4:0]rd_count;
+  integer received=0,expected=0,epoch=0,full_seen=0;
+  always #4 wc=~wc;
+  always #2.286 rc=~rc;
+  dsm_reset_sync wsync(.clk(wc),.arst_n(wa),.srst_n(ws));
+  dsm_reset_sync rsync(.clk(rc),.arst_n(ra),.srst_n(rs));
+- dsm_async_fifo #(.DATA_W(32),.ADDR_W(4)) dut(.wr_clk(wc),.wr_rst_n(ws),.wr_data(wd),.wr_valid(wv&&ws),.wr_ready(wr),.wr_full(full),.rd_clk(rc),.rd_rst_n(rs),.rd_data(rd),.rd_valid(rv),.rd_ready(rr&&rs),.rd_empty(empty));
++ dsm_async_fifo #(.DATA_W(32),.ADDR_W(4)) dut(.wr_clk(wc),.wr_rst_n(ws),.wr_data(wd),.wr_valid(wv&&ws),.wr_ready(wr),.wr_full(full),.rd_clk(rc),.rd_rst_n(rs),.rd_data(rd),.rd_valid(rv),.rd_ready(rr&&rs),.rd_empty(empty),.rd_count(rd_count));
+  always @(posedge rc) if(rs && rr && rv)begin
+   if(rd!==32'h10000000+expected)$fatal(1,"epoch leak/data mismatch epoch%0d index%0d got%h",epoch,expected,rd);
+   expected++;received++;
+@@ -27,7 +27,7 @@ module tb_thermo5_generic_fifo_skew_epochs;
+   if(order==0)begin wa=1;repeat(7)@(negedge rc);ra=1;end
+   else begin ra=1;repeat(7)@(negedge wc);wa=1;end
+   wait(ws&&rs);repeat(4)@(negedge rc);
+-  if(rv||!empty)$fatal(1,"old epoch became valid during skew release");
++  if(rv||!empty||rd_count!=0)$fatal(1,"old epoch became valid during skew release");
+  endtask
+  initial begin
+   #1;wa=1;ra=1;#1;reset_epoch(0);
+diff --git a/dv/verif/reset/tb_thermo5_reset_release_contract.sv b/dv/verif/reset/tb_thermo5_reset_release_contract.sv
+index 302c08b..7dfedb7 100644
+--- a/dv/verif/reset/tb_thermo5_reset_release_contract.sv
++++ b/dv/verif/reset/tb_thermo5_reset_release_contract.sv
+@@ -2,11 +2,12 @@
+ // Component-level evidence only; not a product-level FIFO/epoch oracle.
+ module tb_thermo5_reset_release_contract;
+   reg [2:0] clk=0, arst=0;
++  reg [2:0] clk_run=3'b111;
+   wire [2:0] srst;
+   integer checks=0;
+-  always #4 clk[0]=~clk[0];
+-  always #2.286 clk[1]=~clk[1];
+-  always #5 clk[2]=~clk[2];
++  always #4 if (clk_run[0]) clk[0]=~clk[0];
++  always #2.286 if (clk_run[1]) clk[1]=~clk[1];
++  always #5 if (clk_run[2]) clk[2]=~clk[2];
+   for(genvar g=0;g<3;g=g+1) begin: domains
+     dsm_reset_sync dut(.clk(clk[g]),.arst_n(arst[g]),.srst_n(srst[g]));
+   end
+@@ -29,6 +30,17 @@ module tb_thermo5_reset_release_contract;
+   endtask
+   initial begin
+     #1; arst=7; #1; assert_all();
++    @(negedge clk[2]); clk_run[2]=1'b0;
++    #1; arst[2]=1'b1;
++    #20;
++    if(srst[2]!==1'b0) $fatal(1,"reset released without local clock edges");
++    clk_run[2]=1'b1;
++    @(posedge clk[2]); #1ps;
++    if(srst[2]!==1'b0) $fatal(1,"reset released on first edge after stopped clock");
++    @(posedge clk[2]); #1ps;
++    if(srst[2]!==1'b1) $fatal(1,"reset did not release on second edge after stopped clock");
++    checks++;
++    assert_all();
+     repeat(3) @(negedge clk[0]);
+     for(integer epoch=0;epoch<6;epoch++) begin
+       for(integer n=0;n<3;n++) begin
+diff --git a/rtl/axis/dsm_async_fifo.sv b/rtl/axis/dsm_async_fifo.sv
+index 9e45838..35da3b3 100644
+--- a/rtl/axis/dsm_async_fifo.sv
++++ b/rtl/axis/dsm_async_fifo.sv
+@@ -21,7 +21,8 @@ module dsm_async_fifo #(
+   output wire logic [DATA_W-1:0] rd_data,
+   output wire logic              rd_valid,
+   input  wire logic              rd_ready,
+-  output wire logic              rd_empty
++  output wire logic              rd_empty,
++  output wire logic [ADDR_W:0]    rd_count
+ );
+   localparam int PTR_W = ADDR_W + 1;
+ 
+@@ -35,6 +36,16 @@ module dsm_async_fifo #(
+     bin2gray = (value >> 1) ^ value;
+   endfunction
+ 
++  function automatic logic [PTR_W-1:0] gray2bin(input logic [PTR_W-1:0] value);
++    logic [PTR_W-1:0] result;
++    begin
++      result[PTR_W-1] = value[PTR_W-1];
++      for (int bit_idx = PTR_W-2; bit_idx >= 0; bit_idx--)
++        result[bit_idx] = result[bit_idx+1] ^ value[bit_idx];
++      return result;
++    end
++  endfunction
++
+   wire wr_push = wr_valid && !wr_full_q;
+   wire rd_pop  = rd_ready && !rd_empty_q;
+   wire [PTR_W-1:0] wr_bin_next  = wr_bin_q + wr_push;
+@@ -97,6 +108,7 @@ module dsm_async_fifo #(
+   assign rd_valid = !rd_empty_q;
+   assign rd_empty = rd_empty_q;
+   assign rd_data  = mem[rd_bin_q[ADDR_W-1:0]];
++  assign rd_count = gray2bin(wr_gray_rd_sync2_q) - rd_bin_q;
+ 
+ `ifndef SYNTHESIS
+   // Local-domain executable CDC invariants.  Only Gray-coded pointers cross
+diff --git a/rtl/axis/dsm_axis14_to_core8_cdc.sv b/rtl/axis/dsm_axis14_to_core8_cdc.sv
+index 101f3cd..5e768ca 100644
+--- a/rtl/axis/dsm_axis14_to_core8_cdc.sv
++++ b/rtl/axis/dsm_axis14_to_core8_cdc.sv
+@@ -35,6 +35,7 @@ module dsm_axis14_to_core8_cdc #(
+   input  wire logic                                  core_drain,
+   output wire logic                                  core_valid,
+   output wire logic                                  core_data_empty,
++  output wire logic                                  core_prefill_ready,
+   input  wire logic                                  core_ready,
+   output wire logic signed [CORE_LANES*W-1:0]        core_i_vec,
+   output wire logic signed [CORE_LANES*W-1:0]        core_q_vec,
+@@ -51,6 +52,7 @@ module dsm_axis14_to_core8_cdc #(
+   logic s_rst_n, c_rst_n;
+   logic [FIFO_W-1:0] fifo_wr_data, fifo_rd_data;
+   logic fifo_wr_ready, fifo_rd_valid, fifo_rd_ready, fifo_rd_empty;
++  logic [FIFO_ADDR_W:0] fifo_rd_count;
+   logic signed [SRC_LANES*W-1:0] fifo_i, fifo_q;
+   logic fifo_frame_start, fifo_frame_end;
+   logic signed [GAIN_W-1:0] fifo_frame_gain;
+@@ -85,14 +87,16 @@ module dsm_axis14_to_core8_cdc #(
+         .wr_clk(s_axis_aclk), .wr_rst_n(s_axis_aresetn), .wr_data_vec(fifo_wr_data),
+         .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
+         .rd_clk(core_clk), .rd_rst_n(core_aresetn), .rd_data(fifo_rd_data),
+-        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
++        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty),
++        .rd_count(fifo_rd_count)
+       );
+     end else begin : g_generic_fifo
+       dsm_async_fifo #(.DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W)) u_async_fifo (
+         .wr_clk(s_axis_aclk), .wr_rst_n(s_rst_n), .wr_data(fifo_wr_data),
+         .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
+         .rd_clk(core_clk), .rd_rst_n(c_rst_n), .rd_data(fifo_rd_data),
+-        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty)
++        .rd_valid(fifo_rd_valid), .rd_ready(fifo_rd_ready), .rd_empty(fifo_rd_empty),
++        .rd_count(fifo_rd_count)
+       );
+     end
+   endgenerate
+@@ -112,6 +116,10 @@ module dsm_axis14_to_core8_cdc #(
+   // a graceful-stop controller cannot stop on a transient empty observation.
+   assign core_data_empty = fifo_rd_empty && !fifo_rd_valid &&
+                            (rem_count_q == 0) && !out_valid_q && !end_pending_q;
++  // The synchronized write pointer is the authoritative read-domain view of
++  // queued source beats. Keep startup qualification inside the FIFO ownership
++  // cone instead of crossing an independent prefill control into rd_empty.
++  assign core_prefill_ready = (fifo_rd_count >= 2);
+   assign core_i_vec = out_i_q;
+   assign core_q_vec = out_q_q;
+   assign core_frame_start = out_frame_start_q;
+diff --git a/rtl/axis/dsm_xpm_async_fifo.sv b/rtl/axis/dsm_xpm_async_fifo.sv
+index 7a338df..3599937 100644
+--- a/rtl/axis/dsm_xpm_async_fifo.sv
++++ b/rtl/axis/dsm_xpm_async_fifo.sv
+@@ -21,7 +21,8 @@ module dsm_xpm_async_fifo #(
+   output wire logic [DATA_W-1:0] rd_data,
+   output wire logic              rd_valid,
+   input  wire logic              rd_ready,
+-  output wire logic              rd_empty
++  output wire logic              rd_empty,
++  output wire logic [ADDR_W:0]    rd_count
+ );
+   localparam int FIFO_DEPTH = 1 << ADDR_W;
+   logic fifo_rst, full, empty, wr_rst_busy, rd_rst_busy;
+@@ -72,7 +73,7 @@ module dsm_xpm_async_fifo #(
+     .READ_MODE("fwft"),
+     .FIFO_READ_LATENCY(0),
+     .READ_DATA_WIDTH(DATA_W),
+-    .RD_DATA_COUNT_WIDTH(1),
++    .RD_DATA_COUNT_WIDTH(ADDR_W+1),
+     .PROG_EMPTY_THRESH(2),
+     .DOUT_RESET_VALUE("0"),
+     .CDC_SYNC_STAGES(2),
+@@ -83,7 +84,7 @@ module dsm_xpm_async_fifo #(
+     .full(full), .prog_full(), .wr_data_count(), .overflow(),
+     .wr_rst_busy(wr_rst_busy), .almost_full(), .wr_ack(),
+     .rd_clk(rd_clk), .rd_en(rd_ready && rd_valid), .dout(rd_data),
+-    .empty(empty), .prog_empty(), .rd_data_count(), .underflow(),
++    .empty(empty), .prog_empty(), .rd_data_count(rd_count), .underflow(),
+     .rd_rst_busy(rd_rst_busy), .almost_empty(), .data_valid(),
+     .injectsbiterr(1'b0), .injectdbiterr(1'b0), .sbiterr(), .dbiterr()
+   );
+diff --git a/rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv b/rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv
+index 0d0bbcd..e2eb37e 100644
+--- a/rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv
++++ b/rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv
+@@ -168,8 +168,7 @@ module thermo5_dpd_axi_lite_cfg #(
+         read_data_mux[0] = cfg_busy_q;
+         read_data_mux[1] = cfg_done_q;
+         read_data_mux[2] = cfg_error_q;
+-        // RUN_ACTIVE and DRAINING are synchronized status views of the
+-        // core-domain graceful-stop controller.
++        // These are synchronized status levels from the graceful-stop core.
+         read_data_mux[3] = tx_active_sync2;
+         read_data_mux[4] = draining_sync2;
+       end
+@@ -225,7 +224,6 @@ module thermo5_dpd_axi_lite_cfg #(
+       tx_active_sync2 <= tx_active_sync1;
+       draining_sync1 <= core_draining;
+       draining_sync2 <= draining_sync1;
+-
+       if (s_axil_bvalid && s_axil_bready) s_axil_bvalid <= 1'b0;
+       if (s_axil_rvalid && s_axil_rready) s_axil_rvalid <= 1'b0;
+       if (aw_take) begin
+diff --git a/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv b/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
+index f4f3bfa..baa6a08 100644
+--- a/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
++++ b/rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
+@@ -70,8 +70,10 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+   logic signed [8*W-1:0] core_i_vec, core_q_vec;
+   logic signed [GAIN_W-1:0] core_frame_gain;
+   logic dpd_config_boundary;
+-  logic cdc_s_ready, cdc_s_valid, core_data_empty, cdc_protocol_error;
++  logic cdc_s_ready, cdc_s_valid, core_data_empty, core_prefill_ready;
++  logic cdc_protocol_error;
+   logic core_datapath_enable, core_draining;
++  logic core_prefill_seen_q;
+   logic [7:0] outstanding_words_q;
+   logic core_tx_active_q;
+   (* ASYNC_REG = "TRUE" *) logic run_s1, run_s2;
+@@ -85,15 +87,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+   logic ingress_closed_s;
+   logic ingress_closed_status_s;
+   logic tx_active_status_c, draining_status_c;
++  logic [2:0] status_hold_count_q;
+   (* ASYNC_REG = "TRUE" *) logic source_error_c1, source_error_c2;
+-  (* ASYNC_REG = "TRUE" *) logic prefill_ready_c1, prefill_ready_c2;
+-  (* ASYNC_REG = "TRUE" *) logic run_s2_c1, run_s2_c2;
+-  (* ASYNC_REG = "TRUE" *) logic core_active_s1, core_active_s2;
+-  logic [1:0] prefill_count_s;
+-  logic prefill_ready_s;
+-  // Only the saturating two-beat predicate is consumed by the core. Register
+-  // this single-bit source status instead of crossing a binary-to-Gray cone.
+-  wire logic startup_prefill_done = run_s2_c2 && prefill_ready_c2;
+   wire logic source_accept = s_axis_tvalid && s_axis_tready;
+   wire logic core_accept = core_valid && core_ready;
+   wire logic output_accept = (&pa_valid) && (&pa_ready);
+@@ -111,32 +106,15 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+     if (!s_axis_aresetn) begin
+       run_s1 <= 1'b0;
+       run_s2 <= 1'b0;
+-      prefill_count_s <= '0;
+-      core_active_s1 <= 1'b0;
+-      core_active_s2 <= 1'b0;
+       run_seen_s <= 1'b0;
+       source_frame_open_q <= 1'b0;
+       source_frame_error_q <= 1'b0;
+       source_phase_q <= '0;
+-      prefill_ready_s <= 1'b0;
+       ingress_closed_status_s <= 1'b0;
+     end else begin
+       run_s1 <= run_request_async;
+       run_s2 <= run_s1;
+-      core_active_s1 <= tx_active_status_c;
+-      prefill_ready_s <= (prefill_count_s == 2);
+       ingress_closed_status_s <= ingress_closed_s;
+-      core_active_s2 <= core_active_s1;
+-
+-      // Accumulate startup prefill before the first RUN. After a completed
+-      // STOP/drain, clear the count only when ingress is closed and the core
+-      // activity status has crossed back into the source domain. The next RUN
+-      // therefore waits for two newly accepted beats before starting the
+-      // 14:8 gearbox from an empty FIFO.
+-      if (run_seen_s && ingress_closed_s && !core_active_s2)
+-        prefill_count_s <= '0;
+-      else if (source_accept && prefill_count_s < 2)
+-        prefill_count_s <= prefill_count_s + 1'b1;
+ 
+       if (run_s2) run_seen_s <= 1'b1;
+ 
+@@ -163,17 +141,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+     if (!core_aresetn) begin
+       source_error_c1 <= 1'b0;
+       source_error_c2 <= 1'b0;
+-      prefill_ready_c1 <= 1'b0;
+-      prefill_ready_c2 <= 1'b0;
+-      run_s2_c1 <= 1'b0;
+-      run_s2_c2 <= 1'b0;
+     end else begin
+       source_error_c1 <= source_frame_error_q;
+       source_error_c2 <= source_error_c1;
+-      prefill_ready_c1 <= prefill_ready_s;
+-      prefill_ready_c2 <= prefill_ready_c1;
+-      run_s2_c1 <= run_s2;
+-      run_s2_c2 <= run_s2_c1;
+     end
+   end
+   assign core_protocol_error = cdc_protocol_error | source_error_c2;
+@@ -200,19 +170,37 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+   end
+ 
+   // RUN is a request. Retain the core enable and GT user activity through
+-  // drain; a fresh RUN activation waits for two source beats to cross into the
+-  // core domain before the gearbox starts consuming data.
++  // drain; startup waits until the FIFO's synchronized read-domain occupancy
++  // shows two source beats owned by this run.
+   always_ff @(posedge core_clk or negedge core_aresetn) begin
+     if (!core_aresetn) begin
+       core_tx_active_q <= 1'b0;
++      core_prefill_seen_q <= 1'b0;
++      tx_active_status_c <= 1'b0;
++      draining_status_c <= 1'b0;
++      status_hold_count_q <= '0;
+       outstanding_words_q <= '0;
+     end else begin
++      // Hold each sampled status level for four core clocks so slow AXI can
++      // observe it; transient changes may coalesce because these are levels.
++      if (status_hold_count_q != 0) begin
++        status_hold_count_q <= status_hold_count_q - 1'b1;
++      end else if ({draining_status_c, tx_active_status_c} !=
++                   {core_draining, core_tx_active}) begin
++        {draining_status_c, tx_active_status_c} <= {core_draining, core_tx_active};
++        status_hold_count_q <= 3'd3;
++      end
+       case ({core_accept, output_accept})
+         2'b10: if (!(&outstanding_words_q)) outstanding_words_q <= outstanding_words_q + 1'b1;
+         2'b01: if (outstanding_words_q != 0) outstanding_words_q <= outstanding_words_q - 1'b1;
+         default: ;
+       endcase
+ 
++      if (!core_tx_active_q)
++        core_prefill_seen_q <= 1'b0;
++      else if (core_prefill_ready)
++        core_prefill_seen_q <= 1'b1;
++
+       if (core_enable)
+         core_tx_active_q <= 1'b1;
+       else if (core_tx_active_q && drain_complete)
+@@ -220,21 +208,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+     end
+   end
+ 
+-  // Cross-domain status has a source flop. Public datapath/run outputs retain
+-  // their original cycle semantics; remote status has one source-cycle delay.
+-  always_ff @(posedge core_clk or negedge core_aresetn) begin
+-    if (!core_aresetn) begin
+-      tx_active_status_c <= 1'b0;
+-      draining_status_c <= 1'b0;
+-    end else begin
+-      tx_active_status_c <= core_tx_active;
+-      draining_status_c <= core_draining;
+-    end
+-  end
+-
+   assign core_draining = core_tx_active_q && !core_enable;
+   assign core_datapath_enable = core_tx_active_q &&
+-                                (startup_prefill_done || core_draining);
++                                (core_prefill_seen_q || core_prefill_ready || core_draining);
+   assign core_tx_active = core_enable || core_tx_active_q;
+ 
+   thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(DPD_MAX_TAPS)) u_cfg (
+@@ -267,6 +243,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
+     .core_clk(core_clk), .core_aresetn(core_aresetn),
+     .core_enable(core_datapath_enable), .core_drain(core_draining),
+     .core_valid(core_valid), .core_ready(core_ready), .core_i_vec(core_i_vec), .core_q_vec(core_q_vec),
++    .core_prefill_ready(core_prefill_ready),
+     .core_frame_start(core_frame_start), .core_frame_end(core_frame_end),
+     .core_frame_gain(core_frame_gain),
+     .core_data_empty(core_data_empty), .core_underflow(core_underflow),
+diff --git a/tools/hw/check_thermo5_axil_illegal_frame.py b/tools/hw/check_thermo5_axil_illegal_frame.py
+index 71884d6..344c823 100644
+--- a/tools/hw/check_thermo5_axil_illegal_frame.py
++++ b/tools/hw/check_thermo5_axil_illegal_frame.py
+@@ -17,9 +17,10 @@ EXPECTED_EVENTS = (
+     (
+         "cdc_frame_alignment",
+         re.compile(
+-            r'^"rtl/axis/dsm_axis14_to_core8_cdc\.sv", 262: '
++            r'^Error: "rtl/axis/dsm_axis14_to_core8_cdc\.sv", \d+: '
+             r'thermo5_sku_uvm_tb\.dut\.u_cdc\.unnamed\$\$_1: '
+-            r"started at \d+ps failed at \d+ps$",
++            r'(?:at time \d+ ps|started at \d+ps failed at \d+ps)$'
++            r'\nDSM frame_start was not aligned to a 56-sample boundary$',
+             re.MULTILINE,
+         ),
+         "DSM frame_start was not aligned to a 56-sample boundary",
+@@ -27,9 +28,11 @@ EXPECTED_EVENTS = (
+     (
+         "centered_cubic_stage1_frame_tail",
+         re.compile(
+-            r'^"rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", 310: '
++            r'^Error: "rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", \d+: '
+             r'thermo5_sku_uvm_tb\.dut\.u_frontend\.g_interp1_centered\.'
+-            r'u_interp_1\.unnamed\$\$_1: started at \d+ps failed at \d+ps$',
++            r'u_interp_1\.unnamed\$\$_1: '
++            r'(?:at time \d+ ps|started at \d+ps failed at \d+ps)$'
++            r'\ncentered cubic frame-end vector was followed by same-frame data$',
+             re.MULTILINE,
+         ),
+         "centered cubic frame-end vector was followed by same-frame data",
+@@ -37,9 +40,11 @@ EXPECTED_EVENTS = (
+     (
+         "centered_cubic_stage2_frame_tail",
+         re.compile(
+-            r'^"rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", 310: '
++            r'^Error: "rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", \d+: '
+             r'thermo5_sku_uvm_tb\.dut\.u_frontend\.g_interp2_centered\.'
+-            r'u_interp_2\.unnamed\$\$_1: started at \d+ps failed at \d+ps$',
++            r'u_interp_2\.unnamed\$\$_1: '
++            r'(?:at time \d+ ps|started at \d+ps failed at \d+ps)$'
++            r'\ncentered cubic frame-end vector was followed by same-frame data$',
+             re.MULTILINE,
+         ),
+         "centered cubic frame-end vector was followed by same-frame data",

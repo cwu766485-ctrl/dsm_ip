@@ -1,0 +1,31 @@
+{
+  "local_queue_cases": 44,
+  "local_conservation": "PASS",
+  "weighted_sum": "R=ingress+gain+stage1+elastic1+DPD_real+elastic2_real+stage2_real+elastic3+EF2+PA",
+  "epoch_balance": "outstanding=accepted_core_real-accepted_PA_real-reset_discarded_real",
+  "conditional_real_capacity_upper_bound": 28,
+  "strict_maximum_reachable": "UNPROVEN",
+  "slot_weights": {
+    "ingress_fifo": 2,
+    "gain": 3,
+    "stage1_queue": 2,
+    "interp_to_dpd": 2,
+    "dpd": 11,
+    "dpd_to_interp": 2,
+    "stage2_queue": 2,
+    "interp2_to_tid": 2,
+    "ef2_input_register": 1,
+    "pa_bridge": 1,
+    "pending_synthetic_tail": 0
+  },
+  "stop_rule": "No discard; accepted open packet completes then drain",
+  "reset_rule": "Discard all weighted tokens and reset balance in common reset epoch",
+  "remaining_refinement_obligations": [
+    "DPD lane lockstep/valid and meta_pipe alignment under arbitrary stalls",
+    "Stage1 synthetic creation neither duplicates nor drops real head",
+    "Stage2 q0_tail drop and queue shifts preserve weight and metadata",
+    "All four PA branches keep valid/accept lockstep",
+    "Common reset and synchronized enable/STOP cannot discard live real tokens without balance reset"
+  ],
+  "decision": "OPEN; local algebra/capacity does not prove full RTL invariant or reachability of maximum"
+}

@@ -1,3 +1,133 @@
+# 2026-11-13 SGT - PR #64 CDC debug and Vivado PPA candidate
+
+- Added isolated CDC RTL ECO and AXI-Lite UVM control/diagnostic fixes as
+  separate commits; preserved the original source/test diff snapshots and
+  verification logs. Formal harness changes and CDC/RDC/Warning/UVM/Coverage
+  reports remain explicit about OPEN, INCONCLUSIVE, and NOT_RUN evidence.
+- Added the existing four-cell held-out algorithm comparison with model metrics
+  kept separate from hardware PPA. The requested new eight-group raw bundle
+  remains unlocated and unvalidated.
+- Prepared a matched four-case Windows Vivado flow: AXI-Lite product top,
+  `DPD_MAX_TAPS=1`, XPM FIFO, ZU15EG, 125/218.75/100 MHz and STEP=5120. It
+  records Vivado version and constraint Tcl hashes. Vivado synthesis/routing
+  were not run because Windows interop is unavailable and the Linux payload is
+  incomplete.
+- Checks: 70 thermo5 utility tests passed (1 skipped); CSV/JSON parsing and
+  changed-file whitespace checks passed. Full regression, current candidate
+  SpyGlass/Formal, URG, and Vivado PPA remain unrun or open as detailed in the
+  verification reports. No waiver or merge approval was inferred.
+- Candidate integrated HEAD: `10520b5` before this documentation commit.
+
+# 2026-11-12 SGT - PR #62 ECO revalidation, gates remain open
+
+- Revalidated immutable PR #62 HEAD `ac08611af825586dc378041d2568eb7ee1ea563c` in a clean isolated worktree. Fresh VCS product compile manifest covers 98 parsed local sources plus the filelist and DUT coverage hierarchy; the seven-test legal-only Raw VDB set is source-bound and has zero exclusions.
+- Fresh SpyGlass V-2023.12-SP1: setup 0E/15W/65I, structural CDC 0E/27W/101I, full CDC 4E/34W/109I, RDC 10506E/15W/70I; zero waivers. Full CDC short-status pulse and mixed FIFO/RUN/prefill findings remain open.
+- Fresh VC Formal: source status 7 proven/2 covers; elastic FIFO epoch 4 proven/2 covers; DPD epoch 3 proven/2 covers; async FIFO epoch 4 proven, 3 inconclusive, live-reset cover inconclusive.
+- AXI-Lite product regression, nine-epoch reset sweep, independent trace oracle, and legal-only DUT Raw URG completed. Seven-test smoke Raw leaves 14,972 bins open and is not the 594-test full baseline. The 12,580/12,577 difference is three Condition hits at metric level; exact IDs remain unreconciled across nonhomogeneous source/VDB sets.
+- Added `docs/verification/baseline_reconciliation.md`, `docs/verification/thermo5_verification_signoff_report.md`, source-bound compile/coverage artifacts, the complete per-goal SpyGlass Error/Warning inventory, and a hash-bound run manifest. No RTL changed, no waiver/exclusion was approved, and no PR was merged. Code Coverage, CDC/RDC, and integrated signoff remain OPEN.
+
+# 2026-11-12 — Full CDC/RDC error debug
+
+Added SGDC clock edges,full cdc_verify replay,source-status counterexample
+extractor and tests,depth16 epoch strengthening goals,and independently
+audited immutable-checkpoint identity/stall proof.Full CDC5E→4E;not signoff.
+Remaining short-pulse/mixed-convergence and RDC obligations stay OPEN.
+No product RTL change,no waiver/URG exclusion,no merge.Commands/results:
+[debug follow-up](verification/thermo5-cdc-debug-followup.md).
+
+## 2026-11-11 — Thermo5 DV v3 P0 execution
+
+- Added two localized UVM overlap/reset classes, package includes, P0 vector and
+  runner scripts, actual event/epoch witness checks and inventory dedup tooling.
+- Four licensed P0s PASS; independent CDC/EF2/four-plane trace oracles PASS.
+  Real boundary/pending/old-data/PA-stall intersection is651.510ns. Long64/96
+  drain and reset pending/nonzero EF2/stall witnessed. Product RTL unchanged.
+- Replayed existing590 scenarios on final DV compile:594/594 total results PASS,
+  with590legal/4expected-negative. Five same-parent URG views clean,Exactdelta0.
+- Preserved330 existing gap windows; no seed expansion.48technical,11599pending
+  candidates,930counter directions remain officiallyOPEN. No new Formal or
+  waiver approval; code/full DV signoffsOPEN. Failed setup attempts retained.
+- Checks:65hardware utility tests and66Python reference tests PASS; shell/Python
+  syntax and whitespace checks PASS.
+- Evidence/reproduction: docs/verification/thermo5-dv-convergence-v3.md.
+
+## 2026-11-11 20:50 Asia/Singapore — Thermo5 DV v2 execution
+
+- Added source-bound mailbox/gain Formal harnesses and exact six-bin pending
+  review supplement (five new proofs plus reused DPD proof), preserving frozen RTL.
+- Added one reproducible non-identity COMMIT/stall directed scenario and
+  independent packet/epoch window validation; CDC/EF2/PA trace oracle PASS56words.
+- Updated exact87 triage and590 scenario event/checker inventory; parsed actual
+  packet/epoch audits. New cross window1; new Exact Hit/approval/exception0.
+- Three same-parent URG reports unchanged, zero diagnostics.57utility checks PASS.
+- 48 technical bins,11599 pending candidates,930 counters remain officially OPEN;
+  no new exclusions applied. Full token/reset composition and independent
+  approvals remain blockers; Code Coverage/Full Linux DV signoffs OPEN.
+- Evidence and reproduction: docs/verification/thermo5-pr55-v2-execution.md.
+
+## 2026-11-11 Asia/Singapore — Thermo5 DV convergence v2 Gate0
+
+- Added exact54 triage and589 scenario inventory with packet/epoch evidence,
+  predecessor constraints, Formal/VCS state, URG delta and disposition.
+- Reused frozen589 parent; no RTL/test/compile changes and no new seed or
+  duplicate inconclusive Formal run. 49 utility checks remain PASS.
+- Raw/Official and existing What-if unchanged; new HIT/approval/exception0.
+ 54 technical bins and930 counters remain OPEN; signoffsOPEN.
+
+## 2026-11-11 Asia/Singapore — PR55 previous141 strict analysis
+
+- Extended exact native generation/verification to141prior candidates; retained
+  existing33.139native directives/shared DPD membership checked. Strict141delta
+  4Line/17Cond/120Toggle;fullWhat-if984missing,no lost hits/no warnings.
+- Fixed inventory handling for empty line-gap lists with denominator checks;
+  added licensed-report regression case.49utilityPASS/PythoncompilePASS.
+- Added local weighted real/synthetic token algebra:capacity28conditional;
+  full RTL refinement/strict reachable maximumOPEN. No identical Formal rerun,
+  no DUT/DV/source/parameter changes,regression or seeds. Frozen589VDB reused.
+- NewHIT/approved/accepted0;11593pending,54technicalOPEN,930counterOPEN;
+  Raw/Official12577missing,bothsignoffsOPEN. Updated PR55 review evidence.
+
+## 2026-11-11 Asia/Singapore — PR55 exact33 analysis execution
+
+- Preserved36c2839 decisions. Added exact native generators/verifier,33-entry
+  native mapping,parameter/legalCDC analysis.el files,11593-ID pending approval
+  index,54remaining obligations and application evidence/frontier.
+- Strict URG on frozen589-input set verifies33 analysis removals,zero lost hits,
+  zero diagnostics; legal585 subset separately checked. No official.el.
+- Outstanding capacity29 VC Formal retry INCONCLUSIVE depth51/4min;other goals
+  NOT_RUN. No exclusion inferred.48utility tests/Python compile PASS.
+- NewHIT/approved/accepted0;all87officiallyOPEN,930counterOPEN. Raw/Official
+  unchanged;analysis What-if1125missing. No RTL/DV source modification or seeds.
+  Both signoffsOPEN;independent review still required before merge.
+
+## 2026-11-11 10:35 Asia/Singapore — License-restored exact-target validation
+
+- Fixed optional UVM ready-tail target: read signal bit0 from HDL vector;
+  retain24-beat prefix. Added shell opt-in; frozen RTL unchanged.
+- VCS compile PASS;589/589 unified scenarios PASS (585legal/4negative),48utility
+  testsPASS,strict runnerPASS. Target347472ps and full56-word oracle verified.
+- Raw/Official/What-if URG regenerated; no exact delta, no tool diagnostics.
+  All87 remainOPEN;33 proposed candidates pending;930counterOPEN;both signoffsOPEN.
+- Retain2 target misses and initial binding-file error; no failed VDB accepted.
+  Updated closure evidence, hashes, frontier. Independent approval absent;
+  PR55 requires external review; no automatic waiver or merge/signoff assertion.
+
+## 2026-11-11 10:15 Asia/Singapore — RTL-grounded closure, execution blocked
+
+- Changed: optional public-reset target in stalled-reset UVM test; executable
+  CDC residual invariant utility; exact87-row review, expression groups,
+  manifest, closure note and execution frontier.
+- Reason: examine22 priority bins and remaining control tuples against frozen
+  RTL without changing product parameters or applying unapproved exclusions.
+- Checks: source hashes verified for87 rows; CDC89-state/299-transition legal
+  abstraction and arbitrary-TLAST counterexamples PASS; Python compile and
+  diff whitespace checks PASS. VCS compile attempted, exit255 due unavailable
+  license server. No new simulator/URG/Formal PASS or coverage delta claimed.
+- Limitations:33 new pending candidates,54 technically unresolved; all87 remain
+  officially OPEN. New optional DV path unvalidated; Draft only. Owner Preston
+  is author account, not an independent approval. Counter930 staysOPEN; both
+  signoffsOPEN. Existing588-test results inherited unchanged.
+
 # Update Log
 
 ## 2026-11-10 — Final exact review and DPD invalid proof
@@ -6917,3 +7047,38 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
 - Both interpolators native Condition19 vector1110 gain real URG hits during548640ps public async-reset propagation; explicitly not stable clock-edge tuples.
 - Unified588/588 scenarios PASS after preserving/recovering154 interrupted execution attempts and195 stale-parent jobs.48 hardware utility tests PASS; five same-input URG views clean. Condition667/849,What-if1158 gaps; actual delta2.
 - Candidate approval0/counter exception0;87 technical rows and930 counter directions remain OPEN, two q1_tail assertion attempts/full Formal obligations OPEN. Dense-frame zero-delta tests stopped. No independent Reviewer identity/decision supplied.
+
+## 2026-11-12 00:00 SGT — Thermo5 DV convergence v4 triage
+
+- Added v4 exact disposition, directed matrix, Formal result, system cross, remaining-open ledger, and signoff report under `docs/verification/data/thermo5-dv-v4/`.
+- Re-indexed 48 remaining Exact targets against frozen product SHA `635be681046b3ab7d6fdda7f4e9818d7226efd66`; preserved 22 Interpolator, 7 CDC, 2 Gain, 2 Frontend, and 15 TX Top rows as OPEN.
+- Recorded the four existing P0 functional PASS scenarios as zero-Delta Exact URG evidence. No new HIT, official Exclusion, Coverage Exception, Formal PASS, or seed expansion was inferred.
+- Checks: v4 ledger integrity and existing v3 evidence manifests reviewed. Code Coverage and Full Linux DV signoff remain OPEN.
+
+## 2026-11-12 SGT — Gain FIFO composition closes two technical unknowns
+
+- Added actual FIFO/Gain source-bound Formal harness, runner and Tcl; two fresh executions give4PROVEN/2UNCOVERABLE/3positive covers, zero blackboxes/setup violations. Exact Gain136/137 now proven pending independent approval;46 unresolved.
+- Preserved11599 pending IDs with source/root-cause references; no official exclusions or scope exceptions.930 counters remain OPEN. Frozen RTL diff empty;65utility tests and runner syntax PASS.
+- P1 cross tests, full-chain token proof and independent PR review/integration remain incomplete; no fresh product URG or regression claimed. See thermo5-signoff-v5.md.
+
+## 2026-11-12 SGT — Generic reset-phase witnesses and same-parent coverage refresh
+
+- Added reset synchronizer component test and two fixed product clock-phase reset runner;component25checks and both UVM/independent oracle PASS. FrozenRTL unchanged.
+- Merged594+2 same-parent results into5URGviews,actualDelta0,no metric hit loss/denominator drift/diagnostics.65utilityPASS.
+- XPM unavailable;static probe incomplete(no top);TBreset contract,remaining reset/priority/fault tests and approvals OPEN. No official.el,merge or signoff. See final-cdc-reset report.
+
+## 2026-11-12 SGT — Actual AXIL static CDC/RDC and scoped block witnesses
+
+- Added actual product top SpyGlass config and three-domain SGDC. Setup0E15W,CDC5E29W,RDC10506E15W,no waivers;full native messages/hash retained.
+- New actual config-block DONE/W1C same-edgecrossPASS,DECERR/SLVERR checksPASS;GenericFIFO full/pendingreset/64wordepochrecoveryPASS.65utilityPASS. ProductRTL unchanged,no productURGclaim or replay.
+- XPM model searchblocked,remaining systemtests/violations/approvalsOPEN. See phase2_report.md;bothsignoffsOPEN.
+
+## 2026-11-12 — CDC/RDC source ECO candidate, Gates1–3
+
+Audited PR61 native10525RDC records and five glitch errors. Registered four
+source-status cones (including single-bit prefill) in AXIL top; no clock/reset
+constraints/waivers/URG exclusions changed. Owner confirms common assertion,
+local synchronous releases, no independent runtime reset. Actual SG CDC5→0E,
+RDC10506Eunchanged. Product VCS/oracle/reset/restart and targeted FPV executed;
+async FIFO epoch proof remains inconclusive. Exact report/reproduction and
+remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.

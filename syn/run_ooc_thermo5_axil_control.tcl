@@ -1,20 +1,28 @@
 # OOC routed timing/resource check for the optional thermo5 AXI-Lite wrapper.
 # This is an internal-path study with provisional clocks, not board I/O signoff.
-if {[llength $argv] != 8} {
-  error "usage: <part> <core_mhz> <axil_mhz> <out_dir> <synth|quick|full|timing> <centered_cubic:0|1> <tid_order:1|2> <step:5120|7168>"
+if {[llength $argv] != 11} {
+  error "usage: <part> <source_mhz> <core_mhz> <axil_mhz> <out_dir> <synth|quick|full|timing> <centered_cubic:0|1> <tid_order:1|2> <step:5120> <dpd_max_taps:1> <use_xpm_fifo:1>"
 }
 set part [lindex $argv 0]
-set core_mhz [expr {double([lindex $argv 1])}]
-set axil_mhz [expr {double([lindex $argv 2])}]
-set out_dir [file normalize [lindex $argv 3]]
-set implementation [lindex $argv 4]
-set centered_cubic [lindex $argv 5]
-set tid_order [lindex $argv 6]
-set step [lindex $argv 7]
+set source_mhz [expr {double([lindex $argv 1])}]
+set core_mhz [expr {double([lindex $argv 2])}]
+set axil_mhz [expr {double([lindex $argv 3])}]
+set out_dir [file normalize [lindex $argv 4]]
+set implementation [lindex $argv 5]
+set centered_cubic [lindex $argv 6]
+set tid_order [lindex $argv 7]
+set step [lindex $argv 8]
+set dpd_max_taps [lindex $argv 9]
+set use_xpm_fifo [lindex $argv 10]
 if {$implementation ni {synth quick full timing}} { error "implementation must be synth, quick, full, or timing" }
 if {$centered_cubic ni {0 1}} { error "centered_cubic must be 0 or 1" }
 if {$tid_order ni {1 2}} { error "tid_order must be 1 or 2" }
-if {$step ni {5120 7168}} { error "step must be 5120 or 7168" }
+if {$step ni {5120}} { error "STEP must be 5120 for matched A/B PPA" }
+if {$dpd_max_taps ni {1}} { error "DPD_MAX_TAPS must be 1 for the thermo5 product configuration" }
+if {$use_xpm_fifo ni {1}} { error "FPGA_USE_XPM_FIFO must be 1 for matched A/B PPA" }
+if {abs($source_mhz - 125.0) > 0.001 || abs($core_mhz - 218.75) > 0.001 || abs($axil_mhz - 100.0) > 0.001} {
+  error "Matched A/B clocks are fixed at Source=125 MHz, Core=218.75 MHz, AXI-Lite=100 MHz"
+}
 set interp_name [expr {$centered_cubic ? "centered-cubic" : "causal"}]
 set script_dir [file dirname [file normalize [info script]]]
 set repo [file normalize [file join $script_dir ..]]
@@ -61,14 +69,35 @@ set_param general.maxThreads 1
 set_param synth.maxThreads 1
 catch {set_param synth.enableParallelSynthesis false}
 catch {set_param synth.parallelSynthesis false}
+set effective_generics [list INTERP_TAPS=2 DPD_MAX_TAPS=$dpd_max_taps \
+  FPGA_USE_XPM_FIFO=$use_xpm_fifo INTERP_CENTERED_CUBIC=$centered_cubic \
+  TIDSM_ORDER=$tid_order STEP=$step]
 synth_design -top tid32_thermo5_axi_lite_axis_frontend_tx \
   -part $part -mode out_of_context -flatten_hierarchy none \
-  -directive AreaOptimized_high -generic \
-  [list INTERP_TAPS=2 DPD_MAX_TAPS=4 FPGA_USE_XPM_FIFO=1 \
-    INTERP_CENTERED_CUBIC=$centered_cubic TIDSM_ORDER=$tid_order STEP=$step]
+  -directive AreaOptimized_high -generic $effective_generics
+if {[get_property PART [current_design]] ne $part} { error "Elaborated part mismatch" }
+if {[get_property NAME [current_design]] ne "tid32_thermo5_axi_lite_axis_frontend_tx"} {
+  error "Elaborated top does not match the requested AXI-Lite product top"
+}
+set dpd_cells [get_cells -hier -filter {NAME =~ *u_memory_dpd*}]
+set fifo_cells [get_cells -hier -filter {REF_NAME =~ *xpm_fifo_async*}]
+if {[llength $dpd_cells] == 0} { error "Elaboration is missing the product DPD datapath" }
+if {[llength $fifo_cells] == 0} { error "Elaboration is missing the XPM async FIFO" }
+set config_file [open [file join $out_dir elaborated_configuration.txt] w]
+puts $config_file "TOP=tid32_thermo5_axi_lite_axis_frontend_tx"
+puts $config_file "PART=$part"
+puts $config_file "SOURCE_MHZ=$source_mhz"
+puts $config_file "CORE_MHZ=$core_mhz"
+puts $config_file "AXIL_MHZ=$axil_mhz"
+puts $config_file "GENERICS=$effective_generics"
+puts $config_file "ELABORATED_TOP=[get_property NAME [current_design]]"
+puts $config_file "DPD_HIERARCHY_COUNT=[llength $dpd_cells]"
+puts $config_file "XPM_FIFO_HIERARCHY_COUNT=[llength $fifo_cells]"
+close $config_file
+puts "THERMO5_AXIL_ELAB_CONFIG_PASS top=tid32_thermo5_axi_lite_axis_frontend_tx part=$part DPD_MAX_TAPS=$dpd_max_taps FPGA_USE_XPM_FIFO=$use_xpm_fifo INTERP_CENTERED_CUBIC=$centered_cubic TIDSM_ORDER=$tid_order STEP=$step"
 puts "THERMO5_AXIL_OOC_STAGE=post_synth"
 
-create_clock -name s_axis_aclk -period 8.000 [get_ports s_axis_aclk]
+create_clock -name s_axis_aclk -period [expr {1000.0/$source_mhz}] [get_ports s_axis_aclk]
 create_clock -name core_clk -period [expr {1000.0/$core_mhz}] [get_ports core_clk]
 create_clock -name s_axil_aclk -period [expr {1000.0/$axil_mhz}] [get_ports s_axil_aclk]
 # AXI-Stream FIFO CDC is asynchronous. AXI-Lite/core mailbox data is instead
@@ -131,6 +160,8 @@ report_timing -max_paths 30 -file [file join $out_dir timing_max_paths.rpt]
 report_clock_interaction -file [file join $out_dir clock_interaction.rpt]
 check_timing -verbose -file [file join $out_dir check_timing.rpt]
 report_utilization -file [file join $out_dir utilization.rpt]
+report_power -file [file join $out_dir vectorless_power.rpt]
+puts "THERMO5_POWER_ACTIVITY=VIVADO_VECTORLESS_NO_SAIF"
 write_checkpoint -force [file join $out_dir routed.dcp]
 
 set setup [get_timing_paths -max_paths 1 -quiet]
@@ -143,7 +174,7 @@ if {$wns < 0.0} { set status FAIL_SETUP
 } else { set status PASS }
 set f [open [file join $out_dir summary.csv] w]
 puts $f "Part,Top,Axis_MHz,Core_MHz,Axil_MHz,Interp_Taps,Dpd_Max_Taps,Fifo,Implementation,Status,WNS_ns,WHS_ns,Interpolation,TIDSM_Order,STEP"
-puts $f "$part,tid32_thermo5_axi_lite_axis_frontend_tx,125.00,[format %.2f $core_mhz],[format %.2f $axil_mhz],2,4,XPM,$implementation,$status,[format %.3f $wns],[format %.3f $whs],$interp_name,$tid_order,$step"
+puts $f "$part,tid32_thermo5_axi_lite_axis_frontend_tx,[format %.2f $source_mhz],[format %.2f $core_mhz],[format %.2f $axil_mhz],2,$dpd_max_taps,XPM,$implementation,$status,[format %.3f $wns],[format %.3f $whs],$interp_name,$tid_order,$step"
 close $f
 puts "THERMO5_AXIL_OOC_STATUS=$status WNS=$wns WHS=$whs"
 # CDC is a separate signoff report.  Keep it out of the timing-driven route

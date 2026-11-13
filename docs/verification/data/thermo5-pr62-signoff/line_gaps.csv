@@ -1,0 +1,618 @@
+instance,ownership,line,covered,total,missing,statement,disposition
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_q,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_q,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.u_sat_i,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.u_sat_i,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd.u_sat_i,PROJECT_RTL,416,0,1,1,"dout = {1'b0, {(OUT_W-1){1'b1}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd.u_sat_i,PROJECT_RTL,417,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd.u_sat_q,PROJECT_RTL,419,0,1,1,"dout = {1'b1, {(OUT_W-1){1'b0}}};",PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd.u_sat_q,PROJECT_RTL,420,0,1,1,sat = 1'b1;,PROOF_IDENTITY_NO_SATURATION
+thermo5_sku_uvm_tb.dut.u_frontend.u_frame_gain,PROJECT_RTL,64,1,2,1,if (rounded > maxv) round_sat = maxv[W-1:0];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.u_frame_gain,PROJECT_RTL,65,1,2,1,else if (rounded < minv) round_sat = minv[W-1:0];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid.u_raw_boundary.u_bridge,PROJECT_RTL,21,0,1,1,"$error(""Current bridge requires PARALLEL_W == GT_USER_W; use a dedicated gearbox otherwise"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid.u_raw_boundary.u_bridge,PROJECT_RTL,21,0,1,1,"$error(""Current bridge requires PARALLEL_W == GT_USER_W; use a dedicated gearbox otherwise"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid.u_raw_boundary.u_bridge,PROJECT_RTL,21,0,1,1,"$error(""Current bridge requires PARALLEL_W == GT_USER_W; use a dedicated gearbox otherwise"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid.u_raw_boundary.u_bridge,PROJECT_RTL,21,0,1,1,"$error(""Current bridge requires PARALLEL_W == GT_USER_W; use a dedicated gearbox otherwise"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_cfg,PROJECT_RTL,349,0,1,1,"$error(""MAX_TAPS must be in [1,4]; got %0d"",MAX_TAPS);",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_cfg,PROJECT_RTL,365,0,1,1,"$error(""thermo5 DPD CDC mailbox changed before acknowledgement"");",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd,PROJECT_RTL,338,0,1,1,saturation_count <= saturation_count + 32'd1;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,191,0,1,1,sum_i_pair1_comb = sum_i_pair1_comb + term_i_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,192,0,1,1,sum_q_pair1_comb = sum_q_pair1_comb + term_q_s8[comb_tap];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,210,0,1,1,i_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,211,0,1,1,q_history[tap] <= {W{1'b0}};,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,238,0,1,1,end else if (tap == 0) begin,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,239,0,1,1,i_s0[tap] <= i_in;,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,240,0,1,1,q_s0[tap] <= q_in;,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,242,0,1,1,i_s0[tap] <= i_history[tap-1];,FIXED_EXTERNAL_TAPS1_INTERNAL_INPUT_PATH
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,243,0,1,1,q_s0[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,332,0,1,1,i_history[tap] <= i_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd,PROJECT_RTL,333,0,1,1,q_history[tap] <= q_history[tap-1];,FIXED_DPD_TAPS1_HISTORY_OR_UNUSED_PAIR1
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,132,0,1,1,"out_i_vec[W +: W] = cubic_midpoint(tail_sample_i_q, '0, '0, '0);",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,133,0,1,1,"out_q_vec[W +: W] = cubic_midpoint(tail_sample_q_q, '0, '0, '0);",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,218,0,1,1,tail_pending_q <= 1'b0;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,224,0,1,1,tail_pending_q <= 1'b1;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,225,0,1,1,tail_sample_i_q <= q0_i[LANES-1];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,226,0,1,1,tail_sample_q_q <= q0_q[LANES-1];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,256,0,1,1,q0_start <= in_frame_start;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,257,0,1,1,q0_end <= in_frame_end;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,258,0,1,1,q0_tail <= in_tail;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,259,0,1,1,for (int lane = 0; lane < LANES; lane = lane + 1) begin,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,260,0,1,1,q0_i[lane] <= in_i_vec[lane*W +: W];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,261,0,1,1,q0_q[lane] <= in_q_vec[lane*W +: W];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,263,0,1,1,q_count <= 1;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,294,1,2,1,"if (LANES < 2) $error(""centered cubic interpolator requires LANES >= 2"");",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2,PROJECT_RTL,295,1,2,1,"if (COEFF_FRAC != 14) $error(""centered cubic coefficients require Q14"");",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,101,1,2,1,if (rounded > maxv) round_sat = maxv[W-1:0];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,102,1,2,1,else if (rounded < minv) round_sat = minv[W-1:0];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,230,0,1,1,history_i <= '0;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,231,0,1,1,history_q <= '0;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,256,0,1,1,q0_start <= in_frame_start;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,257,0,1,1,q0_end <= in_frame_end;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,258,0,1,1,q0_tail <= in_tail;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,259,0,1,1,for (int lane = 0; lane < LANES; lane = lane + 1) begin,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,260,0,1,1,q0_i[lane] <= in_i_vec[lane*W +: W];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,261,0,1,1,q0_q[lane] <= in_q_vec[lane*W +: W];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,263,0,1,1,q_count <= 1;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,294,1,2,1,"if (LANES < 2) $error(""centered cubic interpolator requires LANES >= 2"");",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1,PROJECT_RTL,295,1,2,1,"if (COEFF_FRAC != 14) $error(""centered cubic coefficients require Q14"");",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,97,0,1,1,"$error(""EF2 TID requires W >= 2 and an even CHANNELS >= 2"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,105,0,1,1,sat_error = STATE_MAX[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,107,0,1,1,sat_error = STATE_MIN[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,135,0,1,1,result = '0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,136,0,1,1,result.no_wrap = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,137,0,1,1,result.in_bounds = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,138,0,1,1,"x0_wide = {{(ACC_W-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,139,0,1,1,"x1_wide = {{(ACC_W-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,140,0,1,1,"e1_wide = {{(ACC_W-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,141,0,1,1,"e2_wide = {{(ACC_W-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,142,0,1,1,result.u0 = x0_wide + (e1_wide <<< 1) - e2_wide;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,143,0,1,1,result.q0_positive = (result.u0 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,144,0,1,1,result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,146,0,1,1,e0_positive = sat_error(result.u0 - Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,147,0,1,1,e0_negative = sat_error(result.u0 + Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,148,0,1,1,result.e0_state = result.q0_positive ? e0_positive : e0_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,150,0,1,1,u1_positive = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,153,0,1,1,u1_negative = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,156,0,1,1,result.u1 = result.q0_positive ? u1_positive : u1_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,157,0,1,1,result.q1_positive = (result.u1 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,158,0,1,1,result.e1_raw = result.q1_positive ? (result.u1 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,160,0,1,1,result.e1_state = sat_error(result.e1_raw);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,162,0,1,1,"x0_check = {{(ACC_W+1-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,163,0,1,1,"x1_check = {{(ACC_W+1-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,164,0,1,1,"e1_check = {{(ACC_W+1-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,165,0,1,1,"e2_check = {{(ACC_W+1-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,166,0,1,1,"e0_check = {{(ACC_W+1-STATE_W){result.e0_state[STATE_W-1]}},",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,168,0,1,1,"q_one_wide = $signed({Q_ONE[ACC_W-1], Q_ONE});",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,169,0,1,1,u0_check = x0_check + (e1_check <<< 1) - e2_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,170,0,1,1,e0_raw_check = (u0_check > 0) ? (u0_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,172,0,1,1,u1_check = x1_check + (e0_check <<< 1) - e1_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,173,0,1,1,e1_raw_check = (u1_check > 0) ? (u1_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,175,0,1,1,"if (($signed(u0_check) != $signed({result.u0[ACC_W-1], result.u0})) ||",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,179,0,1,1,result.no_wrap = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,180,0,1,1,if ((u0_check < -U_ABS_BOUND) || (u0_check > U_ABS_BOUND) ||,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,186,0,1,1,result.in_bounds = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,187,0,1,1,if ((result.e0_raw > STATE_MAX) || (result.e1_raw > STATE_MAX)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,188,0,1,1,result.clamp_positive = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,189,0,1,1,if ((result.e0_raw < STATE_MIN) || (result.e1_raw < STATE_MIN)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,190,0,1,1,result.clamp_negative = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,191,0,1,1,ef2_pair_lookahead = result;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,232,0,1,1,for (int lane = 0; lane < CHANNELS; lane = lane + 2) begin,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,233,0,1,1,pair_i = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,236,0,1,1,pair_q = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,239,0,1,1,if (!pair_i.no_wrap || !pair_q.no_wrap),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,240,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,241,0,1,1,if (!pair_i.in_bounds || !pair_q.in_bounds),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,242,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,243,0,1,1,if (pair_i.clamp_positive || pair_q.clamp_positive),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,244,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,245,0,1,1,if (pair_i.clamp_negative || pair_q.clamp_negative),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,246,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,249,0,1,1,raw_word_comb[2*lane]       = pair_i.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,250,0,1,1,raw_word_comb[2*lane + 1]   = !pair_q.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,251,0,1,1,raw_word_comb[2*(lane+1)]   = !pair_i.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,252,0,1,1,raw_word_comb[2*(lane+1)+1] = pair_q.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,253,0,1,1,work_err2_i = pair_i.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,254,0,1,1,work_err1_i = pair_i.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,255,0,1,1,work_err2_q = pair_q.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,256,0,1,1,work_err1_q = pair_q.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,290,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,300,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,302,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[0].g_order2.u_tid,PROJECT_RTL,304,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,97,0,1,1,"$error(""EF2 TID requires W >= 2 and an even CHANNELS >= 2"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,105,0,1,1,sat_error = STATE_MAX[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,107,0,1,1,sat_error = STATE_MIN[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,135,0,1,1,result = '0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,136,0,1,1,result.no_wrap = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,137,0,1,1,result.in_bounds = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,138,0,1,1,"x0_wide = {{(ACC_W-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,139,0,1,1,"x1_wide = {{(ACC_W-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,140,0,1,1,"e1_wide = {{(ACC_W-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,141,0,1,1,"e2_wide = {{(ACC_W-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,142,0,1,1,result.u0 = x0_wide + (e1_wide <<< 1) - e2_wide;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,143,0,1,1,result.q0_positive = (result.u0 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,144,0,1,1,result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,146,0,1,1,e0_positive = sat_error(result.u0 - Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,147,0,1,1,e0_negative = sat_error(result.u0 + Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,148,0,1,1,result.e0_state = result.q0_positive ? e0_positive : e0_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,150,0,1,1,u1_positive = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,153,0,1,1,u1_negative = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,156,0,1,1,result.u1 = result.q0_positive ? u1_positive : u1_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,157,0,1,1,result.q1_positive = (result.u1 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,158,0,1,1,result.e1_raw = result.q1_positive ? (result.u1 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,160,0,1,1,result.e1_state = sat_error(result.e1_raw);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,162,0,1,1,"x0_check = {{(ACC_W+1-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,163,0,1,1,"x1_check = {{(ACC_W+1-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,164,0,1,1,"e1_check = {{(ACC_W+1-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,165,0,1,1,"e2_check = {{(ACC_W+1-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,166,0,1,1,"e0_check = {{(ACC_W+1-STATE_W){result.e0_state[STATE_W-1]}},",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,168,0,1,1,"q_one_wide = $signed({Q_ONE[ACC_W-1], Q_ONE});",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,169,0,1,1,u0_check = x0_check + (e1_check <<< 1) - e2_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,170,0,1,1,e0_raw_check = (u0_check > 0) ? (u0_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,172,0,1,1,u1_check = x1_check + (e0_check <<< 1) - e1_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,173,0,1,1,e1_raw_check = (u1_check > 0) ? (u1_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,175,0,1,1,"if (($signed(u0_check) != $signed({result.u0[ACC_W-1], result.u0})) ||",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,179,0,1,1,result.no_wrap = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,180,0,1,1,if ((u0_check < -U_ABS_BOUND) || (u0_check > U_ABS_BOUND) ||,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,186,0,1,1,result.in_bounds = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,187,0,1,1,if ((result.e0_raw > STATE_MAX) || (result.e1_raw > STATE_MAX)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,188,0,1,1,result.clamp_positive = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,189,0,1,1,if ((result.e0_raw < STATE_MIN) || (result.e1_raw < STATE_MIN)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,190,0,1,1,result.clamp_negative = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,191,0,1,1,ef2_pair_lookahead = result;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,232,0,1,1,for (int lane = 0; lane < CHANNELS; lane = lane + 2) begin,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,233,0,1,1,pair_i = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,236,0,1,1,pair_q = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,239,0,1,1,if (!pair_i.no_wrap || !pair_q.no_wrap),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,240,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,241,0,1,1,if (!pair_i.in_bounds || !pair_q.in_bounds),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,242,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,243,0,1,1,if (pair_i.clamp_positive || pair_q.clamp_positive),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,244,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,245,0,1,1,if (pair_i.clamp_negative || pair_q.clamp_negative),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,246,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,249,0,1,1,raw_word_comb[2*lane]       = pair_i.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,250,0,1,1,raw_word_comb[2*lane + 1]   = !pair_q.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,251,0,1,1,raw_word_comb[2*(lane+1)]   = !pair_i.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,252,0,1,1,raw_word_comb[2*(lane+1)+1] = pair_q.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,253,0,1,1,work_err2_i = pair_i.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,254,0,1,1,work_err1_i = pair_i.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,255,0,1,1,work_err2_q = pair_q.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,256,0,1,1,work_err1_q = pair_q.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,290,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,300,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,302,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[3].g_order2.u_tid,PROJECT_RTL,304,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,97,0,1,1,"$error(""EF2 TID requires W >= 2 and an even CHANNELS >= 2"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,105,0,1,1,sat_error = STATE_MAX[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,107,0,1,1,sat_error = STATE_MIN[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,135,0,1,1,result = '0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,136,0,1,1,result.no_wrap = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,137,0,1,1,result.in_bounds = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,138,0,1,1,"x0_wide = {{(ACC_W-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,139,0,1,1,"x1_wide = {{(ACC_W-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,140,0,1,1,"e1_wide = {{(ACC_W-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,141,0,1,1,"e2_wide = {{(ACC_W-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,142,0,1,1,result.u0 = x0_wide + (e1_wide <<< 1) - e2_wide;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,143,0,1,1,result.q0_positive = (result.u0 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,144,0,1,1,result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,146,0,1,1,e0_positive = sat_error(result.u0 - Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,147,0,1,1,e0_negative = sat_error(result.u0 + Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,148,0,1,1,result.e0_state = result.q0_positive ? e0_positive : e0_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,150,0,1,1,u1_positive = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,153,0,1,1,u1_negative = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,156,0,1,1,result.u1 = result.q0_positive ? u1_positive : u1_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,157,0,1,1,result.q1_positive = (result.u1 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,158,0,1,1,result.e1_raw = result.q1_positive ? (result.u1 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,160,0,1,1,result.e1_state = sat_error(result.e1_raw);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,162,0,1,1,"x0_check = {{(ACC_W+1-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,163,0,1,1,"x1_check = {{(ACC_W+1-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,164,0,1,1,"e1_check = {{(ACC_W+1-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,165,0,1,1,"e2_check = {{(ACC_W+1-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,166,0,1,1,"e0_check = {{(ACC_W+1-STATE_W){result.e0_state[STATE_W-1]}},",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,168,0,1,1,"q_one_wide = $signed({Q_ONE[ACC_W-1], Q_ONE});",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,169,0,1,1,u0_check = x0_check + (e1_check <<< 1) - e2_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,170,0,1,1,e0_raw_check = (u0_check > 0) ? (u0_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,172,0,1,1,u1_check = x1_check + (e0_check <<< 1) - e1_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,173,0,1,1,e1_raw_check = (u1_check > 0) ? (u1_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,175,0,1,1,"if (($signed(u0_check) != $signed({result.u0[ACC_W-1], result.u0})) ||",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,179,0,1,1,result.no_wrap = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,180,0,1,1,if ((u0_check < -U_ABS_BOUND) || (u0_check > U_ABS_BOUND) ||,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,186,0,1,1,result.in_bounds = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,187,0,1,1,if ((result.e0_raw > STATE_MAX) || (result.e1_raw > STATE_MAX)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,188,0,1,1,result.clamp_positive = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,189,0,1,1,if ((result.e0_raw < STATE_MIN) || (result.e1_raw < STATE_MIN)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,190,0,1,1,result.clamp_negative = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,191,0,1,1,ef2_pair_lookahead = result;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,232,0,1,1,for (int lane = 0; lane < CHANNELS; lane = lane + 2) begin,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,233,0,1,1,pair_i = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,236,0,1,1,pair_q = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,239,0,1,1,if (!pair_i.no_wrap || !pair_q.no_wrap),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,240,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,241,0,1,1,if (!pair_i.in_bounds || !pair_q.in_bounds),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,242,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,243,0,1,1,if (pair_i.clamp_positive || pair_q.clamp_positive),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,244,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,245,0,1,1,if (pair_i.clamp_negative || pair_q.clamp_negative),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,246,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,249,0,1,1,raw_word_comb[2*lane]       = pair_i.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,250,0,1,1,raw_word_comb[2*lane + 1]   = !pair_q.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,251,0,1,1,raw_word_comb[2*(lane+1)]   = !pair_i.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,252,0,1,1,raw_word_comb[2*(lane+1)+1] = pair_q.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,253,0,1,1,work_err2_i = pair_i.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,254,0,1,1,work_err1_i = pair_i.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,255,0,1,1,work_err2_q = pair_q.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,256,0,1,1,work_err1_q = pair_q.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,290,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,300,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,302,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[1].g_order2.u_tid,PROJECT_RTL,304,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,97,0,1,1,"$error(""EF2 TID requires W >= 2 and an even CHANNELS >= 2"");",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,105,0,1,1,sat_error = STATE_MAX[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,107,0,1,1,sat_error = STATE_MIN[STATE_W-1:0];,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,135,0,1,1,result = '0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,136,0,1,1,result.no_wrap = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,137,0,1,1,result.in_bounds = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,138,0,1,1,"x0_wide = {{(ACC_W-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,139,0,1,1,"x1_wide = {{(ACC_W-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,140,0,1,1,"e1_wide = {{(ACC_W-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,141,0,1,1,"e2_wide = {{(ACC_W-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,142,0,1,1,result.u0 = x0_wide + (e1_wide <<< 1) - e2_wide;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,143,0,1,1,result.q0_positive = (result.u0 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,144,0,1,1,result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,146,0,1,1,e0_positive = sat_error(result.u0 - Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,147,0,1,1,e0_negative = sat_error(result.u0 + Q_ONE);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,148,0,1,1,result.e0_state = result.q0_positive ? e0_positive : e0_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,150,0,1,1,u1_positive = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,153,0,1,1,u1_negative = x1_wide +,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,156,0,1,1,result.u1 = result.q0_positive ? u1_positive : u1_negative;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,157,0,1,1,result.q1_positive = (result.u1 > 0);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,158,0,1,1,result.e1_raw = result.q1_positive ? (result.u1 - Q_ONE) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,160,0,1,1,result.e1_state = sat_error(result.e1_raw);,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,162,0,1,1,"x0_check = {{(ACC_W+1-W){x0[W-1]}}, x0};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,163,0,1,1,"x1_check = {{(ACC_W+1-W){x1[W-1]}}, x1};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,164,0,1,1,"e1_check = {{(ACC_W+1-STATE_W){e1_prev[STATE_W-1]}}, e1_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,165,0,1,1,"e2_check = {{(ACC_W+1-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,166,0,1,1,"e0_check = {{(ACC_W+1-STATE_W){result.e0_state[STATE_W-1]}},",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,168,0,1,1,"q_one_wide = $signed({Q_ONE[ACC_W-1], Q_ONE});",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,169,0,1,1,u0_check = x0_check + (e1_check <<< 1) - e2_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,170,0,1,1,e0_raw_check = (u0_check > 0) ? (u0_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,172,0,1,1,u1_check = x1_check + (e0_check <<< 1) - e1_check;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,173,0,1,1,e1_raw_check = (u1_check > 0) ? (u1_check - q_one_wide) :,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,175,0,1,1,"if (($signed(u0_check) != $signed({result.u0[ACC_W-1], result.u0})) ||",REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,179,0,1,1,result.no_wrap = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,180,0,1,1,if ((u0_check < -U_ABS_BOUND) || (u0_check > U_ABS_BOUND) ||,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,186,0,1,1,result.in_bounds = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,187,0,1,1,if ((result.e0_raw > STATE_MAX) || (result.e1_raw > STATE_MAX)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,188,0,1,1,result.clamp_positive = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,189,0,1,1,if ((result.e0_raw < STATE_MIN) || (result.e1_raw < STATE_MIN)),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,190,0,1,1,result.clamp_negative = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,191,0,1,1,ef2_pair_lookahead = result;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,232,0,1,1,for (int lane = 0; lane < CHANNELS; lane = lane + 2) begin,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,233,0,1,1,pair_i = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,236,0,1,1,pair_q = ef2_pair_lookahead(,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,239,0,1,1,if (!pair_i.no_wrap || !pair_q.no_wrap),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,240,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,241,0,1,1,if (!pair_i.in_bounds || !pair_q.in_bounds),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,242,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,243,0,1,1,if (pair_i.clamp_positive || pair_q.clamp_positive),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,244,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,245,0,1,1,if (pair_i.clamp_negative || pair_q.clamp_negative),REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,246,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,249,0,1,1,raw_word_comb[2*lane]       = pair_i.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,250,0,1,1,raw_word_comb[2*lane + 1]   = !pair_q.q0_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,251,0,1,1,raw_word_comb[2*(lane+1)]   = !pair_i.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,252,0,1,1,raw_word_comb[2*(lane+1)+1] = pair_q.q1_positive;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,253,0,1,1,work_err2_i = pair_i.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,254,0,1,1,work_err1_i = pair_i.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,255,0,1,1,work_err2_q = pair_q.e0_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,256,0,1,1,work_err1_q = pair_q.e1_state;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,290,0,1,1,arithmetic_bounds_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,300,0,1,1,arithmetic_no_wrap_comb = 1'b0;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,302,0,1,1,clamp_positive_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut.u_frontend.u_tid.g_branch[2].g_order2.u_tid,PROJECT_RTL,304,0,1,1,clamp_negative_comb = 1'b1;,REVIEW_FIXED_LEGAL_PARAMETER_ERROR_ARM
+thermo5_sku_uvm_tb.dut,PROJECT_RTL,150,0,1,1,source_frame_error_q <= 1'b1;,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut,PROJECT_RTL,295,0,1,1,"$error(""DPD_MAX_TAPS must be in [1,4]; got %0d"", DPD_MAX_TAPS);",OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd,PROJECT_RTL,61,0,1,1,lane_i_taps[(lane*MAX_TAPS+tap)*W +: W] = history_i[tap-lane-1];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd,PROJECT_RTL,62,0,1,1,lane_q_taps[(lane*MAX_TAPS+tap)*W +: W] = history_q[tap-lane-1];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd,PROJECT_RTL,80,0,1,1,history_i[h] <= history_i[h-LANES];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_frontend.g_memory_dpd.u_memory_dpd,PROJECT_RTL,81,0,1,1,history_q[h] <= history_q[h-LANES];,OPEN_PROJECT_BIN_REVIEW
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,151,0,1,1,end_remaining_q <= end_remaining_q - CORE_LANES;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,216,0,1,1,out_frame_end_q <= 1'b1;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,217,0,1,1,end_pending_q <= 1'b0;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,218,0,1,1,end_remaining_q <= '0;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,225,0,1,1,core_protocol_error <= 1'b1;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,238,0,1,1,out_valid_q <= 1'b0;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT
+thermo5_sku_uvm_tb.dut.u_cdc,PROJECT_RTL,239,0,1,1,core_protocol_error <= 1'b1;,OPEN_FORMAL_RESIDUAL_CORRUPTION_DEFAULT

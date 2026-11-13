@@ -1,0 +1,49 @@
+semantic_bin_id,root_cause,exact_urg_bin,rtl_location,disposition,actual_urg_delta,approval_status,next_required_evidence
+TXB-01ed98a6596d17e20b0c,TX Top,Signal Details:outstanding_words_q[5]:1_to_0,signal:outstanding_words_q[*]:1_to_0,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-110db3f8a9b52bda4df5,Interpolator,67:0/1,line:67:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-12757f483dbb77b4700b,CDC,145:0/1,line:145:expression:0/1,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-162e100d0c56b0f6d5fd,Interpolator,300:0/1/1,line:300:expression:0/1/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-1a3c01edbe1a6cdf4f0f,Interpolator,309:0/1/1/1,line:309:expression:0/1/1/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-1a46bada439ec7a2903c,Gain,136:0/1,line:136:expression:0/1,OPEN,0,PENDING,Invalid metadata reachability is not proven; retain OPEN
+TXB-2cb17f70d19098c6deca,Interpolator,304:0/1,line:304:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-386083089f1b41f3fbbd,Interpolator,67:0/1,line:67:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-3b8b5df27b5b204fbb04,CDC,113:0/1/1/1/1,line:113:expression:0/1/1/1/1,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-452db0275b9ed7af0d4b,TX Top,171:0/1,line:171:expression:0/1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-4b437512c777826f8907,TX Top,96:1/1/1/0/1,line:96:expression:1/1/1/0/1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-4b80ed59cfb06d66498c,TX Top,216:0/1,line:216:expression:0/1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-508b759e14e613ff239b,CDC,231:0/1/1,line:231:expression:0/1/1,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-557fefb1c4381a209747,TX Top,96:1/0/1/1/1,line:96:expression:1/0/1/1/1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-581f1256dd0672fd753a,TX Top,204:0,line:204:expression:0,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-597ed4ee79b36ae4a224,Interpolator,86:-/1/1/0,line:86:subexpression:-/1/1/0,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-5a47f280e6164309e101,TX Top,Signal Details:outstanding_words_q[6]:1_to_0,signal:outstanding_words_q[*]:1_to_0,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-5fe8d53a8b7b430139d1,Interpolator,74:1/1/0,line:74:expression:1/1/0,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-601ed947c812fac07c13,CDC,138:0/1/1,line:138:expression:0/1/1,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-6b10fe02160c9657a91f,CDC,113:1/1/1/1/0,line:113:expression:1/1/1/1/0,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-6c0ccdbf194f518cd524,TX Top,128:0/1/1,line:128:expression:0/1/1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-6f08406287cccaa17533,Interpolator,83:0/1,line:83:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-77c77b40cc71b60978cb,Interpolator,86:0/1,line:86:subexpression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-7b1fe74dbf7ff06539d5,Gain,137:0/1,line:137:expression:0/1,OPEN,0,PENDING,Invalid metadata reachability is not proven; retain OPEN
+TXB-84309750691c8e9b8ebf,Interpolator,83:0/1,line:83:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-88bf5b09aec9ee58a8ff,Interpolator,300:0/1/1,line:300:expression:0/1/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-8b1edaf71e9793afe4ba,CDC,113:1/0/1/1/1,line:113:expression:1/0/1/1/1,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-8ed12996edaade43bb74,Interpolator,309:0/1/1/1,line:309:expression:0/1/1/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-94e8e7df882f0d59f4b4,Interpolator,86:0/1,line:86:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-9ce20b84a284eb4c0773,Interpolator,83:1/0,line:83:subexpression:1/0,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-9ce4e23a9dab37d7ea28,Frontend,76:1/0,line:76:expression:1/0,OPEN,0,PENDING,No exact legal witness or static proof; retain OPEN
+TXB-9f2139c02a8e2f3c5234,Interpolator,86:1/0,line:86:subexpression:1/0,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-a014e054137f7efba83d,Interpolator,75:0/1,line:75:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-a274d5dd6bfd26bfb01d,Interpolator,86:0/1,line:86:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-a275579b3f87b518fc79,TX Top,Signal Details:outstanding_words_q[5]:0_to_1,signal:outstanding_words_q[*]:0_to_1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-b22da1a128d4c228fdbd,Interpolator,220:1/0,line:220:expression:1/0,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-c16debdf7d9cbab220ac,TX Top,198:0/2'b01/-/0/-/-,line:204:decision_path:0/2'b01/-/0/-/-,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-c1cc186d91eb6e6b0021,Frontend,142:0/1/1,line:142:expression:0/1/1,OPEN,0,PENDING,No exact legal witness or static proof; retain OPEN
+TXB-caf8cf334f65d932e7ed,CDC,113:1/1/0/1/1,line:113:expression:1/1/0/1/1,OPEN,0,PENDING,No residual/FWFT proof covering this exact tuple; retain OPEN
+TXB-d8944dd64a04c2d9ad6c,TX Top,Signal Details:outstanding_words_q[7]:1_to_0,signal:outstanding_words_q[*]:1_to_0,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-d9c09d96c814db206877,Interpolator,304:0/1,line:304:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-dc9aededce3dd7b07105,TX Top,96:1/1/1/1/0,line:96:expression:1/1/1/1/0,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-e4abdd28c8384d2dfa8f,Interpolator,68:1/0/1,line:68:expression:1/0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-e99262dd92665c3b9ea8,TX Top,198:0/2'b10/0/-/-/-,line:203:decision_path:0/2'b10/0/-/-/-,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-ecc435da125a4b872e5b,TX Top,Signal Details:outstanding_words_q[6]:0_to_1,signal:outstanding_words_q[*]:0_to_1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-ecf5a64e7dd78bc35ae0,Interpolator,68:1/0/1,line:68:expression:1/0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN
+TXB-eff3f016f7ca879267a7,TX Top,Signal Details:outstanding_words_q[7]:0_to_1,signal:outstanding_words_q[*]:0_to_1,OPEN,0,PENDING,Outstanding/token conservation remains unproven; retain OPEN
+TXB-f4d358f564e64090910b,Interpolator,84:0/1,line:84:expression:0/1,OPEN,0,PENDING,No new witness or non-vacuous proof; retain OPEN

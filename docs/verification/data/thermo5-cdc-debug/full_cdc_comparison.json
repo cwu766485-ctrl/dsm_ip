@@ -1,0 +1,121 @@
+{
+  "before_edges": {
+    "counts": {
+      "Info": 108,
+      "Warning": 35,
+      "Error": 5
+    },
+    "report_sha256": "a5edd612e4f3668174ddd65a9d007f4f585a57d57b32e39186e3799882834d61",
+    "errors": [
+      {
+        "goal": "cdc_verify",
+        "message_id": "66A",
+        "rule": "Ac_cdc01a",
+        "severity": "Error",
+        "source_file": "tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "line": "224",
+        "source": "",
+        "destination": "",
+        "message": "Fast('tid32_thermo5_axi_lite_axis_frontend_tx.core_clk') to slow('tid32_thermo5_axi_lite_axis_frontend_tx.s_axil_aclk') clock crossing(from 'tid32_thermo5_axi_lite_axis_frontend_tx.tx_active_status_c' to 'tid32_thermo5_axi_lite_axis_frontend_tx.u_cfg.tx_active_sync1') detected. Data hold check:FAILED"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "669",
+        "rule": "Ac_cdc01a",
+        "severity": "Error",
+        "source_file": "tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "line": "226",
+        "source": "",
+        "destination": "",
+        "message": "Fast('tid32_thermo5_axi_lite_axis_frontend_tx.core_clk') to slow('tid32_thermo5_axi_lite_axis_frontend_tx.s_axil_aclk') clock crossing(from 'tid32_thermo5_axi_lite_axis_frontend_tx.draining_status_c' to 'tid32_thermo5_axi_lite_axis_frontend_tx.u_cfg.draining_sync1') detected. Data hold check:FAILED"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "66C",
+        "rule": "Ac_cdc01a",
+        "severity": "Error",
+        "source_file": "tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+        "line": "126",
+        "source": "",
+        "destination": "",
+        "message": "Fast('tid32_thermo5_axi_lite_axis_frontend_tx.core_clk') to slow('tid32_thermo5_axi_lite_axis_frontend_tx.s_axis_aclk') clock crossing(from 'tid32_thermo5_axi_lite_axis_frontend_tx.tx_active_status_c' to 'tid32_thermo5_axi_lite_axis_frontend_tx.core_active_s1') detected. Data hold check:FAILED"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "67D",
+        "rule": "Ac_clockperiod01",
+        "severity": "Error",
+        "source_file": "/tmp/thermo5-cdc-rdc-rootfix/dv/uvm/static/thermo5_axil_generic.sgdc",
+        "line": "2",
+        "source": "",
+        "destination": "",
+        "message": "For top design unit 'tid32_thermo5_axi_lite_axis_frontend_tx', Edge-List is not defined for 3 (100 %) clocks. Refer file: '/tmp/thermo5-cdc-rdc-rootfix/runs/cdc_debug/verify/thermo5_axil/tid32_thermo5_axi_lite_axis_frontend_tx/cdc/cdc_verify/spyglass_reports/clock-reset/Ac_clockperiod01.csv' for details"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "654",
+        "rule": "Ac_conv02",
+        "severity": "Error",
+        "source_file": "axis/dsm_async_fifo.sv",
+        "line": "47",
+        "source": "",
+        "destination": "",
+        "message": "7 synchronizers (tid32_thermo5_axi_lite_axis_frontend_tx.u_cdc.\\g_generic_fifo.u_async_fifo .wr_gray_rd_sync1_q[4:0],tid32_thermo5_axi_lite_axis_frontend_tx.prefill_ready_c1 ...) converge on combinational gate 'tid32_thermo5_axi_lite_axis_frontend_tx.u_cdc.\\g_generic_fifo.u_async_fifo .rd_empty_next'. Gray encoding check: 'FAILED'"
+      }
+    ]
+  },
+  "after_edges": {
+    "counts": {
+      "Info": 109,
+      "Warning": 34,
+      "Error": 4
+    },
+    "report_sha256": "c893dc039c8aaa1e612fc82f0b070131dcd389473fdd46f5dfc326ee95c4fdad",
+    "errors": [
+      {
+        "goal": "cdc_verify",
+        "message_id": "66A",
+        "rule": "Ac_cdc01a",
+        "severity": "Error",
+        "source_file": "tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "line": "224",
+        "source": "",
+        "destination": "",
+        "message": "Fast('tid32_thermo5_axi_lite_axis_frontend_tx.core_clk') to slow('tid32_thermo5_axi_lite_axis_frontend_tx.s_axil_aclk') clock crossing(from 'tid32_thermo5_axi_lite_axis_frontend_tx.tx_active_status_c' to 'tid32_thermo5_axi_lite_axis_frontend_tx.u_cfg.tx_active_sync1') detected. Data hold check:FAILED"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "669",
+        "rule": "Ac_cdc01a",
+        "severity": "Error",
+        "source_file": "tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        "line": "226",
+        "source": "",
+        "destination": "",
+        "message": "Fast('tid32_thermo5_axi_lite_axis_frontend_tx.core_clk') to slow('tid32_thermo5_axi_lite_axis_frontend_tx.s_axil_aclk') clock crossing(from 'tid32_thermo5_axi_lite_axis_frontend_tx.draining_status_c' to 'tid32_thermo5_axi_lite_axis_frontend_tx.u_cfg.draining_sync1') detected. Data hold check:FAILED"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "66C",
+        "rule": "Ac_cdc01a",
+        "severity": "Error",
+        "source_file": "tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+        "line": "126",
+        "source": "",
+        "destination": "",
+        "message": "Fast('tid32_thermo5_axi_lite_axis_frontend_tx.core_clk') to slow('tid32_thermo5_axi_lite_axis_frontend_tx.s_axis_aclk') clock crossing(from 'tid32_thermo5_axi_lite_axis_frontend_tx.tx_active_status_c' to 'tid32_thermo5_axi_lite_axis_frontend_tx.core_active_s1') detected. Data hold check:FAILED"
+      },
+      {
+        "goal": "cdc_verify",
+        "message_id": "654",
+        "rule": "Ac_conv02",
+        "severity": "Error",
+        "source_file": "axis/dsm_async_fifo.sv",
+        "line": "47",
+        "source": "",
+        "destination": "",
+        "message": "7 synchronizers (tid32_thermo5_axi_lite_axis_frontend_tx.u_cdc.\\g_generic_fifo.u_async_fifo .wr_gray_rd_sync1_q[4:0],tid32_thermo5_axi_lite_axis_frontend_tx.prefill_ready_c1 ...) converge on combinational gate 'tid32_thermo5_axi_lite_axis_frontend_tx.u_cdc.\\g_generic_fifo.u_async_fifo .rd_empty_next'. Gray encoding check: 'FAILED'"
+      }
+    ]
+  }
+}

@@ -21,6 +21,9 @@ class thermo5_sku_base_test extends uvm_test;
 `endif
     cfg.random_pa_ready=$test$plusargs("STRESS_PA_READY");
     require_signed_extremes=$test$plusargs("EXPECT_SIGNED_EXTREMES");
+`ifdef THERMO5_AXIL_CONTROL
+    cfg.axil_control=1'b1;
+`endif
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -72,6 +75,29 @@ class thermo5_sku_base_test extends uvm_test;
     seq.gap_before_beat=selected_gap_beat;
     seq.gap_cycles=selected_gap_cycles;
     seq.start(env.source.sequencer);
+  endtask
+
+  task request_stream_enable(bit enable);
+`ifdef THERMO5_AXIL_CONTROL
+    thermo5_axil_access_sequence seq;
+    wait(vif.src_rst_n && vif.core_rst_n);
+    wait(env.axil.monitor.vif.aresetn===1'b1);
+    seq=thermo5_axil_access_sequence::type_id::create("stream_control_write");
+    seq.is_write=1;
+    seq.addr=8'h00;
+    seq.data=enable ? 32'h1 : 32'h0;
+    seq.strb=4'h1;
+    seq.aw_delay=0;
+    seq.w_delay=0;
+    seq.response_delay=2;
+    seq.ready_before_response=0;
+    seq.start(env.axil.sequencer);
+    if (seq.resp!=2'b00)
+      `uvm_fatal("AXIL_RUN",$sformatf("CONTROL.RUN write failed: enable=%0b resp=%0b",enable,seq.resp))
+`else
+    if (enable) env.control.core_on();
+    else env.control.core_off();
+`endif
   endtask
 
   task check_full(bit check_event_totals=1);

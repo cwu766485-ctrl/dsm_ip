@@ -1,0 +1,31 @@
+{
+  "product_sha": "635be681046b3ab7d6fdda7f4e9818d7226efd66",
+  "base_review_sha": "dc87f0e55da6cf23224c5946b20bea931d6f21c1",
+  "analysis_previous141": 141,
+  "analysis_new33": 33,
+  "analysis_total174": 174,
+  "new_hit": 0,
+  "approved_exclusions": 0,
+  "accepted_exceptions": 0,
+  "candidate_pending": 11593,
+  "official_open": 12577,
+  "whatif_open": 984,
+  "noncounter_technical_open": 54,
+  "counter_open": 930,
+  "raw_unchanged": true,
+  "official_adjusted_equals_raw": true,
+  "regression_rerun": false,
+  "reason": "Only analysis/tool files changed; frozen589 VDB inputs reused",
+  "harness_rerun": false,
+  "weighted_bound": "28 conditional; strict maximum and RTL refinement OPEN",
+  "evidence_sha256": {
+    "docs/verification/data/thermo5-pr55-application/native141.json": "cac176632bf07f2bf4878b7bdc59bbd8cfa6a315d01cbe4d207a7f66fb46e45d",
+    "docs/verification/data/thermo5-pr55-application/application_checks.json": "4a3ec4d87d8cb8ac2d0e3d7a43304eb0804f85d81e423e6d9f4abe55e58a85d8",
+    "docs/verification/data/thermo5-pr55-application/weighted_conservation.json": "e2184ea2fd384c44d86455f1308bc3aa6c92a2e506984b7090a497770ddc27e5",
+    "docs/verification/data/thermo5-pr55-application/previous141_parameter_analysis_only.el": "e6e5a5f9415d36f83d60f2a72a3b09b741888d5840df15e85941b225568c4ce6",
+    "runs/pr55_exact/previous141/command.json": "d7736a08dad90d39ee1d6232f672c8b809591fbc0a9c415b94e5ae6ce34c86a2",
+    "runs/pr55_exact/all174/command.json": "cb00fbd050c7610e4a3033e6226f29d62ea828672591848f37721f7a82e67e8e",
+    "runs/pr55_exact/full_whatif/command.json": "680c52ba28727c156e3ecee5253977fb9f6e5820a7c6dec353a9b452413fba90",
+    "tools/hw/thermo5_coverage_denominator.py": "9f80eca94aeae13b6a9bc8cc4f98ff8b01f610142450f67f443ff4dd84958546"
+  }
+}

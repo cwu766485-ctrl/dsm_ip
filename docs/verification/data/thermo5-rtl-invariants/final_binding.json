@@ -1,0 +1,10 @@
+{
+  "tests": 589,
+  "legal": 585,
+  "negative": 4,
+  "parent_sha256": "421a36094a493a2345eff8f165a44197bff12bbcf32a09963a61628353bf599e",
+  "uniform_parent": true,
+  "new_exact_hits": 0,
+  "approved_exclusions": 0,
+  "accepted_exceptions": 0
+}

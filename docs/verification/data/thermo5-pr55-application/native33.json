@@ -1,0 +1,343 @@
+[
+  {
+    "semantic_bin_id": "TXB-06fed7d29a61e25fe30f",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 1to0 end_remaining_q [1] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-1415045e35496892448e",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 0to1 end_remaining_q [1] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-163c73f4fcaa40135c32",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"935837611 1908431749\"",
+    "directive": "Toggle 0to1 out_meta [0] \"net out_meta[0:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-1d320f7692d3831884d0",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 21 \"3546188172\" \"(tail_output && out_ready && enable) 1 -1\" (4 \"111\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-3a9590e170ea70bbfa6e",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 30 \"92214852\" \"(out_valid && ((!tail_output)) && q0_start) 1 -1\" (2 \"101\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-3e5062f914cef6907205",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 1to0 end_remaining_q [4] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-4445cf3565dc723fc045",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 21 \"3546188172\" \"(tail_output && out_ready && enable) 1 -1\" (3 \"110\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-471301ea0e99716856de",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 4212170548\"",
+    "directive": "Condition 3 \"2320664023\" \"(pop_head && q0_tail) 1 -1\" (3 \"11\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-49fe8b7a3097cfabcafe",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 4212170548\"",
+    "directive": "Condition 3 \"2320664023\" \"(pop_head && q0_tail) 1 -1\" (1 \"01\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-4b9564ffe2d5249793c5",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 1to0 end_remaining_q [2] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-5289de10c1a887214158",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 19 \"2474396749\" \"(can_emit_head && ((!tail_output)) && out_ready && enable) 1 -1\" (2 \"1011\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-69539e312147372cd222",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"935837611 1908431749\"",
+    "directive": "Toggle 0to1 in_meta [0] \"net in_meta[0:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-834d3694d32e41562627",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"935837611 1908431749\"",
+    "directive": "Toggle 1to0 out_meta [0] \"net out_meta[0:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-85afd49f35a994cc290c",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "branch",
+    "scope_checksum": "CHECKSUM: \"1467091198 3627519779\"",
+    "directive": "Branch 0 \"1959897721\" \"(!c_rst_n)\" (4) \"(!c_rst_n) 0,-,1,1,0,-,-,-,-,-,-,-\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-8c173b5f5995ee34fbfa",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 0to1 end_remaining_q [4] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-909c9c41ce328d3b5464",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 4212170548\"",
+    "directive": "Condition 19 \"2439389106\" \"(drop_head_tail || (can_emit_head && ((!tail_output)) && out_ready && enable)) 1 -1\" (3 \"10\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-9b12c02ba9030d039784",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"2611591664 1177502884\"",
+    "directive": "Block 47 \"595236972\" \"history_i <= '0;\"",
+    "shared_statement_lines": [
+      230,
+      231
+    ],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-a0aba78f44b5d6586879",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"2611591664 1177502884\"",
+    "directive": "Block 43 \"62050017\" \"tail_pending_q <= 1'b1;\"",
+    "shared_statement_lines": [
+      224,
+      225,
+      226
+    ],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-a1f4b10f37fc0e0d7f0b",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"2710960726 492359641\"",
+    "directive": "Toggle 0to1 i2_tail [0] \"logic i2_tail\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-ac118cc658b7c8ebe27f",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 29 \"3656465195\" \"(out_valid && tail_output) 1 -1\" (1 \"01\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-b450fec02bca474b90bf",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 29 \"3656465195\" \"(out_valid && tail_output) 1 -1\" (3 \"11\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-ba8067539d65e06536a5",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"2611591664 1177502884\"",
+    "directive": "Block 43 \"62050017\" \"tail_pending_q <= 1'b1;\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-bdf18ac87d802fe3b1d7",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 0to1 end_remaining_q [2] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-be8f42508812865048fe",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"2611591664 1177502884\"",
+    "directive": "Block 47 \"595236972\" \"history_i <= '0;\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-c396f1ff30f1639e6be9",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 0to1 end_remaining_q [0] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-c659ce0f8167f1f726df",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"2611591664 1177502884\"",
+    "directive": "Block 43 \"62050017\" \"tail_pending_q <= 1'b1;\"",
+    "shared_statement_lines": [
+      224,
+      225,
+      226
+    ],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-cc6988a51fba9f886f57",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"935837611 1908431749\"",
+    "directive": "Toggle 1to0 in_meta [0] \"net in_meta[0:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-d07f79d0903a608e2544",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 4212170548\"",
+    "directive": "Condition 14 \"251994963\" \"(((q_count == 2'h2) || ((q_count == 2'b1) && q0_end)) && have_head && ((!q0_tail))) 1 -1\" (3 \"110\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-d50ead3bf05f3974fcad",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"2611591664 1177502884\"",
+    "directive": "Block 39 \"2358869140\" \"tail_pending_q <= 1'b0;\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-da673e9462548c47c6c3",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+    "metric": "cond",
+    "scope_checksum": "CHECKSUM: \"2611591664 3212351742\"",
+    "directive": "Condition 21 \"3546188172\" \"(tail_output && out_ready && enable) 1 -1\" (2 \"101\")",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-e4810d348ea657bf627a",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "line",
+    "scope_checksum": "CHECKSUM: \"1467091198 3183758415\"",
+    "directive": "Block 10 \"3434293879\" \"end_remaining_q <= (end_remaining_q - CORE_LANES);\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-e48513f6185346ea2beb",
+    "group": "legal_cdc",
+    "instance": "thermo5_sku_uvm_tb.dut.u_cdc",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"1467091198 4103161379\"",
+    "directive": "Toggle 1to0 end_remaining_q [0] \"logic end_remaining_q[4:0]\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  },
+  {
+    "semantic_bin_id": "TXB-f32b89aed692c2088278",
+    "group": "parameter",
+    "instance": "thermo5_sku_uvm_tb.dut.u_frontend",
+    "metric": "toggle",
+    "scope_checksum": "CHECKSUM: \"2710960726 492359641\"",
+    "directive": "Toggle 1to0 i2_tail [0] \"logic i2_tail\"",
+    "shared_statement_lines": [],
+    "approval": "PENDING"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+    "-batch",
+    "-fmode",
+    "FPV",
+    "-f",
+    "/tmp/thermo5-rootfix-clean-proof/dv/uvm/formal/run_thermo5_dpd_identity_stall_fpv.tcl"
+  ],
+  "exit_code": 0,
+  "timeout": false,
+  "timeout_seconds": 360,
+  "duration_seconds": 154.46,
+  "vcf_resolved_path": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+  "source_git_revision": "ec9127e28d50eee4a7425b5a24cce3127f01d017",
+  "source_worktree_clean_at_start": true
+}

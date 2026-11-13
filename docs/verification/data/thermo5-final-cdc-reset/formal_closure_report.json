@@ -1,0 +1,10 @@
+{
+  "new_runs": 0,
+  "reused_gain_proof": "PR58 four proven/two unreachable covers/three positive covers;procedural reset-initialized Generic scope only",
+  "technical_unresolved": 46,
+  "extra_proof_targets_pending": 8,
+  "outstanding": "INCONCLUSIVE;conditional28 is not RTL bound",
+  "q1_tail": "OPEN",
+  "static_cdc_rdc": "OPEN;tool probe only;no analyzed violation count",
+  "counter930": "OPEN;not intrinsically unreachable"
+}

@@ -1,0 +1,13 @@
+crossing,source_domain,destination_domain,mechanism,status,blocking_obligation
+fifo_write_pointer,source,core,Gray2FF,OPEN_STATIC_NOT_SIGNED,"Gray transition, reset/reconvergence static closure"
+fifo_read_pointer,core,source,Gray2FF,OPEN_STATIC_NOT_SIGNED,Same independent-domain reset contract
+config_req,AXIL,core,2FF four-phase,OPEN_STATIC_NOT_SIGNED,Bundled payload stability and reset pending
+config_ack,core,AXIL,2FF four-phase,OPEN_STATIC_NOT_SIGNED,No false done/reset crossing
+config_payload,AXIL,core,bundled stable mailbox,OPEN_STATIC_NOT_SIGNED,Timing exception and data stabilization audit
+run,AXIL,core/source,2FF,OPEN_STATIC_NOT_SIGNED,STOP/drain/restart priority
+source_error,source,core,2FF sticky,OPEN_STATIC_NOT_SIGNED,Reset release skew
+prefill,source,core,Gray2FF,OPEN_STATIC_NOT_SIGNED,Multi-bit reconvergence
+ingress_closed,source,core,3FF,OPEN_STATIC_NOT_SIGNED,Drain reconvergence
+core_active,core,source/AXIL,2FF,OPEN_STATIC_NOT_SIGNED,Restart status
+axil_reset_tb,core_reset,AXIL,single-stage async assert/sync release,OPEN_STATIC_NOT_SIGNED,Hardware reset contract mismatch review
+xpm_reset,both reset domains,source/write clock,two sampled reset levels + remote async guards,OPEN_STATIC_NOT_SIGNED,Vendor model and wr/rd reset-busy checks

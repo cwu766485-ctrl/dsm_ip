@@ -1,0 +1,47 @@
+{
+  "name": "pending_reset_src3999_axil4999",
+  "result": {
+    "index": 593,
+    "test": "thermo5_sku_axil_p0_reset_test",
+    "negative": false,
+    "argv": [
+      "/tmp/dsm_ip_round21_resume/runs/dv_convergence_v3/compile/simv",
+      "+UVM_TESTNAME=thermo5_sku_axil_p0_reset_test",
+      "+VEC_DIR=/tmp/dsm_ip_round21_resume/runs/dv_convergence_v3/vectors/reset",
+      "+ntb_random_seed=930000",
+      "+CORE_WORDS=56",
+      "+THERMO5_TRACE_JSONL=/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.jsonl",
+      "+THERMO5_WITNESS_VCD=/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.vcd",
+      "-cm",
+      "line+cond+fsm+tgl+branch+assert",
+      "-no_save",
+      "-cm_dir",
+      "/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.vdb",
+      "-l",
+      "/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.log",
+      "+SOURCE_CLOCK_PHASE_PS=3999",
+      "+AXIL_CLOCK_PHASE_PS=4999"
+    ],
+    "log": "/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.log",
+    "vdb": "/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.vdb",
+    "exit_code": 0,
+    "status": "PASS",
+    "assertion_error_messages": 0,
+    "log_sha256": "4c37e7426ebba8d52812eb82aa7b68a336d848cc7a11c66bb1750588cefc015c"
+  },
+  "oracle": {
+    "exit_code": 0,
+    "command": [
+      "/usr/bin/python3.12",
+      "/tmp/dsm_ip_round21_resume/dv/uvm/refmodel/python/check_thermo5_monitor_trace.py",
+      "/tmp/dsm_ip_round21_resume/runs/final_cdc_reset/pending_reset_src3999_axil4999/test.jsonl"
+    ],
+    "sha256": "3cb135be9589dba3d4d077bd099ec78aa7a8458e62b1740eaf2ac89b1751af03"
+  },
+  "hashes": {
+    "test.log": "4c37e7426ebba8d52812eb82aa7b68a336d848cc7a11c66bb1750588cefc015c",
+    "test.jsonl": "7f0fdcdf5ef0fe5d79abc15e7d02ca616950f9d31851e78796bc05bd09ec7f93",
+    "test.vcd": "a50162dbdcc4ad2cbba628f31d874e8555945d97cb9448c3311fbb1e4628499b",
+    "oracle.log": "3cb135be9589dba3d4d077bd099ec78aa7a8458e62b1740eaf2ac89b1751af03"
+  }
+}

@@ -1,0 +1,41 @@
+
+  Summary Results
+   Property Summary: FPV
+   -----------------
+   > Assertion
+     - # found        : 7
+     - # proven       : 7
+
+   > Vacuity
+     - # found        : 6
+     - # non_vacuous  : 6
+
+   > Cover
+     - # found        : 2
+     - # covered      : 2
+
+   > Constraint
+     - # found        : 1
+
+
+  List Results
+   Property List:
+   --------------
+   > Assertion
+     # Assertion: 7
+     [  0] proven                   (non_vacuous)  -  thermo5_cdc_source_status_harness.a_active_chain
+     [  1] proven                   (non_vacuous)  -  thermo5_cdc_source_status_harness.a_closed_source_register
+     [  2] proven                   (non_vacuous)  -  thermo5_cdc_source_status_harness.a_drain_source_register
+     [  3] proven                                  -  thermo5_cdc_source_status_harness.a_prefill_bound
+     [  4] proven                   (non_vacuous)  -  thermo5_cdc_source_status_harness.a_prefill_no_early
+     [  5] proven                   (non_vacuous)  -  thermo5_cdc_source_status_harness.a_prefill_source_register
+     [  6] proven                   (non_vacuous)  -  thermo5_cdc_source_status_harness.a_tx_source_register
+
+   > Cover
+     # Cover: 2
+     [  7] covered     (depth=35)                  -  thermo5_cdc_source_status_harness.c_output
+     [  8] covered     (depth=10)                  -  thermo5_cdc_source_status_harness.c_prefill
+
+   > Constraint
+     # Constraint: 1
+     [  9] constrained                             -  constant_9 - rst_n==1

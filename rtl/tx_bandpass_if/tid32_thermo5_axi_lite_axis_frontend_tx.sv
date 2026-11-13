@@ -70,8 +70,10 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   logic signed [8*W-1:0] core_i_vec, core_q_vec;
   logic signed [GAIN_W-1:0] core_frame_gain;
   logic dpd_config_boundary;
-  logic cdc_s_ready, cdc_s_valid, core_data_empty, cdc_protocol_error;
+  logic cdc_s_ready, cdc_s_valid, core_data_empty, core_prefill_ready;
+  logic cdc_protocol_error;
   logic core_datapath_enable, core_draining;
+  logic core_prefill_seen_q;
   logic [7:0] outstanding_words_q;
   logic core_tx_active_q;
   (* ASYNC_REG = "TRUE" *) logic run_s1, run_s2;
@@ -83,13 +85,10 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   localparam int SOURCE_BEATS_PER_QUANTUM = 32;
   logic [4:0] source_phase_q;
   logic ingress_closed_s;
+  logic ingress_closed_status_s;
+  logic tx_active_status_c, draining_status_c;
+  logic [2:0] status_hold_count_q;
   (* ASYNC_REG = "TRUE" *) logic source_error_c1, source_error_c2;
-  (* ASYNC_REG = "TRUE" *) logic [1:0] prefill_gray_c1, prefill_gray_c2;
-  (* ASYNC_REG = "TRUE" *) logic run_s2_c1, run_s2_c2;
-  (* ASYNC_REG = "TRUE" *) logic core_active_s1, core_active_s2;
-  logic [1:0] prefill_count_s;
-  wire logic [1:0] prefill_gray_s = prefill_count_s ^ (prefill_count_s >> 1);
-  wire logic startup_prefill_done = run_s2_c2 && (prefill_gray_c2 == 2'b11);
   wire logic source_accept = s_axis_tvalid && s_axis_tready;
   wire logic core_accept = core_valid && core_ready;
   wire logic output_accept = (&pa_valid) && (&pa_ready);
@@ -107,28 +106,15 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     if (!s_axis_aresetn) begin
       run_s1 <= 1'b0;
       run_s2 <= 1'b0;
-      prefill_count_s <= '0;
-      core_active_s1 <= 1'b0;
-      core_active_s2 <= 1'b0;
       run_seen_s <= 1'b0;
       source_frame_open_q <= 1'b0;
       source_frame_error_q <= 1'b0;
       source_phase_q <= '0;
+      ingress_closed_status_s <= 1'b0;
     end else begin
       run_s1 <= run_request_async;
       run_s2 <= run_s1;
-      core_active_s1 <= core_tx_active;
-      core_active_s2 <= core_active_s1;
-
-      // Accumulate startup prefill before the first RUN. After a completed
-      // STOP/drain, clear the count only when ingress is closed and the core
-      // activity status has crossed back into the source domain. The next RUN
-      // therefore waits for two newly accepted beats before starting the
-      // 14:8 gearbox from an empty FIFO.
-      if (run_seen_s && ingress_closed_s && !core_active_s2)
-        prefill_count_s <= '0;
-      else if (source_accept && prefill_count_s < 2)
-        prefill_count_s <= prefill_count_s + 1'b1;
+      ingress_closed_status_s <= ingress_closed_s;
 
       if (run_s2) run_seen_s <= 1'b1;
 
@@ -155,17 +141,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     if (!core_aresetn) begin
       source_error_c1 <= 1'b0;
       source_error_c2 <= 1'b0;
-      prefill_gray_c1 <= '0;
-      prefill_gray_c2 <= '0;
-      run_s2_c1 <= 1'b0;
-      run_s2_c2 <= 1'b0;
     end else begin
       source_error_c1 <= source_frame_error_q;
       source_error_c2 <= source_error_c1;
-      prefill_gray_c1 <= prefill_gray_s;
-      prefill_gray_c2 <= prefill_gray_c1;
-      run_s2_c1 <= run_s2;
-      run_s2_c2 <= run_s2_c1;
     end
   end
   assign core_protocol_error = cdc_protocol_error | source_error_c2;
@@ -185,25 +163,43 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
       ingress_closed_c2 <= 1'b0;
       ingress_closed_c3 <= 1'b0;
     end else begin
-      ingress_closed_c1 <= ingress_closed_s;
+      ingress_closed_c1 <= ingress_closed_status_s;
       ingress_closed_c2 <= ingress_closed_c1;
       ingress_closed_c3 <= ingress_closed_c2;
     end
   end
 
   // RUN is a request. Retain the core enable and GT user activity through
-  // drain; a fresh RUN activation waits for two source beats to cross into the
-  // core domain before the gearbox starts consuming data.
+  // drain; startup waits until the FIFO's synchronized read-domain occupancy
+  // shows two source beats owned by this run.
   always_ff @(posedge core_clk or negedge core_aresetn) begin
     if (!core_aresetn) begin
       core_tx_active_q <= 1'b0;
+      core_prefill_seen_q <= 1'b0;
+      tx_active_status_c <= 1'b0;
+      draining_status_c <= 1'b0;
+      status_hold_count_q <= '0;
       outstanding_words_q <= '0;
     end else begin
+      // Hold each sampled status level for four core clocks so slow AXI can
+      // observe it; transient changes may coalesce because these are levels.
+      if (status_hold_count_q != 0) begin
+        status_hold_count_q <= status_hold_count_q - 1'b1;
+      end else if ({draining_status_c, tx_active_status_c} !=
+                   {core_draining, core_tx_active}) begin
+        {draining_status_c, tx_active_status_c} <= {core_draining, core_tx_active};
+        status_hold_count_q <= 3'd3;
+      end
       case ({core_accept, output_accept})
         2'b10: if (!(&outstanding_words_q)) outstanding_words_q <= outstanding_words_q + 1'b1;
         2'b01: if (outstanding_words_q != 0) outstanding_words_q <= outstanding_words_q - 1'b1;
         default: ;
       endcase
+
+      if (!core_tx_active_q)
+        core_prefill_seen_q <= 1'b0;
+      else if (core_prefill_ready)
+        core_prefill_seen_q <= 1'b1;
 
       if (core_enable)
         core_tx_active_q <= 1'b1;
@@ -214,7 +210,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
 
   assign core_draining = core_tx_active_q && !core_enable;
   assign core_datapath_enable = core_tx_active_q &&
-                                (startup_prefill_done || core_draining);
+                                (core_prefill_seen_q || core_prefill_ready || core_draining);
   assign core_tx_active = core_enable || core_tx_active_q;
 
   thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(DPD_MAX_TAPS)) u_cfg (
@@ -225,8 +221,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .s_axil_araddr(s_axil_araddr), .s_axil_arvalid(s_axil_arvalid), .s_axil_arready(s_axil_arready),
     .s_axil_rdata(s_axil_rdata), .s_axil_rresp(s_axil_rresp), .s_axil_rvalid(s_axil_rvalid), .s_axil_rready(s_axil_rready),
     .core_clk(core_clk), .core_aresetn(core_aresetn),
-    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(core_tx_active),
-    .core_draining(core_draining), .core_enable(core_enable),
+    .dpd_config_boundary(dpd_config_boundary), .core_tx_active(tx_active_status_c),
+    .core_draining(draining_status_c), .core_enable(core_enable),
     .run_request(run_request_async),
     .dpd_active_taps(dpd_active_taps), .c1_re(c1_re), .c1_im(c1_im),
     .c3_re(c3_re), .c3_im(c3_im), .c5_re(c5_re), .c5_im(c5_im),
@@ -247,6 +243,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .core_clk(core_clk), .core_aresetn(core_aresetn),
     .core_enable(core_datapath_enable), .core_drain(core_draining),
     .core_valid(core_valid), .core_ready(core_ready), .core_i_vec(core_i_vec), .core_q_vec(core_q_vec),
+    .core_prefill_ready(core_prefill_ready),
     .core_frame_start(core_frame_start), .core_frame_end(core_frame_end),
     .core_frame_gain(core_frame_gain),
     .core_data_empty(core_data_empty), .core_underflow(core_underflow),

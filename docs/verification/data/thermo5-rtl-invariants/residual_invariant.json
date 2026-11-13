@@ -1,0 +1,60 @@
+{
+  "source": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+  "source_sha256": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+  "legal": {
+    "states": 89,
+    "transitions": 299,
+    "end_remaining_values": [
+      0,
+      8
+    ],
+    "line151_witnesses": []
+  },
+  "arbitrary_tlast_counterexample": {
+    "states": 184,
+    "transitions": 718,
+    "end_remaining_values": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12
+    ],
+    "line151_witnesses": [
+      {
+        "state": [
+          2,
+          12,
+          true,
+          12,
+          true
+        ],
+        "target": "line151"
+      },
+      {
+        "state": [
+          3,
+          10,
+          true,
+          10,
+          true
+        ],
+        "target": "line151"
+      },
+      {
+        "state": [
+          6,
+          12,
+          true,
+          12,
+          true
+        ],
+        "target": "line151"
+      }
+    ]
+  },
+  "abstraction": "FIFO order preserved; arbitrary availability, stall, enable, reset; drain does not change residual transitions",
+  "limitation": "Source-reviewed transition abstraction, not machine equivalence proof; independent review pending"
+}

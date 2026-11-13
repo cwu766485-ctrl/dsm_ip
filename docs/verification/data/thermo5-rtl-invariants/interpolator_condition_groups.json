@@ -1,0 +1,405 @@
+{
+  "((q_count == 2'h2) && q1_start) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-110db3f8a9b52bda4df5",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "67:0/1",
+      "native_id": "12",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-386083089f1b41f3fbbd",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "67:0/1",
+      "native_id": "10",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(enable && out_valid && ((!out_ready))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-162e100d0c56b0f6d5fd",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "300:0/1/1",
+      "native_id": "6",
+      "vector": [
+        "1",
+        "011"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-88bf5b09aec9ee58a8ff",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "300:0/1/1",
+      "native_id": "5",
+      "vector": [
+        "1",
+        "011"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(rst_n && (q_count == 2'h2) && q0_end && ((!q1_start))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-1a3c01edbe1a6cdf4f0f",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "309:0/1/1/1",
+      "native_id": "7",
+      "vector": [
+        "1",
+        "0111"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-8ed12996edaade43bb74",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "309:0/1/1/1",
+      "native_id": "8",
+      "vector": [
+        "1",
+        "0111"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(tail_output && out_ready && enable) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-1d320f7692d3831884d0",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "74:1/1/1",
+      "native_id": "21",
+      "vector": [
+        "4",
+        "111"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    },
+    {
+      "semantic_bin_id": "TXB-4445cf3565dc723fc045",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "74:1/1/0",
+      "native_id": "21",
+      "vector": [
+        "3",
+        "110"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    },
+    {
+      "semantic_bin_id": "TXB-5fe8d53a8b7b430139d1",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "74:1/1/0",
+      "native_id": "22",
+      "vector": [
+        "3",
+        "110"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-da673e9462548c47c6c3",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "74:1/0/1",
+      "native_id": "21",
+      "vector": [
+        "2",
+        "101"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    }
+  ],
+  "(rst_n && stalled_last) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-2cb17f70d19098c6deca",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "304:0/1",
+      "native_id": "7",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-d9c09d96c814db206877",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "304:0/1",
+      "native_id": "6",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(out_valid && ((!tail_output)) && q0_start) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-3a9590e170ea70bbfa6e",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "85:1/0/1",
+      "native_id": "30",
+      "vector": [
+        "2",
+        "101"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    }
+  ],
+  "(pop_head && q0_tail) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-471301ea0e99716856de",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "229:1/1",
+      "native_id": "3",
+      "vector": [
+        "3",
+        "11"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    },
+    {
+      "semantic_bin_id": "TXB-49fe8b7a3097cfabcafe",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "229:0/1",
+      "native_id": "3",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    }
+  ],
+  "(can_emit_head && ((!tail_output)) && out_ready && enable) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-5289de10c1a887214158",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "71:1/0/1/1",
+      "native_id": "19",
+      "vector": [
+        "2",
+        "1011"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    }
+  ],
+  "(((!APPEND_TAIL_VECTOR)) && (q_count == 2'h2) && q1_tail && ((!q0_tail))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-597ed4ee79b36ae4a224",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "86:-/1/1/0",
+      "native_id": "33",
+      "vector": [
+        "3",
+        "-110"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(enable && (tail_output || can_emit_head)) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-6f08406287cccaa17533",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "83:0/1",
+      "native_id": "27",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-84309750691c8e9b8ebf",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "83:0/1",
+      "native_id": "28",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(tail_output || (((((!APPEND_TAIL_VECTOR) && (q_count == 2'h2)) && q1_tail) && (!q0_tail)))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-77c77b40cc71b60978cb",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "86:0/1",
+      "native_id": "33",
+      "vector": [
+        "2",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(drop_head_tail || (can_emit_head && ((!tail_output)) && out_ready && enable)) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-909c9c41ce328d3b5464",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "71:1/0",
+      "native_id": "19",
+      "vector": [
+        "3",
+        "10"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    }
+  ],
+  "(out_valid && (tail_output || (((!APPEND_TAIL_VECTOR)) && (q_count == 2'h2) && q1_tail && ((!q0_tail))))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-94e8e7df882f0d59f4b4",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "86:0/1",
+      "native_id": "31",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(tail_output || can_emit_head) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-9ce20b84a284eb4c0773",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "83:1/0",
+      "native_id": "28",
+      "vector": [
+        "3",
+        "10"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(tail_output || (((!APPEND_TAIL_VECTOR)) && (q_count == 2'h2) && q1_tail && ((!q0_tail)))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-9f2139c02a8e2f3c5234",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "86:1/0",
+      "native_id": "32",
+      "vector": [
+        "3",
+        "10"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(q0_end || next_is_boundary) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-a014e054137f7efba83d",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "75:0/1",
+      "native_id": "22",
+      "vector": [
+        "2",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(out_valid && (tail_output || (((((!APPEND_TAIL_VECTOR) && (q_count == 2'h2)) && q1_tail) && (!q0_tail))))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-a274d5dd6bfd26bfb01d",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "86:0/1",
+      "native_id": "32",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(out_valid && tail_output) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-ac118cc658b7c8ebe27f",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "84:0/1",
+      "native_id": "29",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    },
+    {
+      "semantic_bin_id": "TXB-b450fec02bca474b90bf",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "84:1/1",
+      "native_id": "29",
+      "vector": [
+        "3",
+        "11"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    },
+    {
+      "semantic_bin_id": "TXB-f4d358f564e64090910b",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "84:0/1",
+      "native_id": "30",
+      "vector": [
+        "1",
+        "01"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(pop_head && ((!q0_tail))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-b22da1a128d4c228fdbd",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "220:1/0",
+      "native_id": "1",
+      "vector": [
+        "2",
+        "10"
+      ],
+      "decision": "OPEN"
+    }
+  ],
+  "(((q_count == 2'h2) || ((q_count == 2'b1) && q0_end)) && have_head && ((!q0_tail))) 1 -1": [
+    {
+      "semantic_bin_id": "TXB-d07f79d0903a608e2544",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "68:1/1/0",
+      "native_id": "14",
+      "vector": [
+        "3",
+        "110"
+      ],
+      "decision": "EXCLUSION_CANDIDATE"
+    },
+    {
+      "semantic_bin_id": "TXB-e4abdd28c8384d2dfa8f",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2",
+      "tuple": "68:1/0/1",
+      "native_id": "12",
+      "vector": [
+        "2",
+        "101"
+      ],
+      "decision": "OPEN"
+    },
+    {
+      "semantic_bin_id": "TXB-ecf5a64e7dd78bc35ae0",
+      "instance": "thermo5_sku_uvm_tb.dut.u_frontend.g_interp1_centered.u_interp_1",
+      "tuple": "68:1/0/1",
+      "native_id": "14",
+      "vector": [
+        "2",
+        "101"
+      ],
+      "decision": "OPEN"
+    }
+  ]
+}
