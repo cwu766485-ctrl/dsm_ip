@@ -32,18 +32,18 @@ CSV schemas and source/report hashes validate; 70 thermo5 utility tests pass
 with one skip under Python 3.12. The host `python3` is 3.6 and cannot import
 the project's annotations syntax. No merge or PR integration was performed.
 
-## Current execution state: PR #64 staging changes prepared, publication pending (2026-11-13)
+## Current execution state: PR #64 candidate integrated, signoff open (2026-11-13)
 
 Fetched `integration/thermo5-vivado-ppa-20261113` at
-`3c9d371be89b1fabc8a2afd3ed2628ffbc48d991`; its parent is candidate
-`3b60f37929c23d014ab533ba80099e02f67c3e8d`, so the current review candidate
-can fast-forward without replaying the old PR stack. Source ECO, DV fixes,
-formal/report evidence, A/B artifacts and PPA scripts are being separated into
-reviewable commits on the isolated candidate branch before publication.
+`3c9d371be89b1fabc8a2afd3ed2628ffbc48d991` and retained it in the candidate
+merge. Candidate HEAD is `10520b5` (full SHA recorded by Git); it contains
+separate source ECO, DV, Formal/report, model comparison, and Vivado PPA commits.
+The PR #64 remote branch has not yet been updated from this isolated worktree.
 
 Vivado OOC flow now fixes the four-way STEP=5120 comparison to AXI-Lite top,
 `DPD_MAX_TAPS=1`, XPM FIFO, ZU15EG part and 125/218.75/100 MHz clocks. Its
-runner synthesizes all cases before routing from each checkpoint. Vivado
+runner synthesizes all cases before routing from each checkpoint and records
+the Vivado version, source commit, and constraint Tcl hashes in its manifest. Vivado
 Windows payload is mounted at `/mnt/d/AMDDesignTools/2026.1/Vivado`, but Linux
 Vivado exits because the `lnx64.o` payload is absent and Windows PowerShell/CMD
 interop is unavailable. Synthesis and routing are therefore NOT_RUN. The new

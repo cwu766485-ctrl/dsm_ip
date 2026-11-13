@@ -1,3 +1,23 @@
+# 2026-11-13 SGT - PR #64 CDC debug and Vivado PPA candidate
+
+- Added isolated CDC RTL ECO and AXI-Lite UVM control/diagnostic fixes as
+  separate commits; preserved the original source/test diff snapshots and
+  verification logs. Formal harness changes and CDC/RDC/Warning/UVM/Coverage
+  reports remain explicit about OPEN, INCONCLUSIVE, and NOT_RUN evidence.
+- Added the existing four-cell held-out algorithm comparison with model metrics
+  kept separate from hardware PPA. The requested new eight-group raw bundle
+  remains unlocated and unvalidated.
+- Prepared a matched four-case Windows Vivado flow: AXI-Lite product top,
+  `DPD_MAX_TAPS=1`, XPM FIFO, ZU15EG, 125/218.75/100 MHz and STEP=5120. It
+  records Vivado version and constraint Tcl hashes. Vivado synthesis/routing
+  were not run because Windows interop is unavailable and the Linux payload is
+  incomplete.
+- Checks: 70 thermo5 utility tests passed (1 skipped); CSV/JSON parsing and
+  changed-file whitespace checks passed. Full regression, current candidate
+  SpyGlass/Formal, URG, and Vivado PPA remain unrun or open as detailed in the
+  verification reports. No waiver or merge approval was inferred.
+- Candidate integrated HEAD: `10520b5` before this documentation commit.
+
 # 2026-11-12 SGT - PR #62 ECO revalidation, gates remain open
 
 - Revalidated immutable PR #62 HEAD `ac08611af825586dc378041d2568eb7ee1ea563c` in a clean isolated worktree. Fresh VCS product compile manifest covers 98 parsed local sources plus the filelist and DUT coverage hierarchy; the seven-test legal-only Raw VDB set is source-bound and has zero exclusions.
