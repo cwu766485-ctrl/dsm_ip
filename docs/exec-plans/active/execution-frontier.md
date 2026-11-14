@@ -1,3 +1,30 @@
+## Current execution state: VCU118 thermo5 A/B PPA matrix complete, timing open (2026-11-14)
+
+The isolated worktree `E:\workspace\chip\dsm_ip_thermo5_vcu118` on
+`work/vcu118-ab-ppa` remains at source commit
+`599959a9ed84eeefb24354df88d0f5296178ecef`. Vivado 2026.1 loaded
+`xcvu9p-flga2104-2L-e`; the non-AXI-Lite smoke synthesis and all four AXI-Lite
+cells completed through routed implementation. The matrix root is
+`runs/thermo5_vcu118_ab_ppa_20261114_183800/`.
+
+Final routed statuses are A causal/order1 `FAIL_SETUP` WNS -0.276 ns, B
+centered-cubic/order1 `FAIL_SETUP` -2.744 ns, C causal/order2 `FAIL_SETUP`
+-97.148 ns, and D centered-cubic/order2 `FAIL_SETUP` -97.717 ns. WHS is
+non-negative in every cell, but none meets the 218.75 MHz core constraint.
+All route-status reports show zero routing errors and complete routable nets.
+The EF2 critical paths are 389-396 logic levels from the interpolation FIFO
+into the order-2 error state. OOC port `HD.PARTPIN_LOCS`/`HD.CLK_SRC` warnings
+and the modeled clock-domain assumptions remain limitations; this is not board
+timing signoff. Power reports are Vivado vectorless without SAIF.
+
+Review artifacts: `ab_ppa_manifest.csv`, `ab_ppa_comparison.csv`,
+`ab_ppa_summary.md`, per-cell `*_route/{routed.dcp,utilization.rpt,
+timing_summary.rpt,timing_max_paths.rpt,route_status.rpt,vectorless_power.rpt}`.
+The comparison parser now accepts both synthesis and routed `CLB LUTs` labels.
+Next action is architecture/timing closure on the EF2 datapath and explicit
+CDC/clock constraints review before any board-level claim; do not report an
+estimated Fmax as routed Fmax.
+
 ## Current execution state: PR #62 ECO revalidation - partial, signoff open (2026-11-12)
 
 ## Current execution state: CDC debug checkpoint and partial UVM recovery (2026-11-13)

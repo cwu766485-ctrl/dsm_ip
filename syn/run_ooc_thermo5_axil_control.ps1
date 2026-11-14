@@ -28,13 +28,27 @@ $OutDir = (Resolve-Path -LiteralPath $OutDir).Path
 $tcl = Join-Path $repo 'syn\run_ooc_thermo5_axil_control.tcl'
 $log = Join-Path $OutDir 'vivado.log'
 $centered = if ($Interpolation -eq 'centered-cubic') { 1 } else { 0 }
-& $VivadoBat -mode batch -source $tcl -tclargs $Part $SourceMHz $CoreMHz $AxilMHz $OutDir $Implementation $centered $TidOrder $Step $DpdMaxTaps $UseXpmFifo *> $log
-if ($LASTEXITCODE -ne 0) { throw "AXI-Lite wrapper OOC failed; see $log" }
+$stderr = Join-Path $OutDir 'vivado.stderr.log'
+$arguments = @('-mode', 'batch', '-source', $tcl, '-tclargs', $Part, $SourceMHz,
+  $CoreMHz, $AxilMHz, $OutDir, $Implementation, $centered, $TidOrder, $Step,
+  $DpdMaxTaps, $UseXpmFifo)
+$process = Start-Process -FilePath $VivadoBat -ArgumentList $arguments -Wait -PassThru `
+  -NoNewWindow -RedirectStandardOutput $log -RedirectStandardError $stderr
+if (Test-Path -LiteralPath $stderr) {
+  Add-Content -LiteralPath $log -Value (Get-Content -LiteralPath $stderr)
+  Remove-Item -LiteralPath $stderr
+}
+if ($process.ExitCode -ne 0) { throw "AXI-Lite wrapper OOC failed (exit=$($process.ExitCode)); see $log" }
 if ($Implementation -eq 'synth') {
   $checkpoint = Join-Path $OutDir 'synthesized.dcp'
   $utilization = Join-Path $OutDir 'synth_utilization.rpt'
-  if (!(Test-Path -LiteralPath $checkpoint) -or !(Test-Path -LiteralPath $utilization)) {
-    throw "AXI-Lite synthesis did not produce its checkpoint and utilization report; see $log"
+  $synthSummary = Join-Path $OutDir 'synth_summary.csv'
+  $timing = @('synth_timing_summary.rpt', 'synth_timing_paths.rpt',
+    'synth_unconstrained_paths.rpt', 'synth_check_timing.rpt')
+  if (!(Test-Path -LiteralPath $checkpoint) -or !(Test-Path -LiteralPath $utilization) -or
+      !(Test-Path -LiteralPath $synthSummary) -or
+      @($timing | Where-Object { !(Test-Path -LiteralPath (Join-Path $OutDir $_)) }).Count -gt 0) {
+    throw "AXI-Lite synthesis did not produce the expected DCP, utilization, and timing reports; see $log"
   }
   Write-Host "THERMO5_AXIL_SYNTH_PASS checkpoint=$checkpoint utilization=$utilization log=$log"
   exit 0

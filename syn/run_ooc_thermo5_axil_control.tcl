@@ -76,13 +76,41 @@ synth_design -top tid32_thermo5_axi_lite_axis_frontend_tx \
   -part $part -mode out_of_context -flatten_hierarchy none \
   -directive AreaOptimized_high -generic $effective_generics
 if {[get_property PART [current_design]] ne $part} { error "Elaborated part mismatch" }
-if {[get_property NAME [current_design]] ne "tid32_thermo5_axi_lite_axis_frontend_tx"} {
-  error "Elaborated top does not match the requested AXI-Lite product top"
+set elaborated_design_name [get_property NAME [current_design]]
+set axil_address_port [get_ports -quiet s_axil_awaddr]
+set axil_clock_port [get_ports -quiet s_axil_aclk]
+set cfg_cells [get_cells -hier -quiet -filter {NAME =~ *u_cfg*}]
+set frontend_cells [get_cells -hier -quiet -filter {NAME =~ *u_frontend*}]
+if {[llength $axil_address_port] == 0 || [llength $axil_clock_port] == 0 ||
+    [llength $cfg_cells] == 0 || [llength $frontend_cells] == 0} {
+  error "Elaborated hierarchy does not contain the AXI-Lite product wrapper, DPD config, and frontend"
 }
 set dpd_cells [get_cells -hier -filter {NAME =~ *u_memory_dpd*}]
 set fifo_cells [get_cells -hier -filter {REF_NAME =~ *xpm_fifo_async*}]
 if {[llength $dpd_cells] == 0} { error "Elaboration is missing the product DPD datapath" }
 if {[llength $fifo_cells] == 0} { error "Elaboration is missing the XPM async FIFO" }
+foreach {name expected} [list \
+  g_interp1_centered [expr {$centered_cubic ? 1 : 0}] \
+  g_interp2_centered [expr {$centered_cubic ? 1 : 0}] \
+  g_interp1_causal [expr {$centered_cubic ? 0 : 1}] \
+  g_interp2_causal [expr {$centered_cubic ? 0 : 1}] \
+  g_order1 [expr {$tid_order == 1 ? 1 : 0}] \
+  g_order2 [expr {$tid_order == 2 ? 1 : 0}]] {
+  set pattern "*$name*"
+  set matches [get_cells -hier -quiet -filter "NAME =~ $pattern"]
+  if {$expected && [llength $matches] == 0} {
+    error "Elaborated hierarchy is missing selected generic branch: $name"
+  }
+  if {!$expected && [llength $matches] != 0} {
+    error "Elaborated hierarchy contains inactive generic branch: $name"
+  }
+}
+set interp1_causal_cells [get_cells -hier -quiet -filter {NAME =~ *g_interp1_causal*}]
+set interp2_causal_cells [get_cells -hier -quiet -filter {NAME =~ *g_interp2_causal*}]
+set interp1_centered_cells [get_cells -hier -quiet -filter {NAME =~ *g_interp1_centered*}]
+set interp2_centered_cells [get_cells -hier -quiet -filter {NAME =~ *g_interp2_centered*}]
+set tid_order1_cells [get_cells -hier -quiet -filter {NAME =~ *g_order1*}]
+set tid_order2_cells [get_cells -hier -quiet -filter {NAME =~ *g_order2*}]
 set config_file [open [file join $out_dir elaborated_configuration.txt] w]
 puts $config_file "TOP=tid32_thermo5_axi_lite_axis_frontend_tx"
 puts $config_file "PART=$part"
@@ -90,9 +118,20 @@ puts $config_file "SOURCE_MHZ=$source_mhz"
 puts $config_file "CORE_MHZ=$core_mhz"
 puts $config_file "AXIL_MHZ=$axil_mhz"
 puts $config_file "GENERICS=$effective_generics"
-puts $config_file "ELABORATED_TOP=[get_property NAME [current_design]]"
+puts $config_file "EXPECTED_ELABORATED_TOP=tid32_thermo5_axi_lite_axis_frontend_tx"
+puts $config_file "ELABORATED_DESIGN_OBJECT_NAME=$elaborated_design_name"
+puts $config_file "AXIL_AWADDR_PORT_COUNT=[llength $axil_address_port]"
+puts $config_file "AXIL_CLOCK_PORT_COUNT=[llength $axil_clock_port]"
+puts $config_file "AXIL_CFG_HIERARCHY_COUNT=[llength $cfg_cells]"
+puts $config_file "THERMO_FRONTEND_HIERARCHY_COUNT=[llength $frontend_cells]"
 puts $config_file "DPD_HIERARCHY_COUNT=[llength $dpd_cells]"
 puts $config_file "XPM_FIFO_HIERARCHY_COUNT=[llength $fifo_cells]"
+puts $config_file "ELABORATED_INTERP1_CAUSAL_CELLS=[llength $interp1_causal_cells]"
+puts $config_file "ELABORATED_INTERP2_CAUSAL_CELLS=[llength $interp2_causal_cells]"
+puts $config_file "ELABORATED_INTERP1_CENTERED_CELLS=[llength $interp1_centered_cells]"
+puts $config_file "ELABORATED_INTERP2_CENTERED_CELLS=[llength $interp2_centered_cells]"
+puts $config_file "ELABORATED_TID_ORDER1_CELLS=[llength $tid_order1_cells]"
+puts $config_file "ELABORATED_TID_ORDER2_CELLS=[llength $tid_order2_cells]"
 close $config_file
 puts "THERMO5_AXIL_ELAB_CONFIG_PASS top=tid32_thermo5_axi_lite_axis_frontend_tx part=$part DPD_MAX_TAPS=$dpd_max_taps FPGA_USE_XPM_FIFO=$use_xpm_fifo INTERP_CENTERED_CUBIC=$centered_cubic TIDSM_ORDER=$tid_order STEP=$step"
 puts "THERMO5_AXIL_OOC_STAGE=post_synth"
@@ -131,6 +170,25 @@ set_max_delay -datapath_only 10.000 -from $cfg_src -to $cfg_dst
 
 report_utilization -file [file join $out_dir synth_utilization.rpt]
 report_clocks -file [file join $out_dir clocks.rpt]
+report_timing_summary -max_paths 30 -report_unconstrained \
+  -file [file join $out_dir synth_timing_summary.rpt]
+report_timing -max_paths 30 \
+  -file [file join $out_dir synth_timing_paths.rpt]
+# Vivado reports unconstrained paths in the summary table; retain that table
+# separately because report_timing has no -unconstrained switch.
+file copy -force [file join $out_dir synth_timing_summary.rpt] \
+  [file join $out_dir synth_unconstrained_paths.rpt]
+check_timing -verbose -file [file join $out_dir synth_check_timing.rpt]
+set synth_setup [get_timing_paths -delay_type max -max_paths 1 -quiet]
+set synth_hold [get_timing_paths -delay_type min -max_paths 1 -quiet]
+set synth_wns "NA"
+set synth_whs "NA"
+if {[llength $synth_setup] != 0} { set synth_wns [get_property SLACK [lindex $synth_setup 0]] }
+if {[llength $synth_hold] != 0} { set synth_whs [get_property SLACK [lindex $synth_hold 0]] }
+set synth_summary [open [file join $out_dir synth_summary.csv] w]
+puts $synth_summary "Part,Top,Source_MHz,Core_MHz,AXIL_MHz,Interpolation,TIDSM_Order,STEP,DPD_Max_Taps,FIFO,Synthesis_WNS_ns,Synthesis_WHS_ns"
+puts $synth_summary "$part,tid32_thermo5_axi_lite_axis_frontend_tx,$source_mhz,$core_mhz,$axil_mhz,$interp_name,$tid_order,$step,$dpd_max_taps,XPM,$synth_wns,$synth_whs"
+close $synth_summary
 write_checkpoint -force [file join $out_dir synthesized.dcp]
 if {$implementation eq "synth"} {
   puts "THERMO5_AXIL_SYNTH_STATUS=PASS"

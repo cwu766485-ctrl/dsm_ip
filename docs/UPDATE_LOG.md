@@ -1,3 +1,35 @@
+# 2026-11-14 SGT - VCU118 thermo5 AXI-Lite A/B PPA implementation matrix
+
+- In isolated worktree branch `work/vcu118-ab-ppa` at source commit
+  `599959a9ed84eeefb24354df88d0f5296178ecef`, ran Vivado 2026.1 on
+  `xcvu9p-flga2104-2L-e` for the four AXI-Lite product-top cells: causal or
+  centered-cubic interpolation, TIDSM order 1 or 2. All cells used
+  INTERP_TAPS=2, DPD_MAX_TAPS=1, FPGA_USE_XPM_FIFO=1, STEP=5120, and
+  125/218.75/100 MHz clocks. Elaborated configuration files were checked for
+  the actual generics and generate branches.
+- Smoke synthesis completed for the non-AXI-Lite VCU118 top and produced DCP,
+  utilization, timing, and check-timing reports. The AXI-Lite matrix then
+  completed synthesis plus opt/place/phys-opt/route for all four cells. The
+  routed statuses are A `FAIL_SETUP` WNS -0.276 ns, B `FAIL_SETUP` -2.744 ns,
+  C `FAIL_SETUP` -97.148 ns, and D `FAIL_SETUP` -97.717 ns; all WHS values
+  are non-negative. No cell meets the 218.75 MHz core constraint.
+- Routed resource results are recorded in
+  `runs/thermo5_vcu118_ab_ppa_20261114_183800/ab_ppa_comparison.csv` and the
+  per-cell DCP/reports. Cubic adds 1,555 LUT and 172 DSP48 over causal at
+  order 1, and 1,486 LUT and 172 DSP48 at EF2. EF2 changes timing/resource
+  behavior substantially and exposes a 389-396 logic-level critical path in
+  the current implementation. Vectorless power is 4.709/4.467/5.736/5.385 W
+  for A/B/C/D respectively; no SAIF or measured workload power is available.
+- This is OOC evidence. Missing `HD.PARTPIN_LOCS`/`HD.CLK_SRC` on OOC ports and
+  unconstrained clock-domain assumptions limit board-level timing accuracy.
+  Model EVM/SNDR/BER values in `ab_ppa_summary.md` remain Python model results,
+  separate from FPGA implementation evidence. No RTL or algorithm files were
+  changed and no branch was pushed or merged.
+- Checks: Vivado smoke PASS; all four synthesis PASS; all four route tools and
+  reports complete; manifest/comparison/summary regenerated; routed DCP and
+  route-status reports present. The parser was corrected to accept Vivado's
+  routed `CLB LUTs` utilization label.
+
 # 2026-11-13 SGT - PR #64 CDC debug and Vivado PPA candidate
 
 - Added isolated CDC RTL ECO and AXI-Lite UVM control/diagnostic fixes as
