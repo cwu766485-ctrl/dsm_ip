@@ -131,3 +131,102 @@ SMASH state propagation. No new MASH/polyphase model, EVM/SNDR/BER/PSD/adjacent
 leakage, FPGA resource estimate, or routed result was produced in this turn;
 there is no evidence yet that a new architecture beats Cubic+EF1 at the link
 level or merits its hardware cost.
+
+## Follow-up: feedback-path diagnostics and new-DSM model screen
+
+The local experiment parameters `SATURATE_STATE` (default 1) and
+`SHARED_ERROR_ARITH` (default 0) are diagnostic-only controls. Vivado 2026.1
+VCU118 OOC synthesis used the same 4.571 ns clock, `AreaOptimized_high`, W=16
+and lane counts 2/4/8. The no-saturation rows are intentionally not an exact
+implementation. The shared-arithmetic rows retain saturation and exact
+quantizer behavior but did not show an area/timing benefit.
+
+| Variant | Lanes | LUT | FF | CARRY8 | Path (ns) | Cell / net (ns) | Levels | WNS (ns) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| E0 exact | 2 | 311 | 90 | 36 | 5.962 | 2.046 / 3.916 | 23 | -1.409 |
+| No saturation diagnostic | 2 | 170 | 90 | 24 | 3.459 | 1.399 / 2.060 | 15 | +1.095 |
+| Shared arithmetic exact | 2 | 333 | 90 | 40 | 6.193 | 1.978 / 4.215 | 22 | -1.640 |
+| E0 exact | 4 | 702 | 98 | 76 | 11.746 | 4.094 / 7.652 | 48 | -7.193 |
+| No saturation diagnostic | 4 | 338 | 98 | 48 | 6.435 | 2.286 / 4.149 | 27 | -1.881 |
+| Shared arithmetic exact | 4 | 715 | 98 | 80 | 11.673 | 3.935 / 7.738 | 43 | -7.120 |
+| E0 exact | 8 | 1,497 | 114 | 156 | 24.201 | 7.465 / 16.736 | 96 | -19.648 |
+| No saturation diagnostic | 8 | 668 | 114 | 96 | 12.414 | 4.022 / 8.392 | 51 | -7.860 |
+| Shared arithmetic exact | 8 | 1,423 | 114 | 160 | 23.450 | 7.794 / 15.656 | 93 | -18.897 |
+
+The no-saturation synthesis reduces total path delay by 2.503/5.311/11.787 ns
+at 2/4/8 lanes. This is a whole-cone remapping delta, not an independently
+measured saturation-cell delay. The exact shared-arithmetic candidate is
+slower at 2 lanes, effectively unchanged at 4 lanes, and improves 0.751 ns at
+8 lanes while using 5.0% more LUT and 2.6% more CARRY8 than E0. That does not
+meet the earlier 20% delay-reduction / 15% LUT-growth screening gate. The
+22-bit feedback arithmetic remains the critical serial dependency; removing
+saturation alone does not make four or eight chronological lanes meet 4.571 ns.
+
+The new model runner is
+`dv/uvm/refmodel/python/benchmark_thermo5_parallel_dsm_v2.py`. It compares
+Legacy EF1, Legacy EF2, a MASH 1-1 candidate followed by explicit five-level
+bit reduction, and 32 independent polyphase second-order loops. The latter's
+scalar-stream NTF is `(1-z^-32)^2`, not the Legacy `(1-z^-1)^2`; neither new
+candidate is bit-true equivalent to Legacy EF2. Both share the same centered
+cubic interpolator, Q1.15 input, STEP=5120 input scaling, four-plane Fs/4
+decode, RMS drive 0.09 and 4097-tap receiver. PA is disabled. EVM/SNDR/BER,
+PSD and adjacent-band proxy are software-model results only, not FPGA or RF
+measurements. BER uses natural-binary axis labels and is uncoded.
+
+The held-out QAM16/64/256 matrix uses four fixed seeds and eight OFDM symbols
+per seed; its final summary is stored in
+`runs/thermo5_parallel_dsm_v2_20261115/summary_all_qam.csv`. Saturation counts
+are model diagnostics; they do not prove formal state reachability. A
+candidate that materially trails EF1/EF2 on the common receiver is No-Go for
+RTL under this screen. Short-feedback MASH cancellation and a
+state-transfer-correct block predictor remain future research, not validated
+architectures.
+
+| QAM | Candidate | EVM (%) | SNDR (dB) | Uncoded BER | Adjacent proxy (dBc) |
+|---:|---|---:|---:|---:|---:|
+| 16 | Cubic + EF1 | 3.585 | 28.910 | 0 | -24.088 |
+| 16 | Cubic + Legacy EF2 | 2.482 | 32.105 | 0 | -25.921 |
+| 16 | Cubic + MASH bit-reduced | 41.176 | 7.707 | 0.16678 | -7.873 |
+| 16 | Cubic + 32-phase block EF2 | 98.971 | 0.090 | 0.45152 | -5.542 |
+| 64 | Cubic + EF1 | 3.613 | 28.844 | 8.92e-6 | -24.041 |
+| 64 | Cubic + Legacy EF2 | 2.489 | 32.081 | 0 | -25.803 |
+| 64 | Cubic + MASH bit-reduced | 41.053 | 7.733 | 0.28739 | -7.827 |
+| 64 | Cubic + 32-phase block EF2 | 98.981 | 0.089 | 0.47267 | -5.474 |
+| 256 | Cubic + EF1 | 3.595 | 28.886 | 0.005672 | -23.894 |
+| 256 | Cubic + Legacy EF2 | 2.484 | 32.096 | 0.000241 | -25.630 |
+| 256 | Cubic + MASH bit-reduced | 41.528 | 7.633 | 0.34370 | -7.806 |
+| 256 | Cubic + 32-phase block EF2 | 98.890 | 0.097 | 0.48539 | -5.542 |
+
+These results make both model candidates a No-Go for RTL as currently defined:
+MASH bit reduction is about 41% EVM with 7.6–7.7 dB SNDR, and the block
+candidate is near 99% EVM with roughly 0.09 dB SNDR. Both lose 16–20 dB of
+adjacent-band proxy against EF1. The large error is consistent with the
+candidate output/cancellation normalization and changed NTF; these candidates
+have not been gain-matched or optimized per architecture beyond the receiver's
+common global complex gain. Do not interpret zero state-saturation count as
+stability proof. No PA, BER coding, FPGA resource, latency, power, or routed
+timing results exist for either candidate. A fair next step is to repair the
+MASH cancellation/output scaling analytically and re-screen it before RTL;
+the present polyphase definition should be discarded or re-derived with a
+correct block-boundary state transfer and four-plane level mapping.
+
+## MASH recovery update (2026-11-16)
+
+The follow-up recovery found two independent software-path errors in the
+initial communication-equivalent MASH candidate: the stage-two input sign was
+reversed, and the direct RF stream omitted the odd-lane Fs/4 sign phase. The
+stage-two sign is now covered by an exact error-state cancellation identity;
+the RF sequence now follows `I,-Q,-I,+Q`. With both corrected, the historical
+dual-PA 1:2 weighted output has QAM16/64/256 EVM 2.507/2.516/2.521%, SNDR
+32.017/31.987/31.968 dB and adjacent-band proxy -25.535/-25.455/-25.173 dBc
+on the same four held-out seeds. This is near Legacy EF2 and better than EF1.
+
+The prior four-plane bit-reduced result remains poor (QAM256 EVM 36.543%).
+The remaining first mismatch is its mapping of MASH `{-3,-1,+1,+3}` into
+equal-weight four-plane `{-4,-2,+2,+4}` levels. The recovered historical
+architecture uses two weighted PA streams and is not drop-in compatible with
+the product's four equal planes. It is the only selected research candidate,
+but RTL remains blocked on an encoding that preserves the four-plane contract.
+Full historical source, checks and model-only results are in
+`docs/verification/thermo5-historical-mash11-recovery-20261116.md` and
+`runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/`.

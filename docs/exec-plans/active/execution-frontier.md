@@ -30,11 +30,37 @@ from the same run directories produce PASS. Fix the runner before using it as
 an automated invocation. The corrected test does not cover reset/STOP or long
 random backpressure at product level.
 
-Existing EF2 E0/E1 and 2/4/8/16-lane synthesis and saturation data are in the
-EF2 root-cause report. This turn did not complete no-saturation diagnostic,
-shared-arithmetic or exact 2/4-sample prediction synthesis, nor new MASH,
-polyphase or short-feedback communication models. These remain OPEN. Product
-EF2 RTL remains unchanged; B Routed DCP/PPA artifacts remain preserved.
+Vivado 2026.1 VCU118 diagnostics for exact shared arithmetic and a deliberately
+non-exact no-saturation control now cover 2/4/8 lanes. Shared arithmetic is
+No-Go under the current gate: it increases LUT and does not reduce delay by
+20%; no-saturation remains diagnostic-only. Exact 2/4-sample prediction is
+still OPEN. A Python model compared Legacy EF1/EF2, MASH 1-1 with explicit
+five-level reduction, and 32-phase block EF2 using common QAM16/64/256 held-out
+vectors. The 2026-11-15 MASH result (about 41% EVM) is a historical,
+faulty-model snapshot; it is superseded by the 2026-11-16 recovery below. The
+block model remains near 99% EVM and No-Go. Neither architecture is bit-true
+to Legacy EF2. Product EF2 behavior remains at default parameters; B Routed
+DCP/PPA artifacts remain preserved.
+
+B's automated PowerShell XSim runner fix and product reset/STOP/random-
+backpressure matrix remain OPEN; repeated `cmd.exe`, child PowerShell and
+unwrapped-executable attempts did not produce a usable snapshot log, while
+direct native PowerShell launch of the compiled snapshot passes. Runner
+experiments were reverted. The four Generic/XPM COMMIT results remain manually
+launched PASS. No new CDC clock-domain crossing was introduced by the Cubic
+register stages, but reset/STOP and code-coverage obligations remain OPEN;
+VCS/VC Formal were not run.
+
+Historical MASH source was recovered at `7b5c2a8`. The initial model's stage-2
+sign and RF Fs/4 odd-lane phase were wrong. After correcting both, historical
+1:2 weighted dual-PA MASH achieves QAM16/64/256 EVM 2.507/2.516/2.521% and
+32.017/31.987/31.968 dB SNDR, better than EF1 and near Legacy EF2. Its output
+is not equivalent to four equal-weight product planes; the current bit-reduced
+mapping remains about 36.5% EVM. The weighted dual-PA model is the single
+research candidate, but no RTL/PPA is authorized until four-plane
+compatibility is resolved. Stage PSDs
+for QAM256 seed 281001 are under `runs/thermo5_parallel_dsm_v2_20261116_mash_stages/`.
+Full Python reference tests pass 67/67.
 
 ## Previous execution state: B pipeline partial signoff and PPA stability (2026-11-15)
 

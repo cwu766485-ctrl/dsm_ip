@@ -7242,3 +7242,52 @@ local synchronous releases, no independent runtime reset. Actual SG CDC5→0E,
 RDC10506Eunchanged. Product VCS/oracle/reset/restart and targeted FPV executed;
 async FIFO epoch proof remains inconclusive. Exact report/reproduction and
 remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
+
+## 2026-11-15 — B Pipeline candidate and EF2 DSM research continuation
+
+- Preserved local B Pipeline COMMIT candidate commit `d367718`; Generic/XPM
+  Original/Pipeline tests each pass with 32 source beats, 59 DPD inputs, three
+  tail transactions, and 56 four-plane PA outputs. Two routed DCPs retain
+  positive WNS under Explore and RuntimeOptimized. Windows automated XSim
+  runner, product reset/STOP/random-backpressure, VCS and Formal remain OPEN.
+- Added VCU118 EF2 shared-arithmetic and no-saturation diagnostic measurements
+  at 2/4/8 lanes. Shared arithmetic did not meet the area/depth screening gate;
+  saturation stays enabled in the exact design. Full data and path caveats are
+  in `docs/verification/thermo5-ef2-root-cause-study-20261115.md`.
+- Parameterized the Python receiver model for square QAM16/64/256 and added an
+  ideal-frame hard-decision test for all three. Full Python reference tests
+  pass 66/66. The
+  initial common four-seed held-out software comparison completed at RMS drive
+  0.09, STEP=5120, centered-cubic interpolation, 4097-tap RX and no PA. Its
+  MASH bit-reduction result (about 41% EVM) used an incorrect stage-2 sign and
+  RF Fs/4 phase; it is retained as a historical failed model snapshot and
+  superseded by the corrected 2026-11-16 result below. The block EF2 model
+  remains near 99% EVM and No-Go for RTL. Results are model-only; no candidate
+  RTL or FPGA PPA exists.
+- Reproduced the Windows XSim runner failure: nested `cmd.exe` reports the
+  compiled snapshot missing although `xsimk.exe` exists. Direct native
+  PowerShell launch of the same snapshot passes. No unvalidated runner fix was
+  retained; automated invocation remains OPEN.
+
+## 2026-11-16 — Historical MASH recovery and RF model correction
+
+- Recovered the complete two-stage 32-lane Cartesian TID-MASH source bundle
+  from commit `7b5c2a853f04c1a5073a9a84e84c64982f922d65`: RTL, MATLAB oracle,
+  bit-true vector generator, SystemVerilog test, and OOC Tcl. The archived
+  `+1.315 ns` timing is ZU15EG/Vivado 2024.1 OOC evidence with no I/O delays,
+  not VCU118 product signoff. The historical communication model uses two
+  weighted PA outputs, not four equal Thermo5 planes.
+- Fixed the research MASH model's stage-2 residual sign and Fs/4 odd-lane
+  phase. Added an exact integer error-cancellation identity/tie-rule test.
+  The bit-reduced four-plane result still fails due the level-ratio conversion;
+  the historical dual-PA weighted model passes the link threshold and is near
+  Legacy EF2: held-out EVM 2.507/2.516/2.521% for QAM16/64/256. Per-stage PSD
+  data is retained under `runs/thermo5_parallel_dsm_v2_20261116_mash_stages/`.
+- Repeated automated XSim launch variants from WSL-hosted PowerShell did not
+  produce a usable log. All runner edits were reverted; standalone native
+  PowerShell still passes the same compiled snapshot. Automated quartet and
+  product reset/STOP/backpressure remain OPEN. VCS/Formal were not run.
+- Checks: Python reference-model suite 67/67, Python bytecode compilation,
+  and scoped `git diff --check` pass. No product modulation RTL was changed in
+  this recovery step; the previously existing EF2 diagnostic parameters keep
+  their exact-default configuration.

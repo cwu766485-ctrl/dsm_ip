@@ -116,10 +116,13 @@ def _next_power_of_two(value):
 
 
 def make_256qam_ofdm(seed, symbols=8, bandwidth_hz=OCCUPIED_BW_HZ,
-                     rms_drive=0.10):
-    """Create 256-QAM OFDM at 1.75 GHz and Q1.15 quantize for the RTL model."""
+                     rms_drive=0.10, qam_order=256):
+    """Create square-QAM OFDM at 1.75 GHz and quantize for the RTL model."""
     if symbols < 1 or rms_drive <= 0.0:
         raise ValueError("symbols and rms_drive must be positive")
+    side = math.isqrt(qam_order)
+    if side * side != qam_order or side < 2 or (side & (side - 1)):
+        raise ValueError("qam_order must be a square power of four")
     rng = random.Random(seed)
     spacing = SOURCE_FS_HZ / NFFT
     used = 2 * int(bandwidth_hz / (2.0 * spacing))
@@ -129,14 +132,14 @@ def make_256qam_ofdm(seed, symbols=8, bandwidth_hz=OCCUPIED_BW_HZ,
     active_bins = list(range(-edge, 0)) + list(range(1, edge + 1))
     qam_rows = []
     time_rows = []
-    qam_norm = math.sqrt(170.0)
+    qam_norm = math.sqrt(2.0 * (qam_order - 1.0) / 3.0)
     for _ in range(symbols):
         spectrum = [0.0j] * NFFT
         row = []
         for carrier in active_bins:
-            value = rng.randrange(256)
-            qam = complex(2 * (value % 16) - 15,
-                          2 * (value // 16) - 15) / qam_norm
+            value = rng.randrange(qam_order)
+            qam = complex(2 * (value % side) - (side - 1),
+                          2 * (value // side) - (side - 1)) / qam_norm
             spectrum[carrier % NFFT] = qam
             row.append(qam)
         samples = fft(spectrum, inverse=True)
@@ -165,6 +168,7 @@ def make_256qam_ofdm(seed, symbols=8, bandwidth_hz=OCCUPIED_BW_HZ,
     return {
         "seed": int(seed),
         "symbols": int(symbols),
+        "qam_order": int(qam_order),
         "active_bins": active_bins,
         "qam_rows": qam_rows,
         "source_iq": framed,
@@ -352,21 +356,24 @@ def demodulate_metrics(baseband, stimulus):
     reference_energy = sum(abs(value) ** 2 for value in expected_qam)
     evm = math.sqrt(error_energy / max(reference_energy, 1e-30))
     raw_evm = math.sqrt(raw_error_energy / max(reference_energy, 1e-30))
-    constellation_scale = math.sqrt(170.0)
+    qam_order = stimulus.get("qam_order", 256)
+    side = math.isqrt(qam_order)
+    axis_bits = side.bit_length() - 1
+    constellation_scale = math.sqrt(2.0 * (qam_order - 1.0) / 3.0)
     symbol_errors = 0
     bit_errors = 0
     for actual, expected in zip(received_qam, expected_qam):
         corrected = gain * actual
-        actual_i = min(15, max(0, int(math.floor(
-            (corrected.real * constellation_scale + 15.0) / 2.0 + 0.5))))
-        actual_q = min(15, max(0, int(math.floor(
-            (corrected.imag * constellation_scale + 15.0) / 2.0 + 0.5))))
-        expected_i = min(15, max(0, int(math.floor(
-            (expected.real * constellation_scale + 15.0) / 2.0 + 0.5))))
-        expected_q = min(15, max(0, int(math.floor(
-            (expected.imag * constellation_scale + 15.0) / 2.0 + 0.5))))
-        actual_index = actual_i | (actual_q << 4)
-        expected_index = expected_i | (expected_q << 4)
+        actual_i = min(side - 1, max(0, int(math.floor(
+            (corrected.real * constellation_scale + side - 1) / 2.0 + 0.5))))
+        actual_q = min(side - 1, max(0, int(math.floor(
+            (corrected.imag * constellation_scale + side - 1) / 2.0 + 0.5))))
+        expected_i = min(side - 1, max(0, int(math.floor(
+            (expected.real * constellation_scale + side - 1) / 2.0 + 0.5))))
+        expected_q = min(side - 1, max(0, int(math.floor(
+            (expected.imag * constellation_scale + side - 1) / 2.0 + 0.5))))
+        actual_index = actual_i | (actual_q << axis_bits)
+        expected_index = expected_i | (expected_q << axis_bits)
         difference = actual_index ^ expected_index
         symbol_errors += int(difference != 0)
         while difference:
@@ -382,7 +389,8 @@ def demodulate_metrics(baseband, stimulus):
         "symbol_errors": symbol_errors,
         "symbol_error_rate": symbol_errors / max(1, symbol_count),
         "uncoded_bit_errors_natural_binary": bit_errors,
-        "uncoded_ber_natural_binary": bit_errors / max(1, 8 * symbol_count),
+        "uncoded_ber_natural_binary": bit_errors / max(
+            1, int(math.log2(qam_order)) * symbol_count),
         "gain_corrected_error_energy": error_energy,
         "reference_energy": reference_energy,
     }

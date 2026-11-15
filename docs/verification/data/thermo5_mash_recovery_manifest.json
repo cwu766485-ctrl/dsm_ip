@@ -1,0 +1,56 @@
+{
+  "study_date": "2026-11-16",
+  "git_branch": "work/vcu118-ab-ppa",
+  "git_head_before_this_manifest": "d367718800558ab8bc38e9f5228c758e87286b3b",
+  "origin_branch_sha_at_fetch": "cc2c3ed5024ee86e244b6e1a4f0fc98b56facd7f",
+  "historical_source_commit": "7b5c2a853f04c1a5073a9a84e84c64982f922d65",
+  "model": {
+    "python": "3.12",
+    "command": "python3.12 benchmark_thermo5_parallel_dsm_v2.py --seeds 281001,281003,281005,281007 --symbols 8 --qam-orders 16,64,256 --candidates cubic_mash11_weighted_dualpa --json ../../../../runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/summary.json --summary-csv ../../../../runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/summary.csv --psd-csv ../../../../runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/psd.csv",
+    "test_command": "python3.12 -m unittest discover -s tests -v",
+    "test_result": "67 tests passed",
+    "benchmark_conditions": {
+      "qam_orders": [16, 64, 256],
+      "heldout_seeds": [281001, 281003, 281005, 281007],
+      "symbols_per_seed": 8,
+      "rms_drive": 0.09,
+      "step": 5120,
+      "interpolator": "centered cubic",
+      "receiver_fir_taps": 4097,
+      "pa_model": "disabled",
+      "result_scope": "software model only"
+    },
+    "source_sha256": {
+      "dv/uvm/refmodel/python/benchmark_thermo5_parallel_dsm_v2.py": "80d43db304d29de059d1fb9b46e91408b49a229feb005db74f282d1abf51f5e8",
+      "dv/uvm/refmodel/python/benchmark_thermo5_tid_receiver.py": "a083613c7f306cea9f773eb91e67ed2fac3872814ae23c448e8671fb72270c78",
+      "dv/uvm/refmodel/python/tests/test_thermo5_dsm_experiments.py": "44c5c0b9d0ec5880b43fac3c11e48655df90134d2aae87fe96fd697f2a53cf97",
+      "dv/uvm/refmodel/python/tests/test_thermo5_receiver.py": "d586bbf1f1e0d3acbeab6744b5f5cf71ccca05a66d7c021e7edaa785cf5d1751"
+    },
+    "output_sha256": {
+      "runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/summary.csv": "d91b5cb34e3f7545056edd37374aab05efc2395d9a35c174cf7b3984879a24ea",
+      "runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/summary.json": "6f021f0248c6ee2c961b52e161869186d3bc613e1389d181d7083da5e5a5b3db",
+      "runs/thermo5_parallel_dsm_v2_20261116_mash_weighted_fs4/psd.csv": "cf125750377486b02616f0cc9c8b5602f1b37ed22e6e4ac58d76bd8b16f95c25",
+      "runs/thermo5_parallel_dsm_v2_20261116_mash_stages/summary.csv": "771eba7578c8987c770e82404f2482ebd7c96fd8e5837971b517e5d3e60c94e9",
+      "runs/thermo5_parallel_dsm_v2_20261116_mash_stages/summary.json": "67b25fce27d943f14aecc15c110dde1f8afce5cc5cf41026fb2cc7169a89bda8",
+      "runs/thermo5_parallel_dsm_v2_20261116_mash_stages/psd.csv": "11a37f2dbd93b8518778521bbc6bbe5423fe61e881f04d5941736646fb6bfe42"
+    }
+  },
+  "preserved_local_vivado_evidence": {
+    "vivado_version": "2026.1",
+    "part": "xcvu9p-flga2104-2L-e",
+    "explore_dcp": {
+      "path": "runs/thermo5_vcu118_B_pipeline_route_20261115/routed.dcp",
+      "sha256": "1f5cd3c950c8da8b1a2781b7d788fd0c09f307549836aedb0098e6a645a9088f"
+    },
+    "runtime_optimized_dcp": {
+      "path": "runs/thermo5_vcu118_B_pipeline_runtimeoptimized_20261115/routed.dcp",
+      "sha256": "e694a728b7523a50d65683314d957316ef716dd6f63c2cffb0457cad42fe8173"
+    },
+    "retention": "ignored local run artifacts; not stored in GitHub"
+  },
+  "limitations": [
+    "Historical MASH weighted dual-PA output does not implement the current four-equal-plane product encoding.",
+    "No new MASH RTL, VCU118 synthesis, or routed implementation was run.",
+    "B pipeline remains a signoff candidate; automated XSim runner and product reset/STOP/random-backpressure, CDC/RDC, coverage, VCS and Formal obligations remain open."
+  ]
+}

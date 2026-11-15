@@ -94,6 +94,18 @@ The runner fix is still OPEN; do not claim automated-runner closure from the
 manual native launches. The exact successful command, full stdout, `$finish`
 marker, trace VCD and tool logs are retained for each configuration.
 
+A Linux-to-Windows reproduction was attempted on 2026-11-15 with a fresh
+Pipeline B/Generic run directory. XVlog and Xelab passed, and
+`xsim.dir/sim_thermo5_i2_d1_axis/xsimk.exe` existed, but the runner's nested
+`cmd.exe /c call xsim.bat` emitted `ERROR: Please check the snapshot name ...
+xsimk.exe does not exist` and did not produce the COMMIT PASS marker. Launching
+the same snapshot with native PowerShell directly from that run directory
+produced `THERMO5_AXIL_CONFIG_BITTRUE_PASS` and `axil_trace.vcd`. Two
+PowerShell child-process variants tested during this session also failed to
+produce a usable `xsim.log`; those unvalidated script edits were not retained.
+The issue is therefore reproduced and localized to automated batch startup,
+but no runner fix is claimed.
+
 ## Remaining checks
 
 - Product reset during traffic and reset with occupied pipeline.
@@ -101,6 +113,14 @@ marker, trace VCD and tool logs are retained for each configuration.
 - Long randomized backpressure with transaction-order comparison.
 - VCS and VC Formal; neither is claimed as run in this candidate.
 - Automated PowerShell XSim launch and log capture.
+
+The Cubic ECO's two added registers are in the existing Core clock domain and
+do not introduce a new clock crossing by construction. A fresh SpyGlass
+CDC/RDC run on the final ECO was not performed, so static CDC/RDC closure is
+not claimed. Reset/STOP behavior through the new stage and its branch/condition
+coverage are additional OPEN obligations; no post-ECO URG/code-coverage merge
+was run. The focused COMMIT and routed PPA evidence above does not close these
+items.
 
 The two routed strategies, source/configuration reports, and raw simulation
 artifacts remain local under ignored `runs/`; generated tool outputs are not

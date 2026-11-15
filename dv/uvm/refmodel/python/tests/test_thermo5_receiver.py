@@ -91,14 +91,17 @@ class Thermo5ReceiverTests(unittest.TestCase):
             append_flush=True)
         self.assertEqual(words, separated_words)
 
-    def test_256qam_demodulator_hard_decisions_on_ideal_frame(self):
-        stimulus = make_256qam_ofdm(seed=4, symbols=1, rms_drive=0.05)
-        baseband = [complex(sample_i, sample_q) / 32768.0
-                    for sample_i, sample_q in stimulus["source_iq"]]
-        metrics = demodulate_metrics(baseband, stimulus)
-        self.assertEqual(metrics["qam_symbols"], 584)
-        self.assertEqual(metrics["symbol_errors"], 0)
-        self.assertEqual(metrics["uncoded_bit_errors_natural_binary"], 0)
+    def test_square_qam_demodulator_hard_decisions_on_ideal_frame(self):
+        for qam_order in (16, 64, 256):
+            with self.subTest(qam_order=qam_order):
+                stimulus = make_256qam_ofdm(
+                    seed=4, symbols=1, rms_drive=0.05, qam_order=qam_order)
+                baseband = [complex(sample_i, sample_q) / 32768.0
+                            for sample_i, sample_q in stimulus["source_iq"]]
+                metrics = demodulate_metrics(baseband, stimulus)
+                self.assertEqual(metrics["qam_symbols"], 584)
+                self.assertEqual(metrics["symbol_errors"], 0)
+                self.assertEqual(metrics["uncoded_bit_errors_natural_binary"], 0)
 
 
 if __name__ == "__main__":

@@ -11,9 +11,22 @@ from dsm_refmodel.thermo5_receiver import audit_thermo5_plane_alignment
 from benchmark_thermo5_step_ntf import _aggregate
 from benchmark_thermo5_ef2_robust import _variant
 from benchmark_thermo5_tid_receiver import make_256qam_ofdm
+from benchmark_thermo5_parallel_dsm_v2 import Q, _mash11_component
 
 
 class Thermo5DsmExperimentTests(unittest.TestCase):
+    def test_mash11_stage_residual_cancellation_identity_and_zero_tie(self):
+        samples = [0, 0, 1, -1, 8192, -4096] * 8
+        output, stats, q1, q2, _, e2 = _mash11_component(
+            samples, return_stages=True)
+        self.assertEqual(q1[0], -Q)
+        self.assertEqual(stats["state_saturations"], 0)
+        for index, (sample, value) in enumerate(zip(samples, output)):
+            e2_prev = e2[index - 1] if index >= 1 else 0
+            e2_prev2 = e2[index - 2] if index >= 2 else 0
+            second_difference = e2[index] - 2 * e2_prev + e2_prev2
+            self.assertEqual(value - sample, -second_difference)
+
     def test_rtl_first_order_step_mode_matches_scalar_oracle(self):
         rng = random.Random(17)
         samples_i = [rng.randint(-9000, 9000) for _ in range(64)]
