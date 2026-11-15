@@ -119,16 +119,24 @@ set ack_src [get_cells -hier -filter {NAME =~ *u_cfg/cfg_ack_core_reg*}]
 set ack_dst [get_cells -hier -filter {NAME =~ *u_cfg/cfg_ack_sync1_reg*}]
 set run_src [get_cells -hier -filter {NAME =~ *u_cfg/run_request_q_reg*}]
 set run_dst [get_cells -hier -filter {NAME =~ *u_cfg/run_sync1_reg*}]
+set tx_active_src [get_cells -hier -filter {NAME =~ *tx_active_status_c_reg*}]
+set tx_active_dst [get_cells -hier -filter {NAME =~ *u_cfg/tx_active_sync1_reg*}]
+set draining_src [get_cells -hier -filter {NAME =~ *draining_status_c_reg*}]
+set draining_dst [get_cells -hier -filter {NAME =~ *u_cfg/draining_sync1_reg*}]
 foreach {label collection} [list \
   cfg_mailbox_source $cfg_src cfg_pending_capture $cfg_dst \
   cfg_request_source $req_src cfg_request_sync1 $req_dst \
   cfg_ack_source $ack_src cfg_ack_sync1 $ack_dst \
-  run_request_source $run_src run_request_sync1 $run_dst] {
+  run_request_source $run_src run_request_sync1 $run_dst \
+  tx_active_source $tx_active_src tx_active_sync1 $tx_active_dst \
+  draining_source $draining_src draining_sync1 $draining_dst] {
   if {[llength $collection] == 0} { error "Could not resolve synthesized CDC collection: $label" }
 }
 set_false_path -from $req_src -to $req_dst
 set_false_path -from $ack_src -to $ack_dst
 set_false_path -from $run_src -to $run_dst
+set_false_path -from $tx_active_src -to $tx_active_dst
+set_false_path -from $draining_src -to $draining_dst
 set_max_delay -datapath_only 10.000 -from $cfg_src -to $cfg_dst
 
 report_utilization -file [file join $out_dir synth_utilization.rpt]

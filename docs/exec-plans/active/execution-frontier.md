@@ -933,6 +933,71 @@ Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
 
 # Execution frontier
 
+## Current execution state: B pipeline partial signoff and PPA stability (2026-11-15)
+
+The isolated `work/vcu118-ab-ppa` candidate remains at base commit
+`dfa34dbd4848499448f2ddb146ead9f324db8490`; preserve existing uncommitted
+research changes. B pipeline module differential, occupied-pipeline reset and
+STOP flush/restart, Verilator SVA simulation, sustained II=1, and the product
+four-plane XPM-FIFO bit-true oracle all passed under Vivado 2026.1 XSim or
+Verilator. The full product run checked 32 source beats/56 outputs. The
+AXI-Lite DPD commit test failed with both Generic and XPM FIFO configurations;
+baseline-versus-ECO root cause remains open. VCS and VC Formal are not
+available here, so no Formal PASS or full B signoff is claimed.
+
+Two same-DCP VCU118 implementation strategies now pass: existing Explore
+route WNS/WHS `+0.307/+0.028 ns`, and RuntimeOptimized `+0.249/+0.028 ns`;
+both have zero TNS/THS and zero setup/hold failing endpoints, with identical
+48,624 LUT / 53,556 FF / 496 DSP48 / 6.5 BRAM tile resources. Reports and the
+second routed DCP are under
+`runs/thermo5_vcu118_B_pipeline_runtimeoptimized_20261115/`. Power is
+vectorless, without SAIF. OOC `HD.PARTPIN_LOCS`/`HD.CLK_SRC` and external I/O
+budget limits remain.
+
+Next: compare the failing AXI-Lite commit test against the unmodified B
+baseline, then add a passing COMMIT/Frame-boundary plus product reset/STOP
+regression and replay it on the ECO. Only after that consider fixing a local
+ECO commit/PR. Keep EF2 E2 bounded to CHANNELS=2/4/8, stopping if the existing
+area/depth gates fail; keep communication-equivalent DSM modeling separate
+from exact bit-true optimization.
+
+## Thermo5 VCU118 timing closure and EF2 study (2026-11-15, continued)
+
+The isolated `work/vcu118-ab-ppa` source base remains `dfa34dbd4848499448f2ddb146ead9f324db8490`; the earlier A CDC exception audit and A routed result (`WNS +0.141 ns`, `WHS +0.011 ns`) remain preserved under `runs/thermo5_vcu118_A_cdc_fixed_timing_20261114_2310/` and `runs/thermo5_vcu118_A_cdc_fixed_audit_20261115/`.
+
+The original B timing-driven attempt produced only `synthesized.dcp` before Vivado stopped during `phys_opt_design`; it had no placed/routed evidence. A fresh run from that immutable baseline DCP completed through route in `runs/thermo5_vcu118_B_timing_resume_20261115/`: WNS -2.739 ns, WHS +0.014 ns, 46,029 LUT / 49,768 FF / 668 DSP / 6.5 BRAM tiles / 0 URAM. Worst path remains 24 levels from centered-cubic into `u_interp2_to_tid_fifo`, 7.291 ns (4.708 ns logic / 2.583 ns net), so this gives no material physical closure (+0.005 ns from the earlier route).
+
+An isolated Cubic pipeline ECO is complete in `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv`: stage 1 registers the exact Q14 pre-add terms and even samples; stage 2 performs the algebraically equivalent shift/add, original round/saturate, and output/metadata register. Differential iverilog passed 19 inputs (three frames with synthetic tails), 16 outputs, shared randomized backpressure, exact I/Q plus Frame/Tail comparison, and +2-cycle first-valid latency. Sustained test passed 1025 inputs/1024 outputs with zero bubbles (II=1); Verilator lint passed. XSim did not start because Windows `cmd.exe` interop failed from this Linux shell. Vivado full implementation passed in `runs/thermo5_vcu118_B_pipeline_route_20261115/`: routed WNS +0.307 ns, WHS +0.028 ns, zero setup/hold failing endpoints; 48,624 LUT / 53,556 FF / 496 DSP / 6.5 BRAM tiles / 0 URAM. Worst path is an 11-level DPD DSP path at 3.939 ns (2.622 ns cell / 1.317 ns net). Power is vectorless 4.186 W, not measured. The OOC result is not board-level signoff.
+
+EF2 status remains experimental: exact pair lookahead was previously bit-true checked but changed standalone synthesis from 5301 to 7616 LUT and improved WNS only from -91.093 to -67.360 ns. Exact 4-sample prediction has a worst-case branch tree (up to 2^4 quantizer histories per real/imag stream); first screen CHANNELS=2/4/8, require equivalence and a measured area/depth benefit before considering 32. A new communication-equivalent block architecture remains a model-only proposal and must separately measure EVM/SNDR/BER/PSD/adjacent-channel leakage. No EF2 or Cubic candidate is integrated into product defaults.
+
+## Current execution state: VCU118 thermo5 A/B PPA matrix complete, timing open (2026-11-14)
+
+The isolated worktree `E:\workspace\chip\dsm_ip_thermo5_vcu118` on
+`work/vcu118-ab-ppa` remains at source commit
+`599959a9ed84eeefb24354df88d0f5296178ecef`. Vivado 2026.1 loaded
+`xcvu9p-flga2104-2L-e`; the non-AXI-Lite smoke synthesis and all four AXI-Lite
+cells completed through routed implementation. The matrix root is
+`runs/thermo5_vcu118_ab_ppa_20261114_183800/`.
+
+Final routed statuses are A causal/order1 `FAIL_SETUP` WNS -0.276 ns, B
+centered-cubic/order1 `FAIL_SETUP` -2.744 ns, C causal/order2 `FAIL_SETUP`
+-97.148 ns, and D centered-cubic/order2 `FAIL_SETUP` -97.717 ns. WHS is
+non-negative in every cell, but none meets the 218.75 MHz core constraint.
+All route-status reports show zero routing errors and complete routable nets.
+The EF2 critical paths are 389-396 logic levels from the interpolation FIFO
+into the order-2 error state. OOC port `HD.PARTPIN_LOCS`/`HD.CLK_SRC` warnings
+and the modeled clock-domain assumptions remain limitations; this is not board
+timing signoff. Power reports are Vivado vectorless without SAIF.
+
+Review artifacts: `ab_ppa_manifest.csv`, `ab_ppa_comparison.csv`,
+`ab_ppa_summary.md`, per-cell `*_route/{routed.dcp,utilization.rpt,
+timing_summary.rpt,timing_max_paths.rpt,route_status.rpt,vectorless_power.rpt}`.
+The comparison parser now accepts both synthesis and routed `CLB LUTs` labels.
+Next action is architecture/timing closure on the EF2 datapath and explicit
+CDC/clock constraints review before any board-level claim; do not report an
+estimated Fmax as routed Fmax.
+
 ## Current execution state: DV v3 P0 execution complete (2026-11-11)
 
 Frozen635be68 byte-identical. Four fixed P0s PASS:old40/56 output at651.510ns
