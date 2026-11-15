@@ -1,4 +1,42 @@
-## Current execution state: B pipeline partial signoff and PPA stability (2026-11-15)
+## Current execution state: AXI-Lite COMMIT differential and EF2 architecture study (2026-11-15)
+
+EF2 product RTL remains unchanged. Vivado 2026.1 VCU118 OOC E0 microbenchmarks
+for CHANNELS=2/4/8/16 now have DCP, utilization, timing and check-timing
+reports under `runs/thermo5_ef2_channels*_E0_20261115/`; the 32-lane E0/E1
+reports remain preserved. E0 worsens from 23 levels / 5.962 ns at 2 lanes to
+407 levels / 95.646 ns at 32 lanes. E1 Pair Lookahead is 296 levels / 71.913
+ns at 32 lanes with 7,616 LUT versus E0 5,301 LUT; neither meets 4.571 ns.
+Python saturation diagnostics reproduced first positive clamp at the 264th
+constant full-scale sample and found zero state clamp for the recorded
+3-seed QAM256 EF2 STEP=5120 workload. This is workload evidence only; clamp
+logic stays intact and no formal reachability proof was run. See
+`docs/verification/thermo5-ef2-root-cause-study-20261115.md`.
+
+B's Explore and RuntimeOptimized routed reports remain preserved. The same
+seed-1, 56-word, centered-cubic EF1/STEP=5120 AXI-Lite test passes for
+original B and Pipeline B with both Generic and XPM FIFO: 32 source beats,
+59 DPD inputs (56 samples plus three frame tails), 56 PA outputs, valid
+COMMIT selection and complete four-plane scoreboard. Generic original B and
+Pipeline B logs/VCDs are under their gate1 Generic run directories; XPM
+original B and Pipeline B evidence is under their gate1 XPM directories.
+The preserved old 59/56 failure was an incorrect DPD-boundary testbench
+expectation. The preserved XPM timeout came from USE_ADV_FEATURES="0000"
+disabling read count used by the CDC prefill gate; "0400" enables the count.
+No protocol check was removed. VCS/VC Formal were not run.
+
+The batch PowerShell XSim launch still reports a missing snapshot or exits
+without capturing the simulator log, while manual native Windows launches
+from the same run directories produce PASS. Fix the runner before using it as
+an automated invocation. The corrected test does not cover reset/STOP or long
+random backpressure at product level.
+
+Existing EF2 E0/E1 and 2/4/8/16-lane synthesis and saturation data are in the
+EF2 root-cause report. This turn did not complete no-saturation diagnostic,
+shared-arithmetic or exact 2/4-sample prediction synthesis, nor new MASH,
+polyphase or short-feedback communication models. These remain OPEN. Product
+EF2 RTL remains unchanged; B Routed DCP/PPA artifacts remain preserved.
+
+## Previous execution state: B pipeline partial signoff and PPA stability (2026-11-15)
 
 The isolated `work/vcu118-ab-ppa` candidate remains at base commit
 `dfa34dbd4848499448f2ddb146ead9f324db8490`; preserve existing uncommitted
@@ -181,6 +219,44 @@ Frozen635be68 unchanged. Re-indexed remaining48 against v3 same-parent594 eviden
 Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
 
 # Execution frontier
+
+## Current execution state: AXI-Lite COMMIT differential and EF2 architecture study (2026-11-15)
+
+The same-seed AXI-Lite test used 56 source words, seed 1, centered-cubic,
+EF1/STEP=5120, and the same three frame starts for original B and Pipeline B.
+Generic original B and Pipeline B both pass the complete corrected testbench
+scoreboard: 32 source beats, 56 PA outputs, 59 DPD samples (56 data plus 3
+centered-cubic frame tails), all four planes and identity DPD configuration.
+The old 59/56 failure was a testbench expectation that counted PA words at the
+DPD boundary; no sample or protocol check was removed. Config applied on the
+first marked DPD input at 638 ns for original B; compare the event logs under
+`runs/uvm_thermo5_i2_d1/axis_xsim_axil_generic_centered_ef1_seed1_words56_gate1_original_generic/`
+and `...gate1_pipeline_generic/`.
+
+The unmodified XPM Generic-to-core timeout is preserved as failure evidence.
+Vivado's XPM source confirms `USE_ADV_FEATURES[10]` enables read data count;
+the gearbox uses that count for its two-entry prefill condition. The prior
+`"0000"` value disabled it, leaving `rd_count=0` while writes succeeded.
+Setting `"0400"` enables only that count. Corrected original B XPM then passes
+the same 32/56/59 scoreboard. Pipeline B XPM compiled/elaborated, but its
+XSim invocation has not produced a reviewable run log and is NOT PASS. VCS and
+VC Formal were not run.
+
+The PowerShell runner still has a Windows/WSL XSim invocation/reporting defect:
+its batch launch reports a missing snapshot although a manual native Windows
+XSim launch from the run directory succeeds. Preserve run logs and continue
+fixing the runner before claiming the Pipeline B XPM differential complete.
+Do not alter scoreboard protocol checks.
+
+The EF2 E0/E1 and 2/4/8/16-lane baseline microbenchmarks remain in
+`docs/verification/thermo5-ef2-root-cause-study-20261115.md`. This turn did not
+produce new no-saturation diagnostic, shared-arithmetic, exact 2/4-sample
+prediction synthesis, or the three communication-equivalent architecture
+models. These remain OPEN; no product EF2 RTL was changed. Existing B Routed
+DCP/PPA artifacts remain preserved and no new full-product implementation was
+run.
+
+## Previous execution state: local GitHub alignment and portable cleanup (2026-11-02 17:46 SGT)
 
 ## Thermo5 VCU118 timing closure and EF2 study (2026-11-15)
 

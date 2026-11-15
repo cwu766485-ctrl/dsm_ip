@@ -69,7 +69,9 @@ module dsm_xpm_async_fifo #(
     .WR_DATA_COUNT_WIDTH(1),
     .PROG_FULL_THRESH(FIFO_DEPTH-2),
     .FULL_RESET_VALUE(0),
-    .USE_ADV_FEATURES("0000"),
+    // The CDC gearbox uses rd_data_count for the two-entry prefill gate.
+    // XPM bit 10 enables the read-domain data-count output.
+    .USE_ADV_FEATURES("0400"),
     .READ_MODE("fwft"),
     .FIFO_READ_LATENCY(0),
     .READ_DATA_WIDTH(DATA_W),

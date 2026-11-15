@@ -1,3 +1,50 @@
+# 2026-11-15 SGT - EF2 root-cause scan and B COMMIT regression debugging
+
+- Replayed the AXI-Lite COMMIT test with the same 56-word vectors, seed 1,
+  centered-cubic EF1/STEP=5120 and frame/config writes. Generic original B and
+  Pipeline B both pass the full four-plane scoreboard with 32 source beats,
+  56 PA outputs and 59 DPD inputs (three required cubic frame tails). The
+  former 59/56 failure was the testbench comparing the DPD count to the PA
+  count. The prior test's mismatch checks remain enabled.
+- Confirmed from Vivado 2026.1 XPM source that `USE_ADV_FEATURES[10]` gates
+  `rd_data_count`. Enabling it with `"0400"` lets original B XPM pass the same
+  test; the preserved pre-fix failure had successful writes but no CDC/core
+  handshake because the count stayed zero and prefill remained blocked.
+  Pipeline B XPM also passes when launched manually from its native Windows
+  run directory. All four runs have a PASS marker and AXIL_TRACE VCD; no
+  Formal PASS is claimed.
+- Added an AXIL_TRACE runner option. The runner's batch XSim launch still
+  reports a missing snapshot while a manual native Windows launch runs; keep
+  this invocation defect open and preserve the old failed logs and new runs.
+- Existing E0/E1 and CHANNELS=2/4/8/16 synthesis data are unchanged. No new
+  no-saturation, shared-arithmetic, exact block-prediction microbenchmark or
+  MASH/polyphase/short-feedback communication model was completed. No product
+  EF2 RTL, Routed DCP, or PPA result was changed; no commit or push was made.
+- Validation: Python reference suite 66/66 PASS; PowerShell runner parser
+  PASS; `git diff --check` PASS (with pre-existing CSV CRLF normalization
+  warnings only). VCS and VC Formal were not run.
+
+- Parameterized the standalone EF2 Vivado OOC runner for even CHANNELS 2..32
+  and synthesized E0 at 2/4/8/16 lanes on VCU118 with Vivado 2026.1. Reports
+  include DCP, utilization, timing paths/summary and check_timing under
+  `runs/thermo5_ef2_channels*_E0_20261115/`. Existing 32-lane E0/E1 results
+  remain unchanged. E0 timing grows from 5.962 ns/23 levels at two lanes to
+  95.646 ns/407 levels at 32; Pair Lookahead remains 71.913 ns/296 levels
+  with LUT rising 43.7%.
+- Python W=16 EF2 saturation checks reproduced the first positive clamp at
+  sample 264 for constant `32767`; the 3-seed centered-cubic QAM256 EF2
+  STEP=5120 communication screen reported zero state/input clamps. No
+  Formal proof was run; saturation RTL remains untouched. EVM/SNDR/BER values
+  are model evidence only.
+- Debugged the Windows/WSL XSim runner and retained per-run command files and
+  logs. Generic and XPM original B and Pipeline B all passed the corrected
+  full same-seed AXI-Lite COMMIT test. Pipeline B XPM required a manual native
+  Windows launch after the runner returned without a usable simulator log.
+  No scoreboard check was relaxed.
+- Updated the EF2 root-cause report and execution frontier. No product EF2
+  RTL, branch merge, commit, or push was made. Formal and the requested new
+  communication-equivalent architecture models remain open.
+
 # 2026-11-15 SGT - B pipeline verification and routed strategy recheck
 
 - Repaired and exercised the Windows Vivado 2026.1 XSim runner. The block

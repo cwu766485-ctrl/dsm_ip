@@ -1,10 +1,13 @@
-param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[switch]$AxilControl,[switch]$CenteredCubic,[ValidateSet(1,2)][int]$TidOrder=1,[ValidateSet(5120,7168)][int]$Step=7168,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='',[string]$VivadoRoot='D:\AMDDesignTools\2026.1\Vivado')
+param([switch]$StressPaReady,[switch]$XpmFifo,[switch]$ProbeInterp1EmptyBlocked,[switch]$AxilControl,[switch]$CenteredCubic,[switch]$AxilTrace,[ValidateSet(1,2)][int]$TidOrder=1,[ValidateSet(5120,7168)][int]$Step=7168,[int]$Seed=1,[int]$Words=56,[string]$VectorDir='',[string]$VivadoRoot='D:\AMDDesignTools\2026.1\Vivado',[string]$CenteredCubicRtlOverride='', [string]$RunLabel='')
 $ErrorActionPreference='Stop'
 $repo=(Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $impl=if($XpmFifo){'xpm'}else{'generic'}
 $mode=if($AxilControl){'axil'}else{'parallel'}
 $interp=if($CenteredCubic){'centered'}else{'causal'}
 $work=Join-Path $repo "runs\uvm_thermo5_i2_d1\axis_xsim_${mode}_${impl}_${interp}_ef${TidOrder}_seed${Seed}_words$Words"
+if($RunLabel -match '[^A-Za-z0-9_-]') { throw 'RunLabel may contain only letters, digits, underscore, and hyphen.' }
+if($RunLabel) { $work += "_$RunLabel" }
+if(Test-Path -LiteralPath $work) { throw "Refusing to overwrite existing XSim run directory: $work" }
 $vectors=if($VectorDir -eq ''){Join-Path $repo 'runs\uvm_thermo5_i2_d1\vectors'}else{[System.IO.Path]::GetFullPath($VectorDir)}
 if($Words -ne 56 -and $Words -ne 1008){throw 'Supported Words values are 56 and 1008.'}
 if (!(Test-Path -LiteralPath (Join-Path $vectors 'tid32_thermo5_frontend_pa3.mem'))) {
@@ -13,6 +16,18 @@ if (!(Test-Path -LiteralPath (Join-Path $vectors 'tid32_thermo5_frontend_pa3.mem
 New-Item -ItemType Directory -Force -Path $work | Out-Null
 $settings=Join-Path $VivadoRoot 'settings64.bat'
 if (!(Test-Path -LiteralPath $settings)) { throw 'Vivado settings unavailable.' }
+function Invoke-VivadoBatch([string]$Name,[string]$Command) {
+  $batch=Join-Path $work "$Name.cmd"
+  $body="@echo off`r`ncd /d $work`r`nif errorlevel 1 exit /b %errorlevel%`r`ncall $settings >nul`r`nif errorlevel 1 exit /b %errorlevel%`r`n$Command`r`nexit /b %errorlevel%`r`n"
+  [System.IO.File]::WriteAllText($batch,$body,[System.Text.Encoding]::ASCII)
+  & $env:ComSpec /d /c $batch
+}
+function Wait-RunFile([string]$Path) {
+  for ($attempt=0; $attempt -lt 50 -and !(Test-Path -LiteralPath $Path); $attempt++) {
+    Start-Sleep -Milliseconds 200
+  }
+  if (!(Test-Path -LiteralPath $Path)) { throw "Expected run output not found: $Path" }
+}
 $relative=@(
   'rtl/axis/dsm_reset_sync.sv','rtl/axis/dsm_frame_power_ctrl.sv',
   'rtl/axis/dsm_async_fifo.sv','rtl/axis/dsm_xpm_async_fifo.sv',
@@ -30,7 +45,16 @@ $relative=@(
   'rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv',
   'dv/verif/subsystem/tx_frontend/tb/tb_thermo5_i2_d1_axis_bittrue.sv'
 )
+if($CenteredCubicRtlOverride) {
+  if(!$CenteredCubic) { throw 'CenteredCubicRtlOverride requires -CenteredCubic.' }
+  if(!(Test-Path -LiteralPath $CenteredCubicRtlOverride)) {
+    throw "Centered-cubic RTL override not found: $CenteredCubicRtlOverride"
+  }
+  $relative = @($relative | Where-Object { $_ -ne 'rtl/interp/dsm_interp_x2_centered_cubic_vector.sv' })
+  $rtlOverrideSource = @($CenteredCubicRtlOverride)
+}
 $vendor=@()
+$rtlOverrideSource = if ($rtlOverrideSource) { $rtlOverrideSource } else { @() }
 $define=''
 if($CenteredCubic){$define+=' --define=THERMO5_CENTERED_CUBIC'}
 if($TidOrder -eq 2){$define+=' --define=THERMO5_TIDSM_ORDER_2'}
@@ -53,21 +77,26 @@ if($XpmFifo){
   foreach($path in $vendor){if(!(Test-Path -LiteralPath $path)){throw "Missing vendor XPM model: $path"}}
   $define+=' --define=THERMO5_XPM_FIFO'
 }
-$source=(($vendor + ($relative | ForEach-Object { Join-Path $repo $_ })) | ForEach-Object { '"'+$_+'"' }) -join ' '
+$source=(($vendor + ($relative | ForEach-Object { Join-Path $repo $_ }) + $rtlOverrideSource) | ForEach-Object { '"'+$_+'"' }) -join ' '
 Push-Location $work
 try {
-  cmd.exe /d /c "call $settings >nul && xvlog -sv $define $source > console_xvlog.log 2>&1"
-  if ($LASTEXITCODE -ne 0) { throw "xvlog failed: $work\console_xvlog.log" }
+  Invoke-VivadoBatch 'run_xvlog' "call $VivadoRoot\bin\xvlog.bat -sv $define $source > console_xvlog.log 2>&1"
+  Wait-RunFile (Join-Path $work 'console_xvlog.log')
+  Wait-RunFile (Join-Path $work 'xvlog.pb')
+  if (!(Select-String -LiteralPath (Join-Path $work 'console_xvlog.log') -Pattern 'ERROR:|FATAL:' -Quiet)) {
+    if (!(Test-Path -LiteralPath (Join-Path $work 'xvlog.pb'))) { throw "xvlog database missing: $work\console_xvlog.log" }
+  } else { throw "xvlog reported an error: $work\console_xvlog.log" }
   $tops=if($XpmFifo){'tb_thermo5_i2_d1_axis_bittrue glbl'}else{'tb_thermo5_i2_d1_axis_bittrue'}
-  cmd.exe /d /c "call $settings >nul && xelab $tops -s sim_thermo5_i2_d1_axis > console_xelab.log 2>&1"
-  if ($LASTEXITCODE -ne 0) { throw "xelab failed: $work\console_xelab.log" }
+  Invoke-VivadoBatch 'run_xelab' "call $VivadoRoot\bin\xelab.bat $tops -s sim_thermo5_i2_d1_axis > console_xelab.log 2>&1"
+  Wait-RunFile (Join-Path $work 'console_xelab.log')
   Copy-Item -Path (Join-Path $vectors '*.mem') -Destination $work
   $plusargs=@()
   if($StressPaReady){$plusargs+='-testplusarg STRESS_PA_READY'}
   if($ProbeInterp1EmptyBlocked){$plusargs+='-testplusarg INTERP1_GAP_STALL'}
+  if($AxilTrace){$plusargs+='-testplusarg AXIL_TRACE'}
   $plusarg=$plusargs -join ' '
-  cmd.exe /d /c "call $settings >nul && xsim sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg > console_xsim.log 2>&1"
-  if ($LASTEXITCODE -ne 0) { throw "xsim failed: $work\console_xsim.log" }
+  Invoke-VivadoBatch 'run_xsim' "call $VivadoRoot\bin\xsim.bat sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg > console_xsim.log 2>&1"
+  Wait-RunFile (Join-Path $work 'console_xsim.log')
 } finally { Pop-Location }
 if($AxilControl){$passMarker='THERMO5_AXIL_CONFIG_BITTRUE_PASS'}else{$passMarker='THERMO5_I2_D1_AXIS_BITTRUE_PASS'}
 if (!(Select-String -LiteralPath (Join-Path $work 'console_xsim.log') -Pattern $passMarker -Quiet)) {

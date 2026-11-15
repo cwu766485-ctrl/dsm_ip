@@ -63,6 +63,8 @@ module tb_thermo5_i2_d1_axis_bittrue #(
   logic stalled=0;
   logic [63:0] held_data[0:3];
   wire [31:0] dpd_sample_count[0:15], dpd_saturation_count[0:15];
+  bit axil_trace_enable=1'b0;
+  integer trace_src_id=0, trace_core_id=0, trace_i1_id=0, trace_dpd_id=0;
 
   always #4 src_clk=~src_clk;
   always #2.286 core_clk=~core_clk;
@@ -127,6 +129,71 @@ module tb_thermo5_i2_d1_axis_bittrue #(
       dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[lane].u_dpd.saturation_count;
   end
 
+  initial begin
+    axil_trace_enable=$test$plusargs("AXIL_TRACE");
+    if (axil_trace_enable) begin
+      $dumpfile("axil_trace.vcd");
+      $dumpvars(0,src_valid,src_ready,src_last,frame_start,
+                dpd_config_boundary_probe,dpd_active_taps_probe,cfg_busy,cfg_done,cfg_error);
+      $dumpvars(0,dut.u_cdc.core_valid,dut.u_cdc.core_ready,
+                dut.u_cdc.core_frame_start,dut.u_cdc.core_frame_end);
+      $dumpvars(0,dut.u_frontend.i1_valid,dut.u_frontend.i1_ready,
+                dut.u_frontend.i1_tail,dut.u_frontend.i1_frame_start,
+                dut.u_frontend.i1_buf_valid,dut.u_frontend.i1_buf_ready,
+                dut.u_frontend.i1_buf_meta,dut.u_frontend.dpd_valid,
+                dut.u_frontend.dpd_ready,dut.u_frontend.dpd_meta);
+      $dumpvars(0,dut.u_cdc.fifo_rd_count,dut.u_cdc.fifo_rd_valid,
+                dut.u_cdc.fifo_rd_ready,dut.u_cdc.fifo_rd_empty,
+                dut.u_cdc.fifo_wr_ready,dut.u_cdc.core_prefill_ready,
+                dut.u_cdc.core_data_empty,dut.u_cdc.s_rst_n,dut.u_cdc.c_rst_n,
+                dut.u_cdc.fifo_frame_start,dut.u_cdc.fifo_frame_end,
+                dut.core_datapath_enable,dut.run_request_async);
+`ifdef THERMO5_XPM_FIFO
+      $dumpvars(0,dut.u_cdc.g_xpm_fifo.u_async_fifo.fifo_rst,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.wr_rst_busy,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.rd_rst_busy,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.wr_reset_sync,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.rd_reset_sync,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.rd_reset_in_wr,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.wr_reset_in_rd,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.full,
+                dut.u_cdc.g_xpm_fifo.u_async_fifo.empty);
+`endif
+    end
+  end
+
+  always @(posedge src_clk) begin
+    if (axil_trace_enable && src_rst_n && src_valid && src_ready) begin
+      $display("AXIL_TRACE time=%0t SRC id=%0d frame_start=%0b tlast=%0b",
+               $time,trace_src_id,frame_start,src_last);
+      trace_src_id++;
+    end
+  end
+
+  always @(posedge core_clk) begin
+    if (axil_trace_enable && core_rst_n) begin
+      if (dut.u_cdc.core_valid && dut.u_cdc.core_ready) begin
+        $display("AXIL_TRACE time=%0t CDC_CORE id=%0d frame_start=%0b frame_end=%0b",
+                 $time,trace_core_id,dut.u_cdc.core_frame_start,dut.u_cdc.core_frame_end);
+        trace_core_id++;
+      end
+      if (dut.u_frontend.i1_valid && dut.u_frontend.i1_ready) begin
+        $display("AXIL_TRACE time=%0t CUBIC_OUT id=%0d frame_start=%0b tail=%0b",
+                 $time,trace_i1_id,dut.u_frontend.i1_frame_start,dut.u_frontend.i1_tail);
+        trace_i1_id++;
+      end
+      if (dut.u_frontend.i1_buf_valid && dut.u_frontend.i1_buf_ready) begin
+        $display("AXIL_TRACE time=%0t DPD_IN id=%0d frame_start=%0b tail=%0b boundary=%0b taps=%0d",
+                 $time,trace_dpd_id,dut.u_frontend.i1_buf_meta[0],dut.u_frontend.i1_buf_meta[1],
+                 dpd_config_boundary_probe,dpd_active_taps_probe);
+        trace_dpd_id++;
+      end
+      if (dpd_config_boundary_probe)
+        $display("AXIL_TRACE time=%0t COMMIT_BOUNDARY taps=%0d busy=%0b done=%0b error=%0b",
+                 $time,dpd_active_taps_probe,cfg_busy,cfg_done,cfg_error);
+    end
+  end
+
   task automatic axil_write(input logic [7:0] addr, input logic [31:0] data,
                             input int unsigned aw_gap, input int unsigned w_gap,
                             output logic [1:0] response);
@@ -148,6 +215,9 @@ module tb_thermo5_i2_d1_axis_bittrue #(
     do @(posedge axil_clk); while (!axil_bvalid);
     response=axil_bresp;
     @(negedge axil_clk); axil_bready=1'b0;
+    if (axil_trace_enable)
+      $display("AXIL_TRACE time=%0t AXIL_WRITE addr=%02h data=%08h resp=%0b",
+               $time,addr,data,response);
   endtask
 
   task automatic axil_read(input logic [7:0] addr,
@@ -244,8 +314,9 @@ module tb_thermo5_i2_d1_axis_bittrue #(
         if(sent!=SRC_BEATS || protocol_error || (stalls==0 && $test$plusargs("STRESS_PA_READY")))
           $fatal(1,"closure sent=%0d/%0d protocol=%b stalls=%0d",sent,SRC_BEATS,protocol_error,stalls);
         for(int lane=0;lane<16;lane++)
-          if(dpd_sample_count[lane]!==CORE_WORDS || dpd_saturation_count[lane]!==0)
-            $fatal(1,"DPD lane%0d count=%0d/%0d saturation=%0d",lane,dpd_sample_count[lane],CORE_WORDS,dpd_saturation_count[lane]);
+          if(dpd_sample_count[lane]!==expected_dpd_samples || dpd_saturation_count[lane]!==0)
+            $fatal(1,"DPD lane%0d count=%0d/%0d saturation=%0d",
+                   lane,dpd_sample_count[lane],expected_dpd_samples,dpd_saturation_count[lane]);
         axil_write(8'h00,32'd0,0,0,axil_response);
         core_enable=0;
         $display("THERMO5_AXIL_CONFIG_BITTRUE_PASS source=%0d output=%0d taps=%0d identity=1",sent,got,dpd_active_taps_probe);
