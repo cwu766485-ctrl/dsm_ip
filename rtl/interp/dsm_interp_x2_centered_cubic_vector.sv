@@ -46,10 +46,6 @@ module dsm_interp_x2_centered_cubic_vector #(
   output logic signed [2*LANES*W-1:0]      out_q_vec
 );
   localparam int ACC_W = W + COEFF_FRAC + 3;
-  localparam logic signed [ACC_W-1:0] C_M1 = -1024;
-  localparam logic signed [ACC_W-1:0] C_0  =  9216;
-  localparam logic signed [ACC_W-1:0] C_P1 =  9216;
-  localparam logic signed [ACC_W-1:0] C_P2 = -1024;
 
   logic [1:0] q_count;
   logic q0_start, q0_end, q0_tail;
@@ -61,6 +57,21 @@ module dsm_interp_x2_centered_cubic_vector #(
   logic signed [W-1:0] history_i, history_q;
   logic tail_pending_q;
   logic signed [W-1:0] tail_sample_i_q, tail_sample_q_q;
+  logic s1_valid, s2_valid;
+  logic s1_start, s1_end, s1_tail;
+  logic s2_start, s2_end, s2_tail;
+  logic signed [2*LANES*W-1:0] s1_even_i, s1_even_q;
+  logic signed [W:0] s1_a_i [0:LANES-1];
+  logic signed [W:0] s1_a_q [0:LANES-1];
+  logic signed [W:0] s1_b_i [0:LANES-1];
+  logic signed [W:0] s1_b_q [0:LANES-1];
+  logic s1_ready, s2_ready;
+  logic signed [2*LANES*W-1:0] s1_input_even_i, s1_input_even_q;
+  logic signed [W:0] s1_input_a_i [0:LANES-1];
+  logic signed [W:0] s1_input_a_q [0:LANES-1];
+  logic signed [W:0] s1_input_b_i [0:LANES-1];
+  logic signed [W:0] s1_input_b_q [0:LANES-1];
+  logic signed [2*LANES*W-1:0] s2_i, s2_q;
 
   wire logic tail_output = APPEND_TAIL_VECTOR && tail_pending_q;
   wire logic have_head = (q_count != 0);
@@ -69,9 +80,11 @@ module dsm_interp_x2_centered_cubic_vector #(
                              have_head && !q0_tail;
   wire logic drop_head_tail = have_head && q0_tail && !APPEND_TAIL_VECTOR;
   wire logic pop_head = drop_head_tail ||
-                        (can_emit_head && !tail_output && out_ready && enable);
+                        (can_emit_head && !tail_output && out_ready && s1_ready && enable);
   wire logic push_input = in_valid && in_ready;
-  wire logic tail_fire = tail_output && out_ready && enable;
+  wire logic tail_fire = tail_output && out_ready && s1_ready && enable;
+  wire logic s1_load = tail_fire ||
+                       (can_emit_head && !tail_output && out_ready && enable);
   wire logic head_final = q0_end || next_is_boundary;
   wire logic same_frame_next = (q_count == 2) && !q1_start;
 
@@ -79,13 +92,15 @@ module dsm_interp_x2_centered_cubic_vector #(
   // the current head is consumed. Without this look-ahead credit the two-entry
   // queue alternates pop and push, limiting a no-stall stream to one vector
   // every two clocks after it fills.
+  assign s2_ready = !s2_valid || out_ready;
+  assign s1_ready = !s1_valid || s2_ready;
   assign in_ready = enable && ((q_count < 2) || pop_head);
-  assign out_valid = enable && (tail_output || can_emit_head);
-  assign out_tail = out_valid && tail_output;
-  assign out_frame_start = out_valid && !tail_output && q0_start;
-  assign out_frame_end = out_valid &&
-                         (tail_output || (!APPEND_TAIL_VECTOR &&
-                          (q_count == 2) && q1_tail && !q0_tail));
+  assign out_valid = enable && s2_valid;
+  assign out_tail = out_valid && s2_tail;
+  assign out_frame_start = out_valid && s2_start;
+  assign out_frame_end = out_valid && s2_end;
+  assign out_i_vec = s2_i;
+  assign out_q_vec = s2_q;
 
   function automatic logic signed [W-1:0] round_sat(
     input logic signed [ACC_W-1:0] value
@@ -104,33 +119,26 @@ module dsm_interp_x2_centered_cubic_vector #(
     end
   endfunction
 
-  function automatic logic signed [W-1:0] cubic_midpoint(
-    input logic signed [W-1:0] xm1,
-    input logic signed [W-1:0] x0,
-    input logic signed [W-1:0] xp1,
-    input logic signed [W-1:0] xp2
-  );
-    logic signed [ACC_W-1:0] sxm1, sx0, sxp1, sxp2, acc;
-    begin
-      sxm1 = {{(ACC_W-W){xm1[W-1]}},xm1};
-      sx0  = {{(ACC_W-W){x0[W-1]}},x0};
-      sxp1 = {{(ACC_W-W){xp1[W-1]}},xp1};
-      sxp2 = {{(ACC_W-W){xp2[W-1]}},xp2};
-      acc = sxm1*C_M1 + sx0*C_0 + sxp1*C_P1 + sxp2*C_P2;
-      cubic_midpoint = round_sat(acc);
-    end
-  endfunction
-
-  always_comb begin : p_output_data
+  always_comb begin : p_stage1_inputs
     logic signed [W-1:0] xm1_i, xm1_q, xp1_i, xp1_q, xp2_i, xp2_q;
-    out_i_vec = '0;
-    out_q_vec = '0;
+    xm1_i = '0;
+    xm1_q = '0;
+    xp1_i = '0;
+    xp1_q = '0;
+    xp2_i = '0;
+    xp2_q = '0;
+    s1_input_even_i = '0;
+    s1_input_even_q = '0;
+    for (int lane = 0; lane < LANES; lane = lane + 1) begin
+      s1_input_a_i[lane] = '0;
+      s1_input_a_q[lane] = '0;
+      s1_input_b_i[lane] = '0;
+      s1_input_b_q[lane] = '0;
+    end
 
     if (tail_output) begin
-      // One synthetic zero-source vector has only one nonzero interpolated
-      // sample: the midpoint immediately following the real frame's tail.
-      out_i_vec[W +: W] = cubic_midpoint(tail_sample_i_q, '0, '0, '0);
-      out_q_vec[W +: W] = cubic_midpoint(tail_sample_q_q, '0, '0, '0);
+      s1_input_b_i[0] = {tail_sample_i_q[W-1], tail_sample_i_q};
+      s1_input_b_q[0] = {tail_sample_q_q[W-1], tail_sample_q_q};
     end else if (can_emit_head) begin
       for (int lane = 0; lane < LANES; lane = lane + 1) begin
         if (lane == 0) begin
@@ -168,12 +176,99 @@ module dsm_interp_x2_centered_cubic_vector #(
           xp2_q = '0;
         end
 
-        out_i_vec[(2*lane)*W +: W] = q0_i[lane];
-        out_q_vec[(2*lane)*W +: W] = q0_q[lane];
-        out_i_vec[(2*lane+1)*W +: W] = cubic_midpoint(
-          xm1_i, q0_i[lane], xp1_i, xp2_i);
-        out_q_vec[(2*lane+1)*W +: W] = cubic_midpoint(
-          xm1_q, q0_q[lane], xp1_q, xp2_q);
+        s1_input_even_i[(2*lane)*W +: W] = q0_i[lane];
+        s1_input_even_q[(2*lane)*W +: W] = q0_q[lane];
+        s1_input_a_i[lane] = {q0_i[lane][W-1], q0_i[lane]} + {xp1_i[W-1], xp1_i};
+        s1_input_a_q[lane] = {q0_q[lane][W-1], q0_q[lane]} + {xp1_q[W-1], xp1_q};
+        s1_input_b_i[lane] = {xm1_i[W-1], xm1_i} + {xp2_i[W-1], xp2_i};
+        s1_input_b_q[lane] = {xm1_q[W-1], xm1_q} + {xp2_q[W-1], xp2_q};
+      end
+    end
+  end
+
+  function automatic logic signed [ACC_W-1:0] cubic_acc(
+    input logic signed [W:0] a,
+    input logic signed [W:0] b
+  );
+    logic signed [ACC_W-1:0] sa, sb;
+    begin
+      sa = {{(ACC_W-W-1){a[W]}},a};
+      sb = {{(ACC_W-W-1){b[W]}},b};
+      cubic_acc = ((sa <<< 3) + sa - sb) <<< 10;
+    end
+  endfunction
+
+  always_ff @(posedge clk or negedge rst_n) begin : p_pipeline
+    if (!rst_n) begin
+      s1_valid <= 1'b0;
+      s2_valid <= 1'b0;
+      s1_start <= 1'b0;
+      s1_end <= 1'b0;
+      s1_tail <= 1'b0;
+      s2_start <= 1'b0;
+      s2_end <= 1'b0;
+      s2_tail <= 1'b0;
+      s1_even_i <= '0;
+      s1_even_q <= '0;
+      s2_i <= '0;
+      s2_q <= '0;
+      for (int lane = 0; lane < LANES; lane = lane + 1) begin
+        s1_a_i[lane] <= '0;
+        s1_a_q[lane] <= '0;
+        s1_b_i[lane] <= '0;
+        s1_b_q[lane] <= '0;
+      end
+    end else if (!enable) begin
+      s1_valid <= 1'b0;
+      s2_valid <= 1'b0;
+      s1_start <= 1'b0;
+      s1_end <= 1'b0;
+      s1_tail <= 1'b0;
+      s2_start <= 1'b0;
+      s2_end <= 1'b0;
+      s2_tail <= 1'b0;
+      s1_even_i <= '0;
+      s1_even_q <= '0;
+      s2_i <= '0;
+      s2_q <= '0;
+    end else begin
+      if (s2_ready) begin
+        s2_valid <= s1_valid;
+        if (s1_valid) begin
+          s2_start <= s1_start;
+          s2_end <= s1_end;
+          s2_tail <= s1_tail;
+          s2_i <= '0;
+          s2_q <= '0;
+          if (s1_tail) begin
+            s2_i[W +: W] <= round_sat(cubic_acc(s1_a_i[0], s1_b_i[0]));
+            s2_q[W +: W] <= round_sat(cubic_acc(s1_a_q[0], s1_b_q[0]));
+          end else begin
+            for (int lane = 0; lane < LANES; lane = lane + 1) begin
+              s2_i[(2*lane)*W +: W] <= s1_even_i[(2*lane)*W +: W];
+              s2_q[(2*lane)*W +: W] <= s1_even_q[(2*lane)*W +: W];
+              s2_i[(2*lane+1)*W +: W] <= round_sat(cubic_acc(s1_a_i[lane], s1_b_i[lane]));
+              s2_q[(2*lane+1)*W +: W] <= round_sat(cubic_acc(s1_a_q[lane], s1_b_q[lane]));
+            end
+          end
+        end
+      end
+      if (s1_ready) begin
+        s1_valid <= s1_load;
+        if (s1_load) begin
+          s1_start <= !tail_output && q0_start;
+          s1_end <= tail_output || (!APPEND_TAIL_VECTOR &&
+                    (q_count == 2) && q1_tail && !q0_tail);
+          s1_tail <= tail_output;
+          s1_even_i <= s1_input_even_i;
+          s1_even_q <= s1_input_even_q;
+          for (int lane = 0; lane < LANES; lane = lane + 1) begin
+            s1_a_i[lane] <= s1_input_a_i[lane];
+            s1_a_q[lane] <= s1_input_a_q[lane];
+            s1_b_i[lane] <= s1_input_b_i[lane];
+            s1_b_q[lane] <= s1_input_b_q[lane];
+          end
+        end
       end
     end
   end
@@ -309,6 +404,42 @@ module dsm_interp_x2_centered_cubic_vector #(
     if (rst_n && q_count == 2 && q0_end && !q1_start)
       assert (q1_tail)
         else $error("centered cubic frame-end vector was followed by same-frame data");
+  end
+
+  property p_stage1_holds_while_stage2_stalls;
+    @(posedge clk) disable iff (!rst_n || !enable)
+      (s1_valid && !s2_ready) |=>
+        (s1_valid && $stable({s1_start,s1_end,s1_tail,s1_even_i,s1_even_q}));
+  endproperty
+  assert property (p_stage1_holds_while_stage2_stalls)
+    else $error("centered cubic stage 1 changed while stage 2 was stalled");
+
+  property p_stage1_transfer_is_not_dropped;
+    @(posedge clk) disable iff (!rst_n || !enable)
+      (s1_valid && s2_ready) |=> s2_valid;
+  endproperty
+  assert property (p_stage1_transfer_is_not_dropped)
+    else $error("centered cubic pipeline dropped a valid stage 1 transaction");
+
+  property p_pipeline_flushes_on_disable;
+    @(posedge clk) disable iff (!rst_n)
+      !enable |=> (!s1_valid && !s2_valid);
+  endproperty
+  assert property (p_pipeline_flushes_on_disable)
+    else $error("centered cubic pipeline did not flush on disable");
+
+  property p_consumed_stage2_does_not_repeat;
+    @(posedge clk) disable iff (!rst_n || !enable)
+      (s2_valid && out_ready && !s1_valid) |=> !s2_valid;
+  endproperty
+  assert property (p_consumed_stage2_does_not_repeat)
+    else $error("centered cubic pipeline duplicated a consumed transaction");
+
+  for (genvar lane = 0; lane < LANES; lane = lane + 1) begin : g_pipe_hold_assert
+    assert property (@(posedge clk) disable iff (!rst_n || !enable)
+      (s1_valid && !s2_ready) |=>
+        $stable({s1_a_i[lane],s1_a_q[lane],s1_b_i[lane],s1_b_q[lane]}))
+      else $error("centered cubic stage 1 arithmetic changed while stalled");
   end
 `endif
 endmodule

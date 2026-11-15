@@ -1,3 +1,41 @@
+## Current execution state: B pipeline partial signoff and PPA stability (2026-11-15)
+
+The isolated `work/vcu118-ab-ppa` candidate remains at base commit
+`dfa34dbd4848499448f2ddb146ead9f324db8490`; preserve existing uncommitted
+research changes. B pipeline module differential, occupied-pipeline reset and
+STOP flush/restart, Verilator SVA simulation, sustained II=1, and the product
+four-plane XPM-FIFO bit-true oracle all passed under Vivado 2026.1 XSim or
+Verilator. The full product run checked 32 source beats/56 outputs. The
+AXI-Lite DPD commit test failed with both Generic and XPM FIFO configurations;
+baseline-versus-ECO root cause remains open. VCS and VC Formal are not
+available here, so no Formal PASS or full B signoff is claimed.
+
+Two same-DCP VCU118 implementation strategies now pass: existing Explore
+route WNS/WHS `+0.307/+0.028 ns`, and RuntimeOptimized `+0.249/+0.028 ns`;
+both have zero TNS/THS and zero setup/hold failing endpoints, with identical
+48,624 LUT / 53,556 FF / 496 DSP48 / 6.5 BRAM tile resources. Reports and the
+second routed DCP are under
+`runs/thermo5_vcu118_B_pipeline_runtimeoptimized_20261115/`. Power is
+vectorless, without SAIF. OOC `HD.PARTPIN_LOCS`/`HD.CLK_SRC` and external I/O
+budget limits remain.
+
+Next: compare the failing AXI-Lite commit test against the unmodified B
+baseline, then add a passing COMMIT/Frame-boundary plus product reset/STOP
+regression and replay it on the ECO. Only after that consider fixing a local
+ECO commit/PR. Keep EF2 E2 bounded to CHANNELS=2/4/8, stopping if the existing
+area/depth gates fail; keep communication-equivalent DSM modeling separate
+from exact bit-true optimization.
+
+## Thermo5 VCU118 timing closure and EF2 study (2026-11-15, continued)
+
+The isolated `work/vcu118-ab-ppa` source base remains `dfa34dbd4848499448f2ddb146ead9f324db8490`; the earlier A CDC exception audit and A routed result (`WNS +0.141 ns`, `WHS +0.011 ns`) remain preserved under `runs/thermo5_vcu118_A_cdc_fixed_timing_20261114_2310/` and `runs/thermo5_vcu118_A_cdc_fixed_audit_20261115/`.
+
+The original B timing-driven attempt produced only `synthesized.dcp` before Vivado stopped during `phys_opt_design`; it had no placed/routed evidence. A fresh run from that immutable baseline DCP completed through route in `runs/thermo5_vcu118_B_timing_resume_20261115/`: WNS -2.739 ns, WHS +0.014 ns, 46,029 LUT / 49,768 FF / 668 DSP / 6.5 BRAM tiles / 0 URAM. Worst path remains 24 levels from centered-cubic into `u_interp2_to_tid_fifo`, 7.291 ns (4.708 ns logic / 2.583 ns net), so this gives no material physical closure (+0.005 ns from the earlier route).
+
+An isolated Cubic pipeline ECO is complete in `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv`: stage 1 registers the exact Q14 pre-add terms and even samples; stage 2 performs the algebraically equivalent shift/add, original round/saturate, and output/metadata register. Differential iverilog passed 19 inputs (three frames with synthetic tails), 16 outputs, shared randomized backpressure, exact I/Q plus Frame/Tail comparison, and +2-cycle first-valid latency. Sustained test passed 1025 inputs/1024 outputs with zero bubbles (II=1); Verilator lint passed. XSim did not start because Windows `cmd.exe` interop failed from this Linux shell. Vivado full implementation passed in `runs/thermo5_vcu118_B_pipeline_route_20261115/`: routed WNS +0.307 ns, WHS +0.028 ns, zero setup/hold failing endpoints; 48,624 LUT / 53,556 FF / 496 DSP / 6.5 BRAM tiles / 0 URAM. Worst path is an 11-level DPD DSP path at 3.939 ns (2.622 ns cell / 1.317 ns net). Power is vectorless 4.186 W, not measured. The OOC result is not board-level signoff.
+
+EF2 status remains experimental: exact pair lookahead was previously bit-true checked but changed standalone synthesis from 5301 to 7616 LUT and improved WNS only from -91.093 to -67.360 ns. Exact 4-sample prediction has a worst-case branch tree (up to 2^4 quantizer histories per real/imag stream); first screen CHANNELS=2/4/8, require equivalence and a measured area/depth benefit before considering 32. A new communication-equivalent block architecture remains a model-only proposal and must separately measure EVM/SNDR/BER/PSD/adjacent-channel leakage. No EF2 or Cubic candidate is integrated into product defaults.
+
 ## Current execution state: VCU118 thermo5 A/B PPA matrix complete, timing open (2026-11-14)
 
 The isolated worktree `E:\workspace\chip\dsm_ip_thermo5_vcu118` on
@@ -143,6 +181,38 @@ Frozen635be68 unchanged. Re-indexed remaining48 against v3 same-parent594 eviden
 Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
 
 # Execution frontier
+
+## Thermo5 VCU118 timing closure and EF2 study (2026-11-15)
+
+On the isolated `work/vcu118-ab-ppa` worktree, Vivado 2026.1 was run against
+the existing VCU118 `xcvu9p-flga2104-2L-e` routed checkpoints. A read-only
+Worst-20/clock-interaction/CDC/methodology/check-timing audit is preserved under
+`runs/thermo5_timing_audit_20261114/`. The original A/B/C/D setup WNS values are
+`-0.276/-2.744/-97.148/-97.717 ns`; B is a real 24-level centered-cubic to
+elastic-buffer path, while C/D are the 389-396-level EF2 feedback expansion.
+
+The A audit identified two omitted but legal status synchronizer inputs. The
+OOC Tcl now false-paths only `tx_active_status_c -> tx_active_sync1` and
+`draining_status_c -> draining_sync1`, while retaining the 10 ns mailbox
+`max_delay`. A fresh timing-driven A implementation is complete under
+`runs/thermo5_vcu118_A_cdc_fixed_timing_20261114_2310/`: WNS `+0.141 ns`, WHS
+`+0.011 ns`, Core-to-Core `+0.14 ns`, AXI-Lite-to-AXI-Lite `+6.04 ns`, and
+Source-to-Source `+4.79 ns`; no unconstrained internal endpoints remain. The
+OOC checkpoint still has expected HD.PARTPIN_LOCS/I/O-delay limitations and
+CDC analyzer findings for XPM/async-reset structures; these are not claimed as
+board-level signoff.
+
+The exact EF2 pair-lookahead candidate passed an independent iverilog 4096-cycle
+reference/candidate test with stalls, bubbles, saturation, tie, and reset. E0
+standalone VCU118 synthesis measured 5301 LUT/210 FF/636 CARRY8 and WNS
+`-91.093 ns`; E1 measured 7616 LUT/210 FF/832 CARRY8 and WNS `-67.360 ns`.
+Both remain timing failures at 218.75 MHz, so PAIR_LOOKAHEAD stays experimental.
+VCS was unavailable in this Linux environment (`vcs: command not found`).
+
+B timing-driven candidate synthesis, opt, and placement completed, but Vivado
+exited during `phys_opt_design` before writing placed/routed DCPs or final timing
+reports. No B timing improvement is claimed; original routed WNS remains
+`-2.744 ns`.
 
 ## Current execution state: DV v3 P0 execution complete (2026-11-11)
 

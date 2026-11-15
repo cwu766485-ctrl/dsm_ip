@@ -1,4 +1,85 @@
+# 2026-11-15 SGT - B pipeline verification and routed strategy recheck
+
+- Repaired and exercised the Windows Vivado 2026.1 XSim runner. The block
+  differential test passed 19 inputs/16 outputs with randomized backpressure,
+  three frames/tails, exact data and metadata comparison, +2-cycle latency,
+  and occupied-pipeline reset and STOP flush/restart. The 1025-input sustained
+  run passed with 1024 outputs and zero bubbles. Verilator assertion simulation
+  and lint passed.
+- Ran the full product XPM-FIFO, Centered-Cubic, EF1/STEP=5120 bit-true XSim
+  regression: 32 source beats and 56 output words matched all four Python
+  oracle planes. AXI-Lite DPD configuration-commit XSim failed with both XPM
+  and Generic FIFOs (different observed checks); raw logs are retained under
+  `runs/uvm_thermo5_i2_d1/axis_xsim_axil_*_centered_ef1_seed1_words56/`.
+  Baseline comparison remains required. VCS and VC Formal were unavailable;
+  no Formal PASS is claimed.
+- Re-routed the same ECO synthesized DCP under Vivado 2026.1 using the
+  `RuntimeOptimized` route directive and unchanged VCU118 constraints. It
+  passed with WNS/WHS `+0.249/+0.028 ns`, TNS/THS 0, zero failing endpoints,
+  48,624 LUT, 53,556 FF, 496 DSP48, 6.5 BRAM tiles, and 0 URAM. The prior
+  Explore route was `+0.307/+0.028 ns` with identical resources. Both reports,
+  logs, and DCPs are under `runs/thermo5_vcu118_B_pipeline_runtimeoptimized_20261115/`.
+  Vectorless power is 4.186 W; no SAIF activity was supplied.
+- No commit, PR, push, or merge was made. Product-level signoff remains open
+  pending diagnosis of the AXI-Lite commit test and additional reset/STOP
+  coverage. No product algorithm/default was changed.
+
+# 2026-11-15 SGT - Centered-cubic pipeline ECO and timing closure continuation
+
+- Modified `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv` to register
+  the exact pair pre-adds/even samples before the equivalent `(9*a-b)<<10`
+  Q14 arithmetic, original round/saturate, and output register. Added a randomized-backpressure
+  differential test against the original source RTL; 19 input transactions
+  across three frames (including synthetic tails) produced 16 bit-identical
+  outputs and matching Frame/Tail metadata; first-valid latency increased by
+  two cycles. The existing sustained test passed 1024 outputs with zero
+  bubbles (II=1); Verilator lint passed. XSim did not start because Windows
+  `cmd.exe` interop failed before invoking xvlog.
+- The earlier B timing-driven attempt had no physical result beyond synthesis.
+  A fresh opt/place/phys-opt/route resume from its preserved original B DCP is
+  running under `runs/thermo5_vcu118_B_timing_resume_20261115/`; it completed
+  opt/place/phys-opt/route and reported WNS -2.739 ns, WHS +0.014 ns, with the
+  critical path still 24 levels from centered-cubic into the interpolation-to-
+  TID FIFO. This is only +0.005 ns versus the earlier -2.744 ns route. Resource
+  use was 46,029 LUT / 49,768 FF / 668 DSP / 6.5 BRAM tiles / 0 URAM. ECO Vivado
+  full VCU118 implementation passed at WNS +0.307 ns / WHS +0.028 ns, zero
+  setup/hold failing endpoints, with 48,624 LUT / 53,556 FF / 496 DSP /
+  6.5 BRAM tiles / 0 URAM. Its routed worst path is an 11-level DPD DSP path
+  at 3.939 ns (2.622 ns cell, 1.317 ns net), a +3.046 ns setup improvement
+  and +2,595 LUT / +3,788 FF / -172 DSP versus the resumed routed baseline.
+  The vectorless power report is 4.186 W (1.693 W dynamic, 2.494 W static),
+  not measured workload power. Reports are under
+  `runs/thermo5_vcu118_B_pipeline_route_20261115/`.
+- A's +0.141 ns routed WNS and CDC exception audit
+  artifacts remain unchanged. EF2 pair lookahead remains experimental; a
+  bounded exact-lookahead screen and separate communication-equivalent model
+  study remain open.
+
 # 2026-11-14 SGT - VCU118 thermo5 AXI-Lite A/B PPA implementation matrix
+
+# 2026-11-15 SGT - VCU118 timing audit, A CDC closure, and EF2 pair study
+
+- Audited the existing A/B/C/D routed DCPs with Vivado 2026.1 on
+  `xcvu9p-flga2104-2L-e`. The read-only audit includes Worst-20 setup paths,
+  clock interaction, CDC, methodology, exceptions, and check-timing reports
+  under `runs/thermo5_timing_audit_20261114/`.
+- The A root cause was two legal Core-to-AXI-Lite status synchronizer inputs
+  omitted from the OOC exceptions. The OOC Tcl now constrains only those
+  `tx_active`/`draining` synchronizer inputs as false paths and retains the
+  10 ns mailbox datapath max-delay constraint. A fresh timing-driven route
+  completed with WNS `+0.141 ns`, WHS `+0.011 ns`, and no unconstrained
+  internal endpoints. The corrected A checkpoint and all reports are under
+  `runs/thermo5_vcu118_A_cdc_fixed_timing_20261114_2310/`.
+- Added a standalone EF2 variant runner. E0 (original expansion) synthesized
+  at 5301 LUT/210 FF/636 CARRY8 and WNS `-91.093 ns`; E1 (exact pair
+  lookahead) used 7616 LUT/210 FF/832 CARRY8 and WNS `-67.360 ns`. An
+  independent iverilog 4096-cycle pair equivalence run passed with stalls,
+  bubbles, clamps, exact tie, and reset. VCS was unavailable in this Linux
+  environment, so no VCS PASS is claimed.
+- Remaining CDC analyzer Critical/Warning records are documented as XPM and
+  asynchronous-reset structural findings; they are not suppressed or called
+  clean signoff. OOC `HD.PARTPIN_LOCS`, `HD.CLK_SRC`, and missing external I/O
+  delays remain limitations. No product RTL or algorithm source was changed.
 
 - In isolated worktree branch `work/vcu118-ab-ppa` at source commit
   `599959a9ed84eeefb24354df88d0f5296178ecef`, ran Vivado 2026.1 on
