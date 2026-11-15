@@ -1,0 +1,65 @@
+{
+  "run_date": "2026-11-15",
+  "candidate": "independent historical Cartesian TID-MASH 1-1 weighted dual-PA",
+  "worktree_head": "cadb3dc4c1736d6b11858ce14a9bb5d32eebf81d",
+  "historical_source_commit": "7b5c2a853f04c1a5073a9a84e84c64982f922d65",
+  "device": "xcvu9p-flga2104-2L-e",
+  "vivado": "2026.1 (64-bit), build 6511674",
+  "clock_target_mhz": 218.75,
+  "matlab": "R2025a",
+  "vector_seed": 20260916,
+  "vector_words": 128,
+  "lanes_per_vector": 32,
+  "functional_result": "TID32_MASH11_FS4_MULTIPA_BITTRUE_PASS words=128 samples=4096 (I plus Q vectors; both PA branches checked)",
+  "rtl_simulator": "Icarus Verilog 12.0",
+  "routed": {
+    "status": "PASS OOC implementation; not product signoff",
+    "wns_ns": 1.09,
+    "whs_ns": 0.032,
+    "lut": 14279,
+    "logic_lut": 8475,
+    "srl": 5804,
+    "ff": 13440,
+    "carry8": 1004,
+    "dsp48": 0,
+    "bram": 0,
+    "uram": 0,
+    "vectorless_power_w": 3.204,
+    "dcp": "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/routed.dcp",
+    "dcp_sha256": "c05907c1e4b6937077087da85d7a2acad64d492df1898e19679fd7a598a2c4f0"
+  },
+  "source_sha256": {
+    "research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_mash11_fs4_multipa_tx.sv": "1d59e49c41d97945b786cb015aee80d09c9fe6a1827b6b0632a9569f06a5d94e",
+    "research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv": "f26ba0efb4f7d5439819fbda79c8070f6e9c71fb95d766998cf343ebaf84103e",
+    "research/thermo5_weighted_mash/matlab/tx_bandpass_if/tid_mash11_pipelined_step.m": "87d851a9b7e77e894a31fb8a7feaa7b4fa7d9485c695abe27e18ca332f9aae02",
+    "research/thermo5_weighted_mash/matlab/tx_bandpass_if/tid_pipelined_first_order_step.m": "40f37c636ff1da696e224d44b0d646a18d6473725d49b0e402d42093835279ea",
+    "research/thermo5_weighted_mash/verif/block/bp_dsm/tb/tb_tid32_mash11_fs4_multipa_tx_bittrue.sv": "5cac01b5673b73c9dadbbe985ba85c0cc86507766e91d5934c71cad4a7f59fb4"
+  },
+  "artifact_sha256": {
+    "runs/thermo5_weighted_mash_vcu118_20261118/vectors/tidmash_i.mem": "e0348bb0789baebe159b8c7f67688b6117942bb304e98e440f37114d3042fe17",
+    "runs/thermo5_weighted_mash_vcu118_20261118/vectors/tidmash_q.mem": "0400f2136c08bf82a9815ad0ffd4e1e4bd730147ad771c3aaccec5245751ab42",
+    "runs/thermo5_weighted_mash_vcu118_20261118/vectors/tidmash_pa1.mem": "283d68abc5b8c1e021e419ed97da2f9e0996df8e9c9fa801d5ce09ffb4c01323",
+    "runs/thermo5_weighted_mash_vcu118_20261118/vectors/tidmash_pa2.mem": "f2b166fe2c47e3f2102d09af36a9427f0cfd3c256a143c944b3d5524eeb0c849",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/utilization.rpt": "f05b736ed4678a05b145ab104f309f4d5daf693d1e41d5e60bfebceaf125723e",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/timing_summary.rpt": "4b9daf6d9543e7c97d91218377a9cbf5493ab72746587148718522af74935417",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/timing_max_paths.rpt": "25be13a67be859a49e85fa65072f9ea19f1c62ebece88ddaa42b04461ea5b404",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/timing_min_paths.rpt": "b7d3c6eb4555fea7fff0b29ce5712ebefd55fb78acf0ea5d6d813de52ca726e6",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/check_timing.rpt": "674ac44218e9ff061eeee7b82792b22a6bd3c7628b2482213a614a259a0a515b",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/route_status.rpt": "f23f297b32c3322f9da199fda566272a592ed12f0c1a32cf67bedecdbf855db6",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/vectorless_power.rpt": "edba30e4154f799941cde09c864b66f52b130571b7d8f90213137073ece9222e",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118_retry/vivado_stdout.log": "bbfdab2501f6a8ff3112dc6a25e75ce22d39be40b5f98e53331c5a483888dc35",
+    "runs/thermo5_weighted_mash_vcu118_20261118/ooc_vcu118/vivado_stdout.log": "35d9a31653db55fa1efcf4b8c07a180526b467439254c5d62544b29e69c30e68",
+    "runs/thermo5_weighted_mash_vcu118_20261118/tidmash.vvp": "abfdf4c4b4740ca15838620a57f8a305c9ea925d3303aede97e8f26e2af7b902"
+  },
+  "b_pipeline_dcp_sha256": {
+    "runs/thermo5_vcu118_B_pipeline_route_20261115/routed.dcp": "1f5cd3c950c8da8b1a2781b7d788fd0c09f307549836aedb0098e6a645a9088f",
+    "runs/thermo5_vcu118_B_pipeline_runtimeoptimized_20261115/routed.dcp": "e694a728b7523a50d65683314d957316ef716dd6f63c2cffb0457cad42fe8173"
+  },
+  "open_items": [
+    "Automated Original/Pipeline by Generic/XPM replay is OPEN; historical manually invoked runs pass and retain VCDs.",
+    "Product Reset During Traffic, STOP/Restart and long random backpressure are OPEN.",
+    "CDC/RDC, formal, and code coverage closure are OPEN; VCS/VC Formal/SpyGlass not run.",
+    "No directed tie-only or residual-polarity test, weighted analog cancellation assertion, or cycle-measured II/latency assertion was added to the historical MASH testbench.",
+    "MASH product interface integration, input/output timing budgets, and board timing are not covered by the OOC route."
+  ]
+}
