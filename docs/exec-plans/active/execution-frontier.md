@@ -24,7 +24,8 @@ dynamic RF-sample configuration alignment and a full AXIS STOP API remain open.
 
 P4 digital QAM gates pass from actual final RTL PA bits: original seed281001,
 8 symbols/RMS .09 gives EVM2.551442%, SNDR31.864285dB, BER15/37376. Four fixed
-32-symbol seeds pass: EVM2.496494-2.533985%, aggregate BER146/598016. Original
+32-symbol seeds pass: EVM2.496494-2.533985%, aggregate BER146/598016. Final four-seed confirmation at b8dd38d matches all compiled Git blobs and
+reproduces metrics from byte-identical PA files. Original
 legacy PA hashes are reproduced exactly. Capture II=1, zero output bubbles,
 zero overflow and zero DPD saturation in the instrumented original-size run.
 Raw adjacent bands are -19.31/-19.42dBc; RF emissions are not signed off.

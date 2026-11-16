@@ -971,5 +971,7 @@
     "Config ID and frame metadata tests concern static-SKU transaction tokens; dynamic RF-sample configuration alignment is not qualified.",
     "Raw adjacent leakage is measured digitally; no RF ACLR/emissions target or signoff is claimed.",
     "Only DPD and corrected MASH residual saturation are checked; total-chain interpolation saturation counters are not instrumented."
-  ]
+  ],
+  "committed_source_confirmation": "committed-source-confirmation.json",
+  "verification_commit": "b8dd38d4650d46120c834b27e0539e2026392e5f"
 }

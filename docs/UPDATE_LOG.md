@@ -1,3 +1,12 @@
+## 2026-11-17 00:36 SGT — Committed-source MASH confirmation
+
+Added independent Timing Alignment Report and committed-source confirmation
+JSON. Fresh four-seed compilation matches every Git source blob at b8dd38d,
+including final passive probes. PA bytes and fresh receiver metrics reproduce
+exactly; aggregate BER146/598016, zero DPD saturation/output bubbles/overflow
+in all four runs. Updated evidence index and root report. No product RTL
+changed after implementation1fd679d. VCS BUBBLE_COVERAGE and P5 limits remain.
+
 ## 2026-11-17 00:15 SGT — Weighted MASH QAM root-cause closure
 
 Changed files: research/thermo5_weighted_mash/rtl/tx_bandpass_if/{tid32_cartesian_fs4_gt_tx,tid32_mash11_fs4_multipa_tx}.sv;

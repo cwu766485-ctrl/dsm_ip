@@ -106,7 +106,8 @@ No Golden function was modified to make that failed assumption pass.
 
 ## P2: timing and alignment contract
 
-The dedicated timing contract is
+The independent [Timing Alignment Report](thermo5-mash-timing-alignment-20261117.md)
+records the full derivation and stall/reset boundaries. The dedicated timing contract is
 `research/thermo5_integration/model/mash_timing_contract.py:1`.
 Receiver correction is in `thermo5_mash_axis_qam.py:134-138`.
 
@@ -231,6 +232,13 @@ Four enlarged 32-symbol experiments use the same RMS, frontend and receiver:
 | 281003 | 2.529758% | 31.938422 | 48 / 149504 |
 | 281007 | 2.496494% | 32.053390 | 35 / 149504 |
 | 281009 | 2.531561% | 31.932231 | 30 / 149504 |
+
+Final confirmation at commit `b8dd38d` recompiled all four seeds with every
+compiled file SHA256 matching its committed Git blob, including the final
+passive probe bench. All PA bytes match the earlier runs; fresh receiver
+evaluations reproduce every metric. All four now also have measured zero DPD
+saturation, zero output bubbles and zero overflow. See
+[data/thermo5-mash-qam-root-cause-20261117/committed-source-confirmation.json](data/thermo5-mash-qam-root-cause-20261117/committed-source-confirmation.json).
 
 Total: **146 / 598,016 bits = 0.000244140625**. All four meet EVM <=3.5%
 and SNDR >=29.12 dB. These are fixed-seed digital observations, not a zero-BER

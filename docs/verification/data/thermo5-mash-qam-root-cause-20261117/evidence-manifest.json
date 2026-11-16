@@ -1492,6 +1492,426 @@
       "path": "research/thermo5_integration/model/measure_mash_raw_psd.py",
       "bytes": 2508,
       "sha256": "a5fa52794576c2a384e79aca0848d30c308d21f48351c1bc65eea55d9542259d"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/audit.vcd",
+      "bytes": 42351452,
+      "sha256": "d5efd67b2f03080ff3d1eda651c3b0446975d3eeaeb161a553aeb366acdfc3ef"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/axis_i_samples.mem",
+      "bytes": 763280,
+      "sha256": "6bad1c9869e6608c75cbb1157ab5eb42028a2575ffb1349c05e7ef839c027db8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/axis_q_samples.mem",
+      "bytes": 763280,
+      "sha256": "60c3927ef0afe12185b6284114134f4271f9bf721f3a653f7368419790ff556d"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/captured_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "e6acf3761c691b2e6879196e8e2faa9eccca01c3891bbe662a8164247245e745"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/captured_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "f7d97832ecf02bb883da281c3eb8431ca4f3d48f752dc1336f5a12f5f95d5433"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/capture_manifest.json",
+      "bytes": 11159,
+      "sha256": "3ebae06c251bd7401b7f5bc9d9b1edcec8458010e445c53db0b1b283e3a6bf3e"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/compile.log",
+      "bytes": 44698,
+      "sha256": "8da16f755a146b54c75be44013154e7d3631bdd0c9b485a6f6263d5792203bbb"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/corrected_expected_pa0.mem",
+      "bytes": 324394,
+      "sha256": "e6acf3761c691b2e6879196e8e2faa9eccca01c3891bbe662a8164247245e745"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/corrected_expected_pa1.mem",
+      "bytes": 324394,
+      "sha256": "f7d97832ecf02bb883da281c3eb8431ca4f3d48f752dc1336f5a12f5f95d5433"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/events.csv",
+      "bytes": 464841,
+      "sha256": "7f3669574101fb16cd8142cf929f24077c0f03a517bb25e33eebedcbacb4d7c8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/expected_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "138f138ab4d08c2bd0e06171f310c4856ed702da275ab44bea03adb2ab6834cd"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/expected_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "4b07e22d7aa8811c8e81d853099c8a0aec37e0ef0c75d11dcf0627c2e4bad97f"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/pre_words.csv",
+      "bytes": 5509509,
+      "sha256": "a4817e6b46abed424006b0f5e31842c2002213302f752ba4e3368f53286be264"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/qam256_rtl_capture_metrics.json",
+      "bytes": 6165973,
+      "sha256": "dfd73214bf9c07ab4b78c981b50a210e69baa4e55db821d89a044f3ae46c187a"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/residual_words.csv",
+      "bytes": 10443580,
+      "sha256": "333228dd09502ba1cc9c576d46b616f95db61b1f6b93e5f8bc1508841056dce5"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/simulation.log",
+      "bytes": 1132,
+      "sha256": "46ca025448c2d51e4270df35c7302cd0efd5b319dfb6a2ae6ec126850a78586b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/source_events.csv",
+      "bytes": 194745,
+      "sha256": "5600244022bf3d628f7aa9c0a071cac82de2483023b1dca3e5bafd863c6dcc1b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/stage1_words.csv",
+      "bytes": 700808,
+      "sha256": "9a60fac1ce3a900b1f797e16c611a5b6aa14659600e69626d0675959e6271af6"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/stage2_words.csv",
+      "bytes": 700823,
+      "sha256": "62253388a0c3edebd5318881fb99a3509d7bf3ef95d6dcc12dfa08a4e5647749"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/stage_pairs.csv",
+      "bytes": 1883987,
+      "sha256": "05bfc121889ee084f1dd8a92b844c995cd2657e89cadf29f76886350d9bf9714"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281001/stimulus.json",
+      "bytes": 1375251,
+      "sha256": "1adf00b8fa9b4bd6a3e52d41df68bf19002c019e43b53bf208b532a7bffcd41d"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/audit.vcd",
+      "bytes": 42352269,
+      "sha256": "41b120249113f2b6e107c47a51d92d95f9386679aa3dfe1d6511009b34d43d4a"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/axis_i_samples.mem",
+      "bytes": 763280,
+      "sha256": "28143abb1c7b01d3887c88e75ed07e1bbac1071f8b75b36b16b9fb64537e3b50"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/axis_q_samples.mem",
+      "bytes": 763280,
+      "sha256": "ca745faec91c379d295551012337133728023e3f7dc9b442056350bb6939ec68"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/captured_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "b883a50111042c16d5a08a98f6686c5d8e7bd9fdad09c8edae8ddd24463e7242"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/captured_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "7785305115da27ef59f76f0988e9ff25b92686295a378226c6fabe484a497ad8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/capture_manifest.json",
+      "bytes": 11159,
+      "sha256": "6aefa30284535ef90fc3a5adbef320ee201876583b113e1203f8f78fc156a415"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/compile.log",
+      "bytes": 44698,
+      "sha256": "8da16f755a146b54c75be44013154e7d3631bdd0c9b485a6f6263d5792203bbb"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/corrected_expected_pa0.mem",
+      "bytes": 324394,
+      "sha256": "b883a50111042c16d5a08a98f6686c5d8e7bd9fdad09c8edae8ddd24463e7242"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/corrected_expected_pa1.mem",
+      "bytes": 324394,
+      "sha256": "7785305115da27ef59f76f0988e9ff25b92686295a378226c6fabe484a497ad8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/events.csv",
+      "bytes": 464841,
+      "sha256": "7f3669574101fb16cd8142cf929f24077c0f03a517bb25e33eebedcbacb4d7c8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/expected_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "5b6e7a0b941144e91ea0b5e2c9c2efd7159299b046b4a42556c5d34ddbe88d8c"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/expected_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "32c03cf55c57b71884097bd8dbc204c894dd5d93675bf1c8b868b8a12c816bc9"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/pre_words.csv",
+      "bytes": 5509509,
+      "sha256": "52b8e5ea1ff8da52153e2796a6dd89400b2e9b069a750b5100bd8b73006c2ac8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/qam256_rtl_capture_metrics.json",
+      "bytes": 6165947,
+      "sha256": "b1f4a704acba275302022054e3c740d2f15ead04a21e9635971423fa2b7bb40f"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/residual_words.csv",
+      "bytes": 10443580,
+      "sha256": "d8453c44b34888f735b1674b15ea8d263bff2d8295ae7118f683996d2ff2154e"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/simulation.log",
+      "bytes": 1132,
+      "sha256": "cdbdab05b4298254704b55b7daefa60de538868a832ad2939b141c596fb30d91"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/source_events.csv",
+      "bytes": 194745,
+      "sha256": "5600244022bf3d628f7aa9c0a071cac82de2483023b1dca3e5bafd863c6dcc1b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/stage1_words.csv",
+      "bytes": 700808,
+      "sha256": "48eb14c8cd0b472d77254c744bf7d934231a9ab2d9fb294dc939f51ad5910482"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/stage2_words.csv",
+      "bytes": 700823,
+      "sha256": "c9229195101760692715eda7b597bb1e2b830da5dcf0372aba8f59b8117d8a83"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/stage_pairs.csv",
+      "bytes": 1883987,
+      "sha256": "87dcc20c2491cf5ce64ab29fb2cc827e6004c38ca4e9dd88a83c7f3975aed706"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281003/stimulus.json",
+      "bytes": 1375063,
+      "sha256": "0248750f393256fd0c287ab0c9f25302392acd73a6b80e06b39ad77b76af5da7"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/audit.vcd",
+      "bytes": 42349861,
+      "sha256": "c969e15830211f55802658ceca5b80b4361471132d12a39f02466b1dbcf21bb7"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/axis_i_samples.mem",
+      "bytes": 763280,
+      "sha256": "786e9cb62a6bae84d0bf955daaf838808fc194c51f8d9ad8ad0307b3d76537b4"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/axis_q_samples.mem",
+      "bytes": 763280,
+      "sha256": "137ed498104d5f7221fd47ce8b0caa59b62d320131e97b4d7f9768b93f9567c6"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/captured_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "70570698e103284576cf9742bd609d4517d20fbaabf9117d59b526acdcce13f0"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/captured_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "26204688bb71a7e2f874f30149a5b018ca128e89d8ecc6e15429e582e83be720"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/capture_manifest.json",
+      "bytes": 11159,
+      "sha256": "a17182ca8326041d8e324c379a507f95844dd32c6b638e6a08b824816049cba4"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/compile.log",
+      "bytes": 44698,
+      "sha256": "8da16f755a146b54c75be44013154e7d3631bdd0c9b485a6f6263d5792203bbb"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/corrected_expected_pa0.mem",
+      "bytes": 324394,
+      "sha256": "70570698e103284576cf9742bd609d4517d20fbaabf9117d59b526acdcce13f0"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/corrected_expected_pa1.mem",
+      "bytes": 324394,
+      "sha256": "26204688bb71a7e2f874f30149a5b018ca128e89d8ecc6e15429e582e83be720"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/events.csv",
+      "bytes": 464841,
+      "sha256": "7f3669574101fb16cd8142cf929f24077c0f03a517bb25e33eebedcbacb4d7c8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/expected_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "0f9478eedfdec2e525505675f0f0455a37f0c37c2e330123613643d411f775ae"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/expected_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "fe8d11e233646c5812f44432ae5944c548ca2652169e8c3e2e2b6e19585027f5"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/pre_words.csv",
+      "bytes": 5509509,
+      "sha256": "f5612cf265e83554eb86935f16772ca8c96fb3b39b532c515fe2d1e438fd48e1"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/qam256_rtl_capture_metrics.json",
+      "bytes": 6216604,
+      "sha256": "8f41666bd126a9aefb386737b655390156d39845f98f7f26a720c4f0b6aed649"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/residual_words.csv",
+      "bytes": 10443580,
+      "sha256": "0368abae658e5df9537701fb47de67d6866af9d5469db8410ada790c260b20d8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/simulation.log",
+      "bytes": 1132,
+      "sha256": "69af4054a886b845359df795364974b772ec8bd26e1b9d3e48769c269dd0ca21"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/source_events.csv",
+      "bytes": 194745,
+      "sha256": "5600244022bf3d628f7aa9c0a071cac82de2483023b1dca3e5bafd863c6dcc1b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/stage1_words.csv",
+      "bytes": 700808,
+      "sha256": "416bb4bb74a24f2b95aba4d4d8d6c21666b52e496a402cb32b84b2c966fcb976"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/stage2_words.csv",
+      "bytes": 700823,
+      "sha256": "6a8685ca760738bf7bbbc241b1a428fd9604f6215805f5b3517849f179b00916"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/stage_pairs.csv",
+      "bytes": 1883987,
+      "sha256": "edad14456db0ab21f44d93207b877607dcb23fdafafea180e14378e70c9f351c"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281007/stimulus.json",
+      "bytes": 1375009,
+      "sha256": "fd2b6eb6aaceed04334c18e58084bf31658fc993c66164d51ac5486d60a0ea0f"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/audit.vcd",
+      "bytes": 42351861,
+      "sha256": "9b0af36ef28dea9d7e8be8472ce7dffda14da080a58d48fe0840bdf9abfc0f2b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/axis_i_samples.mem",
+      "bytes": 763280,
+      "sha256": "c8235de221168dec8bb1bb4cc81c7ed31a6b77a1d9d70386d1976449da3165e7"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/axis_q_samples.mem",
+      "bytes": 763280,
+      "sha256": "6aa9f58a9b7bcc6a7c1367be5c3ca9a4c2e2e24aa6848cc801154212a8f96cb9"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/captured_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "09860bb61da96543f35d01d630c284eb65259d846c1af69bf1c19906b6e2d785"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/captured_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "6e575064bf35694ee23c4228752580af09c59182a9d378066037179ce2099c47"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/capture_manifest.json",
+      "bytes": 11159,
+      "sha256": "3877ad1d64a4149365cbce6387075bd02b7c82ada594fea6ce0c9afcebac26bf"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/compile.log",
+      "bytes": 44698,
+      "sha256": "8da16f755a146b54c75be44013154e7d3631bdd0c9b485a6f6263d5792203bbb"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/corrected_expected_pa0.mem",
+      "bytes": 324394,
+      "sha256": "09860bb61da96543f35d01d630c284eb65259d846c1af69bf1c19906b6e2d785"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/corrected_expected_pa1.mem",
+      "bytes": 324394,
+      "sha256": "6e575064bf35694ee23c4228752580af09c59182a9d378066037179ce2099c47"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/events.csv",
+      "bytes": 464841,
+      "sha256": "7f3669574101fb16cd8142cf929f24077c0f03a517bb25e33eebedcbacb4d7c8"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/expected_mash_pa0.mem",
+      "bytes": 324394,
+      "sha256": "40f85bd6d3e7892375955368f05560e782147ec67c7ccd1d19aa7cb8b6ccc648"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/expected_mash_pa1.mem",
+      "bytes": 324394,
+      "sha256": "42d632bcf9e61d7ea4c7332a723cfc4b98a6d9b8d5906c83ac84e18434d243b0"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/pre_words.csv",
+      "bytes": 5509509,
+      "sha256": "e31facaaac869aa1e90419831b9a3f5881459540877889c3e490dc8fd05b333b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/qam256_rtl_capture_metrics.json",
+      "bytes": 6203492,
+      "sha256": "73b2cde9826789b038a8aee3e6790fd310d9854fea897de89bd70d431bc21f6c"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/residual_words.csv",
+      "bytes": 10443580,
+      "sha256": "4cc3bcb89cd0f5a1be939f6f2cc8130541aa44803e1c0fb74555aacc2d441ccd"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/simulation.log",
+      "bytes": 1132,
+      "sha256": "10331200050d92db4431519b7c744af087dbc9d6a1114c34320762ded4034921"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/source_events.csv",
+      "bytes": 194745,
+      "sha256": "5600244022bf3d628f7aa9c0a071cac82de2483023b1dca3e5bafd863c6dcc1b"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/stage1_words.csv",
+      "bytes": 700808,
+      "sha256": "9e560ed2081165f4645b23360007cb3274cbe0fe33e443232cf871e680fd9013"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/stage2_words.csv",
+      "bytes": 700823,
+      "sha256": "174f46fb6e53e6a8074b1fd7a6c2a3e5ea658b943860d127f6e99879ea836189"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/stage_pairs.csv",
+      "bytes": 1883987,
+      "sha256": "4c7ebc304fd63877822b15831c18f15e4a7e93c1d7bccc565b2aa1a800be96c2"
+    },
+    {
+      "path": "runs/mash_commit_confirm_281009/stimulus.json",
+      "bytes": 1375101,
+      "sha256": "4e9e95dc58323e951775922244babec693cc84925a6a3dcea692531e9b386bc1"
     }
   ],
   "policy": "Large logs, VCDs, CSV traces and PA words stay local under ignored runs/. Their hashes are indexed here."
