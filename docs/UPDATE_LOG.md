@@ -7356,3 +7356,21 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Checks run: Python DSM experiment tests 11/11; historical MASH RTL Bit-True
   128/128; Vivado 2026.1 VCU118 OOC route PASS; manifest JSON and every
   listed source/artifact SHA-256 validate; scoped `git diff --check` passes.
+# 2026-11-16 SGT - Three-architecture integration checkpoint
+
+- Created independent branch `work/vcu118-integration` from
+  `97733eb27674b7737ea21a2252fca45ecac13a26`; existing EF1 and Weighted MASH
+  DCP/PPA evidence was preserved.
+- Added compile-time DSM architecture and PA contract declarations, UVM
+  configuration fields, and a separate Weighted MASH PA transaction type.
+- Added a bounded credit-based MASH backend adapter carrying Config ID, Epoch,
+  Frame and Tail metadata. Icarus Verilog 12.0 module test passed 128/128
+  accepted/produced transactions, metadata ordering under bounded stalls, and
+  steady-state II=1.
+- Confirmed the current Pre-DSM FIFO drops metadata (`META_W=1`, constant zero).
+  Full-chain integration remains open until the boundary contract is widened;
+  no metadata was reconstructed from timing and no four-plane PA contract was
+  changed.
+- Existing EF1 guard regression remained PASS. Dedicated MASH UVM monitor,
+  backend oracle hookup, full-chain top, arbitrary-long backpressure,
+  CDC/RDC/Formal/coverage and full-top VCU118 PPA remain OPEN.

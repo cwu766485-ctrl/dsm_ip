@@ -6,6 +6,7 @@ package thermo5_sku_uvm_pkg;
   localparam int CORE_WORDS = 56;
   localparam int SAMPLES = 448;
 
+  `include "thermo5_arch_contract.svh"
   `include "thermo5_sku_config.svh"
   `include "thermo5_source_item.svh"
   `include "thermo5_axil_item.svh"

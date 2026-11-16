@@ -1,0 +1,24 @@
+{
+  "branch": "work/vcu118-integration",
+  "base_sha": "97733eb27674b7737ea21a2252fca45ecac13a26",
+  "status": "partial_gates_0_to_4",
+  "baselines": {
+    "ef1_explore_dcp_sha256": "1f5cd3c950c8da8b1a2781b7d788fd0c09f307549836aedb0098e6a645a9088f",
+    "ef1_runtimeoptimized_dcp_sha256": "e694a728b7523a50d65683314d957316ef716dd6f63c2cffb0457cad42fe8173",
+    "mash_ooc_dcp_sha256": "c05907c1e4b6937077087da85d7a2acad64d492df1898e19679fd7a598a2c4f0"
+  },
+  "adapter_test": {
+    "simulator": "Icarus Verilog 12.0",
+    "marker": "THERMO5_MASH_ADAPTER_PASS accepted=128 produced=128 II=1 bounded_fifo=16",
+    "status": "PASS"
+  },
+  "open": [
+    "explicit widened Pre-DSM metadata boundary",
+    "dedicated MASH UVM monitor and scoreboard oracle hookup",
+    "full AXIS-to-MASH full-chain top",
+    "arbitrary-long backpressure",
+    "STOP/Restart and reset epoch product semantics",
+    "full-top VCU118 synthesis and route",
+    "CDC/RDC/Formal/coverage signoff"
+  ]
+}

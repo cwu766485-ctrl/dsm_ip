@@ -1585,3 +1585,27 @@ The source of truth is actual URG plus exact remaining bins and proof contracts.
 Update this frontier and `docs/UPDATE_LOG.md` after a material result or next-action
 change. Keep generated reports, vendor/PDK files and licenses out of commits.
 Historical plans are under `../inactive/`; their scores/blockers are historical.
+# 2026-11-16 SGT - Three-architecture integration checkpoint
+
+Independent branch `work/vcu118-integration` is based on
+`97733eb27674b7737ea21a2252fca45ecac13a26`. Existing EF1 and Weighted MASH
+PPA artifacts remain frozen and were not overwritten. Added compile-time DSM
+and PA contract declarations, UVM configuration enums, a separate Weighted
+MASH transaction type, and a bounded credit-based MASH backend adapter.
+
+The adapter was compiled and run with Icarus Verilog 12.0 using the historical
+MASH core. It accepted and produced 128 transactions, preserved metadata order
+under bounded output stalls, and reported `II=1`. This is module evidence only;
+the legacy core has no output-ready input, so arbitrary-long backpressure is
+not claimed.
+
+Gate 1 is partial: the existing `u_interp2_to_tid_fifo` uses `META_W=1` with
+constant-zero metadata, so Frame/Config/Tail/Epoch information is lost at the
+current Pre-DSM boundary. No timing-based reconstruction was added. A widened
+metadata contract is required before full-chain MASH integration.
+
+Gate 4 is partial: architecture-aware configuration and the MASH transaction
+type are present, while a dedicated MASH monitor, independent backend oracle
+hookup, and unified full-chain scoreboard remain open. Full-chain simulation,
+CDC/RDC, Formal, coverage, and VCU118 top-level PPA remain open. Existing EF1
+guard regression remains PASS after these changes.
