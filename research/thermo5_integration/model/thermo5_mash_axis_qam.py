@@ -2,8 +2,10 @@
 """Prepare and evaluate a captured RTL Weighted-MASH QAM256 AXIS run."""
 
 import argparse
+import csv
 import json
 import math
+import re
 import shutil
 from pathlib import Path
 
@@ -27,6 +29,7 @@ from dsm_refmodel.thermo5 import (
 )
 from mash11_reference import run_mash11
 from mash_weighted_contract import weighted_encode
+from mash_timing_contract import MASH_SOURCE_SAMPLE_OFFSET, MASH_STREAM_DELAY_WORDS
 
 
 def _write_mem(path, values, width):
@@ -105,6 +108,8 @@ def _read_packed_words(path):
 def evaluate(run_dir, seed, symbols, rms_drive):
     stimulus = make_256qam_ofdm(seed, symbols=symbols, rms_drive=rms_drive)
     meta = json.loads((run_dir / "stimulus.json").read_text())
+    if (seed, symbols, rms_drive) != (meta['seed'],meta['symbols'],meta['rms_drive_target']):
+        raise ValueError('Evaluation arguments differ from saved stimulus')
     stimulus["data_start"] = int(meta["data_start"])
     stimulus["data_samples"] = int(meta["data_samples"])
     pa0 = _read_packed_words(run_dir / "captured_mash_pa0.mem")
@@ -126,6 +131,10 @@ def evaluate(run_dir, seed, symbols, rms_drive):
     baseband_7g = _linear_fir_decimate(ddc, fs4_coeff, 2, phase=0)
     rx_coeff = _blackman_lowpass(0.75 * bandwidth_hz, RAW_FS_HZ / 2, RX_FIR_TAPS)
     baseband = _linear_fir_decimate(baseband_7g, rx_coeff, 4, phase=0)
+    unaligned_metrics = demodulate_metrics(baseband, stimulus)
+    # Preserve every captured RF sample. Move the CP/FFT window according to
+    # the independently audited recurrence contract, never a best-lag search.
+    stimulus['data_start'] += MASH_SOURCE_SAMPLE_OFFSET
     metrics = demodulate_metrics(baseband, stimulus)
 
     fs = RAW_FS_HZ
@@ -155,9 +164,12 @@ def evaluate(run_dir, seed, symbols, rms_drive):
         "occupied_bandwidth_hz": bandwidth_hz,
         "receiver_filter_taps": RX_FIR_TAPS,
         "latency_cropped_7g_complex_samples": 0,
+        "mash_algorithmic_delay_words": MASH_STREAM_DELAY_WORDS,
+        "fft_window_source_sample_offset": MASH_SOURCE_SAMPLE_OFFSET,
+        "unaligned_evm_percent": unaligned_metrics['evm_percent'],
         "pa_words": len(pa0),
         "raw_rf_samples_after_latency_crop": len(rf),
-        "ii": 1,
+        "ii": None,
         "evm_percent": metrics["evm_percent"],
         "sndr_db": metrics["sndr_db"],
         "uncoded_ber_natural_binary": metrics["uncoded_ber_natural_binary"],
@@ -169,12 +181,33 @@ def evaluate(run_dir, seed, symbols, rms_drive):
         "psd_sample_rate_hz": RAW_FS_HZ/2,
         "psd_fft_size": segment,
         "relative_psd_db": psd,
-        "latency_note": "capture begins at the first valid PA transaction, which corresponds to expected vector 0; transport latency does not remove serialized samples",
+        "latency_note": "First valid PA token includes algorithmic reset fill. CP/FFT starts at source guard + 528 source samples (66 accepted 32-lane words); transport and FIR delays are accounted separately. No lag search is used.",
     }
+    if (run_dir/'stage_pairs.csv').exists():
+        with (run_dir/'stage_pairs.csv').open() as f:
+            observed=list(csv.DictReader(f))
+        gaps=[int(b['cycle'])-int(a['cycle']) for a,b in zip(observed,observed[1:])]
+        result['ii']=min(gaps)
+        result['max_output_interval_cycles']=max(gaps)
+        result['output_bubble_cycles']=sum(g-1 for g in gaps)
+        with (run_dir/'pre_words.csv').open() as f:
+            first_pre=next(csv.DictReader(f))
+        result['first_token_transport_cycles']=int(observed[0]['cycle'])-int(first_pre['cycle'])
+    log_path=run_dir/'simulation.log'
+    if log_path.exists():
+        counters=re.findall(r'DPD_COUNTER lane=(\d+) samples=(\d+) saturations=(\d+)',log_path.read_text())
+        result['dpd_saturation_count']=(sum(int(v[2]) for v in counters) if len(counters)==16 else None)
+        result['dpd_lane_samples']=([int(v[1]) for v in counters] if len(counters)==16 else None)
+    result['bittrue_mismatch']=0 if log_path.exists() and 'THERMO5_MASH_AXIS_QAM_BITTRUE_PASS' in log_path.read_text() else None
+    result['overflow_error']=0 if result['bittrue_mismatch']==0 else None
+    result['digital_qam_gate'] = ('PASS' if result['evm_percent'] <= 3.5 and
+                                  result['sndr_db'] >= 29.12 else 'FAIL')
     (run_dir / "qam256_rtl_capture_metrics.json").write_text(json.dumps(result, indent=2) + "\n")
-    print("THERMO5_MASH_RTL_QAM256_EVALUATION_PASS evm_percent=%.6f sndr_db=%.4f ber=%.8g bit_errors=%d/%d" %
-          (result["evm_percent"], result["sndr_db"], result["uncoded_ber_natural_binary"],
+    print("THERMO5_MASH_RTL_QAM256_EVALUATION_%s evm_percent=%.6f sndr_db=%.4f ber=%.8g bit_errors=%d/%d" %
+          (result['digital_qam_gate'], result["evm_percent"], result["sndr_db"], result["uncoded_ber_natural_binary"],
            result["bit_errors"], result["bits_compared"]))
+    if result['digital_qam_gate'] != 'PASS':
+        raise SystemExit(1)
 
 
 def main():

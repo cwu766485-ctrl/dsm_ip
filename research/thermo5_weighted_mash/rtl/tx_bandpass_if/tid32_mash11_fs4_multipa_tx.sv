@@ -21,7 +21,10 @@ module tid32_mash11_fs4_multipa_tx #(
   // samples, i.e. 33 complete input words.  The two additional entries align
   // that algorithmic delay to the two registered raw-GT boundaries used by
   // the two TID stages.  This is not a combinational state-chain expansion.
-  parameter int STAGE_DELAY_WORDS = 35
+  parameter int STAGE_DELAY_WORDS = 35,
+  // Default retains the historical x-q1 experiment and its frozen oracle.
+  // The QAM-qualified candidate feeds the true accumulator error state.
+  parameter bit USE_ACCUMULATOR_RESIDUE = 1'b0
 ) (
   input  wire logic                         clk,
   input  wire logic                         rst_n,
@@ -42,12 +45,17 @@ module tid32_mash11_fs4_multipa_tx #(
   logic [2*CHANNELS-1:0] s1_to_s2_data;
   logic s2_in_ready, s2_valid;
   logic [2*CHANNELS-1:0] s2_data;
+  logic [2*CHANNELS-1:0] s2_companion_q1;
+  wire [2*CHANNELS-1:0] aligned_q1 = USE_ACCUMULATOR_RESIDUE ?
+      s2_companion_q1 : s1_delay[STAGE_DELAY_WORDS-1];
   logic signed [CHANNELS*W-1:0] i_delay [0:STAGE_DELAY_WORDS-1];
   logic signed [CHANNELS*W-1:0] q_delay [0:STAGE_DELAY_WORDS-1];
   logic [2*CHANNELS-1:0] s1_delay [0:STAGE_DELAY_WORDS-1];
   logic input_delay_valid;
   logic signed [CHANNELS*W-1:0] residual_i_vec;
   logic signed [CHANNELS*W-1:0] residual_q_vec;
+  logic signed [CHANNELS*W-1:0] s1_residue_i, s1_residue_q;
+  logic signed [CHANNELS*W-1:0] s1_to_s2_residue_i, s1_to_s2_residue_q;
   // Fs/4 raw mapping at reset: {I0=0,~Q0=1,~I1=1,Q1=0,...}.
   localparam logic [2*CHANNELS-1:0] RESET_STAGE2_WORD = {CHANNELS/2{4'b0110}};
   logic [1:0] reset_phase_words;
@@ -71,13 +79,16 @@ module tid32_mash11_fs4_multipa_tx #(
   tid32_cartesian_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS)) u_stage1 (
     .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .in_ready(s1_in_ready),
     .in_i_poly_vec(in_i_poly_vec), .in_q_poly_vec(in_q_poly_vec),
-    .gt_valid(s1_valid), .gt_ready(1'b1), .gt_data(s1_data)
+    .gt_valid(s1_valid), .gt_ready(1'b1), .gt_data(s1_data),
+    .gt_residue_i_vec(s1_residue_i), .gt_residue_q_vec(s1_residue_q),
+    .in_companion_data({2*CHANNELS{1'b0}}), .gt_companion_data()
   );
 
   tid32_cartesian_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS)) u_stage2 (
     .clk(clk), .rst_n(rst_n), .in_valid(s1_to_s2_valid), .in_ready(s2_in_ready),
     .in_i_poly_vec(residual_i_vec), .in_q_poly_vec(residual_q_vec),
-    .gt_valid(s2_valid), .gt_ready(1'b1), .gt_data(s2_data)
+    .gt_valid(s2_valid), .gt_ready(1'b1), .gt_data(s2_data),
+    .in_companion_data(s1_to_s2_data), .gt_companion_data(s2_companion_q1)
   );
 
   function automatic logic signed [W-1:0] sat_residual(
@@ -96,7 +107,10 @@ module tid32_mash11_fs4_multipa_tx #(
   always_comb begin
     residual_i_vec = '0;
     residual_q_vec = '0;
-    if (input_delay_valid) begin
+    if (USE_ACCUMULATOR_RESIDUE) begin
+      residual_i_vec = s1_to_s2_residue_i;
+      residual_q_vec = s1_to_s2_residue_q;
+    end else if (input_delay_valid) begin
       for (integer lane = 0; lane < CHANNELS; lane = lane + 1) begin
         logic i_bit, q_bit;
         logic signed [W-1:0] i_qcode, q_qcode;
@@ -120,6 +134,8 @@ module tid32_mash11_fs4_multipa_tx #(
       input_delay_valid <= 1'b0;
       s1_to_s2_valid <= 1'b0;
       s1_to_s2_data <= '0;
+      s1_to_s2_residue_i <= '0;
+      s1_to_s2_residue_q <= '0;
       for (d = 0; d < STAGE_DELAY_WORDS; d = d + 1) begin
         i_delay[d] <= '0;
         q_delay[d] <= '0;
@@ -138,6 +154,8 @@ module tid32_mash11_fs4_multipa_tx #(
         input_delay_valid <= 1'b1;
         s1_to_s2_valid <= 1'b1;
         s1_to_s2_data <= s1_data;
+        s1_to_s2_residue_i <= s1_residue_i;
+        s1_to_s2_residue_q <= s1_residue_q;
         s1_delay[0] <= s1_data;
         for (d = 1; d < STAGE_DELAY_WORDS; d = d + 1)
           s1_delay[d] <= s1_delay[d-1];
@@ -169,11 +187,11 @@ module tid32_mash11_fs4_multipa_tx #(
           pa_stage2_data_reg <= RESET_STAGE2_WORD;
           reset_phase_words <= reset_phase_words + 1'b1;
           if (output_fifo_count == 0) begin
-            output_fifo_s1[0] <= s1_delay[STAGE_DELAY_WORDS-1];
+            output_fifo_s1[0] <= aligned_q1;
             output_fifo_s2[0] <= s2_data;
             output_fifo_count <= 1;
           end else begin
-            output_fifo_s1[1] <= s1_delay[STAGE_DELAY_WORDS-1];
+            output_fifo_s1[1] <= aligned_q1;
             output_fifo_s2[1] <= s2_data;
             output_fifo_count <= 2;
           end
@@ -183,12 +201,12 @@ module tid32_mash11_fs4_multipa_tx #(
           pa_stage1_data_reg <= output_fifo_s1[0];
           pa_stage2_data_reg <= output_fifo_s2[0];
           if (output_fifo_count == 1) begin
-            output_fifo_s1[0] <= s1_delay[STAGE_DELAY_WORDS-1];
+            output_fifo_s1[0] <= aligned_q1;
             output_fifo_s2[0] <= s2_data;
           end else begin
             output_fifo_s1[0] <= output_fifo_s1[1];
             output_fifo_s2[0] <= output_fifo_s2[1];
-            output_fifo_s1[1] <= s1_delay[STAGE_DELAY_WORDS-1];
+            output_fifo_s1[1] <= aligned_q1;
             output_fifo_s2[1] <= s2_data;
           end
         end

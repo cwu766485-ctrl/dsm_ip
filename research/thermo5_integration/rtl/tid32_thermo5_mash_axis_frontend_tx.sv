@@ -11,7 +11,8 @@ module tid32_thermo5_mash_axis_frontend_tx #(
   parameter int INTERP_TAPS = 2,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
   parameter logic [15:0] CONFIG_ID = 16'h0000,
-  parameter logic [15:0] RESET_EPOCH = 16'h0000
+  parameter logic [15:0] RESET_EPOCH = 16'h0000,
+  parameter bit USE_ACCUMULATOR_RESIDUE = 1'b1
 ) (
   input  wire logic                           s_axis_aclk,
   input  wire logic                           s_axis_aresetn,
@@ -95,7 +96,8 @@ module tid32_thermo5_mash_axis_frontend_tx #(
   );
 
   thermo5_unified_dsm_backend #(
-    .W(W), .CHANNELS(32), .STEP(5120), .DSM_ARCH(2)
+    .W(W), .CHANNELS(32), .STEP(5120), .DSM_ARCH(2),
+    .MASH_USE_ACCUMULATOR_RESIDUE(USE_ACCUMULATOR_RESIDUE)
   ) u_mash_backend (
     .clk(core_clk), .rst_n(core_aresetn), .stop_req(1'b0), .drain_done(),
     .in_valid(pre_valid), .in_ready(pre_ready),

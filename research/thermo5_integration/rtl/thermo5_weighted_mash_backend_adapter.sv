@@ -9,7 +9,8 @@ module thermo5_weighted_mash_backend_adapter #(
   parameter int W = 16,
   parameter int CHANNELS = 32,
   parameter int CORE_LATENCY = 6,
-  parameter int FIFO_DEPTH = 64
+  parameter int FIFO_DEPTH = 64,
+  parameter bit USE_ACCUMULATOR_RESIDUE = 1'b0
 ) (
   input  wire logic clk,
   input  wire logic rst_n,
@@ -82,7 +83,8 @@ module thermo5_weighted_mash_backend_adapter #(
                       (core_pending_count == 0) && (fifo_count == 0) &&
                       !encoder_valid;
 
-  tid32_mash11_fs4_multipa_tx #(.W(W), .CHANNELS(CHANNELS)) u_core (
+  tid32_mash11_fs4_multipa_tx #(.W(W), .CHANNELS(CHANNELS),
+    .USE_ACCUMULATOR_RESIDUE(USE_ACCUMULATOR_RESIDUE)) u_core (
     .clk(clk), .rst_n(rst_n), .in_valid(core_in_valid), .in_ready(),
     .in_i_poly_vec(in_i_poly_vec), .in_q_poly_vec(in_q_poly_vec),
     .pa_valid(core_valid), .pa_stage1_data(core_s1), .pa_stage2_data(core_s2)

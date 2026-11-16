@@ -3,7 +3,8 @@
 
 module tb_tid32_thermo5_mash_axis_qam #(
   parameter int SOURCE_BEATS = 3004,
-  parameter int EXPECTED_WORDS = 5257
+  parameter int EXPECTED_WORDS = 5257,
+  parameter bit USE_ACCUMULATOR_RESIDUE = 1'b0
 );
   localparam int W = 16;
   logic s_clk = 1'b0, core_clk = 1'b0;
@@ -25,13 +26,105 @@ module tb_tid32_thermo5_mash_axis_qam #(
   integer pa0_fd, pa1_fd;
   string pa0_path, pa1_path;
   logic signed [15:0] c1_re;
+  // Optional passive root-cause probes. All observations use pre-NBA handshake
+  // values, matching the receiving sequential logic at this clock edge.
+  string audit_dir, vcd_path;
+  integer pre_fd=0, stage_fd=0, pair_fd=0, event_fd=0, source_fd=0, residual_fd=0, stage2_fd=0;
+  integer pre_id=0, stage_id=0, pair_id=0, audit_cycle=0, source_id=0, residual_id=0, stage2_id=0;
+  initial begin
+    if ($value$plusargs("audit_dir=%s", audit_dir)) begin
+      pre_fd=$fopen({audit_dir,"/pre_words.csv"},"w");
+      stage_fd=$fopen({audit_dir,"/stage1_words.csv"},"w");
+      pair_fd=$fopen({audit_dir,"/stage_pairs.csv"},"w");
+      event_fd=$fopen({audit_dir,"/events.csv"},"w");
+      source_fd=$fopen({audit_dir,"/source_events.csv"},"w");
+      residual_fd=$fopen({audit_dir,"/residual_words.csv"},"w");
+      stage2_fd=$fopen({audit_dir,"/stage2_words.csv"},"w");
+      if (!pre_fd || !stage_fd || !pair_fd || !event_fd || !source_fd || !residual_fd || !stage2_fd) $fatal(1,"audit open failed");
+      $fdisplay(pre_fd,"id,time_ps,cycle,i_hex,q_hex,frame_start,frame_end,tail,config_id,epoch");
+      $fdisplay(stage_fd,"id,time_ps,cycle,raw_hex");
+      $fdisplay(pair_fd,"id,time_ps,cycle,q1_hex,q2_hex,pa0_hex,pa1_hex,frame_start,frame_end,tail,config_id,epoch");
+      $fdisplay(event_fd,"time_ps,cycle,pre_valid,pre_ready,stage1_valid,pa_valid,pa_ready");
+      $fdisplay(source_fd,"id,time_ps,frame_start,last");
+      $fdisplay(residual_fd,"id,time_ps,i_hex,q_hex,x_i_hex,x_q_hex,q1_hex");
+      $fdisplay(stage2_fd,"id,time_ps,cycle,raw_hex");
+    end
+    if ($value$plusargs("vcd=%s", vcd_path)) begin
+      $dumpfile(vcd_path);
+      $dumpvars(0, core_clk, core_rst_n, s_clk, s_rst_n, s_valid, s_ready,
+        dut.pre_valid, dut.pre_ready, dut.pre_i_vec, dut.pre_q_vec,
+        dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_valid,
+        dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_data,
+        dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_to_s2_valid,
+        dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.residual_i_vec,
+        dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.residual_q_vec,
+        pa_valid, pa_ready, pa0, pa1);
+    end
+  end
+  wire [31:0] dpd_saturations[0:15];
+  wire [31:0] dpd_samples[0:15];
+  for(genvar probe_lane=0;probe_lane<16;probe_lane=probe_lane+1) begin : g_audit_dpd
+    assign dpd_saturations[probe_lane] =
+      dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[probe_lane].u_dpd.saturation_count;
+    assign dpd_samples[probe_lane] =
+      dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[probe_lane].u_dpd.sample_count;
+  end
+  always @(posedge s_clk) begin
+    if(s_rst_n && source_fd && s_valid && s_ready) begin
+      $fdisplay(source_fd,"%0d,%0.0f,%0b,%0b",source_id,$realtime*1000,s_frame_start,s_last);
+      source_id=source_id+1;
+    end
+  end
+  always @(posedge core_clk) begin
+    audit_cycle=audit_cycle+1;
+    if (core_rst_n && pre_fd) begin
+      $fdisplay(event_fd,"%0.0f,%0d,%0b,%0b,%0b,%0h,%0h",$realtime*1000,audit_cycle,
+        dut.pre_valid,dut.pre_ready,
+        dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_valid,pa_valid,pa_ready);
+      if (dut.pre_valid && dut.pre_ready) begin
+        $fdisplay(pre_fd,"%0d,%0.0f,%0d,%0128h,%0128h,%0b,%0b,%0b,%0d,%0d",
+          pre_id,$realtime*1000,audit_cycle,dut.pre_i_vec,dut.pre_q_vec,
+          dut.pre_frame_start,dut.pre_frame_end,dut.pre_tail,dut.pre_config_id,dut.pre_reset_epoch);
+        pre_id=pre_id+1;
+      end
+      if (dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_valid) begin
+        $fdisplay(stage_fd,"%0d,%0.0f,%0d,%016h",stage_id,$realtime*1000,audit_cycle,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_data);
+        stage_id=stage_id+1;
+      end
+      if (dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_to_s2_valid &&
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s2_in_ready) begin
+        $fdisplay(residual_fd,"%0d,%0.0f,%0128h,%0128h,%0128h,%0128h,%016h",residual_id,$realtime*1000,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.residual_i_vec,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.residual_q_vec,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.i_delay[34],
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.q_delay[34],
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s1_to_s2_data);
+        residual_id=residual_id+1;
+      end
+      if (dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s2_valid) begin
+        $fdisplay(stage2_fd,"%0d,%0.0f,%0d,%016h",stage2_id,$realtime*1000,audit_cycle,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.u_core.s2_data);
+        stage2_id=stage2_id+1;
+      end
+      if ((&pa_valid) && (&pa_ready)) begin
+        $fdisplay(pair_fd,"%0d,%0.0f,%0d,%016h,%016h,%016h,%016h,%0b,%0b,%0b,%0d,%0d",
+          pair_id,$realtime*1000,audit_cycle,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.out_stage1_data,
+          dut.u_mash_backend.g_weighted_mash.u_mash_adapter.out_stage2_data,
+          pa0,pa1,frame_start,frame_end,tail,config_id,reset_epoch);
+        pair_id=pair_id+1;
+      end
+    end
+  end
 
   always #4 s_clk = ~s_clk;
   always #2.285714 core_clk = ~core_clk;
 
   tid32_thermo5_mash_axis_frontend_tx #(
     .W(W), .GAIN_W(16), .DPD_MAX_TAPS(1), .INTERP_TAPS(2),
-    .FPGA_USE_XPM_FIFO(1'b0), .CONFIG_ID(16'h0042), .RESET_EPOCH(16'h0001)
+    .FPGA_USE_XPM_FIFO(1'b0), .CONFIG_ID(16'h0042), .RESET_EPOCH(16'h0001),
+    .USE_ACCUMULATOR_RESIDUE(USE_ACCUMULATOR_RESIDUE)
   ) dut (
     .s_axis_aclk(s_clk), .s_axis_aresetn(s_rst_n),
     .s_axis_tvalid(s_valid), .s_axis_tready(s_ready),
@@ -53,8 +146,13 @@ module tb_tid32_thermo5_mash_axis_qam #(
   initial begin
     $readmemh("axis_i_samples.mem", i_samples);
     $readmemh("axis_q_samples.mem", q_samples);
-    $readmemh("expected_mash_pa0.mem", expected_pa0);
-    $readmemh("expected_mash_pa1.mem", expected_pa1);
+    if (USE_ACCUMULATOR_RESIDUE) begin
+      $readmemh("corrected_expected_pa0.mem", expected_pa0);
+      $readmemh("corrected_expected_pa1.mem", expected_pa1);
+    end else begin
+      $readmemh("expected_mash_pa0.mem", expected_pa0);
+      $readmemh("expected_mash_pa1.mem", expected_pa1);
+    end
     if (!$value$plusargs("pa0=%s", pa0_path)) $fatal(1,"missing +pa0=<path>");
     if (!$value$plusargs("pa1=%s", pa1_path)) $fatal(1,"missing +pa1=<path>");
     pa0_fd=$fopen(pa0_path,"w");
@@ -91,6 +189,8 @@ module tb_tid32_thermo5_mash_axis_qam #(
         accepted,SOURCE_BEATS,produced,EXPECTED_WORDS,errors,core_underflow,
         core_protocol_error,overflow_error);
     $display("THERMO5_MASH_AXIS_QAM_BITTRUE_PASS source_beats=%0d pa_words=%0d II=1",accepted,produced);
+    for(integer probe=0;probe<16;probe=probe+1)
+      $display("DPD_COUNTER lane=%0d samples=%0d saturations=%0d",probe,dpd_samples[probe],dpd_saturations[probe]);
     $fclose(pa0_fd); $fclose(pa1_fd);
     $finish;
   end

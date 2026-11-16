@@ -32,7 +32,15 @@ module tid32_cartesian_fs4_gt_tx #(
   input  wire logic signed [CHANNELS*W-1:0]    in_q_poly_vec,
   output wire logic                            gt_valid,
   input  wire logic                            gt_ready,
-  output wire logic [2*CHANNELS-1:0]           gt_data
+  output wire logic [2*CHANNELS-1:0]           gt_data,
+  // Centered fractional accumulator residues, sampled at the same raw-word
+  // boundary as gt_data. These are the MASH error states, not x-q.
+  output logic signed [CHANNELS*W-1:0]        gt_residue_i_vec,
+  output logic signed [CHANNELS*W-1:0]        gt_residue_q_vec,
+  // Optional companion transaction follows the same accepted-sample delay
+  // and output boundary as the quantizer, including bubbles.
+  input wire logic [2*CHANNELS-1:0]           in_companion_data,
+  output logic [2*CHANNELS-1:0]               gt_companion_data
 );
   logic signed [W:0] a_i [0:CHANNELS-1][0:CHANNELS-1];
   logic signed [W:0] a_q [0:CHANNELS-1][0:CHANNELS-1];
@@ -46,6 +54,7 @@ module tid32_cartesian_fs4_gt_tx #(
   logic enable;
   integer p;
   integer q;
+  logic [2*CHANNELS-1:0] companion_pipe[0:CHANNELS];
 
   initial begin
     if (CHANNELS < 2 || (CHANNELS % 2) != 0) begin
@@ -55,6 +64,28 @@ module tid32_cartesian_fs4_gt_tx #(
 
   assign in_ready = tid_ready;
   assign enable = in_valid && in_ready;
+
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      gt_residue_i_vec <= '0;
+      gt_residue_q_vec <= '0;
+      gt_companion_data <= '0;
+      for (integer k=0;k<=CHANNELS;k=k+1) companion_pipe[k] <= '0;
+    end else begin
+      if (enable) begin
+        companion_pipe[0] <= in_companion_data;
+        for (integer k=1;k<=CHANNELS;k=k+1) companion_pipe[k] <= companion_pipe[k-1];
+      end
+      if (tid_ready && tid_valid) begin
+        gt_companion_data <= companion_pipe[CHANNELS];
+        for (integer lane=0; lane<CHANNELS; lane=lane+1) begin
+          // r in [0,2^W-1] -> signed r-2^(W-1), with no saturation.
+          gt_residue_i_vec[lane*W +: W] <= v_i[lane][W-1:0] ^ {1'b1,{(W-1){1'b0}}};
+          gt_residue_q_vec[lane*W +: W] <= v_q[lane][W-1:0] ^ {1'b1,{(W-1){1'b0}}};
+        end
+      end
+    end
+  end
 
   always_comb begin
     for (integer lane = 0; lane < CHANNELS; lane = lane + 1) begin

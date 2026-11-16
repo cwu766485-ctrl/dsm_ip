@@ -9,7 +9,8 @@ module thermo5_unified_dsm_backend #(
   parameter int STEP = 5120,
   parameter int DSM_ARCH = 0,
   parameter int MASH_FIFO_DEPTH = 64,
-  parameter int META_DEPTH = 16
+  parameter int META_DEPTH = 16,
+  parameter bit MASH_USE_ACCUMULATOR_RESIDUE = 1'b0
 ) (
   input  wire logic clk,
   input  wire logic rst_n,
@@ -47,7 +48,8 @@ module thermo5_unified_dsm_backend #(
       logic mash_frame_start, mash_frame_end, mash_tail;
 
       thermo5_weighted_mash_backend_adapter #(
-        .W(W), .CHANNELS(CHANNELS), .FIFO_DEPTH(MASH_FIFO_DEPTH)
+        .W(W), .CHANNELS(CHANNELS), .FIFO_DEPTH(MASH_FIFO_DEPTH),
+        .USE_ACCUMULATOR_RESIDUE(MASH_USE_ACCUMULATOR_RESIDUE)
       ) u_mash_adapter (
         .clk(clk), .rst_n(rst_n), .stop_req(stop_req), .drain_done(mash_drain_done),
         .in_valid(in_valid), .in_ready(mash_in_ready),

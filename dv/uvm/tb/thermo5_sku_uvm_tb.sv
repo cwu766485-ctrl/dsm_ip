@@ -44,7 +44,9 @@ module thermo5_sku_uvm_tb;
       $dumpvars(0,dut.u_frontend.g_interp1_centered.u_interp_1);
       $dumpvars(0,dut.u_frontend.g_interp2_centered.u_interp_2);
       $dumpvars(0,dut.u_frontend.g_memory_dpd.u_memory_dpd);
+`ifdef THERMO5_AXIL_CONTROL
       $dumpvars(0,dut.u_cfg);
+`endif
     end
   end
 `endif
@@ -143,20 +145,20 @@ module thermo5_sku_uvm_tb;
   generate
     if (USE_TIDSM_ORDER == 2) begin : g_ef2_observe
       for (genvar b = 0; b < 4; b = b + 1) begin : g_branch_observe
-        wire ef2_valid = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.in_valid;
-        wire ef2_ready = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.in_ready;
-        wire ef2_pos = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.clamp_positive_comb;
-        wire ef2_neg = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.clamp_negative_comb;
-        wire [19:0] e1i = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err1_i_q;
-        wire [19:0] e2i = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err2_i_q;
-        wire [19:0] e1q = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err1_q_q;
-        wire [19:0] e2q = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err2_q_q;
+        wire ef2_valid = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.in_valid;
+        wire ef2_ready = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.in_ready;
+        wire ef2_pos = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.clamp_positive_comb;
+        wire ef2_neg = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.clamp_negative_comb;
+        wire [19:0] e1i = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.err1_i_q;
+        wire [19:0] e2i = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.err2_i_q;
+        wire [19:0] e1q = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.err1_q_q;
+        wire [19:0] e2q = dut.u_frontend.g_legacy_tid_backend.u_tid.g_branch[b].g_order2.u_tid.err2_q_q;
         assign bus.ef2_pos_clamp_event[b] = ef2_valid && ef2_ready && ef2_pos;
         assign bus.ef2_neg_clamp_event[b] = ef2_valid && ef2_ready && ef2_neg;
         assign bus.ef2_pos_clamp_candidate[b] =
-          dut.u_frontend.u_tid.in_valid && ef2_pos;
+          dut.u_frontend.g_legacy_tid_backend.u_tid.in_valid && ef2_pos;
         assign bus.ef2_neg_clamp_candidate[b] =
-          dut.u_frontend.u_tid.in_valid && ef2_neg;
+          dut.u_frontend.g_legacy_tid_backend.u_tid.in_valid && ef2_neg;
         assign bus.ef2_state_at_rail[b] =
           (e1i == 20'sh7ffff) || (e1i == -20'sh80000) ||
           (e2i == 20'sh7ffff) || (e2i == -20'sh80000) ||
@@ -170,7 +172,7 @@ module thermo5_sku_uvm_tb;
         assign bus.ef2_err2_q[b] = e2q;
       end
       assign bus.ef2_tidsm_stalled =
-        dut.u_frontend.u_tid.in_valid && !dut.u_frontend.u_tid.in_ready &&
+        dut.u_frontend.g_legacy_tid_backend.u_tid.in_valid && !dut.u_frontend.g_legacy_tid_backend.u_tid.in_ready &&
         (bus.pa_valid == 4'hf) && (bus.pa_ready != 4'hf);
       assign bus.ef2_clamp_stalled =
         (|bus.ef2_pos_clamp_candidate || |bus.ef2_neg_clamp_candidate) &&
