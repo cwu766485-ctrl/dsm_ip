@@ -1,0 +1,975 @@
+{
+  "date_sgt": "2026-11-17",
+  "implementation_commit": "1fd679d8f65cf51a710338eaffe8b446af2071b2",
+  "snapshot_commit": "7974508",
+  "status": "QAM_ROOT_CAUSES_FIXED_P5_OPEN",
+  "preservation": {
+    "checked_files": 5478,
+    "changed_original_files": []
+  },
+  "receiver_smoke": {
+    "dc_i": {
+      "complex_error": 6.045535659088776e-13
+    },
+    "dc_q": {
+      "complex_error": 6.025150392086449e-13
+    },
+    "tone": {
+      "positive_frequency_hz": 40000004.389514044
+    },
+    "impulse": {
+      "peak_source_sample": 4096
+    },
+    "qam256": {
+      "qam_symbols": 1168,
+      "global_complex_equalizer": [
+        0.06512094030757405,
+        -2.0745953441350992e-05
+      ],
+      "raw_evm_percent": 1435.2510674506407,
+      "evm_percent": 2.2235712908292093,
+      "sndr_db": 33.05897883797397,
+      "symbol_errors": 0,
+      "symbol_error_rate": 0.0,
+      "uncoded_bit_errors_natural_binary": 0,
+      "uncoded_ber_natural_binary": 0.0,
+      "gain_corrected_error_energy": 0.56895160863945,
+      "reference_energy": 1150.7294117647057
+    },
+    "contract": {
+      "raw_mapping": "I0,-Q0,-I1,Q1; bit0 first",
+      "ddc_lo": [
+        "(1+0j)",
+        "(-0-1j)",
+        "(-1+0j)",
+        "1j"
+      ],
+      "decimation_phases": [
+        0,
+        0
+      ],
+      "fir_delay": "centered offline FIRs compensate group delay",
+      "fft_window": "source data_start + CP, zero DSM offset",
+      "ideal_input": "unquantized digital RF samples; a binary ideal RF signal would require quantization"
+    }
+  },
+  "stage1_complete": {
+    "input_samples": 168224,
+    "stage1_delay_words": 32,
+    "source_sha256": {
+      "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+      "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+      "research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv": "9006715ffe7a12db92298ab83d0e6b5a523a6ab446a829a5bef4a10db0654824",
+      "research/thermo5_integration/verif/tb/tb_stage1_scalar_replay.sv": "fe5f3fecad784dfd203400e42533bd6e7dc2c0f7d78b4020c0fcc045b7b44084"
+    },
+    "runs": {
+      "0": {
+        "words": 5289,
+        "input_samples_compared": 168224,
+        "bits_compared_including_reset_fill": 338496,
+        "total_mismatch": 0,
+        "first_mismatch": null,
+        "integrated_prefix_mismatches": 0,
+        "flush_zero_words": 32,
+        "commands": [
+          [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_stage1_scalar_replay",
+            "-Ptb_stage1_scalar_replay.WORDS=5257",
+            "-Ptb_stage1_scalar_replay.BUBBLES=0",
+            "-o",
+            "${REPO}/runs/mash_final_stage1_complete/bubbles0/stage1.vvp",
+            "${REPO}/rtl/gt/gt_tx_user_bridge.sv",
+            "${REPO}/rtl/gt/gt_tx_raw64_boundary.sv",
+            "${REPO}/research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv",
+            "${REPO}/research/thermo5_integration/verif/tb/tb_stage1_scalar_replay.sv"
+          ],
+          [
+            "vvp",
+            "${REPO}/runs/mash_final_stage1_complete/bubbles0/stage1.vvp"
+          ]
+        ],
+        "vcd_sha256": "65c4100812bd1f7e92b14335f48a061c8d8f986b303bd5f1138d05bccc4cd5eb"
+      },
+      "1": {
+        "words": 5289,
+        "input_samples_compared": 168224,
+        "bits_compared_including_reset_fill": 338496,
+        "total_mismatch": 0,
+        "first_mismatch": null,
+        "integrated_prefix_mismatches": 0,
+        "flush_zero_words": 32,
+        "commands": [
+          [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_stage1_scalar_replay",
+            "-Ptb_stage1_scalar_replay.WORDS=5257",
+            "-Ptb_stage1_scalar_replay.BUBBLES=1",
+            "-o",
+            "${REPO}/runs/mash_final_stage1_complete/bubbles1/stage1.vvp",
+            "${REPO}/rtl/gt/gt_tx_user_bridge.sv",
+            "${REPO}/rtl/gt/gt_tx_raw64_boundary.sv",
+            "${REPO}/research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv",
+            "${REPO}/research/thermo5_integration/verif/tb/tb_stage1_scalar_replay.sv"
+          ],
+          [
+            "vvp",
+            "${REPO}/runs/mash_final_stage1_complete/bubbles1/stage1.vvp"
+          ]
+        ],
+        "vcd_sha256": "f19a9a2d2e47d02ffc164581211a207a4f71bd476dc122c074d715d5ddacffd1"
+      }
+    }
+  },
+  "baseline_isolation": {
+    "status": "P0_P1_P2_COMPLETE_P3_P4_PENDING",
+    "p0": {
+      "dc_i": {
+        "max_complex_error": 7.556864037043229e-13
+      },
+      "dc_q": {
+        "max_complex_error": 5.967052128760198e-13
+      },
+      "tone": {
+        "measured_frequency_hz": 39999999.89922561,
+        "expected_frequency_hz": 40000000.0
+      },
+      "impulse": {
+        "peak_source_sample": 8192,
+        "expected_source_sample": 8192
+      },
+      "qam256": {
+        "qam_symbols": 4672,
+        "global_complex_equalizer": [
+          0.06581626508421863,
+          -4.85340857762849e-06
+        ],
+        "raw_evm_percent": 1418.9898004200425,
+        "evm_percent": 2.3542864328090443,
+        "sndr_db": 32.56281400214731,
+        "symbol_errors": 0,
+        "symbol_error_rate": 0.0,
+        "uncoded_bit_errors_natural_binary": 0,
+        "uncoded_ber_natural_binary": 0.0,
+        "gain_corrected_error_energy": 2.586663760689295,
+        "reference_energy": 4666.823529411764
+      }
+    },
+    "p1": {
+      "samples_captured": 168224,
+      "raw_bits_compared": 336448,
+      "total_mismatch": 0,
+      "first_mismatch": null,
+      "algorithmic_delay_words": 32,
+      "valid_source_samples_compared": 167200,
+      "unemitted_tail_samples": 1024,
+      "unshifted_first_mismatch": 2,
+      "first_output_time_ps": "258318",
+      "last_output_time_ps": "24288750",
+      "input_bubbles": 45,
+      "stage1_output_bubbles": 45,
+      "word_transport_cycles": [
+        2
+      ]
+    },
+    "isolation": {
+      "A_ideal_fs4": {
+        "fixed_contract_source_offset": 0,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06581626508421863,
+            -4.85340857762849e-06
+          ],
+          "raw_evm_percent": 1418.9898004200425,
+          "evm_percent": 2.3542864328090443,
+          "sndr_db": 32.56281400214731,
+          "symbol_errors": 0,
+          "symbol_error_rate": 0.0,
+          "uncoded_bit_errors_natural_binary": 0,
+          "uncoded_ber_natural_binary": 0.0,
+          "gain_corrected_error_energy": 2.586663760689295,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06581626508421863,
+            -4.85340857762849e-06
+          ],
+          "raw_evm_percent": 1418.9898004200425,
+          "evm_percent": 2.3542864328090443,
+          "sndr_db": 32.56281400214731,
+          "symbol_errors": 0,
+          "symbol_error_rate": 0.0,
+          "uncoded_bit_errors_natural_binary": 0,
+          "uncoded_ber_natural_binary": 0.0,
+          "gain_corrected_error_energy": 2.586663760689295,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.999999999999991,
+          "diagnostic_lag_source_samples": 0
+        }
+      },
+      "B_scalar_stage1": {
+        "fixed_contract_source_offset": 0,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06494118663513046,
+            -8.664326269460463e-05
+          ],
+          "raw_evm_percent": 1429.4945824837555,
+          "evm_percent": 12.002773467748742,
+          "sndr_db": 18.41436780810276,
+          "symbol_errors": 2028,
+          "symbol_error_rate": 0.4340753424657534,
+          "uncoded_bit_errors_natural_binary": 4320,
+          "uncoded_ber_natural_binary": 0.11558219178082192,
+          "gain_corrected_error_energy": 67.23332629622257,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06494118663513046,
+            -8.664326269460463e-05
+          ],
+          "raw_evm_percent": 1429.4945824837555,
+          "evm_percent": 12.002773467748742,
+          "sndr_db": 18.41436780810276,
+          "symbol_errors": 2028,
+          "symbol_error_rate": 0.4340753424657534,
+          "uncoded_bit_errors_natural_binary": 4320,
+          "uncoded_ber_natural_binary": 0.11558219178082192,
+          "gain_corrected_error_energy": 67.23332629622257,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.9783835724204138,
+          "diagnostic_lag_source_samples": 0
+        }
+      },
+      "C_rtl_stage1": {
+        "fixed_contract_source_offset": 256,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.000464326079014396,
+            0.00037199678619544613
+          ],
+          "raw_evm_percent": 1531.4424767632918,
+          "evm_percent": 99.99586279288009,
+          "sndr_db": 0.00035936067833295787,
+          "symbol_errors": 4647,
+          "symbol_error_rate": 0.9946489726027398,
+          "uncoded_bit_errors_natural_binary": 18634,
+          "uncoded_ber_natural_binary": 0.4985552226027397,
+          "gain_corrected_error_energy": 4666.437385089059,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06494118663512921,
+            -8.664326269466792e-05
+          ],
+          "raw_evm_percent": 1429.4945824837785,
+          "evm_percent": 12.002773467749147,
+          "sndr_db": 18.41436780810247,
+          "symbol_errors": 2028,
+          "symbol_error_rate": 0.4340753424657534,
+          "uncoded_bit_errors_natural_binary": 4320,
+          "uncoded_ber_natural_binary": 0.11558219178082192,
+          "gain_corrected_error_energy": 67.2333262962271,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.9771177159433397,
+          "diagnostic_lag_source_samples": 256
+        }
+      },
+      "D_rtl_weighted_mash": {
+        "fixed_contract_source_offset": 528,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            -0.0006503455443743008,
+            0.00028552441655948797
+          ],
+          "raw_evm_percent": 1531.406496842838,
+          "evm_percent": 99.99411723081391,
+          "sndr_db": 0.0005109858693722681,
+          "symbol_errors": 4657,
+          "symbol_error_rate": 0.9967893835616438,
+          "uncoded_bit_errors_natural_binary": 18736,
+          "uncoded_ber_natural_binary": 0.5012842465753424,
+          "gain_corrected_error_energy": 4666.274468649113,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06486151955486545,
+            -0.00010207605935453094
+          ],
+          "raw_evm_percent": 1429.2928511824352,
+          "evm_percent": 13.145892316703856,
+          "sndr_db": 17.624198590440344,
+          "symbol_errors": 2149,
+          "symbol_error_rate": 0.4599743150684932,
+          "uncoded_bit_errors_natural_binary": 4709,
+          "uncoded_ber_natural_binary": 0.12598994006849315,
+          "gain_corrected_error_energy": 80.6494703898888,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.9739137357537211,
+          "diagnostic_lag_source_samples": 528
+        }
+      }
+    },
+    "timing_contract": {
+      "source_guard_samples": 2576,
+      "lane_samples_per_word": 32,
+      "stage1_algorithmic_words": 32,
+      "mash_output_algorithmic_words": 66,
+      "stage_alignment_register_entries": 35,
+      "encoder_cycles": 1,
+      "raw_bits_per_complex_sample": 2,
+      "stage1_raw_bit_offset": 2048,
+      "mash_raw_bit_offset": 4224,
+      "fir0_group_delay_raw_samples": 2048,
+      "fir1_group_delay_7g_samples": 2048,
+      "fir_delay_policy": "Both existing FIR functions explicitly compensate group delay before decimation.",
+      "decimation_phases": [
+        0,
+        0
+      ],
+      "cp_samples": 512,
+      "fft_samples": 4096,
+      "acceptance_offset_policy": "fixed recurrence-derived delay; no diagnostic correlation result enters metrics"
+    },
+    "input_sha256": {
+      "pre_words.csv": "16293e7099440d432a1b671b096ab60d9e95c384497070803202423984b18cab",
+      "stage1_words.csv": "79a6d549932b30a259ae32e253c96ee145ed08106cf54d6d8d073426a7d9d575",
+      "stage_pairs.csv": "84a356483fd181e810258888379bee55352dacfc7f2a5ad058d04834ba239ff1",
+      "audit.vcd": "5e3ec73a0543923a9027b2223219602731d9019f71cf0f8f5414474d0219b626",
+      "stimulus.json": "8ac5543e0203d9c14b0b83cb2809e391628c079dd24f6d855993b2ce41c6be81"
+    }
+  },
+  "corrected_isolation": {
+    "status": "P0_P1_P2_COMPLETE_P3_P4_PENDING",
+    "p0": {
+      "dc_i": {
+        "max_complex_error": 7.556864037043229e-13
+      },
+      "dc_q": {
+        "max_complex_error": 5.967052128760198e-13
+      },
+      "tone": {
+        "measured_frequency_hz": 39999999.89922561,
+        "expected_frequency_hz": 40000000.0
+      },
+      "impulse": {
+        "peak_source_sample": 8192,
+        "expected_source_sample": 8192
+      },
+      "qam256": {
+        "qam_symbols": 4672,
+        "global_complex_equalizer": [
+          0.06581626508421863,
+          -4.85340857762849e-06
+        ],
+        "raw_evm_percent": 1418.9898004200425,
+        "evm_percent": 2.3542864328090443,
+        "sndr_db": 32.56281400214731,
+        "symbol_errors": 0,
+        "symbol_error_rate": 0.0,
+        "uncoded_bit_errors_natural_binary": 0,
+        "uncoded_ber_natural_binary": 0.0,
+        "gain_corrected_error_energy": 2.586663760689295,
+        "reference_energy": 4666.823529411764
+      }
+    },
+    "p1": {
+      "samples_captured": 168224,
+      "raw_bits_compared": 336448,
+      "total_mismatch": 0,
+      "first_mismatch": null,
+      "algorithmic_delay_words": 32,
+      "valid_source_samples_compared": 167200,
+      "unemitted_tail_samples": 1024,
+      "unshifted_first_mismatch": 2,
+      "first_output_time_ps": "258318",
+      "last_output_time_ps": "24288750",
+      "input_bubbles": 45,
+      "stage1_output_bubbles": 45,
+      "word_transport_cycles": [
+        2
+      ]
+    },
+    "isolation": {
+      "A_ideal_fs4": {
+        "fixed_contract_source_offset": 0,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06581626508421863,
+            -4.85340857762849e-06
+          ],
+          "raw_evm_percent": 1418.9898004200425,
+          "evm_percent": 2.3542864328090443,
+          "sndr_db": 32.56281400214731,
+          "symbol_errors": 0,
+          "symbol_error_rate": 0.0,
+          "uncoded_bit_errors_natural_binary": 0,
+          "uncoded_ber_natural_binary": 0.0,
+          "gain_corrected_error_energy": 2.586663760689295,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06581626508421863,
+            -4.85340857762849e-06
+          ],
+          "raw_evm_percent": 1418.9898004200425,
+          "evm_percent": 2.3542864328090443,
+          "sndr_db": 32.56281400214731,
+          "symbol_errors": 0,
+          "symbol_error_rate": 0.0,
+          "uncoded_bit_errors_natural_binary": 0,
+          "uncoded_ber_natural_binary": 0.0,
+          "gain_corrected_error_energy": 2.586663760689295,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.999999999999991,
+          "diagnostic_lag_source_samples": 0
+        }
+      },
+      "B_scalar_stage1": {
+        "fixed_contract_source_offset": 0,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06494118663513046,
+            -8.664326269460463e-05
+          ],
+          "raw_evm_percent": 1429.4945824837555,
+          "evm_percent": 12.002773467748742,
+          "sndr_db": 18.41436780810276,
+          "symbol_errors": 2028,
+          "symbol_error_rate": 0.4340753424657534,
+          "uncoded_bit_errors_natural_binary": 4320,
+          "uncoded_ber_natural_binary": 0.11558219178082192,
+          "gain_corrected_error_energy": 67.23332629622257,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06494118663513046,
+            -8.664326269460463e-05
+          ],
+          "raw_evm_percent": 1429.4945824837555,
+          "evm_percent": 12.002773467748742,
+          "sndr_db": 18.41436780810276,
+          "symbol_errors": 2028,
+          "symbol_error_rate": 0.4340753424657534,
+          "uncoded_bit_errors_natural_binary": 4320,
+          "uncoded_ber_natural_binary": 0.11558219178082192,
+          "gain_corrected_error_energy": 67.23332629622257,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.9783835724204138,
+          "diagnostic_lag_source_samples": 0
+        }
+      },
+      "C_rtl_stage1": {
+        "fixed_contract_source_offset": 256,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.000464326079014396,
+            0.00037199678619544613
+          ],
+          "raw_evm_percent": 1531.4424767632918,
+          "evm_percent": 99.99586279288009,
+          "sndr_db": 0.00035936067833295787,
+          "symbol_errors": 4647,
+          "symbol_error_rate": 0.9946489726027398,
+          "uncoded_bit_errors_natural_binary": 18634,
+          "uncoded_ber_natural_binary": 0.4985552226027397,
+          "gain_corrected_error_energy": 4666.437385089059,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06494118663512921,
+            -8.664326269466792e-05
+          ],
+          "raw_evm_percent": 1429.4945824837785,
+          "evm_percent": 12.002773467749147,
+          "sndr_db": 18.41436780810247,
+          "symbol_errors": 2028,
+          "symbol_error_rate": 0.4340753424657534,
+          "uncoded_bit_errors_natural_binary": 4320,
+          "uncoded_ber_natural_binary": 0.11558219178082192,
+          "gain_corrected_error_energy": 67.2333262962271,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.9771177159433397,
+          "diagnostic_lag_source_samples": 256
+        }
+      },
+      "D_rtl_weighted_mash": {
+        "fixed_contract_source_offset": 528,
+        "before": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            -0.0006478634041466837,
+            0.0003368436500390481
+          ],
+          "raw_evm_percent": 1521.9305818947637,
+          "evm_percent": 99.99385935280252,
+          "sndr_db": 0.0005333862154868007,
+          "symbol_errors": 4652,
+          "symbol_error_rate": 0.9957191780821918,
+          "uncoded_bit_errors_natural_binary": 18806,
+          "uncoded_ber_natural_binary": 0.5031571061643836,
+          "gain_corrected_error_energy": 4666.25040067267,
+          "reference_energy": 4666.823529411764
+        },
+        "after": {
+          "qam_symbols": 4672,
+          "global_complex_equalizer": [
+            0.06581332031233088,
+            -3.4316410244947113e-06
+          ],
+          "raw_evm_percent": 1418.9894432132637,
+          "evm_percent": 2.5514422572939357,
+          "sndr_db": 31.864285118238985,
+          "symbol_errors": 7,
+          "symbol_error_rate": 0.0014982876712328766,
+          "uncoded_bit_errors_natural_binary": 15,
+          "uncoded_ber_natural_binary": 0.0004013270547945205,
+          "gain_corrected_error_energy": 3.03803565848896,
+          "reference_energy": 4666.823529411764
+        },
+        "correlation": {
+          "peak_normalized_magnitude": 0.9983826841533878,
+          "diagnostic_lag_source_samples": 528
+        }
+      }
+    },
+    "timing_contract": {
+      "source_guard_samples": 2576,
+      "lane_samples_per_word": 32,
+      "stage1_algorithmic_words": 32,
+      "mash_output_algorithmic_words": 66,
+      "stage_alignment_register_entries": 35,
+      "encoder_cycles": 1,
+      "raw_bits_per_complex_sample": 2,
+      "stage1_raw_bit_offset": 2048,
+      "mash_raw_bit_offset": 4224,
+      "fir0_group_delay_raw_samples": 2048,
+      "fir1_group_delay_7g_samples": 2048,
+      "fir_delay_policy": "Both existing FIR functions explicitly compensate group delay before decimation.",
+      "decimation_phases": [
+        0,
+        0
+      ],
+      "cp_samples": 512,
+      "fft_samples": 4096,
+      "acceptance_offset_policy": "fixed recurrence-derived delay; no diagnostic correlation result enters metrics"
+    },
+    "input_sha256": {
+      "pre_words.csv": "16293e7099440d432a1b671b096ab60d9e95c384497070803202423984b18cab",
+      "stage1_words.csv": "79a6d549932b30a259ae32e253c96ee145ed08106cf54d6d8d073426a7d9d575",
+      "stage_pairs.csv": "7687cfd7cdc909fcea973948a331e4f2a81ea139e0d06105132cf0519c41756c",
+      "audit.vcd": "fb966defc4277c0cff9f8b4038fe56f98059134d4171b01309af7b6e0b589c40",
+      "stimulus.json": "8ac5543e0203d9c14b0b83cb2809e391628c079dd24f6d855993b2ce41c6be81"
+    }
+  },
+  "legacy_cancellation": {
+    "pa_reconstruction_total_mismatch": 0,
+    "pa_reconstruction_first_mismatch": null,
+    "q1_delayed_66_words_scalar_mismatches": 0,
+    "stage2_scalar_mismatches": 0,
+    "residual_accumulator_mismatches": 336438,
+    "first_residual_discrepancy": {
+      "transaction_id": 0,
+      "lane": 0,
+      "component": "I",
+      "time_ps": "262890",
+      "rtl_stage2_input": 32767,
+      "independent_accumulator_residue_centered": -32768,
+      "delayed_x": 0,
+      "q1": -1
+    },
+    "hypothetical_x_minus_q1_saturations": 139878,
+    "metadata_mismatches": 0,
+    "correct_residue_requested": false
+  },
+  "corrected_cancellation": {
+    "pa_reconstruction_total_mismatch": 0,
+    "pa_reconstruction_first_mismatch": null,
+    "q1_delayed_66_words_scalar_mismatches": 0,
+    "stage2_scalar_mismatches": 0,
+    "residual_accumulator_mismatches": 0,
+    "first_residual_discrepancy": null,
+    "hypothetical_x_minus_q1_saturations": 139878,
+    "metadata_mismatches": 0,
+    "correct_residue_requested": true
+  },
+  "corrected_8_symbols": {
+    "source": "captured RTL PA0/PA1 words; independent Python receiver",
+    "qam_order": 256,
+    "seed": 281001,
+    "symbols": 8,
+    "source_rate_hz": 1750000000.0,
+    "raw_bit_rate_per_pa_hz": 14000000000.0,
+    "fs4_carrier_hz": 3500000000.0,
+    "occupied_bandwidth_hz": 250000000.0,
+    "receiver_filter_taps": 4097,
+    "latency_cropped_7g_complex_samples": 0,
+    "mash_algorithmic_delay_words": 66,
+    "fft_window_source_sample_offset": 528,
+    "unaligned_evm_percent": 99.99385935280252,
+    "pa_words": 5257,
+    "raw_rf_samples_after_latency_crop": 336448,
+    "ii": 1,
+    "evm_percent": 2.5514422572939357,
+    "sndr_db": 31.864285118238985,
+    "uncoded_ber_natural_binary": 0.0004013270547945205,
+    "bit_errors": 15,
+    "bits_compared": 37376,
+    "ber_95pct_upper_bound_if_zero": null,
+    "adjacent_band_proxy_dbc": -28.05984075860942,
+    "psd_sample_rate_hz": 7000000000.0,
+    "psd_fft_size": 65536,
+    "latency_note": "First valid PA token includes algorithmic reset fill. CP/FFT starts at source guard + 528 source samples (66 accepted 32-lane words); transport and FIR delays are accounted separately. No lag search is used.",
+    "max_output_interval_cycles": 1,
+    "output_bubble_cycles": 0,
+    "first_token_transport_cycles": 8,
+    "dpd_saturation_count": 0,
+    "dpd_lane_samples": [
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258,
+      5258
+    ],
+    "bittrue_mismatch": 0,
+    "overflow_error": 0,
+    "digital_qam_gate": "PASS"
+  },
+  "fixed_seeds_32_symbols": {
+    "symbols_per_seed": 32,
+    "rms_drive": 0.09,
+    "runs": [
+      {
+        "seed": 281001,
+        "evm_percent": 2.5339848012631725,
+        "sndr_db": 31.92391988650484,
+        "bit_errors": 33,
+        "bits": 149504,
+        "status": "PASS",
+        "capture": "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281001",
+        "commands": [
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "prepare",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281001",
+            "--seed",
+            "281001",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/run_mash_capture.py",
+            "--input-run",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281001",
+            "--output",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281001",
+            "--correct-residue"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "evaluate",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281001",
+            "--seed",
+            "281001",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ]
+        ]
+      },
+      {
+        "seed": 281003,
+        "evm_percent": 2.5297575153346257,
+        "sndr_db": 31.93842210453962,
+        "bit_errors": 48,
+        "bits": 149504,
+        "status": "PASS",
+        "capture": "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281003",
+        "commands": [
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "prepare",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281003",
+            "--seed",
+            "281003",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/run_mash_capture.py",
+            "--input-run",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281003",
+            "--output",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281003",
+            "--correct-residue"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "evaluate",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281003",
+            "--seed",
+            "281003",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ]
+        ]
+      },
+      {
+        "seed": 281007,
+        "evm_percent": 2.496493913060913,
+        "sndr_db": 32.05338977004468,
+        "bit_errors": 35,
+        "bits": 149504,
+        "status": "PASS",
+        "capture": "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281007",
+        "commands": [
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "prepare",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281007",
+            "--seed",
+            "281007",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/run_mash_capture.py",
+            "--input-run",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281007",
+            "--output",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281007",
+            "--correct-residue"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "evaluate",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281007",
+            "--seed",
+            "281007",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ]
+        ]
+      },
+      {
+        "seed": 281009,
+        "evm_percent": 2.5315613404553963,
+        "sndr_db": 31.932230901402583,
+        "bit_errors": 30,
+        "bits": 149504,
+        "status": "PASS",
+        "capture": "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281009",
+        "commands": [
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "prepare",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281009",
+            "--seed",
+            "281009",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/run_mash_capture.py",
+            "--input-run",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/source_281009",
+            "--output",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281009",
+            "--correct-residue"
+          ],
+          [
+            "/usr/bin/python3",
+            "${REPO}/research/thermo5_integration/model/thermo5_mash_axis_qam.py",
+            "evaluate",
+            "--run-dir",
+            "${REPO}/runs/mash_final_fixed_seeds_32symbols/capture_281009",
+            "--seed",
+            "281009",
+            "--symbols",
+            "32",
+            "--rms-drive",
+            "0.09"
+          ]
+        ]
+      }
+    ],
+    "total_bits": 598016,
+    "total_bit_errors": 146,
+    "aggregate_ber": 0.000244140625
+  },
+  "raw_rf_psd": {
+    "source": "actual 1:2 bipolar RTL PA pair, before DDC/LPF",
+    "sample_rate_hz": 14000000000.0,
+    "carrier_hz": 3500000000.0,
+    "main_bandwidth_hz": 250000000.0,
+    "fft_size": 65536,
+    "window": "Blackman",
+    "segments": 8,
+    "payload_start_raw_sample": 24832,
+    "left_adjacent_equal_bandwidth_dbc": -19.30796601739215,
+    "right_adjacent_equal_bandwidth_dbc": -19.420347360050396,
+    "total_adjacent_equal_bandwidth_dbc": -16.353493234087843,
+    "note": "Digital sequence measurement; not calibrated RF ACLR or an emissions signoff."
+  },
+  "control_replay": {
+    "scope": "adapter replay of all captured Cartesian OFDM samples; no AXIS STOP interface",
+    "runs": [
+      {
+        "stress": 0,
+        "commands": [
+          [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_mash_control_replay",
+            "-Ptb_mash_control_replay.WORDS=5257",
+            "-Ptb_mash_control_replay.STRESS=0",
+            "-o",
+            "${REPO}/runs/mash_evidence_controls/stress0/controls.vvp",
+            "${REPO}/rtl/gt/gt_tx_user_bridge.sv",
+            "${REPO}/rtl/gt/gt_tx_raw64_boundary.sv",
+            "${REPO}/research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv",
+            "${REPO}/research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_mash11_fs4_multipa_tx.sv",
+            "${REPO}/research/thermo5_integration/rtl/thermo5_weighted_mash_encoder.sv",
+            "${REPO}/research/thermo5_integration/rtl/thermo5_weighted_mash_backend_adapter.sv",
+            "${REPO}/research/thermo5_integration/verif/tb/tb_mash_control_replay.sv"
+          ],
+          [
+            "vvp",
+            "${REPO}/runs/mash_evidence_controls/stress0/controls.vvp"
+          ]
+        ],
+        "returncodes": [
+          0,
+          0
+        ]
+      },
+      {
+        "stress": 1,
+        "commands": [
+          [
+            "iverilog",
+            "-g2012",
+            "-s",
+            "tb_mash_control_replay",
+            "-Ptb_mash_control_replay.WORDS=5257",
+            "-Ptb_mash_control_replay.STRESS=1",
+            "-o",
+            "${REPO}/runs/mash_evidence_controls/stress1/controls.vvp",
+            "${REPO}/rtl/gt/gt_tx_user_bridge.sv",
+            "${REPO}/rtl/gt/gt_tx_raw64_boundary.sv",
+            "${REPO}/research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv",
+            "${REPO}/research/thermo5_weighted_mash/rtl/tx_bandpass_if/tid32_mash11_fs4_multipa_tx.sv",
+            "${REPO}/research/thermo5_integration/rtl/thermo5_weighted_mash_encoder.sv",
+            "${REPO}/research/thermo5_integration/rtl/thermo5_weighted_mash_backend_adapter.sv",
+            "${REPO}/research/thermo5_integration/verif/tb/tb_mash_control_replay.sv"
+          ],
+          [
+            "vvp",
+            "${REPO}/runs/mash_evidence_controls/stress1/controls.vvp"
+          ]
+        ],
+        "returncodes": [
+          0,
+          0
+        ]
+      }
+    ]
+  },
+  "required_checks": {
+    "xsim": "PASS: causal EF1 generic 56-word directed test; see report",
+    "vcs": "PARTIAL: bittrue seed1 PASS; regression stops at BUBBLE_COVERAGE seed2",
+    "matlab_generation": "Files produced, but PowerShell generation wrapper threw on exit-code handling; not counted PASS",
+    "python_reference": "69/69 PASS",
+    "weighted_contract_and_identity": "3/3 PASS"
+  },
+  "limitations": [
+    "P5 dedicated MASH UVM, CDC/RDC/Formal, functional/code coverage remain open.",
+    "VCU118 full-top routed PPA and dual 14-Gb/s GTY were not run.",
+    "Control replay validates transaction PA sequences, not a continuous physical serializer waveform.",
+    "Config ID and frame metadata tests concern static-SKU transaction tokens; dynamic RF-sample configuration alignment is not qualified.",
+    "Raw adjacent leakage is measured digitally; no RF ACLR/emissions target or signoff is claimed.",
+    "Only DPD and corrected MASH residual saturation are checked; total-chain interpolation saturation counters are not instrumented."
+  ]
+}

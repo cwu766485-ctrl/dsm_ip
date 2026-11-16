@@ -1,3 +1,115 @@
+## 2026-11-17 00:15 SGT: Weighted MASH QAM root causes fixed; P5 OPEN
+
+Independent branch `work/thermo5-mash-qam-root-cause`; imported source snapshot
+`7974508`, implementation `1fd679d`. Both original worktrees are unchanged.
+Complete original backup: `../mash_root_cause_preservation/manifest.json`,
+5,478 files / 1,811,338,023 bytes; final SHA256 recheck finds zero changes.
+Named failing experiment and original PA hashes are preserved exactly.
+
+P0-P2 are complete: independent Fs/4 DC I/Q, tone, impulse and OFDM receiver
+smoke passes; all 168,224 captured Pre-DSM samples pass independent scalar
+Stage 1 replay with bubbles and complete tail flush. Stage 1 accepted-stream
+delay is 32 words; final MASH delay is 66 words / 528 source samples. Fixed
+contract FFT positioning replaces the zero-delay receiver assumption; no lag
+search is used for acceptance. Timing correction alone leaves 13.145892% EVM.
+
+P3 fixes the second cause: feed the accumulator error residue instead of
+clipped x-q1 into Stage 2. First actual discrepancy is I lane0, transaction0,
+262890 ps: old +32767 vs centered accumulator residue -32768. Both VCD values
+are verified. A real-data bubble test exposes a third cause at PA word489;
+a q1 companion now follows Stage 2 accepted transactions through bubbles.
+Dense/stressed full OFDM adapter PA sequence checks, STOP/restart and
+reset/new-epoch replay pass. Frame/config tests cover static-SKU tokens;
+dynamic RF-sample configuration alignment and a full AXIS STOP API remain open.
+
+P4 digital QAM gates pass from actual final RTL PA bits: original seed281001,
+8 symbols/RMS .09 gives EVM2.551442%, SNDR31.864285dB, BER15/37376. Four fixed
+32-symbol seeds pass: EVM2.496494-2.533985%, aggregate BER146/598016. Original
+legacy PA hashes are reproduced exactly. Capture II=1, zero output bubbles,
+zero overflow and zero DPD saturation in the instrumented original-size run.
+Raw adjacent bands are -19.31/-19.42dBc; RF emissions are not signed off.
+
+Checks: Python69/69; weighted contract/identity3/3; Stage1 dense/bubble/tail;
+legacy/corrected full-chain PA miters; adapter control replay; XSim56-word
+causal EF1 Generic PASS. VCS matching EF2/centered bittrue seed1 PASS, but
+required regression FAILS at seed2 BUBBLE_COVERAGE (i2 empty/blocked unhit).
+Requirements/checkers remain enabled. MATLAB vector wrapper produces files
+but throws on exit-code handling, so it is not counted PASS. Icarus runs use
+SYNTHESIS guard because it cannot parse the existing SVA.
+
+Report: `docs/verification/thermo5-mash-qam-root-cause-20261117.md`; compact
+metrics, VCD witness and complete evidence index are under the matching
+`docs/verification/data/` directory. Large logs, CSVs, PA words and VCDs stay
+under ignored runs/. Historical core/Goldens retain legacy mode; the MASH
+AXIS top defaults to the corrected residue mode.
+
+Next: close the remaining VCS bubble-coverage witness and generator exit-code
+issue, then dedicated MASH UVM/AXIS controls, CDC/RDC/Formal and coverage.
+VCU118 full-top routed PPA and dual 14-Gb/s GTY remain OPEN. No old ZU15EG
+OOC result is reused for physical signoff; no merge into thermo5 is performed.
+
+## 2026-11-18 MASH AXIS QAM256 Integration Check
+
+Independent worktree: `work/thermo5-unified-architectures`, base HEAD
+`6c96c4e1b11bf193240fb8bf5d0e540e5b3c8b3c`. Existing dirty changes and
+artifacts were preserved; no commit, push, or merge was performed.
+
+The isolated MASH AXIS top passed Icarus 12.0 bit-true streaming simulation:
+3,004 input beats, 5,257 64-bit PA0/PA1 word pairs, II=1, zero mismatch against
+the independent weighted-PA Golden. Its 168,224 Pre-DSM complex samples match
+the centered-cubic reference. The nominal bus arithmetic is 64 bits/cycle x
+218.75 MHz = 14 Gb/s per PA; Fs/4 polarity at 14 GS/s corresponds to 3.5 GHz.
+No GTY serializer or hardware was exercised, so those are interface rates,
+not physical output signoff.
+
+QAM256 full-RTL capture is a FAIL: seed 281001, 8 symbols, RMS 0.09, 250 MHz,
+4,672 QAM symbols produced 99.994117% EVM, 0.0005 dB SNDR and BER
+18,736/37,376. A scalar software MASH model under the same conditions gives
+2.534587% EVM, 31.9219 dB SNDR and BER 11/37,376, but is not bit-true to the
+parallel TID MASH RTL. The first confirmed divergence is at the parallel MASH
+output sequence. Diagnostic receiver measurements on the bit-true TID Stage 1
+and Stage 2 output streams also fail at 99.998429% and 99.998016% EVM, so the
+failure precedes digital cancellation and weighted PA encoding. Root cause in
+the parallel TID recurrence/output encoding remains OPEN. The evaluator
+consumes the first valid captured PA transaction without cropping transport
+latency from serialized samples.
+
+Evidence and exact hashes are in `docs/verification/thermo5-three-architecture-integration-20261116.md`
+and `runs/thermo5_mash_axis_qam_20261118_seed281001_rms009/`. Vivado is absent
+here; full-top VCU118 PPA, GTY timing, CDC/RDC/Formal, held-out QAM seeds and
+board/RF tests remain OPEN. Do not promote this candidate as a QAM-capable
+mainline SKU yet.
+
+## 2026-11-16 Unified DSM Integration Recheck
+
+Independent worktree branch: `work/thermo5-unified-architectures`, base
+`6c96c4e1b11bf193240fb8bf5d0e540e5b3c8b3c`. Existing dirty user changes were
+preserved. No commit, push, or merge was performed.
+
+The opt-in shared Frontend Pre-DSM boundary carries Frame Start/End, Tail,
+Config ID and Reset Epoch. Existing default EF1/EF2 PA path remains bit-true.
+Icarus 12.0 passed the 56-word frontend-to-backend regression for EF1, EF2,
+and weighted MASH; MASH Pre-DSM samples and weighted PA bits match independent
+Python Goldens. Backend-only 128-word tests passed at II=1 for all three
+architectures. The new MASH Python recurrence matched 128 historical MATLAB
+raw stage vectors (16,384 bits, zero mismatch); shared Python suite passed
+69/69.
+
+This is synchronous frontend/backend evidence, not a complete AXI/CDC product
+top. The checked-out `thermo5` and `main` branches do not contain this MASH
+integration. Existing AXIS/AXI-Lite tops retain their four-equal-plane output
+contract. MASH AXIS CDC integration, weighted dual-lane GTY serializer,
+dedicated UVM scoreboard, 256-QAM receiver from captured RTL PA data, full-top
+VCU118 PPA, and CDC/RDC/Formal/coverage signoff remain OPEN. Do not report the
+historical model EVM/SNDR/BER values as results of the integrated RTL.
+
+Latest detailed evidence: `docs/verification/thermo5-three-architecture-integration-20261116.md`,
+manifest `docs/verification/data/thermo5-three-architecture-integration-20261116-manifest.json`,
+run root `runs/thermo5_unified_integration_20261116/recheck_20261118/`.
+Next: add the isolated MASH AXIS/weighted-PA top with an explicit static
+metadata contract, then exercise it with a held-out OFDM frame and reconstruct
+the captured PA words in the 3.5-GHz Fs/4 receiver before any merge decision.
+
 ## 2026-11-16 EF1 Runner closure and Weighted MASH extended DV
 
 The XSim Runner race was fixed by waiting for the actual `xsimk.exe` and
@@ -360,6 +472,34 @@ Frozen RTL unchanged. New actual FIFO->Gain compositional Formal:4 proven,3 nonv
 
 Frozen635be68 unchanged. Re-indexed remaining48 against v3 same-parent594 evidence: 22 Interpolator,7 CDC,2 Gain,2 Frontend,15 TX Top remain OPEN. Existing four P0 functional scenarios retain independent oracle/watchdog PASS but Exact URG delta0. No new Formal run because no new hypothesis; Outstanding/q1_tail and CDC/Gain/TX obligations remain OPEN. Added v4 disposition/matrix/formal/cross/remaining-open/signoff artifacts under docs/verification/data/thermo5-dv-v4. 11599 exclusion candidates pending, approvals0, exceptions0,930 counters OPEN. PR57 remains open; no merge. Both signoffs OPEN.
 Evidence: docs/verification/data/thermo5-dv-v4/coverage_v4_signoff_report.md.
+
+# Execution frontier - Weighted MASH full-chain integration (2026-11-16)
+
+The integration worktree `work/vcu118-integration` is based on
+`6c96c4e1b11bf193240fb8bf5d0e540e5b3c8b3c`; existing local changes and frozen
+EF1/MASH DCP evidence were preserved. No commit or push was made.
+
+The historical MASH stage-2 residual and MATLAB/RTL state equations agree for
+the preserved vectors. The RTL raw stage outputs require digital cancellation
+before 1:2 weighted PA encoding. The independent encoder plus MASH RTL passed
+128 vectors / 4096 Cartesian samples; randomized encoder testing passed 256
+32-lane words. The adapter now has a fresh long-stall/reset-epoch regression:
+256 transactions drain without overflow after admission stops at 17 reserved
+slots, reset flushes in-flight work, and 32 new-epoch vectors pass with
+Frame/Tail and PA/metadata stability checks. Logs and VCD are under
+`runs/thermo5_weighted_mash_integration_20261116/adapter_closure_rerun1/`.
+
+The complete AXIS -> CDC -> Gain -> Cubic -> DPD -> Cubic -> MASH product top
+is still OPEN. `u_interp2_to_tid_fifo` is `META_W=1` with constant-zero input;
+Frame/Tail labels exist immediately upstream but are discarded, while Config
+ID and Reset Epoch are not carried by this frontend contract. Do not infer
+them from cycle timing. Dedicated MASH UVM monitors/oracles, RTL-output QAM256
+receiver results, full-top VCU118 PPA, and CDC/RDC/Formal/coverage signoff are
+also OPEN. Historical QAM model values are not full-chain RTL evidence.
+
+Next action: design a Pre-DSM metadata contract that preserves existing EF1
+behavior, then add an independent MASH full-chain elaboration and transaction
+scoreboard before running QAM receiver evaluation.
 
 # Execution frontier
 

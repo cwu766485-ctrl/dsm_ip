@@ -1,0 +1,16 @@
+{
+  "legacy": {
+    "vcd": "runs/mash_evidence_legacy/audit.vcd",
+    "symbol": ".",
+    "time_ps": 262890,
+    "i_lane0_signed": 32767,
+    "sha256": "9bd79732f784458929d379094406839cd0f68ea4598a53b4ec98e6ccd63a5579"
+  },
+  "corrected": {
+    "vcd": "runs/mash_evidence_corrected/audit.vcd",
+    "symbol": ".",
+    "time_ps": 262890,
+    "i_lane0_signed": -32768,
+    "sha256": "fb966defc4277c0cff9f8b4038fe56f98059134d4171b01309af7b6e0b589c40"
+  }
+}

@@ -1366,3 +1366,19 @@ reports Raw and Adjusted identically; it does not create an adjusted URG DB.
 
 The source audit fails when a compiled file, compile profile, filelist, or
 coverage hierarchy differs. A valid audit can still return `RAW_100_OPEN`.
+
+## Weighted MASH root-cause reproduction
+
+See `docs/verification/thermo5-mash-qam-root-cause-20261117.md` for complete
+P0-P4 commands and the remaining VCS failure. From the repository root:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 research/thermo5_integration/model/receiver_fs4_smoke.py --output runs/mash_receiver_fresh
+PYTHONDONTWRITEBYTECODE=1 python3 research/thermo5_integration/model/run_mash_qam_regression.py --output runs/mash_qam_fresh --seeds 281001,281003,281007,281009 --symbols 32
+```
+
+Python3/NumPy and Icarus12/vvp are required. Outputs must use new ignored
+run directories. `run_mash_capture.py --correct-residue` selects the corrected
+architecture; omitting the flag intentionally replays the preserved legacy
+x-q1 experiment. Never treat a successful capture as a QAM gate PASS without
+running the PA-bit receiver evaluation. Full-top PPA/GTY are separate.

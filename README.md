@@ -56,3 +56,9 @@ WNS/TNS/WHS/THS = `+0.198/0.000/+0.018/0.000 ns` at 218.75 MHz under the
 modeled OOC constraints. This is not parent-level I/O, board, GT CDC/RDC, or
 measured RF-output signoff. See `docs/exec-plans/active/execution-frontier.md`
 and `docs/UPDATE_LOG.md` for the exact reports and remaining limitations.
+
+## Weighted MASH investigation branch
+
+The optional weighted-MASH AXIS candidate and its independent scalar, timing
+and receiver checks are documented in [the QAM root-cause report](docs/verification/thermo5-mash-qam-root-cause-20261117.md).
+Digital QAM gates pass; full-system verification and physical signoff remain open.
