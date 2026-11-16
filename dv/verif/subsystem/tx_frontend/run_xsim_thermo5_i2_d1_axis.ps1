@@ -22,11 +22,18 @@ function Invoke-VivadoBatch([string]$Name,[string]$Command) {
   [System.IO.File]::WriteAllText($batch,$body,[System.Text.Encoding]::ASCII)
   & $env:ComSpec /d /c $batch
 }
-function Wait-RunFile([string]$Path) {
-  for ($attempt=0; $attempt -lt 50 -and !(Test-Path -LiteralPath $Path); $attempt++) {
-    Start-Sleep -Milliseconds 200
+function Wait-RunFile([string]$Path,[int]$Attempts=300) {
+  for ($attempt=0; $attempt -lt $Attempts -and !(Test-Path -LiteralPath $Path); $attempt++) {
+    Start-Sleep -Milliseconds 500
   }
   if (!(Test-Path -LiteralPath $Path)) { throw "Expected run output not found: $Path" }
+}
+function Wait-RunPattern([string]$Path,[string]$Pattern,[int]$Attempts=300) {
+  for ($attempt=0; $attempt -lt $Attempts; $attempt++) {
+    if ((Test-Path -LiteralPath $Path) -and (Select-String -LiteralPath $Path -Pattern $Pattern -Quiet)) { return }
+    Start-Sleep -Milliseconds 500
+  }
+  throw "Expected pattern '$Pattern' not found in $Path"
 }
 $relative=@(
   'rtl/axis/dsm_reset_sync.sv','rtl/axis/dsm_frame_power_ctrl.sv',
@@ -59,7 +66,7 @@ $define=''
 if($CenteredCubic){$define+=' --define=THERMO5_CENTERED_CUBIC'}
 if($TidOrder -eq 2){$define+=' --define=THERMO5_TIDSM_ORDER_2'}
 if($Step -eq 5120){$define+=' --define=THERMO5_STEP_5120'}
-if($Words -eq 1008){$define='-d THERMO5_LONG_1008'}
+if($Words -eq 1008){$define+=' -d THERMO5_LONG_1008'}
 if($AxilControl){
   $define+=' -d THERMO5_AXIL_CONTROL'
   $relative=@($relative | Where-Object { $_ -ne 'dv/verif/subsystem/tx_frontend/tb/tb_thermo5_i2_d1_axis_bittrue.sv' })
@@ -77,6 +84,21 @@ if($XpmFifo){
   foreach($path in $vendor){if(!(Test-Path -LiteralPath $path)){throw "Missing vendor XPM model: $path"}}
   $define+=' --define=THERMO5_XPM_FIFO'
 }
+if($Words -eq 1008 -and $define -notmatch 'THERMO5_LONG_1008') {
+  throw 'THERMO5_LONG_1008 macro was not retained in the 1008-word compile.'
+}
+if($CenteredCubic -and $define -notmatch 'THERMO5_CENTERED_CUBIC') {
+  throw 'THERMO5_CENTERED_CUBIC macro was not retained in the compile.'
+}
+if($TidOrder -eq 2 -and $define -notmatch 'THERMO5_TIDSM_ORDER_2') {
+  throw 'THERMO5_TIDSM_ORDER_2 macro was not retained in the compile.'
+}
+if($Step -eq 5120 -and $define -notmatch 'THERMO5_STEP_5120') {
+  throw 'THERMO5_STEP_5120 macro was not retained in the compile.'
+}
+$configFile=Join-Path $work 'compile_configuration.txt'
+@("Words=$Words","Seed=$Seed","VivadoRoot=$VivadoRoot","Define=$define","XpmFifo=$XpmFifo","CenteredCubic=$CenteredCubic","TidOrder=$TidOrder","Step=$Step") |
+  Set-Content -LiteralPath $configFile -Encoding ASCII
 $source=(($vendor + ($relative | ForEach-Object { Join-Path $repo $_ }) + $rtlOverrideSource) | ForEach-Object { '"'+$_+'"' }) -join ' '
 Push-Location $work
 try {
@@ -89,14 +111,40 @@ try {
   $tops=if($XpmFifo){'tb_thermo5_i2_d1_axis_bittrue glbl'}else{'tb_thermo5_i2_d1_axis_bittrue'}
   Invoke-VivadoBatch 'run_xelab' "call $VivadoRoot\bin\xelab.bat $tops -s sim_thermo5_i2_d1_axis > console_xelab.log 2>&1"
   Wait-RunFile (Join-Path $work 'console_xelab.log')
+  $snapshot=Join-Path $work 'xsim.dir\sim_thermo5_i2_d1_axis\xsimk.exe'
+  Wait-RunFile $snapshot
+  if (!(Select-String -LiteralPath (Join-Path $work 'console_xelab.log') -Pattern 'Built simulation snapshot' -Quiet)) {
+    throw "xelab did not complete a simulation snapshot: $work\console_xelab.log"
+  }
   Copy-Item -Path (Join-Path $vectors '*.mem') -Destination $work
   $plusargs=@()
   if($StressPaReady){$plusargs+='-testplusarg STRESS_PA_READY'}
   if($ProbeInterp1EmptyBlocked){$plusargs+='-testplusarg INTERP1_GAP_STALL'}
   if($AxilTrace){$plusargs+='-testplusarg AXIL_TRACE'}
   $plusarg=$plusargs -join ' '
-  Invoke-VivadoBatch 'run_xsim' "call $VivadoRoot\bin\xsim.bat sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg > console_xsim.log 2>&1"
-  Wait-RunFile (Join-Path $work 'console_xsim.log')
+  $xsimLog=Join-Path $work 'xsim.log'
+  $xsimConsole=Join-Path $work 'console_xsim.log'
+  $xsimStdout=Join-Path $work 'xsim_launcher.stdout.log'
+  $xsimStderr=Join-Path $work 'xsim_launcher.stderr.log'
+  $xsimBatch=Join-Path $VivadoRoot 'bin\xsim.bat'
+  $xsimCmdFile=Join-Path $work 'run_xsim.cmd'
+  $xsimBody="@echo off`r`ncd /d `"$work`"`r`nif errorlevel 1 exit /b %errorlevel%`r`ncall `"$settings`" >nul`r`nif errorlevel 1 exit /b %errorlevel%`r`ncall `"$xsimBatch`" sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg -log xsim.log`r`nexit /b %errorlevel%`r`n"
+  [System.IO.File]::WriteAllText($xsimCmdFile,$xsimBody,[System.Text.Encoding]::ASCII)
+  & $env:ComSpec /d /c $xsimCmdFile
+  $xsimExitCode=$LASTEXITCODE
+  if($null -eq $xsimExitCode -or "$xsimExitCode" -eq '') { $xsimExitCode=0 }
+  @("CommandFile=$xsimCmdFile","ExitCode=$xsimExitCode") |
+    Set-Content -LiteralPath $xsimStdout -Encoding ASCII
+  if (!(Test-Path -LiteralPath $xsimStderr)) {
+    New-Item -ItemType File -Path $xsimStderr -Force | Out-Null
+  }
+  Wait-RunFile $xsimLog
+  $expectedPassMarker=if($AxilControl){'THERMO5_AXIL_CONFIG_BITTRUE_PASS'}else{'THERMO5_I2_D1_AXIS_BITTRUE_PASS'}
+  Wait-RunPattern $xsimLog $expectedPassMarker
+  if($xsimExitCode -ne 0) {
+    throw "XSim exited with code $xsimExitCode; inspect $xsimLog, $xsimStdout, and $xsimStderr"
+  }
+  Copy-Item -LiteralPath $xsimLog -Destination $xsimConsole -Force
 } finally { Pop-Location }
 if($AxilControl){$passMarker='THERMO5_AXIL_CONFIG_BITTRUE_PASS'}else{$passMarker='THERMO5_I2_D1_AXIS_BITTRUE_PASS'}
 if (!(Select-String -LiteralPath (Join-Path $work 'console_xsim.log') -Pattern $passMarker -Quiet)) {

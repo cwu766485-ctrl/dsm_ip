@@ -1,4 +1,100 @@
+## 2026-11-16 EF1 Runner closure and Weighted MASH extended DV
+
+The XSim Runner race was fixed by waiting for the actual `xsimk.exe` and
+`Built simulation snapshot` marker after Xelab, then waiting for the final
+simulation PASS marker before copying the console log. `Words=1008` now appends
+`THERMO5_LONG_1008` instead of replacing the other configuration macros.
+Fresh automated Original/Pipeline x Generic/XPM COMMIT runs all passed with
+32 source, 59 DPD (including three tails), and 56 PA output words. Each has an
+independent console/xsim log, VCD, command file, and compile configuration.
+
+The independent Weighted MASH extended Icarus testbench passed 128/128
+accepted and produced vectors, every PA bit matched the existing MATLAB oracle,
+external first-output latency was 6 cycles, the asserted internal alignment
+parameter was 35 words, and steady-state II was 1. The historical block has no
+downstream ready/valid or STOP interface, so output blocking and reset/STOP
+traffic remain OPEN rather than being inferred from this test.
+
+The report and manifest are `docs/verification/thermo5-ef1-mash-regression-20261116.md`
+and `docs/verification/data/thermo5-ef1-mash-regression-20261116-manifest.json`.
+Product reset/STOP/random-backpressure regression, CDC/RDC, VCS, VC Formal,
+SpyGlass, and MASH parent interface timing remain OPEN. No product RTL or
+four-plane Thermo5 contract was changed.
+
+## 2026-11-16 EF1/MASH verification follow-up
+
+Worktree HEAD was `4ff7425b1b5ba68b38c60ca596fdb5ed84e91c4d`, one commit ahead
+of GitHub at start; that commit was pushed to `work/vcu118-ab-ppa` and the
+remote now resolves to the same SHA. Existing unrelated local modifications
+remain uncommitted.
+
+Replayed the historical weighted-MASH RTL against the recorded MATLAB vectors
+with Icarus 12.0 from the vectors directory: `TID32_MASH11_FS4_MULTIPA_BITTRUE_PASS
+words=128 samples=4096`. Running from the parent directory first failed because
+the testbench uses relative `$readmemh` paths; that invocation is invalid and
+is not counted. The existing four Generic/XPM by Original/Pipeline COMMIT
+XSim logs still contain their PASS markers (32 source, 56 output). All four
+compiled configurations were manually replayed from their native Windows run
+directories with identical seed 1 and the AXIL_TRACE option; every replay
+passed. Three reruns are recorded as `xsim_replay_20261116.log`, and the new
+Original/Generic run is in `gate_final_retest_original_generic/xsim.log`. The
+four-way automated Runner replay remains OPEN.
+
+The runner's current native Windows PowerShell launch still fails to create
+`xsim.log` when invoked from its script context, even though launching the
+same compiled snapshot directly with `powershell.exe -Command`, an explicit
+`Set-Location`, and `xsim.bat` passes. Preserve this as OPEN; do not treat the
+runner change as validated. The attempt to start a fresh Vivado batch timing
+audit from this WSL session returned without launching Vivado, so existing
+VCU118 routed reports remain the only PPA evidence. The saved MASH checkpoint
+SHA is `c05907c1e4b6937077087da85d7a2acad64d492df1898e19679fd7a598a2c4f0`;
+its 3.279 ns worst path is a 293-sink `s1_valid` enable net (0.079 ns cell,
+3.200 ns net). Existing `check_timing` reports 1,025 input ports without
+input delay and 129 output ports without output delay, so interface timing
+remains OPEN pending actual endpoint contracts.
+
+Product reset-during-traffic, STOP/restart, long randomized backpressure,
+four-plane lockstep stress, CDC/RDC, formal, and code-coverage obligations
+remain OPEN. VCS, VC Formal, and SpyGlass were not run. No product RTL was
+changed and no new candidate was merged. The pushed commit contains only the
+already-existing local HEAD; worktree modifications and new verification
+evidence were not committed.
+
 ## Current execution state: AXI-Lite COMMIT differential and EF2 architecture study (2026-11-15)
+
+### 2026-11-15 Weighted MASH VCU118 and B Pipeline follow-up
+
+The independent historical weighted MASH source bundle has been recovered
+from `7b5c2a853f04c1a5073a9a84e84c64982f922d65` under
+`research/thermo5_weighted_mash/`; no product default or Cubic+EF1 RTL was
+changed. MATLAB R2025a generated 128 32-lane vectors (seed 20260916), and the
+historical testbench passed against both PA outputs under Icarus Verilog:
+`TID32_MASH11_FS4_MULTIPA_BITTRUE_PASS words=128 samples=4096`.
+
+The 2026.1 VCU118 OOC synthesis and complete route finished for
+`xcvu9p-flga2104-2L-e` at 218.75 MHz. Routed WNS/WHS are +1.090/+0.032 ns,
+with zero setup/hold endpoints failing. Resources: 14,279 LUT (8,475 logic,
+5,804 SRL), 13,440 FF, 1,004 CARRY8, zero DSP/BRAM/URAM. Worst setup path is a
+high-fanout `s1_valid` enable net: 3.279 ns total, 0.079 ns cell / 3.200 ns
+routing, 293 sinks. Vectorless power estimates 3.204 W. This remains OOC
+evidence only; `HD.CLK_SRC` and input `HD.PARTPIN_LOCS` warnings limit
+correspondence to the parent product. Full report, route checkpoint, source
+identity and hashes are in `docs/verification/thermo5-weighted-mash-vcu118-20261118.md`
+and `docs/verification/data/thermo5-weighted-mash-vcu118-20261118-manifest.json`.
+
+The historical MASH RF output is the weighted two-PA 1:2 contract and is not
+compatible with the present four equal-plane Thermo5 top without an interface
+change. Prior corrected model-only results remain EVM 2.507/2.516/2.521% and
+SNDR 32.017/31.987/31.968 dB for QAM16/64/256; no fresh communication sweep
+was run in this checkpoint.
+
+B's two routed Pipeline DCPs remain preserved at WNS/WHS +0.307/+0.028 ns
+(Explore) and +0.249/+0.028 ns (RuntimeOptimized). The prior four manually
+invoked COMMIT tests have PASS markers, 32 source / 56 output words, and VCDs.
+Fresh automated relaunch remains OPEN: snapshots elaborate, but XSim launch
+from WSL-hosted PowerShell is intermittent. An unvalidated Runner edit was
+reverted. Product reset/STOP/random-backpressure, CDC/RDC, formal, and code
+coverage obligations remain OPEN; VCS/VC Formal/SpyGlass were not run.
 
 EF2 product RTL remains unchanged. Vivado 2026.1 VCU118 OOC E0 microbenchmarks
 for CHANNELS=2/4/8/16 now have DCP, utilization, timing and check-timing
@@ -61,6 +157,27 @@ research candidate, but no RTL/PPA is authorized until four-plane
 compatibility is resolved. Stage PSDs
 for QAM256 seed 281001 are under `runs/thermo5_parallel_dsm_v2_20261116_mash_stages/`.
 Full Python reference tests pass 67/67.
+
+### 2026-11-17 MASH mapping follow-up
+
+The A/B/C output-mapping benchmark has now completed under the same four
+held-out seeds and receiver. Three equal bipolar planes exactly encode steady
+MASH levels `{-3,-1,+1,+3}` and match the weighted A results for all QAM sizes.
+Across 12 QAM/seed cases, 2,015,232 I plus 2,015,232 Q samples had zero mapping
+mismatches and zero state saturation. The reset first sample is zero because
+`q2_delay` resets to zero; a three-bipolar sum cannot represent zero, so exact B
+requires common PA mute on the first I and Q raw slots of each reset epoch.
+Current four-plane atomic valid/ready and word-aligned board `pa_enable` do not
+provide that contract. C's four-active-plane bit reduction remains about 36%
+EVM and is No-Go. No MASH RTL/PPA is authorized before a three-lane plus
+sample-slot-mute interface is established.
+
+The four-case automated B COMMIT rerun did not close: one fresh Pipeline/
+Generic invocation reproduced the XSim batch snapshot-not-found error despite
+successful XVlog/Xelab and an existing `xsimk.exe`. The new run log and
+`console_xsim.log` are preserved. Product reset/STOP/backpressure, ECO CDC/RDC,
+coverage, VCS and Formal remain OPEN. See
+`docs/verification/thermo5-mash-three-plane-mapping-20261117.md`.
 
 ## Previous execution state: B pipeline partial signoff and PPA stability (2026-11-15)
 

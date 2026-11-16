@@ -1,0 +1,13 @@
+{
+  "worktree_head": "4ff7425b1b5ba68b38c60ca596fdb5ed84e91c4d",
+  "branch": "work/vcu118-ab-ppa",
+  "tool_versions": {"vivado": "2026.1", "xsim": "2026.1", "iverilog": "12.0"},
+  "ef1_commit_runs": [
+    {"name": "original_generic", "run": "runs/uvm_thermo5_i2_d1/axis_xsim_axil_generic_centered_ef1_seed1_words56_p0_runner_final_original_generic", "status": "PASS", "marker": "THERMO5_AXIL_CONFIG_BITTRUE_PASS source=32 output=56 taps=2 identity=1"},
+    {"name": "pipeline_generic", "run": "runs/uvm_thermo5_i2_d1/axis_xsim_axil_generic_centered_ef1_seed1_words56_p0_runner_final_pipeline_generic", "status": "PASS", "marker": "THERMO5_AXIL_CONFIG_BITTRUE_PASS source=32 output=56 taps=2 identity=1"},
+    {"name": "original_xpm", "run": "runs/uvm_thermo5_i2_d1/axis_xsim_axil_xpm_centered_ef1_seed1_words56_p0_runner_final_original_xpm", "status": "PASS", "marker": "THERMO5_AXIL_CONFIG_BITTRUE_PASS source=32 output=56 taps=2 identity=1"},
+    {"name": "pipeline_xpm", "run": "runs/uvm_thermo5_i2_d1/axis_xsim_axil_xpm_centered_ef1_seed1_words56_p0_runner_final_pipeline_xpm", "status": "PASS", "marker": "THERMO5_AXIL_CONFIG_BITTRUE_PASS source=32 output=56 taps=2 identity=1"}
+  ],
+  "mash_extended": {"status": "PASS", "words": 128, "accepted": 128, "produced": 128, "external_latency_cycles": 6, "alignment_words": 35, "ii": 1, "oracle": "runs/thermo5_weighted_mash_vcu118_20261118/vectors"},
+  "open": ["product reset during traffic", "STOP/restart", "long random backpressure", "MASH output blocking wrapper", "CDC/RDC", "VCS", "VC Formal", "SpyGlass", "interface input/output timing budgets"]
+}
