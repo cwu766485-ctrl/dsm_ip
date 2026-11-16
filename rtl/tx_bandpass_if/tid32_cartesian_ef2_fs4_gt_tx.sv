@@ -17,7 +17,10 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
   parameter int CHANNELS = 32,
   // Experimental exact two-sample look-ahead. Keep disabled in the product
   // baseline until an FPGA implementation is routed and timing-qualified.
-  parameter bit PAIR_LOOKAHEAD = 1'b0
+  parameter bit PAIR_LOOKAHEAD = 1'b0,
+  // Diagnostic-only controls. Defaults preserve the exact product recurrence.
+  parameter bit SATURATE_STATE = 1'b1,
+  parameter bit SHARED_ERROR_ARITH = 1'b0
 ) (
   input  wire logic                         clk,
   input  wire logic                         rst_n,
@@ -110,6 +113,32 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
     end
   endfunction
 
+  function automatic logic signed [STATE_W-1:0] limit_error_state(
+    input logic signed [ACC_W-1:0] value
+  );
+    begin
+      if (SATURATE_STATE)
+        limit_error_state = sat_error(value);
+      else
+        limit_error_state = value[STATE_W-1:0];
+    end
+  endfunction
+
+  function automatic logic signed [ACC_W-1:0] quantization_error(
+    input logic signed [ACC_W-1:0] value,
+    input logic positive
+  );
+    logic signed [ACC_W-1:0] selected_step;
+    begin
+      if (SHARED_ERROR_ARITH) begin
+        selected_step = positive ? Q_ONE : -Q_ONE;
+        quantization_error = value - selected_step;
+      end else begin
+        quantization_error = positive ? (value - Q_ONE) : (value + Q_ONE);
+      end
+    end
+  endfunction
+
   // Exact pairwise look-ahead. q0 is computed from u0 while both possible
   // saturated e0 values and their corresponding u1 values are evaluated in
   // parallel. q0 then selects the matching u1; q1 and the final state follow.
@@ -141,10 +170,9 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
       e2_wide = {{(ACC_W-STATE_W){e2_prev[STATE_W-1]}}, e2_prev};
       result.u0 = x0_wide + (e1_wide <<< 1) - e2_wide;
       result.q0_positive = (result.u0 > 0);
-      result.e0_raw = result.q0_positive ? (result.u0 - Q_ONE) :
-                                                       (result.u0 + Q_ONE);
-      e0_positive = sat_error(result.u0 - Q_ONE);
-      e0_negative = sat_error(result.u0 + Q_ONE);
+      result.e0_raw = quantization_error(result.u0, result.q0_positive);
+      e0_positive = limit_error_state(result.u0 - Q_ONE);
+      e0_negative = limit_error_state(result.u0 + Q_ONE);
       result.e0_state = result.q0_positive ? e0_positive : e0_negative;
 
       u1_positive = x1_wide +
@@ -155,9 +183,8 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
         e1_wide;
       result.u1 = result.q0_positive ? u1_positive : u1_negative;
       result.q1_positive = (result.u1 > 0);
-      result.e1_raw = result.q1_positive ? (result.u1 - Q_ONE) :
-                                                       (result.u1 + Q_ONE);
-      result.e1_state = sat_error(result.e1_raw);
+      result.e1_raw = quantization_error(result.u1, result.q1_positive);
+      result.e1_state = limit_error_state(result.e1_raw);
 
       x0_check = {{(ACC_W+1-W){x0[W-1]}}, x0};
       x1_check = {{(ACC_W+1-W){x1[W-1]}}, x1};
@@ -167,11 +194,9 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
                   result.e0_state};
       q_one_wide = $signed({Q_ONE[ACC_W-1], Q_ONE});
       u0_check = x0_check + (e1_check <<< 1) - e2_check;
-      e0_raw_check = (u0_check > 0) ? (u0_check - q_one_wide) :
-                                                      (u0_check + q_one_wide);
+      e0_raw_check = quantization_error(u0_check[ACC_W-1:0], u0_check > 0);
       u1_check = x1_check + (e0_check <<< 1) - e1_check;
-      e1_raw_check = (u1_check > 0) ? (u1_check - q_one_wide) :
-                                                      (u1_check + q_one_wide);
+      e1_raw_check = quantization_error(u1_check[ACC_W-1:0], u1_check > 0);
       if (($signed(u0_check) != $signed({result.u0[ACC_W-1], result.u0})) ||
           ($signed(e0_raw_check) != $signed({result.e0_raw[ACC_W-1], result.e0_raw})) ||
           ($signed(u1_check) != $signed({result.u1[ACC_W-1], result.u1})) ||
@@ -291,8 +316,8 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
 
       y_i_positive = (u_i > 0);
       y_q_positive = (u_q > 0);
-      e_i_raw = y_i_positive ? (u_i - Q_ONE) : (u_i + Q_ONE);
-      e_q_raw = y_q_positive ? (u_q - Q_ONE) : (u_q + Q_ONE);
+      e_i_raw = quantization_error(u_i, y_i_positive);
+      e_q_raw = quantization_error(u_q, y_q_positive);
       if (($signed(u_i_check) != $signed({u_i[ACC_W-1], u_i})) ||
           ($signed(u_q_check) != $signed({u_q[ACC_W-1], u_q})) ||
           ($signed(e_i_raw_check) != $signed({e_i_raw[ACC_W-1], e_i_raw})) ||
@@ -314,8 +339,8 @@ module tid32_cartesian_ef2_fs4_gt_tx #(
 
       work_err2_i = work_err1_i;
       work_err2_q = work_err1_q;
-      work_err1_i = sat_error(e_i_raw);
-      work_err1_q = sat_error(e_q_raw);
+      work_err1_i = limit_error_state(e_i_raw);
+      work_err1_q = limit_error_state(e_q_raw);
     end
     end
 

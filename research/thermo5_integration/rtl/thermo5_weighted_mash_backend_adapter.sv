@@ -13,6 +13,8 @@ module thermo5_weighted_mash_backend_adapter #(
 ) (
   input  wire logic clk,
   input  wire logic rst_n,
+  input  wire logic stop_req,
+  output wire logic drain_done,
   input  wire logic in_valid,
   output wire logic in_ready,
   input  wire logic signed [CHANNELS*W-1:0] in_i_poly_vec,
@@ -26,6 +28,8 @@ module thermo5_weighted_mash_backend_adapter #(
   input  wire logic out_ready,
   output wire logic [2*CHANNELS-1:0] out_stage1_data,
   output wire logic [2*CHANNELS-1:0] out_stage2_data,
+  output wire logic [2*CHANNELS-1:0] out_pa0_data,
+  output wire logic [2*CHANNELS-1:0] out_pa1_data,
   output wire logic [15:0] out_config_id,
   output wire logic [15:0] out_epoch,
   output wire logic out_frame_start,
@@ -34,9 +38,14 @@ module thermo5_weighted_mash_backend_adapter #(
   output wire logic overflow_error,
   output wire logic [15:0] inflight_count
 );
-  localparam int CAPACITY = FIFO_DEPTH + CORE_LATENCY + 2;
-  localparam int COUNT_W = $clog2(CAPACITY + 1);
-  logic core_in_valid, core_in_ready, core_valid;
+  localparam int STORAGE_CAPACITY = FIFO_DEPTH + 1;
+  localparam int COUNT_W = $clog2(STORAGE_CAPACITY + 1);
+  logic core_in_valid, core_valid;
+  logic raw_valid, raw_pop, encoder_in_ready, encoder_valid;
+  logic [2*CHANNELS-1:0] encoder_pa0, encoder_pa1;
+  logic [2*CHANNELS-1:0] out_s1_q, out_s2_q;
+  logic [15:0] out_cfg_q, out_epoch_q;
+  logic out_fs_q, out_fe_q, out_tail_q;
   logic [2*CHANNELS-1:0] core_s1, core_s2;
   logic [CORE_LATENCY-1:0] meta_valid_pipe;
   logic [15:0] cfg_pipe[0:CORE_LATENCY-1], epoch_pipe[0:CORE_LATENCY-1];
@@ -47,26 +56,43 @@ module thermo5_weighted_mash_backend_adapter #(
   logic [$clog2(FIFO_DEPTH)-1:0] rd_ptr, wr_ptr;
   logic [$clog2(FIFO_DEPTH+1)-1:0] fifo_count;
   logic [COUNT_W-1:0] credit_count;
+  logic [COUNT_W-1:0] core_pending_count;
   logic overflow_q;
 
-  assign core_in_ready = 1'b1;
-  assign in_ready = (credit_count < CAPACITY);
+  // Reserve one eventual output slot for every accepted transaction. The
+  // reservation moves from core pending to the raw FIFO and then encoder.
+  assign in_ready = !stop_req &&
+                    (fifo_count + core_pending_count + encoder_valid < STORAGE_CAPACITY);
   assign core_in_valid = in_valid && in_ready;
-  assign out_valid = (fifo_count != 0);
-  assign out_stage1_data = s1_mem[rd_ptr];
-  assign out_stage2_data = s2_mem[rd_ptr];
-  assign out_config_id = cfg_mem[rd_ptr];
-  assign out_epoch = epoch_mem[rd_ptr];
-  assign out_frame_start = fs_mem[rd_ptr];
-  assign out_frame_end = fe_mem[rd_ptr];
-  assign out_tail = tail_mem[rd_ptr];
+  assign raw_valid = (fifo_count != 0);
+  assign raw_pop = raw_valid && encoder_in_ready;
+  assign out_valid = encoder_valid;
+  assign out_stage1_data = out_s1_q;
+  assign out_stage2_data = out_s2_q;
+  assign out_pa0_data = encoder_pa0;
+  assign out_pa1_data = encoder_pa1;
+  assign out_config_id = out_cfg_q;
+  assign out_epoch = out_epoch_q;
+  assign out_frame_start = out_fs_q;
+  assign out_frame_end = out_fe_q;
+  assign out_tail = out_tail_q;
   assign overflow_error = overflow_q;
   assign inflight_count = credit_count;
+  assign drain_done = stop_req && (credit_count == 0) &&
+                      (core_pending_count == 0) && (fifo_count == 0) &&
+                      !encoder_valid;
 
   tid32_mash11_fs4_multipa_tx #(.W(W), .CHANNELS(CHANNELS)) u_core (
     .clk(clk), .rst_n(rst_n), .in_valid(core_in_valid), .in_ready(),
     .in_i_poly_vec(in_i_poly_vec), .in_q_poly_vec(in_q_poly_vec),
     .pa_valid(core_valid), .pa_stage1_data(core_s1), .pa_stage2_data(core_s2)
+  );
+
+  thermo5_weighted_mash_encoder #(.CHANNELS(CHANNELS)) u_weighted_encoder (
+    .clk(clk), .rst_n(rst_n), .in_valid(raw_valid), .in_ready(encoder_in_ready),
+    .in_stage1_data(s1_mem[rd_ptr]), .in_stage2_data(s2_mem[rd_ptr]),
+    .out_valid(encoder_valid), .out_ready(out_ready),
+    .out_pa0_data(encoder_pa0), .out_pa1_data(encoder_pa1)
   );
 
   always_ff @(posedge clk or negedge rst_n) begin : p_adapter
@@ -75,7 +101,11 @@ module thermo5_weighted_mash_backend_adapter #(
     if (!rst_n) begin
       meta_valid_pipe <= '0;
       rd_ptr <= '0; wr_ptr <= '0; fifo_count <= '0; credit_count <= '0;
+      core_pending_count <= '0;
       overflow_q <= 1'b0;
+      out_s1_q <= '0; out_s2_q <= '0;
+      out_cfg_q <= '0; out_epoch_q <= '0;
+      out_fs_q <= 1'b0; out_fe_q <= 1'b0; out_tail_q <= 1'b0;
       for (k=0; k<CORE_LATENCY; k=k+1) begin
         cfg_pipe[k] <= '0; epoch_pipe[k] <= '0;
         frame_start_pipe[k] <= 1'b0; frame_end_pipe[k] <= 1'b0; tail_pipe[k] <= 1'b0;
@@ -95,7 +125,7 @@ module thermo5_weighted_mash_backend_adapter #(
       end
 
       push_fifo = core_valid;
-      pop_fifo = out_valid && out_ready;
+      pop_fifo = raw_pop;
       if (push_fifo) begin
         if (fifo_count == FIFO_DEPTH && !pop_fifo) overflow_q <= 1'b1;
         else begin
@@ -105,17 +135,29 @@ module thermo5_weighted_mash_backend_adapter #(
           wr_ptr <= wr_ptr + 1'b1;
         end
       end
+      if (raw_pop) begin
+        out_s1_q <= s1_mem[rd_ptr]; out_s2_q <= s2_mem[rd_ptr];
+        out_cfg_q <= cfg_mem[rd_ptr]; out_epoch_q <= epoch_mem[rd_ptr];
+        out_fs_q <= fs_mem[rd_ptr]; out_fe_q <= fe_mem[rd_ptr]; out_tail_q <= tail_mem[rd_ptr];
+      end
       if (pop_fifo) rd_ptr <= rd_ptr + 1'b1;
       case ({push_fifo && !(fifo_count == FIFO_DEPTH && !pop_fifo), pop_fifo})
         2'b10: fifo_count <= fifo_count + 1'b1;
         2'b01: fifo_count <= fifo_count - 1'b1;
         default: fifo_count <= fifo_count;
       endcase
-      case ({core_in_valid, pop_fifo})
+      case ({core_in_valid, out_valid && out_ready})
         2'b10: credit_count <= credit_count + 1'b1;
         2'b01: credit_count <= credit_count - 1'b1;
         default: credit_count <= credit_count;
       endcase
+      case ({core_in_valid, core_valid})
+        2'b10: core_pending_count <= core_pending_count + 1'b1;
+        2'b01: core_pending_count <= core_pending_count - 1'b1;
+        default: core_pending_count <= core_pending_count;
+      endcase
+      if (core_valid && core_pending_count == 0)
+        overflow_q <= 1'b1;
     end
   end
 endmodule

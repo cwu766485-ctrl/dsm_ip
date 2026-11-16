@@ -11,7 +11,11 @@ from dsm_refmodel.thermo5_receiver import audit_thermo5_plane_alignment
 from benchmark_thermo5_step_ntf import _aggregate
 from benchmark_thermo5_ef2_robust import _variant
 from benchmark_thermo5_tid_receiver import make_256qam_ofdm
-from benchmark_thermo5_parallel_dsm_v2 import Q, _mash11_component
+from benchmark_thermo5_parallel_dsm_v2 import (
+    Q,
+    _encode_three_equal_mash,
+    _mash11_component,
+)
 
 
 class Thermo5DsmExperimentTests(unittest.TestCase):
@@ -26,6 +30,53 @@ class Thermo5DsmExperimentTests(unittest.TestCase):
             e2_prev2 = e2[index - 2] if index >= 2 else 0
             second_difference = e2[index] - 2 * e2_prev + e2_prev2
             self.assertEqual(value - sample, -second_difference)
+
+    def test_three_equal_pa_thermometer_mapping_is_exact_and_fs4_ordered(self):
+        rng = random.Random(20261117)
+        levels_i = [rng.choice((-3, -1, 1, 3)) * Q for _ in range(64)]
+        levels_q = [rng.choice((-3, -1, 1, 3)) * Q for _ in range(64)]
+        words, decoded_i, decoded_q, mute_mask = _encode_three_equal_mash(
+            levels_i, levels_q)
+        self.assertEqual(decoded_i, levels_i)
+        self.assertEqual(decoded_q, levels_q)
+        self.assertEqual(len(words), 2)
+        self.assertEqual(len(mute_mask), 0)
+        for word_index, word in enumerate(words):
+            self.assertEqual(len(word), 3)
+            for lane in range(32):
+                sample_index = word_index * 32 + lane
+                for component, expected in ((0, levels_i[sample_index] // Q),
+                                            (1, levels_q[sample_index] // Q)):
+                    decoded = 0
+                    for plane, plane_word in enumerate(word):
+                        bit = (plane_word >> (2 * lane + component)) & 1
+                        if component == 0:
+                            positive = bool(bit) if lane % 2 == 0 else not bool(bit)
+                        else:
+                            positive = not bool(bit) if lane % 2 == 0 else bool(bit)
+                        decoded += 1 if positive else -1
+                    self.assertEqual(decoded, expected)
+
+    def test_three_equal_pa_mapping_preserves_each_frame_after_state_reset(self):
+        first_input = [0, 8192, -8192, 12000] * 8
+        second_input = [-12000, 4096, 0, -4096] * 8
+        first, _ = _mash11_component(first_input)
+        second, _ = _mash11_component(second_input)
+        frame_one, decoded_i_one, decoded_q_one, mute_one = \
+            _encode_three_equal_mash(first, first)
+        frame_two, decoded_i_two, decoded_q_two, mute_two = \
+            _encode_three_equal_mash(second, second)
+        self.assertEqual(len(frame_one), 1)
+        self.assertEqual(len(frame_two), 1)
+        self.assertNotEqual(frame_one[0], frame_two[0])
+        self.assertEqual(len(mute_one), 2)
+        self.assertEqual(len(mute_two), 2)
+        self.assertEqual(decoded_i_one, first)
+        self.assertEqual(decoded_q_one, first)
+        self.assertEqual(decoded_i_two, second)
+        self.assertEqual(decoded_q_two, second)
+        self.assertEqual(mute_one, [(0, 0), (0, 1)])
+        self.assertEqual(mute_two, [(0, 0), (0, 1)])
 
     def test_rtl_first_order_step_mode_matches_scalar_oracle(self):
         rng = random.Random(17)

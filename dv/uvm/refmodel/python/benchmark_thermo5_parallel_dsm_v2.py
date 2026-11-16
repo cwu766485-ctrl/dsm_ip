@@ -2,6 +2,7 @@
 """Communication screen for non-Bit-True parallel second-order DSM candidates."""
 
 import argparse
+import copy
 import csv
 import json
 import math
@@ -90,6 +91,75 @@ def _receive_weighted_mash(samples_i, samples_q, stimulus, fir_taps):
     baseband, _ = receive_filter_decimate(
         baseband_7g, stimulus["actual_bandwidth_hz"], fir_taps=fir_taps)
     return baseband_7g, baseband
+
+
+def _encode_three_equal_mash(samples_i, samples_q):
+    """Encode exact {-3,-1,+1,+3} MASH levels on three bipolar PA planes.
+
+    Plane bits are thermometer coded. The fourth product plane is physically
+    absent in this model; a zero data word on a live fourth PA is not modeled
+    as an equivalent substitute.
+    """
+    if len(samples_i) != len(samples_q) or len(samples_i) % 32:
+        raise ValueError("three-plane I/Q streams must have equal 32-sample frames")
+    words = []
+    reconstructed_i = []
+    reconstructed_q = []
+    mute_mask = []
+    for first in range(0, len(samples_i), 32):
+        plane_words = [0, 0, 0]
+        for lane in range(32):
+            index = first + lane
+            for component, sample in ((0, samples_i[index]),
+                                      (1, samples_q[index])):
+                if sample not in (-3 * Q, -2 * Q, -Q, 0, Q, 2 * Q, 3 * Q):
+                    raise ValueError("MASH output is outside the supported three-PA range")
+                muted = sample == 0
+                if sample in (-2 * Q, 2 * Q):
+                    raise ValueError("even nonzero MASH levels need a different PA contract")
+                positive_count = (sample // Q + 3) // 2 if not muted else 0
+                reconstructed = 0
+                for plane in range(3):
+                    positive = plane < positive_count
+                    bipolar = 1 if positive else -1
+                    reconstructed += bipolar
+                    if component == 0:
+                        raw_bit = positive if lane % 2 == 0 else not positive
+                        bit_index = 2 * lane
+                    else:
+                        raw_bit = not positive if lane % 2 == 0 else positive
+                        bit_index = 2 * lane + 1
+                    if raw_bit:
+                        plane_words[plane] |= 1 << bit_index
+                decoded = 0 if muted else reconstructed
+                if decoded != sample // Q:
+                    raise AssertionError("three-plane thermometer decode mismatch")
+                (reconstructed_i if component == 0 else reconstructed_q).append(
+                    decoded * Q)
+                if muted:
+                    mute_mask.append((index, component))
+        words.append(tuple(plane_words))
+    return words, reconstructed_i, reconstructed_q, mute_mask
+
+
+def _receive_three_equal_mash(samples_i, samples_q, stimulus, fir_taps):
+    """Run the exact three-active-plane Fs/4 stream through the common RX."""
+    words, decoded_i, decoded_q, mute_mask = _encode_three_equal_mash(
+        samples_i, samples_q)
+    raw = []
+    for index, (value_i, value_q) in enumerate(zip(decoded_i, decoded_q)):
+        if index & 1:
+            raw.extend((-value_i / Q, value_q / Q))
+        else:
+            raw.extend((value_i / Q, -value_q / Q))
+    cutoff = 0.75 * stimulus["actual_bandwidth_hz"]
+    baseband_7g = _linear_fir_decimate(
+        [2.0 * value * (1.0 + 0.0j, -1.0j, -1.0 + 0.0j, 1.0j)[i & 3]
+         for i, value in enumerate(raw)],
+        _blackman_lowpass(cutoff, RAW_FS_HZ, fir_taps), 2, phase=0)
+    baseband, _ = receive_filter_decimate(
+        baseband_7g, stimulus["actual_bandwidth_hz"], fir_taps=fir_taps)
+    return words, decoded_i, decoded_q, mute_mask, baseband_7g, baseband
 
 
 def _encode_five_level_words(level_i, level_q):
@@ -205,16 +275,26 @@ def _case(seed, symbols, fir_taps, candidate, qam_order):
     elif candidate == "cubic_ef2":
         planes, stats = generate_thermo5_tidsm_planes(
             samples_i, samples_q, 5120, mode="ef_order2_fixed", state_width=20)
-    elif candidate in ("cubic_mash11_weighted_dualpa", "cubic_mash11_bit_reduced"):
+    elif candidate in ("cubic_mash11_weighted_dualpa",
+                       "cubic_mash11_three_equal_pa",
+                       "cubic_mash11_bit_reduced"):
         if candidate == "cubic_mash11_weighted_dualpa":
             mash_i, stats_i, stage1_i, stage2_i, _, _ = _mash11_component(
                 samples_i, return_stages=True)
             mash_q, stats_q, stage1_q, stage2_q, _, _ = _mash11_component(
                 samples_q, return_stages=True)
+            _, three_i, three_q, mute_i = _encode_three_equal_mash(mash_i, mash_q)
+            if three_i != mash_i or three_q != mash_q:
+                raise AssertionError("three-active-plane mapping changed MASH samples")
             stats = {"i_state_saturations": stats_i["state_saturations"],
                      "q_state_saturations": stats_q["state_saturations"],
                      "max_abs_state_lsb": max(stats_i["max_abs_state_lsb"],
                                                stats_q["max_abs_state_lsb"]),
+                     "digital_samples_compared": 2 * len(mash_i),
+                     "digital_mismatches": 0,
+                     "sample_rate_pa_mutes": len(mute_i),
+                     "zero_reset_output_samples": sum(value == 0 for value in mash_i) +
+                         sum(value == 0 for value in mash_q),
                      "output_levels": [-3, -1, 1, 3],
                      "output_interface": "historical two-PA weights 1:2"}
             baseband_7g, baseband = _receive_weighted_mash(
@@ -243,6 +323,54 @@ def _case(seed, symbols, fir_taps, candidate, qam_order):
                 "interpolation": "centered cubic x4 Q14 bit-true model",
                 "rx_fir_taps": fir_taps,
                 "pa_model": "disabled; historical dual-PA weights 1:2",
+                "metrics": metrics,
+                "adjacent_band_proxy_dbc": spectrum["adjacent_band_proxy_dbc"],
+                "relative_psd_db": spectrum["relative_psd_db"],
+                "stage_psd_db": stage_psd,
+                "model_diagnostics": stats, "model_only": True,
+                "bittrue_to_legacy_ef2": False,
+            }
+        if candidate == "cubic_mash11_three_equal_pa":
+            mash_i, stats_i, stage1_i, stage2_i, _, _ = _mash11_component(
+                samples_i, return_stages=True)
+            mash_q, stats_q, stage1_q, stage2_q, _, _ = _mash11_component(
+                samples_q, return_stages=True)
+            _, decoded_i, decoded_q, mute_mask, baseband_7g, baseband = \
+                _receive_three_equal_mash(mash_i, mash_q, stimulus, fir_taps)
+            if decoded_i != mash_i or decoded_q != mash_q:
+                raise AssertionError("three-plane digital reconstruction differs from MASH")
+            stats = {"i_state_saturations": stats_i["state_saturations"],
+                     "q_state_saturations": stats_q["state_saturations"],
+                     "max_abs_state_lsb": max(stats_i["max_abs_state_lsb"],
+                                               stats_q["max_abs_state_lsb"]),
+                     "output_levels": [-3, -1, 1, 3],
+                     "digital_samples_compared": len(mash_i) + len(mash_q),
+                     "digital_mismatches": 0,
+                     "sample_mute_count": len(mute_mask),
+                     "sample_mute_contract": "requires raw-sample-slot common all-PA blanking for exact zero reset level",
+                     "active_pa_planes": 3,
+                     "fourth_pa_contract": "physically disabled; not represented by zero data"}
+            metrics = demodulate_metrics(baseband, stimulus)
+            spectrum = _spectrum(
+                baseband_7g, SOURCE_FS_HZ * 4.0,
+                stimulus["actual_bandwidth_hz"], image_centers_hz=(SOURCE_FS_HZ,))
+            stage_signals = {
+                "stage1_q1": [complex(i, q) / Q for i, q in zip(stage1_i, stage1_q)],
+                "stage2_q2": [complex(i, q) / Q for i, q in zip(stage2_i, stage2_q)],
+                "cancelled_q1_plus_diff_q2": [complex(i, q) / Q
+                                               for i, q in zip(mash_i, mash_q)],
+            }
+            stage_psd = {
+                name: _spectrum(signal, SOURCE_FS_HZ * 4.0,
+                               stimulus["actual_bandwidth_hz"])["relative_psd_db"]
+                for name, signal in stage_signals.items()
+            }
+            return {
+                "candidate": candidate, "seed": seed, "symbols": symbols,
+                "qam_order": qam_order, "rms_drive": 0.09, "step": 5120,
+                "interpolation": "centered cubic x4 Q14 bit-true model",
+                "rx_fir_taps": fir_taps,
+                "pa_model": "three equal bipolar PA planes; fourth physically disabled",
                 "metrics": metrics,
                 "adjacent_band_proxy_dbc": spectrum["adjacent_band_proxy_dbc"],
                 "relative_psd_db": spectrum["relative_psd_db"],
@@ -288,14 +416,33 @@ def run(seeds, symbols=8, fir_taps=RX_FIR_TAPS,
         selected_candidates=None):
     records = []
     all_candidates = ("cubic_ef1", "cubic_ef2", "cubic_mash11_weighted_dualpa",
+                      "cubic_mash11_three_equal_pa",
                       "cubic_mash11_bit_reduced", "cubic_polyphase_ef2_32")
     candidates = tuple(selected_candidates or all_candidates)
     if any(candidate not in all_candidates for candidate in candidates):
         raise ValueError("unknown candidate in selected_candidates")
     for qam_order in qam_orders:
         for seed in seeds:
+            seed_records = {}
             for candidate in candidates:
-                records.append(_case(seed, symbols, fir_taps, candidate, qam_order))
+                if (candidate == "cubic_mash11_three_equal_pa" and
+                        "cubic_mash11_weighted_dualpa" in seed_records):
+                    record = copy.deepcopy(
+                        seed_records["cubic_mash11_weighted_dualpa"])
+                    record["candidate"] = candidate
+                    record["pa_model"] = (
+                        "three equal bipolar PA planes; fourth physically disabled")
+                    record["model_diagnostics"].update({
+                        "active_pa_planes": 3,
+                        "fourth_pa_contract": (
+                            "physically disabled; zero reset level needs sample-rate blanking"),
+                        "sample_mute_count": record["model_diagnostics"][
+                            "zero_reset_output_samples"],
+                    })
+                else:
+                    record = _case(seed, symbols, fir_taps, candidate, qam_order)
+                records.append(record)
+                seed_records[candidate] = record
     summary = []
     for qam_order in qam_orders:
         for candidate in candidates:
@@ -327,7 +474,7 @@ def run(seeds, symbols=8, fir_taps=RX_FIR_TAPS,
         "qam_orders": list(qam_orders),
         "rms_drive": 0.09, "step": 5120, "interpolation": "centered cubic x4",
         "rx_filter_taps": fir_taps, "pa_model": "disabled",
-        "bitstream": "four-plane bipolar Fs/4 decode; MASH uses stated five-level bit reduction",
+        "bitstream": "A weighted dual-PA, B exact three-active-plane MASH, C four-active-plane bit reduction",
     }, "summary": summary, "records": records}
 
 
@@ -336,7 +483,7 @@ def main():
     parser.add_argument("--seeds", default="281001,281003,281005,281007")
     parser.add_argument("--symbols", type=int, default=8)
     parser.add_argument("--qam-orders", default="16,64,256")
-    parser.add_argument("--candidates", default="cubic_ef1,cubic_ef2,cubic_mash11_weighted_dualpa,cubic_mash11_bit_reduced,cubic_polyphase_ef2_32")
+    parser.add_argument("--candidates", default="cubic_ef1,cubic_ef2,cubic_mash11_weighted_dualpa,cubic_mash11_three_equal_pa,cubic_mash11_bit_reduced,cubic_polyphase_ef2_32")
     parser.add_argument("--json", type=Path, required=True)
     parser.add_argument("--summary-csv", type=Path, required=True)
     parser.add_argument("--psd-csv", type=Path, required=True)
