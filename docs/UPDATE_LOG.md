@@ -1,3 +1,8 @@
+## 2026-11-17 23:03 SGT — Cubic candidate stream comparison
+
+- Added `dv/verif/integration/vcu118_arch/tb_cubic_stream_equivalence.sv` and `research/vcu118_arch/run_cubic_stream_equiv.sh`. Both cubic candidates matched the original interpolator for 3,575 output words each under 887 sink stalls, 668 source bubbles and one midstream reset. Logs and generated renamed RTL are retained in `runs/cubic_stream_equiv_01/`; this is simulation, not unbounded formal proof.
+- Updated MASH timing report. EF1 bounded-CDC candidate is in synthesis; Runtime remains temporarily suspended with independent resume watchdog.
+
 ## 2026-11-17 23:00 SGT — Prioritize EF1 timing candidate
 
 - Temporarily suspended and trimmed the existing Runtime Vivado process (PID 18680) without killing it; `research/vcu118_arch/preempt_ef1_candidate.py` runs the new EF1 candidate at `runs/ef1_cdc_candidate_preempt_01/`, and resumes Runtime in a finally block. An independent watchdog also resumes it if the controller dies. Original Runtime DCP/logs remain intact.
