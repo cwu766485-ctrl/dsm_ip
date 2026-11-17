@@ -1,3 +1,8 @@
+## 2026-11-17 23:25 SGT — Cubic candidate arithmetic proof
+
+- Added `research/vcu118_arch/cubic_candidate_reassociation.smt2`. Z3 4.8.12 proves the two candidate 21-bit numerator expressions identical for all 16-bit inputs; the existing integer bound and rounding proof also returns unsat for both counterexample queries (`runs/cubic_reassociation_formal_01/`). This does not prove complete sequential product RTL equivalence.
+- Updated the MASH closure report. EF1 bounded candidate remains in placement with Runtime protected by the resume controller.
+
 ## 2026-11-17 23:08 SGT — Reject segmented CDC constraint and retry
 
 - EF1 attempt `runs/ef1_cdc_candidate_preempt_01/` used Q-pin startpoints and produced `Constraints 18-515` path segmentation Critical Warnings. It was deliberately stopped, and Runtime resumed; its wrapper exit code 0 is not success. Preserved the log and added `validation.json` as FAIL. No routed result is claimed.
