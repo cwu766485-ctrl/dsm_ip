@@ -35,6 +35,8 @@
     "runs/corrected_mash_ooc_01/synth_utilization.rpt": "76be9ae79c17abe758ae456d08bbab6920b8411b1ca200442f263fcbb571e0e2",
     "runs/corrected_mash_ooc_01/synth_timing_summary.rpt": "d24ee087082f21238bd2ba38e9c87e48f9b23b93997a7bc0b4783abe26a42884",
     "runs/corrected_mash_ooc_01/synthesized.dcp": "ba98b5f9a0bd51567f58d05203d05a2eee21da2eff1f23a1fc6ead31ed29b0c2",
-    "runs/cubic_math_smt_02/z3.log": "ee89c6dd4e0a4dfe1957378466c8176a4b4fc0c7bae40af31a9bd2ac46e5f449"
+    "runs/cubic_math_smt_02/z3.log": "ee89c6dd4e0a4dfe1957378466c8176a4b4fc0c7bae40af31a9bd2ac46e5f449",
+    "runs/required_xsim_02_launcher/console.log": "ea9d203cf0958ce28ab7798c2f93640ee1c8583b83298f6486751abcf07b738d",
+    "runs/required_vcs_03_launcher/console.log": "c6e5d4a7454256cca35315f765be036b269d8565147cbcb0f4b6bc0bdb5f7eba"
   }
 }
