@@ -1,3 +1,8 @@
+## 2026-11-17 23:40 SGT — Schedule MASH candidate routes ahead of Runtime
+
+- Replaced the passive MASH queue with `research/vcu118_arch/preempt_mash_candidates.py`, scheduled at `runs/mash_candidates_preempt_01/` after EF1 attempt 03. It preserves Runtime with a suspend/resume finally block and independent watchdog, runs MASH A/B serially in fresh output directories, records Tcl/candidate hashes and validates actual completion markers. No candidate result exists yet.
+- The prior passive queues are stopped and retained. Updated closure report, matrix and frontier; no product RTL, Golden or pre-existing implementation files changed.
+
 ## 2026-11-17 23:33 SGT — Reject implicit hold false-path
 
 - AMD UG903 documents that `set_max_delay -datapath_only` internally false-paths hold checks. The prior report's statement that no false path was added was incomplete: while none was explicit, hold was implicitly waived. Because independent-reset and physical CDC justification is incomplete, stopped attempt `runs/ef1_cdc_candidate_preempt_02/` before routing and marked it INVALID; Runtime resumed. Its log is retained.
