@@ -86,6 +86,18 @@ python3 research/vcu118_arch/check_cubic_rounding_exhaustive.py
 z3 -T:30 research/vcu118_arch/centered_cubic_math_proof.smt2
 ```
 
+The preserved real MASH RTL QAM capture can also be replayed through the
+5,264-word prefill candidate with bubbles and STOP:
+
+```bash
+mkdir runs/repro_prefill_actual_qam_NEW
+iverilog -g2012 -s tb_prefill_qam_pa -o runs/repro_prefill_actual_qam_NEW/simv \
+  research/vcu118_arch/thermo5_frame_prefill_tx.sv dv/verif/integration/vcu118_arch/tb_prefill_qam_pa.sv
+vvp runs/repro_prefill_actual_qam_NEW/simv \
+  +PA0=../thermo5_runtime_product/runs/runtime_qam281001/capture_xpm_fixed/phase1_arch2_pa0.mem \
+  +PA1=../thermo5_runtime_product/runs/runtime_qam281001/capture_xpm_fixed/phase1_arch2_pa1.mem
+```
+
 The below test creates a fresh working directory because the testbench writes its VCD at a relative path:
 
 ```bash
