@@ -1,3 +1,7 @@
+## 2026-11-17 23:42 SGT — Harden MASH queue recovery
+
+- Stopped the waiting-only MASH queue before it suspended Runtime; the abandoned launcher and logs are retained. Added a pre-suspend marker so the independent watchdog can recover even if the controller fails immediately after suspending Runtime. New queue uses `runs/mash_candidates_preempt_02/`.
+
 ## 2026-11-17 23:40 SGT — Schedule MASH candidate routes ahead of Runtime
 
 - Replaced the passive MASH queue with `research/vcu118_arch/preempt_mash_candidates.py`, scheduled at `runs/mash_candidates_preempt_01/` after EF1 attempt 03. It preserves Runtime with a suspend/resume finally block and independent watchdog, runs MASH A/B serially in fresh output directories, records Tcl/candidate hashes and validates actual completion markers. No candidate result exists yet.

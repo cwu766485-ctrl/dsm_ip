@@ -2,7 +2,7 @@
 
 Research HEAD at start `773983f29158edc8aff64aab5ce5fc7b54d15e6b`; worktree
 was clean. Baseline DCP/report/replay hashes are recorded in
-`runs/timing_live_closure_baseline_01/manifest.json`. Runtime is temporarily suspended in routing to prioritize the EF1 CDC-bound candidate; `runs/ef1_cdc_candidate_preempt_01/` was stopped as INVALID due to path segmentation; `runs/ef1_cdc_candidate_preempt_02/` was stopped because datapath-only implicitly false-paths hold without full justification. `runs/ef1_cdc_candidate_preempt_03/` reuses the same-source synthesized checkpoint with ordinary max-delay and is active with resume-on-completion and watchdog. MASH A/B priority queue `runs/mash_candidates_preempt_01/` waits for EF1, then temporarily suspends Runtime during its two serial routes and resumes with an independent watchdog.
+`runs/timing_live_closure_baseline_01/manifest.json`. Runtime is temporarily suspended in routing to prioritize the EF1 CDC-bound candidate; `runs/ef1_cdc_candidate_preempt_01/` was stopped as INVALID due to path segmentation; `runs/ef1_cdc_candidate_preempt_02/` was stopped because datapath-only implicitly false-paths hold without full justification. `runs/ef1_cdc_candidate_preempt_03/` reuses the same-source synthesized checkpoint with ordinary max-delay and is active with resume-on-completion and watchdog. MASH A/B priority queue `runs/mash_candidates_preempt_02/` waits for EF1, then temporarily suspends Runtime during its two serial routes and resumes with an independent watchdog.
 The EF1 bundled-data mailbox common-reset digital formal has 3 proven assertions
 and 3 covers with zero black boxes, including source hold, sample stability and
 capture identity; independent reset, arbitrary phases, metastability and bus

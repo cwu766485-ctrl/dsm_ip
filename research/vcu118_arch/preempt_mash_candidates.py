@@ -37,6 +37,7 @@ while not (out/'watchdog_ready').exists():
  import time;time.sleep(1)
 def control(action):
  return subprocess.run(['powershell.exe','-NoProfile','-ExecutionPolicy','Bypass','-File',win(ps),action,str(pid)],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,check=True).stdout
+(out/'suspend_attempted').write_text('attempting suspend after EF1 completion\n')
 (out/'suspend.log').write_text(control('suspend'))
 results={}
 try:
