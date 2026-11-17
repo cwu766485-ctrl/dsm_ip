@@ -51,6 +51,17 @@ fresh output path; the original is `../thermo5_runtime_product/runs/runtime_qam2
 The research scripts never update existing inputs or RTL PA captures. See the
 original run directories for MATLAB comparison and waveform evidence.
 
+Run the three runtime backend throughput check with Icarus (or compile the
+same source list with VCS). The test drives 2,048 words per architecture:
+
+```bash
+mkdir runs/repro_runtime_ii_NEW
+mapfile -t rtl_sources < <(rg '^rtl/.*\.(sv|v)$' dv/uvm/sim/thermo5_sku_filelist.f)
+iverilog -g2012 -s tb_runtime_backend_ii -o runs/repro_runtime_ii_NEW/simv \
+  "${rtl_sources[@]}" dv/verif/integration/vcu118_arch/tb_runtime_backend_ii.sv
+vvp runs/repro_runtime_ii_NEW/simv
+```
+
 The below test creates a fresh working directory because the testbench writes its VCD at a relative path:
 
 ```bash
