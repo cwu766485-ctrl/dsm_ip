@@ -1,3 +1,8 @@
+## 2026-11-17 13:35 SGT — Matched EF1 candidate synthesis
+
+- Matched optimized EF1 synthesis: core WNS +1.140 ns vs baseline -1.823 ns; LUT 48,069 vs 48,098, FF 49,836 vs 49,833, DSP 496 vs 670 and BRAM 6.5 for both. The optimized overall WNS -0.694 ns is an unexpanded cross-clock path.
+- Evidence: `runs/optimized_ppa_ef1_01/ef1/` and baseline `../thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/`. Routed implementations and CDC/constraints review remain open; no timing signoff is claimed.
+
 ## 2026-11-17 13:22 SGT — Isolated centered-cubic optimization candidate
 
 - Changed `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv` to express the fixed Q14 midpoint with an equivalent reduced integer numerator and signed rounding. Added `research/vcu118_arch/compare_qam_captures.py` and the candidate report; updated the execution frontier.
