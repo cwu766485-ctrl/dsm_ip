@@ -6,6 +6,8 @@
 
 ## 2026-11-17 20:26 SGT — VCU118 convergence follow-up
 
+- Initial research HEAD `de773566ad1f633a46deb4476f504d93823dd63b`; research worktree clean. Original thermo5 worktree retained its six pre-existing modified/untracked entries. Existing reports and serial PPA driver were inspected before changes.
+
 - Added `docs/verification/vcu118_convergence_20261117/` with a routed PPA matrix, critical paths, full-chain GTY status, architecture tradeoff and signoff frontier. EF2 and MASH-only actual routed results fail setup; Runtime synthesis remains in progress. Original PPA reports and old tradeoff table remain preserved.
 - Added `dv/verif/integration/vcu118_arch/tb_vcu118_gty14_pa_replay.sv` and `research/vcu118_arch/sim_gty14_pa_replay.tcl` for actual MASH PA capture through the research prefill and vendor GTY; compile-only Icarus check passed. XSim attempts 01/02 failed to find tools on PATH; attempt 03 has reached elaboration. No integrated full-chain or physical GTY claim.
 - Updated research README and execution frontier. No product RTL, Golden, timing exception or pre-existing DCP/VCD was modified. Existing Vivado launcher backed up a root log automatically; preserve both the backed-up and new logs.
