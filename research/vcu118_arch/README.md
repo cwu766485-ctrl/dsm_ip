@@ -62,6 +62,18 @@ iverilog -g2012 -s tb_runtime_backend_ii -o runs/repro_runtime_ii_NEW/simv \
 vvp runs/repro_runtime_ii_NEW/simv
 ```
 
+The isolated centered-cubic arithmetic candidate can be checked independently:
+
+```bash
+mkdir runs/repro_cubic_NEW
+iverilog -g2012 -s tb_centered_cubic_candidate -o runs/repro_cubic_NEW/simv \
+  research/vcu118_arch/centered_cubic_midpoint_candidate.sv \
+  dv/verif/integration/vcu118_arch/tb_centered_cubic_candidate.sv
+vvp runs/repro_cubic_NEW/simv
+python3 research/vcu118_arch/check_cubic_rounding_exhaustive.py
+z3 -T:30 research/vcu118_arch/centered_cubic_math_proof.smt2
+```
+
 The below test creates a fresh working directory because the testbench writes its VCD at a relative path:
 
 ```bash
