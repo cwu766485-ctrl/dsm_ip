@@ -10,5 +10,11 @@
   "runs/ef2_4lane_formal_01/properties.txt": "6f8d464433efc3fd1dee101b73733f2dc3dbfa3941a18c0f449fd19e87340ed9",
   "runs/ef2_8lane_formal_01/properties.txt": "f6e0fcc8770b943dba73622e32f8dcd62ba02770cd111e7d97b243fa54e40e45",
   "runs/live_reset_restart_01/project/gty_sim.sim/sim_1/behav/xsim/simulate.log": "e03d1079e5217da47d545f995033a1c4c269f2b69ca76acaa77a41a14c96ab52",
-  "runs/live_reset_restart_receiver_01/metrics.json": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4"
+  "runs/live_reset_restart_receiver_01/metrics.json": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4",
+  "runs/live_stop_restart_01/project/gty_sim.sim/sim_1/behav/xsim/simulate.log": "2177b28a756900a162d111095cab16d9258a1616b2bc67b7b050313283326fb5",
+  "runs/live_stop_restart_vectors_01/manifest.json": "4fdb059130cee09b6d402d742b19b2095621016dbd031cf0ab9674198f33ca9d",
+  "runs/live_stop_restart_receiver_01/frame0/metrics.json": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4",
+  "runs/live_stop_restart_receiver_01/frame1/metrics.json": "dfb548a82eef39ba7080f8455577a8586ae0f5be63ed6f70df25c67adb7872e4",
+  "runs/live_stop_restart_receiver_01/psd0/result.json": "bdaf3b7538c3bd56f5c896e386771b4bf2c8a827ef1759286430eda8b3ddb2c1",
+  "runs/live_stop_restart_receiver_01/psd1/result.json": "8b84559f394c8b67f0c4021ce1cd10a12e32eec8758dcf073d315fe807f8c88a"
 }

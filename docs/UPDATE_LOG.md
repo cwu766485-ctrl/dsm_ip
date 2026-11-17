@@ -1,3 +1,9 @@
+## 2026-11-18 00:16 SGT — Two-frame live STOP/Restart without reset
+
+- `runs/live_stop_restart_01/` passed two successive live buffered frames with no reset, with STOP and drain each frame, input bubbles, actual AXIS → product MASH → prefill → dual GTY. Each frame matched 5,264 independent continuous-state Golden PA words and 336,896 serial TX and PMA loopback bits per lane; zero observed lane skew and no underflow/protocol error.
+- Serial receiver: frame 0 EVM 2.551442%, SNDR 31.864285 dB, 15/37,376 errors; frame 1 EVM 2.553836%, SNDR 31.856141 dB, 12/37,376 errors. Welch adjacent proxies -16.314892 and -16.397680 dBc (`runs/live_stop_restart_receiver_01/`). These are digital results, not RF ACLR. Single-bank source buffering introduces between-frame refill, epoch remains synthetic, and physical implementation and independent reset remain open.
+- Updated live integration report and frontier; added log and metrics hashes.
+
 ## 2026-11-18 00:10 SGT — Two-frame continuous-state STOP/Restart test preparation
 
 - Added a two-frame scalar MASH Golden generator and live AXIS-to-GTY testbench/Tcl. Golden generation independently carries MASH state across both frames; first-frame 5,264 words match existing Golden exactly (`runs/live_stop_restart_vectors_01/`). Icarus syntax compile passed. The no-reset live STOP/Restart test is NOT_RUN until XSim completes; no product RTL or reference model was modified.
