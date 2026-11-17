@@ -30,8 +30,8 @@ A separate corrected standalone MASH OOC has completed synthesis (12,472 LUT,
 22,811 FF, pre-place WNS +2.666 ns) and entered placement; its boundaries and
 I/O constraints differ from the historical MASH wrapper.
 An isolated centered-cubic arithmetic candidate in branch
-`work/thermo5-vcu118-cubic-optimization` at `c3212ec4b02ea59d0b7c775174d655cffe21f5ca`
-passes XSim, VCS and all ten active QAM PA capture hashes; its full RTL formal
+`work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
+passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its full RTL formal
 miter timed out and it is not timing-characterized or in the baseline PPA.
 No routed comparison, Fmax, GTY integration or board signoff is claimed. Next:
 complete all routes, inspect genuine paths, add post-route reports/estimates,
