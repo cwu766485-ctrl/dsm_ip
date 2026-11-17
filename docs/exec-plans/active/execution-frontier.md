@@ -1,3 +1,17 @@
+## VCU118 convergence follow-up (2026-11-17, in progress)
+
+Research worktree remains `work/thermo5-vcu118-architecture-research`. Detailed
+handoff: `docs/verification/vcu118_convergence_20261117/signoff_frontier.md`.
+EF2 routed core WNS -97.149 ns, overall WHS +0.009 ns; MASH-only routed core
+WNS -2.879 ns, overall WHS +0.004 ns, vectorless power 4.896 W. Both FAIL.
+Runtime PPA implementation is running with the common original Tcl. Optimized EF1
+worst path is an unexpanded AXI-Lite/core mailbox CDC, with 0.011 ns modeled
+edge separation; data/clock-domain contract and valid constraints remain open.
+Actual-PA/prefill/GTY replay passed 336,896 serial bits per lane and PMA
+loopback, and recovered serial data passed the same receiver; failed attempts
+01-03 are preserved. This replay is not live AXI-to-GTY integration. No system
+or board signoff is claimed. Runtime synthesis WNS -93.355 ns is not routed.
+
 ## VCU118 architecture and 14-Gb/s GTY research (2026-11-17 SGT, in progress)
 
 Independent branch `work/thermo5-vcu118-architecture-research` is based on

@@ -1,0 +1,7 @@
+case,status,source_sha,scope,lut,ff,dsp,bram_tiles,setup_wns_ns,setup_tns_ns,hold_wns_ns,hold_tns_ns,power_w,worst_path,evidence
+EF1 baseline,FAIL,67d68abb402f9bb2c9a87a43a99f46955acfe9d9,OOC frontend product proxy,47321,50206,670,6.5,-2.797,-6830.201,0.007,0,5.331,core cubic1 to elastic buffer,runs/vcu118_ppa_research_01/ef1
+EF1 cubic candidate,FAIL,3f88efef965e2d5705adc57d06f530c265af2e82,OOC frontend product proxy,47053,49853,496,6.5,-0.363,-32.464,0.002,0,4.815,AXI-Lite config mailbox to core pending register,../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1
+EF2 baseline,FAIL,67d68abb402f9bb2c9a87a43a99f46955acfe9d9,OOC frontend product proxy,55070,25063,670,6.5,-97.149,-66927.648,0.009,0,6.218,pre-DSM FIFO to EF2 error-state feedback,runs/vcu118_ppa_research_01/ef2
+MASH-only,FAIL,67d68abb402f9bb2c9a87a43a99f46955acfe9d9,OOC frontend product proxy,35818,48180,670,6.5,-2.879,-9062.624,0.004,0,4.896,core cubic1 to elastic buffer,runs/vcu118_ppa_research_01/mash
+Runtime,BLOCKED,67d68abb402f9bb2c9a87a43a99f46955acfe9d9,OOC frontend product proxy,,,,,,,,,,implementation running; synthesis WNS -93.355 ns,runs/vcu118_ppa_research_01/runtime
+EF2 pair lookahead,NOT_RUN,37150ea7a31c879d5a89d3f881456d43de1a990a,OOC frontend product proxy,,,,,,,,,,bit-true scope only,../thermo5_vcu118_ef2_lookahead

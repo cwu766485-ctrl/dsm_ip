@@ -1,3 +1,15 @@
+## 2026-11-17 20:33 SGT — Actual MASH PA through GTY digital model
+
+- Actual 5,264-word dual-PA frame replay through research prefill and vendor GTY passed 336,896 serial bits per lane and PMA loopback; observed simulated lane skew 0 UI. Receiver run on serial-captured files: EVM 2.551442%, SNDR 31.864285 dB, 15/37,376 uncoded bits; source and recovered SHA-256 match. Separate digital Welch adjacent proxy -16.314892 dBc; not hardware ACLR.
+- XSim attempts 01/02 failed due to missing tool PATH; attempt 03 failed long-frame serial comparison with a per-UI rounding drift in the testbench; preserved all failures. Attempt 04 uses a seven-UI exact 500 ps sampling interval and passes. Source and reproduction are under `dv/verif/integration/vcu118_arch/` and `research/vcu118_arch/`.
+- Updated convergence reports, frontier and README. The test replays a prior RTL PA capture and synthetic metadata; live AXI-to-GTY, independent reset/relock, physical CDC and board/RF remain open. Runtime synthesis WNS -93.355 ns is not routed. No product RTL or timing exceptions changed.
+
+## 2026-11-17 20:26 SGT — VCU118 convergence follow-up
+
+- Added `docs/verification/vcu118_convergence_20261117/` with a routed PPA matrix, critical paths, full-chain GTY status, architecture tradeoff and signoff frontier. EF2 and MASH-only actual routed results fail setup; Runtime synthesis remains in progress. Original PPA reports and old tradeoff table remain preserved.
+- Added `dv/verif/integration/vcu118_arch/tb_vcu118_gty14_pa_replay.sv` and `research/vcu118_arch/sim_gty14_pa_replay.tcl` for actual MASH PA capture through the research prefill and vendor GTY; compile-only Icarus check passed. XSim attempts 01/02 failed to find tools on PATH; attempt 03 has reached elaboration. No integrated full-chain or physical GTY claim.
+- Updated research README and execution frontier. No product RTL, Golden, timing exception or pre-existing DCP/VCD was modified. Existing Vivado launcher backed up a root log automatically; preserve both the backed-up and new logs.
+
 ## 2026-11-17 17:30 SGT — VCU118 research execution handoff
 
 - Updated `docs/exec-plans/active/execution-frontier.md`: EF2 baseline completed detailed placement and is in post-placement optimization; matched MASH-only and runtime cases remain queued. No new routed results are claimed. The serial PPA process continues in `runs/vcu118_ppa_research_01/`.

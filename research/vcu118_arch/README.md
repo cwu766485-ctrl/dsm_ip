@@ -176,3 +176,16 @@ mkdir runs/repro_mailbox_formal_NEW
 Check `properties.txt` for a proven non-vacuous assertion and both reached
 covers; exit status alone is not a proof. The common-reset/phase scope is
 documented in the report and does not authorize a timing exception.
+
+For the actual 5,264-word MASH PA capture through the research frame prefill
+and vendor GTY serial model, use a fresh directory:
+
+```powershell
+& 'D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat' -mode batch `
+  -source research/vcu118_arch/sim_gty14_pa_replay.tcl `
+  -tclargs runs/repro_gty_pa_replay_NEW
+```
+
+This is a captured-PA replay, not an integrated live AXI-to-GTY DUT. Review
+`serial_pa0.mem` and `serial_pa1.mem` from the XSim working directory and the
+self-checking log. `runs/gty_pa_replay_04/` passed for the preserved input; see the convergence report for the prior failed attempts and serial receiver results.
