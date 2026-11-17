@@ -78,6 +78,14 @@
     "runs/vcu118_ppa_research_01/ef2/synthesized.dcp": "7acc0992edaeecb60d596587abbf72b18dcdf6638163fbf6ec4df43459285aae",
     "../thermo5_vcu118_cubic_optimization/runs/cubic_vcf_01/console.log": "99dce24dfce1f74af03c93e5ee4210aaa4757a9b98d63f0d402f6a1f215bb0f5",
     "../thermo5_vcu118_cubic_optimization/runs/cubic_vcf_01/properties.txt": "389ce2461a094e807a924aac73f93f203496250ea0c35a9f1d8995585a6442c7",
-    "../thermo5_vcu118_cubic_optimization/runs/cubic_vcf_01/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a"
+    "../thermo5_vcu118_cubic_optimization/runs/cubic_vcf_01/setup.txt": "9179ff820f8ccd52c831980266a856fb521fc62364086ba3188857dd4aa5685a",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/routed.dcp": "c3c1b90cb0a7ccd4081c4c9f33f9524185d3a961f589540da535813d96edb832",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/routed_utilization.rpt": "ebf240782cb557f8ac4be1005226c89345a5d4d905d2df912a5ba32c6d917fc3",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/routed_timing_summary.rpt": "fbc5021a8f9baf3c6eb590ac8834eb50e77c1f270b0875c688b3ed4114686a68",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/setup_worst20.rpt": "0803db8853844216e9524b8c0f1f897ecd7bb6e5de2a8043389c36b2951d2b91",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/hold_worst20.rpt": "d8dbbcc60467cc065180cbcdc0a00c42a222ae3000ef08a0c585d1365b3898f0",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/routed_clock_interaction.rpt": "2bddf5d298e247402bac85226b920cb0750cfa0b084fe8afb9a75419a8804a58",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/power_default_activity.rpt": "2877c59e9dfdcc9d6629a47c4fabde469814a10657df2e1ba04c8a494a85ed68",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1.console.log": "03b3dee13fccaa5f38e177fc0a70d20f1010603c6b3c8c9689de3e6808df78f3"
   }
 }

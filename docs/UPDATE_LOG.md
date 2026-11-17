@@ -1,3 +1,8 @@
+## 2026-11-17 15:58 SGT — Optimized EF1 routed comparison and EF2 resume
+
+- Optimized EF1 OOC route: core WNS +0.075 ns, core WHS +0.023 ns, approximate core Fmax 222.420 MHz, versus baseline -2.797 ns / 135.722 MHz. Overall WNS is -0.363 ns on the unexpanded AXI-Lite-to-core mailbox, overall WHS +0.002 ns. 47,053 LUT, 49,853 FF, 496 DSP, 6.5 BRAM and 4.815 W vectorless estimate. No exceptions were added.
+- Baseline EF2 resumed after a temporary host-memory suspension. Updated tradeoff CSV, report, execution frontier and evidence hashes. Physical clock/port, small margin, CDC and full arithmetic formal equivalence remain open; no full-top/GTY signoff or merge.
+
 ## 2026-11-17 12:50 SGT — VCU118 three-architecture research checkpoint
 
 - Added isolated architecture/GTY/PPA study scripts and tests in `research/vcu118_arch/` and `dv/verif/integration/vcu118_arch/`, the tradeoff CSV and research report under `docs/verification/`, and updated the execution frontier. The base product RTL and previous run evidence remain unchanged.

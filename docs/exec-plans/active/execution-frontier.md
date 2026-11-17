@@ -31,19 +31,17 @@ Fmax is approximately 135.722 MHz under these OOC assumptions. Worst hold is an
 unexpanded CDC path; port partial-location warnings prevent physical I/O
 signoff. EF2 synthesis core WNS is -93.320 ns, from the second-interpolator FIFO read
 pointer through EF2 to its error-state register (419 logic levels). Its Vivado
-process was temporarily suspended and its working set trimmed when free host
-RAM fell below 0.4 GB. A guarded local watchdog resumes that exact EF2
-process when optimized EF1 exits; `runs/memory_control_01/resume_ef2.ps1` is
-the manual fallback if the watchdog fails. Detailed EF2 route remains open,
-followed by MASH-only and runtime cases.
+process was suspended under low host RAM and automatically resumed after the
+optimized EF1 route. MASH-only and runtime baseline cases remain queued.
 Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
 failed nets. HD.CLK_SRC/HD.PARTPIN_LOCS are unset; this is not full-top/GTY
 signoff and differs from the historical MASH wrapper and I/O assumptions.
-Matched optimized EF1 synthesis in the candidate worktree reports core WNS
-+1.140 ns vs baseline -1.823 ns and 496 DSP vs 670, after all 36 QAM PA hashes
-matched baseline. Optimized overall WNS -0.694 ns is an unexpanded CDC path;
-optimized EF1 routing and the cross-clock contract remain open.
+Matched optimized EF1 routed: core WNS +0.075 ns, core WHS +0.023 ns, versus
+baseline core WNS -2.797 ns; 47,053 LUT, 49,853 FF, 496 DSP and 4.815 W
+vectorless estimate. Overall WNS -0.363 ns is an unexpanded mailbox CDC path;
+CDC/physical constraints and the small core margin remain open. All 36 QAM PA
+hashes match baseline; formal checks of full arithmetic remain inconclusive.
 An isolated centered-cubic arithmetic candidate in branch
 `work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
 passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its RTL formal
