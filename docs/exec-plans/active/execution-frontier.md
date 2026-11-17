@@ -26,9 +26,12 @@ and VCS required regression pass with preserved vectors.
 
 Four equal-boundary VCU118 PPA cases are running serially in a new run directory.
 EF1 synthesis completed, with pre-place WNS -1.823 ns; placement is in progress.
-A separate corrected standalone MASH OOC has completed synthesis (12,472 LUT,
-22,811 FF, pre-place WNS +2.666 ns) and entered routing; its boundaries and
-I/O constraints differ from the historical MASH wrapper.
+Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
+WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
+failed nets. HD.CLK_SRC/HD.PARTPIN_LOCS are unset; this is not full-top/GTY
+signoff and differs from the historical MASH wrapper and I/O assumptions.
+A matched optimized EF1 implementation is running separately in the candidate
+worktree after all 36 QAM PA file hashes matched baseline.
 An isolated centered-cubic arithmetic candidate in branch
 `work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
 passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its full RTL formal
