@@ -30,3 +30,13 @@ The reset relationship and release circuit need RDC and system-level review;
 no false path or implicit hold waiver was accepted. See
 `runs/ef1_cdc_candidate_preempt_03/implementation/synth_timing_summary.rpt`.
 The implementation is still running, so this is not the final routed WNS.
+
+Reset structure audit: `rtl/axis/dsm_xpm_async_fifo.sv` declares
+`rd_reset_in_wr` as an ASYNC_REG two-flop guard. Its first stage asynchronously
+asserts on `rd_rst_n` and the chain deasserts on `wr_clk` edges; the second stage
+gates `wr_ready`. The reported first-stage recovery path is consistent with that
+intended reset-domain synchronizer structure. This observation does not prove
+release MTBF, board reset distribution, independent reset behavior or authorize
+a blanket false path. Any eventual narrowly scoped exception needs completed
+RDC, reset-contract and physical review, including a check that the second stage
+and other reset/data paths remain timed.

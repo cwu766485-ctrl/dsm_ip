@@ -1,3 +1,7 @@
+## 2026-11-17 23:49 SGT — XPM reset crossing structure audit
+
+- Audited `rtl/axis/dsm_xpm_async_fifo.sv`: `rd_reset_in_wr` is a two-stage ASYNC_REG guard, asynchronously asserted by read-domain reset and released on write-clock edges; its second stage gates `wr_ready`. The pre-place recovery endpoint is its first stage. This describes intent only; reset-domain, MTBF, independent reset and physical release evidence remain open and no false path was added. Updated EF1 closure report.
+
 ## 2026-11-17 23:48 SGT — EF1 pre-place reset-domain path
 
 - EF1 attempt 03 pre-place WNS -0.694 ns is a recovery check from modeled `core_aresetn` to XPM FIFO write-domain `rd_reset_in_wr_reg[0]/CLR`, in `**async_default**`. This is a reset-domain crossing and must not be reported as final routed setup or masked. Updated CDC timing report; no RTL, exception or existing report was changed.
