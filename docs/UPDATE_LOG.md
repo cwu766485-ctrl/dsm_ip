@@ -1,3 +1,8 @@
+## 2026-11-17 22:53 SGT — Source-prefill directed checks
+
+- Added `dv/verif/integration/vcu118_arch/tb_axis_frame_prefill.sv` and `tb_axis_frame_prefill_reset.sv`. Icarus directed tests passed bounded input bubbles, output stall and data/metadata integrity, reset while filling, and oversize-frame fault; raw logs in `runs/axis_frame_prefill_unit_01/` and `runs/axis_frame_prefill_reset_01/`. Full live bubble-stress test with the candidate is running in `runs/live_axis_gty_04/` and is not yet a PASS.
+- No product RTL was modified. Buffer capacity, multi-frame steady-state throughput, GTY hardware and PPA remain open.
+
 ## 2026-11-17 22:49 SGT — Bounded upstream frame-prefill candidate
 
 - Added research-only `thermo5_axis_frame_prefill.sv` and a live GTY test configuration. It buffers a complete bounded AXIS frame and replays at the AXIS clock to absorb finite source bubbles before the existing CDC; it does not alter product RTL or guarantee arbitrary stalls. Maximum 3,008 beats require approximately 1,401,728 bits before mapping/overhead; PPA and production integration NOT_RUN.
