@@ -1,3 +1,8 @@
+## 2026-11-17 15:58 SGT — Routed EF1 optimization candidate
+
+- Optimized EF1 completed VCU118 OOC route: core WNS +0.075 ns, core WHS +0.023 ns, overall WNS -0.363 ns on AXI-Lite-to-core mailbox, overall WHS +0.002 ns; 47,053 LUT, 49,853 FF, 496 DSP, 6.5 BRAM and vectorless 4.815 W. The baseline core WNS was -2.797 ns.
+- Updated the candidate report and frontier. No false paths were added. The core margin is small, clock/port and CDC assumptions remain unqualified, and whole RTL formal equivalence is inconclusive. No product signoff or merge is claimed.
+
 ## 2026-11-17 14:48 SGT — Additional cubic arithmetic formal attempt
 
 - Added `research/vcu118_arch/formal_centered_cubic_clocked.sv` and `formal_centered_cubic_vcf.tcl` for a clocked standalone 16-bit arithmetic miter.

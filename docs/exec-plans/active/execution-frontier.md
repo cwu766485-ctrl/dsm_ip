@@ -1,14 +1,16 @@
-## Isolated centered-cubic optimization candidate (2026-11-17 13:22 SGT)
+## Isolated centered-cubic optimization candidate (2026-11-17 15:58 SGT)
 
-Branch `work/thermo5-vcu118-cubic-optimization` is separate from the running
-baseline PPA worktree. A narrow fixed-Q14 midpoint rewrite passes XSim and VCS
-regressions, eight full-runtime QAM streams, and SHA256 comparison of all ten
-active EF1/EF2/MASH PA files against the preserved baseline. Details and
-reproduction: `docs/verification/thermo5-cubic-optimization-20261117.md`.
-The complete 16-bit RTL formal miter timed out. Matched optimized EF1 synthesis completed: core WNS +1.140 ns vs baseline
--1.823 ns and DSP 496 vs 670. Overall WNS is -0.694 ns on an unexpanded
-cross-clock path. The routed implementation is running, and no timing improvement or product signoff is claimed. Next: compare matched EF1 routed data, then decide whether to run the remaining modes and whether
-the candidate is suitable for integration.
+Branch `work/thermo5-vcu118-cubic-optimization` passes XSim, VCS and all 36
+runtime QAM PA capture hashes. Scoped arithmetic integer proof passes; the full
+RTL SAT and standalone VC Formal checks time out or are inconclusive.
+
+Matched VCU118 EF1 route is complete: core WNS +0.075 ns and WHS +0.023 ns,
+versus baseline core WNS -2.797 ns. Overall WNS -0.363 ns is an unexpanded
+AXI-Lite-to-core mailbox crossing; overall WHS is +0.002 ns. No exceptions were
+added. The core margin is small and OOC clock/port limitations remain. Next:
+prove the mailbox/CDC contract and derive appropriate physical constraints,
+verify margin, then complete the remaining same-boundary architecture cases.
+See `docs/verification/thermo5-cubic-optimization-20261117.md`.
 
 ## VCU118 architecture and 14-Gb/s GTY research (2026-11-17 SGT, in progress)
 
