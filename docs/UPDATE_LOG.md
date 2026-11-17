@@ -1,3 +1,7 @@
+## 2026-11-18 00:10 SGT — Two-frame continuous-state STOP/Restart test preparation
+
+- Added a two-frame scalar MASH Golden generator and live AXIS-to-GTY testbench/Tcl. Golden generation independently carries MASH state across both frames; first-frame 5,264 words match existing Golden exactly (`runs/live_stop_restart_vectors_01/`). Icarus syntax compile passed. The no-reset live STOP/Restart test is NOT_RUN until XSim completes; no product RTL or reference model was modified.
+
 ## 2026-11-18 00:03 SGT — Live common reset during traffic and restart
 
 - `runs/live_reset_restart_01/` passed the new live common-reset test: after the first buffered frame delivered at least 100 PA words, product and GTY reset together, reinitialized and emitted a fresh complete frame. All 5,264 PA words, 336,896 TX/loopback bits per lane and frame/config markers matched Golden; drain=1, underflow=0, protocol=0 and observed lane skew=0. Receiver on post-reset serial capture gave EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376 (`runs/live_reset_restart_receiver_01/`).
