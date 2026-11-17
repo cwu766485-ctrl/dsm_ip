@@ -1,0 +1,52 @@
+# Thermo5 VCU118 architecture research — working report
+
+Status: **research in progress; no routed PPA, GTY board, or RF signoff**. Base commit: `67d68abb402f9bb2c9a87a43a99f46955acfe9d9`; branch `work/thermo5-vcu118-architecture-research`. The independent worktree preserves the original thermo5 worktree and its uncommitted files. Generated evidence remains under this worktree's ignored `runs/` directory. The accompanying [tradeoff table](data/architecture_tradeoff.csv) distinguishes actual accepted RTL PA captures from scalar models. Values are not interchangeable with radiated measurements.
+
+## Runtime output contract
+
+The runtime backend has EF1 and EF2 four-plane equal-weight outputs, and MASH 1-1 two 64-bit outputs with bipolar weights 1 and 2, giving levels {-3,-1,1,3}. Architecture selection is made with the AXI-Lite mode register after STOP and drain; the existing product top does not implement an integrated physical GTY or complete-frame serializer FIFO. A 64-bit plane accepted each core cycle at nominal 218.75 MHz corresponds to 14.000 Gb/s **conditionally**. The MASH backend test accepted and retired 2,048 consecutive words with no bubble, checked transaction order and two planes, and observed eight cycles first-word latency (`runs/mash_ii_02/simulation.log`, `stream.vcd`). This finite test does not guarantee an uninterrupted complete system stream for arbitrary AXIS stalls.
+
+The weighted encoder directed test checks all 64 positions, bit 0 earliest, the I/-Q/-I/Q phase convention, and 1:2 reconstruction (`runs/fs4_rtl_mapping_01/simulation.log`). At a nominal 14 GHz raw sample rate the four-sample sinusoid is 3.5 GHz. The independent analysis of 5,264 real accepted MASH RTL PA words produces digital PSD `runs/fs4_rtl_psd_01/actual_pa_psd.csv`; its nominal in-band range is 3.375–3.625 GHz. This PSD assumes those words are serialized contiguously and is not a measurement of analog RF output.
+
+The existing `rtl/gt/thermo5_raw64_continuous_tx.sv` requires all four valid planes, so its MASH two-plane mask triggers its fault; it also faults when RUN falls before an outstanding valid payload has drained. The directed expected-negative reproducer is in `runs/serializer_contract_01/`. Startup prefill of the existing frontend is not complete-frame prefill. As a research-only candidate, `research/vcu118_arch/thermo5_frame_prefill_tx.sv` implements two banks, complete-frame prefill, a maximum 56-word frame, tagged architecture/config/reset epoch, fixed-rate per-frame output, STOP/drain, and fault checks. `runs/frame_prefill_07/` records normal, back-to-back, STOP/restart, illegal mode switch, overflow, and link-loss tests and VCD. It is not integrated in the product top or PPA cases. It cannot guarantee infinite continuous frames when the source has unbounded stalls; CDC, GT reset/relock and physical lane skew still need design and verification.
+
+## Same-input QAM256 observations
+
+The following are actual accepted product RTL PA words for seed 281001, eight OFDM symbols, RMS 0.09, identity DPD, the same frontend and receiver. Architecture-specific fixed source offsets follow the recurrence/contract: EF1 256, EF2 0, MASH 528 Cartesian samples; they were not chosen by an EVM search. The adjacent figures are rectangular 250 MHz positive-frequency bands relative to the 3.5 GHz main band; they are a **digital leakage proxy**, not standardized or measured RF ACLR. See the CSV for separate lower and upper bands and error counts.
+
+| RTL | EVM % | SNDR dB | errors / bits | Combined adjacent proxy dBc |
+|---|---:|---:|---:|---:|
+| EF1 | 3.502994 | 29.111211 | 168 / 37376 | -17.408943 |
+| EF2 | 2.505986 | 32.020427 | 2 / 37376 | -19.037241 |
+| MASH 1-1 | 2.551442 | 31.864285 | 15 / 37376 | -16.177531 |
+
+EF1 narrowly misses the suggested 3.5% and 29.12 dB thresholds on this seed. A separate scalar step sweep reproduces the baseline but the candidate step 7680 caused 43 offset saturations on seed 281002 (`runs/ef1_step_holdout_281002/metrics.json`); it is not promoted to RTL. The seed is not a basis for declaring a product-wide BER or timing signoff.
+
+## Third-order MASH model
+
+`research/vcu118_arch/mash111_research.py` and independent MATLAB `mash111_scalar.m` are model-only. With Q=32768, D=1-z^-1 and reset residues zero, the fixed-point stage relations are q1=x/Q-D r1/Q, q2=(r1-Q)/Q-D r2/Q, q3=(r2-Q)/Q-D r3/Q. The digital cancellation `y=q1+D*q2+D^2*q3` gives the exact integer identity `Q*y=x-D^3*r3`; it is checked for every I and Q sample. The output levels are {-7,-5,-3,-1,1,3,5,7}, mapped exactly to three bipolar planes weighted 1:2:4. This would require three nominal 14 Gb/s output lanes and a new analog combiner. It is not an RTL implementation or measured LUT estimate. MATLAB and Python agree on all 168,448 samples of the fixed OFDM input (`runs/mash111_matlab_full_01/matlab.log`).
+
+| Seed, symbols | Model | EVM % | SNDR dB | errors / bits | Combined adjacent proxy dBc |
+|---|---|---:|---:|---:|---:|
+| 281001, 8 | MASH 1-1 | 2.551442 | 31.864285 | 15 / 37376 | -16.242458 |
+| 281001, 8 | MASH 1-1-1 | 2.355778 | 32.557312 | 0 / 37376 | -24.945474 |
+| 281002, 32 | MASH 1-1 | 2.510098 | 32.006187 | 36 / 149504 | -16.302364 |
+| 281002, 32 | MASH 1-1-1 | 2.334710 | 32.635341 | 0 / 149504 | -24.908940 |
+
+Both model rows use exactly the same per-seed samples, receiver, drive, DPD and clock. Model and RTL PSD windows begin at different positions; compare adjacent bands within each matched pair. Zero errors are finite observations, not proof of zero BER. Full raw PSD and individual bands are in the corresponding `runs/mash111_study*` directories.
+
+## VCU118 same-boundary PPA
+
+The four-case script targets `xcvu9p-flga2104-2L-e`, 125 MHz AXIS, 100 MHz AXI-Lite, 218.75 MHz core, centered cubic twice, identity DPD and XPM FIFO. The three static cases are research proxy tops that constant-select a backend while retaining the common front end and AXI-Lite boundary; they are not deployment-ready static products. The runtime proxy, with dynamic selection, passed the existing runtime switching UVM check for 448 words and six transitions (`runs/ppa_runtime_equiv_01/simulation.log`). No serializer candidate or GTY is included. No user false paths or clock groups are inserted; 0.2 ns I/O budgets are provisional, and unrelated clock timing needs a reviewed CDC/constraint contract. Vivado rounds the requested 4.571428571 ns core period to 4.571 ns, slightly conservative. Power reports, when available, are vectorless estimates, not measured switching power.
+
+The four-case routed implementation was launched under `runs/vcu118_ppa_research_01/`; consult the CSV for per-case completion status. The EF1 synthesis checkpoint exists and has 48,098 LUT, 49,833 FF, 670 DSP and 6.5 BRAM tiles; synthesis WNS -1.823 ns is **not routed timing**. The leading pre-place core path crosses the first centered interpolator to the elastic buffer. Historical MASH standalone OOC WNS +1.090 ns is from an earlier, subsequently corrected implementation and a different design boundary; it must not be used as current MASH timing or as a ranking. Full setup/hold, worst-20 paths, Fmax, vectorless power and route status remain open until the corresponding reports exist and are reviewed.
+
+## Exact nominal 14 Gb/s GTY candidate
+
+The GT Wizard accepts 14.000 Gb/s raw 64-bit TX/RX with a nominal 125 MHz reference; it rejects the tested 156.25 MHz reference at that exact rate. The VCU118 QSFP1 candidate uses GTYE4 channels X1Y48/X1Y49, bank 231 and REFCLK0 X1Y12; the board guide identifies the associated programmable Si570 reference. This is a nominal configuration, not proof that the actual board clock has been programmed or meets jitter requirements. [AMD VCU118 user guide](https://docs.amd.com/api/khub/documents/Uoc4S9pQd1uve6kiGiG2kA/content), [GT Wizard product guide](https://docs.amd.com/r/en-US/pg182-gtwizard-ultrascale/Transmitter-Frame).
+
+The vendor digital simulation reports TXUSRCLK2 period 4571.429 ps, both TX reset-done, 256 words or 16,384 serial bits per lane matched bit0-first, and an internal TX-to-RX PMA loopback matching all 16,384 bits per lane. The known training latency is explicitly located before comparing the full sequence; measured inter-lane skew is zero in this simulation (`runs/gty_qsfp_loopback_launcher/console.log`). Hardware refclock programming/measurement, PCB lane assignment and constraints, GTY integration, alignment over resets/PVT, physical eye, combiner and RF EVM/ACLR remain unverified.
+
+## Reproduction and open work
+
+See `research/vcu118_arch/README.md` for commands and preserved prerequisite paths. Results are generated in new output directories; never overwrite prior runs. Finish and review all four routed cases with timing and route diagnostics; evaluate genuine timing failures rather than false-path masking. Integrate and verify complete-frame buffering and mode/STOP semantics with GTY if the finite-frame capacity matches the system contract. Run full product regressions, physical CDC/RDC, board clock and GTY bring-up, and RF measurements. Validate MASH 1-1-1 fixed-point hardware, PA balance, overflow and expanded BER before product use. None of these remaining tasks is signoff PASS.

@@ -1,0 +1,26 @@
+{
+  "base_git_sha": "67d68abb402f9bb2c9a87a43a99f46955acfe9d9",
+  "paths": "relative to research worktree; ignored run artifacts remain local",
+  "sha256": {
+    "runs/mash_ii_02/simulation.log": "3117d2be449f98c75b7145219825a8998cc7cca1574141d7f9d5fe8f764b61c8",
+    "runs/mash_ii_02/stream.vcd": "dd619fa57bd5fb12beaf64be217ccaa6006f3b269d56951f1eed41678bf52f0e",
+    "runs/fs4_rtl_mapping_01/simulation.log": "53b4f3be61fbab70c24b7548d940aed0e83a02a8ed73c0b11273fc536f190d86",
+    "runs/fs4_rtl_psd_01/actual_pa_psd.csv": "870772eefcee5f5960ae32619def55b2aeb321d4bbf7b1b322d74cdf66c97665",
+    "runs/serializer_contract_01/simulation.log": "c095c387abfd4587d3262927dfc606a470d5bb8955765a0140518135970ac23a",
+    "runs/three_arch_qam_281001/metrics.json": "14f9954d8b9b2ea2cb60f0b49fa6031ed9710c17390b05fe70e7c04d58f4e39e",
+    "runs/three_arch_qam_281001/actual_pa_psd.csv": "34e566d5ea51598af367d8e66a6da4c51e872ef3e04d16e7ef6e8fcfec57efb6",
+    "runs/mash111_study_01/metrics.json": "8c40a5d05b4aa73dd85a8c6ab04ff703e5e7d4884a12f5b17ce48f89157378e8",
+    "runs/mash111_study_01/raw_psd.csv": "5aa6e426b7546ffa1c645c280c4d84e8bf47873f1e670169c97182130d9ea808",
+    "runs/mash111_study_seed281002/metrics.json": "116e43079b1cdd256c4082627f64dcb8878127497980a43fbd8dfbe53c7fcb18",
+    "runs/mash111_study_seed281002/raw_psd.csv": "e1691e6db5e2ed8903c6dc785f2f19b9bb13ae3495047ae8dee1abd0f6651543",
+    "runs/mash111_matlab_full_01/matlab.log": "691ee1dc1a5756aaa361960a5dbd75656de429f25c45b6aed0d295822d03d43d",
+    "runs/gty_qsfp_loopback_launcher/console.log": "cafe2037de25e95d1dfbb912f6ac5d45e3507c92ea1a81eff110c4b0ba55e66b",
+    "runs/ppa_runtime_equiv_01/simulation.log": "2496056dd8f4d09fd9a3c6e085a21ff9694f296ca104cd09421f68384ef95c82",
+    "runs/required_xsim_01/console.log": "b6e7df7d769e489cb49f8370db9faa9a488c361f32de5fb546e3e3944c0e2194",
+    "runs/required_vcs_02_launcher/console.log": "33cdc26d0cc68f9649cd26f29b3cdf20b9f7afaf3fe0b4c04d3998aa90c03305",
+    "runs/vcu118_ppa_research_01/ef1/synthesized.dcp": "7a6048f39f0ada2ad4dd487a072ceb59927797945e2fcc89e5c36066f5d9f3f9",
+    "runs/vcu118_ppa_research_01/ef1/synth_timing_summary.rpt": "1bd6c13d89ab36daf164764521bfb23e49a5b13d42e64561697e0f66c1018aef",
+    "runs/frame_prefill_07/simulation.log": "137ee57f0dbbc7cef9da9ba2982124bc51425e05469c920dabd25b6e2e2b7dc5",
+    "runs/frame_prefill_07/traffic.vcd": "ee7485a78336c7746f45c43daa92c0eb9d5acaa6e83388a2bcd2cf2b469cd752"
+  }
+}

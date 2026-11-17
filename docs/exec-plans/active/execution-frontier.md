@@ -1,3 +1,33 @@
+## VCU118 architecture and 14-Gb/s GTY research (2026-11-17 SGT, in progress)
+
+Independent branch `work/thermo5-vcu118-architecture-research` is based on
+`67d68abb402f9bb2c9a87a43a99f46955acfe9d9`; existing user changes and prior
+runs are preserved. Report: `docs/verification/thermo5-vcu118-architecture-research-20261117.md`;
+tradeoff: `docs/verification/data/architecture_tradeoff.csv`.
+
+The MASH backend passed 2,048 continuous words at II=1 with ready held high;
+Fs/4 mapping and PSD are checked from RTL accepted bits. Existing continuous
+serializer faults on MASH's two-plane mask and early STOP. An isolated 56-word
+complete-frame two-bank prefill candidate passes directed tests but is not in
+the product top, so unrestricted system continuity remains OPEN.
+
+On the QSFP1 GTY sites X1Y48/X1Y49 the vendor model accepts nominal 125 MHz
+reference and exactly 14.000 Gb/s RAW. TXUSRCLK2, two 16,384-bit serial
+sequences and internal TX/RX loopback pass in digital simulation; board clock,
+physical electrical/RF output and product integration remain OPEN.
+
+Actual RTL EF1/EF2/MASH EVM is 3.502994%/2.505986%/2.551442% for fixed seed
+281001; EF1 narrowly misses the suggested 3.5% limit. Matched scalar MASH111
+models have exact third-order cancellation and MATLAB agreement across 168,448
+samples, with two documented seeds. MASH111 is not product RTL. XSim directed
+and VCS required regression pass with preserved vectors.
+
+Four equal-boundary VCU118 PPA cases are running serially in a new run directory.
+EF1 synthesis completed, with pre-place WNS -1.823 ns; placement is in progress.
+No routed comparison, Fmax, GTY integration or board signoff is claimed. Next:
+complete all routes, inspect genuine paths, add post-route reports/estimates,
+then address measured bottlenecks and integrate the reviewed serializer design.
+
 ## Runtime EF1/EF2/MASH digital product qualified (2026-11-17 11:17 SGT)
 
 Implementation: `7fe5bbb0c5e2ee35062ef797a18b73b3c9771bf5`, independent branch
