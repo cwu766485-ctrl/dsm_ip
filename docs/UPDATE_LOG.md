@@ -1,3 +1,7 @@
+## 2026-11-17 23:46 SGT — Guard orphaned EF1 implementation
+
+- Added `research/vcu118_arch/watch_ef1_runtime_resume.sh` to the active EF1 controller. If the controller dies unexpectedly, it waits for an orphaned candidate Vivado to exit before resuming Runtime. Replaced the earlier waiting watchdog while its controller remained alive; no implementation was interrupted or modified.
+
 ## 2026-11-17 23:45 SGT — Guard orphaned MASH implementation
 
 - Added `research/vcu118_arch/watch_mash_runtime_resume.sh` for the active `runs/mash_candidates_preempt_02/` queue. If its controller unexpectedly dies after suspending Runtime, the watchdog waits for any orphaned MASH Vivado process to exit before resuming Runtime, avoiding two large implementations competing for memory. The previous waiting-only watchdog instances were stopped without suspending or changing Runtime; no existing experiment data were changed.
