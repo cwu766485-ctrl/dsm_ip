@@ -161,10 +161,18 @@ wsl -d Rocky-8.10 -- bash -ilc 'export VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1;
 The XSim script itself uses a fixed subdirectory under its current worktree;
 use a fresh worktree or inspect its output directory before running it again.
 
-To repeat the scoped mailbox source-hold check from Rocky with VC Formal,
-set `MAILBOX_FORMAL_ROOT` to this worktree and `MAILBOX_FORMAL_OUT` to a new
-`runs/` directory, then run `vcf -batch -fmode FPV -f
-research/vcu118_arch/formal_cfg_mailbox_hold.tcl` from that directory. Check
-`properties.txt` for a proven non-vacuous assertion and both reached covers;
-exit status alone is not a proof. The common-reset/phase scope is documented in
-the report and does not authorize a timing exception.
+To repeat the scoped mailbox source-hold check in Rocky with VC Formal and a
+fresh output directory:
+
+```bash
+research_root=$PWD
+mkdir runs/repro_mailbox_formal_NEW
+(cd runs/repro_mailbox_formal_NEW && \
+  MAILBOX_FORMAL_ROOT="$research_root" \
+  MAILBOX_FORMAL_OUT="$research_root/runs/repro_mailbox_formal_NEW" \
+  vcf -batch -fmode FPV -f "$research_root/research/vcu118_arch/formal_cfg_mailbox_hold.tcl")
+```
+
+Check `properties.txt` for a proven non-vacuous assertion and both reached
+covers; exit status alone is not a proof. The common-reset/phase scope is
+documented in the report and does not authorize a timing exception.
