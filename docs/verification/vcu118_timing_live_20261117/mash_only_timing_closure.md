@@ -4,6 +4,18 @@ Status: **FAIL**, OOC routed setup WNS -2.879 ns; overall WHS +0.004 ns. LUT 35,
 
 All 20 reported max paths are alternate paths between the same endpoints: first centered cubic `q0_i_reg[2][15]` to the interpolator-to-DPD elastic buffer `data_i_mem_reg[0][120]`. Delay is 7.431 ns (4.857 ns logic, 2.574 ns route), 24 logic levels. The observed category is **shared cubic datapath / elastic-buffer data input**. No path in this Worst-20 set starts or ends in DSM core/cancellation, PA encoder, FIFO credit/ready fanout, CDC/configuration, or an external boundary. This is not proof that those other categories meet timing; a dedicated path-group audit remains open.
 
+| Worst-20 classification | Paths observed |
+|---|---:|
+| Shared cubic data path → elastic-buffer data | 20 |
+| DSM core / cancellation | 0 |
+| PA encoder | 0 |
+| FIFO / credit control | 0 |
+| Valid / ready fanout | 0 |
+| CDC / configuration | 0 |
+| External timing boundary | 0 |
+
+These are alternate paths to one endpoint from `report_timing -max_paths 20 -nworst 20`; they are not 20 independent endpoints. The zero rows are not independent timing coverage.
+
 Candidate A reduces the exact midpoint numerator to `(middle << 3) + middle - edges`; candidate B re-associates it as `(middle << 3) + (middle - edges)`. W+5 signed intermediate width, Q14-equivalent tie-away rounding and saturation are retained. Both full candidate RTL source copies are under `research/vcu118_arch/cubic_midpoint_candidate_{a,b}.sv`; neither changes product RTL. Each passed 65,536 exhaustive W=4 tuples, 100,000 W=16 random tuples and a 1,024-output sustained no-bubble block test (`runs/cubic_candidates_bittrue_02/`, `runs/cubic_candidates_sustained_01/`). Both candidates additionally passed a streaming miter against the original RTL with 3,575 outputs, 887 stalls, 668 input bubbles and one reset (`runs/cubic_stream_equiv_01/`); reproduce via `bash research/vcu118_arch/run_cubic_stream_equiv.sh runs/NEW_DIR`. Candidate A previously passed complete runtime QAM captures and regressions in isolated branch `work/thermo5-vcu118-cubic-optimization`; candidate B has not had full-chain validation. Z3 4.8.12 also proved the W=16 21-bit numerator reassociation between A and B for all operands (`research/vcu118_arch/cubic_candidate_reassociation.smt2`, `runs/cubic_reassociation_formal_01/z3.log`); the existing integer bound and rounding proof also returned unsat for both counterexample queries. This is an arithmetic proof, not full RTL sequential equivalence or product signoff.
 
 MASH routed experiments for both candidates are **BLOCKED / queued** until the existing Runtime run completes; no completed candidate result exists. `research/vcu118_arch/run_ppa_cubic_candidate.tcl` retains the matched clocks, frontend, DPD, XPM FIFO, provisional I/O budgets and reporting sequence; it substitutes only the candidate cubic source. Use `research/vcu118_arch/queue_timing_live_experiments.py` with a fresh output directory after the current Runtime implementation. Report actual CARRY8, latency, WNS/WHS and resources from those runs before choosing a best candidate. Do not label OOC PASS as physical Full Top signoff.
