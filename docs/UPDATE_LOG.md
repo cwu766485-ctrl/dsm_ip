@@ -1,3 +1,9 @@
+## 2026-11-17 23:33 SGT — Reject implicit hold false-path
+
+- AMD UG903 documents that `set_max_delay -datapath_only` internally false-paths hold checks. The prior report's statement that no false path was added was incomplete: while none was explicit, hold was implicitly waived. Because independent-reset and physical CDC justification is incomplete, stopped attempt `runs/ef1_cdc_candidate_preempt_02/` before routing and marked it INVALID; Runtime resumed. Its log is retained.
+- Removed `-datapath_only` from the corrected research constraints so default hold checks remain; 4 ns remains an exploratory bound, not CDC signoff. Fixed segmentation detection to match actual emitted messages rather than the `set_msg_config` command text. New attempt 03 reuses the same-source synthesized DCP, is independently guarded and will validate hold and exception reports. Updated matrix, CDC report and frontier.
+- Reference: AMD UG903 `Consequences-of-Setting-Maximum-Delay-or-Minimum-Delay-Constraints-on-a-Path`.
+
 ## 2026-11-17 23:25 SGT — Cubic candidate arithmetic proof
 
 - Added `research/vcu118_arch/cubic_candidate_reassociation.smt2`. Z3 4.8.12 proves the two candidate 21-bit numerator expressions identical for all 16-bit inputs; the existing integer bound and rounding proof also returns unsat for both counterexample queries (`runs/cubic_reassociation_formal_01/`). This does not prove complete sequential product RTL equivalence.

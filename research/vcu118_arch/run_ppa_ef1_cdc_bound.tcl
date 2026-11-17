@@ -45,7 +45,7 @@ foreach p [get_ports -filter {DIRECTION == OUT}] {
 }
 # Research candidate: bundled-data mailbox. Request traverses two core
 # synchronizer flops before a subsequent capture edge. 4 ns is below one
-# nominal 4.571 ns core period and bounds the data path without false paths.
+# nominal 4.571 ns core period. The hold requirement remains timed; this is an exploratory path constraint, not final asynchronous signoff.
 # Valid only if the common-reset hold/capture contract and physical CDC review
 # apply; this does not waive unrelated CDC paths or constitute signoff.
 if {$kind ne "ef1"} {error "CDC-bound experiment is EF1-only"}
@@ -55,7 +55,7 @@ set mailbox_src [get_pins -of_objects $mailbox_src_cells -filter {REF_PIN_NAME =
 set mailbox_dst [get_pins -of_objects $mailbox_dst_cells -filter {REF_PIN_NAME == D}]
 if {[llength $mailbox_src] == 0 || [llength $mailbox_dst] == 0} {error "empty mailbox pin selection"}
 puts "MAILBOX_DATA_BOUND src=[llength $mailbox_src] dst=[llength $mailbox_dst] ns=4.0"
-set_max_delay -datapath_only 4.000 -from $mailbox_src_cells -to $mailbox_dst_cells
+set_max_delay 4.000 -from $mailbox_src_cells -to $mailbox_dst_cells
 report_exceptions -file exceptions.rpt
 report_clock_interaction -delay_type min_max -file clock_interaction.rpt
 check_timing -verbose -file check_timing.rpt

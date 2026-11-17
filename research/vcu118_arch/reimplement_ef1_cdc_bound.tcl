@@ -15,7 +15,7 @@ set mailbox_src_cells [get_cells -hier -filter {NAME =~ *u_cfg/cfg_mailbox_q_reg
 set mailbox_dst_cells [get_cells -hier -filter {NAME =~ *u_cfg/cfg_pending_core_reg*}]
 if {[llength $mailbox_src_cells] == 0 || [llength $mailbox_dst_cells] == 0} {error "empty mailbox cell selection"}
 puts "MAILBOX_DATA_BOUND src=[llength $mailbox_src_cells] dst=[llength $mailbox_dst_cells] ns=4.0"
-set_max_delay -datapath_only 4.000 -from $mailbox_src_cells -to $mailbox_dst_cells
+set_max_delay 4.000 -from $mailbox_src_cells -to $mailbox_dst_cells
 report_exceptions -file exceptions.rpt
 report_clock_interaction -delay_type min_max -file clock_interaction.rpt
 check_timing -verbose -file check_timing.rpt

@@ -47,7 +47,7 @@ try:
  with (out/'console.log').open('wb') as log:result=subprocess.run(['cmd.exe','/d','/c',win(launch)],cwd=out,stdout=log,stderr=subprocess.STDOUT)
  text=(out/'console.log').read_text(errors='replace')
  complete=bool(re.search(r'^PPA_ROUTED_COMPLETE case=ef1 mode=0 candidate=a$',text,re.M))
- segmented='Constraints 18-515' in text
+ segmented=bool(re.search(r'^(?:ERROR|CRITICAL WARNING): \[Constraints 18-515\]',text,re.M))
  valid=result.returncode==0 and complete and not segmented
  (out/'result.json').write_text(json.dumps({'exit_code':result.returncode,'completion_marker':complete,'path_segmentation':segmented,'valid_run':valid},indent=2)+'\n')
 finally:
