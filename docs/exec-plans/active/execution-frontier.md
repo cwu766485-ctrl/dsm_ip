@@ -30,7 +30,10 @@ Baseline EF1 routed with core/overall WNS -2.797 ns (FAIL), overall WHS
 Fmax is approximately 135.722 MHz under these OOC assumptions. Worst hold is an
 unexpanded CDC path; port partial-location warnings prevent physical I/O
 signoff. EF2 synthesis core WNS is -93.320 ns, from the second-interpolator FIFO read
-pointer through EF2 to its error-state register (419 logic levels); detailed synthesis reporting and route remain in progress,
+pointer through EF2 to its error-state register (419 logic levels). Its Vivado
+process was temporarily suspended and its working set trimmed when free host
+RAM fell below 0.4 GB; `runs/memory_control_01/resume_ef2.ps1` must be used
+to resume it when optimized EF1 completes. Detailed EF2 route remains open,
 followed by MASH-only and runtime cases.
 Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
