@@ -8,7 +8,7 @@ The synthesized baseline EF1 critical core path crosses the first centered-cubic
 
 - Directed XSim `run_xsim_thermo5_i2_d1_axis.ps1`: PASS (`runs/verify_xsim_launcher/console.log`).
 - VCS `thermo5-vcs-regression` using preserved baseline vectors: PASS, including expected negative protocol test (`runs/verify_vcs_launcher/console.log`).
-- XPM runtime full-chain QAM seed 281001, RMS 0.09, 5,264 output words per stream: all eight streams, six mode transitions and blocked-PA reset pass (`runs/qam281001/simulation.log`). The 10 active PA captures for EF1, EF2 and MASH match pre-existing baseline files exactly by SHA256 (`runs/qam281001_comparison.json`), so the prior offline EVM/BER for these captured streams is unchanged.
+- XPM runtime full-chain QAM seed 281001, RMS 0.09, 5,264 output words per stream: all eight streams, six mode transitions and blocked-PA reset pass (`runs/qam281001/simulation.log`). The 36 PA capture files across all phases for EF1, EF2 and MASH match pre-existing baseline files exactly by SHA256 (`runs/qam281001_all_comparison.json`), so the prior offline EVM/BER for these captured streams is unchanged.
 
 ```bash
 python3 dv/uvm/sim/run_thermo5_runtime_xsim.py --out runs/repro_qam_NEW \
