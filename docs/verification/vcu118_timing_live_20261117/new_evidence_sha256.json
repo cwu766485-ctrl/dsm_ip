@@ -8,5 +8,7 @@
   "runs/axis_frame_prefill_reset_01/simulation.log": "76ff1e478f5eac2ad3e6396e51b1be0bab0e7980c5ba4225179e223ed0a0c03e",
   "runs/mailbox_capture_formal_01/properties.txt": "94f0b7b90eda5c55e9bfd9e3a37e4f752fd7933f21823353a22f0190be1c40ca",
   "runs/ef2_4lane_formal_01/properties.txt": "6f8d464433efc3fd1dee101b73733f2dc3dbfa3941a18c0f449fd19e87340ed9",
-  "runs/ef2_8lane_formal_01/properties.txt": "f6e0fcc8770b943dba73622e32f8dcd62ba02770cd111e7d97b243fa54e40e45"
+  "runs/ef2_8lane_formal_01/properties.txt": "f6e0fcc8770b943dba73622e32f8dcd62ba02770cd111e7d97b243fa54e40e45",
+  "runs/live_reset_restart_01/project/gty_sim.sim/sim_1/behav/xsim/simulate.log": "e03d1079e5217da47d545f995033a1c4c269f2b69ca76acaa77a41a14c96ab52",
+  "runs/live_reset_restart_receiver_01/metrics.json": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4"
 }

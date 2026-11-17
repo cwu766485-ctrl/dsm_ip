@@ -1,3 +1,8 @@
+## 2026-11-18 00:03 SGT — Live common reset during traffic and restart
+
+- `runs/live_reset_restart_01/` passed the new live common-reset test: after the first buffered frame delivered at least 100 PA words, product and GTY reset together, reinitialized and emitted a fresh complete frame. All 5,264 PA words, 336,896 TX/loopback bits per lane and frame/config markers matched Golden; drain=1, underflow=0, protocol=0 and observed lane skew=0. Receiver on post-reset serial capture gave EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376 (`runs/live_reset_restart_receiver_01/`).
+- This is one common-reset/restart digital scenario with the research single-frame source buffer. Independent resets, epoch metadata, STOP/restart without reset, back-to-back throughput, PPA and physical board/RF remain open. Updated live integration report and frontier.
+
 ## 2026-11-17 23:58 SGT — Live reset/restart test preparation
 
 - Added `dv/verif/integration/vcu118_arch/tb_vcu118_live_reset_restart.sv` and `research/vcu118_arch/sim_live_reset_restart.tcl`. The test is designed to reset the real MASH/GTY while the first buffered frame is active, then verify a fresh complete Golden frame and both serial lanes. Syntax-only Icarus compile passed; full XSim is NOT_RUN. Updated live GTY report.
