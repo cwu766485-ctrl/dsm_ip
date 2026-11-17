@@ -30,8 +30,8 @@ def launch(name,tcl,args):
  print(name,'EXIT',result.returncode,flush=True)
 # Bound only the proved bundled-data path; do not silently waive other CDCs.
 formal=root/'runs/mailbox_capture_formal_01/properties.txt'
-preempt=root/'runs/ef1_cdc_candidate_preempt_01/result.json'
-if preempt.exists() and json.loads(preempt.read_text()).get('exit_code')==0:
+preempt=root/'runs/ef1_cdc_candidate_preempt_02/result.json'
+if preempt.exists() and json.loads(preempt.read_text()).get('valid_run') is True:
  results['ef1_cdc_bound']='COMPLETED_IN_PREEMPT_RUN'
  (out/'results.json').write_text(json.dumps(results,indent=2)+'\n')
 elif formal.exists() and all(re.search(r'proven[^\n]*'+n,formal.read_text(errors='replace')) for n in ('a_cfg_mailbox_hold','a_capture_matches','a_sample_stable')):

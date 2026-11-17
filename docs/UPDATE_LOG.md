@@ -1,3 +1,8 @@
+## 2026-11-17 23:08 SGT — Reject segmented CDC constraint and retry
+
+- EF1 attempt `runs/ef1_cdc_candidate_preempt_01/` used Q-pin startpoints and produced `Constraints 18-515` path segmentation Critical Warnings. It was deliberately stopped, and Runtime resumed; its wrapper exit code 0 is not success. Preserved the log and added `validation.json` as FAIL. No routed result is claimed.
+- Fixed the 4 ns datapath-only experiment to use start/end register cells, added `research/vcu118_arch/reimplement_ef1_cdc_bound.tcl` to reuse the same-source synthesized DCP read-only and fail on a path-segmentation warning, and made the controller require the completion marker and no segmentation before `valid_run=true`. Started fresh attempt 02 and a new independent resume watchdog; Runtime is temporarily suspended again. Queue now skips EF1 only on a validated attempt 02. Updated PPA matrix, CDC report and frontier.
+
 ## 2026-11-17 23:05 SGT — Preserve implementation under host memory pressure
 
 - Host available physical memory fell below 1 GiB while the EF1 candidate synthesized and Runtime remained suspended. Used Rocky WSL root `tee /proc/sys/vm/drop_caches` with value 3 to release reclaimable clean page, inode and dentry caches; no files, DCPs, logs or processes were removed. Host available memory subsequently recovered above 3 GiB. Runtime resume finally/watchdog remain active.

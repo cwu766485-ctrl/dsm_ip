@@ -2,7 +2,7 @@
 
 Research HEAD at start `773983f29158edc8aff64aab5ce5fc7b54d15e6b`; worktree
 was clean. Baseline DCP/report/replay hashes are recorded in
-`runs/timing_live_closure_baseline_01/manifest.json`. Runtime is temporarily suspended in routing to prioritize the EF1 CDC-bound candidate; `runs/ef1_cdc_candidate_preempt_01/` is active with a resume-on-completion finally block and independent crash watchdog. MASH A/B queue `runs/timing_closure_ppa_02/` resumes after Runtime completes.
+`runs/timing_live_closure_baseline_01/manifest.json`. Runtime is temporarily suspended in routing to prioritize the EF1 CDC-bound candidate; `runs/ef1_cdc_candidate_preempt_01/` was stopped as INVALID due to path segmentation; `runs/ef1_cdc_candidate_preempt_02/` reuses the same-source synthesized checkpoint and is active with a resume-on-completion finally block and independent crash watchdog. MASH A/B queue `runs/timing_closure_ppa_02/` resumes after Runtime completes.
 The EF1 bundled-data mailbox common-reset digital formal has 3 proven assertions
 and 3 covers with zero black boxes, including source hold, sample stability and
 capture identity; independent reset, arbitrary phases, metastability and bus
