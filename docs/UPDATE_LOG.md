@@ -1,3 +1,7 @@
+## 2026-11-17 23:05 SGT — Preserve implementation under host memory pressure
+
+- Host available physical memory fell below 1 GiB while the EF1 candidate synthesized and Runtime remained suspended. Used Rocky WSL root `tee /proc/sys/vm/drop_caches` with value 3 to release reclaimable clean page, inode and dentry caches; no files, DCPs, logs or processes were removed. Host available memory subsequently recovered above 3 GiB. Runtime resume finally/watchdog remain active.
+
 ## 2026-11-17 23:04 SGT — EF2 inductive-step proof attempt
 
 - Added `dv/uvm/formal/thermo5_ef2_4lane_inductive_harness.sv` and `research/vcu118_arch/formal_ef2_4lane_inductive.tcl`. Under the explicit equal-current-state hypothesis, VC Formal has zero black boxes and reaches all 4 covers, but both raw-word and next-state assertions are inconclusive (`runs/ef2_4lane_inductive_01/`). The hypothesis is not a proof and the product EF2 core remains unchanged.
