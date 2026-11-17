@@ -1,3 +1,8 @@
+## 2026-11-17 23:55 SGT — Deferred candidate result extraction
+
+- Added `research/vcu118_arch/collect_closure_when_finished.py` and a read-only watcher for the guarded EF1/MASH runs. It creates a fresh matrix and hashes under `runs/timing_closure_autosummary_02/` only after the MASH controller finishes and requires each run's validated completion marker; positive OOC timing remains BLOCKED for system signoff. The first waiting-only watcher was stopped and retained after adding the completion gate.
+- Updated MASH report; active implementation and existing evidence are not modified.
+
 ## 2026-11-17 23:46 SGT — Guard orphaned EF1 implementation
 
 - Added `research/vcu118_arch/watch_ef1_runtime_resume.sh` to the active EF1 controller. If the controller dies unexpectedly, it waits for an orphaned candidate Vivado to exit before resuming Runtime. Replaced the earlier waiting watchdog while its controller remained alive; no implementation was interrupted or modified.
