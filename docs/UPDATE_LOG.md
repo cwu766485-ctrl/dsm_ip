@@ -1,3 +1,8 @@
+## 2026-11-17 14:19 SGT — Scoped EF2 pair formal proof
+
+- VC Formal `ef2_pair` PASS: seven proven assertions, four covers, zero black boxes (`runs/pair_formal_01/formal_summary.json`). This is a two-sample relational proof with its reset contract, not a 32-lane implementation or routed PPA signoff.
+- Updated `docs/verification/thermo5-ef2-lookahead-candidate-20261117.md` and the execution frontier. No RTL changed in this milestone.
+
 ## 2026-11-17 14:03 SGT — Isolated EF2 lookahead experiment
 
 - Enabled the existing EF2 pair-lookahead only in `rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv` in a separate research branch containing the cubic candidate. Added the experiment report and updated the frontier.

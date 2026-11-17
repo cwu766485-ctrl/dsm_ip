@@ -4,7 +4,9 @@ Branch `work/thermo5-vcu118-ef2-lookahead` derives from the independent cubic
 optimization branch and activates the existing two-sample EF2 lookahead only in
 this worktree. XSim and VCS regression pass, and all 36 PA captures from the
 eight-phase QAM runtime/switch/reset test match the baseline SHA256. A 4,096-
-cycle VCS miter also covers both clamps, bubbles, stalls, ties and reset. The result
+cycle VCS miter also covers both clamps, bubbles, stalls, ties and reset. VC
+Formal proves seven assertions and covers four events for the two-sample harness.
+The result
 is input-bound, not full state-equivalence or routed timing proof. Details and
 reproduction: `docs/verification/thermo5-ef2-lookahead-candidate-20261117.md`.
 Next: finish the baseline EF2 same-boundary PPA, independently prove extreme

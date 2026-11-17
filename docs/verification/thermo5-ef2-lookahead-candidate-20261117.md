@@ -5,6 +5,8 @@ Status: **candidate only; no fresh PPA or product signoff**. This branch derives
 Required directed XSim and VCS regression pass with preserved vectors. A separate VCS miter passes 4,096 cycles, including 2,663 accepted words, 408 positive and 409 negative clamps, 817 stall cycles, 616 bubbles, 103 negative ties and a reset epoch (`runs/pair_miter_04/simulation.log`). Earlier launcher/dependency failures remain preserved in `runs/pair_miter_01` through `_03`. XPM runtime QAM256 seed 281001, 5,264 words per stream, passes all eight stream phases, six mode transitions, and blocked-PA reset; all 36 generated phase/plane PA files are SHA256-identical to the preserved baseline. Logs and comparison are in `runs/verify_xsim_launcher/`, `runs/verify_vcs_launcher/`, `runs/qam281001/` and `runs/qam281001_all_comparison.json`.
 
 ```bash
+# VC Formal in Rocky with its configured license and a fresh output directory:
+python3 dv/uvm/formal/run_thermo5_scoped_formal.py --out-dir runs/repro_pair_formal_NEW --jobs ef2_pair
 python3 dv/uvm/sim/run_thermo5_runtime_xsim.py --out runs/repro_qam_NEW \
   --vectors /mnt/e/workspace/chip/dsm_ip/runs/thermo5_runtime_product/runs/runtime_qam281001/vectors \
   --words 5264 --beats 3008 --seed 281001 --xpm
@@ -13,4 +15,4 @@ python3 research/vcu118_arch/compare_qam_captures.py \
   --candidate runs/repro_qam_NEW --out runs/repro_comparison_NEW.json
 ```
 
-This finite test does not prove all fixed-point states or clamp transitions and does not establish timing benefit. Existing pair-level equivalence evidence and the full unmodified EF2 recurrence remain separate. Before adopting, prove full-vector state equivalence including saturation/ties and stalls, run the same-boundary EF2 routed PPA and CDC/constraints review, then repeat other architecture and system regressions. Do not change Golden data, merge into product, or claim convergence on the basis of these captures.
+VC Formal separately proves seven relational assertions for the two-sample harness with four cover points reached and zero black boxes (`runs/pair_formal_01/formal_summary.json`): ready/valid, both quantizers, state, bounds and no-wrap. This is a two-sample proof with its reset contract, not a full 32-lane integration proof or timing benefit. The full unmodified EF2 recurrence and the 32-lane implementation remain separate. Before adopting, prove full-vector state equivalence including saturation/ties and stalls, run the same-boundary EF2 routed PPA and CDC/constraints review, then repeat other architecture and system regressions. Do not change Golden data, merge into product, or claim convergence on the basis of these captures.
