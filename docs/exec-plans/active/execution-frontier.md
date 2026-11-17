@@ -5,7 +5,8 @@ Independent branch `work/thermo5-vcu118-architecture-research` is based on
 runs are preserved. Report: `docs/verification/thermo5-vcu118-architecture-research-20261117.md`;
 tradeoff: `docs/verification/data/architecture_tradeoff.csv`.
 
-The MASH backend passed 2,048 continuous words at II=1 with ready held high;
+All three runtime backends passed 2,048 continuous words at II=1 with ready
+held high in both Icarus and VCS (latencies EF1/EF2/MASH 3/2/8 cycles);
 Fs/4 mapping and PSD are checked from RTL accepted bits. Existing continuous
 serializer faults on MASH's two-plane mask and early STOP. An isolated 56-word
 complete-frame two-bank prefill candidate passes directed tests but is not in

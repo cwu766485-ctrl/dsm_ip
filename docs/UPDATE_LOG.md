@@ -1,7 +1,7 @@
 ## 2026-11-17 12:50 SGT — VCU118 three-architecture research checkpoint
 
 - Added isolated architecture/GTY/PPA study scripts and tests in `research/vcu118_arch/` and `dv/verif/integration/vcu118_arch/`, the tradeoff CSV and research report under `docs/verification/`, and updated the execution frontier. The base product RTL and previous run evidence remain unchanged.
-- Demonstrated conditional MASH II=1 and Fs/4 mapping; reproduced the existing serializer's two-lane/STOP contract failures and tested an unintegrated complete-frame prefill candidate. Ran same-input three-architecture RTL metrics, and independent fixed-point Python/MATLAB MASH111 modeling.
+- Demonstrated conditional EF1, EF2 and MASH runtime backend II=1 in Icarus and VCS, and Fs/4 mapping; reproduced the existing serializer's two-lane/STOP contract failures and tested an unintegrated complete-frame prefill candidate. Ran same-input three-architecture RTL metrics, and independent fixed-point Python/MATLAB MASH111 modeling.
 - Verified nominal exact 14 Gb/s QSFP1 GTY Wizard TX serial and TX/RX digital loopback. No board or RF validation is implied.
 - Checks: directed Icarus and Verilator; GT Wizard vendor simulation; MATLAB full-sample agreement; XSim `run_xsim_thermo5_i2_d1_axis.ps1` PASS; VCS `thermo5-vcs-regression` PASS using preserved vectors. PPA EF1 synthesis exists; four-case routed flow is in progress. Full route, constraints/CDC review, hardware GTY, RF and product integration remain open.
 
