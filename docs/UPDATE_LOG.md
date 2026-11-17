@@ -1,3 +1,8 @@
+## 2026-11-17 22:58 SGT — Bounded live AXIS-to-GTY stress pass
+
+- `runs/live_axis_gty_04/` passed the same periodic source-bubble stress that previously set underflow after inserting the research AXIS complete-frame prefill. Actual live product frontend/MASH outputs, 5,264 PA words and 336,896 GT serial and loopback bits per lane matched unchanged Golden; STOP drained, underflow=0 and protocol=0. Receiver on serial outputs gives EVM 2.551442%, SNDR 31.864285 dB and BER 15/37,376; digital Welch adjacent proxy -16.314892 dBc, not measured RF ACLR.
+- This is a single 3,008-beat bounded frame in digital simulation; single-bank multi-frame throughput, live reset/restart, metadata epoch, resource/timing PPA, product integration, board and RF remain open. Unbuffered bubble stress attempts 01/02 remain FAIL and preserved.
+
 ## 2026-11-17 22:53 SGT — Source-prefill directed checks
 
 - Added `dv/verif/integration/vcu118_arch/tb_axis_frame_prefill.sv` and `tb_axis_frame_prefill_reset.sv`. Icarus directed tests passed bounded input bubbles, output stall and data/metadata integrity, reset while filling, and oversize-frame fault; raw logs in `runs/axis_frame_prefill_unit_01/` and `runs/axis_frame_prefill_reset_01/`. Full live bubble-stress test with the candidate is running in `runs/live_axis_gty_04/` and is not yet a PASS.
