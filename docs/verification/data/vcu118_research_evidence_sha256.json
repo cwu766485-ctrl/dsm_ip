@@ -71,6 +71,10 @@
     "runs/vcu118_ppa_research_01/ef1/routed_clock_interaction.rpt": "0e5393d69ae00f34d69c564d38d756bb7e9d885f67d935f4d6c44b7830c44c4a",
     "runs/vcu118_ppa_research_01/ef1/power_default_activity.rpt": "34391c695ef3b65be87a69479d16e7df9411df5d77f926b1ceb07020d3c75f39",
     "runs/vcu118_ppa_research_01/ef1.console.log": "ebe70a884686fc50784e574ff0721cc81cf467bb2f2c786ea0804bf994cd78b6",
-    "../thermo5_vcu118_ef2_lookahead/runs/pair_formal_01/formal_summary.json": "198d9a7a389dc0a70bf8fe85ab99a050559fd390f874b4ddb891b9f50ae74f2d"
+    "../thermo5_vcu118_ef2_lookahead/runs/pair_formal_01/formal_summary.json": "198d9a7a389dc0a70bf8fe85ab99a050559fd390f874b4ddb891b9f50ae74f2d",
+    "runs/vcu118_ppa_research_01/ef2/synth_utilization.rpt": "de43d7c5c4c9a96ad2ae634ae7e9b43a76a799337817560fa5189f8e5e0908af",
+    "runs/vcu118_ppa_research_01/ef2/synth_timing_summary.rpt": "b9637e4bbba59508d12c5a924facc34e87913b5b3921912fdbb431afce566c6f",
+    "runs/vcu118_ppa_research_01/ef2/clock_interaction.rpt": "1024db0b4011d4ca7d49ed214b84a6888ed082749178631ec1cd1729b20c6ff9",
+    "runs/vcu118_ppa_research_01/ef2/synthesized.dcp": "7acc0992edaeecb60d596587abbf72b18dcdf6638163fbf6ec4df43459285aae"
   }
 }

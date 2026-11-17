@@ -29,8 +29,8 @@ Baseline EF1 routed with core/overall WNS -2.797 ns (FAIL), overall WHS
 +0.007 ns, 47,321 LUT, 50,206 FF, 670 DSP and vectorless power 5.331 W. Core
 Fmax is approximately 135.722 MHz under these OOC assumptions. Worst hold is an
 unexpanded CDC path; port partial-location warnings prevent physical I/O
-signoff. EF2 synthesis core WNS is approximately -93.32 ns (two-decimal clock
-interaction report); detailed synthesis reporting and route remain in progress,
+signoff. EF2 synthesis core WNS is -93.320 ns, from the second-interpolator FIFO read
+pointer through EF2 to its error-state register (419 logic levels); detailed synthesis reporting and route remain in progress,
 followed by MASH-only and runtime cases.
 Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
