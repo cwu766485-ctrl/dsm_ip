@@ -32,8 +32,9 @@ unexpanded CDC path; port partial-location warnings prevent physical I/O
 signoff. EF2 synthesis core WNS is -93.320 ns, from the second-interpolator FIFO read
 pointer through EF2 to its error-state register (419 logic levels). Its Vivado
 process was temporarily suspended and its working set trimmed when free host
-RAM fell below 0.4 GB; `runs/memory_control_01/resume_ef2.ps1` must be used
-to resume it when optimized EF1 completes. Detailed EF2 route remains open,
+RAM fell below 0.4 GB. A guarded local watchdog resumes that exact EF2
+process when optimized EF1 exits; `runs/memory_control_01/resume_ef2.ps1` is
+the manual fallback if the watchdog fails. Detailed EF2 route remains open,
 followed by MASH-only and runtime cases.
 Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
