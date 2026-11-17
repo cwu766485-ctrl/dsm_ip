@@ -11,7 +11,7 @@
              (<= (- 32768) d) (<= d 32767)))
 (define-fun n () Int (- (* 9 (+ b c)) (+ a d)))
 (push)
-(assert (or (< n (- 1048576)) (> n 1048575)))
+(assert (or (< n (- 655360)) (> n 655360)))
 (check-sat)
 (pop)
 (define-fun value () Int (* 1024 n))
