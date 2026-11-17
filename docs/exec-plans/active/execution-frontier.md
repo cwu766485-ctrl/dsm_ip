@@ -1,3 +1,18 @@
+## Timing and live GTY closure (2026-11-17 22:27 SGT)
+
+Research HEAD at start `773983f29158edc8aff64aab5ce5fc7b54d15e6b`; worktree
+was clean. Baseline DCP/report/replay hashes are recorded in
+`runs/timing_live_closure_baseline_01/manifest.json`. Runtime is still routing.
+The EF1 bundled-data mailbox common-reset digital formal has 3 proven assertions
+and 3 covers with zero black boxes, including source hold, sample stability and
+capture identity; independent reset, arbitrary phases, metastability and bus
+physical delay/skew remain open. A 4 ns datapath bound is a reviewable candidate,
+not system signoff. MASH-only Worst-20 paths all originate in cubic1 and end at
+the elastic buffer; arithmetic candidates A/B passed minimum block tests, with
+matched OOC routing queued. Live AXIS-to-GTY testbench is newly authored and
+not yet functionally verified. EF2 4-lane formal: 4 proven / 3 inconclusive,
+4 covers, zero blackboxes. See `docs/verification/vcu118_timing_live_20261117/`.
+
 ## VCU118 convergence follow-up (2026-11-17, in progress)
 
 Research worktree remains `work/thermo5-vcu118-architecture-research`. Detailed

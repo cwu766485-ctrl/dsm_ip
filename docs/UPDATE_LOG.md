@@ -1,3 +1,10 @@
+## 2026-11-17 22:27 SGT — Timing and live GTY closure research
+
+- Recorded clean initial research HEAD `773983f29158edc8aff64aab5ce5fc7b54d15e6b` and hashes of existing routed DCPs/reports and replay evidence in `runs/timing_live_closure_baseline_01/manifest.json`; Runtime route continues. Original thermo5 dirty files remain untouched.
+- Added `docs/verification/vcu118_timing_live_20261117/` with requested reports and PPA matrix. EF1 CDC common-reset VC Formal capture/hold/sample stability: 3 proven nonvacuous assertions and 3 covers, zero black boxes; independent reset, phase and physical CDC remain open. Proposed 4 ns data-path bound and routed candidate are not signoff.
+- MASH-only Worst-20 paths share cubic1 to elastic buffer endpoints. Added two research-only cubic algebra candidates and same-boundary candidate implementation Tcl. Each passed 65,536 exhaustive W=4 tuples, 100,000 W=16 random tuples and 1,024 sustained output words with no bubbles (`runs/cubic_candidates_bittrue_02/`, `runs/cubic_candidates_sustained_01/`). Candidate B is not full-chain validated. First Icarus attempt lacked synthesis guard and remains preserved.
+- Added live AXIS-to-prefill/GTY testbench and Vivado Tcl; syntax-only Icarus compile passed, live simulation not yet complete. Added 4/8-lane EF2 harnesses: 4-lane VCF 4 proven, 3 inconclusive, 4 covers, zero blackboxes; 8-lane not run. No product RTL or Golden changed.
+
 ## 2026-11-17 20:51 SGT — Deferred Runtime report extraction
 
 - Added `research/vcu118_arch/summarize_runtime_when_finished.py`; the running read-only watcher waits for the existing driver to finish and writes a new summary and hashes under `runs/runtime_ppa_autosummary_02/`. It never modifies the original run. Checked timing/utilization/power parsing against the already completed EF1 report. A successful OOC timing result remains BLOCKED for system signoff.

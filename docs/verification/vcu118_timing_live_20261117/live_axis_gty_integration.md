@@ -1,0 +1,9 @@
+# Live AXIS-to-GTY integration
+
+Status: **NOT_RUN** for the newly constructed live AXIS-to-GTY test. Digital replay of a captured MASH PA frame through prefill and vendor GTY passed previously; replay is not this acceptance. Source baseline `773983f29158edc8aff64aab5ce5fc7b54d15e6b`; Vivado 2026.1 build 6511674 and GT Wizard 14.000 Gb/s nominal raw mode.
+
+`dv/verif/integration/vcu118_arch/tb_vcu118_live_axis_gty.sv` connects canonical runtime product RTL, AXIS input, AXI-Lite MASH selection, PA handshake and the research complete-frame buffer to two GTY TX/RX lanes. The GTY TXUSRCLK2 drives the core and buffer, avoiding an unmodeled clock boundary. It compares actual frontend/PA outputs and recovered GT serial bits against the preserved 5,264-word independent MASH golden. The test introduces source bubbles and STOP during an open frame; it checks frame markers, configuration ID, underflow and serial alignment. The buffer epoch input is synthetic zero because the product interface does not expose an epoch. Reset/restart/relock across multiple frames is not yet covered by this bench.
+
+The bench and `research/vcu118_arch/sim_live_axis_gty.tcl` passed syntax-only Icarus compilation with unresolved modules allowed; **that is not a functional pass**. Run in a fresh directory with Vivado and an explicit Vivado `bin` PATH, or use the serial queue `research/vcu118_arch/queue_timing_live_experiments.py`. Require explicit full-frame and TX/RX bit-true markers and no fatal messages. Reconstruct receiver EVM/SNDR/BER and digital PSD from actual serial output only after the markers and bit-order alignment are checked. Source vectors are in `../thermo5_runtime_product/runs/runtime_qam281001/vectors`.
+
+Prior separate PA replay evidence: `runs/gty_pa_replay_04/project/gty_sim.sim/sim_1/behav/xsim/simulate.log` and `runs/gty_serial_receiver_01/metrics.json`. Hardware RF and ACLR: **NOT_MEASURED**. Clock/reset/GTY board and PVT alignment remain open.
