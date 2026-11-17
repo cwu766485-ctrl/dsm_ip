@@ -32,7 +32,7 @@ unexpanded CDC path; port partial-location warnings prevent physical I/O
 signoff. EF2 synthesis core WNS is -93.320 ns, from the second-interpolator FIFO read
 pointer through EF2 to its error-state register (419 logic levels). Its Vivado
 process was suspended under low host RAM and automatically resumed after the
-optimized EF1 route. MASH-only and runtime baseline cases remain queued.
+optimized EF1 route. As of 17:30 SGT EF2 completed detailed placement and is in post-placement optimization; no EF2 routed report exists. MASH-only and runtime baseline cases remain queued.
 Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
 failed nets. HD.CLK_SRC/HD.PARTPIN_LOCS are unset; this is not full-top/GTY
@@ -47,8 +47,8 @@ hashes match baseline; formal checks of full arithmetic remain inconclusive.
 An isolated centered-cubic arithmetic candidate in branch
 `work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
 passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its RTL formal
-miter timed out and a clocked arithmetic VC Formal attempt was inconclusive and it is not timing-characterized or in the baseline PPA.
-No routed comparison, Fmax, GTY integration or board signoff is claimed. Next:
+miter timed out and a clocked arithmetic VC Formal attempt was inconclusive; the candidate has an EF1 routed comparison as reported above, and is not in the baseline PPA.
+No full four-case routed comparison, GTY integration or board signoff is claimed. Next:
 complete all routes, inspect genuine paths (especially the current 32-sample
 EF2 combinational recurrence; lookahead candidate branch `947f7d4332f2e5f00890219ab3acf3bb713322bd` matches all 36 QAM PA files and passes scoped two-sample formal, but has no PPA), add post-route reports/estimates,
 then address measured bottlenecks and integrate the reviewed serializer design.

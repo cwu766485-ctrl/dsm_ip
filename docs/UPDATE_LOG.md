@@ -1,3 +1,9 @@
+## 2026-11-17 17:30 SGT — VCU118 research execution handoff
+
+- Updated `docs/exec-plans/active/execution-frontier.md`: EF2 baseline completed detailed placement and is in post-placement optimization; matched MASH-only and runtime cases remain queued. No new routed results are claimed. The serial PPA process continues in `runs/vcu118_ppa_research_01/`.
+- Corrected stale frontier wording about the isolated EF1 cubic candidate, whose routed comparison is already documented. No RTL, timing constraints, generated evidence or prior runs were modified. Full routed comparison, physical constraints, GTY integration, board validation and signoff remain open.
+- Checks: inspected live Vivado and driver logs; no new simulation was required for this documentation-only update.
+
 ## 2026-11-17 16:04 SGT — Scoped AXI-Lite mailbox source-hold proof
 
 - Added `research/vcu118_arch/formal_cfg_mailbox_hold.sv` and its VC Formal Tcl. One source-domain mailbox-hold assertion is proven and non-vacuous; request and acknowledgement covers are reached, zero black boxes, with no listed clock/loop/multidriver setup violations (`runs/mailbox_formal_01/`).
