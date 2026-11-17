@@ -110,14 +110,29 @@ module dsm_interp_x2_centered_cubic_vector #(
     input logic signed [W-1:0] xp1,
     input logic signed [W-1:0] xp2
   );
-    logic signed [ACC_W-1:0] sxm1, sx0, sxp1, sxp2, acc;
+    // Fixed Q14 coefficients share a factor 1024. Compute the equivalent
+    // reduced numerator at W+5 bits; its absolute bound is below 20*2^(W-1).
+    localparam int REDUCED_W = W + 5;
+    logic signed [REDUCED_W-1:0] a, b, c, d;
+    logic signed [REDUCED_W-1:0] middle, edges, numerator, adjusted, rounded;
+    logic signed [REDUCED_W-1:0] maxv, minv;
     begin
-      sxm1 = {{(ACC_W-W){xm1[W-1]}},xm1};
-      sx0  = {{(ACC_W-W){x0[W-1]}},x0};
-      sxp1 = {{(ACC_W-W){xp1[W-1]}},xp1};
-      sxp2 = {{(ACC_W-W){xp2[W-1]}},xp2};
-      acc = sxm1*C_M1 + sx0*C_0 + sxp1*C_P1 + sxp2*C_P2;
-      cubic_midpoint = round_sat(acc);
+      a = {{(REDUCED_W-W){xm1[W-1]}},xm1};
+      b = {{(REDUCED_W-W){x0[W-1]}},x0};
+      c = {{(REDUCED_W-W){xp1[W-1]}},xp1};
+      d = {{(REDUCED_W-W){xp2[W-1]}},xp2};
+      middle = b + c;
+      edges = a + d;
+      numerator = (middle <<< 3) + middle - edges;
+      // Signed arithmetic right shift floors negative values. Add 7 for
+      // negative and 8 for nonnegative to preserve ties away from zero.
+      adjusted = numerator + (numerator < 0 ? REDUCED_W'(7) : REDUCED_W'(8));
+      rounded = adjusted >>> 4;
+      maxv = ({{(REDUCED_W-1){1'b0}},1'b1} <<< (W-1)) - 1;
+      minv = -({{(REDUCED_W-1){1'b0}},1'b1} <<< (W-1));
+      if (rounded > maxv) cubic_midpoint = maxv[W-1:0];
+      else if (rounded < minv) cubic_midpoint = minv[W-1:0];
+      else cubic_midpoint = rounded[W-1:0];
     end
   endfunction
 

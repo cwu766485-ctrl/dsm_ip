@@ -1,3 +1,10 @@
+## 2026-11-17 13:22 SGT — Isolated centered-cubic optimization candidate
+
+- Changed `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv` to express the fixed Q14 midpoint with an equivalent reduced integer numerator and signed rounding. Added `research/vcu118_arch/compare_qam_captures.py` and the candidate report; updated the execution frontier.
+- Reason: the baseline EF1 synthesis critical path traverses this arithmetic. No latency, interface, reset or intended numerical behavior changes.
+- Checks: XSim directed PASS; VCS required regression PASS; runtime XPM QAM 281001 full-chain UVM PASS; ten active PA captures exactly match preserved baseline SHA256. The split rounding proof and integer arithmetic proof pass; the full RTL formal miter timed out.
+- Limitations: optimized PPA has not yet run; there is no routed timing, resource, CDC or board signoff and no product merge.
+
 ## 2026-11-17 12:50 SGT — VCU118 three-architecture research checkpoint
 
 - Added isolated architecture/GTY/PPA study scripts and tests in `research/vcu118_arch/` and `dv/verif/integration/vcu118_arch/`, the tradeoff CSV and research report under `docs/verification/`, and updated the execution frontier. The base product RTL and previous run evidence remain unchanged.
