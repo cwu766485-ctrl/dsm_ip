@@ -424,3 +424,14 @@ Generated from a bounded scan; verify any heuristic before relying on it.
 - `fpga/hardware/xczu15eg/15eg_demo/1.mem_test/prj/mem_test/mem_test.cache/ip/2022.1/9/6/96dc4ce98e7f8ca2/design_1_zynq_ultra_ps_e_0_0.dcp`
 - `fpga/hardware/xczu15eg/15eg_demo/1.mem_test/prj/mem_test/mem_test.cache/ip/2022.1/9/6/96dc4ce98e7f8ca2/design_1_zynq_ultra_ps_e_0_0_sim_netlist.v`
 - `fpga/hardware/xczu15eg/15eg_demo/1.mem_test/prj/mem_test/mem_test.cache/ip/2022.1/9/6/96dc4ce98e7f8ca2/design_1_zynq_ultra_ps_e_0_0_sim_netlist.vhdl`
+
+## Runtime DSM product
+
+`rtl/tx_bandpass_if/tid32_thermo5_runtime_tx.sv` is the canonical runtime
+EF1/EF2/MASH AXI-Lite entry point. Shared frontend, default EF2, STOP/drain
+handover and explicit four-equal versus two-weighted PA contracts are specified
+in `docs/spec/thermo5-runtime-dsm.md`. Runtime UVM uses
+`dv/uvm/sim/thermo5_runtime_filelist.f`, `dv/uvm/env/thermo5_runtime/`, and
+`dv/uvm/tests/thermo5_runtime/`. Run `thermo5-runtime-vcs-run` or the XSim Python
+runner from the command index. The product report separates digital qualification
+from open physical/CDC/RDC signoff.

@@ -22,6 +22,7 @@ jobs:
       - name: Python syntax and whitespace
         run: |
           python -m py_compile dv/uvm/sim/run_thermo5_dv_package.py dv/uvm/sim/run_thermo5_gap_closure.py dv/uvm/sim/run_thermo5_fault_detection_vcs.py dv/uvm/sim/package_thermo5_ef2_qualification.py dv/uvm/sim/package_thermo5_linux_signoff.py dv/uvm/formal/run_thermo5_scoped_formal.py tools/hw/thermo5_audit_reports.py tools/hw/thermo5_coverage_denominator.py tools/hw/thermo5_long_counter_delta.py
+          python -m py_compile dv/uvm/sim/run_thermo5_runtime_xsim.py dv/uvm/refmodel/python/generate_thermo5_runtime_vectors.py dv/uvm/refmodel/python/thermo5_runtime_qam.py tools/hw/thermo5_runtime_control.py tools/hw/extract_thermo5_bubble_witness.py
           git diff --check
       - name: Python thermo5 reference-model tests
         run: PYTHONPATH=dv/uvm/refmodel/python python -m unittest discover -s dv/uvm/refmodel/python/tests -v
@@ -113,6 +114,39 @@ jobs:
             --qualification-manifest "$ef2_root/qualification_vcs/qualification_manifest.json" \
             --formal-summary "$ef2_root/formal/formal_summary.json" \
             --output "$ef2_root/signoff_manifest.json"
+      - name: Runtime EF1 EF2 MASH handover regression
+        if: always()
+        env:
+          THERMO5_XPM_ROOT: ${{ vars.THERMO5_XPM_ROOT }}
+        shell: bash -il {0}
+        run: |
+          source "$HOME/.bashrc"
+          runtime_root="$PWD/runs/ci_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}/runtime"
+          python3.12 dv/uvm/refmodel/python/generate_thermo5_runtime_vectors.py \
+            --output-dir "$runtime_root/vectors" --words 56 --seed 610216
+          make -C dv/uvm/sim thermo5-runtime-vcs-run \
+            THERMO5_RUNTIME_VECTORS="$runtime_root/vectors" \
+            THERMO5_RUNTIME_OUT="$runtime_root/generic"
+          test -n "$THERMO5_XPM_ROOT"
+          make -C dv/uvm/sim thermo5-runtime-vcs-run \
+            THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT="$THERMO5_XPM_ROOT" \
+            THERMO5_RUNTIME_VECTORS="$runtime_root/vectors" \
+            THERMO5_RUNTIME_OUT="$runtime_root/xpm"
+      - name: Archive runtime product evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thermo5-runtime-${{ github.sha }}
+          if-no-files-found: warn
+          retention-days: 30
+          path: |
+            runs/ci_*/runtime/vectors/manifest.json
+            runs/ci_*/runtime/generic/compile.log
+            runs/ci_*/runtime/generic/simulation.log
+            runs/ci_*/runtime/generic/phase*_arch*_pa*.mem
+            runs/ci_*/runtime/xpm/compile.log
+            runs/ci_*/runtime/xpm/simulation.log
+            runs/ci_*/runtime/xpm/phase*_arch*_pa*.mem
       - name: Archive current EF2 signoff evidence
         if: always()
         uses: actions/upload-artifact@v4

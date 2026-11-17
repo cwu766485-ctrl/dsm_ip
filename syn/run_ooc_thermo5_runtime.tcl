@@ -20,6 +20,11 @@ foreach line [split [read $fd] \n] {
  if {[string match rtl/* $line]} {read_verilog -sv [file join $repo $line]}
 }
 close $fd
+# Keep native synthesis in one process, matching the existing AXI-Lite flow.
+set_param general.maxThreads 1
+set_param synth.maxThreads 1
+catch {set_param synth.enableParallelSynthesis false}
+catch {set_param synth.parallelSynthesis false}
 synth_design -top tid32_thermo5_runtime_tx -part $part -mode out_of_context
 report_utilization -file [file join $out synth_utilization.rpt]
 write_checkpoint [file join $out synthesized.dcp]

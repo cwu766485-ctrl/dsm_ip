@@ -111,6 +111,9 @@ thermo5 DUT and verification flows.
 Read `docs/ai-native/repository-map.md`, `docs/ai-native/design-verification-index.md`, `docs/ai-native/commands.md`, and `docs/exec-plans/active/execution-frontier.md` before work.
 
 - Thermo5 DUT top: `tid32_thermo5_axis_frontend_tx`; optional AXI-Lite wrapper: `tid32_thermo5_axi_lite_axis_frontend_tx`.
+- Runtime EF1/EF2/MASH product top: `tid32_thermo5_runtime_tx`. Default EF2;
+  STOP/drain is required before AXI-Lite mode selection. See
+  `docs/spec/thermo5-runtime-dsm.md` and the runtime commands in the command index.
 - Thermo5 verification source of truth: `dv/uvm/sim/thermo5_sku_filelist.f`; directed XSim tests are under `dv/verif/`.
 - ZU15EG thermo5 AXI-Lite OOC routed evidence is positive at 218.75 MHz under the modeled OOC constraints. Parent I/O budgets, system CDC/RDC, and physical board output remain outside that signoff.
 - The `eda.yaml` and DC top for thermo3 are intentionally absent here; use the full `main` branch or the dedicated `thermo3` branch for that design.

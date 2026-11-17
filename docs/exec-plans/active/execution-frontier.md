@@ -1,52 +1,38 @@
-## Runtime DSM product integration (2026-11-17 SGT, in progress)
+## Runtime EF1/EF2/MASH digital product qualified (2026-11-17 11:17 SGT)
 
-Candidate `work/thermo5-runtime-product` starts from remote thermo5
-`599959a9ed84eeefb24354df88d0f5296178ecef`. The original dirty IDE checkout,
-failed QAM evidence, and root-cause branch remain preserved. Only corrected
-MASH implementation/model dependencies are being promoted into canonical
-`rtl/` and `dv/uvm/`; the experimental branch is not merged wholesale.
+Implementation: `7fe5bbb0c5e2ee35062ef797a18b73b3c9771bf5`, independent branch
+`work/thermo5-runtime-product`, based on remote thermo5 `599959a`. Canonical
+runtime top: `tid32_thermo5_runtime_tx`; default EF2, STOP/drain before AXI-Lite
+0x40 selection. PA mask/weight sidebands distinguish four equal channels from
+two channels weighted1:2. Register/software contract and commands are indexed.
 
-Authorized interface contract: default EF2; STOP and fully drain before
-AXI-Lite architecture selection (EF1=0, EF2=1, MASH=2). A source-domain
-freeze/ack barrier guards the core-domain idle decision. Active-traffic
-requests are rejected. Unified outputs expose the PA mask and weighted
-contract (four equal planes versus two 1:2 weighted planes).
+Confirmed fixes: corrected accumulator-residue MASH/q1 companion alignment;
+legal centered-interpolator tail-discard bubble witness; self-recursive local
+PowerShell profile; disabled XPM read count blocking independent RUN startup
+(feature0400). All original failure artifacts and six IDE dirty files remain
+preserved. The final Generic/XPM test observes blocked MASH PA before reset.
 
-Bubble coverage reproduced and repaired without removing assertions:
-non-AXI-Lite optional VCD now guards `u_cfg`; deterministic partial PA-ready
-holds the existing centered-interpolator tail-discard witness. Debug-enabled
-VCS confirms time 1360170 ps, q_count=2, tail/end=1, downstream FIFO count=2,
-PA ready=1110, output valid/ready=0/0. This is reachable tail-discard blocking,
-not an empty data queue. All 56 PA words remain bit-true, zero UVM errors.
+PASS: required VCS six legal plus one expected-negative test; runtime VCS and
+XSim Generic/XPM suites (six directed mode pairs, eight streams/448 words each);
+legacy AXI-Lite config VCS; six legal legacy XSim tests; required directed
+causal-EF1 XSim Generic/XPM; Python reference66/66; YAML/whitespace checks.
+Three independent QAM seeds compare336384 bits with99 errors; worst EVM2.551442%,
+minimum SNDR31.864285dB. Corrected XPM and Generic PA words match exactly. Receiver
+uses fixed528-source offset; original42056 input samples are unchanged, with
+only56 trailing zeros added for legal product packet length.
 
-The local PowerShell profile recursively dot-sourced itself. Removed that
-single line after byte-exact backup; real profile startup and both existing
-helper functions pass. The private profile is outside Git.
+Fixed-source XPM ZU15EG synthesis PASS:92144 LUT,74767 FF,670 DSP,6.5 BRAM;
+checkpoint/hash evidence is in the runtime product summary. The native tool reports
+a worker load ERROR and explicitly recovers through single-core optimization,
+then completes synthesis and writes the DCP. This is synthesis only.
+The historical static AXI-Lite OOC script fails its exact top-name assertion
+and remains FAIL; no timing evidence is taken from it. Initial license/launcher,
+reset-setup and compiler failures remain preserved alongside successful reruns.
 
-Runtime RTL Generic and XPM XSim UVM suites pass eight streams / six directed
-handover pairs, including 400-cycle stalls, partial ready and paired-reset
-replay. Six existing legal parallel UVM tests and the required causal-EF1
-directed XSim smoke pass. Python reference tests pass 66/66. Canonical runtime
-seed281001 actual PA gives EVM2.551442%, SNDR31.864285dB, BER15/37376, using
-the fixed528-source offset. Its 42056-sample input prefix matches preserved
-failure exactly; only56 trailing zeros satisfy the product packet quantum.
-
-The stronger blocked-PA reset setup CONFIRMED an additional XPM startup bug:
-USE_ADV_FEATURES=0000 disabled the read count used by prefill. At10300ns RUN=1,
-source stalls atbeat17, rd_count=0 and core_datapath_enable=0 with queued data.
-Prior early STOP tests bypassed startup through core_draining. Enable only XPM
-feature bit10 (0400). Fixed-source XPM UVM and synthesis are running. Preserve
-the failed bounded test and hierarchical Tcl probe as before-fix evidence.
-
-VCS compilation after vector preparation remains license-blocked. First runtime
-XPM synthesis passes (92128 LUT /74758 FF /670 DSP /6.5 BRAM), but it predates
-the read-count fix; fresh synthesis is required and underway. The historical
-AXI-Lite OOC script fails its exact top-name check after synthesis and is not
-PASS. Long QAM seed281002 passes (EVM2.510098%, SNDR32.006187dB, BER36/149504);
-seed281003 is running. Seed281004/32 symbols is INPUT_REJECTED by the unchanged
-peak guard. Next: validate the new XPM RUN/reset test and QAM, finish evidence
-and integrate thermo5 while retaining the root IDE's original dirty files.
-No routed PPA, GTY, full coverage, or CDC/RDC signoff is claimed.
+Evidence: `docs/verification/thermo5-runtime-product-report.md` and its summary
+JSON/VCD witness CSV. Licensed CI now runs both runtime FIFO implementations.
+Next: full-top routed PPA, physical weighted PA/GTY integration, complete code
+coverage and system CDC/RDC/Formal closure. No physical RF signoff is claimed.
 
 ## Current execution state: PR #62 ECO revalidation - partial, signoff open (2026-11-12)
 

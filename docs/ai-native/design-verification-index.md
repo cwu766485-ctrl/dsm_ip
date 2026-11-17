@@ -139,3 +139,14 @@ This index separates design, verification, flow, and protected boundaries so an 
 ## Missing evidence to resolve
 
 - Exact top/configuration, clock/reset assumptions, test selection, coverage/signoff criteria, and generated-source provenance are not inferred unless documented above.
+
+## Runtime DSM product
+
+`rtl/tx_bandpass_if/tid32_thermo5_runtime_tx.sv` is the canonical runtime
+EF1/EF2/MASH AXI-Lite entry point. Shared frontend, default EF2, STOP/drain
+handover and explicit four-equal versus two-weighted PA contracts are specified
+in `docs/spec/thermo5-runtime-dsm.md`. Runtime UVM uses
+`dv/uvm/sim/thermo5_runtime_filelist.f`, `dv/uvm/env/thermo5_runtime/`, and
+`dv/uvm/tests/thermo5_runtime/`. Run `thermo5-runtime-vcs-run` or the XSim Python
+runner from the command index. The product report separates digital qualification
+from open physical/CDC/RDC signoff.

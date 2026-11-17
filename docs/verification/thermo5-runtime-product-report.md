@@ -2,8 +2,8 @@
 
 Date: 2026-11-17 SGT. Candidate branch: `work/thermo5-runtime-product`.
 Base: `599959a9ed84eeefb24354df88d0f5296178ecef` (remote thermo5).
-Implementation revision and evidence hashes are recorded in the accompanying
-`data/thermo5-runtime-product-summary.json` after validation completes.
+Implementation revision: `7fe5bbb0c5e2ee35062ef797a18b73b3c9771bf5`.
+Evidence hashes are recorded in `data/thermo5-runtime-product-summary.json`.
 
 ## Scope and first faults
 
@@ -41,13 +41,14 @@ Code locations (candidate revision):
 
 | Location | Role |
 |---|---|
-| `dv/uvm/tests/thermo5/full_ip/thermo5_sku_bubble_backpressure_test.svh:85` | Legal targeted partial-ready stimulus |
+| `dv/uvm/tests/thermo5/full_ip/thermo5_sku_bubble_backpressure_test.svh:86` | Legal targeted partial-ready stimulus |
 | `dv/uvm/tb/thermo5_sku_uvm_tb.sv:255` | Direct queue/FIFO witness, bound to sampled signals |
 | `rtl/tx_bandpass_if/thermo5_mash_cartesian_stage.sv:83` | Centered accumulator error, not x-q1 |
 | `rtl/tx_bandpass_if/thermo5_mash11_core.sv:111` | Stage2 consumes accumulator residue |
 | `rtl/tx_bandpass_if/thermo5_mash11_core.sv:91` | q1 companion follows Stage2 accepted order |
+| `rtl/axis/dsm_xpm_async_fifo.sv:74` | Enable the read count required for XPM startup |
 | `rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv:426` | Locked core idle decision and backend reset |
-| `dv/uvm/refmodel/python/thermo5_runtime_qam.py:17` | Explicit 528-source-sample FFT contract |
+| `dv/uvm/refmodel/python/thermo5_runtime_qam.py:16` | Explicit 528-source-sample FFT contract |
 
 `data/thermo5-bubble-witness.csv` is independently extracted from the debug VCD
 immediately before the edge, matching posedge monitor sampling before NBA updates.
@@ -124,9 +125,10 @@ replay waits for blocked MASH PA data before asserting the paired resets.
 ## Verification status
 
 Results and artifact hashes follow in the evidence summary. Only completed,
-explicitly marked checks are PASS. Required VCS compilation was attempted after
-vector preparation but could not obtain a license; the VCS regression remains
-BLOCKED. Vivado XSim runs the actual UVM monitor/scoreboard, not a substituted
+explicitly marked checks are PASS. Initial VCS attempts were license-blocked. A final retry obtained a license:
+the required six legal tests and one expected-negative test PASS, both runtime
+Generic/XPM UVM suites PASS, and the existing static AXI-Lite config test PASS.
+The static test checks the unchanged 0x54483501 ID and coefficient mailbox. Vivado XSim runs the actual UVM monitor/scoreboard, not a substituted
 behavioral DUT. The old directed XSim runner needed explicit executable launch
 and its causal interpolation hierarchy probes updated before it could run.
 Python reference tests: 66/66 passed. No MATLAB algorithm was changed.
@@ -142,11 +144,47 @@ a digital link measurement; scalar gain fitting and BER mapping follow the
 existing receiver. Seed281004/32-symbol input is rejected by the unchanged
 0.35 peak guard (peak0.355822); it is recorded as INPUT_REJECTED, never PASS.
 
+| Canonical runtime PA experiment | EVM RMS | SNDR | Uncoded natural-binary BER |
+|---|---:|---:|---:|
+| seed281001, 8 symbols, Generic | 2.551442% | 31.864285dB | 15/37376 |
+| seed281001, 8 symbols, corrected XPM | 2.551442% | 31.864285dB | 15/37376 |
+| seed281002, 32 symbols, Generic | 2.510098% | 32.006187dB | 36/149504 |
+| seed281003, 32 symbols, Generic | 2.529758% | 31.938422dB | 48/149504 |
+
+Unique-seed total: 99/336384 bit errors (0.000294306); the repeated XPM capture
+is not counted as new independent BER samples. Each long run also completes all
+six directed architecture switches and eight checked streams (152768 accepted
+PA words per 32-symbol run). Generic and corrected XPM PA0/PA1 match every bit
+for all 5264 words of seed281001; phase1 and phase3 MASH replay also match exactly.
+The fixed-source short suites check 448 words each; Generic reports6/6 mode pairs,
+738 stalls/188 partial stalls, and XPM reports6/6,728 stalls/187 partial stalls.
+The stronger XPM reset observes32 source beats, PA_VALID=3, ready=0 and active=1
+before reset, then a fresh default-EF2 replay. No source/PA overflow or protocol
+error is reported by the finish checks.
+
+Fixed-source XPM synthesis PASS on ZU15EG: **92144 LUTs, 74767 FFs, 670 DSPs,
+6.5 BRAM tiles**, with no latches or black boxes. The checkpoint and utilization
+report are SHA256-indexed. The final log still records one worker-plugin load ERROR. The vendor tool then
+explicitly reports single-core fallback, completes synth_design and writes the
+DCP. The summary classifies this as PASS_WITH_RECOVERED_WORKER_ERROR rather
+than an error-free tool log. Earlier stalled plugin attempts remain preserved.
+No clocks/routing are constrained by this synthesis-only study, so it proves
+elaboration/mapping and resource use, not a frequency or physical timing limit.
+The existing static AXI-Lite OOC flow was attempted and fails its post-synthesis
+exact-top-name assertion; that flow is FAIL, not timing PASS. No routed timing
+was run. The required directed XSim Generic and XPM smokes pass after the
+explicit launcher and stale causal hierarchy probe fixes.
+
+The licensed CI workflow now includes both runtime FIFO implementations and
+archives PA captures; hosted syntax/reference checks also include the new
+Python tools. Workflow YAML parsing and whitespace checks pass locally. Remote
+CI is separate from these local results.
+
 ## Remaining signoff boundaries
 
 Runtime selection is a canonical, synthesizable digital configuration; it is
 not a claim of routed full-top or physical RF signoff. Complete code/functional
-coverage, fresh licensed VCS regression, new CDC/RDC/Formal closure, independent
+coverage, new CDC/RDC/Formal closure, independent
 live resets, VCU118 full-top routed PPA, weighted PA board routing and two
 14-Gb/s GTY serializers remain separate work. Existing EF2 OOC timing cannot
 be reused as runtime full-top/GTY signoff. Output transactions may contain
@@ -159,5 +197,6 @@ Use the exact commands in `../ai-native/commands.md`, section Runtime EF1 / EF2 
 MASH product. Raw artifacts remain below the candidate worktree's ignored
 `runs/`; small reviewable summaries and SHA256 are tracked. Preserve all failed
 launcher/compiler/license logs alongside successful reruns. No cleanup command
-was run. The root IDE's six pre-existing uncommitted files are preserved
-separately from this integration.
+was run. The root IDE's six pre-existing uncommitted files are preserved with retained
+stash `48ef33fb61069cb306b9af0eb5d8ed68eaed04a5` and a byte-exact backup; their
+additions are restored as uncommitted work after integration.

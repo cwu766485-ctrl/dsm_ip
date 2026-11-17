@@ -1,3 +1,26 @@
+# 2026-11-17 11:17 SGT - Runtime product final digital qualification
+
+- Final RTL/UVM implementation: `7fe5bbb`; subsequent changes bind evidence,
+  register/PA contract, navigation, licensed CI and native synthesis settings.
+  Corrected MASH is canonical and runtime-selectable with default EF2.
+- PASS: mandatory VCS regression (six legal/one expected negative), runtime
+  Generic/XPM VCS and XSim, legacy AXI-Lite config VCS, six legal legacy XSim,
+  required directed Generic/XPM XSim, Python66/66, workflow YAML and whitespace.
+- Three fixed QAM seeds compare336384 bits with99 errors; EVM2.510098-2.551442%,
+  SNDR31.864285-32.006187dB. Corrected XPM matches Generic raw PA words exactly.
+  Repeated XPM samples are excluded from independent BER counts. Seed281004
+  remains INPUT_REJECTED by the unchanged peak guard.
+- Fixed-source XPM ZU15EG synthesis PASS:92144 LUT,74767 FF,670 DSP,6.5 BRAM.
+  Generated DCP/utilization/logs stay ignored; tracked SHA256 summary binds them.
+  The final log records a worker load ERROR followed by explicit single-core
+  fallback and successful DCP generation; this is classified separately from
+  a clean tool log. Earlier plugin/license failures remain preserved.
+- Existing static AXI-Lite OOC exact-top-name check remains FAIL after synthesis;
+  no routed timing, GTY, full coverage or system CDC/RDC/Formal PASS is inferred.
+- Root IDE's six prior dirty files have byte-exact backup and a retained stash;
+  their content will be restored as uncommitted work after the branch update.
+  The original failed QAM evidence/root-cause branch remain untouched.
+
 # 2026-11-17 SGT - Runtime EF1/EF2/MASH product and bubble witness closure
 
 - Promoted corrected accumulator-residue MASH and its independent scalar oracle

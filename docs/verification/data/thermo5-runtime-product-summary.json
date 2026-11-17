@@ -1,0 +1,562 @@
+{
+  "date_sgt": "2026-11-17",
+  "rtl_uvm_implementation_sha": "7fe5bbb0c5e2ee35062ef797a18b73b3c9771bf5",
+  "baseline_sha": "599959a9ed84eeefb24354df88d0f5296178ecef",
+  "tests": {
+    "runtime_generic": {
+      "status": "PASS",
+      "marker": "RUNTIME_PRODUCT_PASS",
+      "artifact": {
+        "path": "runs/runtime_generic_fixed_test/simulation.log",
+        "sha256": "a6b14f34d3edfc75b859e02dae090d62f731870feadc132919bf8b6ad349105b",
+        "bytes": 5391
+      }
+    },
+    "runtime_xpm": {
+      "status": "PASS",
+      "marker": "RUNTIME_PRODUCT_PASS",
+      "artifact": {
+        "path": "runs/runtime_xpm_rdc_fix/simulation.log",
+        "sha256": "ef4bd931a7f165ebbbb34ddafa78860b3535c8f7273859c6a78233ee40e40706",
+        "bytes": 5384
+      }
+    },
+    "legacy_bittrue": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_xsim_3/thermo5_sku_bittrue_test.log",
+        "sha256": "e858242cba8bb0fd1ec89b99f24845c3835726eab33002b6fccbeddd1d601e92",
+        "bytes": 5155
+      }
+    },
+    "legacy_bubble_backpressure": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_xsim_3/thermo5_sku_bubble_backpressure_test.log",
+        "sha256": "8bb032184c2e48f1f70ffdc5fcd56f2ec4a133649a0c557f5901134e0a26aca8",
+        "bytes": 6675
+      }
+    },
+    "legacy_fifo_boundary": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_xsim_3/thermo5_sku_fifo_boundary_test.log",
+        "sha256": "5d305bc3fe20f0527db5d7794be5cd9c99fb93ff785f43bcc00478b02e111107",
+        "bytes": 5154
+      }
+    },
+    "legacy_fifo_empty": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_xsim_3/thermo5_sku_fifo_empty_test.log",
+        "sha256": "77f57001fed428a0c7921e64f75f4a0217e55931a3deca38f7024ab0d24194d6",
+        "bytes": 5123
+      }
+    },
+    "legacy_reset": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_xsim_3/thermo5_sku_reset_test.log",
+        "sha256": "783ff789932e12ee7ec95305025bbe755ae0b95dad15a396287e54c2a01b8429",
+        "bytes": 5440
+      }
+    },
+    "legacy_reset_sweep": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_xsim_3/thermo5_sku_reset_sweep_test.log",
+        "sha256": "8b8e53f481deaa6b4cc32384dcb03827a80bdb8e1b51696c490210900b7b4f60",
+        "bytes": 5169
+      }
+    },
+    "required_directed_generic": {
+      "status": "PASS",
+      "marker": "THERMO5_I2_D1_AXIS_BITTRUE_PASS",
+      "artifact": {
+        "path": "runs/uvm_thermo5_i2_d1/axis_xsim_parallel_generic_causal_ef1_seed1_words56/console_xsim.log",
+        "sha256": "2bb6189de5f736fd6af65bcc72da6401c262629676885f76394d1efc2fb86341",
+        "bytes": 874
+      }
+    },
+    "required_directed_xpm": {
+      "status": "PASS",
+      "marker": "THERMO5_I2_D1_AXIS_BITTRUE_PASS",
+      "artifact": {
+        "path": "runs/uvm_thermo5_i2_d1/axis_xsim_parallel_xpm_causal_ef1_seed1_words56/console_xsim.log",
+        "sha256": "bda52726138bb55734895882ee599046304ec011e6266d0d1158cbb8e15cc8ea",
+        "bytes": 874
+      }
+    },
+    "python_reference": {
+      "status": "PASS",
+      "tests": 66,
+      "artifact": {
+        "path": "runs/python_reference_tests.log",
+        "sha256": "1b7aae7321865a32a7d891c6e1aa04d0f5aefa3f2cb2cac4391a37a82316f9c4",
+        "bytes": 166
+      }
+    },
+    "required_vcs": {
+      "status": "PASS",
+      "legal_tests": 6,
+      "expected_negative_tests": 1,
+      "command_log": {
+        "path": "runs/required_vcs_final_command.log",
+        "sha256": "66beff1c78ced9653014544af7ff0f6b4af055f3a5aa78c9223d0ba952cc2fac",
+        "bytes": 75517
+      },
+      "negative": {
+        "path": "runs/required_vcs_final/illegal_frame_seed4.log",
+        "sha256": "b23bc6b93df03c556b57409c250f0d10bf58aad0527dbeaeba4c989562333539",
+        "bytes": 4960
+      }
+    },
+    "legacy_axil_synthesis": {
+      "status": "FAIL",
+      "reason": "Exact top-name check failed after synthesis; no timing result",
+      "artifact": {
+        "path": "runs/required_axil_synth_launcher/command.log",
+        "sha256": "f8b3796dee14accf993490da9b79f5f4d922df92b640a988c09f273043c7610d",
+        "bytes": 368509
+      }
+    },
+    "required_vcs_bittrue": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/required_vcs_final/thermo5_sku_bittrue_test_seed1.log",
+        "sha256": "caf38a07512e6e0a917a0d86fc967e2aab7bf8e983bc37d65409f87ea2295268",
+        "bytes": 4464
+      }
+    },
+    "required_vcs_bubble_backpressure": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/required_vcs_final/thermo5_sku_bubble_backpressure_test_seed2.log",
+        "sha256": "19ab9e61b6d13e9a1f21b0c72a3b559d1e5fdbc5affad4ab021b506cc8113cb6",
+        "bytes": 4980
+      }
+    },
+    "required_vcs_fifo_boundary": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/required_vcs_final/thermo5_sku_fifo_boundary_test_seed2.log",
+        "sha256": "2b8526dc0d35bc8577b01e0065b2ab7551baf026f628abb888258773d5da0f31",
+        "bytes": 4491
+      }
+    },
+    "required_vcs_fifo_empty": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/required_vcs_final/thermo5_sku_fifo_empty_test_seed5.log",
+        "sha256": "643ee1efdbede2c4d5c9294a1b503e27da6045cff1c4dcd8bb98d7aa757981af",
+        "bytes": 4454
+      }
+    },
+    "required_vcs_reset": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/required_vcs_final/thermo5_sku_reset_test_seed3.log",
+        "sha256": "1a887de8634c2720f522c6160e0a90a8dd231675d9de164d388539a7d93b2d96",
+        "bytes": 4714
+      }
+    },
+    "required_vcs_reset_sweep": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/required_vcs_final/thermo5_sku_reset_sweep_test_seed6.log",
+        "sha256": "b1afd90ef7386c74eea1f959e8407c8ad1cf991083be6307679bdb492d33617c",
+        "bytes": 4501
+      }
+    },
+    "runtime_vcs_generic": {
+      "status": "PASS",
+      "marker": "RUNTIME_PRODUCT_PASS",
+      "artifact": {
+        "path": "runs/runtime_vcs_final/simulation.log",
+        "sha256": "6a408711acc0f9c9cefce824bbed16a8b3b8ffab2ec3eab1317cf3742afb609b",
+        "bytes": 4082
+      }
+    },
+    "runtime_vcs_xpm": {
+      "status": "PASS",
+      "marker": "RUNTIME_PRODUCT_PASS",
+      "artifact": {
+        "path": "runs/runtime_vcs_xpm_final/simulation.log",
+        "sha256": "1b0a6a66f82f38f3449ac9170035f84d9f3660d96860269874182f1f565eb3a4",
+        "bytes": 4094
+      }
+    },
+    "legacy_axil_config_vcs": {
+      "status": "PASS",
+      "marker": "SKU_PASS",
+      "artifact": {
+        "path": "runs/legacy_axil_vcs_final/thermo5_sku_axil_config_test_seed101.log",
+        "sha256": "2387d43cef88ad6f068a599fb33f945949bbacf264f8313de5a1ef3e33f38d86",
+        "bytes": 5149
+      }
+    }
+  },
+  "qam": [
+    {
+      "qam_symbols": 4672,
+      "global_complex_equalizer": [
+        0.06581332031233088,
+        -3.431641024494603e-06
+      ],
+      "raw_evm_percent": 1418.9894432132637,
+      "evm_percent": 2.551442257293938,
+      "sndr_db": 31.864285118238982,
+      "symbol_errors": 7,
+      "symbol_error_rate": 0.0014982876712328766,
+      "uncoded_bit_errors_natural_binary": 15,
+      "uncoded_ber_natural_binary": 0.0004013270547945205,
+      "gain_corrected_error_energy": 3.038035658488965,
+      "reference_energy": 4666.823529411764,
+      "seed": 281001,
+      "symbols": 8,
+      "words": 5264,
+      "fft_window_source_offset": 528,
+      "source": "canonical runtime RTL PA captures, phase1 MASH",
+      "pa_sha256": {
+        "phase1_arch2_pa0.mem": "c71de3d15c33e3ee45d512ac29a0fd85986c9d244f4698abc3a9c2dd0b43ac1b",
+        "phase1_arch2_pa1.mem": "9c8360c85fbf33dbdc106d98d3e817e4418bf993118a15394c87e49b513a94b6"
+      },
+      "pass": true,
+      "capture_run": {
+        "status": "PASS",
+        "marker": "RUNTIME_PRODUCT_PASS",
+        "artifact": {
+          "path": "runs/runtime_qam281001/capture/simulation.log",
+          "sha256": "24614dc34635cbc0eee353ca7161c6d269fb902e34b66057028ccc1225d3a461",
+          "bytes": 5054
+        }
+      },
+      "metric_artifact": {
+        "path": "runs/runtime_qam281001/qam_metrics.json",
+        "sha256": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4",
+        "bytes": 861
+      },
+      "vector_manifest": {
+        "path": "runs/runtime_qam281001/vectors/manifest.json",
+        "sha256": "748f7faff7a8960cc42175764ce8c516a4b32b97787cc9d4d3142661fca9736b",
+        "bytes": 1788
+      }
+    },
+    {
+      "qam_symbols": 18688,
+      "global_complex_equalizer": [
+        0.06544449329180689,
+        5.374065480876451e-07
+      ],
+      "raw_evm_percent": 1427.564711587765,
+      "evm_percent": 2.5100977264056508,
+      "sndr_db": 32.00618739338724,
+      "symbol_errors": 24,
+      "symbol_error_rate": 0.0012842465753424657,
+      "uncoded_bit_errors_natural_binary": 36,
+      "uncoded_ber_natural_binary": 0.00024079623287671232,
+      "gain_corrected_error_energy": 11.747503053657834,
+      "reference_energy": 18645.082352941175,
+      "seed": 281002,
+      "symbols": 32,
+      "words": 19096,
+      "fft_window_source_offset": 528,
+      "source": "canonical runtime RTL PA captures, phase1 MASH",
+      "pa_sha256": {
+        "phase1_arch2_pa0.mem": "35fd4c4969450aafea544fd8afdca7fafcd0928df7179e31edcbab7901b4338d",
+        "phase1_arch2_pa1.mem": "4ec34fdf72617325dbf504b99b1782688d93e408fc0382a7fa3dc2b690ea10e2"
+      },
+      "pass": true,
+      "capture_run": {
+        "status": "PASS",
+        "marker": "RUNTIME_PRODUCT_PASS",
+        "artifact": {
+          "path": "runs/runtime_qam281002/capture/simulation.log",
+          "sha256": "b30b9918ef199ccc2208b99bea304bef6c313c7e3322be17aa2f53ee3e737579",
+          "bytes": 5076
+        }
+      },
+      "metric_artifact": {
+        "path": "runs/runtime_qam281002/qam_metrics.json",
+        "sha256": "a034bd126bd4d66f308ab052414060dcc4d9767e101c1ca2870ad194db3390ef",
+        "bytes": 866
+      },
+      "vector_manifest": {
+        "path": "runs/runtime_qam281002/vectors/manifest.json",
+        "sha256": "bb4769efefea3123f0d62caa0a521b15b486df18687d2d462d4306c1f9ea6650",
+        "bytes": 1792
+      }
+    },
+    {
+      "qam_symbols": 18688,
+      "global_complex_equalizer": [
+        0.06560678309726532,
+        -9.2706981901735e-06
+      ],
+      "raw_evm_percent": 1423.779066098853,
+      "evm_percent": 2.5297575153346243,
+      "sndr_db": 31.938422104539622,
+      "symbol_errors": 27,
+      "symbol_error_rate": 0.001444777397260274,
+      "uncoded_bit_errors_natural_binary": 48,
+      "uncoded_ber_natural_binary": 0.0003210616438356164,
+      "gain_corrected_error_energy": 12.00015499775539,
+      "reference_energy": 18751.199999999997,
+      "seed": 281003,
+      "symbols": 32,
+      "words": 19096,
+      "fft_window_source_offset": 528,
+      "source": "canonical runtime RTL PA captures, phase1 MASH",
+      "pa_sha256": {
+        "phase1_arch2_pa0.mem": "a337e4cb6854b3099771e5b6a17447e955755ff1798127614ced3bd6bb006f79",
+        "phase1_arch2_pa1.mem": "44d19e86c87644989f7b118cfcdc40c50b5558f2260c4b8c9f3a3bf61f19bfe0"
+      },
+      "pass": true,
+      "capture_run": {
+        "status": "PASS",
+        "marker": "RUNTIME_PRODUCT_PASS",
+        "artifact": {
+          "path": "runs/runtime_qam281003/capture/simulation.log",
+          "sha256": "9ef71000e39c175fffc51070b234504461863e74234d7f006b0cae3317a2f31b",
+          "bytes": 5076
+        }
+      },
+      "metric_artifact": {
+        "path": "runs/runtime_qam281003/qam_metrics.json",
+        "sha256": "6b779f79a73c774b8220a5a39a43cfa37a955ea672e28414f15f4db3b3bf9ca8",
+        "bytes": 863
+      },
+      "vector_manifest": {
+        "path": "runs/runtime_qam281003/vectors/manifest.json",
+        "sha256": "30d3e8af0bd08e3f3fdf31f3fcc03363f36d24c959b746ce5dc67fabb1a3ee61",
+        "bytes": 1792
+      }
+    },
+    {
+      "qam_symbols": 4672,
+      "global_complex_equalizer": [
+        0.06581332031233088,
+        -3.431641024494603e-06
+      ],
+      "raw_evm_percent": 1418.9894432132637,
+      "evm_percent": 2.551442257293938,
+      "sndr_db": 31.864285118238982,
+      "symbol_errors": 7,
+      "symbol_error_rate": 0.0014982876712328766,
+      "uncoded_bit_errors_natural_binary": 15,
+      "uncoded_ber_natural_binary": 0.0004013270547945205,
+      "gain_corrected_error_energy": 3.038035658488965,
+      "reference_energy": 4666.823529411764,
+      "seed": 281001,
+      "symbols": 8,
+      "words": 5264,
+      "fft_window_source_offset": 528,
+      "source": "canonical runtime RTL PA captures, phase1 MASH",
+      "pa_sha256": {
+        "phase1_arch2_pa0.mem": "c71de3d15c33e3ee45d512ac29a0fd85986c9d244f4698abc3a9c2dd0b43ac1b",
+        "phase1_arch2_pa1.mem": "9c8360c85fbf33dbdc106d98d3e817e4418bf993118a15394c87e49b513a94b6"
+      },
+      "pass": true,
+      "capture_run": {
+        "status": "PASS",
+        "marker": "RUNTIME_PRODUCT_PASS",
+        "artifact": {
+          "path": "runs/runtime_qam281001/capture_xpm_fixed/simulation.log",
+          "sha256": "ce27db148248c706fbc6608fef87b7f371deba90a2d84684302ecd0ecaab0b66",
+          "bytes": 5663
+        }
+      },
+      "metric_artifact": {
+        "path": "runs/runtime_qam281001/qam_metrics_xpm_fixed.json",
+        "sha256": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4",
+        "bytes": 861
+      }
+    }
+  ],
+  "unique_seed_ber": {
+    "bit_errors": 99,
+    "bits_compared": 336384,
+    "ber": 0.00029430650684931505,
+    "excludes_repeated_xpm_capture": true
+  },
+  "input_rejected": {
+    "seed": 281004,
+    "symbols": 32,
+    "reason": "Unchanged peak guard:0.355822>0.35",
+    "status": "INPUT_REJECTED"
+  },
+  "bubble_witness": {
+    "edge_ps": 1360170,
+    "vcd": {
+      "path": "runs/bubble_debug_bound/witness.vcd",
+      "sha256": "b01151479ef72d8dd0bf479d5452323a28b63b453569a5606b10b2767b551109",
+      "bytes": 1475624
+    },
+    "log": {
+      "path": "runs/bubble_debug_bound/thermo5_sku_bubble_backpressure_test_seed2.log",
+      "sha256": "f673cca418ddb356e01f8c8313e5339e1cda98ece24f7de086b291ebc0f371fc",
+      "bytes": 5095
+    },
+    "csv": {
+      "path": "docs/verification/data/thermo5-bubble-witness.csv",
+      "sha256": "659847630534537acbffbf8b4fccde8662ae388fc4ba98232b94e50735fb9d1c",
+      "bytes": 1261
+    }
+  },
+  "xpm_read_count_before": {
+    "status": "EXPECTED_FAIL",
+    "log": {
+      "path": "runs/runtime_reset_bounded/simulation.log",
+      "sha256": "3e1377b75e90cc89fe5b1675557c335f9ca82330ec8b62de49fac8faf8390002",
+      "bytes": 4798
+    },
+    "hierarchy_probe": {
+      "path": "runs/runtime_reset_probe/probe3.log",
+      "sha256": "98396b37702dfa129769f15751b92c6c126cfd77e527e86bfd3dc23e7c94eb24",
+      "bytes": 8000
+    }
+  },
+  "source_prefix": {
+    "i": {
+      "original_samples": 42056,
+      "runtime_samples": 42112,
+      "prefix_equal": true,
+      "trailing_zero_samples": 56
+    },
+    "q": {
+      "original_samples": 42056,
+      "runtime_samples": 42112,
+      "prefix_equal": true,
+      "trailing_zero_samples": 56
+    }
+  },
+  "pa_consistency": {
+    "pa0": {
+      "words": 5264,
+      "generic_phase1_vs_phase3_vs_fixed_xpm": true,
+      "sha256": {
+        "runs/runtime_qam281001/capture/phase1_arch2_pa0.mem": "c71de3d15c33e3ee45d512ac29a0fd85986c9d244f4698abc3a9c2dd0b43ac1b",
+        "runs/runtime_qam281001/capture/phase3_arch2_pa0.mem": "c71de3d15c33e3ee45d512ac29a0fd85986c9d244f4698abc3a9c2dd0b43ac1b",
+        "runs/runtime_qam281001/capture_xpm_fixed/phase1_arch2_pa0.mem": "c71de3d15c33e3ee45d512ac29a0fd85986c9d244f4698abc3a9c2dd0b43ac1b",
+        "runs/runtime_qam281001/capture_xpm_fixed/phase3_arch2_pa0.mem": "c71de3d15c33e3ee45d512ac29a0fd85986c9d244f4698abc3a9c2dd0b43ac1b"
+      }
+    },
+    "pa1": {
+      "words": 5264,
+      "generic_phase1_vs_phase3_vs_fixed_xpm": true,
+      "sha256": {
+        "runs/runtime_qam281001/capture/phase1_arch2_pa1.mem": "9c8360c85fbf33dbdc106d98d3e817e4418bf993118a15394c87e49b513a94b6",
+        "runs/runtime_qam281001/capture/phase3_arch2_pa1.mem": "9c8360c85fbf33dbdc106d98d3e817e4418bf993118a15394c87e49b513a94b6",
+        "runs/runtime_qam281001/capture_xpm_fixed/phase1_arch2_pa1.mem": "9c8360c85fbf33dbdc106d98d3e817e4418bf993118a15394c87e49b513a94b6",
+        "runs/runtime_qam281001/capture_xpm_fixed/phase3_arch2_pa1.mem": "9c8360c85fbf33dbdc106d98d3e817e4418bf993118a15394c87e49b513a94b6"
+      }
+    }
+  },
+  "synthesis_current": {
+    "status": "PASS_WITH_RECOVERED_WORKER_ERROR",
+    "netlist_status": "PASS",
+    "device": "xczu15eg-ffvb1156-2-i",
+    "stage": "synthesis only, unconstrained; not routed timing",
+    "lut": 92144,
+    "ff": 74767,
+    "dsp": 670,
+    "bram_tiles": 6.5,
+    "latches": 0,
+    "black_boxes": 0,
+    "recovered_tool_error": "ERROR: [Common 17-217] Failed to load feature 'fpga_compiler'.",
+    "recovery": "Vendor tool explicitly continued in single-core optimization, completed synth_design and wrote DCP.",
+    "artifacts": [
+      {
+        "path": "runs/runtime_synth_launcher/readcount_single_command.log",
+        "sha256": "fa3d77341da1b8d61c638bba82878cc905c1b5f53d378b357e61f9b932d7ac19",
+        "bytes": 440996
+      },
+      {
+        "path": "runs/runtime_synth_readcount_single/synthesized.dcp",
+        "sha256": "2d66bbc05fd5a788e7ee74eadc84cae2331b00909430814f0b2ea32e487c319d",
+        "bytes": 21289571
+      },
+      {
+        "path": "runs/runtime_synth_readcount_single/synth_utilization.rpt",
+        "sha256": "0cd04c02cebb5b93e596e3e5cc87744772b24d078ac0cd2612ed8e8fce1103ac",
+        "bytes": 10034
+      }
+    ]
+  },
+  "source_sha256": {
+    "dv/uvm/agent/interfaces/thermo5_runtime_if.sv": "29d011751fe7f95350a385452a056d970b44123ac4e1a9a275740553a593ad5d",
+    "dv/uvm/env/thermo5_runtime/thermo5_runtime_uvm_pkg.sv": "c7f4121f24b43c647798abc1235464cd6ed34e4ec045b415007fad2e3e6c2c11",
+    "dv/uvm/refmodel/python/dsm_refmodel/thermo5_mash.py": "6f51c5d44a1675754b48b1d79ad1e891ffe951c4ada49a1791d4ddb1209ccfe3",
+    "dv/uvm/refmodel/python/generate_thermo5_runtime_vectors.py": "fd03ec017051e060479254ec7f52d9b681f72234397d4626f1507d6214d5f687",
+    "dv/uvm/refmodel/python/thermo5_runtime_qam.py": "1dcb901d87bccd825040f1fadc9b05ccdbdd226e9af7c3871517666291a6abfa",
+    "dv/uvm/sim/Makefile": "3f83a9c60c6689cff75531dd8da4bcd5b9f2dc4a53c960a7b07000e50582d5c7",
+    "dv/uvm/sim/run_thermo5_runtime_xsim.py": "354d2d3b9878543a09a34d72f80d21b667f6684ddf7c174321dc26355af22ec3",
+    "dv/uvm/sim/thermo5_runtime_filelist.f": "8573b94ea283e43b09eefe01f5ffe71d57d62c57c0511f77e9cd6020159c31b9",
+    "dv/uvm/sim/thermo5_sku_filelist.f": "e9727a642fa010613a919435f5484bb0bd88232bc7c0b1be5a57968d4c00a601",
+    "dv/uvm/tb/thermo5_runtime_uvm_tb.sv": "781487d04f011e559c5cc89825d4eefd523cbfd33290b62a6b0e8b4be56f6edf",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "74a4411cec6f27e97963b8da457991cb135ad9676d6de42cfb483f0ea722f449",
+    "dv/uvm/tests/thermo5/full_ip/thermo5_sku_bubble_backpressure_test.svh": "84f697a993eac3012576d6b7e3ba661ed05c5cc38c8262075406131857e46eef",
+    "dv/uvm/tests/thermo5_runtime/thermo5_runtime_switch_test.svh": "6b7697d952bd83c57c578caf4bc366f03d812094c8ff0353f32948e09f401b9a",
+    "dv/verif/subsystem/tx_frontend/run_xsim_thermo5_i2_d1_axis.ps1": "3e8762a735e93d8a2f6adb9ddbade88f835904f96a9741605b1bc33c28ccaaf6",
+    "dv/verif/subsystem/tx_frontend/tb/tb_thermo5_i2_d1_axis_bittrue.sv": "04acb99db7ff9f02786cfd50e9d708d5f8991017ec137927496288a54602c87d",
+    "rtl/axis/dsm_xpm_async_fifo.sv": "0e9b33073d56082f34d9f47869da957f34f6a564e157708bc38e8bb16e5adbff",
+    "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "8fb650d7b030819e2d5ccbe7225ff5304af264445ce45aaa54ccd300ea75ed13",
+    "rtl/tx_bandpass_if/thermo5_mash11_core.sv": "7ec39d1b90f7b8780725927046945d0d6c0689efe302c4e62bdb55136fb90e24",
+    "rtl/tx_bandpass_if/thermo5_mash_backend.sv": "665bf332e6edfc7bfbc411fd8d960a869d5249d68b30ed0f4d4c18d3713edb42",
+    "rtl/tx_bandpass_if/thermo5_mash_cartesian_stage.sv": "28019eca9478e76a4a1a183c3a14c6af9e147fd1c1c03cd1aee8c60b70039639",
+    "rtl/tx_bandpass_if/thermo5_mash_weighted_encoder.sv": "5a484efc9e96809d79ad7af3376daba46e3acb6c9cc6d88d025218f27fe6aa06",
+    "rtl/tx_bandpass_if/thermo5_runtime_dsm_backend.sv": "9a0c6ff9ec43892e5cd1768f7bddd5359cdce49f88acbe3e11493dec149e8ec2",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "77370c5c30092a30960586e75b2f2f4f8720446fafe45bb2c5ba77fc8863ea48",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "d9538c9c6923f477ec72e41f6a03c83fa7bd751d06bf187d443343549479c6c8",
+    "rtl/tx_bandpass_if/tid32_thermo5_runtime_tx.sv": "727552fcfc99250a1655f55145dbebe8b928313cd1407303f08164e2ff592187",
+    "syn/run_ooc_thermo5_runtime.tcl": "9a55a54869f873498172442669c5b400637c5bd2a3f67f6e0253bace1323d162",
+    "tools/hw/extract_thermo5_bubble_witness.py": "8108b34aec1454d5626e83cdf3e3e890a2dd57c8f3d46dd925f41042b787120f",
+    "tools/hw/thermo5_runtime_control.py": "398e1ceb6904126851b10b692bf945fe13f15f94c3be254bab43ecfee1981ba9",
+    ".github/workflows/thermo5-dv.yml": "c28d666ea291dbcdf81ab3fa152f74e96ff4d1265f4bdac15068f2750d859956"
+  },
+  "retained_attempts": [
+    {
+      "path": "runs/runtime_uvm_1_command.log",
+      "sha256": "afe498dc4aef76265827d9026249f56bee435e8b26ee1b90e7124fbbd184e232",
+      "bytes": 1760
+    },
+    {
+      "path": "runs/required_vcs_regression_ready_command.log",
+      "sha256": "b49414af1157b58b4622dd8c0e64c064388041a42d285bfc81c1185bed469688",
+      "bytes": 1752
+    },
+    {
+      "path": "runs/required_xsim_command.log",
+      "sha256": "ca98059fb63577952e996cd6edc7a1eb1b2c4122ee36fe3ef76341dec018d1fb",
+      "bytes": 771
+    },
+    {
+      "path": "runs/runtime_synth_launcher/rdc_fix_command.log",
+      "sha256": "0e40a4ac8c59483494f4cb5a5ded3d4073264f4e09fee47e1a078890ace48679",
+      "bytes": 94400
+    },
+    {
+      "path": "runs/runtime_synth_launcher/readcount_final_command.log",
+      "sha256": "33ca73ee67766fbf841851944fb26632759ee9fbf1fa9126202aebc8070eb15e",
+      "bytes": 94400
+    }
+  ],
+  "ide_preservation": {
+    "stash_sha": "48ef33fb61069cb306b9af0eb5d8ed68eaed04a5",
+    "backup": "IDE root/runs/thermo5_runtime_product_preservation/ide_before_integration",
+    "files": 6,
+    "restore_as_uncommitted": true
+  }
+}
