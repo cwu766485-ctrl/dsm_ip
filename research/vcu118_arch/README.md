@@ -124,3 +124,39 @@ On the Windows host, run the GT Wizard digital serial loopback with a **new** ou
 ```
 
 Require the explicit `GTY_TX_SERIAL_BITTRUE_PASS`, `GTY_RX_LOOPBACK_BITTRUE_PASS`, and `GTY_TXUSRCLK2_PASS` messages, not just Tcl completion. A vendor simulation is not a physical transceiver test. For post-route Fmax, run `report_routed.tcl` on each completed routed DCP into a fresh directory; evaluate clock-interaction and I/O assumptions before interpreting its core-only result.
+
+The bounded RTL proof attempts can be reproduced with Yosys. The full miter
+and split numerator miter timed out after 120 seconds in the recorded run;
+the split rounding miter passed. Do not treat a timeout as a proof.
+
+```bash
+mkdir runs/repro_cubic_formal_NEW
+yosys -Q -T -p 'read_verilog -formal -sv research/vcu118_arch/centered_cubic_midpoint_candidate.sv research/vcu118_arch/formal_centered_cubic_miter.sv; prep -top formal_centered_cubic_miter -flatten; sat -verify -prove-asserts -timeout 120' \
+  > runs/repro_cubic_formal_NEW/full.log 2>&1
+for top in cubic_numerator_miter cubic_round_miter; do
+  yosys -Q -T -p "read_verilog -formal -sv research/vcu118_arch/centered_cubic_split_miters.sv; prep -top $top -flatten; sat -verify -prove-asserts -timeout 120" \
+    > "runs/repro_cubic_formal_NEW/$top.log" 2>&1
+done
+```
+
+For a completed routed case, derive core-only Fmax and paths without changing
+its checkpoint (replace `CASE` and choose a fresh output directory):
+
+```powershell
+& 'D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat' -mode batch `
+  -source research/vcu118_arch/report_routed.tcl `
+  -tclargs runs/vcu118_ppa_research_01/CASE/routed.dcp runs/repro_route_analysis_CASE_NEW
+```
+
+The required baseline checks used the preserved input vectors shown below; the
+VCS output path must be new. The first VCS attempt lacked vectors and is kept
+as a failure log, while the second command completed the regression.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\dv\verif\scripts\run_xsim_thermo5_i2_d1_axis.ps1 `
+  -VectorDir E:\workspace\chip\dsm_ip\runs\mash_root_cause_work\runs\uvm_thermo5_i2_d1\vectors
+wsl -d Rocky-8.10 -- bash -ilc 'export VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1; cd /mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research; make -C dv/uvm/sim thermo5-vcs-regression THERMO5_OUT=$PWD/runs/repro_vcs_NEW THERMO5_VECTORS=/mnt/e/workspace/chip/dsm_ip/runs/thermo5_runtime_product/runs/bubble_baseline_vectors'
+```
+
+The XSim script itself uses a fixed subdirectory under its current worktree;
+use a fresh worktree or inspect its output directory before running it again.
