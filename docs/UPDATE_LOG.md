@@ -1,3 +1,8 @@
+## 2026-11-17 23:04 SGT — EF2 inductive-step proof attempt
+
+- Added `dv/uvm/formal/thermo5_ef2_4lane_inductive_harness.sv` and `research/vcu118_arch/formal_ef2_4lane_inductive.tcl`. Under the explicit equal-current-state hypothesis, VC Formal has zero black boxes and reaches all 4 covers, but both raw-word and next-state assertions are inconclusive (`runs/ef2_4lane_inductive_01/`). The hypothesis is not a proof and the product EF2 core remains unchanged.
+- Updated the architecture study. The bounded EF1 CDC implementation is in synthesis with Runtime paused and its independent resume watchdog active.
+
 ## 2026-11-17 23:03 SGT — Cubic candidate stream comparison
 
 - Added `dv/verif/integration/vcu118_arch/tb_cubic_stream_equivalence.sv` and `research/vcu118_arch/run_cubic_stream_equiv.sh`. Both cubic candidates matched the original interpolator for 3,575 output words each under 887 sink stalls, 668 source bubbles and one midstream reset. Logs and generated renamed RTL are retained in `runs/cubic_stream_equiv_01/`; this is simulation, not unbounded formal proof.
