@@ -5,10 +5,8 @@ baseline PPA worktree. A narrow fixed-Q14 midpoint rewrite passes XSim and VCS
 regressions, eight full-runtime QAM streams, and SHA256 comparison of all ten
 active EF1/EF2/MASH PA files against the preserved baseline. Details and
 reproduction: `docs/verification/thermo5-cubic-optimization-20261117.md`.
-The complete 16-bit RTL formal miter timed out. No optimized synthesis or route
-has completed, and no timing improvement or product signoff is claimed. Next:
-run matched VCU118 optimized EF1 PPA in a fresh directory when resources allow;
-compare routed data, then decide whether to run the remaining modes and whether
+The complete 16-bit RTL formal miter timed out. Matched optimized EF1 synthesis is running in `runs/optimized_ppa_ef1_01/`; no
+optimized synthesis or route has completed, and no timing improvement or product signoff is claimed. Next: compare matched EF1 routed data, then decide whether to run the remaining modes and whether
 the candidate is suitable for integration.
 
 ## VCU118 architecture and 14-Gb/s GTY research (2026-11-17 SGT, in progress)
