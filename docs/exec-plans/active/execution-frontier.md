@@ -26,7 +26,8 @@ and VCS required regression pass with preserved vectors.
 
 Four equal-boundary VCU118 PPA cases are running serially in a new run directory.
 EF1 synthesis completed with pre-place WNS -1.823 ns; placement and physical
-optimization completed and routing is in progress.
+optimization completed and routing is in progress. OOC port partial-location
+warnings prevent a physical I/O timing conclusion.
 Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
 failed nets. HD.CLK_SRC/HD.PARTPIN_LOCS are unset; this is not full-top/GTY
