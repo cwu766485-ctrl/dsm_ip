@@ -1,3 +1,8 @@
+## 2026-11-17 14:48 SGT — Additional cubic arithmetic formal attempt
+
+- Added `research/vcu118_arch/formal_centered_cubic_clocked.sv` and `formal_centered_cubic_vcf.tcl` for a clocked standalone 16-bit arithmetic miter.
+- VC Formal process exited 0 but its only assertion is inconclusive at the 4-minute property limit; this is not a proof. Setup shows no listed clock/loop/multidriver violations. Full-module sequential equivalence and routed PPA remain open.
+
 ## 2026-11-17 13:35 SGT — Matched EF1 candidate synthesis
 
 - Matched optimized EF1 synthesis: core WNS +1.140 ns vs baseline -1.823 ns; LUT 48,069 vs 48,098, FF 49,836 vs 49,833, DSP 496 vs 670 and BRAM 6.5 for both. The optimized overall WNS -0.694 ns is an unexpanded cross-clock path.
