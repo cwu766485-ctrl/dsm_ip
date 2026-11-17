@@ -1,3 +1,9 @@
+## 2026-11-17 14:03 SGT — Isolated EF2 lookahead experiment
+
+- Enabled the existing EF2 pair-lookahead only in `rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv` in a separate research branch containing the cubic candidate. Added the experiment report and updated the frontier.
+- Checks: XSim directed PASS; VCS required regression PASS; eight-phase XPM runtime QAM/switch/reset PASS with all 36 captured PA files identical to the baseline SHA256.
+- Limitations: no candidate EF2 PPA, full-state formal proof or CDC/board signoff. Product default and original reference vectors are unchanged.
+
 ## 2026-11-17 13:22 SGT — Isolated centered-cubic optimization candidate
 
 - Changed `rtl/interp/dsm_interp_x2_centered_cubic_vector.sv` to express the fixed Q14 midpoint with an equivalent reduced integer numerator and signed rounding. Added `research/vcu118_arch/compare_qam_captures.py` and the candidate report; updated the execution frontier.

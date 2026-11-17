@@ -78,7 +78,7 @@ module tid32_thermo5_fs4_multipa_tx #(
           .gt_ready(common_ready), .gt_data(pa_data[b])
         );
       end else if (TIDSM_ORDER == 2) begin : g_order2
-        tid32_cartesian_ef2_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS)) u_tid (
+        tid32_cartesian_ef2_fs4_gt_tx #(.W(W), .CHANNELS(CHANNELS), .PAIR_LOOKAHEAD(1'b1)) u_tid (
           .clk(clk), .rst_n(rst_n), .in_valid(in_valid && in_ready),
           .in_ready(branch_in_ready[b]), .in_i_poly_vec(i_vec[b]),
           .in_q_poly_vec(q_vec[b]), .gt_valid(pa_valid[b]),

@@ -1,3 +1,15 @@
+## Isolated EF2 pair-lookahead candidate (2026-11-17 14:03 SGT)
+
+Branch `work/thermo5-vcu118-ef2-lookahead` derives from the independent cubic
+optimization branch and activates the existing two-sample EF2 lookahead only in
+this worktree. XSim and VCS regression pass, and all 36 PA captures from the
+eight-phase QAM runtime/switch/reset test match the baseline SHA256. The result
+is input-bound, not full state-equivalence or routed timing proof. Details and
+reproduction: `docs/verification/thermo5-ef2-lookahead-candidate-20261117.md`.
+Next: finish the baseline EF2 same-boundary PPA, independently prove extreme
+state/clamp/tie equivalence, and measure candidate routed EF2 PPA. Do not merge
+or claim signoff from the current evidence.
+
 ## Isolated centered-cubic optimization candidate (2026-11-17 13:22 SGT)
 
 Branch `work/thermo5-vcu118-cubic-optimization` is separate from the running
