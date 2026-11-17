@@ -25,6 +25,8 @@ and VCS required regression pass with preserved vectors.
 
 Four equal-boundary VCU118 PPA cases are running serially in a new run directory.
 EF1 synthesis completed, with pre-place WNS -1.823 ns; placement is in progress.
+A separate corrected standalone MASH OOC route has also started; its boundaries
+and I/O constraints differ from the historical MASH wrapper.
 An isolated centered-cubic arithmetic candidate has bounded arithmetic proof
 and bit-true simulation but has not been integrated or timing-characterized.
 No routed comparison, Fmax, GTY integration or board signoff is claimed. Next:
