@@ -10,7 +10,7 @@ edge separation; data/clock-domain contract and valid constraints remain open.
 Actual-PA/prefill/GTY replay passed 336,896 serial bits per lane and PMA
 loopback, and recovered serial data passed the same receiver; failed attempts
 01-03 are preserved. This replay is not live AXI-to-GTY integration. No system
-or board signoff is claimed. Runtime synthesis WNS -93.355 ns is not routed.
+or board signoff is claimed. Runtime synthesis WNS -93.355 ns is not routed. Full 32-lane EF2 formal miter has zero black boxes: 3 proven, 4 inconclusive, four covers; no full proof. Attempt 03 had missing dependencies and invalid black-box counterexamples.
 
 ## VCU118 architecture and 14-Gb/s GTY research (2026-11-17 SGT, in progress)
 

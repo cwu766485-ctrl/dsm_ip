@@ -7,7 +7,8 @@ Status definitions: PASS means the specifically named test passed; FAIL means me
 | EF1 baseline routed core | FAIL | -2.797 ns WNS; see `ppa_matrix.csv` |
 | EF1 cubic candidate overall | FAIL | -0.363 ns unexpanded asynchronous mailbox; core +0.075 ns only; physical CDC contract remains open |
 | EF2 baseline routed core | FAIL | -97.149 ns, 409 levels, 190 CARRY8; no false path |
-| EF2 two-sample candidate | PASS | Scoped pair equivalence assertions and covers only; full-core proof and PPA NOT_RUN |
+| EF2 two-sample candidate | PASS | Scoped pair equivalence assertions and covers; Full Top PPA NOT_RUN |
+| EF2 32-lane equivalence | BLOCKED | Zero-black-box formal: 3 proven, 4 inconclusive, four covers reached; no full bit-true proof |
 | MASH-only routed | FAIL | Core/overall WNS -2.879 ns, overall WHS +0.004 ns; vectorless total power 4.896 W |
 | Runtime routed | BLOCKED | Synthesis is running; no routed report exists |
 | Live AXI to GTY serial and receiver | BLOCKED | Frontend/PA, prefill and GTY have individual tests; no live integration |

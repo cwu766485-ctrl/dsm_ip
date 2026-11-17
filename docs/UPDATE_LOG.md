@@ -1,3 +1,8 @@
+## 2026-11-17 20:44 SGT — EF2 full-width equivalence attempt
+
+- Added `dv/uvm/formal/thermo5_ef2_32lane_equiv_harness.sv`, `research/vcu118_arch/formal_ef2_32lane.tcl` and reproducible runner. The W=16/32-lane zero-black-box miter under VC Formal V-2023.12-SP2 proved 3 assertions, left 4 inconclusive and reached all 4 covers. Full output/state bit-true equivalence is not proven; see `runs/ef2_32lane_formal_04/properties.txt`. Reset setup checking was disabled and requires review.
+- Attempts 01/02 failed launcher setup and 03 had two black boxes; their apparent counterexamples are invalid and remain preserved. Updated convergence critical-path and signoff reports and frontier. No product RTL changed. Runtime PPA placement continues.
+
 ## 2026-11-17 20:33 SGT — Actual MASH PA through GTY digital model
 
 - Actual 5,264-word dual-PA frame replay through research prefill and vendor GTY passed 336,896 serial bits per lane and PMA loopback; observed simulated lane skew 0 UI. Receiver run on serial-captured files: EVM 2.551442%, SNDR 31.864285 dB, 15/37,376 uncoded bits; source and recovered SHA-256 match. Separate digital Welch adjacent proxy -16.314892 dBc; not hardware ACLR.
