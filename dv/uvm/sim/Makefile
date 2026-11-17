@@ -64,7 +64,7 @@ THERMO5_DUT_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),+define+THERMO5_AXIL_CO
 	+define+THERMO5_TIDSM_ORDER=$(THERMO5_TIDSM_ORDER) \
 	+define+THERMO5_STEP=$(THERMO5_STEP)
 THERMO5_DPD_ARGS := $(if $(strip $(THERMO5_DPD_MAX_TAPS)),+define+THERMO5_DPD_MAX_TAPS=$(THERMO5_DPD_MAX_TAPS),)
-THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
+THERMO5_DEBUG_ARGS := $(if $(or $(filter 1,$(THERMO5_USE_AXIL)),$(findstring THERMO5_WITNESS_VCD,$(THERMO5_EXTRA_ARGS))),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
 THERMO5_COV_ARGS := $(if $(filter 1,$(THERMO5_COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
@@ -897,3 +897,25 @@ clean-generated:
 	    -print -exec rm -f -- {} +; \
 	  find "$(ROOT)" -path "$(ROOT)/.git" -prune -o -type f \
 	    \( -name 'simv' -o -name '*_simv' \) -perm /111 -print -exec rm -f -- {} +
+
+# Canonical runtime product: same AXIS/DPD frontend, AXI-Lite mode handover.
+THERMO5_RUNTIME_OUT ?= $(ROOT)/runs/thermo5_runtime
+THERMO5_RUNTIME_VECTORS ?= $(ROOT)/runs/thermo5_runtime_vectors
+THERMO5_RUNTIME_WORDS ?= 56
+THERMO5_RUNTIME_BEATS ?= 32
+THERMO5_RUNTIME_ARGS ?=
+.PHONY: thermo5-runtime-vcs thermo5-runtime-vcs-run
+thermo5-runtime-vcs:
+	@mkdir -p $(THERMO5_RUNTIME_OUT)
+	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm -debug_access+all \
+	  -timescale=1ns/1ps $(THERMO5_XPM_ARGS) -f dv/uvm/sim/thermo5_runtime_filelist.f \
+	  -top thermo5_runtime_uvm_tb -Mdir=$(THERMO5_RUNTIME_OUT)/csrc \
+	  -o $(THERMO5_RUNTIME_OUT)/simv -l $(THERMO5_RUNTIME_OUT)/compile.log
+thermo5-runtime-vcs-run: thermo5-runtime-vcs
+	@$(THERMO5_RUNTIME_OUT)/simv +UVM_TESTNAME=thermo5_runtime_switch_test \
+	  +VEC_DIR=$(THERMO5_RUNTIME_VECTORS) +CORE_WORDS=$(THERMO5_RUNTIME_WORDS) \
+	  +SOURCE_BEATS=$(THERMO5_RUNTIME_BEATS) +CAP_DIR=$(THERMO5_RUNTIME_OUT) \
+	  +ntb_random_seed=$(UVM_SEED) $(THERMO5_RUNTIME_ARGS) \
+	  -l $(THERMO5_RUNTIME_OUT)/simulation.log
+	@grep -q '\[RUNTIME_PRODUCT_PASS\]' $(THERMO5_RUNTIME_OUT)/simulation.log
+	@! grep -Eq 'UVM_(ERROR|FATAL)[[:space:]]+[^:]*@' $(THERMO5_RUNTIME_OUT)/simulation.log

@@ -56,3 +56,13 @@ WNS/TNS/WHS/THS = `+0.198/0.000/+0.018/0.000 ns` at 218.75 MHz under the
 modeled OOC constraints. This is not parent-level I/O, board, GT CDC/RDC, or
 measured RF-output signoff. See `docs/exec-plans/active/execution-frontier.md`
 and `docs/UPDATE_LOG.md` for the exact reports and remaining limitations.
+
+## Runtime DSM product configuration
+
+`tid32_thermo5_runtime_tx` is the canonical AXI-Lite runtime entry point for
+EF1, EF2 (reset default), and accumulator-residue MASH 1-1. Software must STOP
+and drain before changing architecture. MASH exposes two PA planes weighted
+1:2; EF1/EF2 expose four equal planes. See the [register/PA contract](docs/spec/thermo5-runtime-dsm.md)
+and [reproduction commands](docs/ai-native/commands.md#runtime-ef1--ef2--mash-product).
+Digital qualification and remaining hardware-signoff limits are tracked in the
+[runtime product report](docs/verification/thermo5-runtime-product-report.md).

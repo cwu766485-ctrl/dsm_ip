@@ -44,7 +44,11 @@ module thermo5_sku_uvm_tb;
       $dumpvars(0,dut.u_frontend.g_interp1_centered.u_interp_1);
       $dumpvars(0,dut.u_frontend.g_interp2_centered.u_interp_2);
       $dumpvars(0,dut.u_frontend.g_memory_dpd.u_memory_dpd);
+      $dumpvars(0,dut.u_frontend.u_interp2_to_tid_fifo);
+      $dumpvars(0,bus.pa_valid,bus.pa_ready,dut.u_frontend.i2_valid,dut.u_frontend.i2_ready);
+`ifdef THERMO5_AXIL_CONTROL
       $dumpvars(0,dut.u_cfg);
+`endif
     end
   end
 `endif
@@ -244,6 +248,20 @@ module thermo5_sku_uvm_tb;
   assign bus.xpm_rd_rst_i = 1'b0;
 `endif
 `ifdef THERMO5_CENTERED_CUBIC
+  always @(posedge core_clk) begin
+    if(bus.core_rst_n && bus.interp2_empty_blocked) begin
+      assert(dut.u_frontend.u_interp2_to_tid_fifo.count_q==2)
+        else $error("I2 empty/blocked witness disagrees with downstream FIFO occupancy");
+      $display("THERMO5_I2_QUEUE_WITNESS time_ps=%0.0f q_count=%0d head_tail=%0b head_end=%0b fifo_count=%0d i_valid=%b i_ready=%b out_valid=%b out_ready=%b pa_ready=%h",
+        $realtime*1000,dut.u_frontend.g_interp2_centered.u_interp_2.q_count,
+        dut.u_frontend.g_interp2_centered.u_interp_2.q0_tail,
+        dut.u_frontend.g_interp2_centered.u_interp_2.q0_end,
+        dut.u_frontend.u_interp2_to_tid_fifo.count_q,
+        dut.u_frontend.g_interp2_centered.u_interp_2.in_valid,
+        dut.u_frontend.g_interp2_centered.u_interp_2.in_ready,
+        dut.u_frontend.i2_valid,dut.u_frontend.i2_ready,bus.pa_ready);
+    end
+  end
   assign bus.interp1_empty_blocked = !dut.u_frontend.i1_valid && !dut.u_frontend.i1_ready;
   assign bus.interp1_stage1_held = 1'b0;
   assign bus.interp1_stage1_empty_blocked = 1'b0;

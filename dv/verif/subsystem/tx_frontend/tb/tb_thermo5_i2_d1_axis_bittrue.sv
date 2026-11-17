@@ -290,18 +290,18 @@ module tb_thermo5_i2_d1_axis_bittrue #(
 `ifndef THERMO5_CENTERED_CUBIC
       if ($test$plusargs("TRACE_INTERP") && core_enable && cycles<180)
         $display("I1_TRACE cycle=%0d sent=%0d ready=%h i1=%b%b%b%b i1outready=%b i1s2ready=%b i2=%b%b%b%b got=%0d",cycles,sent,pa_ready,
-          dut.u_frontend.u_interp_1.s0_valid,dut.u_frontend.u_interp_1.s1_valid,
-          dut.u_frontend.u_interp_1.s2_valid,dut.u_frontend.u_interp_1.out_valid,
-          dut.u_frontend.u_interp_1.out_ready,dut.u_frontend.u_interp_1.s2_ready,
-          dut.u_frontend.u_interp_2.s0_valid,dut.u_frontend.u_interp_2.s1_valid,
-          dut.u_frontend.u_interp_2.s2_valid,dut.u_frontend.u_interp_2.out_valid,got);
+          dut.u_frontend.g_interp1_causal.u_interp_1.s0_valid,dut.u_frontend.g_interp1_causal.u_interp_1.s1_valid,
+          dut.u_frontend.g_interp1_causal.u_interp_1.s2_valid,dut.u_frontend.g_interp1_causal.u_interp_1.out_valid,
+          dut.u_frontend.g_interp1_causal.u_interp_1.out_ready,dut.u_frontend.g_interp1_causal.u_interp_1.s2_ready,
+          dut.u_frontend.g_interp2_causal.u_interp_2.s0_valid,dut.u_frontend.g_interp2_causal.u_interp_2.s1_valid,
+          dut.u_frontend.g_interp2_causal.u_interp_2.s2_valid,dut.u_frontend.g_interp2_causal.u_interp_2.out_valid,got);
       if ($test$plusargs("INTERP1_GAP_STALL") && core_enable &&
-          !dut.u_frontend.u_interp_1.s1_valid &&
-          !dut.u_frontend.u_interp_1.s2_ready) begin
+          !dut.u_frontend.g_interp1_causal.u_interp_1.s1_valid &&
+          !dut.u_frontend.g_interp1_causal.u_interp_1.s2_ready) begin
         interp1_empty_blocked_hits++;
         if (interp1_empty_blocked_hits==1)
           $display("THERMO5_INTERP1_EMPTY_BLOCKED_HIT cycle=%0d u_interp_1.s1_valid=%b s2_ready=%b",cycles,
-                   dut.u_frontend.u_interp_1.s1_valid,dut.u_frontend.u_interp_1.s2_ready);
+                   dut.u_frontend.g_interp1_causal.u_interp_1.s1_valid,dut.u_frontend.g_interp1_causal.u_interp_1.s2_ready);
       end
 `endif
       if(stalled) begin

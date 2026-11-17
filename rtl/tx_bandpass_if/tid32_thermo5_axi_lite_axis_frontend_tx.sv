@@ -13,7 +13,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   parameter bit INTERP_CENTERED_CUBIC = 1'b1,
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
-  parameter int TIDSM_ORDER = 2
+  parameter int TIDSM_ORDER = 2,
+  parameter bit ENABLE_RUNTIME_DSM = 1'b0
 ) (
   input  wire logic         s_axil_aclk,
   input  wire logic         s_axil_aresetn,
@@ -61,7 +62,13 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   input  wire logic [3:0]                      pa_ready,
   output wire logic                            cfg_busy,
   output wire logic                            cfg_done,
-  output wire logic                            cfg_error
+  output wire logic                            cfg_error,
+  output wire logic [1:0]                      active_dsm_arch,
+  output wire logic                            pa_contract_weighted,
+  output wire logic [3:0]                      pa_channel_mask,
+  output wire logic                            dsm_switch_busy,
+  output wire logic                            pa_frame_start,pa_frame_end,pa_tail,
+  output wire logic [15:0]                     pa_config_id
 );
   logic core_enable, run_request_async;
   logic [2:0] dpd_active_taps;
@@ -76,6 +83,20 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   logic core_prefill_seen_q;
   logic [7:0] outstanding_words_q;
   logic core_tx_active_q;
+  logic [1:0] runtime_arch;
+  logic runtime_reset,arch_switch_pending;
+  logic [15:0] runtime_config_id;
+  (* ASYNC_REG="TRUE" *) logic arch_lock_s1,arch_lock_s2;
+  (* ASYNC_REG="TRUE" *) logic arch_locked_c1,arch_locked_c2,arch_locked_c3;
+  logic pre_valid,pre_ready,pre_fs,pre_fe,pre_tail;
+  logic signed [32*W-1:0] pre_i,pre_q;
+  logic [15:0] pre_config,pre_epoch;
+  logic [3:0] legacy_pa_valid;
+  logic [63:0] legacy_pa_data[0:3];
+  logic backend_overflow;
+  wire runtime_idle = !core_tx_active && core_data_empty && !core_valid &&
+                      outstanding_words_q==0 && !pre_valid && !(|pa_valid) &&
+                      !core_protocol_error;
   (* ASYNC_REG = "TRUE" *) logic run_s1, run_s2;
   (* ASYNC_REG = "TRUE" *) logic ingress_closed_c1, ingress_closed_c2, ingress_closed_c3;
   logic run_seen_s;
@@ -91,10 +112,12 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   (* ASYNC_REG = "TRUE" *) logic source_error_c1, source_error_c2;
   wire logic source_accept = s_axis_tvalid && s_axis_tready;
   wire logic core_accept = core_valid && core_ready;
-  wire logic output_accept = (&pa_valid) && (&pa_ready);
+  wire logic output_accept = ((pa_valid & pa_channel_mask)==pa_channel_mask) &&
+                             ((pa_ready & pa_channel_mask)==pa_channel_mask);
   wire logic drain_complete = ingress_closed_c3 && core_data_empty &&
                               (outstanding_words_q == 0) && !core_valid && !(|pa_valid);
-  wire logic source_ingress_open = run_s2 || !run_seen_s || source_frame_open_q;
+  wire logic source_ingress_open = (run_s2 || !run_seen_s || source_frame_open_q) &&
+                                   !arch_lock_s2;
   assign ingress_closed_s = !run_s2 && run_seen_s && !source_frame_open_q;
 
   // Before the first RUN, preserve FIFO prefill. After RUN falls, continue
@@ -111,9 +134,11 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
       source_frame_error_q <= 1'b0;
       source_phase_q <= '0;
       ingress_closed_status_s <= 1'b0;
+      arch_lock_s1<=0;arch_lock_s2<=0;
     end else begin
       run_s1 <= run_request_async;
       run_s2 <= run_s1;
+      arch_lock_s1<=arch_switch_pending;arch_lock_s2<=arch_lock_s1;
       ingress_closed_status_s <= ingress_closed_s;
 
       if (run_s2) run_seen_s <= 1'b1;
@@ -146,7 +171,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
       source_error_c2 <= source_error_c1;
     end
   end
-  assign core_protocol_error = cdc_protocol_error | source_error_c2;
+  assign core_protocol_error = cdc_protocol_error | source_error_c2 | backend_overflow;
 
   /*
    * Stop/drain follows accepted AXI-Stream TLAST. Legal packet lengths are
@@ -213,7 +238,15 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
                                 (core_prefill_seen_q || core_prefill_ready || core_draining);
   assign core_tx_active = core_enable || core_tx_active_q;
 
-  thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(DPD_MAX_TAPS)) u_cfg (
+  always_ff @(posedge core_clk or negedge core_aresetn) begin
+    if(!core_aresetn) begin arch_locked_c1<=0;arch_locked_c2<=0;arch_locked_c3<=0;end
+    else begin
+      arch_locked_c1<=arch_lock_s2;arch_locked_c2<=arch_locked_c1;arch_locked_c3<=arch_locked_c2;
+    end
+  end
+
+  thermo5_dpd_axi_lite_cfg #(.MAX_TAPS(DPD_MAX_TAPS),
+    .ENABLE_RUNTIME_DSM(ENABLE_RUNTIME_DSM)) u_cfg (
     .s_axil_aclk(s_axil_aclk), .s_axil_aresetn(s_axil_aresetn),
     .s_axil_awaddr(s_axil_awaddr), .s_axil_awvalid(s_axil_awvalid), .s_axil_awready(s_axil_awready),
     .s_axil_wdata(s_axil_wdata), .s_axil_wstrb(s_axil_wstrb), .s_axil_wvalid(s_axil_wvalid), .s_axil_wready(s_axil_wready),
@@ -226,7 +259,10 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .run_request(run_request_async),
     .dpd_active_taps(dpd_active_taps), .c1_re(c1_re), .c1_im(c1_im),
     .c3_re(c3_re), .c3_im(c3_im), .c5_re(c5_re), .c5_im(c5_im),
-    .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error)
+    .cfg_busy(cfg_busy), .cfg_done(cfg_done), .cfg_error(cfg_error),
+    .dsm_switch_idle(runtime_idle),.dsm_source_locked(arch_locked_c3),
+    .dsm_switch_pending(arch_switch_pending),.dsm_switch_busy(dsm_switch_busy),
+    .dsm_arch(runtime_arch),.dsm_reset_pulse(runtime_reset),.dsm_config_id(runtime_config_id)
   );
 
   assign core_run_request = core_enable;
@@ -254,18 +290,45 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .W(W), .IN_LANES(8), .DPD_LANES(16), .GAIN_W(GAIN_W), .STEP(STEP),
     .TIDSM_ORDER(TIDSM_ORDER),
     .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
-    .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD)
+    .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD),
+    .USE_EXTERNAL_DSM(ENABLE_RUNTIME_DSM)
   ) u_frontend (
     .clk(core_clk), .rst_n(core_aresetn), .enable(core_datapath_enable),
     .in_valid(core_valid), .in_ready(core_ready), .in_frame_start(core_frame_start),
     .in_frame_end(core_frame_end),
+    .in_config_id(runtime_config_id),.in_reset_epoch(16'd0),
     .in_frame_gain(core_frame_gain), .in_i_vec(core_i_vec), .in_q_vec(core_q_vec),
     .dpd_active_taps(dpd_active_taps), .c1_re(c1_re[DPD_MAX_TAPS*16-1:0]),
     .c1_im(c1_im[DPD_MAX_TAPS*16-1:0]), .c3_re(c3_re[DPD_MAX_TAPS*16-1:0]),
     .c3_im(c3_im[DPD_MAX_TAPS*16-1:0]), .c5_re(c5_re[DPD_MAX_TAPS*16-1:0]),
-    .c5_im(c5_im[DPD_MAX_TAPS*16-1:0]), .pa_valid(pa_valid), .pa_data(pa_data),
-    .dpd_config_boundary(dpd_config_boundary), .pa_ready(pa_ready)
+    .c5_im(c5_im[DPD_MAX_TAPS*16-1:0]), .pa_valid(legacy_pa_valid), .pa_data(legacy_pa_data),
+    .dpd_config_boundary(dpd_config_boundary), .pa_ready(pa_ready),
+    .pre_dsm_valid(pre_valid),.pre_dsm_ready(pre_ready),.pre_dsm_i_vec(pre_i),.pre_dsm_q_vec(pre_q),
+    .pre_dsm_frame_start(pre_fs),.pre_dsm_frame_end(pre_fe),.pre_dsm_tail(pre_tail),
+    .pre_dsm_config_id(pre_config),.pre_dsm_reset_epoch(pre_epoch)
   );
+
+  assign active_dsm_arch = ENABLE_RUNTIME_DSM ? runtime_arch : (TIDSM_ORDER==1 ? 2'd0 : 2'd1);
+  generate
+    if(ENABLE_RUNTIME_DSM) begin : g_runtime_dsm
+      thermo5_runtime_dsm_backend #(.W(W),.STEP_EF2(STEP)) u_backend(
+        .clk(core_clk),.rst_n(core_aresetn),.reset_arch(runtime_reset),.arch(runtime_arch),
+        .in_valid(pre_valid),.in_ready(pre_ready),.in_i_vec(pre_i),.in_q_vec(pre_q),
+        .in_frame_start(pre_fs),.in_frame_end(pre_fe),.in_tail(pre_tail),
+        .in_config_id(pre_config),.in_epoch(pre_epoch),
+        .pa_valid(pa_valid),.pa_ready(pa_ready),.pa_data(pa_data),
+        .out_frame_start(pa_frame_start),.out_frame_end(pa_frame_end),.out_tail(pa_tail),
+        .out_config_id(pa_config_id),.out_epoch(),
+        .weighted_contract(pa_contract_weighted),.channel_mask(pa_channel_mask),
+        .overflow_error(backend_overflow));
+    end else begin : g_static_dsm
+      assign pa_valid=legacy_pa_valid;
+      for(genvar p=0;p<4;p=p+1) assign pa_data[p]=legacy_pa_data[p];
+      assign pa_contract_weighted=0;assign pa_channel_mask=4'hf;
+      assign pre_ready=0;assign backend_overflow=0;
+      assign pa_frame_start=0;assign pa_frame_end=0;assign pa_tail=0;assign pa_config_id=0;
+    end
+  endgenerate
 
   initial begin
     if (DPD_MAX_TAPS < 1 || DPD_MAX_TAPS > 4)

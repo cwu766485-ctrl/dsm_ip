@@ -54,20 +54,32 @@ if($XpmFifo){
   $define+=' --define=THERMO5_XPM_FIFO'
 }
 $source=(($vendor + ($relative | ForEach-Object { Join-Path $repo $_ })) | ForEach-Object { '"'+$_+'"' }) -join ' '
+# Use a batch file and an explicit waited process. This also works when the
+# launcher inherits a WSL PATH rather than the Vivado Windows PATH.
+function Invoke-VivadoStep([string]$Name, [string]$Arguments) {
+  $batch = Join-Path $work ($Name + '.cmd')
+  $tool = Join-Path $VivadoRoot ('bin\' + $Name + '.bat')
+  $logName = 'console_' + $Name + '.log'
+  @('@echo off', ('call "' + $tool + '" ' + $Arguments + ' > ' + $logName + ' 2>&1'),
+    'exit /b %errorlevel%') | Set-Content -LiteralPath $batch -Encoding ASCII
+  $process = Start-Process -FilePath $env:ComSpec -ArgumentList @('/d','/c',('"'+$batch+'"')) `
+    -WorkingDirectory $work -Wait -PassThru -NoNewWindow
+  if ($process.ExitCode -ne 0) { throw "$Name failed: $work\$logName" }
+  if (Select-String -LiteralPath (Join-Path $work $logName) -Pattern '^ERROR:' -Quiet) {
+    throw "$Name reported an error: $work\$logName"
+  }
+}
 Push-Location $work
 try {
-  cmd.exe /d /c "call $settings >nul && xvlog -sv $define $source > console_xvlog.log 2>&1"
-  if ($LASTEXITCODE -ne 0) { throw "xvlog failed: $work\console_xvlog.log" }
+  Invoke-VivadoStep xvlog "-sv $define $source"
   $tops=if($XpmFifo){'tb_thermo5_i2_d1_axis_bittrue glbl'}else{'tb_thermo5_i2_d1_axis_bittrue'}
-  cmd.exe /d /c "call $settings >nul && xelab $tops -s sim_thermo5_i2_d1_axis > console_xelab.log 2>&1"
-  if ($LASTEXITCODE -ne 0) { throw "xelab failed: $work\console_xelab.log" }
+  Invoke-VivadoStep xelab "$tops -s sim_thermo5_i2_d1_axis"
   Copy-Item -Path (Join-Path $vectors '*.mem') -Destination $work
   $plusargs=@()
   if($StressPaReady){$plusargs+='-testplusarg STRESS_PA_READY'}
   if($ProbeInterp1EmptyBlocked){$plusargs+='-testplusarg INTERP1_GAP_STALL'}
   $plusarg=$plusargs -join ' '
-  cmd.exe /d /c "call $settings >nul && xsim sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg > console_xsim.log 2>&1"
-  if ($LASTEXITCODE -ne 0) { throw "xsim failed: $work\console_xsim.log" }
+  Invoke-VivadoStep xsim "sim_thermo5_i2_d1_axis -runall -sv_seed $Seed $plusarg"
 } finally { Pop-Location }
 if($AxilControl){$passMarker='THERMO5_AXIL_CONFIG_BITTRUE_PASS'}else{$passMarker='THERMO5_I2_D1_AXIS_BITTRUE_PASS'}
 if (!(Select-String -LiteralPath (Join-Path $work 'console_xsim.log') -Pattern $passMarker -Quiet)) {

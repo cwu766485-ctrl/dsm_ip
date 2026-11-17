@@ -1,3 +1,53 @@
+## Runtime DSM product integration (2026-11-17 SGT, in progress)
+
+Candidate `work/thermo5-runtime-product` starts from remote thermo5
+`599959a9ed84eeefb24354df88d0f5296178ecef`. The original dirty IDE checkout,
+failed QAM evidence, and root-cause branch remain preserved. Only corrected
+MASH implementation/model dependencies are being promoted into canonical
+`rtl/` and `dv/uvm/`; the experimental branch is not merged wholesale.
+
+Authorized interface contract: default EF2; STOP and fully drain before
+AXI-Lite architecture selection (EF1=0, EF2=1, MASH=2). A source-domain
+freeze/ack barrier guards the core-domain idle decision. Active-traffic
+requests are rejected. Unified outputs expose the PA mask and weighted
+contract (four equal planes versus two 1:2 weighted planes).
+
+Bubble coverage reproduced and repaired without removing assertions:
+non-AXI-Lite optional VCD now guards `u_cfg`; deterministic partial PA-ready
+holds the existing centered-interpolator tail-discard witness. Debug-enabled
+VCS confirms time 1360170 ps, q_count=2, tail/end=1, downstream FIFO count=2,
+PA ready=1110, output valid/ready=0/0. This is reachable tail-discard blocking,
+not an empty data queue. All 56 PA words remain bit-true, zero UVM errors.
+
+The local PowerShell profile recursively dot-sourced itself. Removed that
+single line after byte-exact backup; real profile startup and both existing
+helper functions pass. The private profile is outside Git.
+
+Runtime RTL Generic and XPM XSim UVM suites pass eight streams / six directed
+handover pairs, including 400-cycle stalls, partial ready and paired-reset
+replay. Six existing legal parallel UVM tests and the required causal-EF1
+directed XSim smoke pass. Python reference tests pass 66/66. Canonical runtime
+seed281001 actual PA gives EVM2.551442%, SNDR31.864285dB, BER15/37376, using
+the fixed528-source offset. Its 42056-sample input prefix matches preserved
+failure exactly; only56 trailing zeros satisfy the product packet quantum.
+
+The stronger blocked-PA reset setup CONFIRMED an additional XPM startup bug:
+USE_ADV_FEATURES=0000 disabled the read count used by prefill. At10300ns RUN=1,
+source stalls atbeat17, rd_count=0 and core_datapath_enable=0 with queued data.
+Prior early STOP tests bypassed startup through core_draining. Enable only XPM
+feature bit10 (0400). Fixed-source XPM UVM and synthesis are running. Preserve
+the failed bounded test and hierarchical Tcl probe as before-fix evidence.
+
+VCS compilation after vector preparation remains license-blocked. First runtime
+XPM synthesis passes (92128 LUT /74758 FF /670 DSP /6.5 BRAM), but it predates
+the read-count fix; fresh synthesis is required and underway. The historical
+AXI-Lite OOC script fails its exact top-name check after synthesis and is not
+PASS. Long QAM seed281002 passes (EVM2.510098%, SNDR32.006187dB, BER36/149504);
+seed281003 is running. Seed281004/32 symbols is INPUT_REJECTED by the unchanged
+peak guard. Next: validate the new XPM RUN/reset test and QAM, finish evidence
+and integrate thermo5 while retaining the root IDE's original dirty files.
+No routed PPA, GTY, full coverage, or CDC/RDC signoff is claimed.
+
 ## Current execution state: PR #62 ECO revalidation - partial, signoff open (2026-11-12)
 
 ## Current execution state: CDC debug checkpoint and partial UVM recovery (2026-11-13)

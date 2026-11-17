@@ -6,7 +6,8 @@
 // domain until the core applies the complete bundle at a DPD input frame
 // boundary and returns the four-phase acknowledgement.
 module thermo5_dpd_axi_lite_cfg #(
-  parameter int MAX_TAPS = 4
+  parameter int MAX_TAPS = 4,
+  parameter bit ENABLE_RUNTIME_DSM = 1'b0
 ) (
   input  wire logic         s_axil_aclk,
   input  wire logic         s_axil_aresetn,
@@ -44,7 +45,14 @@ module thermo5_dpd_axi_lite_cfg #(
   output logic signed [63:0] c5_im,
   output logic              cfg_busy,
   output logic              cfg_done,
-  output logic              cfg_error
+  output logic              cfg_error,
+  input  wire logic         dsm_switch_idle,
+  input  wire logic         dsm_source_locked,
+  output wire logic         dsm_switch_pending,
+  output wire logic         dsm_switch_busy,
+  output logic [1:0]        dsm_arch,
+  output logic              dsm_reset_pulse,
+  output logic [15:0]       dsm_config_id
 );
   localparam logic [7:0] REG_CONTROL = 8'h00;
   localparam logic [7:0] REG_STATUS  = 8'h04;
@@ -56,6 +64,8 @@ module thermo5_dpd_axi_lite_cfg #(
   localparam logic [7:0] REG_C3_IM   = 8'h28;
   localparam logic [7:0] REG_C5_RE   = 8'h30;
   localparam logic [7:0] REG_C5_IM   = 8'h38;
+  localparam logic [7:0] REG_DSM_ARCH = 8'h40;
+  localparam logic [7:0] REG_DSM_STATUS = 8'h44;
   localparam logic [31:0] IP_ID      = 32'h5448_3501;
 
   // {tap_count, c1_re, c1_im, c3_re, c3_im, c5_re, c5_im} = 387 bits.
@@ -95,6 +105,16 @@ module thermo5_dpd_axi_lite_cfg #(
   logic [1:0] write_resp;
   logic [31:0] read_data_mux;
   logic [1:0] read_resp_mux;
+  logic [1:0] arch_mailbox,arch_pending_core;
+  logic arch_req_q,arch_seen_ack,arch_busy_q,arch_done_q,arch_error_q;
+  logic arch_ack_core,arch_error_core;
+  (* ASYNC_REG="TRUE" *) logic arch_req_c1,arch_req_c2;
+  (* ASYNC_REG="TRUE" *) logic arch_ack_a1,arch_ack_a2;
+  (* ASYNC_REG="TRUE" *) logic arch_error_a1,arch_error_a2;
+  logic [1:0] arch_active_status;
+  logic [1:0] arch_phase;
+  assign dsm_switch_pending = ENABLE_RUNTIME_DSM && arch_busy_q;
+  assign dsm_switch_busy = ENABLE_RUNTIME_DSM && arch_busy_q;
 
   assign s_axil_awready = !aw_pending && !s_axil_bvalid;
   assign s_axil_wready  = !w_pending && !s_axil_bvalid;
@@ -151,6 +171,14 @@ module thermo5_dpd_axi_lite_cfg #(
       if (write_strb[0] && write_data[1] &&
           (cfg_busy_q || !tap_count_legal))
         write_resp = 2'b10; // SLVERR: busy or illegal active tap count
+      if (ENABLE_RUNTIME_DSM && write_strb[0] && (|write_data[1:0]) && arch_busy_q)
+        write_resp = 2'b10;
+    end else if (ENABLE_RUNTIME_DSM && write_addr==REG_DSM_ARCH) begin
+      if(write_strb[0] && (write_data[7:0]>2 || run_request_q ||
+          tx_active_sync2 || draining_sync2 || arch_busy_q || cfg_busy_q))
+        write_resp = 2'b10;
+    end else if(ENABLE_RUNTIME_DSM && write_addr==REG_DSM_STATUS) begin
+      write_resp=2'b00;
     end else if (write_addr == REG_STATUS || write_addr == REG_TAPS ||
                  coeff_word_addr(write_addr)) begin
       write_resp = 2'b00;
@@ -173,7 +201,19 @@ module thermo5_dpd_axi_lite_cfg #(
         read_data_mux[4] = draining_sync2;
       end
       REG_TAPS: read_data_mux = {29'd0,shadow_taps};
-      REG_ID: read_data_mux = IP_ID;
+      REG_ID: read_data_mux = ENABLE_RUNTIME_DSM ? 32'h5448_3502 : IP_ID;
+      REG_DSM_ARCH: begin
+        if(ENABLE_RUNTIME_DSM) read_data_mux={30'd0,arch_active_status};
+        else read_resp_mux=2'b11;
+      end
+      REG_DSM_STATUS: begin
+        if(ENABLE_RUNTIME_DSM) begin
+          read_data_mux[1:0]=arch_active_status;
+          read_data_mux[8]=arch_busy_q;
+          read_data_mux[9]=arch_done_q;
+          read_data_mux[10]=arch_error_q;
+        end else read_resp_mux=2'b11;
+      end
       default: begin
         if (coeff_word_addr(s_axil_araddr))
           read_data_mux = coeff_read_word(s_axil_araddr);
@@ -217,7 +257,13 @@ module thermo5_dpd_axi_lite_cfg #(
       cfg_busy_q <= 1'b0;
       cfg_done_q <= 1'b0;
       cfg_error_q <= 1'b0;
+      arch_mailbox<=1;arch_req_q<=0;arch_seen_ack<=0;
+      arch_busy_q<=0;arch_done_q<=0;arch_error_q<=0;
+      arch_ack_a1<=0;arch_ack_a2<=0;arch_error_a1<=0;arch_error_a2<=0;
+      arch_active_status<=1;
     end else begin
+      arch_ack_a1<=arch_ack_core;arch_ack_a2<=arch_ack_a1;
+      arch_error_a1<=arch_error_core;arch_error_a2<=arch_error_a1;
       cfg_ack_sync1 <= cfg_ack_core;
       cfg_ack_sync2 <= cfg_ack_sync1;
       tx_active_sync1 <= core_tx_active;
@@ -243,8 +289,17 @@ module thermo5_dpd_axi_lite_cfg #(
         s_axil_bresp <= write_resp;
         if (write_resp != 2'b00) begin
           if (write_addr == REG_CONTROL) cfg_error_q <= 1'b1;
+          if (ENABLE_RUNTIME_DSM && write_addr==REG_DSM_ARCH) arch_error_q<=1;
         end else begin
           case (write_addr)
+            REG_DSM_ARCH: if(ENABLE_RUNTIME_DSM && write_strb[0]) begin
+              arch_mailbox<=write_data[1:0];arch_req_q<=1;arch_seen_ack<=0;
+              arch_busy_q<=1;arch_done_q<=0;arch_error_q<=0;
+            end
+            REG_DSM_STATUS: if(ENABLE_RUNTIME_DSM && write_strb[1]) begin
+              if(write_data[9]) arch_done_q<=0;
+              if(write_data[10]) arch_error_q<=0;
+            end
             REG_CONTROL: begin
               if (write_strb[0]) begin
                 run_request_q <= write_data[0];
@@ -279,6 +334,19 @@ module thermo5_dpd_axi_lite_cfg #(
             REG_C5_IM+8'h04: shadow_c5_im[63:32] <= merge_bytes(shadow_c5_im[63:32],write_data,write_strb);
             default: begin end
           endcase
+        end
+      end
+
+      // Four-phase bundled-data transfer. The selected architecture is never
+      // a directly synchronized multi-bit bus. ACK follows the decision by a
+      // core cycle; the source mailbox stays fixed until ACK returns low.
+      if(ENABLE_RUNTIME_DSM && arch_busy_q) begin
+        if(arch_ack_a2) begin
+          arch_req_q<=0;arch_seen_ack<=1;
+          arch_error_q<=arch_error_q || arch_error_a2;
+          if(!arch_error_a2) arch_active_status<=arch_mailbox;
+        end else if(arch_seen_ack) begin
+          arch_busy_q<=0;arch_done_q<=!arch_error_a2;arch_seen_ack<=0;
         end
       end
 
@@ -342,12 +410,65 @@ module thermo5_dpd_axi_lite_cfg #(
     {dpd_active_taps,c1_re,c1_im,c3_re,c3_im,c5_re,c5_im} = cfg_for_dpd;
   end
 
+  always_ff @(posedge core_clk or negedge core_aresetn) begin
+    if(!core_aresetn) begin
+      arch_req_c1<=0;arch_req_c2<=0;arch_phase<=0;
+      arch_ack_core<=0;arch_error_core<=0;arch_pending_core<=1;
+      dsm_arch<=1;dsm_reset_pulse<=0;dsm_config_id<=0;
+    end else begin
+      arch_req_c1<=arch_req_q;arch_req_c2<=arch_req_c1;
+      dsm_reset_pulse<=0;
+      if(ENABLE_RUNTIME_DSM) begin
+        case(arch_phase)
+          0: if(arch_req_c2) begin
+            arch_pending_core<=arch_mailbox;arch_phase<=1;
+          end
+          1: if(dsm_source_locked) begin
+            arch_error_core<=!dsm_switch_idle || arch_pending_core>2;
+            if(dsm_switch_idle && arch_pending_core<=2) begin
+              dsm_arch<=arch_pending_core;dsm_reset_pulse<=1;
+              dsm_config_id<=dsm_config_id+1'b1;
+            end
+            arch_phase<=2;
+          end
+          2: begin arch_ack_core<=1;arch_phase<=3;end
+          3: if(!arch_req_c2) begin arch_ack_core<=0;arch_phase<=0;end
+          default:arch_phase<=0;
+        endcase
+      end
+    end
+  end
+
   initial begin
     if (MAX_TAPS < 1 || MAX_TAPS > 4)
       $error("MAX_TAPS must be in [1,4]; got %0d",MAX_TAPS);
   end
 
 `ifndef SYNTHESIS
+  logic [1:0] arch_mailbox_hold,arch_previous;
+  logic arch_tracking,arch_commit_allowed;
+  always_ff @(posedge s_axil_aclk or negedge s_axil_aresetn) begin
+    if(!s_axil_aresetn) begin arch_tracking<=0;arch_mailbox_hold<=1;end
+    else if(ENABLE_RUNTIME_DSM) begin
+      if(arch_req_q && !arch_tracking) begin
+        arch_tracking<=1;arch_mailbox_hold<=arch_mailbox;
+      end else if(arch_req_q && arch_mailbox!==arch_mailbox_hold)
+        $error("thermo5 architecture mailbox changed before acknowledgement");
+      else if(!arch_req_q) arch_tracking<=0;
+    end
+  end
+  always_ff @(posedge core_clk or negedge core_aresetn) begin
+    if(!core_aresetn) begin arch_previous<=1;arch_commit_allowed<=0;end
+    else if(ENABLE_RUNTIME_DSM) begin
+      if(dsm_reset_pulse && !arch_commit_allowed)
+        $error("thermo5 architecture committed without locked idle decision");
+      if(dsm_arch!==arch_previous && !dsm_reset_pulse)
+        $error("thermo5 architecture changed without backend reset");
+      arch_previous<=dsm_arch;
+      arch_commit_allowed<=(arch_phase==1 && dsm_source_locked &&
+                            dsm_switch_idle && arch_pending_core<=2);
+    end
+  end
   // The bundled payload must not change while the request is outstanding.
   logic [CFG_W-1:0] mailbox_hold;
   logic mailbox_tracking;

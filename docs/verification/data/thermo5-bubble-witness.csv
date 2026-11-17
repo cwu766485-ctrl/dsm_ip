@@ -1,0 +1,15 @@
+sample_edge_ps,phase,signal,binary,integer
+1360170,pre-edge,thermo5_sku_uvm_tb.bus.pa_valid,1111,15
+1360170,pre-edge,thermo5_sku_uvm_tb.bus.pa_ready,1110,14
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.q_count,10,2
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.q0_tail,1,1
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.q0_end,1,1
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.in_valid,1,1
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.in_ready,1,1
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.out_valid,0,0
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.g_interp2_centered.u_interp_2.out_ready,0,0
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo.count_q,01,1
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo.in_valid,0,0
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo.in_ready,0,0
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo.out_valid,1,1
+1360170,pre-edge,thermo5_sku_uvm_tb.dut.u_frontend.u_interp2_to_tid_fifo.out_ready,0,0

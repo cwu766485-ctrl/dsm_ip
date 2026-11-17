@@ -3,6 +3,49 @@
 
 Only commands evidenced by repository text are listed. Validate environment and source revision before execution.
 
+## Runtime EF1 / EF2 / MASH product
+
+Contract and software sequence: `docs/spec/thermo5-runtime-dsm.md`.
+Use fresh output directories. The XSim runner works from Windows Python or WSL
+and uses the installed Vivado UVM library; no research-tree sources are needed.
+
+```bash
+python3 dv/uvm/refmodel/python/generate_thermo5_runtime_vectors.py \
+  --output-dir runs/runtime_vectors --words 56 --seed 610216
+python3 dv/uvm/sim/run_thermo5_runtime_xsim.py \
+  --out runs/runtime_xsim --vectors runs/runtime_vectors --xpm
+# Licensed Linux alternative; XPM is optional using the existing FIFO variables.
+make -C dv/uvm/sim thermo5-runtime-vcs-run \
+  THERMO5_RUNTIME_VECTORS="$PWD/runs/runtime_vectors" \
+  THERMO5_RUNTIME_OUT="$PWD/runs/runtime_vcs"
+# Six existing legal parallel-SKU tests, using their original multi-frame vectors:
+python3 dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+  --output-dir runs/legacy_vectors --words 56 --seed 610216 \
+  --interp-mode centered_cubic --tidsm-order 2 --step 5120 \
+  --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
+python3 dv/uvm/sim/run_thermo5_runtime_xsim.py --legacy-suite --seed 2 \
+  --out runs/legacy_xsim --vectors runs/legacy_vectors
+# Full runtime PA QAM capture, including all six directed handovers:
+python3 dv/uvm/refmodel/python/thermo5_runtime_qam.py prepare \
+  --out runs/runtime_qam --seed 281001 --symbols 8
+python3 dv/uvm/refmodel/python/generate_thermo5_runtime_vectors.py \
+  --output-dir runs/runtime_qam/vectors --input-dir runs/runtime_qam/input \
+  --words 5264 --seed 281001
+python3 dv/uvm/sim/run_thermo5_runtime_xsim.py \
+  --out runs/runtime_qam/capture --vectors runs/runtime_qam/vectors \
+  --words 5264 --beats 3008 --xpm
+python3 dv/uvm/refmodel/python/thermo5_runtime_qam.py evaluate \
+  --prepared runs/runtime_qam --capture runs/runtime_qam/capture \
+  --out runs/runtime_qam/metrics.json
+```
+
+For 32 symbols, preparation prints 19096 words / 10912 beats. Keep the original
+input-drive guard: a rejected peak is an invalid stimulus, not a passed run.
+`--reuse` reuses an elaborated snapshot in that output directory; provide the
+matching Generic/XPM snapshot and preserve previous captures before reuse.
+Synthesis-only entry: `syn/run_ooc_thermo5_runtime.tcl <part> <new_out_dir>`
+via `vivado -mode batch -source ... -tclargs ...`. It does not report routed timing.
+
 ## Thermo5 EF2 current-source Linux signoff
 
 On a licensed Synopsys Linux host, use a fresh ignored `runs/` directory for

@@ -8,6 +8,7 @@ class thermo5_sku_bubble_backpressure_test extends thermo5_sku_base_test;
   int interp2_hold_hits, interp1_output_hold_hits, interp2_output_hold_hits;
   int interp1_output_empty_hits, interp1_stage1_empty_hits, interp2_stage1_empty_hits;
   int partial_ready_hits;
+  int interp2_partial_empty_hits;
   int gap_beat=4, gap_length=80;
   bit require_interp1_stage1_empty=0;
   // A zero-length initial hold lets the source bubble meet partial PA
@@ -53,7 +54,8 @@ class thermo5_sku_bubble_backpressure_test extends thermo5_sku_base_test;
             // stall bins are the externally visible held output words; internal
             // causal-stage empty/hold bins are intentionally not fabricated.
             if (interp2_hits==0 || interp1_output_hold_hits==0 ||
-                interp2_output_hold_hits==0 || env.coverage.pa_stall_cycles==0)
+                interp2_output_hold_hits==0 || env.coverage.pa_stall_cycles==0 ||
+                interp2_partial_empty_hits==0)
 `else
             if (interp1_hits==0 || interp2_hits==0 || dpd_hits==0 ||
                 interp1_hold_hits==0 || interp1_stage0_hits==0 || interp2_hold_hits==0 ||
@@ -71,10 +73,21 @@ class thermo5_sku_bubble_backpressure_test extends thermo5_sku_base_test;
       end
       begin
         int ready_phase;
+        int targeted_stall_cycles;
         ready_phase=0;
+        targeted_stall_cycles=0;
         wait(vif.core_rst_n);
         forever begin
           @(negedge vif.core_clk);
+`ifdef THERMO5_CENTERED_CUBIC
+          // Hold the legal no-emittable-head/full-downstream state across a
+          // sampled partial-ready edge. The independent payload scoreboard
+          // remains active; no internal state or DUT handshake is forced.
+          if (vif.interp2_empty_blocked && targeted_stall_cycles<2) begin
+            env.pa_sink.set_ready(4'b1110);
+            targeted_stall_cycles++;
+          end else
+`endif
           case (ready_phase % 4)
             0: env.pa_sink.set_ready(4'hf);
             1: env.pa_sink.set_ready(4'b1110);
@@ -89,7 +102,16 @@ class thermo5_sku_bubble_backpressure_test extends thermo5_sku_base_test;
           @(posedge vif.core_clk);
           if (vif.core_rst_n) begin
             if (vif.interp1_empty_blocked) interp1_hits++;
-            if (vif.interp2_empty_blocked) interp2_hits++;
+            if (vif.interp2_empty_blocked) begin
+              interp2_hits++;
+              if (vif.pa_valid==4'hf && vif.pa_ready!=4'hf && vif.pa_ready!=0) begin
+                interp2_partial_empty_hits++;
+                if(interp2_partial_empty_hits==1)
+                  `uvm_info("I2_EMPTY_PARTIAL_WITNESS",$sformatf(
+                    "time=%0t state=%02h pa_valid=%h pa_ready=%h",
+                    $time,vif.interp2_centered_state,vif.pa_valid,vif.pa_ready),UVM_NONE)
+              end
+            end
             if (vif.dpd_empty_blocked) dpd_hits++;
             if (vif.interp1_stage1_held) interp1_hold_hits++;
             if (vif.interp1_stage0_held) interp1_stage0_hits++;

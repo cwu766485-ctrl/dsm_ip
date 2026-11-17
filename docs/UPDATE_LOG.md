@@ -1,3 +1,33 @@
+# 2026-11-17 SGT - Runtime EF1/EF2/MASH product and bubble witness closure
+
+- Promoted corrected accumulator-residue MASH and its independent scalar oracle
+  into canonical RTL/Python paths. Added runtime top, credit/metadata backend,
+  locked idle AXI-Lite handover, PA contract/mask sidebands and software helper.
+  Default EF2; STOP/drain required; live requests reject. Existing static top
+  defaults and independent EF1/EF2 Golden remain intact.
+- Added runtime UVM PA monitor/scoreboard, six-mode transition sequence, long
+  stall, STOP/restart, protocol negatives and paired-reset replay. Generic and
+  XPM initial suites pass eight streams/448 words; strengthened XPM test also
+  proves blocked PA before reset. It exposed and fixes disabled XPM read count:
+  feature0400 is required by the existing rd_count>=2 startup predicate.
+- Repaired centered-interpolator bubble witness without weakening assertions;
+  direct debug VCD shows legal tail-discard blocking with full downstream FIFO.
+  Added pre-edge evidence extractor. All56 PA words remain independently bit-true.
+- Removed only the self-dot-source line from the separately backed-up local
+  PowerShell profile. Profile startup and existing functions pass; private
+  profile is outside Git. Directed XSim launch/probe fixes restore its smoke.
+- Checks completed: required directed XSim Generic and XPM PASS; six legacy
+  legal UVM tests PASS in XSim; Python reference66/66 PASS; runtime seed281001
+  PA EVM2.551442%, SNDR31.864285dB, BER15/37376; long seed281002 PASS.
+  VCS compilation is license-blocked. Prior runtime synthesis PASS predates
+  read-count fix; fixed-source synthesis/QAM and seed281003 are running.
+  Historical AXI-Lite synthesis script fails its top-name assertion after
+  synthesis and remains FAIL. No routed timing/GTY/CDC/RDC signoff is claimed.
+- Files and exact evidence: `docs/spec/thermo5-runtime-dsm.md`, runtime product
+  report, source lists, and final hash summary. Original failed evidence and
+  the IDE's six dirty files remain preserved. Final evidence will record the
+  implementation revision before integration into thermo5.
+
 # 2026-11-13 SGT - PR #64 CDC debug and Vivado PPA candidate
 
 - Added isolated CDC RTL ECO and AXI-Lite UVM control/diagnostic fixes as

@@ -69,7 +69,9 @@ module dsm_xpm_async_fifo #(
     .WR_DATA_COUNT_WIDTH(1),
     .PROG_FULL_THRESH(FIFO_DEPTH-2),
     .FULL_RESET_VALUE(0),
-    .USE_ADV_FEATURES("0000"),
+    // EN_RDC is bit10: the CDC startup controller consumes rd_count.
+    // With 0000 XPM drives that port to zero and RUN cannot prefill.
+    .USE_ADV_FEATURES("0400"),
     .READ_MODE("fwft"),
     .FIFO_READ_LATENCY(0),
     .READ_DATA_WIDTH(DATA_W),

@@ -28,7 +28,8 @@ module tid32_thermo5_frontend_tx #(
   parameter int STEP = 5120,
   parameter bit HOLD_STATE_ON_DISABLE = 1'b0,
   parameter bit BYPASS_DPD = 1'b0,
-  parameter int TIDSM_ORDER = 2
+  parameter int TIDSM_ORDER = 2,
+  parameter bit USE_EXTERNAL_DSM = 1'b0
 ) (
   input  wire logic                                      clk,
   input  wire logic                                      rst_n,
@@ -37,6 +38,8 @@ module tid32_thermo5_frontend_tx #(
   output wire logic                                      in_ready,
   input  wire logic                                      in_frame_start,
   input  wire logic                                      in_frame_end,
+  input  wire logic [15:0]                               in_config_id,
+  input  wire logic [15:0]                               in_reset_epoch,
   input  wire logic signed [GAIN_W-1:0]                  in_frame_gain,
   input  wire logic signed [IN_LANES*W-1:0]              in_i_vec,
   input  wire logic signed [IN_LANES*W-1:0]              in_q_vec,
@@ -46,6 +49,15 @@ module tid32_thermo5_frontend_tx #(
   input  wire logic signed [MAX_TAPS*COEFF_W-1:0]        c5_re, c5_im,
   output wire logic [3:0]                                pa_valid,
   output wire logic [63:0]                               pa_data [0:3],
+  output wire logic                                      pre_dsm_valid,
+  input  wire logic                                      pre_dsm_ready,
+  output wire logic signed [2*DPD_LANES*W-1:0]           pre_dsm_i_vec,
+  output wire logic signed [2*DPD_LANES*W-1:0]           pre_dsm_q_vec,
+  output wire logic                                      pre_dsm_frame_start,
+  output wire logic                                      pre_dsm_frame_end,
+  output wire logic                                      pre_dsm_tail,
+  output wire logic [15:0]                               pre_dsm_config_id,
+  output wire logic [15:0]                               pre_dsm_reset_epoch,
   output wire logic                                      dpd_config_boundary,
   input  wire logic [3:0]                                pa_ready
 );
@@ -61,6 +73,19 @@ module tid32_thermo5_frontend_tx #(
   logic i2_fifo_valid, tid_ready;
   logic [GAIN_W+1:0] ingress_meta;
   logic [1:0] i1_buf_meta;
+  localparam int PRE_META_W = USE_EXTERNAL_DSM ? 35 : 1;
+  logic [PRE_META_W-1:0] pre_meta;
+  logic [15:0] frame_config_mem[0:7], frame_epoch_mem[0:7];
+  logic [2:0] ctx_rd,ctx_wr;
+  logic [3:0] ctx_count;
+  logic [15:0] active_config_id_q,active_epoch_q;
+  wire ctx_space = !USE_EXTERNAL_DSM || !in_frame_start || ctx_count<8;
+  wire ctx_push = USE_EXTERNAL_DSM && in_valid && in_ready && in_frame_start;
+  wire ctx_pop = USE_EXTERNAL_DSM && i2_valid && i2_ready && i2_frame_start;
+  wire [15:0] config_for_word = i2_frame_start ? frame_config_mem[ctx_rd] : active_config_id_q;
+  wire [15:0] epoch_for_word = i2_frame_start ? frame_epoch_mem[ctx_rd] : active_epoch_q;
+  wire [PRE_META_W-1:0] pre_input_meta = USE_EXTERNAL_DSM ? {epoch_for_word,config_for_word,i2_tail,i2_frame_end,i2_frame_start} : 35'd0;
+  logic legacy_tid_ready;
   logic signed [IN_LANES*W-1:0] gain_i, gain_q;
   logic signed [IN_LANES*W-1:0] ingress_i, ingress_q;
   logic signed [DPD_LANES*W-1:0] i1_i, i1_q, i1_buf_i, i1_buf_q, dpd_i, dpd_q, dpd_buf_i, dpd_buf_q;
@@ -70,12 +95,12 @@ module tid32_thermo5_frontend_tx #(
   // Decouple the asynchronous FIFO read-enable from downstream PA ready.
   // The low-power enable still gates admission exactly as before.
   assign ingress_meta = {in_frame_gain, in_frame_end, in_frame_start};
-  assign in_ready = enable && ingress_ready;
+  assign in_ready = enable && ingress_ready && ctx_space;
   thermo5_vector_registered_ready_fifo #(
     .W(W), .LANES(IN_LANES), .META_W(GAIN_W+2)
   ) u_cdc_to_frame_gain_fifo (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(in_valid && enable), .in_ready(ingress_ready), .in_meta(ingress_meta),
+    .in_valid(in_valid && enable && ctx_space), .in_ready(ingress_ready), .in_meta(ingress_meta),
     .in_i_vec(in_i_vec), .in_q_vec(in_q_vec),
     .out_valid(ingress_valid), .out_ready(gain_input_ready),
     .out_meta({ingress_frame_gain, ingress_frame_end, ingress_frame_start}),
@@ -209,21 +234,54 @@ module tid32_thermo5_frontend_tx #(
   // interpolators, DPD, frame-gain, and back to the asynchronous FIFO in one
   // cycle.  The queue sustains one 32-complex-sample word per core cycle.
   thermo5_vector_registered_ready_fifo #(
-    .W(W), .LANES(2*DPD_LANES), .META_W(1)
+    .W(W), .LANES(2*DPD_LANES), .META_W(PRE_META_W)
   ) u_interp2_to_tid_fifo (
     .clk(clk), .rst_n(rst_n),
-    .in_valid(i2_valid), .in_ready(i2_ready), .in_meta(1'b0),
+    .in_valid(i2_valid), .in_ready(i2_ready),
+    .in_meta(pre_input_meta),
     .in_i_vec(i2_i), .in_q_vec(i2_q),
-    .out_valid(i2_fifo_valid), .out_ready(tid_ready), .out_meta(),
+    .out_valid(i2_fifo_valid), .out_ready(tid_ready), .out_meta(pre_meta),
     .out_i_vec(i2_fifo_i), .out_q_vec(i2_fifo_q)
   );
 
   tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES),
     .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER)) u_tid (
-    .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid), .in_ready(tid_ready),
+    .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid && !USE_EXTERNAL_DSM), .in_ready(legacy_tid_ready),
     .in_i_poly_vec(i2_fifo_i), .in_q_poly_vec(i2_fifo_q),
     .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
   );
+  assign tid_ready = USE_EXTERNAL_DSM ? pre_dsm_ready : legacy_tid_ready;
+  assign pre_dsm_valid = USE_EXTERNAL_DSM && i2_fifo_valid;
+  assign pre_dsm_i_vec = USE_EXTERNAL_DSM ? i2_fifo_i : '0;
+  assign pre_dsm_q_vec = USE_EXTERNAL_DSM ? i2_fifo_q : '0;
+  generate
+    if(USE_EXTERNAL_DSM) begin : g_pre_metadata
+      assign {pre_dsm_reset_epoch,pre_dsm_config_id,pre_dsm_tail,
+              pre_dsm_frame_end,pre_dsm_frame_start} = pre_meta;
+    end else begin : g_no_pre_metadata
+      assign {pre_dsm_reset_epoch,pre_dsm_config_id,pre_dsm_tail,
+              pre_dsm_frame_end,pre_dsm_frame_start} = '0;
+    end
+  endgenerate
+  always_ff @(posedge clk or negedge rst_n) begin
+    if(!rst_n) begin
+      ctx_rd<=0;ctx_wr<=0;ctx_count<=0;active_config_id_q<=0;active_epoch_q<=0;
+    end else if(USE_EXTERNAL_DSM) begin
+      if(ctx_push) begin
+        frame_config_mem[ctx_wr]<=in_config_id;frame_epoch_mem[ctx_wr]<=in_reset_epoch;
+        ctx_wr<=ctx_wr+1'b1;
+      end
+      if(ctx_pop) begin
+        active_config_id_q<=frame_config_mem[ctx_rd];active_epoch_q<=frame_epoch_mem[ctx_rd];
+        ctx_rd<=ctx_rd+1'b1;
+      end
+      case({ctx_push,ctx_pop})
+        2'b10:ctx_count<=ctx_count+1'b1;
+        2'b01:ctx_count<=ctx_count-1'b1;
+        default:;
+      endcase
+    end
+  end
 endmodule
 
 //------------------------------------------------------------------------------
