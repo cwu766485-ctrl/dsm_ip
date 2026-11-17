@@ -1,3 +1,7 @@
+## 2026-11-17 23:48 SGT — EF1 pre-place reset-domain path
+
+- EF1 attempt 03 pre-place WNS -0.694 ns is a recovery check from modeled `core_aresetn` to XPM FIFO write-domain `rd_reset_in_wr_reg[0]/CLR`, in `**async_default**`. This is a reset-domain crossing and must not be reported as final routed setup or masked. Updated CDC timing report; no RTL, exception or existing report was changed.
+
 ## 2026-11-17 23:42 SGT — Harden MASH queue recovery
 
 - Stopped the waiting-only MASH queue before it suspended Runtime; the abandoned launcher and logs are retained. Added a pre-suspend marker so the independent watchdog can recover even if the controller fails immediately after suspending Runtime. New queue uses `runs/mash_candidates_preempt_02/`.

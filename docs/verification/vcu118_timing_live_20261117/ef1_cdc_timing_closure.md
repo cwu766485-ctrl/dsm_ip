@@ -21,3 +21,12 @@ Vivado session reports that configuration mismatch when opening it. The netlist
 is already synthesized, but the implementation and its warning require review.
 
 AMD documentation: https://docs.amd.com/r/en-US/ug903-vivado-using-constraints/Consequences-of-Setting-Maximum-Delay-or-Minimum-Delay-Constraints-on-a-Path
+
+Attempt 03's **pre-place** timing summary shows overall WNS -0.694 ns on a
+recovery path from `core_aresetn` (modeled relative to `core_clk`) to the XPM
+FIFO write-domain `rd_reset_in_wr_reg[0]/CLR` checked against `s_axis_aclk`.
+This is a reset-domain path in `**async_default**`, not mailbox payload setup.
+The reset relationship and release circuit need RDC and system-level review;
+no false path or implicit hold waiver was accepted. See
+`runs/ef1_cdc_candidate_preempt_03/implementation/synth_timing_summary.rpt`.
+The implementation is still running, so this is not the final routed WNS.
