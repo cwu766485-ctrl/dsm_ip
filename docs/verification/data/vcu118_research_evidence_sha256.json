@@ -57,6 +57,10 @@
     "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/synthesized.dcp": "4a8395da27c18f4405e9ef2891025ab3765ec82a092f3198fc44aebe3c12ceac",
     "runs/ef1_step_study_01/metrics.json": "1e62398b4f7b4054974d53eaa46a1df91aae695bea59fc374bfb605ab79d6df0",
     "runs/ef1_step_holdout_b_281002/metrics.json": "58faec66b0b8aa7cf8e179408a09c282ad91e0950c5e77046090766a6d369ddd",
-    "runs/ef1_step_holdout_b_281003/metrics.json": "578951eba29ab5073861667fef8c92c4e856adc5e9e801ee341b47732c8e27ee"
+    "runs/ef1_step_holdout_b_281003/metrics.json": "578951eba29ab5073861667fef8c92c4e856adc5e9e801ee341b47732c8e27ee",
+    "../thermo5_vcu118_ef2_lookahead/runs/verify_xsim_launcher/console.log": "b756509657856c5085f09a1a061bd6d81b373463e4e8109949c4de3b9ca6e3d4",
+    "../thermo5_vcu118_ef2_lookahead/runs/verify_vcs_launcher/console.log": "a13e7e3b7aac4a69e1a13eaeabd88b0886283e5a4ddadc4a45df47a1d2269cc8",
+    "../thermo5_vcu118_ef2_lookahead/runs/qam281001/simulation.log": "5ccf9eb4259920ecb43c8d9a6f20190e321591bb7ae48200216e92306611fa9c",
+    "../thermo5_vcu118_ef2_lookahead/runs/qam281001_all_comparison.json": "e75a6593c9bc87406ff5ef77345eb7d224eac6a549024adc324fe5f5c82953b2"
   }
 }
