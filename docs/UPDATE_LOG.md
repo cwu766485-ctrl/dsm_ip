@@ -1,3 +1,8 @@
+## 2026-11-17 20:48 SGT — Preserve Runtime placement under memory pressure
+
+- Added optional formal time-limit overrides in `research/vcu118_arch/formal_ef2_32lane.tcl` and launched the extended zero-black-box check in `runs/ef2_32lane_formal_05/`. Interrupted it without a final result as host available memory approached 2 GiB while Runtime placement was active; retained its log. Attempt 04 remains the last complete full-width proof result: 3 proven and 4 inconclusive.
+- Updated critical path report and frontier; no production RTL, constraints, Golden or existing evidence were modified.
+
 ## 2026-11-17 20:44 SGT — EF2 full-width equivalence attempt
 
 - Added `dv/uvm/formal/thermo5_ef2_32lane_equiv_harness.sv`, `research/vcu118_arch/formal_ef2_32lane.tcl` and reproducible runner. The W=16/32-lane zero-black-box miter under VC Formal V-2023.12-SP2 proved 3 assertions, left 4 inconclusive and reached all 4 covers. Full output/state bit-true equivalence is not proven; see `runs/ef2_32lane_formal_04/properties.txt`. Reset setup checking was disabled and requires review.

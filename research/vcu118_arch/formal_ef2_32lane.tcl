@@ -10,8 +10,12 @@ create_reset rst_n -sense low
 sim_run -stable
 sim_save_reset
 set_fml_var fml_coi_reduction true
-set_fml_var fml_max_time 5m
-set_fml_var fml_property_time_limit 2m
+set total_time 5m
+set property_time 2m
+if {[info exists ::env(THERMO5_FML_MAX_TIME)]} {set total_time $::env(THERMO5_FML_MAX_TIME)}
+if {[info exists ::env(THERMO5_FML_PROPERTY_TIME)]} {set property_time $::env(THERMO5_FML_PROPERTY_TIME)}
+set_fml_var fml_max_time $total_time
+set_fml_var fml_property_time_limit $property_time
 set_fml_var fml_max_mem 2GB
 set_fml_var fml_cov_gen_trace on
 check_fv_setup -check {clock comb_loop glitch multi_driver osc_loop osc_seq} -block
