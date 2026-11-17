@@ -20,7 +20,7 @@ The following are actual accepted product RTL PA words for seed 281001, eight OF
 | EF2 | 2.505986 | 32.020427 | 2 / 37376 | -19.037241 |
 | MASH 1-1 | 2.551442 | 31.864285 | 15 / 37376 | -16.177531 |
 
-EF1 narrowly misses the suggested 3.5% and 29.12 dB thresholds on this seed. A separate scalar step sweep reproduces the baseline but the candidate step 7680 caused 43 offset saturations on seed 281002 (`runs/ef1_step_holdout_281002/metrics.json`); it is not promoted to RTL. The seed is not a basis for declaring a product-wide BER or timing signoff.
+EF1 narrowly misses the suggested 3.5% and 29.12 dB thresholds on this seed. A separate scalar step sweep reproduces the baseline but the candidate step 7680 caused 43 offset saturations on seed 281002 (`runs/ef1_step_holdout_281002/metrics.json`); it is not promoted to RTL. STEP 6656 is another scalar-only candidate with EVM 3.399252%, 3.399179%, and 3.383360% on seeds 281001/281002/281003 respectively and no observed offset saturation; BER counts and sample sizes are in the CSV. It also remains unvalidated in RTL, PSD and PPA and does not change the baseline result. The seeds are not a basis for declaring a product-wide BER or timing signoff.
 
 ## Third-order MASH model
 
