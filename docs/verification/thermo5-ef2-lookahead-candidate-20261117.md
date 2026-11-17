@@ -2,7 +2,7 @@
 
 Status: **candidate only; no fresh PPA or product signoff**. This branch derives from `3f88efef965e2d5705adc57d06f530c265af2e82` and includes the isolated centered-cubic arithmetic candidate. It sets the existing EF2 `PAIR_LOOKAHEAD` implementation to 1 in the four-plane wrapper. The scalar default remains unchanged on the baseline architecture branch.
 
-Required directed XSim and VCS regression pass with preserved vectors. XPM runtime QAM256 seed 281001, 5,264 words per stream, passes all eight stream phases, six mode transitions, and blocked-PA reset; all 36 generated phase/plane PA files are SHA256-identical to the preserved baseline. Logs and comparison are in `runs/verify_xsim_launcher/`, `runs/verify_vcs_launcher/`, `runs/qam281001/` and `runs/qam281001_all_comparison.json`.
+Required directed XSim and VCS regression pass with preserved vectors. A separate VCS miter passes 4,096 cycles, including 2,663 accepted words, 408 positive and 409 negative clamps, 817 stall cycles, 616 bubbles, 103 negative ties and a reset epoch (`runs/pair_miter_04/simulation.log`). Earlier launcher/dependency failures remain preserved in `runs/pair_miter_01` through `_03`. XPM runtime QAM256 seed 281001, 5,264 words per stream, passes all eight stream phases, six mode transitions, and blocked-PA reset; all 36 generated phase/plane PA files are SHA256-identical to the preserved baseline. Logs and comparison are in `runs/verify_xsim_launcher/`, `runs/verify_vcs_launcher/`, `runs/qam281001/` and `runs/qam281001_all_comparison.json`.
 
 ```bash
 python3 dv/uvm/sim/run_thermo5_runtime_xsim.py --out runs/repro_qam_NEW \
