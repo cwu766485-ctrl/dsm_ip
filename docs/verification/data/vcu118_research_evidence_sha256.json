@@ -49,6 +49,11 @@
     "runs/corrected_mash_ooc_01/setup_worst20.rpt": "db08bc37fd4eeab880e0da105c53a1e29bd93f55dd0f3ea5fe374e3c7dab6d7b",
     "runs/corrected_mash_ooc_01/hold_worst20.rpt": "bb652fb197b099d2e884f2b7519dae3f7d1d1ad84a77797ef3fc13783c2886c4",
     "runs/corrected_mash_ooc_01/power_default_activity.rpt": "087f855e65a3585ee85120d7143db70697e63fcfbe0532ac174f6d4443e1f195",
-    "runs/corrected_mash_ooc_launcher_01/console.log": "42cd163350f1f23f9956eda68849f1b50dba0348de7ce438066b71132ba68adb"
+    "runs/corrected_mash_ooc_launcher_01/console.log": "42cd163350f1f23f9956eda68849f1b50dba0348de7ce438066b71132ba68adb",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/synth_utilization.rpt": "660dfa075d44c44c087ee308729475bbaaaee1a2f6ea134c754a67780817ab25",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/synth_timing_summary.rpt": "08c199324262e8ec803d55ca01674d5547cda3489f16058341ded6ad13a3050c",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/clock_interaction.rpt": "f90196728d589f1cdaa8d0756c8e87ce8e6f72c6e76b2675c6c6b2589220ee9c",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/exceptions.rpt": "79b8384c88e78c558eb59f45da22f645cba57dc48c6265453607b3220aa97892",
+    "../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/synthesized.dcp": "4a8395da27c18f4405e9ef2891025ab3765ec82a092f3198fc44aebe3c12ceac"
   }
 }

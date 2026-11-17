@@ -30,8 +30,10 @@ Corrected standalone MASH OOC routed: 12,451 LUT, 22,814 FF, WNS +0.789 ns,
 WHS +0.027 ns, estimated core Fmax 264.410 MHz, vectorless power 2.694 W, no
 failed nets. HD.CLK_SRC/HD.PARTPIN_LOCS are unset; this is not full-top/GTY
 signoff and differs from the historical MASH wrapper and I/O assumptions.
-A matched optimized EF1 implementation is running separately in the candidate
-worktree after all 36 QAM PA file hashes matched baseline.
+Matched optimized EF1 synthesis in the candidate worktree reports core WNS
++1.140 ns vs baseline -1.823 ns and 496 DSP vs 670, after all 36 QAM PA hashes
+matched baseline. Optimized overall WNS -0.694 ns is an unexpanded CDC path;
+route and the cross-clock contract remain open.
 An isolated centered-cubic arithmetic candidate in branch
 `work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
 passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its full RTL formal
