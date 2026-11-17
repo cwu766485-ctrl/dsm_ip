@@ -1,3 +1,7 @@
+## 2026-11-17 23:45 SGT — Guard orphaned MASH implementation
+
+- Added `research/vcu118_arch/watch_mash_runtime_resume.sh` for the active `runs/mash_candidates_preempt_02/` queue. If its controller unexpectedly dies after suspending Runtime, the watchdog waits for any orphaned MASH Vivado process to exit before resuming Runtime, avoiding two large implementations competing for memory. The previous waiting-only watchdog instances were stopped without suspending or changing Runtime; no existing experiment data were changed.
+
 ## 2026-11-17 23:49 SGT — XPM reset crossing structure audit
 
 - Audited `rtl/axis/dsm_xpm_async_fifo.sv`: `rd_reset_in_wr` is a two-stage ASYNC_REG guard, asynchronously asserted by read-domain reset and released on write-clock edges; its second stage gates `wr_ready`. The pre-place recovery endpoint is its first stage. This describes intent only; reset-domain, MTBF, independent reset and physical release evidence remain open and no false path was added. Updated EF1 closure report.
