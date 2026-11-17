@@ -1,6 +1,6 @@
 # MASH-only timing closure
 
-Status: **FAIL**, OOC routed setup WNS -2.879 ns; overall WHS +0.004 ns. LUT 35,818; FF 48,180; DSP 670; BRAM 6.5; vectorless power 4.896 W. Device xcvu9p-flga2104-2L-e, Vivado 2026.1 build 6511674, baseline source SHA `67d68abb402f9bb2c9a87a43a99f46955acfe9d9`. Routed DCP and unmodified Worst-20: `runs/vcu118_ppa_research_01/mash/routed.dcp`, `setup_worst20.rpt`, `hold_worst20.rpt` and `routed_timing_summary.rpt`.
+Status: **FAIL**, OOC routed setup WNS -2.879 ns; overall WHS +0.004 ns. LUT 35,818; FF 48,180; DSP 670; BRAM 6.5; CARRY8 3,222; vectorless power 4.896 W. Device xcvu9p-flga2104-2L-e, Vivado 2026.1 build 6511674, baseline source SHA `67d68abb402f9bb2c9a87a43a99f46955acfe9d9`. Routed DCP and unmodified Worst-20: `runs/vcu118_ppa_research_01/mash/routed.dcp`, `setup_worst20.rpt`, `hold_worst20.rpt` and `routed_timing_summary.rpt`.
 
 All 20 reported max paths are alternate paths between the same endpoints: first centered cubic `q0_i_reg[2][15]` to the interpolator-to-DPD elastic buffer `data_i_mem_reg[0][120]`. Delay is 7.431 ns (4.857 ns logic, 2.574 ns route), 24 logic levels. The observed category is **shared cubic datapath / elastic-buffer data input**. No path in this Worst-20 set starts or ends in DSM core/cancellation, PA encoder, FIFO credit/ready fanout, CDC/configuration, or an external boundary. This is not proof that those other categories meet timing; a dedicated path-group audit remains open.
 

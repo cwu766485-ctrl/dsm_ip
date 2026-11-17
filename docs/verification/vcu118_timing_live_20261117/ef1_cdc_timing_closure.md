@@ -7,3 +7,18 @@ The -0.363 ns worst setup path is `u_product/u_cfg/cfg_mailbox_q_reg[334]/C` to 
 The RTL uses a four-phase bundled-data handshake: mailbox data is held while request is active, request crosses via two ASYNC_REG stages, destination captures into a pending bank and later acknowledges after a boundary. Scoped VC Formal with common reset proves source hold and destination capture equals sampled source; see `runs/mailbox_capture_formal_01/`. Sample-edge stability also proved: all 3 assertions and 3 covers passed non-vacuously, with zero black boxes. Reset is held released during proof. This is a digital model and does not prove metastability, independent resets, relative physical bus skew or a complete CDC/RDC contract.
 
 A research-only 4 ns `set_max_delay -datapath_only` on mailbox source/destination register cells is prepared in `research/vcu118_arch/reimplement_ef1_cdc_bound.tcl` and `research/vcu118_arch/run_ppa_ef1_cdc_bound.tcl`. Two request synchronization stages plus a subsequent capture edge provide a multi-edge logical settling interval; 4 ns is below one nominal core period and is a conservative trial bound, not an unqualified board constraint. No false path or multicycle was added. Attempt `runs/ef1_cdc_candidate_preempt_01/` used Q-pin startpoints and emitted `Constraints 18-515` path-segmentation Critical Warnings; it was stopped and is INVALID. Its wrapper exit code 0 is unreliable, as documented in `validation.json`. The experiment is **BLOCKED / running** in `runs/ef1_cdc_candidate_preempt_02/`, starting from the prior identical candidate synthesized DCP SHA-256 `4a8395da27c18f4405e9ef2891025ab3765ec82a092f3198fc44aebe3c12ceac`, until completed reports exist; source stability, endpoint selection, physical CDC review and unrelated crossing paths remain mandatory. The run uses `research/vcu118_arch/preempt_ef1_candidate.py`, which temporarily suspends the existing Runtime implementation and resumes it in a finally block; an independent watchdog also resumes Runtime if the controller exits unexpectedly. Each output directory is new. The resulting OOC implementation cannot by itself establish system CDC signoff.
+
+For the corrected retry, Vivado's `exceptions.rpt` contains the one bounded
+mailbox path as `max_dpo=4`; 99 source and 99 destination cells were selected.
+No `Constraints 18-515` warning or false path appeared during constraint setup.
+This is not a routed timing result. Reproduce from the preserved synthesized DCP
+using a fresh destination (run from an isolated Vivado working directory to
+avoid overwriting its automatic log/journal):
+
+```powershell
+& 'D:\AMDDesignTools\2026.1\Vivado\bin\vivado.bat' -mode batch -source research/vcu118_arch/reimplement_ef1_cdc_bound.tcl -tclargs ef1 runs/NEW_EF1_CDC_BOUND a
+```
+
+The checkpoint restores a non-default `synth.maxThreads` property; the fresh
+Vivado session reports that configuration mismatch when opening it. The netlist
+is already synthesized, but the implementation and its warning require review.
