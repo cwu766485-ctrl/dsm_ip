@@ -46,8 +46,8 @@ matched baseline. Optimized overall WNS -0.694 ns is an unexpanded CDC path;
 route and the cross-clock contract remain open.
 An isolated centered-cubic arithmetic candidate in branch
 `work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
-passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its full RTL formal
-miter timed out and it is not timing-characterized or in the baseline PPA.
+passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its RTL formal
+miter timed out and a clocked arithmetic VC Formal attempt was inconclusive and it is not timing-characterized or in the baseline PPA.
 No routed comparison, Fmax, GTY integration or board signoff is claimed. Next:
 complete all routes, inspect genuine paths (especially the current 32-sample
 EF2 combinational recurrence; lookahead candidate branch `947f7d4332f2e5f00890219ab3acf3bb713322bd` matches all 36 QAM PA files and passes scoped two-sample formal, but has no PPA), add post-route reports/estimates,
