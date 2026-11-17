@@ -1,6 +1,5 @@
 `timescale 1ns/1ps
-module tb_frame_prefill_tx;
-  localparam int WORDS=56;
+module tb_frame_prefill_tx #(parameter int WORDS=56);
   logic clk=0,rst_n=0,run=0,link=1,valid=0,start=0,last=0;
   logic [255:0] in_data=0;logic [3:0] mask=3;logic[1:0] arch=2;logic[15:0] cfg=16'h1234,epoch=16'h0007;
   wire ready,drain,protocol_error,overflow,link_fault,out_start,out_end,out_tail;wire [1:0] out_arch;wire [15:0] out_epoch;
@@ -94,5 +93,5 @@ module tb_frame_prefill_tx;
         out_data,out_mask,out_start,out_end,out_tail,out_arch,out_cfg,out_epoch,drain,protocol_error,overflow,link_fault);
     end
   end
-  initial begin #100000;$fatal(1,"prefill timeout");end
+  initial begin #(WORDS*50);$fatal(1,"prefill timeout");end
 endmodule

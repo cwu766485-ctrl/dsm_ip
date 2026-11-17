@@ -95,6 +95,12 @@ iverilog -g2012 -s tb_frame_prefill_tx -o runs/repro_prefill_NEW/simv \
   research/vcu118_arch/thermo5_frame_prefill_tx.sv \
   dv/verif/integration/vcu118_arch/tb_frame_prefill_tx.sv
 (cd runs/repro_prefill_NEW && vvp ./simv)
+# Repeat for the QAM frame length, in a second fresh output path:
+mkdir runs/repro_prefill_qam_NEW
+iverilog -g2012 -s tb_frame_prefill_tx -P tb_frame_prefill_tx.WORDS=5264 \
+  -o runs/repro_prefill_qam_NEW/simv research/vcu118_arch/thermo5_frame_prefill_tx.sv \
+  dv/verif/integration/vcu118_arch/tb_frame_prefill_tx.sv
+vvp runs/repro_prefill_qam_NEW/simv
 ```
 
 On the Windows host, run the GT Wizard digital serial loopback with a **new** output directory (the script refuses an existing one):

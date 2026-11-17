@@ -8,10 +8,10 @@ tradeoff: `docs/verification/data/architecture_tradeoff.csv`.
 All three runtime backends passed 2,048 continuous words at II=1 with ready
 held high in both Icarus and VCS (latencies EF1/EF2/MASH 3/2/8 cycles);
 Fs/4 mapping and PSD are checked from RTL accepted bits. Existing continuous
-serializer faults on MASH's two-plane mask and early STOP. An isolated 56-word
-complete-frame two-bank prefill candidate passes directed tests but is not in
-the product top and cannot hold the current 5,264-word QAM frame, so system
-continuity and appropriate buffer sizing/segmentation remain OPEN.
+serializer faults on MASH's two-plane mask and early STOP. An isolated two-bank prefill candidate passes directed tests at both the default
+56-word and a 5,264-word frame capacity (counter-pattern data); it is not in the
+product top. Resource cost, actual QAM integration and system continuity remain
+OPEN.
 
 On the QSFP1 GTY sites X1Y48/X1Y49 the vendor model accepts nominal 125 MHz
 reference and exactly 14.000 Gb/s RAW. TXUSRCLK2, two 16,384-bit serial
