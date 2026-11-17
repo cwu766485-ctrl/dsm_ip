@@ -1,3 +1,9 @@
+## 2026-11-17 16:04 SGT — Scoped AXI-Lite mailbox source-hold proof
+
+- Added `research/vcu118_arch/formal_cfg_mailbox_hold.sv` and its VC Formal Tcl. One source-domain mailbox-hold assertion is proven and non-vacuous; request and acknowledgement covers are reached, zero black boxes, with no listed clock/loop/multidriver setup violations (`runs/mailbox_formal_01/`).
+- Scope: arbitrary AXI traffic, common initialized reset held released in proof, modeled 35:16 period ratio and phase grid. This does not establish independent/reset-during-traffic behavior, metastability, arbitrary phase, bus skew or physical delay. No timing exceptions were added; overall routed WNS remains -0.363 ns.
+- Updated report, frontier and evidence hashes. Baseline EF2 is resumed and in placement; remaining three full-chain routes are not complete.
+
 ## 2026-11-17 15:58 SGT — Optimized EF1 routed comparison and EF2 resume
 
 - Optimized EF1 OOC route: core WNS +0.075 ns, core WHS +0.023 ns, approximate core Fmax 222.420 MHz, versus baseline -2.797 ns / 135.722 MHz. Overall WNS is -0.363 ns on the unexpanded AXI-Lite-to-core mailbox, overall WHS +0.002 ns. 47,053 LUT, 49,853 FF, 496 DSP, 6.5 BRAM and 4.815 W vectorless estimate. No exceptions were added.

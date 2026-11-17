@@ -40,6 +40,8 @@ signoff and differs from the historical MASH wrapper and I/O assumptions.
 Matched optimized EF1 routed: core WNS +0.075 ns, core WHS +0.023 ns, versus
 baseline core WNS -2.797 ns; 47,053 LUT, 49,853 FF, 496 DSP and 4.815 W
 vectorless estimate. Overall WNS -0.363 ns is an unexpanded mailbox CDC path;
+A scoped common-reset VC Formal check proves source mailbox hold and covers
+request/ack, but arbitrary phase/reset and physical bus delay are not proven.
 CDC/physical constraints and the small core margin remain open. All 36 QAM PA
 hashes match baseline; formal checks of full arithmetic remain inconclusive.
 An isolated centered-cubic arithmetic candidate in branch
