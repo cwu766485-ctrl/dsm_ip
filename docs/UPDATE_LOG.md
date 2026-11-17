@@ -1,3 +1,20 @@
+## 2026-11-17 22:49 SGT — Bounded upstream frame-prefill candidate
+
+- Added research-only `thermo5_axis_frame_prefill.sv` and a live GTY test configuration. It buffers a complete bounded AXIS frame and replays at the AXIS clock to absorb finite source bubbles before the existing CDC; it does not alter product RTL or guarantee arbitrary stalls. Maximum 3,008 beats require approximately 1,401,728 bits before mapping/overhead; PPA and production integration NOT_RUN.
+- The separate continuous-source live control passed 5,264 Golden PA words, 336,896 serial bits per lane and PMA loopback with STOP/drain complete and `underflow=0`, `protocol=0` (`runs/live_axis_gty_03/`); the original bubble stress test remains FAIL. This establishes a control, not closure of the stress case. AXIS-prefill stress run is prepared and not yet passed.
+- Updated live integration report and testbench; baseline Runtime routing and candidate PPA queue remain active.
+
+## 2026-11-17 22:42 SGT — Live chain bit-true with detected underflow
+
+- Live XSim attempt 02 drives real AXIS product frontend → MASH → two-bank prefill → two GTYs. All 5,264 accepted PA words and 336,896 TX serial and PMA loopback bits per lane matched independent Golden, observed zero simulated lane skew; STOP drained successfully. Overall test FAILS because `underflow=1` (`drain=1 protocol=0`) under injected periodic AXIS bubbles; no Golden, gate or failure was altered. Receiver on actual serial capture: EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376; Welch adjacent proxy -16.314892 dBc, not hardware ACLR.
+- Started separate continuous-source control attempt 03 with first-underflow diagnostics; stress failures 01/02 remain intact. AXIS FIFO has 16 entries and 2-beat prefill, while nominal input/output sample rates match; a finite queue cannot absorb arbitrary persistent source stalls. Exact flag event remains to be diagnosed. Epoch is testbench-synthetic and multi-frame reset/restart still open.
+- Updated live-chain report and frontier. Existing Runtime route continues; no product RTL modified.
+
+## 2026-11-17 22:34 SGT — Live GTY first failure and 8-lane proof
+
+- Live AXIS-to-GTY XSim attempt 01 completed checks on 5,264 golden PA/prefill words but failed its combined drain/underflow/protocol check before serial comparison. Preserved its full log. Attempt 02 separates those signals and continues serial comparison before its final status; no threshold, golden, or hardware RTL was changed.
+- EF2 8-lane VC Formal completed with 4 proven and 3 inconclusive assertions, 4 covers and zero black boxes. Full 8-lane bit-true is not proven. Updated live and EF2 reports, frontier and evidence manifest.
+
 ## 2026-11-17 22:27 SGT — Timing and live GTY closure research
 
 - Recorded clean initial research HEAD `773983f29158edc8aff64aab5ce5fc7b54d15e6b` and hashes of existing routed DCPs/reports and replay evidence in `runs/timing_live_closure_baseline_01/manifest.json`; Runtime route continues. Original thermo5 dirty files remain untouched.

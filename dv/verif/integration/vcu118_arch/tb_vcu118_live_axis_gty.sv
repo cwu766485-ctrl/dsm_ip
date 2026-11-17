@@ -1,6 +1,11 @@
 `timescale 1ps/1fs
 module tb_vcu118_live_axis_gty;
   localparam integer WORDS=5264, MAX_BITS=1500000;
+`ifdef LIVE_CONTIGUOUS
+  localparam bit INJECT_BUBBLES=0;
+`else
+  localparam bit INJECT_BUBBLES=1;
+`endif
   localparam realtime UI=1000.0/14.0;
   reg refclk=0,freeclk=0,reset=1;
   always #4000 refclk=~refclk;
@@ -18,6 +23,21 @@ module tb_vcu118_live_axis_gty;
   reg src_valid=0,src_start=0,src_last=0;
   reg signed [223:0] src_i=0,src_q=0;
   wire src_ready,src_full,underflow,protocol_error,tx_active;
+  wire pipe_valid,pipe_ready,pipe_start,pipe_last,source_prefill_fault;
+  wire signed [223:0] pipe_i,pipe_q;
+  wire signed [15:0] pipe_gain;
+`ifdef SOURCE_PREFILL
+  thermo5_axis_frame_prefill #(.MAX_BEATS(3008)) input_buffer(
+    .clk(srcclk),.rst_n(src_rst_n),.in_valid(src_valid),.in_ready(src_ready),
+    .in_i(src_i),.in_q(src_q),.in_start(src_start),.in_last(src_last),.in_gain(16'sd16384),
+    .out_valid(pipe_valid),.out_ready(pipe_ready),.out_i(pipe_i),.out_q(pipe_q),
+    .out_start(pipe_start),.out_last(pipe_last),.out_gain(pipe_gain),
+    .protocol_fault(source_prefill_fault),.frame_occupied());
+`else
+  assign src_ready=pipe_ready;assign pipe_valid=src_valid;assign pipe_i=src_i;assign pipe_q=src_q;
+  assign pipe_start=src_start;assign pipe_last=src_last;assign pipe_gain=16'sd16384;
+  assign source_prefill_fault=0;
+`endif
   reg [7:0] awaddr=0,araddr=0;
   reg awvalid=0,wvalid=0,bready=0,arvalid=0,rready=0;
   reg [31:0] wdata=0; wire [31:0] rdata;
@@ -36,9 +56,9 @@ module tb_vcu118_live_axis_gty;
     .s_axil_bresp(bresp),.s_axil_bvalid(bvalid),.s_axil_bready(bready),
     .s_axil_araddr(araddr),.s_axil_arvalid(arvalid),.s_axil_arready(arready),
     .s_axil_rdata(rdata),.s_axil_rresp(rresp),.s_axil_rvalid(rvalid),.s_axil_rready(rready),
-    .s_axis_aclk(srcclk),.s_axis_aresetn(src_rst_n),.s_axis_tvalid(src_valid),.s_axis_tready(src_ready),
-    .s_axis_i_vec(src_i),.s_axis_q_vec(src_q),.s_axis_tuser_frame_start(src_start),
-    .s_axis_tlast(src_last),.s_axis_tuser_frame_gain(16'sd16384),.s_axis_fifo_full(src_full),
+    .s_axis_aclk(srcclk),.s_axis_aresetn(src_rst_n),.s_axis_tvalid(pipe_valid),.s_axis_tready(pipe_ready),
+    .s_axis_i_vec(pipe_i),.s_axis_q_vec(pipe_q),.s_axis_tuser_frame_start(pipe_start),
+    .s_axis_tlast(pipe_last),.s_axis_tuser_frame_gain(pipe_gain),.s_axis_fifo_full(src_full),
     .core_clk(txclk[0]),.core_aresetn(rst_n),.core_underflow(underflow),.core_protocol_error(protocol_error),
     .core_run_request(run_request),.core_tx_active(tx_active),
     .pa_valid(pa_valid),.pa_ready(pa_ready),.pa_data(pa_data),.cfg_busy(cfg_busy),.cfg_done(cfg_done),.cfg_error(cfg_error),
@@ -48,7 +68,13 @@ module tb_vcu118_live_axis_gty;
   wire in_ready,drain_done,fault,overflow,link_fault,out_start,out_end,out_tail;
   wire [255:0] gt_data; wire [3:0] out_mask;
   wire [15:0] out_cfg,out_epoch; wire [1:0] out_arch;
-  integer sent=0, emitted=0;
+  integer sent=0, emitted=0, source_sent=0;
+  reg underflow_seen=0;
+  always @(posedge txclk[0]) if (rst_n && underflow && !underflow_seen) begin
+    underflow_seen=1;
+    $display("LIVE_FIRST_UNDERFLOW time_ps=%0t source_beats=%0d accepted_pa_words=%0d run=%b",$time,source_sent,sent,run_request);
+  end
+  reg final_drain_ok,final_underflow,final_protocol;
   assign txdata=gt_data[127:0];
   thermo5_frame_prefill_tx #(.MAX_FRAME_WORDS(WORDS)) buffer (
     .clk(txclk[0]), .rst_n(rst_n), .run_request(run_request), .link_ready(txdone[0]),
@@ -66,7 +92,7 @@ module tb_vcu118_live_axis_gty;
         $fatal(1,"prefill data/metadata mismatch word=%0d",emitted);
       emitted=emitted+1;
     end
-    if(fault || overflow || link_fault) $fatal(1,"prefill fault");
+    if(fault || overflow || link_fault || source_prefill_fault) $fatal(1,"prefill fault");
   end
   reg [1:0] txbits[0:MAX_BITS-1];
   integer txcount=0,rxcount=0,clk_checks=0;
@@ -135,17 +161,18 @@ module tb_vcu118_live_axis_gty;
     fork
       begin
         for(int beat=0;beat<3008;beat++) begin
-          if(beat%37==9) begin @(negedge srcclk);src_valid=0;repeat(2) @(negedge srcclk);end
+          if(INJECT_BUBBLES && beat%37==9) begin @(negedge srcclk);src_valid=0;repeat(2) @(negedge srcclk);end
           @(negedge srcclk);src_valid=1;src_start=(beat==0);src_last=(beat==3007);
           for(int l=0;l<14;l++) begin src_i[l*16+:16]=source_i[beat*14+l];src_q[l*16+:16]=source_q[beat*14+l];end
-          do @(posedge srcclk);while(!src_ready);
+          do @(posedge srcclk);while(!src_ready);source_sent=source_sent+1;
         end
         @(negedge srcclk);src_valid=0;src_start=0;src_last=0;
       end
       begin wait(sent>=16);write_reg(8'h00,0);end
     join
     wait(emitted==WORDS);repeat(128) @(negedge txclk[0]);
-    if(!drain_done || underflow || protocol_error) $fatal(1,"drain, underflow or protocol failure");
+    final_drain_ok=drain_done;final_underflow=underflow;final_protocol=protocol_error;
+    $display("LIVE_DRAIN_DIAGNOSTIC drain=%b underflow=%b protocol=%b sent=%0d emitted=%0d",drain_done,underflow,protocol_error,sent,emitted);
     $display("LIVE_AXIS_PA_PREFILL_PASS words=%0d frame_config_id=1 stop_during_frame=1",WORDS);
     for(lane=0;lane<2;lane++) begin
       found=0;best[lane]=-1;
@@ -196,6 +223,8 @@ module tb_vcu118_live_axis_gty;
       if(!found)$fatal(1,"GT RX loopback bit-true mismatch lane=%0d captured_words=%0d",lane,rxcount);
     end
     $display("GTY_RX_LOOPBACK_BITTRUE_PASS lanes=2 words=%0d bits_per_lane=%0d starts=%0d,%0d skew_bits=%0d",WORDS,WORDS*64,best[0],best[1],best[1]-best[0]);
+    if(!final_drain_ok || final_underflow || final_protocol)
+      $fatal(1,"live drain/underflow/protocol failure drain=%b underflow=%b protocol=%b",final_drain_ok,final_underflow,final_protocol);
     $finish;
   end
   initial begin #200000000;$fatal(1,"GTY reset or simulation watchdog");end

@@ -1,0 +1,129 @@
+{
+  "captured_at": "2026-11-17T22:16:33.677222+08:00",
+  "head": "773983f29158edc8aff64aab5ce5fc7b54d15e6b",
+  "status": [],
+  "files": {
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/routed.dcp": {
+      "sha256": "661f40e10d907fa4d4b4c7a3493bb311b363017b2b3cb2a3a492232c90d6c699",
+      "bytes": 59821111
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/setup_worst20.rpt": {
+      "sha256": "d55e7456f7da0d95fb2b62a1a23a137f5bca49fc748ab2848578b8e09c6e7939",
+      "bytes": 273576
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/hold_worst20.rpt": {
+      "sha256": "64763b8706f478814d396b71e4f20b87531f227b51bc1df4eaef04d1cb443928",
+      "bytes": 84471
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/routed_timing_summary.rpt": {
+      "sha256": "0d82e4dbf8c72936f848f0285fcf3142c53b37f1fcd673b44c228076e3159819",
+      "bytes": 133959
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/routed_utilization.rpt": {
+      "sha256": "f7e211f03947f3f98b4e01ee8371f250ccd75dc0d64f168b5b60387f16e71f30",
+      "bytes": 17438
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef1/power_default_activity.rpt": {
+      "sha256": "34391c695ef3b65be87a69479d16e7df9411df5d77f926b1ceb07020d3c75f39",
+      "bytes": 10254
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef2/routed.dcp": {
+      "sha256": "96728977c32e94a3a7923e111ad22d65f98f04224ffc5748c51958954960dbb6",
+      "bytes": 60213276
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef2/setup_worst20.rpt": {
+      "sha256": "ee16ab0b494f56fcaa27f2e90fd6e05faa40537c7734005013ba00cf8baa4111",
+      "bytes": 3288136
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef2/hold_worst20.rpt": {
+      "sha256": "df509e0ed4de6cfc6ed941b46c26a11e4ad23a2a4ead04a18b1c6beae8b95c0c",
+      "bytes": 77519
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef2/routed_timing_summary.rpt": {
+      "sha256": "bb22e3626977903d48ee79297c1061719802342626059d03e32863e80c5a4221",
+      "bytes": 284595
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef2/routed_utilization.rpt": {
+      "sha256": "f6cb24166cb058b6848d3341f10f40f5a676ff0cbfae24081538bc461a894e8f",
+      "bytes": 17352
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/ef2/power_default_activity.rpt": {
+      "sha256": "ed3ca3bd622603e8a5c6a29de787a1cea69334f8d8ac94fd27f4817fb63c54f9",
+      "bytes": 10225
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/mash/routed.dcp": {
+      "sha256": "59364e38763e08792f92faf62ddf2d0c4f1fd684e0ae1ff6d9f1c369651adc79",
+      "bytes": 55063213
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/mash/setup_worst20.rpt": {
+      "sha256": "f1688faf975b4c61a32e8e3acab9eab5666082f81e5241faaf00dca9efe4e731",
+      "bytes": 273156
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/mash/hold_worst20.rpt": {
+      "sha256": "aabf31a503e6541f7c7906c8a9e7e7e9e079a5da95a1081d4e7e15b6df26234a",
+      "bytes": 84661
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/mash/routed_timing_summary.rpt": {
+      "sha256": "274a2057f25796a47f754ea2e6cdc71e199412a92ed16fc708ccc53e78feeb2c",
+      "bytes": 132852
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/mash/routed_utilization.rpt": {
+      "sha256": "d7c350854682e9246ad4e843ba4b894a9b01690d111dc139d7625a4dbde8a7de",
+      "bytes": 17481
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/mash/power_default_activity.rpt": {
+      "sha256": "76f57a91e0c6d84380499162dc515459f9f32c372f1764b192fded44694f4752",
+      "bytes": 10307
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/runtime/routed.dcp": {
+      "status": "NOT_YET_PRESENT"
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/runtime/setup_worst20.rpt": {
+      "status": "NOT_YET_PRESENT"
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/runtime/hold_worst20.rpt": {
+      "status": "NOT_YET_PRESENT"
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/runtime/routed_timing_summary.rpt": {
+      "status": "NOT_YET_PRESENT"
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/runtime/routed_utilization.rpt": {
+      "status": "NOT_YET_PRESENT"
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/vcu118_ppa_research_01/runtime/power_default_activity.rpt": {
+      "status": "NOT_YET_PRESENT"
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/routed.dcp": {
+      "sha256": "c3c1b90cb0a7ccd4081c4c9f33f9524185d3a961f589540da535813d96edb832",
+      "bytes": 52024332
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/setup_worst20.rpt": {
+      "sha256": "0803db8853844216e9524b8c0f1f897ecd7bb6e5de2a8043389c36b2951d2b91",
+      "bytes": 77554
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/hold_worst20.rpt": {
+      "sha256": "d8dbbcc60467cc065180cbcdc0a00c42a222ae3000ef08a0c585d1365b3898f0",
+      "bytes": 76169
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1/routed_timing_summary.rpt": {
+      "sha256": "fbc5021a8f9baf3c6eb590ac8834eb50e77c1f270b0875c688b3ed4114686a68",
+      "bytes": 125485
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/gty_pa_replay_04/project/gty_sim.sim/sim_1/behav/xsim/simulate.log": {
+      "sha256": "4d452e378a94b42eec56d0f1bc627e4da908b4cea1374fd0bf475ba9816cea18",
+      "bytes": 878
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/gty_serial_receiver_01/compare.json": {
+      "sha256": "cd6a2e559a6c635f18085601c5db13234e2f6f42fb17cec3d923f04afeeddb29",
+      "bytes": 563
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/gty_serial_receiver_01/metrics.json": {
+      "sha256": "e9bc576bcb487859f5bb7ad7d50ba9288ac2accebdfda86ac1f135aae0dde4d4",
+      "bytes": 861
+    },
+    "/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/gty_serial_psd_01/result.json": {
+      "sha256": "bdaf3b7538c3bd56f5c896e386771b4bf2c8a827ef1759286430eda8b3ddb2c1",
+      "bytes": 644
+    }
+  }
+}
