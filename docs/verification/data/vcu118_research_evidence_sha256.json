@@ -37,6 +37,10 @@
     "runs/corrected_mash_ooc_01/synthesized.dcp": "ba98b5f9a0bd51567f58d05203d05a2eee21da2eff1f23a1fc6ead31ed29b0c2",
     "runs/cubic_math_smt_02/z3.log": "ee89c6dd4e0a4dfe1957378466c8176a4b4fc0c7bae40af31a9bd2ac46e5f449",
     "runs/required_xsim_02_launcher/console.log": "ea9d203cf0958ce28ab7798c2f93640ee1c8583b83298f6486751abcf07b738d",
-    "runs/required_vcs_03_launcher/console.log": "c6e5d4a7454256cca35315f765be036b269d8565147cbcb0f4b6bc0bdb5f7eba"
+    "runs/required_vcs_03_launcher/console.log": "c6e5d4a7454256cca35315f765be036b269d8565147cbcb0f4b6bc0bdb5f7eba",
+    "../thermo5_vcu118_cubic_optimization/runs/verify_xsim_launcher/console.log": "676625a903a5ccf4a50ab774c599224be19b6284ad8a40286802a57fae921951",
+    "../thermo5_vcu118_cubic_optimization/runs/verify_vcs_launcher/console.log": "b46821c0da87a67cbfb2e7de1842e78815465e6d10791006169d161b052c9ef7",
+    "../thermo5_vcu118_cubic_optimization/runs/qam281001/simulation.log": "855b574e630f10258762f77de20b7b0ccfb254c28b20cf295f14b13cd6033baa",
+    "../thermo5_vcu118_cubic_optimization/runs/qam281001_comparison.json": "810402fdeaf6a4952c90e36c6cf97fa494061e06dbc5091b169ea28754024a25"
   }
 }
