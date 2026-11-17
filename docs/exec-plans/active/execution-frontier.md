@@ -43,7 +43,7 @@ signoff and differs from the historical MASH wrapper and I/O assumptions.
 Matched optimized EF1 synthesis in the candidate worktree reports core WNS
 +1.140 ns vs baseline -1.823 ns and 496 DSP vs 670, after all 36 QAM PA hashes
 matched baseline. Optimized overall WNS -0.694 ns is an unexpanded CDC path;
-route and the cross-clock contract remain open.
+optimized EF1 routing and the cross-clock contract remain open.
 An isolated centered-cubic arithmetic candidate in branch
 `work/thermo5-vcu118-cubic-optimization` at `3f88efef965e2d5705adc57d06f530c265af2e82`
 passes XSim, VCS and all 36 phase/plane QAM PA capture hashes; its RTL formal
