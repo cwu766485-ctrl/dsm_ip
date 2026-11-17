@@ -23,3 +23,10 @@ Reproduce the successful bounded stress test using a new output directory and Vi
 ```
 
 Copy `serial_pa0.mem` and `serial_pa1.mem` from the XSim working directory to a fresh receiver directory as `phase1_arch2_pa0.mem` and `phase1_arch2_pa1.mem`; use the receiver and PSD commands in `docs/verification/vcu118_convergence_20261117/full_chain_gty_report.md`. Confirm the final drain status and absence of `Fatal:` as well as both serial markers.
+
+`dv/verif/integration/vcu118_arch/tb_vcu118_live_reset_restart.sv` is a separate
+research test that resets the real product and GTY while the first buffered
+frame has delivered at least 100 PA words, then reconfigures MASH and checks a
+complete fresh frame against the original Golden and both serial lanes. Its
+script is `research/vcu118_arch/sim_live_reset_restart.tcl`. It is only syntax
+checked at present; no reset/restart PASS is claimed until XSim completes.

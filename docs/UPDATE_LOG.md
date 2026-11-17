@@ -1,3 +1,7 @@
+## 2026-11-17 23:58 SGT — Live reset/restart test preparation
+
+- Added `dv/verif/integration/vcu118_arch/tb_vcu118_live_reset_restart.sv` and `research/vcu118_arch/sim_live_reset_restart.tcl`. The test is designed to reset the real MASH/GTY while the first buffered frame is active, then verify a fresh complete Golden frame and both serial lanes. Syntax-only Icarus compile passed; full XSim is NOT_RUN. Updated live GTY report.
+
 ## 2026-11-17 23:55 SGT — Deferred candidate result extraction
 
 - Added `research/vcu118_arch/collect_closure_when_finished.py` and a read-only watcher for the guarded EF1/MASH runs. It creates a fresh matrix and hashes under `runs/timing_closure_autosummary_02/` only after the MASH controller finishes and requires each run's validated completion marker; positive OOC timing remains BLOCKED for system signoff. The first waiting-only watcher was stopped and retained after adding the completion gate.
