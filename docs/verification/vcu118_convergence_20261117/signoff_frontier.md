@@ -18,3 +18,9 @@ Status definitions: PASS means the specifically named test passed; FAIL means me
 | Board GTY, RF ACLR and system signoff | NOT_RUN | Board clocks, physical constraints, RF combiner and measurement needed |
 
 Common reproducibility and versions: Vivado 2026.1 build 6511674; baseline SHA `67d68abb402f9bb2c9a87a43a99f46955acfe9d9`; EF1 candidate source SHA `3f88efef965e2d5705adc57d06f530c265af2e82`; common PPA Tcl SHA256 `12315c97539a62d8ed429b8a6c7898111c520397414cbe7dc7331cca80010226`. Original evidence lives in unique ignored `runs/` directories; never reuse an output directory. See `research/vcu118_arch/README.md` and `full_chain_gty_report.md` for exact commands and prerequisites.
+
+The existing serial PPA driver is still running Runtime placement. A read-only
+watcher `research/vcu118_arch/summarize_runtime_when_finished.py` waits for its
+`CASE runtime EXIT` line, then writes `runs/runtime_ppa_autosummary_02/summary.json`
+and `summary.csv`, with evidence SHA-256, without changing the original reports.
+A positive OOC WNS would still remain BLOCKED pending CDC and physical review.

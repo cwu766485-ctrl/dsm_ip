@@ -1,3 +1,8 @@
+## 2026-11-17 20:51 SGT — Deferred Runtime report extraction
+
+- Added `research/vcu118_arch/summarize_runtime_when_finished.py`; the running read-only watcher waits for the existing driver to finish and writes a new summary and hashes under `runs/runtime_ppa_autosummary_02/`. It never modifies the original run. Checked timing/utilization/power parsing against the already completed EF1 report. A successful OOC timing result remains BLOCKED for system signoff.
+- Updated convergence signoff frontier and active execution frontier. Runtime placement remains active; no new routed result, product change or timing exception.
+
 ## 2026-11-17 20:48 SGT — Preserve Runtime placement under memory pressure
 
 - Added optional formal time-limit overrides in `research/vcu118_arch/formal_ef2_32lane.tcl` and launched the extended zero-black-box check in `runs/ef2_32lane_formal_05/`. Interrupted it without a final result as host available memory approached 2 GiB while Runtime placement was active; retained its log. Attempt 04 remains the last complete full-width proof result: 3 proven and 4 inconclusive.
