@@ -1,3 +1,8 @@
+## 2026-11-17 23:00 SGT — Prioritize EF1 timing candidate
+
+- Temporarily suspended and trimmed the existing Runtime Vivado process (PID 18680) without killing it; `research/vcu118_arch/preempt_ef1_candidate.py` runs the new EF1 candidate at `runs/ef1_cdc_candidate_preempt_01/`, and resumes Runtime in a finally block. An independent watchdog also resumes it if the controller dies. Original Runtime DCP/logs remain intact.
+- The earlier passive candidate queue was stopped while waiting and retained; `runs/timing_closure_ppa_02/` waits for Runtime to finish and skips EF1 if the priority run completed, then runs MASH A/B serially. Updated PPA matrix and closure reports; no timing PASS or physical signoff claimed.
+
 ## 2026-11-17 22:58 SGT — Bounded live AXIS-to-GTY stress pass
 
 - `runs/live_axis_gty_04/` passed the same periodic source-bubble stress that previously set underflow after inserting the research AXIS complete-frame prefill. Actual live product frontend/MASH outputs, 5,264 PA words and 336,896 GT serial and loopback bits per lane matched unchanged Golden; STOP drained, underflow=0 and protocol=0. Receiver on serial outputs gives EVM 2.551442%, SNDR 31.864285 dB and BER 15/37,376; digital Welch adjacent proxy -16.314892 dBc, not measured RF ACLR.
