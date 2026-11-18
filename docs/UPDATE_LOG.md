@@ -7588,3 +7588,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   followed by serial-frame recovery. Run 02 is in progress; run 01 and its
   source snapshot remain preserved. Pending config-commit handling remains
   covered only by scoped block tests/formal, not this full-chain scenario.
+
+## 2026-11-18 SGT — Abort PPA output-clock correction
+
+- Stopped exploratory PPA queue 01 after finding its new source epoch-reset
+  output was assigned Core output-delay clock rather than AXIS. Preserved its
+  Tcl and logs. Queue 02 assigns source reset to AXIS and serializer reset to
+  Core; full reset/parent I/O constraints remain provisional.

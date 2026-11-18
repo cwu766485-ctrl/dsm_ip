@@ -13,8 +13,10 @@
 - Runtime-mode PPA proxy with candidate reset coordination passed 448-word
   Golden VCS mode-switch regression; static pruned modes were not separately
   validated. EF1/MASH full implementations are queued under
-  `runs/de_abort_integration_sandbox/runs/abort_ppa_queue_01/`. Same study
-  clocks/DPD/XPM, but added reset ports and experimental 4 ns mailbox bound;
+  `runs/de_abort_integration_sandbox/runs/abort_ppa_queue_02/`. Queue 01 was
+  stopped because its added source-reset output had the wrong clock assignment;
+  original Tcl and logs are retained. Same study clocks/DPD/XPM, but added
+  reset ports and experimental 4 ns mailbox bound;
   no system/board timing signoff or result yet.
 - Core-only reset while AXI-Lite remains live, during live GT serialization,
   passed in `runs/live_core_abort_01/`: 5264 Golden words, 336896 TX/RX bits

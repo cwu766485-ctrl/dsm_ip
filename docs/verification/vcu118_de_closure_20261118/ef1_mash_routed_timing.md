@@ -26,7 +26,7 @@ research Runtime wrapper passed its runtime-mode Golden VCS test (`448` words,
 `runs/de_abort_integration_sandbox/runs/abort_ppa_equiv_01/`. This exercises
 `PPA_MODE=-1`, not each statically pruned proxy. The EF1-only and MASH-only
 proxies are now queued serially in
-`runs/de_abort_integration_sandbox/runs/abort_ppa_queue_01/`. Both use the
+`runs/de_abort_integration_sandbox/runs/abort_ppa_queue_02/`. Attempt 01 was stopped because the new source epoch reset output was incorrectly assigned a Core output-delay clock; its original Tcl, logs and partial reports are preserved. Attempt 02 assigns that output to AXIS clock and the serializer reset output to Core. Both cases use the
 same device, clocks, Cubic A, XPM FIFO and the same **exploratory**, unapproved
 4 ns mailbox exception; they add source/serializer epoch output ports and
 reset logic relative to the old PPA baseline, so report that boundary difference

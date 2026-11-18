@@ -41,7 +41,7 @@ foreach p [get_ports -filter {DIRECTION == IN && NAME !~ *clk*}] {
 }
 foreach p [get_ports -filter {DIRECTION == OUT}] {
  set n [get_property NAME $p]
- if {[string match s_axil_* $n] || $n in {cfg_busy cfg_done cfg_error dsm_switch_busy}} {set c s_axil_aclk} elseif {[string match s_axis_* $n]} {set c s_axis_aclk} else {set c core_clk}
+ if {[string match s_axil_* $n] || $n in {cfg_busy cfg_done cfg_error dsm_switch_busy}} {set c s_axil_aclk} elseif {[string match s_axis_* $n] || $n eq "source_epoch_aresetn"} {set c s_axis_aclk} else {set c core_clk}
  set_output_delay 0.2 -clock [get_clocks $c] $p
 }
 # Research candidate: bundled-data mailbox. Request traverses two core
