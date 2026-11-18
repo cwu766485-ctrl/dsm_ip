@@ -37,3 +37,10 @@ mandatory. No routed timing or PPA result is yet available. The research
 the isolated proxy and script; copy into a fresh isolated checkout with the
 recorded config candidate and use a new output directory. This is OOC, not
 physical board or GT signoff.
+
+A read-only watcher `research/vcu118_arch/summarize_abort_ppa_queue.py` is
+waiting for queue 02 completion and will write a fresh
+`runs/abort_ppa_summary_01/ppa_summary.csv` plus SHA-256 evidence. It requires
+completed native DCP and reports with validated queue markers; nonnegative
+OOC timing remains BLOCKED until CDC and physical integration signoff. The
+watcher does not overwrite tracked reports. Its syntax check passed.

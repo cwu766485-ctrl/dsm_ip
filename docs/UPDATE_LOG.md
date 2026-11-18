@@ -7604,3 +7604,9 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   EVM 2.551442%, SNDR 31.864285 dB, BER 15/37376. The held B was a status
   write, not a pending configuration commit. Serial boundary search, synthetic
   epoch, parent PA gate, board RF, CDC/RDC, formal and routed timing remain open.
+
+## 2026-11-18 SGT — Abort PPA evidence watcher
+
+- Added a read-only native-report/sha256 summarizer, waiting for both isolated
+  PPA cases. It does not label nonnegative OOC timing as system PASS and does
+  not overwrite any report. Python syntax check passed; queue not finished.
