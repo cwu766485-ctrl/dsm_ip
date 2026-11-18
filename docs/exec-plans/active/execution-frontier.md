@@ -1,5 +1,22 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Bidirectional reset candidates and mode witness
+
+- User selected Core-only reset while AXI-Lite remains live: pending AXI writes
+  must complete; aborted configuration is reported as failure, preserving any
+  B response already presented. Candidate 2 covers both reset directions,
+  partial write SLVERR, held B response and sticky status in directed tests.
+  Candidate 2 fails a completed-mode Core-reset readback test.
+- Candidate 3 corrects that readback and passes six directed tests, normal
+  independent-Golden XSim and two VCS tests (coverage disabled), plus a
+  scoped 4/4 assertion Core-reset formal with 2/2 covers. It nevertheless
+  resets the Core mode to EF2 on AXI-only reset while Core remains active:
+  `runs/de_candidate3_axil_mode_witness_01/`. Live PA contract safety remains
+  unproven; candidate 3 remains FAIL/not product RTL.
+- Full candidate 3 mailbox seven-property formal is running in
+  `runs/de_candidate3_combined_formal_01/`. All evidence and both dirty
+  candidate sandbox worktrees are intentionally preserved.
+
 ## 2026-11-18 — DE independent-reset candidate and RCA
 
 - Run-start SHA `267812fbbe9153f5cf3ce3eb7efafb80018aeb63`; evidence hashed

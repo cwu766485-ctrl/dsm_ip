@@ -7,3 +7,15 @@ Candidate isolated independent-AXI-reset check: `runs/de_independent_reset_candi
 The candidate's seven-property combined fixed-phase/common-reset run is in
 `runs/de_epoch_candidate_combined_formal_01/`; no result is claimed until
 the full report and vacuity/cover are checked.
+
+
+Candidate 2 and candidate 3 Core-only-reset scope each have 4/4 non-vacuous
+assertions proven, 2/2 covers (`runs/de_candidate2_formal_02/`,
+`runs/de_candidate3_formal_01/`). They cover source/Core reset state, stable B
+response under backpressure and abort-status behavior, with fixed 16:35 clock
+ratio, boot reset held released and reset setup checks disabled. They do not
+prove live active-mode or PA contract safety. Candidate 2 formal attempt 01
+is excluded from qualification because its harness was edited while the run
+was starting; attempt 02 recorded input hashes before launch. Candidate 3
+seven-property combined proof is running in `runs/de_candidate3_combined_formal_01/`;
+its outcome does not erase the separate mode-reset witness.

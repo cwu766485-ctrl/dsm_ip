@@ -7487,3 +7487,15 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   bidirectional epoch contract and remains research-only.
 - Stopped its in-progress Vivado PPA after this failure and preserved logs;
   no candidate routed timing or product signoff claimed.
+
+## 2026-11-18 SGT — Bidirectional reset and AXI response candidates
+
+- User chose live AXI-Lite response completion and failure reporting during
+  Core-only reset. Added research-only candidates 2/3 and directed AXI split
+  write, held B response, reset abort/restart and mode readback checks.
+- Candidate 2 fails Core-reset mode readback; candidate 3 fixes that case but
+  AXI-only reset changes Core mode while Core remains active. Neither candidate
+  is product qualified. Normal Golden XSim and minimal VCS pass on candidate 3;
+  scoped Core reset formal 4/4 plus 2/2 covers, fixed-phase/reset-check limits.
+- Candidate 2 formal attempt 01 is not counted because its source was edited
+  during startup; later attempts record hashes and preserve logs.

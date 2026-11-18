@@ -16,3 +16,13 @@ The remaining candidate-only PPA and formal jobs have not yet completed.
   replayed after reset (`runs/de_core_reset_candidate_witness_01/`). This
   failure motivated stopping the candidate PPA; the implementation and logs
   are preserved and the candidate is not promoted.
+
+- Candidate 2 AXI-Lite and Core independent-reset tests, partial AW/W SLVERR,
+  stalled-B stability/sticky status and pending mode abort/restart: scoped
+  directed PASS; Core-only reset after completed mode 2 leaves incorrect AXI
+  mode readback, FAIL (`runs/de_candidate2_mode_readback_01/`).
+- Candidate 3 passes six directed cases, independent-Golden XSim (32 beats/56
+  words) and two VCS tests with coverage disabled, but AXI-only reset changes
+  the Core mode from MASH to EF2 while Core reset stays released; this
+  candidate is therefore **FAIL / not product qualified**. Full-chain live
+  traffic behavior, PA routing and all clock/reset phases remain OPEN.

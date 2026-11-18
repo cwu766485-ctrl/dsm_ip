@@ -40,3 +40,30 @@ vvp simv
 The first is a limited candidate success; the second is an expected witness
 of candidate failure, not a passing qualification. No production CDC/RDC
 exception or product RTL fix has been accepted.
+
+
+## Bidirectional epoch candidates after AXI response contract
+
+The user selected AXI-Lite to remain live during independent Core reset. An
+already-presented stalled B response must remain stable; a previously accepted
+configuration request that later aborts is reported by sticky status. Candidate
+2 adds a source-domain epoch guard, delays Core epoch release until the source
+has processed the reset, cancels DPD/mode requests, and preserves the AXI
+transport response. Scoped directed tests passed AXI-only and Core-only DPD
+reset, a split AW/W interrupted write returning SLVERR, stalled B response
+stability with sticky abort status, and pending mode abort/restart. An early
+stalled-B test attempt returned SLVERR because it submitted before epoch release;
+its failure is preserved in `runs/de_candidate2_b_stalled_01/`; the corrected
+post-release case is `runs/de_candidate2_b_stalled_02/`. Candidate 2 fails
+`runs/de_candidate2_mode_readback_01/`: after a prior MASH commit and Core
+reset, active Core mode becomes EF2 but AXI-Lite readback remains MASH.
+
+Candidate 3 resets source-side mode readback on a Core reset and passes six
+directed tests in `runs/de_candidate3_directed_01/`, including that readback
+case. However `runs/de_candidate3_axil_mode_witness_01/` shows AXI-Lite-only
+reset changes the selected Core mode from MASH to EF2 while Core reset remains
+deasserted. This is a real candidate behavior, and its effect on live PA
+traffic/mode-switch safety has not been proven. Therefore candidate 3 is not
+qualified, and no product RTL or PPA signoff is claimed. A safe implementation
+must preserve or coordinate the active physical PA contract and resynchronize
+AXI-Lite mode readback without allowing mixed epochs.
