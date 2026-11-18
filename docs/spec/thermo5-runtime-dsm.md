@@ -29,6 +29,15 @@ unmodified four-equal-plane RF combiner. `pa_frame_start`, `pa_frame_end`,
 stalls. Config ID counts successful mode commits, including same-mode commits,
 and resets to zero with the core reset. It is distinct from DPD coefficient IDs.
 
+## Clock-domain integration assumption
+
+For the current VCU118 study, treat AXI-Lite 100 MHz and Core 218.75 MHz as
+asynchronous, with no phase relationship used for cross-domain setup timing.
+Their actual board clock sources and implementation constraints remain to be
+verified. The mailbox requires held data plus a synchronized handshake; a
+clock-domain exception does not replace physical data-delay/skew, reset or
+metastability review, and Core-to-Core paths remain timed.
+
 ## AXI-Lite extension
 
 | Address | Access | Meaning |

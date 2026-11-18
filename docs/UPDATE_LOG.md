@@ -7417,3 +7417,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   centered-cubic EF2/STEP5120 default. All UVM logs report zero errors/fatals;
   the illegal-frame negative assertion was observed. Earlier mismatched-vector
   failure is preserved. The research reset coordinator is not in this build.
+
+## 2026-11-18 SGT — Asynchronous clock treatment
+
+- Recorded the selected asynchronous Core/AXI-Lite assumption, pending board
+  confirmation. Added a read-only, one-ACK-first-stage false-path STA audit
+  with first-to-second-stage timing checks; result not yet available. No broad
+  clock-group exception or product RTL change was made.

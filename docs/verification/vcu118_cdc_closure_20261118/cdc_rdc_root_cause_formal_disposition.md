@@ -135,3 +135,19 @@ for the actual default using the repository command, in an independent run
 completed with exit 0, each log has UVM_ERROR/UVM_FATAL=0 and the illegal-frame
 negative test observed its expected assertion. The new research reset
 coordinator is not in that product build. Both attempts are preserved.
+
+
+## Selected clock treatment and narrow ACK experiment
+
+For this VCU118 study, treat 100 MHz AXI-Lite and 218.75 MHz Core as
+asynchronous, pending board clock-source confirmation; this is now recorded
+in the runtime integration specification. Vivado CDC-3 identifies the ACK
+source into a two-stage ASYNC_REG synchronizer. A fresh, read-only STA
+experiment `research/vcu118_arch/audit_ef1_ack_first_stage_exception.tcl`
+applies a false path only from `cfg_ack_core_reg` to `cfg_ack_sync1_reg`
+(uniqueness and both ASYNC_REG properties checked); it reports first-to-second
+stage setup/hold and all remaining timing paths separately. The source DCP is
+not modified or rerouted. Run `runs/ef1_ack_first_stage_audit_01/` is queued
+after the preceding DCP audit. It is an exploratory constraint, not a system
+signoff or a waiver of the mailbox data, FIFO, other CDCs or RDCs. No timing
+PASS may be claimed until native exception coverage and reports are reviewed.
