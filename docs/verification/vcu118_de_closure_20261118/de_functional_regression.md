@@ -11,3 +11,8 @@ Reproduce the baseline two-mode repaired bubble test using
 the candidate repaired-driver result is under
 `runs/de_epoch_candidate_sandbox/runs/de_axil_bubble_test_repair_01/`.
 The remaining candidate-only PPA and formal jobs have not yet completed.
+
+- Candidate Core-only reset/restart: **FAIL**, old request `0x1234` is
+  replayed after reset (`runs/de_core_reset_candidate_witness_01/`). This
+  failure motivated stopping the candidate PPA; the implementation and logs
+  are preserved and the candidate is not promoted.

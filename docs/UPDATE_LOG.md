@@ -7478,3 +7478,12 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Candidate Core-only reset can leave the AXI-Lite request active; independent
   reset handling in that direction and mode mailbox reset remain open. Candidate
   has not been promoted to product RTL.
+
+## 2026-11-18 SGT — Core-only reset candidate counterexample
+
+- Added Core-only reset witness: candidate replays pre-reset configuration
+  `0x1234` at 102871 ps. The VCD and logs are in
+  `runs/de_core_reset_candidate_witness_01/`; candidate does not satisfy the
+  bidirectional epoch contract and remains research-only.
+- Stopped its in-progress Vivado PPA after this failure and preserved logs;
+  no candidate routed timing or product signoff claimed.

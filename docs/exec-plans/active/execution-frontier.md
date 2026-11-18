@@ -8,14 +8,16 @@
 - Original RTL fails that witness. Research-only DPD reset candidate passes
   the directed witness/new-request test and a limited 2/2 formal reset-state
   proof with 2/2 covers; it restores active config to default and does not fix
-  the runtime mode mailbox or prove full traffic/reset behavior.
+  the runtime mode mailbox. Core-only reset causes old request replay in
+  `runs/de_core_reset_candidate_witness_01/`, so candidate is FAIL.
 - In isolated dirty worktree `runs/de_epoch_candidate_sandbox/`, the candidate
   passed AXI-Lite XSim independent Golden (32 beats/56 words). Candidate VCS
   bit-true passed but AXI-Lite bubble test timed out; unchanged original RTL
   does likewise. Test incorrectly used direct Core enable under AXI-Lite; a
   driver correction preserves checks and passes candidate bubble test. Fix is
   now on this branch; baseline two-mode checks passed in
-  `runs/de_bubble_test_repair_regression_01/`. Candidate EF1 PPA is running.
+  `runs/de_bubble_test_repair_regression_01/`. Candidate EF1 PPA was stopped
+  after a Core-only reset witness showed stale request replay; logs preserved.
 - Original mailbox combined formal completed 7/7 proved, 7 non-vacuous, 4/4
   covers in one fixed-phase/common-reset model; independent resets and physical
   CDC are not proven by that run. `runs/de_cdc_rdc_clusters_04/` accounts for
