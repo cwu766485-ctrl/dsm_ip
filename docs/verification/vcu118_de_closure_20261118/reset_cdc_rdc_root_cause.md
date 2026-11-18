@@ -17,3 +17,26 @@ Raw Vivado routed `report_cdc` has 101 CDC-15 warnings: 99 DPD mailbox bits and 
 SpyGlass Generic-FIFO/non-runtime frontend RDC report has 10,539 `Ar_resetcross01` errors; `rdc_structural_groups.csv` accounts for all 10,539 in 46 groups by reset domain, hierarchy and Q→D/EN type. The two biggest structural groups are Core-reset first/second cubic to unreset elastic/FIFO data (2,416 and 4,900 messages); interpretation of payload reset/valid gating remains OPEN. Five cross-domain source-reset→Core-reset reports correspond to the DPD mailbox. No group is waived; grouping does not prove benignness. Generic SpyGlass report and routed XPM Vivado report are different scopes, and cannot be numerically merged.
 
 Reproduce clustering using `python3 research/vcu118_arch/cluster_de_cdc_rdc.py --rdc runs/cdc_rdc_generic_static_20261118_02/rdc/moresimple.rpt --cdc runs/ef1_vivado_cdc_audit_queue_01/reports/cdc_details.rpt --out runs/NEW_DIR`. Two earlier parser attempts produced incomplete output and are preserved; attempt 04 reconciles native counts with zero unparsed errors.
+
+## Reproducing reset witnesses
+
+From the repository root, use a new empty working directory; retain the generated
+VCDs. Icarus Verilog 12.0 commands (substitute the absolute repository path):
+
+```bash
+iverilog -g2012 -D SYNTHESIS -s tb_cfg_independent_reset_candidate -o simv \
+  /ABS/REPO/rtl/axis/dsm_reset_sync.sv \
+  /ABS/REPO/research/vcu118_arch/thermo5_dpd_axi_lite_cfg_epoch_candidate.sv \
+  /ABS/REPO/research/vcu118_arch/tb_cfg_independent_reset_candidate.sv
+vvp simv
+# In a separate new working directory:
+iverilog -g2012 -D SYNTHESIS -s tb_cfg_core_reset_candidate_witness -o simv \
+  /ABS/REPO/rtl/axis/dsm_reset_sync.sv \
+  /ABS/REPO/research/vcu118_arch/thermo5_dpd_axi_lite_cfg_epoch_candidate.sv \
+  /ABS/REPO/research/vcu118_arch/tb_cfg_core_reset_candidate_witness.sv
+vvp simv
+```
+
+The first is a limited candidate success; the second is an expected witness
+of candidate failure, not a passing qualification. No production CDC/RDC
+exception or product RTL fix has been accepted.
