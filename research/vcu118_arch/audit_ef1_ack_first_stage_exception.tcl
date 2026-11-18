@@ -12,7 +12,11 @@ set src [get_cells -hier -filter {NAME =~ *u_cfg/cfg_ack_core_reg}]
 set first [get_cells -hier -filter {NAME =~ *u_cfg/cfg_ack_sync1_reg}]
 set second [get_cells -hier -filter {NAME =~ *u_cfg/cfg_ack_sync2_reg}]
 foreach obj [list $src $first $second] {if {[llength $obj] != 1} {error "ACK endpoint selection is not unique"}}
-if {[get_property ASYNC_REG $first] ne "TRUE" || [get_property ASYNC_REG $second] ne "TRUE"} {error "ACK synchronizer ASYNC_REG property absent"}
+set first_async [get_property ASYNC_REG $first]
+set second_async [get_property ASYNC_REG $second]
+puts "ACK_ASYNC_REG first=$first_async second=$second_async"
+if {![string is boolean -strict $first_async] || ![string is boolean -strict $second_async]} {error "ACK synchronizer ASYNC_REG is not boolean"}
+if {!$first_async || !$second_async} {error "ACK synchronizer ASYNC_REG property absent"}
 set_false_path -from $src -to $first
 report_exceptions -file exceptions.rpt
 report_clock_interaction -delay_type min_max -file clock_interaction.rpt

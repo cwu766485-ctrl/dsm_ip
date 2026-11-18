@@ -7432,3 +7432,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   constraints. The reported CDC warnings are not waived or signed off.
 - One-path ACK synchronizer exception experiment remains in progress; this
   analysis does not alter the routed checkpoint.
+
+## 2026-11-18 SGT — Narrow ACK exception audit retry
+
+- First ACK audit stopped before applying any exception because the ASYNC_REG
+  string comparison failed; wrapper exit 0 without completion marker is
+  INVALID. The corrected boolean-check retry uses a new directory and prints
+  both property values. No signoff or new product constraint is claimed.

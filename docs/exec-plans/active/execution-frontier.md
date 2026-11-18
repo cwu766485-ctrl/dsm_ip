@@ -5,10 +5,11 @@
 - User selected treating Core 218.75 MHz and AXI-Lite 100 MHz as asynchronous
   for this study; physical board clock-source confirmation remains open.
 - A post-route STA experiment queued in `runs/ef1_ack_first_stage_audit_01/`
-  applies exactly one ACK source→first synchronizer false path, checks unique
-  cells/ASYNC_REG and reports timing from first to second stage and remaining
-  worst paths. It does not re-route or waive other paths. Review its native
-  reports and common-reset physical implementation before any signoff.
+  was INVALID before applying any exception because the ASYNC_REG string check
+  rejected its value; its exit code 0 is not success. A fresh retry in
+  `runs/ef1_ack_first_stage_audit_02/` prints and strictly checks both boolean
+  properties, then scopes one ACK exception and stage-to-stage timing. It
+  does not re-route. Review the native reports before any signoff.
 
 ## 2026-11-18 — Routed CDC and regression follow-up
 

@@ -151,3 +151,13 @@ not modified or rerouted. Run `runs/ef1_ack_first_stage_audit_01/` is queued
 after the preceding DCP audit. It is an exploratory constraint, not a system
 signoff or a waiver of the mailbox data, FIFO, other CDCs or RDCs. No timing
 PASS may be claimed until native exception coverage and reports are reviewed.
+
+ACK exception audit attempt 01 did not apply the exception: the Tcl
+`ASYNC_REG` string comparison rejected the returned value and exited before
+reports. The batch wrapper nevertheless returned exit code 0, so the absence
+of `ACK_FIRST_STAGE_AUDIT_COMPLETE` makes this run INVALID; logs are preserved.
+Attempt 02 prints the raw property values and accepts only valid true Tcl
+boolean values, still requiring both stages and unique endpoint selection;
+its independent directory is `runs/ef1_ack_first_stage_audit_02/`. The true
+reason for attempt 01's property comparison remains to be established from
+the raw values in attempt 02.
