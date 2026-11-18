@@ -7474,3 +7474,7 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Baseline bubble/backpressure test passed after driver correction for both
   parallel and AXI-Lite modes (56 Golden words each, no UVM errors/fatals).
   The candidate seven-assertion mailbox combined formal run is in progress.
+
+- Candidate Core-only reset can leave the AXI-Lite request active; independent
+  reset handling in that direction and mode mailbox reset remain open. Candidate
+  has not been promoted to product RTL.
