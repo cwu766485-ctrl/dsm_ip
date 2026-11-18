@@ -115,3 +115,13 @@ receiver and PSD commands in
   test does not have an AXI write/B response pending during the reset, and
   serial frame-boundary pattern search, synthetic epoch, research buffers
   and physical PA/RF limitations are the same as the AXI-only test.
+
+Core-only full-chain attempt 02 adds a deliberately stalled accepted AXI-Lite
+status-write B response before the live Core reset, checks BVALID/BRESP remain
+stable across reset and completes the response while AXI-Lite stays released.
+The original attempt 01 test source is copied into its `isolated_sources/`
+directory. Attempt 02 is running in `runs/live_core_abort_02/`; it does not
+replace the earlier valid attempt and no new result is claimed until complete.
+The separate block-level candidate tests address interrupted configuration
+commit and sticky failure status; this full-chain attempt uses a harmless
+status write, not a simultaneously pending configuration commit.

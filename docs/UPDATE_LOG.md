@@ -7580,3 +7580,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - No pending AXI write occurred during this full-chain test; bounded source,
   serial boundary search, synthetic epoch, research buffers, physical PA/RF,
   CDC/RDC/formal and timing signoff remain open.
+
+## 2026-11-18 SGT — Live Core reset with a held AXI response
+
+- Extended research live Core-reset test to hold an accepted AXI-Lite status
+  write response across Core reset and check response stability/completion,
+  followed by serial-frame recovery. Run 02 is in progress; run 01 and its
+  source snapshot remain preserved. Pending config-commit handling remains
+  covered only by scoped block tests/formal, not this full-chain scenario.

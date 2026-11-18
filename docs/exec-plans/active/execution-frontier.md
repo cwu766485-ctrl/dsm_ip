@@ -1,5 +1,13 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Pending AXI response during Core reset
+
+- Added a second bounded live GTY Core-reset test: hold a previously accepted
+  AXI-Lite status-write B response while Core alone resets, verify it remains
+  stable and completes, then reconfigure and compare the serial frame. Run
+  `runs/live_core_abort_02/` is in progress; it is not a pending configuration
+  commit test. Previous successful attempt and source snapshot are preserved.
+
 ## 2026-11-18 — Coordinated-reset PPA and Core-only live test
 
 - Runtime-mode PPA proxy with candidate reset coordination passed 448-word

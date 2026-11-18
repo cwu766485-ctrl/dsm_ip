@@ -178,11 +178,21 @@ module tb_vcu118_live_core_abort_restart;
     // Abort while the full-frame serializer buffer is actively emitting.
     wait(emitted>=100);
     if(underflow_seen || underflow || protocol_error) $fatal(1,"pre-abort underflow or protocol failure");
+    // Accept a harmless status write and hold its B response while Core alone
+    // resets; AXI-Lite must remain live and BVALID/BRESP must remain stable.
+    fork
+      begin @(negedge axilclk);awaddr=8'h04;awvalid=1;do @(posedge axilclk);while(!awready);@(negedge axilclk);awvalid=0;end
+      begin @(negedge axilclk);wdata=0;wvalid=1;do @(posedge axilclk);while(!wready);@(negedge axilclk);wvalid=0;end
+    join
+    wait(bvalid);if(bresp!==0 || bready!==0)$fatal(1,"expected stalled OKAY B response");
     @(negedge txclk[0]);rst_n=0;
     #10;
     if(axil_rst_n!==1 || src_rst_n!==1 || serializer_epoch_n!==0 || source_epoch_n!==0 || pa_valid!==0 || out_mask!==0)
       $fatal(1,"Core-only reset did not immediately mask PA and reset serializer buffer");
     $display("LIVE_CORE_RESET_ACTIVE_ABORT_MASK_PASS emitted_before_abort=%0d",emitted);
+    repeat(4) begin @(posedge axilclk);#10;if(bvalid!==1 || bresp!==0)$fatal(1,"B response changed during Core reset");end
+    @(negedge axilclk);bready=1;@(posedge axilclk);@(negedge axilclk);bready=0;
+    $display("LIVE_CORE_RESET_HELD_B_RESPONSE_PASS");
     sent=0;emitted=0;source_sent=0;txcount=0;rxcount=0;underflow_seen=0;
     #200000;rst_n=1;
     wait(serializer_epoch_n && source_epoch_n);
