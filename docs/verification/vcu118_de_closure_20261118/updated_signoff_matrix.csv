@@ -7,3 +7,4 @@ Runtime EF1/EF2/MASH,BLOCKED,BLOCKED,,,,,,218.75,3/2/8 backend cycles; II=1 scop
 DPD independent-reset candidate,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,AXI-only reset directed pass; Core-only reset stale request replay fail; PPA stopped; not product RTL
 Bidirectional epoch candidate 2,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,Core reset after MASH selection leaves stale AXI mode readback; sandbox only
 Bidirectional epoch candidate 3,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,AXI-only reset changes Core-selected mode without system abort proof; sandbox only
+Runtime coordinated-abort research prototype,BLOCKED,BLOCKED,,,,,,218.75,BLOCKED,BLOCKED,BLOCKED,NOT_RUN,BLOCKED,Finite AXIL/Core reset live GTY cases pass; pattern-based serial boundary and synthetic epoch; physical PA/RF unmeasured; matched OOC PPA pending
