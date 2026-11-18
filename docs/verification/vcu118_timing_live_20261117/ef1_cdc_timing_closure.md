@@ -52,3 +52,16 @@ EF1 has been restarted from the preserved synthesized checkpoint in the new
 `runs/ef1_cdc_candidate_restart_04/` directory, with the checkpoint and script
 SHA-256 recorded in its manifest. No completed timing or CDC result is implied.
 The interrupted logs and reports remain unchanged.
+
+
+## 2026-11-18 completed candidate route
+
+Attempt 04 completed using the preserved synthesized checkpoint. Overall setup
+WNS -0.352 ns, TNS -4.915 ns; hold WNS +0.005 ns, TNS 0; core-only WNS
++0.097 ns. The worst setup path is core-clock `cfg_ack_core_reg/C` to AXI-Lite
+`cfg_ack_sync1_reg/D`: 0.004 ns modeled edge separation, 0.079 ns cell delay,
+0.258 ns net delay and -0.009 ns skew. See
+`runs/ef1_cdc_candidate_restart_04/implementation/` for routed DCP, Worst-20,
+clock interaction and exception reports. This supersedes the earlier running
+status, remains FAIL overall and does not resolve physical CDC/RDC. A fresh
+full synthesis and route is running in `runs/ef1_fresh_synth_route_20261118_01/`.

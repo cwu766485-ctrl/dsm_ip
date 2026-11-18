@@ -1,5 +1,20 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Fresh routed comparison
+
+- EF1 CDC-bound route completed: overall WNS -0.352 ns, WHS +0.005 ns;
+  worst path core ACK to AXI-Lite first synchronizer. OOC FAIL. A fresh
+  synthesis and route is running in `runs/ef1_fresh_synth_route_20261118_01/`.
+- MASH cubic candidates A/B completed OOC routing: overall WNS -0.333/-0.363 ns,
+  hold WNS +0.006/+0.004 ns; both FAIL overall. Original -2.879 ns core path
+  improved, but CDC and full product equivalence remain open.
+- Baseline DCP/log/VCD hashes and pre-work status are in
+  `runs/convergence_evidence_20261118_01/manifest.json`. New comparison and
+  strict status matrix are in `docs/verification/vcu118_convergence_20261118/`.
+- Mailbox atomic-update formal harness is running; review complete results,
+  coverage and scoped assumptions before claiming a proof. EF2 4/8-lane remains
+  inconclusive, and live GTY remains limited to finite-frame digital simulation.
+
 ## 2026-11-18 — VCU118 implementation interruption
 
 - EF1 candidate attempt 03 and the prior Runtime/MASH controllers are no longer

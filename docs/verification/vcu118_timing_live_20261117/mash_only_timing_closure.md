@@ -36,3 +36,17 @@ Any new implementation must use fresh output directories and independently
 validate completion markers and native reports.
 
 A new serial queue is waiting in `runs/mash_candidates_restart_03/`; it starts only if EF1 attempt 04 emits its routed completion marker. It stops on a candidate failure, and all results require native report review. Reproduce the scheduled queue from the preserved script using `python3 runs/mash_candidates_restart_03/queue.py` only after choosing a fresh output directory.
+
+
+## 2026-11-18 completed A/B routes
+
+Both `runs/mash_candidates_restart_03/implementation_{a,b}/` completed with
+no valid clock exceptions. A/B overall setup WNS -0.333/-0.363 ns and TNS
+-31.374/-31.574 ns; hold WNS +0.006/+0.004 ns and THS 0. Core WNS
++0.104/+0.070 ns. A/B use 35,927/35,857 LUT, 47,726/47,724 FF, 496 DSP,
+6.5 BRAM and 2,981 CARRY8; vectorless power 4.534/4.544 W. Worst setup is
+AXI-Lite mailbox → core pending bank in each run. These are candidate cubic
+arithmetic changes, not separate elastic-buffer microarchitectures. Both
+remain overall FAIL; complete product metadata/reset/backpressure equivalence
+and fresh end-to-end latency are open, so neither is selected for product.
+See `docs/verification/vcu118_convergence_20261118/ppa_comparison.csv`.

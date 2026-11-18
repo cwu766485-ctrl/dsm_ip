@@ -7317,3 +7317,15 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Restarted EF1 implementation in a fresh run directory from the recorded DCP;
   no routed result, CDC signoff or new regression PASS is claimed.
 - Next: inspect completed EF1 native reports and run both MASH candidates.
+
+
+## 2026-11-18 SGT — Completed VCU118 EF1/MASH route review
+
+- Updated the EF1 and MASH timing reports, execution frontier and new PPA,
+  live-GTY, timing-root-cause and signoff matrices under
+  `docs/verification/vcu118_convergence_20261118/`. Preserved 134 baseline
+  DCP/VCD/report/log hashes under `runs/convergence_evidence_20261118_01/`.
+- Reviewed native routed reports: EF1 -0.352 ns, MASH A/B -0.333/-0.363 ns
+  overall setup WNS; all remain FAIL. No product RTL changed.
+- Added a separate mailbox atomicity formal harness; check final formal output
+  and its scope. Full EF1 resynthesis and implementation are in progress.

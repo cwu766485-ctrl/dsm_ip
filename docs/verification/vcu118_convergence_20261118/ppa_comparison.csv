@@ -1,0 +1,7 @@
+case,status,setup_wns_ns,setup_tns_ns,hold_wns_ns,hold_tns_ns,lut,ff,dsp,bram_tile,carry8,vectorless_power_w,evidence
+EF1 original,FAIL,-2.797,-6830.201,0.007,0,47321,50206,670,6.5,4480,5.331,runs/vcu118_ppa_research_01/ef1
+EF1 candidate prior,FAIL,-0.363,-32.464,0.002,0,47053,49853,496,6.5,4239,4.815,../thermo5_vcu118_cubic_optimization/runs/optimized_ppa_ef1_01/ef1
+EF1 candidate CDC bound,FAIL,-0.352,-4.915,0.005,0,47060,49852,496,6.5,4239,4.913,runs/ef1_cdc_candidate_restart_04/implementation
+MASH baseline,FAIL,-2.879,-9062.624,0.004,0,35818,48180,670,6.5,3222,4.896,runs/vcu118_ppa_research_01/mash
+MASH candidate A,FAIL,-0.333,-31.374,0.006,0,35927,47726,496,6.5,2981,4.534,runs/mash_candidates_restart_03/implementation_a
+MASH candidate B,FAIL,-0.363,-31.574,0.004,0,35857,47724,496,6.5,2981,4.544,runs/mash_candidates_restart_03/implementation_b
