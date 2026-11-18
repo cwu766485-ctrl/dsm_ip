@@ -8,8 +8,11 @@
   transaction is waiting can apply that pre-reset pending bundle at a boundary.
   Witness VCD/log: `runs/cfg_independent_reset_epoch_01/`; this exposes an
   unsupported/undefined epoch contract, not a proven common-reset failure.
-- Atomic-harness remaining property is being retried in isolation without new
-  assumptions in `runs/mailbox_sample_isolated_01/`. Generic AXI-Lite SpyGlass
+- Atomic-harness remaining property proved on isolated retry without new
+  assumptions in `runs/mailbox_sample_isolated_01/`; vacuity/cover were not run
+  there but the original seven-property run marked it non-vacuous with capture
+  cover hit. Composite fixed-phase/common-reset proof, not full CDC signoff.
+  Generic AXI-Lite SpyGlass
   structural CDC reports 0 errors/29 warnings and 6 convergences; RDC reports
   10,539 Ar_resetcross01 errors/18 warnings and no waivers in
   `runs/cdc_rdc_generic_static_20261118_02/`. This is not Runtime/XPM signoff. EF1 fresh route and its queued post-route Vivado CDC

@@ -7359,3 +7359,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Generic-frontend SpyGlass completed: CDC 0 errors/29 warnings, RDC 10,539
   `Ar_resetcross01` errors/18 warnings, no waivers. Exit code zero does not
   indicate a clean RDC result; message disposition remains open.
+
+## 2026-11-18 SGT — Isolated mailbox sample-stability proof
+
+- The previously inconclusive identical assertion was PROVEN in a dedicated
+  7m02s run with no added protocol assumptions. Its isolated vacuity/cover
+  checks were NOT_RUN; the prior seven-property run showed non-vacuity and
+  capture cover. Composite proof remains limited to the fixed-clock-ratio,
+  released common-reset model; reset setup checking and physical CDC remain open.
