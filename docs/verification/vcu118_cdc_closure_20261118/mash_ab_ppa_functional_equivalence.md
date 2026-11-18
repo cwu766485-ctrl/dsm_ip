@@ -1,0 +1,7 @@
+# MASH candidate A/B PPA and functional equivalence
+
+Status **FAIL** for overall OOC setup; **BLOCKED** for product selection. Candidate A/B respectively WNS -0.333/-0.363 ns, WHS +0.006/+0.004 ns, LUT 35927/35857, FF 47726/47724, DSP 496/496, BRAM 6.5/6.5, CARRY8 2981/2981. Measured Core WNS +0.104/+0.070 ns; overall worst is AXI-Lite mailbox to pending bank. Both are cubic arithmetic changes feeding the elastic buffer, not independently redesigned buffers. No new clock exception is included in either.
+
+See `docs/verification/vcu118_convergence_20261118/ppa_comparison.csv` and `docs/verification/vcu118_timing_live_20261117/mash_only_timing_closure.md` for source, scoped arithmetic/streaming tests, prior full-chain candidate A evidence, run commands and native routed Worst-20/DCP. Full A/B metadata, STOP/restart, reset and end-to-end latency/II equivalence are not proven; a new MASH A implementation with a validated CDC repair is NOT_RUN.
+
+A new local RTL stream miter `dv/verif/integration/vcu118_arch/tb_cubic_enable_equivalence.sv` passed for each candidate in `runs/cubic_enable_equiv_01/`: 3,555 compared outputs including Frame/Tail markers, 859 stalled output cycles, 714 input bubbles, one reset and seven module enable deassertions. This is local block equivalence, not product STOP/drain/restart, config metadata or full-chain proof. Reproduce using `bash research/vcu118_arch/run_cubic_enable_equiv.sh runs/NEW_DIR`; no Golden changes were made.

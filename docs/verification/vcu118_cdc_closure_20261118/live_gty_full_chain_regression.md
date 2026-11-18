@@ -1,0 +1,3 @@
+# Live GTY full-chain regression
+
+Status **BLOCKED** for product-level signoff; no additional live product stress has been run in this round. The preserved bounded live tests and failure evidence, serial bit comparisons and receiver results are in `docs/verification/vcu118_convergence_20261118/live_gty_regression_report.md` with full commands in `docs/verification/vcu118_timing_live_20261117/live_axis_gty_integration.md`. Single-frame source prefill is research-only and has a frame gap; genuine hardware epoch is not exposed; sustained back-to-back streaming, arbitrary random stalls, overflow/recovery and board RF remain open. Do not call replay or limited digital simulation physical GT/RF signoff.

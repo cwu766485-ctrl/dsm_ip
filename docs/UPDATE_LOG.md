@@ -7340,3 +7340,22 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 
 - Initial synthesis warning triage recorded in the timing report; scope and
   post-synthesis relevance remain open. No warning was waived.
+
+
+## 2026-11-18 SGT — CDC/RDC and reset-epoch follow-up
+
+- Added a real RTL independent AXI-Lite reset epoch witness and retained VCD
+  and log under `runs/cfg_independent_reset_epoch_01/`; stale pending config
+  can apply on the following Core frame boundary. Common-reset behavior is a
+  separate contract; no product RTL or timing exception was changed.
+- Added isolated retry of the remaining mailbox formal property and a read-only
+  post-route Vivado CDC audit; started Generic FIFO SpyGlass CDC/RDC and fresh
+  reports in `docs/verification/vcu118_cdc_closure_20261118/`.
+- MASH A/B local stream equivalence with markers, reset, randomized stalls and
+  enable deassertions passed (3,555 outputs each); product STOP is not proven.
+- Required RTL-change regressions not applicable: no product RTL changed.
+  EF1 fresh route, formal retry and static audits were still running at update.
+
+- Generic-frontend SpyGlass completed: CDC 0 errors/29 warnings, RDC 10,539
+  `Ar_resetcross01` errors/18 warnings, no waivers. Exit code zero does not
+  indicate a clean RDC result; message disposition remains open.

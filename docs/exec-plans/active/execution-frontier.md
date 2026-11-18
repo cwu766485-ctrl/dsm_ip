@@ -1,5 +1,24 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — CDC reset-epoch witness and audits
+
+- Research HEAD at start `80b2167844a3338cb6cf746f1da1829977aac5f4`; baseline
+  evidence hashed in `runs/cdc_sta_closure_baseline_20261118_01/manifest.json`.
+- Actual AXI-Lite configuration RTL independently reset while a Core pending
+  transaction is waiting can apply that pre-reset pending bundle at a boundary.
+  Witness VCD/log: `runs/cfg_independent_reset_epoch_01/`; this exposes an
+  unsupported/undefined epoch contract, not a proven common-reset failure.
+- Atomic-harness remaining property is being retried in isolation without new
+  assumptions in `runs/mailbox_sample_isolated_01/`. Generic AXI-Lite SpyGlass
+  structural CDC reports 0 errors/29 warnings and 6 convergences; RDC reports
+  10,539 Ar_resetcross01 errors/18 warnings and no waivers in
+  `runs/cdc_rdc_generic_static_20261118_02/`. This is not Runtime/XPM signoff. EF1 fresh route and its queued post-route Vivado CDC
+  audit are running; no repaired RTL or new timing exception is claimed.
+- Candidate A/B local stream comparison including markers, randomized stalls,
+  reset and module enable interruption passed in `runs/cubic_enable_equiv_01/`.
+  This does not prove product STOP/Restart or full-chain equivalence. See
+  `docs/verification/vcu118_cdc_closure_20261118/`.
+
 ## 2026-11-18 — Fresh routed comparison
 
 - EF1 CDC-bound route completed: overall WNS -0.352 ns, WHS +0.005 ns;
