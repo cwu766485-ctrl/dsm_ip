@@ -7571,3 +7571,12 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   PASS or physical signoff is claimed.
 - Started separate real-GTY digital Core-only-reset/restart experiment with
   AXI-Lite kept live, after the bounded AXI-only reset experiment passed.
+
+## 2026-11-18 SGT — Bounded digital live Core-reset abort
+
+- Core-only reset with AXI-Lite live cleared modeled PA mask during output;
+  restart 5264 Golden words and 336896 serial TX/RX bits per lane matched,
+  no underflow, EVM 2.551442%, SNDR 31.864285 dB, BER 15/37376.
+- No pending AXI write occurred during this full-chain test; bounded source,
+  serial boundary search, synthetic epoch, research buffers, physical PA/RF,
+  CDC/RDC/formal and timing signoff remain open.

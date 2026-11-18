@@ -9,8 +9,10 @@
   clocks/DPD/XPM, but added reset ports and experimental 4 ns mailbox bound;
   no system/board timing signoff or result yet.
 - Core-only reset while AXI-Lite remains live, during live GT serialization,
-  is running in `runs/live_core_abort_01/`; inspect final diagnostics and
-  serial/RX markers. Existing AXI-only bounded digital test passed.
+  passed in `runs/live_core_abort_01/`: 5264 Golden words, 336896 TX/RX bits
+  per lane, no observed underflow, EVM 2.551442%, SNDR 31.864285 dB, BER
+  15/37376. No pending AXI write during this full-chain test; bit-frame search,
+  synthetic epoch, research buffers and physical limitations remain open.
 
 ## 2026-11-18 — Live AXI-reset abort prototype result
 

@@ -104,6 +104,14 @@ receiver and PSD commands in
   three-architecture VCS test: 448 words, 6/6 mode transitions, 738 stalls,
   no UVM errors/fatals (`runs/de_abort_integration_sandbox/runs/abort_ppa_equiv_01/`).
   Static EF1/MASH proxy modes and system reset behavior require further checks.
-- Core-only reset during active GT serialization with AXI-Lite left live is
-  running in `runs/live_core_abort_01/`. It is a separate experiment from the
-  completed AXI-only test; no result is claimed before all bit/receiver checks.
+- Core-only reset during active GT serialization with AXI-Lite left live:
+  **PASS for this bounded digital case** in `runs/live_core_abort_01/`. After
+  100 emitted words the modeled PA mask clears; after reconfiguration and
+  restart 5,264 words and 336,896 serial TX/RX bits per lane match Golden,
+  observed lane skew 0, drain=1, underflow=0, protocol=0. The receiver applied
+  to actual serial bits gives EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376;
+  lower/upper digital adjacent proxies -19.254889/-19.396653 dBc
+  (`runs/live_core_abort_receiver_01/`, `runs/live_core_abort_psd_01/`). This
+  test does not have an AXI write/B response pending during the reset, and
+  serial frame-boundary pattern search, synthetic epoch, research buffers
+  and physical PA/RF limitations are the same as the AXI-only test.
