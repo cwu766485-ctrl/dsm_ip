@@ -111,3 +111,24 @@ Required directed XSim check of the existing product passed with a unique seed
 (marker `THERMO5_I2_D1_AXIS_BITTRUE_PASS`). This product test does not compile
 or validate the new research reset coordinator. The required VCS regression is
 in progress in `runs/cdc_followup_required_vcs_01/`.
+
+
+## Vivado routed CDC classification
+
+The fresh EF1 routed DCP was reopened read-only. Native `report_cdc -details`
+under `runs/ef1_vivado_cdc_audit_queue_01/reports/cdc_details.rpt` reports
+16 CDC-3 synchronized single-bit info, 101 CDC-15 clock-enable-controlled
+crossing warnings, 3 CDC-6 multi-bit synchronized warnings and 2 CDC-26
+LUTRAM read/write collision warnings. The 101 include config and mode mailbox
+bundles; CDC-6 includes XPM FIFO Gray-pointer synchronizers. These are
+classifications to inspect, not automatic bugs or waivers: protocol, bus
+stability, physical constraints, FIFO use and reset must all be reviewed.
+The audit is still generating its remaining reports and final completion marker.
+
+Required VCS regression attempt 01 FAILED at the first bit-true word: observed
+`b3bb39bf8b9f88c8`, expected `6666666666666666`
+(`runs/cdc_followup_required_vcs_01/`). That invocation used existing
+EF1/causal vectors while the Makefile default was centered-cubic EF2/STEP5120;
+its result cannot qualify that configuration. Attempt 02 regenerates vectors
+for the actual default using the repository command, in an independent run
+`runs/cdc_followup_required_vcs_02/`; results are pending. Both logs are kept.

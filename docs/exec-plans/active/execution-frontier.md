@@ -1,5 +1,14 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Routed CDC and regression follow-up
+
+- EF1 routed Vivado CDC report lists 16 CDC-3 infos, 101 CDC-15 warnings,
+  3 CDC-6 warnings and 2 CDC-26 warnings. Classification and remaining
+  check_timing/report completion are pending in `runs/ef1_vivado_cdc_audit_queue_01/`.
+- Required VCS attempt 01 failed first bit-true comparison with EF1/causal
+  vectors against the default centered EF2 build. Attempt 02 uses newly
+  generated matching centered EF2 vectors and is running. Preserve both.
+
 ## 2026-11-18 — Common reset integration candidate
 
 - Added research-only three-domain reset coordinator and directed test; common

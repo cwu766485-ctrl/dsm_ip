@@ -7402,3 +7402,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   system CDC/RDC and routed implementation are NOT_RUN.
 - Existing EF1 product XSim bit-true passed at unique seed 880291; this test
   does not instantiate the candidate. Required VCS regression is running.
+
+## 2026-11-18 SGT — Routed CDC classification and VCS retry
+
+- Fresh EF1 routed `report_cdc`: CDC-3 16 info, CDC-15 101 warnings, CDC-6
+  3 warnings, CDC-26 2 warnings; dispositions and audit completion remain open.
+- Required VCS first attempt failed first PA comparison after using causal/EF1
+  vectors for centered/EF2 default. Preserved failure and started a fresh run
+  with repo-generated vectors matching the build; no VCS PASS claimed yet.
