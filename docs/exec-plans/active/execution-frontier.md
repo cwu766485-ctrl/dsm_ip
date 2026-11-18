@@ -14,7 +14,9 @@
 
 - EF1 routed Vivado CDC report lists 16 CDC-3 infos, 101 CDC-15 warnings,
   3 CDC-6 warnings and 2 CDC-26 warnings. Classification and remaining
-  check_timing/report completion are pending in `runs/ef1_vivado_cdc_audit_queue_01/`.
+  dispositions are open in `runs/ef1_vivado_cdc_audit_queue_01/`; native
+  audit completed and post-route check_timing found no unconstrained internal
+  endpoints under its provisional study constraints.
 - Required VCS attempt 01 failed first bit-true comparison with EF1/causal
   vectors against the default centered EF2 build. Attempt 02 with newly
   generated matching centered EF2 vectors passed all seven tests. Preserve both.
@@ -39,7 +41,9 @@
   check_timing reports zero unconstrained internal endpoints under provisional
   constraints. One exploratory 4 ns mailbox max-delay exception remains open.
 - Vivado completed with its final marker and vectorless power estimate 4.912 W.
-  The queued post-route Vivado CDC audit is now running.
+  The post-route Vivado CDC audit completed; its warning dispositions remain
+  open. Post-route check_timing reports zero unconstrained internal endpoints
+  relative to study constraints.
 
 ## 2026-11-18 — Chosen common-reset epoch contract
 

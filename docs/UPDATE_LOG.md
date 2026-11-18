@@ -7424,3 +7424,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   confirmation. Added a read-only, one-ACK-first-stage false-path STA audit
   with first-to-second-stage timing checks; result not yet available. No broad
   clock-group exception or product RTL change was made.
+
+## 2026-11-18 SGT — Post-route Vivado CDC audit completed
+
+- Read-only audit produced `CDC_AUDIT_COMPLETE`, all requested clock/exception
+  and timing reports, and zero unconstrained internal endpoints under study
+  constraints. The reported CDC warnings are not waived or signed off.
+- One-path ACK synchronizer exception experiment remains in progress; this
+  analysis does not alter the routed checkpoint.

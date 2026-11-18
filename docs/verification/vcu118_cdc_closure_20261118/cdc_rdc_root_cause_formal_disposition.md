@@ -123,7 +123,7 @@ LUTRAM read/write collision warnings. The 101 include config and mode mailbox
 bundles; CDC-6 includes XPM FIFO Gray-pointer synchronizers. These are
 classifications to inspect, not automatic bugs or waivers: protocol, bus
 stability, physical constraints, FIFO use and reset must all be reviewed.
-The audit is still generating its remaining reports and final completion marker.
+The read-only audit completed with `CDC_AUDIT_COMPLETE`; post-route check_timing reports zero unconstrained internal endpoints relative to the study constraints. Classification and system disposition remain open.
 
 Required VCS regression attempt 01 FAILED at the first bit-true word: observed
 `b3bb39bf8b9f88c8`, expected `6666666666666666`
