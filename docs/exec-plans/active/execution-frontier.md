@@ -7,8 +7,8 @@
   ns, TNS -4.915 ns, WHS +0.005 ns; core-only WNS +0.099 ns. FAIL. The study
   check_timing reports zero unconstrained internal endpoints under provisional
   constraints. One exploratory 4 ns mailbox max-delay exception remains open.
-- Vivado was still writing the power report at this update; wait for final
-  marker and the queued post-route CDC audit before treating those as complete.
+- Vivado completed with its final marker and vectorless power estimate 4.912 W.
+  The queued post-route Vivado CDC audit is now running.
 
 ## 2026-11-18 — Chosen common-reset epoch contract
 

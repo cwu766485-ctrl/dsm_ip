@@ -7391,3 +7391,6 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   OOC setup FAIL. Worst-20 and constraints remain in the run directory.
 - Zero internal unconstrained endpoints in synthesis-stage check_timing is
   relative to study constraints only. Final power/CDC audit were still running.
+
+- EF1 fresh routed run subsequently completed with its native completion marker
+  and vectorless power estimate 4.912 W; post-route CDC audit is running.
