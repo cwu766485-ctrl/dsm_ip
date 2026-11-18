@@ -7499,3 +7499,7 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   scoped Core reset formal 4/4 plus 2/2 covers, fixed-phase/reset-check limits.
 - Candidate 2 formal attempt 01 is not counted because its source was edited
   during startup; later attempts record hashes and preserve logs.
+
+- Added `run_de_candidate3_directed.sh`; all six directed cases and the
+  separate expected mode-change witness replayed in a new directory. The
+  witness remains a product qualification blocker.

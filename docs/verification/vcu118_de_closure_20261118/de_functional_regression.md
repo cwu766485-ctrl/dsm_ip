@@ -26,3 +26,8 @@ The remaining candidate-only PPA and formal jobs have not yet completed.
   the Core mode from MASH to EF2 while Core reset stays released; this
   candidate is therefore **FAIL / not product qualified**. Full-chain live
   traffic behavior, PA routing and all clock/reset phases remain OPEN.
+
+Reproduce candidate 3's six directed checks plus its expected mode-change
+witness using `bash research/vcu118_arch/run_de_candidate3_directed.sh
+runs/NEW_DIR`. The final witness intentionally demonstrates an unresolved
+mode change and must not be interpreted as product PASS.
