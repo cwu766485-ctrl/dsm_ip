@@ -7337,3 +7337,6 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   released common reset. Full physical CDC/RDC remains open.
 - EF1 fresh synthesis reported 0 errors, 0 critical warnings and 739 warnings;
   implementation continues and warnings need review. See the timing report.
+
+- Initial synthesis warning triage recorded in the timing report; scope and
+  post-synthesis relevance remain open. No warning was waived.

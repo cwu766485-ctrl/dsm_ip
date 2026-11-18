@@ -35,3 +35,12 @@ Tcl `7b05d4510ee33cfd88ce520b9b29b4b64f8da8b97dfc13bb321a1d9ee8d61d91`.
 
 Fresh EF1 synthesis reports 0 errors, 0 critical warnings and 739 warnings;
 warning categories and final implementation still require review.
+
+Warning triage from the fresh synthesis log is incomplete. Examples include
+`Synth 8-7137` reset/set priority simulation-mismatch warnings on MASH backend
+memory registers, `Synth 8-7071/7023` unconnected stage-2 residue outputs,
+`Synth 8-4767` RAM implemented in registers, XPM safe-FSM warning `8-13336`,
+and Vivado 1 ps clock-period rounding `12-2489`. Some messages can originate
+in elaborated but subsequently pruned logic; their presence alone does not
+establish an EF1 functional defect. Each category requires hierarchy/scope
+review against the final synthesized netlist, not blanket dismissal.
