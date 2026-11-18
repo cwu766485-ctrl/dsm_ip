@@ -1,5 +1,29 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — DE independent-reset candidate and RCA
+
+- Run-start SHA `267812fbbe9153f5cf3ce3eb7efafb80018aeb63`; evidence hashed
+  in `runs/de_closure_baseline_20261118_01/manifest.json`. User now requires
+  independent AXI-Lite reset not to commit a stale pending configuration.
+- Original RTL fails that witness. Research-only DPD reset candidate passes
+  the directed witness/new-request test and a limited 2/2 formal reset-state
+  proof with 2/2 covers; it restores active config to default and does not fix
+  the runtime mode mailbox or prove full traffic/reset behavior.
+- In isolated dirty worktree `runs/de_epoch_candidate_sandbox/`, the candidate
+  passed AXI-Lite XSim independent Golden (32 beats/56 words). Candidate VCS
+  bit-true passed but AXI-Lite bubble test timed out; unchanged original RTL
+  does likewise. Test incorrectly used direct Core enable under AXI-Lite; a
+  driver correction preserves checks and passes candidate bubble test. Fix is
+  now on this branch; baseline two-mode checks passed in
+  `runs/de_bubble_test_repair_regression_01/`. Candidate EF1 PPA is running.
+- Original mailbox combined formal completed 7/7 proved, 7 non-vacuous, 4/4
+  covers in one fixed-phase/common-reset model; independent resets and physical
+  CDC are not proven by that run. `runs/de_cdc_rdc_clusters_04/` accounts for
+  101/101 CDC-15 warnings and 10,539/10,539 RDC errors in 46 groups, all open.
+- Candidate mailbox seven-assertion combined formal is running in
+  `runs/de_epoch_candidate_combined_formal_01/`; it is distinct from the
+  2-assertion independent-reset candidate proof and full system proof.
+
 ## 2026-11-18 — Asynchronous clock treatment and ACK exception audit
 
 - User selected treating Core 218.75 MHz and AXI-Lite 100 MHz as asynchronous

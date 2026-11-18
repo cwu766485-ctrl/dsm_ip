@@ -34,11 +34,17 @@ class thermo5_sku_bubble_backpressure_test extends thermo5_sku_base_test;
           send_source(cfg.source_beats,0,gap_beat,gap_length);
           begin
             wait(env.source.monitor.accepted_beats>=4);
-            env.control.core_on();
+            request_stream_enable(1'b1);
             repeat (hold_pa_cycles) @(posedge vif.core_clk);
             cfg.pa_stall_percent=90;
+`ifdef THERMO5_AXIL_CONTROL
+            wait(env.source.monitor.accepted_beats==cfg.source_beats);
+            request_stream_enable(1'b0);
+`endif
             wait(env.scoreboard.checked==cfg.core_words);
-            env.control.core_off();
+`ifndef THERMO5_AXIL_CONTROL
+            request_stream_enable(1'b0);
+`endif
             if (env.source.monitor.accepted_beats!=cfg.source_beats ||
                 env.scoreboard.source_checked!=cfg.source_beats || vif.protocol_error)
               `uvm_fatal("BUBBLE_COUNT","Source count or protocol error after valid gap")

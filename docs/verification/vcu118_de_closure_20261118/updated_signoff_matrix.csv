@@ -1,0 +1,6 @@
+configuration,functional_bit_true,routed_setup_hold,lut,ff,dsp,bram_tile,carry8,target_core_mhz,latency_ii_scope,gty_serializer,cdc_rdc_formal,uvm_coverage,evm_sndr_ber_adjacent,qualification
+EF1,BLOCKED,FAIL,47060,49852,496,6.5,4239,218.75,3 backend cycles; II=1 scoped,NOT_RUN,BLOCKED,BLOCKED,NOT_RUN,EF1 cubic candidate; bounded mailbox; OOC
+EF2,BLOCKED,FAIL,55070,25063,670,6.5,5528,218.75,2 backend cycles; II=1 scoped,NOT_RUN,BLOCKED,BLOCKED,NOT_RUN,Original OOC EF2; 4/8-lane proof inconclusive
+MASH-only,BLOCKED,FAIL,35927,47726,496,6.5,2981,218.75,8 backend cycles baseline; II=1 scoped,BLOCKED,BLOCKED,BLOCKED,BLOCKED,Candidate A OOC; live GTY bounded research buffer only
+EF1+MASH,NOT_RUN,NOT_RUN,,,,,,218.75,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,No matched dual-architecture synthesis or DV
+Runtime EF1/EF2/MASH,BLOCKED,BLOCKED,,,,,,218.75,3/2/8 backend cycles; II=1 scoped,BLOCKED,BLOCKED,BLOCKED,BLOCKED,Runtime full route incomplete; independent serializer/RF unverified

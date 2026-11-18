@@ -7446,3 +7446,31 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   First→second synchronizer stage setup/hold +9.699/+0.066 ns; overall WNS
   -0.337 ns, TNS -4.562 ns, WHS +0.005 ns. Worst moves to draining-status
   synchronizer. No new route or product timing signoff is claimed.
+
+
+## 2026-11-18 SGT — DE independent reset and RCA
+
+- User requests independent AXI-Lite reset safety; original RTL's stale-pending
+  witness remains FAIL. Added isolated DPD epoch-reset candidate, directed
+  witness/restart test and scoped 2-assertion formal proof; candidate is not in
+  canonical product RTL and does not address runtime mode or full frame reset.
+- Candidate passed independent Golden AXI-Lite XSim in an isolated dirty
+  sandbox. VCS nominal bit-true passed; AXI-Lite bubble test times out for both
+  candidate and unmodified baseline. A test-driver correction preserving all
+  checks is being tested. Candidate EF1 PPA still running.
+- Original mailbox formal achieved 7/7 assertions non-vacuous and 4/4 covers
+  in one run under fixed-phase/common-reset assumptions. RDC/CDC clustering
+  accounts for every 10,539 RDC and 101 CDC-15 finding; no waiver approved.
+
+## 2026-11-18 SGT — Bubble test AXI-Lite driver correction
+
+- Changed `dv/uvm/tests/thermo5/full_ip/thermo5_sku_bubble_backpressure_test.svh`
+  to use the existing RUN/STOP helper in AXI-Lite mode; retained the parallel
+  mode behavior, Golden scoreboard, traffic and coverage assertions.
+- Candidate sandbox AXI-Lite bubble/backpressure passed 56 Golden output words
+  with nonzero held-output and second-interpolator hits; prior baseline and
+  candidate timeouts remain saved. Baseline two-mode test is running.
+
+- Baseline bubble/backpressure test passed after driver correction for both
+  parallel and AXI-Lite modes (56 Golden words each, no UVM errors/fatals).
+  The candidate seven-assertion mailbox combined formal run is in progress.
