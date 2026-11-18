@@ -1,3 +1,8 @@
+## 2026-11-18 — Coordinated reset OOC and deeper Formal results
+
+- Recorded completed EF1/MASH A routed timing, resources and critical reset paths, with OOC/XDC/power limitations. Started isolated MASH B route; did not change RTL or add exceptions.
+- Longer combined mailbox run reached 6/7 non-vacuous proofs and 4/4 covers; sample stability remains inconclusive. Started same-environment property-isolated diagnostic. Documented the three output CDC error cones and required system reset/PA evidence.
+
 ## 2026-11-18 — DE release candidate frontier
 
 - Added a scoped EF1/MASH release frontier with historical PPA, open reset/CDC/formal gates, finite live GTY evidence and UVM handoff checklist. No release candidate or tag was created; new route and deeper formal remain running. No RTL changed.

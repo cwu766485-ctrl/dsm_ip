@@ -24,3 +24,7 @@ completed: 5/7 proven, `a_active_stable` and `a_sample_stable` inconclusive
 at depth 175; all 7 non-vacuous and 4/4 covers hit. The same fixed-period,
 released-reset model and disabled reset setup check apply. Its outcome does
 not erase the separate mode-reset witness.
+
+## Longer combined candidate 3 run
+
+`runs/de_candidate3_combined_formal_deep_01/` completed 6/7 assertions proven, all non-vacuous, with 4/4 covers reached. `a_active_stable` is now proven; `a_sample_stable` remains inconclusive at depth 312 after the longer timeout. The same fixed 16:35 clocks and released-reset constraint apply, and reset setup checking remains disabled; this is neither a reset-epoch proof nor arbitrary-phase signoff. The host-overload warning is retained in the native log. No properties or assumptions were weakened. A property-isolated run with the same harness and assumptions is running in `runs/de_candidate3_sample_isolated_01/`; even a successful isolated run alone would not replace the requested same-run combined 7/7.

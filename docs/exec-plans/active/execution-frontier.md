@@ -1,5 +1,20 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — New routed candidate and formal results
+
+- Coordinated-reset EF1/MASH A OOC routes completed: overall WNS -0.532 /
+  -0.547 ns, WHS +0.009 / +0.007 ns. Worst paths are reset boundary/recovery
+  with speculative input clock assumptions; Core WNS +0.015 / +0.056 ns.
+  Exploratory 4 ns mailbox bound and unspecified clock source remain open.
+  MASH B same-script route started under `runs/de_abort_integration_sandbox/
+  runs/abort_ppa_mash_b_01/`; no result yet.
+- Longer candidate combined Formal is 6/7 proven, four covers, all assertions
+  non-vacuous. Sample stability remains inconclusive at depth 312; a same-model
+  isolated attempt is running. Reset epoch and arbitrary clock phase unproved.
+- Three CDC output errors trace to asynchronous reset fan-in / PA masking;
+  parent glitch/pulse, release and physical mute contracts are unproved.
+
+
 ## 2026-11-18 — Runtime structural results and deeper formal
 
 - Candidate Runtime Generic SpyGlass completed: 45,778 RDC errors in 239

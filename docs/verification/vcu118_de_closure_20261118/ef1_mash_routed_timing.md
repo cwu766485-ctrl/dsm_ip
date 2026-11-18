@@ -44,3 +44,16 @@ waiting for queue 02 completion and will write a fresh
 completed native DCP and reports with validated queue markers; nonnegative
 OOC timing remains BLOCKED until CDC and physical integration signoff. The
 watcher does not overwrite tracked reports. Its syntax check passed.
+
+## Coordinated-reset candidate A: new OOC routed runs
+
+Vivado 2026.1 completed both routed runs, queue results and source hashes in `runs/de_abort_integration_sandbox/runs/abort_ppa_queue_02/`; DCP and native reports are under `ef1_implementation/` and `mash_implementation/`. These are research OOC proxies with added reset ports, exploratory mailbox 4 ns `set_max_delay`, provisional 0.2 ns I/O delays and unspecified OOC `HD.CLK_SRC`; they are not final product/board PPA. Power uses vectorless defaults and has a reset-activity warning.
+
+| Case | Setup WNS / TNS ns | Hold WNS / TNS ns | LUT / FF / DSP / BRAM / CARRY8 | Core-clock WNS ns | Power W |
+|---|---|---|---|---:|---:|
+| EF1 | -0.532 / -12.569 | +0.009 / 0 | 47062 / 49898 / 496 / 6.5 / 4239 | +0.015 | 3.493 |
+| MASH A | -0.547 / -11.038 | +0.007 / 0 | 35861 / 47737 / 496 / 6.5 / 2981 | +0.056 | 3.399 |
+
+EF1 worst path `core_aresetn` → `source_epoch_aresetn`: 0.100 ns cell, 0.000 ns net; the study assigns the input to Core and output to AXIS, creating a 0.003 ns edge relationship between asynchronous domains. This is a reset-output boundary, not evidence that a synchronous datapath meets timing. MASH worst path `core_aresetn` → `axis_abort_sync/sync_q_reg[0]/CLR`: asynchronous recovery; 0.088 ns cell, 0.180 ns net, 0.020 ns reported skew, 0.003 ns modeled relationship. Both have remaining AXI-Lite/Core CDC violations. This diagnosis is not approval to waive any path: parent reset assertion width, glitches, synchronous release, PA mute and recovery/removal at reset consumers need proof. `check_timing.rpt` lists zero unconstrained internal endpoints under this provisional model; it does not validate the I/O or clock assumptions. `routed_clock_interaction.rpt`, `exceptions.rpt`, `setup_worst20.rpt`, `hold_worst20.rpt`, DCP SHA-256 and PPA CSV in `runs/abort_ppa_summary_02/` provide the audit trail.
+
+MASH candidate B with the same research script and independent output directory was started under `runs/de_abort_integration_sandbox/runs/abort_ppa_mash_b_01/`; status is NOT_RUN until the completion marker and reports exist. A/B here are cubic arithmetic implementations feeding MASH, not different elastic-buffer RTL. Dual-architecture route remains NOT_RUN.
