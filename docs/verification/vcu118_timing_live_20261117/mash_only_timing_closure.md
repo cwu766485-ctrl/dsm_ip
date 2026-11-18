@@ -25,3 +25,14 @@ After the guarded MASH queue completes, the read-only watcher
 `runs/timing_closure_autosummary_02/updated_ppa_matrix.csv` and SHA-256
 manifest. It requires validated controller completion markers and does not
 convert positive OOC timing into system signoff; review the native reports.
+
+
+## 2026-11-18 execution update
+
+The previous queued controller is no longer running after the WSL session
+restart; the prior Runtime process is also absent. Neither candidate has a
+completed new routed result. The old queue and its logs remain preserved.
+Any new implementation must use fresh output directories and independently
+validate completion markers and native reports.
+
+A new serial queue is waiting in `runs/mash_candidates_restart_03/`; it starts only if EF1 attempt 04 emits its routed completion marker. It stops on a candidate failure, and all results require native report review. Reproduce the scheduled queue from the preserved script using `python3 runs/mash_candidates_restart_03/queue.py` only after choosing a fresh output directory.

@@ -7308,3 +7308,12 @@ local synchronous releases, no independent runtime reset. Actual SG CDC5→0E,
 RDC10506Eunchanged. Product VCS/oracle/reset/restart and targeted FPV executed;
 async FIFO epoch proof remains inconclusive. Exact report/reproduction and
 remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
+
+
+## 2026-11-18 SGT — VCU118 run interruption and restart
+
+- Updated EF1 and MASH timing reports and the execution frontier to record the
+  interrupted placement and stopped controllers; preserved all existing evidence.
+- Restarted EF1 implementation in a fresh run directory from the recorded DCP;
+  no routed result, CDC signoff or new regression PASS is claimed.
+- Next: inspect completed EF1 native reports and run both MASH candidates.

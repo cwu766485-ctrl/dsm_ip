@@ -1,5 +1,17 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — VCU118 implementation interruption
+
+- EF1 candidate attempt 03 and the prior Runtime/MASH controllers are no longer
+  running after a WSL session restart. EF1 stopped during placement without a
+  routed completion marker. Preserve the incomplete evidence; no new timing PASS.
+- Restarted EF1 from the preserved synthesized DCP in
+  `runs/ef1_cdc_candidate_restart_04/`. Next: finish route, inspect setup/hold
+  and CDC exceptions, then run both MASH candidates in fresh directories.
+- Live two-frame STOP/restart and common-reset digital simulation evidence is
+  preserved; physical GT/RF and full signoff remain open. See the five reports
+  in `docs/verification/vcu118_timing_live_20261117/`.
+
 Research HEAD at start `773983f29158edc8aff64aab5ce5fc7b54d15e6b`; worktree
 was clean. Baseline DCP/report/replay hashes are recorded in
 `runs/timing_live_closure_baseline_01/manifest.json`. Runtime is temporarily suspended in routing to prioritize the EF1 CDC-bound candidate; `runs/ef1_cdc_candidate_preempt_01/` was stopped as INVALID due to path segmentation; `runs/ef1_cdc_candidate_preempt_02/` was stopped because datapath-only implicitly false-paths hold without full justification. `runs/ef1_cdc_candidate_preempt_03/` reuses the same-source synthesized checkpoint with ordinary max-delay and is active with resume-on-completion and watchdog. MASH A/B priority queue `runs/mash_candidates_preempt_02/` waits for EF1, then temporarily suspends Runtime during its two serial routes and resumes with an independent watchdog.

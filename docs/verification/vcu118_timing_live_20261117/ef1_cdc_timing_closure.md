@@ -40,3 +40,15 @@ release MTBF, board reset distribution, independent reset behavior or authorize
 a blanket false path. Any eventual narrowly scoped exception needs completed
 RDC, reset-contract and physical review, including a check that the second stage
 and other reset/data paths remain timed.
+
+
+## 2026-11-18 interruption and restart
+
+The previous controller and Vivado processes are no longer present after the
+WSL session restarted. Attempt 03 ended during placement without a completion
+marker or routed DCP; its previous running status is superseded and it remains
+incomplete. The prior Runtime implementation and MASH queue also stopped.
+EF1 has been restarted from the preserved synthesized checkpoint in the new
+`runs/ef1_cdc_candidate_restart_04/` directory, with the checkpoint and script
+SHA-256 recorded in its manifest. No completed timing or CDC result is implied.
+The interrupted logs and reports remain unchanged.
