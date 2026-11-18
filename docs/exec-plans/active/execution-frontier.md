@@ -7,9 +7,11 @@
 - A post-route STA experiment queued in `runs/ef1_ack_first_stage_audit_01/`
   was INVALID before applying any exception because the ASYNC_REG string check
   rejected its value; its exit code 0 is not success. A fresh retry in
-  `runs/ef1_ack_first_stage_audit_02/` prints and strictly checks both boolean
-  properties, then scopes one ACK exception and stage-to-stage timing. It
-  does not re-route. Review the native reports before any signoff.
+  `runs/ef1_ack_first_stage_audit_02/` completed: both ASYNC_REG values are 1,
+  first→second stage setup +9.699 ns / hold +0.066 ns. With the one ACK
+  exception, overall WNS -0.337 ns / TNS -4.562 ns and WHS +0.005 ns; new
+  worst is draining status → first AXI-Lite synchronizer. OOC FAIL. This is
+  read-only timing on the same routed DCP, not signoff or a new route.
 
 ## 2026-11-18 — Routed CDC and regression follow-up
 

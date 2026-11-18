@@ -161,3 +161,17 @@ boolean values, still requiring both stages and unique endpoint selection;
 its independent directory is `runs/ef1_ack_first_stage_audit_02/`. The true
 reason for attempt 01's property comparison remains to be established from
 the raw values in attempt 02.
+
+
+The ACK audit retry completed (`ACK_FIRST_STAGE_AUDIT_COMPLETE`, no path
+segmentation). `ASYNC_REG` values are `1` for both flops; attempt 01 failed
+solely because it compared those values literally to `TRUE`. The exception
+report lists precisely the new ACK source→first-stage false path in addition
+to the pre-existing 4 ns mailbox max-delay. The timed first→second ACK stage
+reports setup +9.699 ns and hold +0.066 ns. Overall timing remains **FAIL**:
+WNS -0.337 ns, TNS -4.562 ns, WHS +0.005 ns; new worst path is Core
+`draining_status_c_reg/C` → AXI-Lite `draining_sync1_reg/D`. Core-only WNS
++0.099 ns. Full reports and manifest are in
+`runs/ef1_ack_first_stage_audit_02/`. These are read-only timing results on
+the same routed DCP, not a reimplementation, physical reset proof, board
+clock confirmation or justification for applying other crossing exceptions.

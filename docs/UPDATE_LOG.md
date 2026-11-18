@@ -7439,3 +7439,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   string comparison failed; wrapper exit 0 without completion marker is
   INVALID. The corrected boolean-check retry uses a new directory and prints
   both property values. No signoff or new product constraint is claimed.
+
+## 2026-11-18 SGT — Narrow ACK exception STA result
+
+- Read-only ACK-first-stage exception audit completed without path segmentation.
+  First→second synchronizer stage setup/hold +9.699/+0.066 ns; overall WNS
+  -0.337 ns, TNS -4.562 ns, WHS +0.005 ns. Worst moves to draining-status
+  synchronizer. No new route or product timing signoff is claimed.
