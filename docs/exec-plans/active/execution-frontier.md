@@ -1,5 +1,17 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Runtime structural results and deeper formal
+
+- Candidate Runtime Generic SpyGlass completed: 45,778 RDC errors in 239
+  reconciled structural groups, zero waived; CDC has three output clock-cone
+  errors. They remain OPEN and are not directly comparable to the older
+  frontend-only 10,539 count. See Runtime groups CSV and reset report.
+- Longer same-harness combined formal started in
+  `runs/de_candidate3_combined_formal_deep_01/`; fixed clock ratio and reset
+  setup limitation remain. Previous 5/7 result remains the current evidence.
+- EF1 route remains running; its intermediate WNS is not a final result.
+
+
 ## 2026-11-18 — Candidate Runtime static CDC/RDC launched
 
 - Generic-FIFO Runtime candidate CDC/RDC run `runs/abort_candidate_static_01/`

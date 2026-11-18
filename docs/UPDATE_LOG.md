@@ -1,3 +1,8 @@
+## 2026-11-18 — Runtime candidate CDC/RDC structural results
+
+- SpyGlass Generic Runtime candidate goals completed; classified all 45,778 reported RDC errors into 239 groups without waiver, and recorded three CDC output clock-cone errors. Scope differs from historical frontend-only count. Added grouping script, CSV, root-cause report and frontier; grouped findings remain open.
+- Launched a longer combined candidate Formal run without changing its assertions or environment assumptions. The prior 5/7 proof remains authoritative until it finishes. EF1 routed implementation remains in progress. No RTL change.
+
 ## 2026-11-18 — Candidate Runtime CDC/RDC follow-up
 
 - Added isolated SpyGlass driver and Generic FIFO three-clock SGDC for the coordinated-reset Runtime candidate. The setup goal exited zero; CDC and RDC are still running in `runs/abort_candidate_static_01/`. Source SHA-256 and native logs are preserved; no waivers or signoff are implied.

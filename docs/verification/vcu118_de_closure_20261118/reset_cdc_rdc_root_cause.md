@@ -86,3 +86,11 @@ the process status. Run command: `wsl.exe -d Rocky-8.10 -- bash -ilc
 /mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/abort_candidate_static_01/run.sh`
 (use a new output directory for a repeat). No waivers have been approved.
 The run scope differs from the historical frontend-only Generic RDC evidence.
+
+## Coordinated-reset Runtime structural results
+
+SpyGlass V-2023.12-SP1 completed all three goals in `runs/abort_candidate_static_01/`. The Runtime/Generic FIFO RDC goal reports **45,778 Ar_resetcross01 errors, 0 waived**; all messages reconcile into 239 structural groups in `runtime_candidate_rdc_groups.csv` (no unparsed rows). Large groups include EF1 bridge to MASH stage1 enable (8,448), EF2 bridge to MASH stage1 enable (8,448), second interpolator to unreset FIFO payload (4,922), and configuration to MASH stage1 enable (4,224). These are tool structural groupings, not established independent defects or safe crossings. The analyzer attributes parts of combined reset expressions to individual reset inputs; inspect actual reset cones and valid/enable behavior before disposition.
+
+The CDC goal reports three `Clock_sync06` errors on `pa_valid[3:0]`, `serializer_epoch_aresetn`, and `source_epoch_aresetn`: asynchronous reset inputs appear in the output fan-in. The immediate abort/mute path is intentional in the research wrapper, but glitch behavior, reset deassertion, system isolation and physical PA connection are not proved. These remain OPEN; do not waive them. This Runtime scope includes EF1, EF2, MASH and candidate supervisor, whereas the earlier 10,539-message Generic run was frontend-only; counts do not measure improvement. Vivado XPM CDC is a separate scope.
+
+Reproduce grouping into a **new** directory: `python3 research/vcu118_arch/cluster_runtime_candidate_rdc.py --rdc runs/abort_candidate_static_01/rdc/moresimple.rpt --cdc runs/ef1_vivado_cdc_audit_queue_01/reports/cdc_details.rpt --out runs/NEW_RUNTIME_GROUPS`. The CDC argument is the historical Vivado report and must not be mistaken for this Runtime SpyGlass CDC report. See `runs/abort_candidate_static_01/source_sha256.txt` for dirty sandbox source identities. No waiver or RTL signoff is implied.
