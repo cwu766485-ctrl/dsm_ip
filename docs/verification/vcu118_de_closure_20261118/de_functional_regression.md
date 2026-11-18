@@ -38,3 +38,14 @@ mode change and must not be interpreted as product PASS.
   This is a normal-operation test and does not itself exercise AXI-only reset.
   The live AXI-only reset during GT serialization test is running in
   `runs/live_axil_abort_01/`; no pass is claimed yet.
+
+- Abort-wrapper Runtime VCS minimal regression (Generic FIFO, no coverage
+  instrumentation) passed 448 words and 6/6 transitions, zero UVM errors/fatals
+  in `runs/de_abort_integration_sandbox/runs/runtime_abort_vcs_01/`.
+- Live GTY attempt 01 observed PA-mask clear during AXI-only reset while
+  emitting, but also reported a pre-reset underflow with RUN still high. It is
+  **FAIL** for continuous-frame qualification regardless of later markers.
+  Test source was preserved under its `isolated_sources/`. Attempt 02 sends a
+  legal STOP for the completed source frame and explicitly fails if pre-abort
+  underflow/protocol flags appear; it is running in `runs/live_axil_abort_02/`.
+  Do not treat STOP as hiding an underflow: attempt 01 remains preserved.

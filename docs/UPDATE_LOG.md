@@ -7539,3 +7539,12 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   no physical or product stop PASS is claimed.
 - Candidate 3 combined mailbox formal: 5/7 proven, 2 inconclusive depth 175,
   7 non-vacuous, 4/4 covers; fixed phase and reset-check limits remain.
+
+## 2026-11-18 SGT — Live abort first-attempt underflow
+
+- Abort wrapper's normal Runtime VCS minimal test passed (448 words, 6/6
+  transitions). It is not board or AXI-reset-under-load proof.
+- Live GTY attempt 01 observed digital PA mask clear during AXI-only reset,
+  but pre-reset underflow occurred; mark FAIL, preserving evidence. Attempt 02
+  uses a legal STOP on the completed frame and explicitly checks pre-abort
+  underflow/protocol status; no result yet.

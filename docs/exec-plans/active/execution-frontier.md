@@ -9,7 +9,9 @@
 - Normal three-mode runtime Golden XSim passed in isolated worktree
   `runs/de_abort_integration_sandbox/runs/runtime_abort_normal_01/` (448 words,
   6/6 transitions); live GT serialization reset test is running in
-  `runs/live_axil_abort_01/`. Neither result proves physical RF stop.
+  `runs/live_axil_abort_01/`. Attempt 01 observed PA mask clear but had a
+  pre-reset underflow and is FAIL; attempt 02 sends legal STOP and explicitly
+  checks underflow. VCS normal three-mode test passed. No physical RF proof.
 - Candidate 3 seven-property combined formal completed 5/7 proofs, two
   inconclusive at depth 175, all seven non-vacuous and 4/4 covers. It is not
   formal signoff; fixed clocks and disabled reset setup check remain.

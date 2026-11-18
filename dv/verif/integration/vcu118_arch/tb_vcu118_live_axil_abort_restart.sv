@@ -161,16 +161,23 @@ module tb_vcu118_live_axil_abort_restart;
     repeat(8) @(negedge txclk[0]);rst_n=1;src_rst_n=1;axil_rst_n=1;
     repeat(10) @(negedge axilclk);write_reg(8'h40,2);
     wait(arch==2 && !mode_busy);write_reg(8'h00,1);
-    // First frame is fully buffered then reset while the real MASH chain is active.
-    for(int beat=0;beat<3008;beat++) begin
-      if(beat%37==9) begin @(negedge srcclk);src_valid=0;repeat(2) @(negedge srcclk);end
-      @(negedge srcclk);src_valid=1;src_start=(beat==0);src_last=(beat==3007);
-      for(int l=0;l<14;l++)begin src_i[l*16+:16]=source_i[beat*14+l];src_q[l*16+:16]=source_q[beat*14+l];end
-      do @(posedge srcclk);while(!src_ready);
-    end
-    @(negedge srcclk);src_valid=0;src_start=0;src_last=0;
+    // First complete source frame is stopped gracefully while its payload is
+    // in flight, then interrupted during actual serializer-buffer emission.
+    fork
+      begin
+        for(int beat=0;beat<3008;beat++) begin
+          if(beat%37==9) begin @(negedge srcclk);src_valid=0;repeat(2) @(negedge srcclk);end
+          @(negedge srcclk);src_valid=1;src_start=(beat==0);src_last=(beat==3007);
+          for(int l=0;l<14;l++)begin src_i[l*16+:16]=source_i[beat*14+l];src_q[l*16+:16]=source_q[beat*14+l];end
+          do @(posedge srcclk);while(!src_ready);source_sent=source_sent+1;
+        end
+        @(negedge srcclk);src_valid=0;src_start=0;src_last=0;
+      end
+      begin wait(sent>=16);write_reg(8'h00,0);end
+    join
     // Abort while the full-frame serializer buffer is actively emitting.
     wait(emitted>=100);
+    if(underflow_seen || underflow || protocol_error) $fatal(1,"pre-abort underflow or protocol failure");
     @(negedge txclk[0]);axil_rst_n=0;
     #10;
     if(rst_n!==1 || src_rst_n!==1 || serializer_epoch_n!==0 || source_epoch_n!==0 || pa_valid!==0 || out_mask!==0)
