@@ -1,5 +1,18 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Live AXI-reset abort prototype result
+
+- User selected abort/safe-stop/reconfigure. Research Runtime wrapper + external
+  frame buffer reset integration passed bounded digital live GTY attempt 02:
+  abort during active output cleared PA mask; after restart 5264 Golden words
+  and 336896 TX/RX bits per lane match with zero simulated skew and no observed
+  underflow. EVM 2.551442%, SNDR 31.864285 dB, 15/37376 errors.
+- Scope: one finite prefetched frame and legal STOP, synthetic epoch, pattern
+  scan for serial capture boundary. Parent must connect resets/physical PA
+  enable. Board RF, arbitrary stalls, Core-only live reset, reset CDC/RDC,
+  formal closure and routed timing remain OPEN. Attempt 01 underflow FAIL is
+  retained. See `docs/verification/vcu118_de_closure_20261118/`.
+
 ## 2026-11-18 — Runtime abort wrapper and candidate formal
 
 - User selected active-frame abort and safe stop on AXI-Lite reset, followed

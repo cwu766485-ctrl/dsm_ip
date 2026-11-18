@@ -60,3 +60,42 @@ adjacent proxies -19.254889/-19.396653 dBc. Evidence:
 to identify the capture boundary; that diagnostic does not establish a fixed
 hardware timing contract. The pre-reset underflow means the overall attempt
 remains FAIL despite the simulator's final success marker. This is not RF ACLR.
+
+
+## AXI-only reset during live GT serialization — attempt 02
+
+**PASS, bounded digital research test only**: with a complete prefetched frame
+and legal STOP, the actual RTL MASH chain and two GTY models emitted 100 PA
+words before AXI-Lite alone was reset. The prototype wrapper asynchronously
+suppressed PA valid and held the externally connected input/serializer epoch
+resets active; the modeled serializer `out_mask` cleared. After reconfiguration,
+the full 5,264-word frame, frame/config metadata and 336,896 TX and RX bits per
+lane matched independent Golden; observed inter-lane skew was zero, drain=1,
+underflow=0, protocol=0. No pre/post-reset `LIVE_FIRST_UNDERFLOW` or fatal was
+reported. `runs/live_axil_abort_02/project/gty_sim.sim/sim_1/behav/xsim/simulate.log`
+SHA-256 `e2ef9ebc9fe6f384e9e373307ac82b2e6f017f742149001bda06c529dbc7b507`.
+The prior attempt 01 is still **FAIL** because of pre-reset underflow.
+
+Actual post-restart serial bits at fixed receiver source offset 528 give
+EVM 2.551442%, SNDR 31.864285 dB and BER 15/37,376 (0.000401327); positive-
+frequency adjacent digital power is -19.254889/-19.396653 dBc in the stated
+250 MHz Welch bands (`runs/live_axil_abort_receiver_02/`,
+`runs/live_axil_abort_psd_02/`). These are not measured RF ACLR. The TX/RX
+bitstream comparator scans for the serialized frame pattern to identify the
+capture boundary, so this experiment does not establish a fixed physical
+serializer phase/latency contract. Epoch input to the serializer remains
+synthetic zero. The input and serializer buffers are research modules; the
+additional resets must be connected by the parent and physical PA-enable
+gating must be implemented. Core-only reset on the complete live chain,
+unbounded/random starvation, true frame abort metadata, board GT and RF remain
+OPEN. No full-Top routed timing or system CDC/RDC is established.
+
+Vivado 2026.1 / nominal 14.000 Gb/s; source Git and SHA-256 hashes are in
+`runs/live_axil_abort_launcher_02/manifest.json` (the testbench was a recorded
+dirty source at launch; the source hash is authoritative). Reproduce with
+`vivado -mode batch -source research/vcu118_arch/sim_live_axil_abort_restart.tcl
+-tclargs <NEW_OUTPUT_DIR>` from a fresh working directory and require both
+serial/RX markers, final drain diagnostics and no first-underflow/fatal marker.
+Copy the actual `serial_pa{0,1}.mem` to a fresh capture directory and run the
+receiver and PSD commands in
+`docs/verification/vcu118_convergence_20261117/full_chain_gty_report.md`.

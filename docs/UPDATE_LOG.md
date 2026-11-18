@@ -7552,3 +7552,13 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Live attempt 01 post-reset serial bits separately yield EVM 2.551442%,
   SNDR 31.864285 dB and 15/37376 errors. Whole run remains FAIL due to
   documented pre-reset underflow; serialized boundary search is diagnostic.
+
+## 2026-11-18 SGT — Bounded digital live AXI-reset abort
+
+- Research wrapper/serializer reset test passed bounded live MASH→dual GTY
+  digital attempt 02: mask clears on AXI-only reset during active output;
+  restart yields 5264 Golden words, 336896 TX/RX bits/lane and no observed
+  underflow. Digital EVM 2.551442%, SNDR 31.864285 dB, 15/37376 errors.
+- Prior attempt 01 pre-reset underflow remains FAIL. Pattern scan identifies
+  serial capture boundary; true epoch, fixed physical alignment, arbitrary
+  traffic, parent PA-enable, board RF, CDC/RDC and routed timing remain open.
