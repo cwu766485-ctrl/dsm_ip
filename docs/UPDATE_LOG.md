@@ -7562,3 +7562,12 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Prior attempt 01 pre-reset underflow remains FAIL. Pattern scan identifies
   serial capture boundary; true epoch, fixed physical alignment, arbitrary
   traffic, parent PA-enable, board RF, CDC/RDC and routed timing remain open.
+
+## 2026-11-18 SGT — Abort-proxy timing and Core-reset validation
+
+- Research PPA proxy passed runtime Golden mode-switch VCS regression; queued
+  EF1/MASH implementations under identical experimental constraints. Added
+  reset ports mean its boundary differs from the prior OOC baseline; no timing
+  PASS or physical signoff is claimed.
+- Started separate real-GTY digital Core-only-reset/restart experiment with
+  AXI-Lite kept live, after the bounded AXI-only reset experiment passed.

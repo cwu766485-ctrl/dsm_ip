@@ -99,3 +99,11 @@ serial/RX markers, final drain diagnostics and no first-underflow/fatal marker.
 Copy the actual `serial_pa{0,1}.mem` to a fresh capture directory and run the
 receiver and PSD commands in
 `docs/verification/vcu118_convergence_20261117/full_chain_gty_report.md`.
+
+- An equivalent Runtime-mode abort PPA proxy passed the independent-Golden
+  three-architecture VCS test: 448 words, 6/6 mode transitions, 738 stalls,
+  no UVM errors/fatals (`runs/de_abort_integration_sandbox/runs/abort_ppa_equiv_01/`).
+  Static EF1/MASH proxy modes and system reset behavior require further checks.
+- Core-only reset during active GT serialization with AXI-Lite left live is
+  running in `runs/live_core_abort_01/`. It is a separate experiment from the
+  completed AXI-only test; no result is claimed before all bit/receiver checks.

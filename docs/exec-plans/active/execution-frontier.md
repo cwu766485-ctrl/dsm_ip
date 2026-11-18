@@ -1,5 +1,17 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Coordinated-reset PPA and Core-only live test
+
+- Runtime-mode PPA proxy with candidate reset coordination passed 448-word
+  Golden VCS mode-switch regression; static pruned modes were not separately
+  validated. EF1/MASH full implementations are queued under
+  `runs/de_abort_integration_sandbox/runs/abort_ppa_queue_01/`. Same study
+  clocks/DPD/XPM, but added reset ports and experimental 4 ns mailbox bound;
+  no system/board timing signoff or result yet.
+- Core-only reset while AXI-Lite remains live, during live GT serialization,
+  is running in `runs/live_core_abort_01/`; inspect final diagnostics and
+  serial/RX markers. Existing AXI-only bounded digital test passed.
+
 ## 2026-11-18 — Live AXI-reset abort prototype result
 
 - User selected abort/safe-stop/reconfigure. Research Runtime wrapper + external

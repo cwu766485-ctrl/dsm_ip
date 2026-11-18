@@ -16,3 +16,24 @@ exploratory mailbox 4 ns max delay. OOC input/output budgets and physical
 clock source remain provisional. Invoke `vivado -mode batch -source
 research/vcu118_arch/audit_ef1_ack_first_stage_exception.tcl -tclargs
 <ABS_ROUTED_DCP> <NEW_OUTPUT_DIR>` from a fresh working directory.
+
+
+## Abort-wrapper exploratory PPA
+
+An isolated PPA proxy copy with the same source/Core reset coordination as the
+research Runtime wrapper passed its runtime-mode Golden VCS test (`448` words,
+`6/6` mode transitions, zero UVM errors/fatals) in
+`runs/de_abort_integration_sandbox/runs/abort_ppa_equiv_01/`. This exercises
+`PPA_MODE=-1`, not each statically pruned proxy. The EF1-only and MASH-only
+proxies are now queued serially in
+`runs/de_abort_integration_sandbox/runs/abort_ppa_queue_01/`. Both use the
+same device, clocks, Cubic A, XPM FIFO and the same **exploratory**, unapproved
+4 ns mailbox exception; they add source/serializer epoch output ports and
+reset logic relative to the old PPA baseline, so report that boundary difference
+when comparing resources. The manifests capture the dirty sandbox status and
+SHA-256 of each substituted source; completion markers and native reports are
+mandatory. No routed timing or PPA result is yet available. The research
+`thermo5_ppa_abort_candidate.sv` and `run_ppa_abort_candidate.tcl` reproduce
+the isolated proxy and script; copy into a fresh isolated checkout with the
+recorded config candidate and use a new output directory. This is OOC, not
+physical board or GT signoff.
