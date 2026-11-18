@@ -67,3 +67,10 @@ traffic/mode-switch safety has not been proven. Therefore candidate 3 is not
 qualified, and no product RTL or PPA signoff is claimed. A safe implementation
 must preserve or coordinate the active physical PA contract and resynchronize
 AXI-Lite mode readback without allowing mixed epochs.
+
+`runs/de_candidate3_axil_mode_active_witness_01/` additionally drives the
+configuration block's `core_tx_active=1` during independent AXI-Lite reset:
+`dsm_arch` immediately changes from MASH to EF2 with Core reset high. This is
+a direct configuration-block witness while its active indication is asserted;
+it does not by itself show a serialized PA waveform. Reset/frame/PA policy
+remains a system-level choice and no candidate is promoted.

@@ -7509,3 +7509,8 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Combined fixed-phase formal on first reset candidate: 6/7 proven, sample
   stability inconclusive depth 195, 7 non-vacuous and 4/4 covers. This
   candidate already failed Core-only reset replay and remains unqualified.
+
+- Candidate 3 AXI-only reset also changes the configuration block Core mode
+  while its `core_tx_active` input is high; directed VCD retained in
+  `runs/de_candidate3_axil_mode_active_witness_01/`. Serialized PA impact is
+  not measured by this block-level test.

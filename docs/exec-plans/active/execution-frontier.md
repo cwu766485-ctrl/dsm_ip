@@ -11,7 +11,9 @@
   independent-Golden XSim and two VCS tests (coverage disabled), plus a
   scoped 4/4 assertion Core-reset formal with 2/2 covers. It nevertheless
   resets the Core mode to EF2 on AXI-only reset while Core remains active:
-  `runs/de_candidate3_axil_mode_witness_01/`. Live PA contract safety remains
+  `runs/de_candidate3_axil_mode_witness_01/`. A second directed test sets
+  `core_tx_active=1` and observes the same change in
+  `runs/de_candidate3_axil_mode_active_witness_01/`. Live PA safety remains
   unproven; candidate 3 remains FAIL/not product RTL.
 - Full candidate 3 mailbox seven-property formal is running in
   `runs/de_candidate3_combined_formal_01/`. All evidence and both dirty
