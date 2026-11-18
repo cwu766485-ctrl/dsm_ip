@@ -49,3 +49,14 @@ mode change and must not be interpreted as product PASS.
   legal STOP for the completed source frame and explicitly fails if pre-abort
   underflow/protocol flags appear; it is running in `runs/live_axil_abort_02/`.
   Do not treat STOP as hiding an underflow: attempt 01 remains preserved.
+
+Attempt 01's post-reset frame serial TX and RX both matched 336,896 bits per
+lane, with zero observed inter-lane skew, drain=1 and post-reset underflow=0.
+The receiver applied to the actual post-reset serial bits gives EVM 2.551442%,
+SNDR 31.864285 dB, 15/37,376 uncoded bit errors, with digital lower/upper
+adjacent proxies -19.254889/-19.396653 dBc. Evidence:
+`runs/live_axil_abort_receiver_01/`, `runs/live_axil_abort_psd_01/`,
+`runs/live_axil_abort_01/`. The test scans for the serialized frame pattern
+to identify the capture boundary; that diagnostic does not establish a fixed
+hardware timing contract. The pre-reset underflow means the overall attempt
+remains FAIL despite the simulator's final success marker. This is not RF ACLR.

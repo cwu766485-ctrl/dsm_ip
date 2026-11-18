@@ -7548,3 +7548,7 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   but pre-reset underflow occurred; mark FAIL, preserving evidence. Attempt 02
   uses a legal STOP on the completed frame and explicitly checks pre-abort
   underflow/protocol status; no result yet.
+
+- Live attempt 01 post-reset serial bits separately yield EVM 2.551442%,
+  SNDR 31.864285 dB and 15/37376 errors. Whole run remains FAIL due to
+  documented pre-reset underflow; serialized boundary search is diagnostic.
