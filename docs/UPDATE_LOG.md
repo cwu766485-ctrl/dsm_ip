@@ -7521,3 +7521,21 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   abort/safe-stop, uninterrupted transmission, or reset only after drain.
   The choice affects the PA mode and system reset implementation; candidate 3
   remains unqualified and no option has been inferred.
+
+## 2026-11-18 SGT — Selected independent-reset stop policy
+
+- Recorded the user-selected target: AXI-Lite-only reset aborts the frame and
+  safely stops output pending reconfiguration; Core-only reset leaves AXI-Lite
+  transport live and reports aborted transactions. The existing common-reset
+  requirement remains until product integration is actually verified.
+- Started research-only Runtime abort wrapper; serializer and board PA gating
+  need explicit integration, testing and physical signoff.
+
+## 2026-11-18 SGT — Runtime abort integration prototype
+
+- Added research Runtime wrapper and live-GTY AXI-only reset test. Normal
+  three-mode Golden runtime test passed in isolated sandbox; live GT test in
+  progress. External serializer/PA enable must adopt the exported reset, so
+  no physical or product stop PASS is claimed.
+- Candidate 3 combined mailbox formal: 5/7 proven, 2 inconclusive depth 175,
+  7 non-vacuous, 4/4 covers; fixed phase and reset-check limits remain.

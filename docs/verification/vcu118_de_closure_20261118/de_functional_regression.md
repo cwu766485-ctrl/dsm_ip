@@ -31,3 +31,10 @@ Reproduce candidate 3's six directed checks plus its expected mode-change
 witness using `bash research/vcu118_arch/run_de_candidate3_directed.sh
 runs/NEW_DIR`. The final witness intentionally demonstrates an unresolved
 mode change and must not be interpreted as product PASS.
+
+- User-selected safe-stop integration prototype: isolated Runtime three-mode
+  XSim test passed 448 output words, 6/6 transitions, 727 stalls and 187
+  partial-ready events in `runs/de_abort_integration_sandbox/runs/runtime_abort_normal_01/`.
+  This is a normal-operation test and does not itself exercise AXI-only reset.
+  The live AXI-only reset during GT serialization test is running in
+  `runs/live_axil_abort_01/`; no pass is claimed yet.

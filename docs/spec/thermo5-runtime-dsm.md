@@ -87,6 +87,20 @@ AXI-only reset can otherwise leave a pre-reset Core pending configuration that
 applies at the next boundary. A directed local common-reset test covers one
 pending DPD update and restart; system-level reset epoch, CDC/RDC, serializer,
 and RF-board signoff remain open.
+
+## DE target: independent-reset abort (not yet product-qualified)
+
+The selected target policy for an AXI-Lite-only reset during transmission is
+to abort the current frame, safely stop PA emission and serializer frame
+processing, and require reconfiguration before restart. A Core-only reset
+must leave AXI-Lite transport operational: a pending response already presented
+must remain stable, and an aborted configuration transaction must be reported
+through its response when possible or sticky failure status otherwise.
+These are target requirements, not a claim about the current product top. The
+existing independent reset behavior and physical serializer/PA shutdown are
+not yet qualified; the common-reset integration requirement above remains in
+force until an implementation and system-level tests replace it.
+
 MASH's accepted-stream delay is 66 words = 528 source samples; the receiver
 uses that explicit CP/FFT offset, without per-capture alignment search. Wall-clock
 latency changes with bubbles/backpressure; a serializer must enforce continuity.

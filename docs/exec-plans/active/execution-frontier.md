@@ -1,5 +1,29 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Runtime abort wrapper and candidate formal
+
+- User selected active-frame abort and safe stop on AXI-Lite reset, followed
+  by reconfiguration. Runtime abort wrapper prototype gates PA valid and
+  coordinates source/Core epochs, exposing reset to the external serializer;
+  parent/physical PA gating is not integrated or signed off.
+- Normal three-mode runtime Golden XSim passed in isolated worktree
+  `runs/de_abort_integration_sandbox/runs/runtime_abort_normal_01/` (448 words,
+  6/6 transitions); live GT serialization reset test is running in
+  `runs/live_axil_abort_01/`. Neither result proves physical RF stop.
+- Candidate 3 seven-property combined formal completed 5/7 proofs, two
+  inconclusive at depth 175, all seven non-vacuous and 4/4 covers. It is not
+  formal signoff; fixed clocks and disabled reset setup check remain.
+
+## 2026-11-18 — Selected active-frame reset policy
+
+- User selected abort current frame and safely stop transmission on AXI-Lite
+  reset; reconfiguration is required before restart. This is a target contract,
+  not yet implemented or signed off. Core-only reset must leave AXI-Lite live
+  and report aborted transactions without changing already-presented B.
+- Research runtime abort-wrapper prototype coordinates source/Core reset and
+  exports reset signals for external serializer/input buffering. It is not
+  product RTL; actual GT/PA integration and reset/traffic behavior remain open.
+
 ## 2026-11-18 — Active-frame AXI reset policy clarification
 
 - Asked user whether AXI-Lite-only reset while transmitting should abort and

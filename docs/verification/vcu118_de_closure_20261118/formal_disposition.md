@@ -19,5 +19,8 @@ ratio, boot reset held released and reset setup checks disabled. They do not
 prove live active-mode or PA contract safety. Candidate 2 formal attempt 01
 is excluded from qualification because its harness was edited while the run
 was starting; attempt 02 recorded input hashes before launch. Candidate 3
-seven-property combined proof is running in `runs/de_candidate3_combined_formal_01/`;
-its outcome does not erase the separate mode-reset witness.
+seven-property combined proof `runs/de_candidate3_combined_formal_01/`
+completed: 5/7 proven, `a_active_stable` and `a_sample_stable` inconclusive
+at depth 175; all 7 non-vacuous and 4/4 covers hit. The same fixed-period,
+released-reset model and disabled reset setup check apply. Its outcome does
+not erase the separate mode-reset witness.
