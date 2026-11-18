@@ -109,8 +109,8 @@ Required directed XSim check of the existing product passed with a unique seed
 880291 and the existing vectors in
 `runs/uvm_thermo5_i2_d1/axis_xsim_parallel_generic_causal_ef1_seed880291_words56/`
 (marker `THERMO5_I2_D1_AXIS_BITTRUE_PASS`). This product test does not compile
-or validate the new research reset coordinator. The required VCS regression is
-in progress in `runs/cdc_followup_required_vcs_01/`.
+or validate the new research reset coordinator. The first VCS regression attempt failed due to a vector/build configuration
+mismatch; the corrected matching-vector retry passed as described below.
 
 
 ## Vivado routed CDC classification
@@ -129,6 +129,9 @@ Required VCS regression attempt 01 FAILED at the first bit-true word: observed
 `b3bb39bf8b9f88c8`, expected `6666666666666666`
 (`runs/cdc_followup_required_vcs_01/`). That invocation used existing
 EF1/causal vectors while the Makefile default was centered-cubic EF2/STEP5120;
-its result cannot qualify that configuration. Attempt 02 regenerates vectors
+its result cannot qualify that configuration. Attempt 02 regenerated vectors
 for the actual default using the repository command, in an independent run
-`runs/cdc_followup_required_vcs_02/`; results are pending. Both logs are kept.
+`runs/cdc_followup_required_vcs_02/`. The full seven-test VCS regression
+completed with exit 0, each log has UVM_ERROR/UVM_FATAL=0 and the illegal-frame
+negative test observed its expected assertion. The new research reset
+coordinator is not in that product build. Both attempts are preserved.

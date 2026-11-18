@@ -7410,3 +7410,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Required VCS first attempt failed first PA comparison after using causal/EF1
   vectors for centered/EF2 default. Preserved failure and started a fresh run
   with repo-generated vectors matching the build; no VCS PASS claimed yet.
+
+## 2026-11-18 SGT — Matched-vector VCS regression
+
+- Seven-test VCS regression passed with freshly generated vectors matching the
+  centered-cubic EF2/STEP5120 default. All UVM logs report zero errors/fatals;
+  the illegal-frame negative assertion was observed. Earlier mismatched-vector
+  failure is preserved. The research reset coordinator is not in this build.

@@ -6,8 +6,8 @@
   3 CDC-6 warnings and 2 CDC-26 warnings. Classification and remaining
   check_timing/report completion are pending in `runs/ef1_vivado_cdc_audit_queue_01/`.
 - Required VCS attempt 01 failed first bit-true comparison with EF1/causal
-  vectors against the default centered EF2 build. Attempt 02 uses newly
-  generated matching centered EF2 vectors and is running. Preserve both.
+  vectors against the default centered EF2 build. Attempt 02 with newly
+  generated matching centered EF2 vectors passed all seven tests. Preserve both.
 
 ## 2026-11-18 — Common reset integration candidate
 
@@ -16,8 +16,10 @@
   `runs/common_reset_coordinator_01/`. It is NOT integrated into product or
   qualified with timing/CDC/RDC. Existing product XSim bit-true regression
   passed using unique seed 880291; it does not exercise the new coordinator.
-- Required VCS regression is running in `runs/cdc_followup_required_vcs_01/`.
-  Review all tests and final markers; do not infer PASS from process start.
+- Required VCS regression retry `runs/cdc_followup_required_vcs_02/` passed
+  seven tests with matching generated vectors; the earlier mismatched-vector
+  failure in `runs/cdc_followup_required_vcs_01/` remains preserved. Neither
+  run instantiates the research reset coordinator.
 
 ## 2026-11-18 — Fresh EF1 timing report
 
