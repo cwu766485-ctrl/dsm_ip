@@ -1,3 +1,7 @@
+## 2026-11-18 — DE release candidate frontier
+
+- Added a scoped EF1/MASH release frontier with historical PPA, open reset/CDC/formal gates, finite live GTY evidence and UVM handoff checklist. No release candidate or tag was created; new route and deeper formal remain running. No RTL changed.
+
 ## 2026-11-18 — Runtime candidate CDC/RDC structural results
 
 - SpyGlass Generic Runtime candidate goals completed; classified all 45,778 reported RDC errors into 239 groups without waiver, and recorded three CDC output clock-cone errors. Scope differs from historical frontend-only count. Added grouping script, CSV, root-cause report and frontier; grouped findings remain open.
