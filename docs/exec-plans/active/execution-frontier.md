@@ -8,7 +8,9 @@
   enforce the parent distribution; system integration/CDC/RDC remain OPEN.
 - Actual configuration RTL with two local reset synchronizers passed pending
   update abort and new-epoch reconfiguration in `runs/cfg_common_reset_abort_01/`.
-  One directed phase is not a formal reset-epoch or whole-product proof.
+  `runs/cfg_common_reset_formal_01/` adds 2/2 non-vacuous config-block reset
+  state proofs and 2/2 covers; fixed clock ratio and reset setup disabled. Whole
+  product reset epoch and physical RDC are still open.
 
 ## 2026-11-18 — CDC reset-epoch witness and audits
 

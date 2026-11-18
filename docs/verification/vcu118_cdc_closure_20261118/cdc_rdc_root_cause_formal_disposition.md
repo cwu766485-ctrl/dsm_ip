@@ -70,3 +70,16 @@ iverilog -g2012 -D SYNTHESIS -s tb_cfg_common_reset_abort -o simv \
   /ABS/REPO/research/vcu118_arch/tb_cfg_common_reset_abort.sv
 vvp simv
 ```
+
+VC Formal V-2023.12-SP2 `runs/cfg_common_reset_formal_01/properties.txt`
+additionally proves 2/2 non-vacuous reset-state assertions with 2/2 covers:
+a common reset epoch clears AXI-Lite request/busy and Core pending/ACK, and
+the scenarios include a pending request before reset and a later new request.
+The arbitrary `epoch_n` pulse is combined with boot reset and feeds two local
+reset synchronizers; clock periods are fixed at 16/35 formal units. Reset setup
+checks were disabled and VC Formal reported three potential reset setup issues.
+This is limited to the configuration block's reset state, not every possible
+transaction ordering, physical reset release, output frame abort, full product
+or arbitrary clock phase. Reproduce with `MAILBOX_FORMAL_ROOT`,
+`MAILBOX_FORMAL_OUT` and `research/vcu118_arch/formal_cfg_common_reset_abort.tcl`
+in a fresh directory; do not treat the scoped proof as RDC signoff.

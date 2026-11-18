@@ -7376,3 +7376,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Added and ran `tb_cfg_common_reset_abort.sv`: real config RTL with local reset
   synchronizers discarded one pending transaction and accepted a fresh one
   after reset. System-level reset epoch and CDC/RDC remain open.
+
+## 2026-11-18 SGT — Scoped common-reset state proof
+
+- VC Formal proved 2/2 non-vacuous config-block reset-state assertions and
+  hit 2/2 covers with a nondeterministic common epoch pulse and local reset
+  synchronizers. Fixed clock periods, disabled reset setup checks and product
+  integration remain limitations; no CDC/RDC or full-chain signoff claimed.
