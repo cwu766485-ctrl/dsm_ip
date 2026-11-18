@@ -7329,3 +7329,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   overall setup WNS; all remain FAIL. No product RTL changed.
 - Added a separate mailbox atomicity formal harness; check final formal output
   and its scope. Full EF1 resynthesis and implementation are in progress.
+
+## 2026-11-18 SGT — Scoped mailbox atomicity result
+
+- VC Formal V-2023.12-SP2: 6/7 assertions proven, one sample-stability
+  assertion inconclusive at depth 127, 4/4 covers; fixed clock ratio and
+  released common reset. Full physical CDC/RDC remains open.
+- EF1 fresh synthesis reported 0 errors, 0 critical warnings and 739 warnings;
+  implementation continues and warnings need review. See the timing report.

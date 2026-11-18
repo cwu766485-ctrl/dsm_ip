@@ -11,9 +11,10 @@
 - Baseline DCP/log/VCD hashes and pre-work status are in
   `runs/convergence_evidence_20261118_01/manifest.json`. New comparison and
   strict status matrix are in `docs/verification/vcu118_convergence_20261118/`.
-- Mailbox atomic-update formal harness is running; review complete results,
-  coverage and scoped assumptions before claiming a proof. EF2 4/8-lane remains
-  inconclusive, and live GTY remains limited to finite-frame digital simulation.
+- Mailbox atomic-update formal completed 6/7 assertions proved, 1 inconclusive
+  (sample stability, depth 127), 4/4 covers; earlier smaller proof covered that
+  stability property. Fixed phase/common reset only, not CDC signoff. EF2 4/8
+  remains inconclusive; live GTY remains finite-frame digital simulation.
 
 ## 2026-11-18 — VCU118 implementation interruption
 
