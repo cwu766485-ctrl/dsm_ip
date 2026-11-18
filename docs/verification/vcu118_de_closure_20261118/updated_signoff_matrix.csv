@@ -8,3 +8,5 @@ DPD independent-reset candidate,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED
 Bidirectional epoch candidate 2,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,Core reset after MASH selection leaves stale AXI mode readback; sandbox only
 Bidirectional epoch candidate 3,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,AXI-only reset changes Core-selected mode without system abort proof; sandbox only
 Runtime coordinated-abort research prototype,BLOCKED,BLOCKED,,,,,,218.75,BLOCKED,BLOCKED,BLOCKED,NOT_RUN,BLOCKED,Finite AXIL/Core reset live GTY cases pass; pattern-based serial boundary and synthetic epoch; physical PA/RF unmeasured; matched OOC PPA pending
+EF1 coordinated-reset candidate A,BLOCKED,FAIL,47062,49898,496,6.5,4239,218.75,BLOCKED,BLOCKED,BLOCKED,NOT_RUN,BLOCKED,OOC route WNS -0.532 TNS -12.569 WHS +0.009; reset/CDC/parent clock open
+MASH coordinated-reset candidate A,BLOCKED,FAIL,35861,47737,496,6.5,2981,218.75,BLOCKED,BLOCKED,BLOCKED,NOT_RUN,BLOCKED,OOC route WNS -0.547 TNS -11.038 WHS +0.007; reset/CDC/parent clock open

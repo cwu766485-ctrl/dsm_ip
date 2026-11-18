@@ -1,3 +1,7 @@
+## 2026-11-18 — Updated DE candidate matrix
+
+- Added the newly completed EF1/MASH A research OOC implementations to the signoff matrix and refreshed the release frontier with 6/7 Formal. MASH B and isolated Formal continue running. All product-level gates remain blocked.
+
 ## 2026-11-18 — Coordinated reset OOC and deeper Formal results
 
 - Recorded completed EF1/MASH A routed timing, resources and critical reset paths, with OOC/XDC/power limitations. Started isolated MASH B route; did not change RTL or add exceptions.
