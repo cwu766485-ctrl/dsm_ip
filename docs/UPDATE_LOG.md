@@ -7514,3 +7514,10 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   while its `core_tx_active` input is high; directed VCD retained in
   `runs/de_candidate3_axil_mode_active_witness_01/`. Serialized PA impact is
   not measured by this block-level test.
+
+## 2026-11-18 SGT — Active-frame reset contract open
+
+- Requested clarification of AXI-Lite-only reset during an active frame:
+  abort/safe-stop, uninterrupted transmission, or reset only after drain.
+  The choice affects the PA mode and system reset implementation; candidate 3
+  remains unqualified and no option has been inferred.

@@ -1,5 +1,15 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Active-frame AXI reset policy clarification
+
+- Asked user whether AXI-Lite-only reset while transmitting should abort and
+  safely stop the frame, preserve continuous output/PA mode, or be permitted
+  only after STOP/drain. The answer is required before implementing a safe
+  mode/PA reset policy; no option has been assumed.
+- Candidate 3 changes Core mode with `core_tx_active=1` and Core reset high
+  (`runs/de_candidate3_axil_mode_active_witness_01/`), so it remains FAIL for
+  product qualification. Seven-property candidate formal is still running.
+
 ## 2026-11-18 — Bidirectional reset candidates and mode witness
 
 - User selected Core-only reset while AXI-Lite remains live: pending AXI writes
