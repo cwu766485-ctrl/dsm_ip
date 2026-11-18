@@ -120,8 +120,26 @@ Core-only full-chain attempt 02 adds a deliberately stalled accepted AXI-Lite
 status-write B response before the live Core reset, checks BVALID/BRESP remain
 stable across reset and completes the response while AXI-Lite stays released.
 The original attempt 01 test source is copied into its `isolated_sources/`
-directory. Attempt 02 is running in `runs/live_core_abort_02/`; it does not
-replace the earlier valid attempt and no new result is claimed until complete.
+directory. Attempt 02 **PASS for this bounded digital case**:
+`LIVE_CORE_RESET_HELD_B_RESPONSE_PASS`, no observed underflow or protocol
+error, drain=1; the post-reset frame matched 5,264 Golden words and 336,896
+TX/RX bits per lane with zero simulated skew. Its actual serialized bits
+measure EVM 2.551442%, SNDR 31.864285 dB, 15/37,376 uncoded bit errors,
+with lower/upper digital adjacent proxies -19.254889/-19.396653 dBc. Native
+log `runs/live_core_abort_02/project/gty_sim.sim/sim_1/behav/xsim/simulate.log`
+SHA-256 `4e7af70ecdfc45f07852309944b2a9ae36fa8e69255657f43330485fbcd0f930`;
+receiver/PSD under `runs/live_core_abort_receiver_02/` and
+`runs/live_core_abort_psd_02/`. The capture still finds serial boundaries
+by pattern scan; epoch remains synthetic. It does not replace attempt 01.
 The separate block-level candidate tests address interrupted configuration
 commit and sticky failure status; this full-chain attempt uses a harmless
 status write, not a simultaneously pending configuration commit.
+
+Reproduce live Core-reset/held-response attempt with Vivado 2026.1 using
+`vivado -mode batch -source research/vcu118_arch/sim_live_core_abort_restart.tcl
+-tclargs <NEW_OUTPUT_DIR>` from a fresh directory. The source revision and
+SHA-256 values are in `runs/live_core_abort_launcher_02/manifest.json`; the
+run's testbench was dirty at launch, so its recorded hash identifies the source.
+The parent must actually connect the wrapper's two epoch resets and a physical
+PA-enable gate; board RF, CDC/RDC and the fixed serial timing contract remain
+OPEN.

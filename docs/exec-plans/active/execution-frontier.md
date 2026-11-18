@@ -2,11 +2,13 @@
 
 ## 2026-11-18 — Pending AXI response during Core reset
 
-- Added a second bounded live GTY Core-reset test: hold a previously accepted
-  AXI-Lite status-write B response while Core alone resets, verify it remains
-  stable and completes, then reconfigure and compare the serial frame. Run
-  `runs/live_core_abort_02/` is in progress; it is not a pending configuration
-  commit test. Previous successful attempt and source snapshot are preserved.
+- Second bounded live GTY Core-reset test passed in `runs/live_core_abort_02/`:
+  an accepted AXI-Lite status-write B response remained stable/completed while
+  Core alone reset; reconfigured output matched 5264 Golden words and 336896
+  TX/RX bits per lane, with no observed underflow. EVM 2.551442%, SNDR
+  31.864285 dB, BER 15/37376. It is not a pending configuration commit test.
+  Serial pattern search, synthetic epoch, parent physical PA gate, board RF,
+  CDC/RDC, formal and routed timing remain open.
 
 ## 2026-11-18 — Coordinated-reset PPA and Core-only live test
 

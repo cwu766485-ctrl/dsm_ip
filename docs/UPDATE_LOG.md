@@ -7595,3 +7595,12 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   output was assigned Core output-delay clock rather than AXIS. Preserved its
   Tcl and logs. Queue 02 assigns source reset to AXIS and serializer reset to
   Core; full reset/parent I/O constraints remain provisional.
+
+## 2026-11-18 SGT — Live Core reset held-B result
+
+- Bounded research live-GTY attempt 02 passed held AXI-Lite BVALID/BRESP
+  stability and completion through Core-only reset, PA mask clear, restart,
+  5264 Golden words and 336896 TX/RX bits/lane without observed underflow.
+  EVM 2.551442%, SNDR 31.864285 dB, BER 15/37376. The held B was a status
+  write, not a pending configuration commit. Serial boundary search, synthetic
+  epoch, parent PA gate, board RF, CDC/RDC, formal and routed timing remain open.
