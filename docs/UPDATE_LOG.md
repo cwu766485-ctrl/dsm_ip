@@ -7503,3 +7503,9 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 - Added `run_de_candidate3_directed.sh`; all six directed cases and the
   separate expected mode-change witness replayed in a new directory. The
   witness remains a product qualification blocker.
+
+## 2026-11-18 SGT — First reset candidate combined formal disposition
+
+- Combined fixed-phase formal on first reset candidate: 6/7 proven, sample
+  stability inconclusive depth 195, 7 non-vacuous and 4/4 covers. This
+  candidate already failed Core-only reset replay and remains unqualified.

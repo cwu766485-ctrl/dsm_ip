@@ -4,9 +4,11 @@ VC Formal V-2023.12-SP2, original configuration RTL: `runs/mailbox_atomic_combin
 
 Candidate isolated independent-AXI-reset check: `runs/de_independent_reset_candidate_formal_01/` has 2/2 non-vacuous reset-state assertions proven and 2/2 covers, with independent AXI epoch input and Core reset held released. This does not prove the full mailbox contract under all reset epochs; reset checker is disabled and phase relationship is fixed. Full combined 7-property candidate proof including reset and mode switch is OPEN.
 
-The candidate's seven-property combined fixed-phase/common-reset run is in
-`runs/de_epoch_candidate_combined_formal_01/`; no result is claimed until
-the full report and vacuity/cover are checked.
+The first candidate seven-property combined fixed-phase/common-reset run
+`runs/de_epoch_candidate_combined_formal_01/` completed: 6/7 proven, sample
+stability inconclusive at depth 195, all 7 non-vacuous and 4/4 covers hit.
+This candidate separately fails the Core-only-reset replay test and is not
+qualified regardless of that formal outcome.
 
 
 Candidate 2 and candidate 3 Core-only-reset scope each have 4/4 non-vacuous
