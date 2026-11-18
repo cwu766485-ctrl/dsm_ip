@@ -1,5 +1,15 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Chosen common-reset epoch contract
+
+- User selected common reset assertion and abort of in-flight transactions.
+  `docs/spec/thermo5-runtime-dsm.md` records common assertion, local synchronized
+  release and reconfiguration after abort. Existing three reset ports do not
+  enforce the parent distribution; system integration/CDC/RDC remain OPEN.
+- Actual configuration RTL with two local reset synchronizers passed pending
+  update abort and new-epoch reconfiguration in `runs/cfg_common_reset_abort_01/`.
+  One directed phase is not a formal reset-epoch or whole-product proof.
+
 ## 2026-11-18 — CDC reset-epoch witness and audits
 
 - Research HEAD at start `80b2167844a3338cb6cf746f1da1829977aac5f4`; baseline

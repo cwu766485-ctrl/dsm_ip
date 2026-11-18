@@ -7367,3 +7367,12 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   checks were NOT_RUN; the prior seven-property run showed non-vacuity and
   capture cover. Composite proof remains limited to the fixed-clock-ratio,
   released common-reset model; reset setup checking and physical CDC remain open.
+
+## 2026-11-18 SGT — Runtime common-reset transaction contract
+
+- Recorded the selected common-assert/local-release reset and transaction-abort
+  contract in `docs/spec/thermo5-runtime-dsm.md`; parent reset distribution
+  must enforce it because the three existing input ports do not.
+- Added and ran `tb_cfg_common_reset_abort.sv`: real config RTL with local reset
+  synchronizers discarded one pending transaction and accepted a fresh one
+  after reset. System-level reset epoch and CDC/RDC remain open.

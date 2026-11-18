@@ -44,3 +44,29 @@ SGDC declares three clocks unrelated and three resets separately; reconciling
 the actual parent reset contract and classifying each crossing are open.
 Reproduction uses `runs/cdc_rdc_generic_static_20261118_02/run.sh`, after
 choosing new output paths; native goal reports and logs remain under that run.
+
+
+## Chosen common-reset contract and directed test
+
+The integration contract is now common assertion in AXI-Lite, AXIS and Core,
+with local synchronous deassertion; reset aborts all in-flight frames and
+configuration/mode requests and software reconfigures before RUN. See
+`docs/spec/thermo5-runtime-dsm.md`. The three existing top reset ports do not
+enforce this; parent distribution, skew and traffic gating are still **BLOCKED**
+until implemented and verified.
+
+A new real-RTL directed test `research/vcu118_arch/tb_cfg_common_reset_abort.sv`
+uses `dsm_reset_sync` in each of the two configuration domains. It submits an
+old pending DPD configuration, asserts common reset, checks no old pending or
+ACK remains after release, then submits and applies a new configuration. It
+passed in `runs/cfg_common_reset_abort_01/` with a retained VCD. This is one
+phase/scenario, not an arbitrary-clock/reset formal or complete runtime proof.
+Reproduce in an unused directory with Icarus 12.0:
+
+```bash
+iverilog -g2012 -D SYNTHESIS -s tb_cfg_common_reset_abort -o simv \
+  /ABS/REPO/rtl/axis/dsm_reset_sync.sv \
+  /ABS/REPO/rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv \
+  /ABS/REPO/research/vcu118_arch/tb_cfg_common_reset_abort.sv
+vvp simv
+```

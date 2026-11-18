@@ -66,9 +66,18 @@ backends stay reset. Readback updates only on a successful acknowledgment.
 board read/write callbacks and returns the physical PA contract. It leaves RUN
 cleared so the caller can complete step5 before restarting.
 
-Reset all three domains as in the existing system reset contract. Independent
-AXI-only/core-only live resets are not qualified by this change. No full-system
-CDC/RDC, serializer, or RF-board signoff follows from digital simulation.
+Reset uses a common reset epoch: the integration must assert reset for AXI-Lite,
+AXIS and Core together, and synchronize deassertion separately to each local
+clock. Assertion aborts every in-flight frame and pending configuration or mode
+transaction; software discards any interrupted result and reconfigures before
+RUN. Reset restores the documented default configuration and architecture.
+The three top-level reset inputs do not themselves enforce common assertion;
+the parent must implement and verify that distribution and release contract.
+Independent AXI-only/core-only live reset is unsupported. In particular, an
+AXI-only reset can otherwise leave a pre-reset Core pending configuration that
+applies at the next boundary. A directed local common-reset test covers one
+pending DPD update and restart; system-level reset epoch, CDC/RDC, serializer,
+and RF-board signoff remain open.
 MASH's accepted-stream delay is 66 words = 528 source samples; the receiver
 uses that explicit CP/FFT offset, without per-capture alignment search. Wall-clock
 latency changes with bubbles/backpressure; a serializer must enforce continuity.
