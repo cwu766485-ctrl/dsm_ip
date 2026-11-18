@@ -1,3 +1,8 @@
+## 2026-11-18 — Candidate Runtime CDC/RDC follow-up
+
+- Added isolated SpyGlass driver and Generic FIFO three-clock SGDC for the coordinated-reset Runtime candidate. The setup goal exited zero; CDC and RDC are still running in `runs/abort_candidate_static_01/`. Source SHA-256 and native logs are preserved; no waivers or signoff are implied.
+- Updated execution frontier and reset root-cause report. Matched EF1/MASH PPA remains in progress; Vivado flags unspecified OOC clock source locations, so clock skew and board integration remain open. No product RTL was changed in this follow-up.
+
 ## 2026-11-18 00:16 SGT — Two-frame live STOP/Restart without reset
 
 - `runs/live_stop_restart_01/` passed two successive live buffered frames with no reset, with STOP and drain each frame, input bubbles, actual AXIS → product MASH → prefill → dual GTY. Each frame matched 5,264 independent continuous-state Golden PA words and 336,896 serial TX and PMA loopback bits per lane; zero observed lane skew and no underflow/protocol error.

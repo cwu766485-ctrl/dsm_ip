@@ -1,5 +1,17 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Candidate Runtime static CDC/RDC launched
+
+- Generic-FIFO Runtime candidate CDC/RDC run `runs/abort_candidate_static_01/`
+  uses three unrelated clocks and independent reset assumptions. Setup finished;
+  CDC and RDC are in progress, with no disposition or waivers yet. The driver,
+  SGDC, source hashes and raw logs are retained. This scope differs from the
+  historical frontend-only RDC run and their counts cannot be compared directly.
+- EF1/MASH queue 02 is still running. Vivado reports missing `HD.CLK_SRC` on
+  OOC clock ports, so any routed result requires a parent-clock/skew audit and
+  cannot establish board-level clock timing or product signoff.
+
+
 ## 2026-11-18 — Pending AXI response during Core reset
 
 - Second bounded live GTY Core-reset test passed in `runs/live_core_abort_02/`:

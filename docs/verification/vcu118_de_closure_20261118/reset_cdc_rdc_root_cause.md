@@ -74,3 +74,15 @@ configuration block's `core_tx_active=1` during independent AXI-Lite reset:
 a direct configuration-block witness while its active indication is asserted;
 it does not by itself show a serialized PA waveform. Reset/frame/PA policy
 remains a system-level choice and no candidate is promoted.
+
+## Runtime candidate static follow-up (in progress)
+
+`runs/abort_candidate_static_01/` runs SpyGlass V-2023.12-SP1 on the isolated
+coordinated-reset Runtime candidate with the Generic FIFO and independently
+declared AXI-Lite, source and Core clocks and resets. The source hash manifest
+identifies the dirty sandbox candidate. Setup exited zero; structural CDC/RDC
+results are pending and must be read from native reports, not inferred from
+the process status. Run command: `wsl.exe -d Rocky-8.10 -- bash -ilc
+/mnt/e/workspace/chip/dsm_ip/runs/thermo5_vcu118_arch_research/runs/abort_candidate_static_01/run.sh`
+(use a new output directory for a repeat). No waivers have been approved.
+The run scope differs from the historical frontend-only Generic RDC evidence.
