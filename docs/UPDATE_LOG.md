@@ -7394,3 +7394,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
 
 - EF1 fresh routed run subsequently completed with its native completion marker
   and vectorless power estimate 4.912 W; post-route CDC audit is running.
+
+## 2026-11-18 SGT — Three-domain reset coordinator research candidate
+
+- Added a research-only common-assert, per-clock two-stage release coordinator
+  and standalone test; the test passed, but candidate product integration,
+  system CDC/RDC and routed implementation are NOT_RUN.
+- Existing EF1 product XSim bit-true passed at unique seed 880291; this test
+  does not instantiate the candidate. Required VCS regression is running.

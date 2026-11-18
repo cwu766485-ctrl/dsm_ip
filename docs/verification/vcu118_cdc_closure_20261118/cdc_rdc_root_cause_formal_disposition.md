@@ -83,3 +83,31 @@ transaction ordering, physical reset release, output frame abort, full product
 or arbitrary clock phase. Reproduce with `MAILBOX_FORMAL_ROOT`,
 `MAILBOX_FORMAL_OUT` and `research/vcu118_arch/formal_cfg_common_reset_abort.tcl`
 in a fresh directory; do not treat the scoped proof as RDC signoff.
+
+
+## Parent reset coordinator candidate
+
+A research-only `thermo5_common_reset_coordinator.sv` maps one common async
+reset request to three domain resets, each via the existing two-stage
+`dsm_reset_sync`. Its standalone directed test passes asynchronous common
+assertion and two local rising edges before release for all three clocks
+(`runs/common_reset_coordinator_01/`, including VCD). This supplies an
+integration candidate but is **NOT_RUN** in the runtime product top, GTY
+simulation, CDC/RDC, timing or PPA; parents must actually connect the outputs
+and verify reset distribution and clock startup. It does not alone establish
+software transaction abortion or frame recovery. Reproduce in a fresh cwd:
+
+```bash
+iverilog -g2012 -D SYNTHESIS -s tb_common_reset_coordinator -o simv \
+  /ABS/REPO/rtl/axis/dsm_reset_sync.sv \
+  /ABS/REPO/research/vcu118_arch/thermo5_common_reset_coordinator.sv \
+  /ABS/REPO/research/vcu118_arch/tb_common_reset_coordinator.sv
+vvp simv
+```
+
+Required directed XSim check of the existing product passed with a unique seed
+880291 and the existing vectors in
+`runs/uvm_thermo5_i2_d1/axis_xsim_parallel_generic_causal_ef1_seed880291_words56/`
+(marker `THERMO5_I2_D1_AXIS_BITTRUE_PASS`). This product test does not compile
+or validate the new research reset coordinator. The required VCS regression is
+in progress in `runs/cdc_followup_required_vcs_01/`.

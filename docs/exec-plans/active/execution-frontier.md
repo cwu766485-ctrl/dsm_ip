@@ -1,5 +1,15 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Common reset integration candidate
+
+- Added research-only three-domain reset coordinator and directed test; common
+  assertion and two local clock edges before release passed in
+  `runs/common_reset_coordinator_01/`. It is NOT integrated into product or
+  qualified with timing/CDC/RDC. Existing product XSim bit-true regression
+  passed using unique seed 880291; it does not exercise the new coordinator.
+- Required VCS regression is running in `runs/cdc_followup_required_vcs_01/`.
+  Review all tests and final markers; do not infer PASS from process start.
+
 ## 2026-11-18 — Fresh EF1 timing report
 
 - Fresh synthesis and route generated `routed.dcp` and native timing reports in
