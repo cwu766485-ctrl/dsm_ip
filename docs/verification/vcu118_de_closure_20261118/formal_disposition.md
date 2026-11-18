@@ -28,3 +28,7 @@ not erase the separate mode-reset witness.
 ## Longer combined candidate 3 run
 
 `runs/de_candidate3_combined_formal_deep_01/` completed 6/7 assertions proven, all non-vacuous, with 4/4 covers reached. `a_active_stable` is now proven; `a_sample_stable` remains inconclusive at depth 312 after the longer timeout. The same fixed 16:35 clocks and released-reset constraint apply, and reset setup checking remains disabled; this is neither a reset-epoch proof nor arbitrary-phase signoff. The host-overload warning is retained in the native log. No properties or assumptions were weakened. A property-isolated run with the same harness and assumptions is running in `runs/de_candidate3_sample_isolated_01/`; even a successful isolated run alone would not replace the requested same-run combined 7/7.
+
+## Candidate 3 isolated sample-stability diagnostic
+
+`runs/de_candidate3_sample_isolated_01/` proved `a_sample_stable` under the same fixed-clock, reset-released harness in 16 seconds. The isolated report marks vacuity and the other six assertions and four covers NOT_RUN. It does not by itself satisfy a non-vacuous combined 7/7 result or prove independent reset. A same-session attempt checks this assertion first and then the entire unchanged property set and covers under `runs/de_candidate3_combined_seeded_01/`; its outcome remains pending.

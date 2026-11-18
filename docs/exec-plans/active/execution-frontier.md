@@ -1,5 +1,16 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Isolated sample proof and RDC hierarchy triage
+
+- Candidate3 `a_sample_stable` proven in a single-property run, with same
+  fixed-clock/reset-released model; vacuity and remaining goals NOT_RUN there.
+  `runs/de_candidate3_combined_seeded_01/` checks the isolated property then
+  the full unchanged property/cover set in one session; completion pending.
+- All 45,778 Runtime RDC messages were additionally bucketed by hierarchy;
+  each group remains OPEN. See reset report and reproducible summary script.
+- MASH B route is still running; no completed result or RC freeze.
+
+
 ## 2026-11-18 — New routed candidate and formal results
 
 - Coordinated-reset EF1/MASH A OOC routes completed: overall WNS -0.532 /

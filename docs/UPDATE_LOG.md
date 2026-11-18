@@ -1,3 +1,8 @@
+## 2026-11-18 — Formal isolation and Runtime RDC triage
+
+- Isolated candidate3 sample-stability assertion proved with the unchanged harness, but its vacuity and other goals were not run. Started a same-session isolated-then-combined run; 7/7 combined and reset-epoch proof remain open.
+- Added reproducible hierarchy summary reconciling all 45,778 Runtime RDC errors and 239 groups; it creates no waivers or safety dispositions. Updated Formal, reset reports and execution frontier. No RTL change.
+
 ## 2026-11-18 — Updated DE candidate matrix
 
 - Added the newly completed EF1/MASH A research OOC implementations to the signoff matrix and refreshed the release frontier with 6/7 Formal. MASH B and isolated Formal continue running. All product-level gates remain blocked.
