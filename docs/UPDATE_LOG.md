@@ -7383,3 +7383,11 @@ remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
   hit 2/2 covers with a nondeterministic common epoch pulse and local reset
   synchronizers. Fixed clock periods, disabled reset setup checks and product
   integration remain limitations; no CDC/RDC or full-chain signoff claimed.
+
+## 2026-11-18 SGT — Fresh EF1 routed timing report
+
+- Fresh synthesis/route generated routed DCP and native timing summary: overall
+  WNS -0.352 ns, TNS -4.915 ns, WHS +0.005 ns; core-only WNS +0.099 ns.
+  OOC setup FAIL. Worst-20 and constraints remain in the run directory.
+- Zero internal unconstrained endpoints in synthesis-stage check_timing is
+  relative to study constraints only. Final power/CDC audit were still running.

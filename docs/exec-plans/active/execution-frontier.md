@@ -1,5 +1,15 @@
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
 
+## 2026-11-18 — Fresh EF1 timing report
+
+- Fresh synthesis and route generated `routed.dcp` and native timing reports in
+  `runs/ef1_fresh_synth_route_20261118_01/implementation/`. Overall WNS -0.352
+  ns, TNS -4.915 ns, WHS +0.005 ns; core-only WNS +0.099 ns. FAIL. The study
+  check_timing reports zero unconstrained internal endpoints under provisional
+  constraints. One exploratory 4 ns mailbox max-delay exception remains open.
+- Vivado was still writing the power report at this update; wait for final
+  marker and the queued post-route CDC audit before treating those as complete.
+
 ## 2026-11-18 — Chosen common-reset epoch contract
 
 - User selected common reset assertion and abort of in-flight transactions.
