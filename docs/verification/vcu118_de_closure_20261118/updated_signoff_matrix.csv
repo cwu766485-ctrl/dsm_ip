@@ -5,3 +5,5 @@ MASH-only,BLOCKED,FAIL,35927,47726,496,6.5,2981,218.75,8 backend cycles baseline
 EF1+MASH,NOT_RUN,NOT_RUN,,,,,,218.75,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,NOT_RUN,No matched dual-architecture synthesis or DV
 Runtime EF1/EF2/MASH,BLOCKED,BLOCKED,,,,,,218.75,3/2/8 backend cycles; II=1 scoped,BLOCKED,BLOCKED,BLOCKED,BLOCKED,Runtime full route incomplete; independent serializer/RF unverified
 DPD independent-reset candidate,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,AXI-only reset directed pass; Core-only reset stale request replay fail; PPA stopped; not product RTL
+Bidirectional epoch candidate 2,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,Core reset after MASH selection leaves stale AXI mode readback; sandbox only
+Bidirectional epoch candidate 3,FAIL,NOT_RUN,,,,,,218.75,BLOCKED,NOT_RUN,BLOCKED,NOT_RUN,NOT_RUN,AXI-only reset changes Core-selected mode without system abort proof; sandbox only
