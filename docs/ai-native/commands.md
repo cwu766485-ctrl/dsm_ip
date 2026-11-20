@@ -46,6 +46,19 @@ matching Generic/XPM snapshot and preserve previous captures before reuse.
 Synthesis-only entry: `syn/run_ooc_thermo5_runtime.tcl <part> <new_out_dir>`
 via `vivado -mode batch -source ... -tclargs ...`. It does not report routed timing.
 
+
+## Safe workspace cleanup
+
+From the repository root: `make clean-preview` previews disposable files;
+`make clean` deletes them using `tools/eda/clean_workspace.py`. Without Make
+on Windows, run `python tools/eda/clean_workspace.py --apply`.
+Python 3 and Git are required. Stop EDA jobs first. The script preserves Git
+tracked files, vendor/PDK/private content, filesystem links, the entire `runs/`
+tree, and CSV/DCP/waveform/log/journal/report evidence elsewhere. Coverage
+databases and simulator caches outside `runs/` are removed and must be
+regenerated for URG/debug or simulation reuse. Unknown local files are retained.
+This root target is the portable cleanup entry point; the older Linux-only
+`make -C dv/uvm/sim clean` remains available with its original wider scope.
 ## Thermo5 EF2 current-source Linux signoff
 
 On a licensed Synopsys Linux host, use a fresh ignored `runs/` directory for

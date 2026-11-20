@@ -1,3 +1,21 @@
+## 2026-11-21 00:26 SGT — Safe cleanup and upload preparation
+
+- Reviewed both checkouts before cleanup: the root `thermo5` checkout was at
+  `67d68abb402f9bb2c9a87a43a99f46955acfe9d9`; the independent VCU118 research
+  worktree was at `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef` and retained all
+  previously uncommitted source/report files.
+- Hardened `tools/eda/clean_workspace.py`: it scans only selected source/build
+  roots, skips the complete `runs/`, `ip/`, and board/vendor paths, and keeps
+  CSV, DCP, waveform, log, journal, and report evidence case-insensitively.
+  Unknown files and links remain untouched.
+- `make clean-preview` identified one generated Python bytecode cache file
+  (about 0.01 MiB); `make clean` removed exactly that file. No DCP, VCD, CSV,
+  log, report, run evidence, tracked source, or vendor content was removed.
+- Validation: Python syntax compile, cleanup preview/apply, and Git whitespace
+  checks. No RTL or Golden changed; no simulation/Formal/PPA rerun was needed.
+  GitHub publication is limited to independent branches; `thermo5` is not
+  updated or merged.
+
 # 2026-11-17 11:17 SGT - Runtime product final digital qualification
 
 - Final RTL/UVM implementation: `7fe5bbb`; subsequent changes bind evidence,
@@ -1403,6 +1421,24 @@ No product RTL change,no waiver/URG exclusion,no merge.Commands/results:
   UVM PASS; Raw/Adjusted URG and fail-closed coverage gate PASS; no new Formal
   run. No product RTL/default algorithm, RX, AI-DPD, XPM/GT Wizard, or Vivado
   implementation changed.
+
+## 2026-11-02 17:46 SGT - Align Windows workspace and add portable cleanup
+
+- Fast-forwarded local thermo5 from `051d427` to origin/thermo5 `2d7a58d`,
+  including merged PR #26; divergence is zero in both directions.
+- Added root `Makefile` and `tools/eda/clean_workspace.py`; documented
+  `make clean-preview` / `make clean` in README and the command index, and
+  updated the execution frontier. Python/Git are required; Windows without
+  Make can run `python tools/eda/clean_workspace.py --apply`.
+- Removed 55,032 reproducible intermediate/cache/waveform files (8.338 GiB).
+  Preserved tracked files, vendor/PDK/private directories, filesystem links,
+  raw board data, and logs/vectors/manifests/reports in runs/. Windows cannot
+  access some WSL special cache links; the cleaner skips reparse points.
+- Checks: disposable-file boundary fixture PASS; WSL `make -n clean` and
+  `make -n clean-preview` PASS; actual Windows cleanup PASS;
+  `git diff --check` PASS. No local RTL, MATLAB or algorithm edits;
+  XSim/VCS/OOC were not rerun. VDBs/waveforms must be regenerated before
+  coverage merge/debug. Unknown untracked files remain for manual review.
 
 ## 2026-11-02 09:07 SGT - Merge Thermo5 TX closure branches
 
@@ -7135,3 +7171,29 @@ local synchronous releases, no independent runtime reset. Actual SG CDC5→0E,
 RDC10506Eunchanged. Product VCS/oracle/reset/restart and targeted FPV executed;
 async FIFO epoch proof remains inconclusive. Exact report/reproduction and
 remaining risks: docs/verification/thermo5-cdc-rdc-rootfix.md. No auto merge.
+
+
+## 2026-11-19 11:21 SGT — 16-frame Golden prepared
+
+- Generated a continuous-state scalar MASH Golden for 16 repeated source
+  frames in `runs/live_long_16frame_02/golden_generated/`: 84,224 PA words
+  and 5,390,336 serial bits per lane. This is a new experiment directory; the
+  previous four-frame Golden and logs are unchanged.
+- Prepared a 16-frame GT Wizard testbench/Tcl/Windows launcher and SHA manifest.
+  XSim is NOT_RUN while the active MASH A Vivado route uses the shared worker.
+  Physical RF remains outside this digital check.
+- Rechecked that the generated first-frame oracle matches the existing
+  architecture-2 PA Golden. No RTL was changed.
+
+
+## 2026-11-19 11:21 SGT — 16-frame Golden prepared
+
+- Generated a continuous-state scalar MASH Golden for 16 repeated source
+  frames in `runs/live_long_16frame_02/golden_generated/`: 84,224 PA words
+  and 5,390,336 serial bits per lane. This is a new experiment directory; the
+  previous four-frame Golden and logs are unchanged.
+- Prepared a 16-frame GT Wizard testbench/Tcl/Windows launcher and SHA manifest.
+  XSim is NOT_RUN while the active MASH A Vivado route uses the shared worker.
+  Physical RF remains outside this digital check.
+- Rechecked that the generated first-frame oracle matches the existing
+  architecture-2 PA Golden. No RTL was changed.

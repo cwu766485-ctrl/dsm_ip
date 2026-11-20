@@ -18,6 +18,21 @@ excludes unrelated transmitter architectures and board applications.
 - Frozen SKU: `INTERP_TAPS=2`, `DPD_MAX_TAPS=1`, identity coefficient, XPM FIFO
   for the prospective GT parent; generic and XPM FIFO are both verified.
 
+
+## Workspace cleanup
+
+From the repository root, run `make clean-preview` to preview or `make clean`
+to delete reproducible EDA databases, simulator/Python caches, and tool scratch
+files. Python 3 and Git are required. On Windows
+without Make, use `python tools/eda/clean_workspace.py --apply`; in Rocky WSL,
+use `wsl -d Rocky-8.10 -- bash -lc 'cd /mnt/e/workspace/chip/dsm_ip && make clean'`.
+Stop EDA runs before cleanup. Tracked files, vendor/PDK/private directories,
+and all files under `runs/` are retained. CSV, DCP, waveform, log, journal and
+report files elsewhere are also retained. Special filesystem links are
+skipped. Coverage VDBs and simulator caches outside `runs/` are removed and
+must be regenerated before coverage merging or simulation reuse. Unknown
+untracked files and raw board measurements are retained rather than classified
+as disposable.
 ## Verification entry points
 
 Generate the 56-word independent MATLAB reference vectors:

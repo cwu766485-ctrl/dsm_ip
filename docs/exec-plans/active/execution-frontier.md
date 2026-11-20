@@ -1,3 +1,19 @@
+## Workspace housekeeping — 2026-11-21 00:26 SGT
+
+The root `thermo5` checkout is `67d68abb402f9bb2c9a87a43a99f46955acfe9d9`;
+the separate VCU118 research worktree remains on
+`work/thermo5-vcu118-architecture-research` at
+`30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`. The safe cleanup utility was
+hardened to avoid traversing experiment, IP, vendor and board directories and
+to preserve DCP/VCD/CSV/log/report evidence. Final preview identified one disposable Python `.pyc` cache (about 0.01 MiB);
+apply removed exactly that file. All
+experiment artifacts and pre-existing uncommitted files remain intact.
+
+The recorded DE state remains: 16-frame digital PASS; EF1 and MASH A positive
+scoped OOC routes; CDC/RDC and Full-Top Formal unresolved; no EF1+MASH Full-Top
+route; DE Freeze BLOCKED. Upload only on independent branches; do not update or
+merge `thermo5`.
+
 ## Runtime EF1/EF2/MASH digital product qualified (2026-11-17 11:17 SGT)
 
 Implementation: `7fe5bbb0c5e2ee35062ef797a18b73b3c9771bf5`, independent branch
@@ -1305,3 +1321,23 @@ The source of truth is actual URG plus exact remaining bins and proof contracts.
 Update this frontier and `docs/UPDATE_LOG.md` after a material result or next-action
 change. Keep generated reports, vendor/PDK files and licenses out of commits.
 Historical plans are under `../inactive/`; their scores/blockers are historical.
+
+
+## Local GitHub alignment and portable cleanup (2026-11-02 17:46 SGT)
+
+The Windows workspace was fast-forwarded from `051d427` to GitHub thermo5
+`2d7a58d` (PR #26 merged). HEAD and origin/thermo5 have zero divergence.
+Added root `make clean-preview` / `make clean`, backed by
+`tools/eda/clean_workspace.py`, for Windows and Linux. The portable cleaner
+preserves tracked files, vendor/PDK/private paths, filesystem links, and run
+logs/vectors/manifests/reports. It removes reproducible databases, caches,
+waveforms and root tool scratch. Actual cleanup removed 55,032 files,
+8.338 GiB; VDBs require regeneration before URG. Unknown local artifacts,
+raw measurements and inaccessible WSL special links remain protected.
+
+Validation: cleanup boundary fixture PASS; WSL Make dry-runs PASS; actual
+Windows cleanup PASS; Git divergence 0/0; `git diff --check` PASS. No local
+RTL/algorithm changes were made; no XSim/VCS/OOC regression was rerun for
+this housekeeping task. Remote verification results remain historical
+evidence, not a fresh local PASS. Next verification work remains the Phase 2
+gaps listed below; stop EDA jobs before running cleanup again.
