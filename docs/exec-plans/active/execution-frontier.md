@@ -1,4 +1,317 @@
+# 2026-11-20 23:37 SGT — EF1 and MASH A v11 OOC routes complete; DE Freeze blocked
+
+- v9 EF1 route's raw timing failure was traced to a naming mismatch: the
+  generated AMD XPM reset synchronizer stage is
+  `syncstages_ff_reg[0]/D`, while v9's exception pattern targeted the wrapper
+  name. The separate read-only post-route audit verified the actual
+  `ASYNC_REG` cells and passed scoped STA, but it did not reroute.
+- Added research Tcl v11 with a fail-closed match for exactly the two XPM
+  FIFO reset `syncstages_ff_reg[0]/D` pins, each checked for `ASYNC_REG`.
+  Fresh EF1-only OOC synthesis/place/route completed in
+  `runs/de_final_closure_20261120/ef1_candidate4_ooc_v11/`: routed WNS/TNS
+  `+0.171/0 ns`, WHS/THS `+0.027/0 ns`, 47,061 LUT, 49,829 FF, 496 DSP,
+  6.5 BRAM tiles, 4,239 CARRY8, and 3.532 W vectorless estimate.
+- Fresh selected MASH A OOC synthesis/place/route completed in
+  `runs/de_final_closure_20261120/mash_a_candidate4_ooc_v11/`: routed WNS/TNS
+  `+0.037/0 ns`, WHS/THS `+0.025/0 ns`, 35,883 LUT, 47,731 FF, 496 DSP,
+  6.5 BRAM tiles, 2,981 CARRY8, and 3.426 W vectorless estimate. MASH B
+  remains paused.
+- Both reports have zero unconstrained internal endpoints, but each has three
+  reset inputs without input delays, no parent `HD.CLK_SRC`/`HD.PARTPIN_LOCS`,
+  and unsafe asynchronous clock-interaction rows. These are scoped OOC results,
+  not product timing signoff. Router completion reported no unrouted nets or
+  route overlaps.
+- Existing v9 routes/audits, 16-frame PASS and all dirty work remain
+  preserved. No product RTL/Golden change, commit, tag or merge. Full-top
+  Formal, CDC/RDC disposition, parent XDC, integrated EF1+MASH route, and
+  combined reset/backpressure/epoch stress remain open. DE Freeze remains
+  BLOCKED.
+
+# 2026-11-20 19:20 SGT — DE final closure follow-up
+
+- Research worktree remains on `work/thermo5-vcu118-architecture-research`,
+  HEAD `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; pre-existing dirty files
+  are preserved. No product RTL or Golden changed. The fresh EF1 candidate4
+  v9 OOC route completed at 18:49 SGT and produced routed DCP
+  `49c85415d4e7d16a033fc51d9067ce5f7edf8c3b1c989aa7232297c946db9a3d`.
+- Raw EF1 OOC route WNS/TNS is `−0.244/−0.244 ns` at the Core-to-AXIS XPM
+  reset synchronizer stage-zero D pin; WHS/THS is `+0.009/0 ns`. A read-only
+  exact stage-zero audit on the same routed DCP verified seven ASYNC_REG
+  first-stage cells and reports WNS/TNS `+0.254/0 ns`, WHS/THS `+0.027/0 ns`,
+  zero unconstrained internal endpoints, and no unsafe inter-clock STA row.
+  This is a scoped OOC timing audit, not a reroute or Full-Top signoff.
+- EF1 core worst setup path is the centered Interpolator-2 output to the
+  Interpolator-2 FIFO data register: 4.298 ns data delay, 15 logic levels,
+  −0.009 ns skew. Three async reset input ports still lack input delay,
+  `HD.CLK_SRC` is unset, and the parent VCU118 XDC is absent.
+- Refreshed `de_final_closure_20261120.md` and `de_ppa_matrix_20261120.csv`.
+  CDC/RDC remains OPEN (3 Vivado Critical, 101 CDC-15, 17,895 RDC Errors/86
+  signatures), Full-Top Formal and EF1+MASH Full-Top PPA remain NOT_RUN. DE RC
+  remains BLOCKED. No DCP/VCD/log was overwritten; no commit/tag/merge.
+
+# 2026-11-20 17:43 SGT — DE final closure refresh
+
+- Branch/HEAD remain `work/thermo5-vcu118-architecture-research` /
+  `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; pre-existing dirty work is
+  preserved. No product RTL, Golden, DCP, VCD, or previous log was modified.
+- Reproduced the original 16-frame XSim launch failure in a fresh directory:
+  `xvlog` was absent from the child PATH and compile exited 1 before DUT
+  simulation. Added a no-wave launcher that orders `Vivado/bin` before
+  `unwrapped/win64.o`, records stage return codes, checks PASS markers, and
+  refuses existing outputs.
+- Fresh `runs/live_long_16frame_fix04/` completed Vivado script generation,
+  Compile, Elaborate, XSim, and PASS-marker checks with return code 0. All
+  84,224 PA words/lane across 16 frames are exact against the independent
+  continuous Golden; dual-lane TX/RX bit-true at 14.000 Gb/s, zero skew, no
+  underflow/overflow/protocol fault. First-frame fixed-offset metrics:
+  EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376. See
+  `de_final_closure_20261120.md` and the run manifest.
+- RC remains BLOCKED. Mailbox Formal v7 is PASS scoped only (25/25 assertions,
+  28/28 non-vacuity, 11/11 covers). The 3 reset-critical CDC paths, 101
+  CDC-15 warnings, and 17,895 RDC errors/86 structural signatures are
+  undisposed. MASH A +0.240 ns WNS/+0.032 ns WHS is scoped OOC only; legacy
+  EF1 timing fails, current EF1 and EF1+MASH routes/full-top Formal are
+  NOT_RUN. Parent VCU118 constraints and combined reset/backpressure/epoch
+  stress remain open. No RC, tag, commit, or merge.
+
+# 2026-11-19 12:18 SGT — MASH A routed audit PASS; 16-frame XSim BLOCKED
+
+- Branch/HEAD remain `work/thermo5-vcu118-architecture-research` /
+  `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; pre-existing dirty work is
+  preserved. No product RTL was edited in this turn.
+- MASH A candidate4 v9 routed DCP SHA-256:
+  `0645758fc5a89ea58683acd3d45188bfa4209faeac2ef906584e2ddd5f291e29`.
+  The raw report's only failing setup endpoint is the XPM async FIFO remote
+  reset synchronizer stage-zero D pin. A read-only audit verified exactly two
+  such cells have `ASYNC_REG=TRUE` and re-timed the routed netlist with only
+  those two D pins excluded. Result: WNS `+0.240 ns`, TNS `0`, WHS `+0.032 ns`,
+  THS `0`; the actual worst Core path is DPD DSP/CARRY at `+0.240 ns`.
+- This is a scoped OOC MASH A routed timing PASS. It is not a fresh v10 route or
+  product signoff: 3 reset-class Vivado CDC Critical findings and CDC-15
+  mailbox warnings remain; reset inputs lack I/O delay, OOC `HD.CLK_SRC` is
+  unset, and board timing/clock budgets are absent.
+- The 16-frame Live GTY run has nine recorded launch/compile attempts; none
+  reached DUT simulation. The generated `compile.bat` cannot resolve `xvlog`
+  under the Vivado launcher environment. A custom loader attempt stalled
+  without a log and was stopped. All attempts and artifacts are preserved;
+  16-frame status is BLOCKED. The existing 4-frame digital PASS is bounded;
+  physical RF remains NOT_MEASURED.
+- Next: establish a supported XSim child-tool environment, then rerun the
+  16-frame test. EF1, MASH B, EF1+MASH, full RDC dispositions, parent-level
+  timing, and DE Freeze remain OPEN/BLOCKED.
+
+# 2026-11-19 11:16 SGT — Candidate4 RDC completed; MASH A route active (history)
+
+- Current research branch/HEAD remain `work/thermo5-vcu118-architecture-research` /
+  `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; the worktree was already dirty.
+  All prior evidence and uncommitted files are preserved.
+- Exact-source SpyGlass candidate4 setup and CDC completed: 0 setup errors,
+  0 CDC errors, 0 unsynchronized crossings, 0 waivers. The previous 3
+  `Clock_sync06` outputs do not reproduce in this candidate4 scope.
+- Candidate4 Generic FIFO RDC completed with 17,895 errors (`Qualifier not
+  found`), 12 informational synchronized crossings, and 0 waivers. All
+  17,907 messages reconcile into 86 normalized endpoint/reset signatures;
+  every signature is `OPEN_REVIEW`. See
+  `reset_cdc_rdc_root_cause.md` and
+  `runs/de_resetfix_spyglass_candidate4_04/rdc_triage_02/`. The count is not
+  comparable to the older 45,778/239 Runtime or 10,539 frontend-only run.
+- Vivado MASH A candidate4 v9 PID 40944 is still active in Phase 5 Rip-up and
+  Reroute. It has a placed DCP but no routed DCP/final STA; the intermediate
+  WNS/TNS `−0.260/−0.260 ns` and WHS/THS `−0.018/−0.018 ns` still include the
+  XPM reset stage-zero path and are not closure evidence. Preserve and finish
+  this route, then perform the read-only exact-endpoint STA audit.
+- A 16-frame continuous Live GTY test is prepared under
+  `runs/live_long_16frame_02/`: its independent scalar MASH Golden has 84,224
+  words/lane (5,390,336 serialized bits/lane), and source/Tcl/testbench hashes
+  are saved. XSim is NOT_RUN pending the active Vivado route. The 4-frame PASS
+  remains the only completed extended continuous test.
+- Formal v7 remains scoped PASS (25 assertions, 28 non-vacuity goals, 11
+  covers); this does not close combined product reset behavior. EF1/MASH B
+  routes, combined Top, long randomized reset/backpressure, parent timing,
+  product serializer integration and RF measurement remain open. DE Freeze
+  remains **NO**.
+
+# 2026-11-19 10:49 SGT — MASH A v9 post-placement WNS remains negative
+
+- v9 MASH A completed Detail Placement and entered Post Placement Optimization
+  Phase 4.1; Vivado PID 40944 remains active and responsive. The tool has
+  inserted a BUFG for the Core abort/reset net (estimated 11,003 loads).
+  Post-placement estimated WNS remains `−0.262 ns`; this is before the exact
+  XPM reset stage-zero endpoint correction and is not final routed STA. No
+  placed or routed DCP exists yet. Its
+  synthesis-only result
+  remains WNS/TNS `−0.361/−0.361 ns` at the XPM asynchronous reset stage-zero
+  input, WHS `+0.039 ns`, Core intra-clock WNS `+1.140 ns`.
+- The exact XPM reset-stage root cause, v10 constraint script, read-only
+  corrected-STA audit, and fresh serial MASH B/EF1 run directories are
+  documented below. No exceptions were applied to functional paths or whole
+  clock groups.
+- Current blockers remain: output-cone CDC disposition, exact-source RDC,
+  combined EF1+MASH timing, reset-during-long-stream GTY, parent clock/I/O
+  contracts. DE Freeze remains NO.
+- The preserved first-frame-boundary continuous-stream failure is now traced
+  to `thermo5_frame_prefill_tx` bank handover: it emits one cycle with the
+  output mask cleared before reading the next READY bank. The later
+  `thermo5_elastic_pa_tx` FIFO removes this bubble and the preserved 2-frame
+  and 4-frame loopback runs pass. This buffer remains a research-side external
+  integration; randomized stalls/reset and product-top integration remain open.
+
+# 2026-11-19 09:40 SGT — MASH A v9 placement and XPM reset stage audit
+
+- v9 MASH A synthesis and `opt_design` completed; placement is active. The
+  synthesized DCP and intermediate timing/CDC/exception reports are saved.
+  Setup WNS/TNS is `−0.361/−0.361 ns` at one endpoint; hold WNS is `+0.039 ns`;
+  Core intra-clock setup is `+1.140 ns`.
+- The single setup path is Core→AXIS into XPM FIFO
+  `rrst_wr_inst/syncstages_ff_reg[0]/D`, where a remote FIFO reset request
+  enters stage zero of an AMD `xpm_cdc_sync_rst` chain. Vivado XPM source marks
+  the chain ASYNC_REG and clocks later stages in the destination domain. v9
+  missed the internal generated name; v10 narrowly selects the two such D
+  pins and checks ASYNC_REG. v10 is prepared but not run.
+- Wait for v9 route and reports before starting another implementation. The
+  three unsafe output-cone CDC endpoints, current-source SpyGlass/RDC, combined
+  EF1+MASH route, parent clocks and board output remain open. A read-only
+  post-route audit is prepared to apply only the two XPM reset stage-zero D
+  exceptions in-memory and collect routed reports without rewriting the DCP.
+
+# 2026-11-19 09:17 SGT — Tcl Boolean guard diagnosis and v9 rerun
+
+- Candidate4/Tcl v8 MASH A stopped after synthesis but before saving a DCP.
+  Vivado 2026.1 returns the valid `ASYNC_REG` Boolean as `1`; v8 compared it
+  only with `TRUE`. A read-only query of the preserved EF1 synthesized DCP
+  reports all ten reset synchronizer cells as `ASYNC_REG=<1>`. This is an
+  exception-script parser error, not missing RTL attributes or a timing result.
+- v9 now accepts `TRUE`/`1` only and retains fail-closed checks. It does not
+  broaden the CLR/first-stage D exceptions or cut clocks. Fresh MASH A v9 route
+  is running under `runs/de_resetfix_ppa_08/candidate4/mash_a/`; B and EF1 are
+  queued.
+- v9 MASH A synthesized and passed the guard: 18 local reset CLR pins, 2 XPM
+  reset-sync first-stage D pins, held-mailbox bundles of 99 and 2 bits, and
+  four bounded XPM Gray-pointer synchronizer instances. The synthesized CDC
+  summary still has three unsafe critical output-cone endpoints (1 Core→AXI-Lite,
+  2 Core→AXIS); the routed detailed CDC audit and reset/PA contract are open.
+  No routed DCP or timing summary exists yet.
+- Candidate A/B have prior arithmetic bit-true PASS (W=4 65,536 cases; W=16
+  100,000), sustained-stream PASS (1,025 inputs / 1,024 outputs), and stream
+  equivalence PASS under 887 stalls, 668 bubbles and one reset (3,575 outputs).
+  This is not a substitute for PPA or product reset/CDC signoff.
+- Dated status matrix is `docs/verification/vcu118_de_closure_20261118/de_signoff_matrix_20261119.csv`; the detailed old-route path/resource report is `timing_root_cause_20261118.md`.
+- Formal v7 remains scoped PASS (25/25, 28/28 non-vacuous, 11/11 covers).
+  Old Tcl v3 routes all remain timing FAIL. Current-source SpyGlass CDC/RDC,
+  combined EF1+MASH top, randomized reset/backpressure Live GTY stress,
+  parent timing, RF measurement and DE Freeze remain OPEN.
+
+# 2026-11-19 09:07 SGT — DE closure sprint refresh
+
+- Independent-reset Runtime mailbox Formal v7 completed **25/25 assertions,
+  28/28 non-vacuity goals, 11/11 covers**. The v6 non-convergence was a
+  checker sampling error: it sampled AXI-source `arch_req_q` on Core clock.
+  V7 uses synchronized `arch_req_c2` and proves request provenance from a
+  successful AXI-Lite write. No new assumptions or weakened assertions.
+- Tcl v3 OOC EF1, MASH A and MASH B routes have completed and all fail overall
+  setup: WNS/TNS = −0.435/−31.817 ns, −0.377/−30.773 ns, and
+  −0.435/−28.402 ns respectively. EF1 Core path is −0.187 ns; MASH A Core
+  path is −0.029 ns; MASH B Core paths pass but AXI mailbox and Core→AXIS
+  paths remain failing. Full path data and DCP identities are in the timing
+  root-cause report and preserved run directories.
+- Candidate4/Tcl v8 routes are prepared under `runs/de_resetfix_ppa_07/`.
+  MASH A launched first and is synthesizing; MASH B and EF1 are queued. V8
+  checks `ASYNC_REG` before cutting only local reset-sync CLR/first-stage D
+  endpoints; it preserves mailbox and XPM Gray-bus max-delay/skew checks and
+  does not cut whole clock groups. OOC I/O budgets remain provisional.
+- Top-level CDC/RDC structural disposition, combined EF1+MASH route, randomized
+  live reset/backpressure GTY stress, parent clock constraints and board RF
+  remain OPEN. DE Freeze remains **NO**. Keep all new results in this research
+  worktree; do not commit, tag, or merge.
+
+## 2026-11-18 23:37 SGT — Routed timing root cause and corrected-candidate preparation
+
+- EF1 OOC synthesis reports were inspected path-by-path. The worst `−0.827 ns`
+  is recovery from Core reset release into the asynchronous CLR of the AXIS
+  `rd_reset_in_wr` reset synchronizer; this is the first reset-sync stage, not
+  a Core data path. The separate `−0.283 ns` path is AXI-Lite mailbox data to
+  the Core pending bank, falsely phase-checked between independent clocks;
+  the source holds the bundle through the four-phase handshake. Exact path
+  delay/skew and scope are recorded in
+  `docs/verification/vcu118_de_closure_20261118/timing_root_cause_20261118.md`.
+- Prepared v4 timing Tcl with asynchronous-reset exceptions limited to local
+  reset-synchronizer CLR pins, plus one-Core-period max-delay and bus-skew
+  checks on held-data mailboxes. It does not cut clock groups. Prepared v5
+  switches the OOC frontend to the reset-epoch candidate proven by Formal v5.
+  The additional Formal v6 covers the separate runtime architecture mailbox;
+  it has not run yet, so no candidate PPA with mailbox bounds has launched.
+- Current EF1 attempt 04 and MASH A/B attempt 05 are still placing under Tcl v3
+  and the original config RTL; their DCP/STA, if completed, are exploratory and
+  cannot be represented as candidate3 closure. Candidate3 EF1, MASH A and B
+  runs are hash-manifested and PREPARED_NOT_LAUNCHED under
+  `runs/de_resetfix_ppa_06/candidate3/` pending Formal v6 and worker capacity.
+- Four-frame serial capture remains exact Golden on both lanes; first-frame
+  receiver metrics are EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376. Formal
+  v5 scoped PASS remains distinct from full Runtime reset/CDC disposition.
+  Runtime RDC groups, output reset fan-in/physical PA mute, combined Top,
+  arbitrary backpressure/reset in the long stream, and board RF remain OPEN.
+  DE Freeze remains NO.
+
+## 2026-11-18 23:19 SGT — Long-capture receiver metrics and current routes
+
+- The four-frame live GTY serial captures were checked word-for-word against
+  the independent continuous Golden: 21,056 words/lane, zero mismatches. The
+  first frame was demodulated with the existing fixed source-offset receiver:
+  EVM 2.551442%, SNDR 31.864285 dB, BER 15/37,376. Analysis script:
+  `research/vcu118_arch/analyze_live_serial_qam.py`; result:
+  `runs/live_long_4frame_02/receiver_metrics_01/qam_metrics.json`. Physical RF
+  and ACLR remain NOT_MEASURED.
+- Current EF1 XPM OOC attempt 04 has a synthesized DCP and valid four-instance
+  bounded Gray-pointer constraints, then advanced into placement. No placed or
+  routed DCP/STA is present yet. MASH A attempt 05 has synthesized and is
+  finishing CDC/constraint processing; no placed or routed DCP/STA is present.
+  MASH B has not started. Both flows use exploratory OOC boundary budgets;
+  neither can establish parent-top/board timing signoff. Preserve all prior
+  failures and reports.
+- Formal candidate mailbox proof remains scoped PASS (17/17 assertions,
+  20/20 non-vacuous goals, 6/6 covers). Runtime CDC/RDC disposition and
+  combined EF1+MASH remain OPEN. DE Freeze remains NO.
+
+## 2026-11-18 23:04 SGT — Four-frame Live GTY digital result
+
+- Four-frame continuous Runtime MASH full digital chain PASS: 21,056 PA words and 1,347,584 raw bits per lane at 14.000 Gb/s; two-lane TX/RX bit-true, zero skew, all four frame metadata sequences matched, drain completed without underflow/overflow/protocol error/gap. This is GT Wizard behavioral simulation only.
+- Open live-chain contracts: serial start is found by payload scan rather than asserted fixed latency; buffer epoch is testbench constant zero; random backpressure and reset during the same long stream were not exercised; physical RF and ACLR NOT_MEASURED. See `live_chain_4frame_20261118.md`.
+- EF1 corrected XPM OOC attempt 04 continues synthesis; no timing result yet. MASH A/B attempts are prepared but not started. Formal v5 candidate Mailbox proof is complete at 17/17 assertions, 20/20 non-vacuous goals and 6/6 covers. DE Freeze NO.
+
+## 2026-11-18 22:55 SGT — DE closure update
+
+- Formal v5 completed with 17/17 assertions proven, 20/20 non-vacuous goals and 6/6 covers. All seven atomicity slices proved with `MAX_TAPS=4`; no property weakening or new environment assumption. Scope is the research Mailbox candidate block only; parent reset CDC/RDC and physical output contracts remain open. See `docs/verification/vcu118_de_closure_20261118/formal_disposition_20261118.md`.
+- Formal v4 (`MAX_TAPS=1`) was interrupted after it proved several goals because its final tap-count slice is structurally vacuous; logs retained. License-environment startup failures for v5 are also retained; retry 03 is the valid proof.
+- EF1 corrected-constraint attempt 03 is synthesizing in `runs/de_resetfix_ppa_03/ef1/`; no routed DCP or final STA yet. Attempt 02, with Vivado path-segmentation warnings on Gray-pointer constraints, was stopped after its synthesized DCP and reports were saved.
+- Four-frame, 21,056-word/lane Live GTY simulation is compiling in `runs/live_long_4frame_02/`; no simulation result yet. Earlier two-frame bit-true evidence remains separate.
+- Branch/HEAD unchanged at `work/thermo5-vcu118-architecture-research` / `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; existing dirty files and experiment artifacts preserved. DE Freeze remains NO pending routed EF1/MASH A/B and combined Top, Runtime CDC/RDC disposition, long-frame results, and board-level RF evidence.
+
 ## Timing and live GTY closure (2026-11-17 22:27 SGT)
+
+## 2026-11-18 22:27 SGT — DE closure sprint status
+
+- Research HEAD remains `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; branch is
+  `work/thermo5-vcu118-architecture-research`. Existing dirty work and all
+  run evidence remain preserved.
+- EF1 reset-fix Route attempt 01 completed synthesis but stopped before DCP:
+  the script required generic FIFO Gray-pointer names while this product
+  candidate uses XPM FIFO. This is a script-scope failure, not an RTL timing
+  result. Attempt 02 is running with XPM Gray source-period max-delay and
+  bus-skew constraints; no routed result yet.
+- Independent-reset Formal v3 completed 10/11 assertions, 14/14 non-vacuous
+  goals and 4/4 covers. Pending-bank atomicity is inconclusive at depth 67.
+  V4 exact 387-bit chunk partition is running, but its final 3-bit tap-count
+  chunk is expectedly vacuous with MAX_TAPS=1. V5 uses MAX_TAPS=4 plus a tap
+  change cover and is prepared, not run.
+- Research PA elastic-buffer unit regression passes continuous traffic,
+  partial-frame STOP/drain, reset flush, restart and intentional underflow
+  detection. Two-frame live XSim at 14.000 Gb/s passes 10,528 words per lane,
+  serialized TX/RX bit-true and zero inter-lane skew. Four-frame Golden with
+  21,056 words is generated; its live simulation is NOT_RUN.
+- DE Freeze remains NO. Full current XPM EF1 route, MASH A/B current reset-fix
+  routes, combined EF1+MASH routed top, product integration of the elastic
+  buffer, reset/epoch proof with non-vacuous tap coverage, unresolved RDC
+  groups, and physical RF measurement remain open.
 
 ## 2026-11-18 — Isolated sample proof and RDC hierarchy triage
 
@@ -1668,3 +1981,86 @@ The source of truth is actual URG plus exact remaining bins and proof contracts.
 Update this frontier and `docs/UPDATE_LOG.md` after a material result or next-action
 change. Keep generated reports, vendor/PDK files and licenses out of commits.
 Historical plans are under `../inactive/`; their scores/blockers are historical.
+
+## 2026-11-19 00:01 SGT — DE closure follow-up
+
+- Added Formal v6 architecture-mailbox reset freshness assertions and covers;
+  exact current source/harness SHA-256 are in
+  `docs/verification/vcu118_de_closure_20261118/formal_disposition_20261118.md`.
+  VC Formal has not run because the three existing Windows Vivado placement
+  workers still occupy memory. Its new launch script creates a fresh output
+  directory and refuses to overwrite one.
+- Prepared candidate4 OOC runs using the candidate3 reset-epoch config, the
+  qualified-reset/mailbox Tcl v6, and a wrapper that removes the redundant
+  combinational top-level PA-valid reset gate. EF1, MASH A and MASH B source
+  hashes/commands are recorded under
+  `runs/de_resetfix_ppa_06/candidate4/`; all remain
+  PREPARED_NOT_LAUNCHED pending Formal v6 and implementation capacity.
+- Prepared a fresh current-source SpyGlass CDC-only sandbox at
+  `runs/abort_cdc_pa_valid_v4_01/`. It uses a copied source tree with the
+  research runtime top substituted only inside that new sandbox; it has not
+  run. An earlier static reset-fix report showed 0 Clock_sync06 and 0 waivers,
+  but its source SHA differs from the current workspace, so it is historical
+  evidence only.
+- Four-frame continuous digital GTY replay and receiver evidence remain
+  bounded PASS: all serial-derived PA words bit-true; first-frame EVM
+  2.551442%, SNDR 31.864285 dB, BER 15/37,376. Random backpressure, reset
+  during active transmission, board RF/ACLR, and full product epoch/PA mute
+  remain OPEN.
+- The three current Tcl v3 OOC workers (EF1 attempt 04 and MASH A/B attempt
+  05) are still in placement/physical optimization. They use original config
+  RTL and incomplete reset/mailbox constraints; keep outputs as exploratory,
+  not closure. No DCP or log was replaced. HEAD remains
+  `30ba6cb5ef53d0a9bed4889e1b0efdb881bdecef`; no commit, RC, tag or merge.
+
+## 2026-11-19 00:10 SGT — Formal v6 launch defect corrected
+
+- Found that the new v6 Tcl selected top `formal_cfg_mailbox_candidate3_independent_v6`
+  while the SystemVerilog module still declared the v5 name. Corrected the
+  harness declaration and updated its SHA-256 in the Formal disposition.
+- No DUT RTL changed and no Formal result is claimed. The three preserved
+  Vivado route workers are still active; host free memory is about 2.2 GB, so
+  Formal v6, current-source SpyGlass CDC, candidate4 routing and Live GTY
+  replay remain NOT_RUN pending implementation memory release.
+- Existing Tcl v3 EF1/MASH A/B outputs remain exploratory because their
+  configuration RTL and exception set predate the corrected candidate. No
+  existing evidence was overwritten.
+
+## 2026-11-19 00:21 SGT — Reset wrapper smoke and route progress
+
+- Candidate4 Runtime reset-boundary smoke passes Icarus 12.0 in
+  `runs/de_v4_reset_contract_smoke_02/`: Core-only reset asynchronously
+  aborts source/serializer epochs while AXI-Lite stays ready; Core and
+  AXI-Lite resets both recover through their local synchronizers. The first
+  Icarus attempt is retained separately; it failed to compile existing
+  `$stable()` SVA, so the successful simulation defines `SYNTHESIS`. This is
+  not active-frame/full-chain reset signoff.
+- Formal v6 top-name mismatch is fixed; harness SHA-256 is
+  `df7e10c44394e38b76c82ef029122937e078fd74ada980752d6e345baa12d6e1`.
+  The DUT-only Verilator lint passes with two existing width warnings. Full
+  harness lint reports unsupported ranged/delayed SVA in Verilator 5.020;
+  VC Formal remains the required proof engine and has not run.
+- Existing Tcl v3 routes progress: EF1 entered routing; MASH A entered routing
+  with an intermediate WNS `−0.354 ns`, TNS `−26.488 ns`, WHS `0.000 ns`;
+  MASH B remains in detail placement. These are incomplete, old-source OOC
+  experiments. Vivado workers consume most RAM, so Formal, SpyGlass and
+  candidate4 routes remain NOT_RUN.
+- Reset smoke report references and hashes were added to the reset/CDC and
+  live-chain reports. No functional product RTL, Golden or existing DCP/VCD
+  changed; no RC, tag, commit or merge was created.
+# 2026-11-19 11:02 SGT — MASH A v9 placed DCP and current-source CDC
+
+- v9 MASH A saved `implementation/placed.dcp` at 10:53 SGT and is in Route
+  Phase 2.4 (Update Timing); Vivado PID 40944 remains active. Routed DCP and
+  setup/hold reports are pending. Its intermediate summary is WNS/TNS
+  `−0.260/−0.260 ns`, WHS/THS `−0.018/−0.018 ns`, before correcting the exact
+  asynchronous XPM reset stage-zero D endpoint. The OOC router warns that input ports lack
+  `HD.PARTPIN_LOCS`, so system-boundary timing remains provisional.
+- Fresh SpyGlass V-2023.12-SP1 on the exact `thermo5_ppa_top_v4` source passed
+  setup with 0 errors/23 warnings and CDC with 0 errors, 0 waivers, 0
+  unsynchronized clock-domain crossings, 12 convergences (41 warnings). The
+  earlier three `Clock_sync06` output-cone errors do not reproduce in this
+  source revision. Parent reset pulse/glitch and physical PA-mute contracts
+  are still outside this static result. Current Generic-FIFO RDC is running.
+- Keep the 45,778-message/239-group prior report separate: it used a different
+  source/configuration and has no disposition for this candidate.

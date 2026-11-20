@@ -102,3 +102,179 @@ In `research/vcu118_arch/tid32_thermo5_runtime_abort_candidate.sv`, all three ex
 ## Reconciled Runtime RDC hierarchy triage
 
 All 45,778 messages and 239 groups are accounted for by reproducible, mutually exclusive hierarchy buckets: MASH stage1-related 29,646/14 groups; interpolator2 FIFO-related 5,246/32; interpolator1 elastic-related 2,790/17; asynchronous FIFO-related 192/15; configuration other 1,840/80; backend other 2,673/53; other 3,391/28. These names indicate textual hierarchy membership only and are not proven root causes, safe dispositions or waivers. The input CSV retains source/destination reset, clock, rule and reason for each group. `python3 research/vcu118_arch/summarize_rdc_cones.py docs/verification/vcu118_de_closure_20261118/runtime_candidate_rdc_groups.csv runs/NEW_SUMMARY.json` reproduces this exact tally; it rejects unexpected group/message totals and refuses to overwrite its output.
+
+## Reset-domain analysis refresh — resetdomains_02
+
+The later SpyGlass V-2023.12-SP1 run in
+`runs/abort_candidate_static_resetdomains_02/` reports 41,145
+`Ar_resetcross01` messages in 202 hierarchy groups, all with tool reason
+`Qualifier not found`; zero are waived. It is a Generic-FIFO Runtime candidate
+run, not an XPM product signoff. Its disjoint hierarchy-name buckets are:
+
+| Textual hierarchy bucket | Messages |
+| --- | ---: |
+| MASH state/enable reset fanout | 20,865 |
+| Configuration/mode mailbox | 8,081 |
+| Unreset FIFO/elastic payload boundary | 7,682 |
+| DPD lane/state reset fanout | 3,442 |
+| Other reset-domain paths | 1,075 |
+
+The report also counts 31 structurally synchronized crossings, zero
+unsynchronized scalar/vector crossings, zero `Clock_sync06` output-cone errors,
+and zero setup-audit errors. This removes the earlier three PA-valid/epoch
+output findings in this candidate configuration; parent reset glitch width,
+physical PA mute and destination recovery remain unverified. CDC convergence
+results still need functional review.
+
+The RDC delta from the prior Generic Runtime report (45,778 messages / 239
+groups) is −4,633 / −37. The analysis setup and reset-domain reconciliation
+differ, so the delta is not evidence of RTL closure. The old 10,539-message
+frontend-only report has a different top and remains incomparable. Every group
+in the new `rdc_groups.csv` remains OPEN_REVIEW; no waiver or safe disposition
+is approved. Reproduce the five text buckets by grouping the CSV message
+counts after matching the source/destination hierarchy strings above; retain
+the per-group CSV as the authoritative mapping.
+
+## Candidate4 reset-boundary smoke — 2026-11-19 00:19 SGT
+
+Icarus Verilog 12.0 PASSed a focused simulation of
+`tid32_thermo5_runtime_abort_candidate_v4.sv` with the Generic FIFO parameter:
+Core-only reset asynchronously aborts both stream/serializer epochs while
+AXI-Lite AWREADY remains asserted, and both Core-only and AXI-Lite resets
+release through the local synchronizers. This is a bounded reset-boundary
+smoke, not a full active-traffic/frame-abort, pending-mailbox, AXI response,
+CDC/RDC or GTY regression. Product reset signoff stays OPEN.
+
+The first Icarus compile attempt is preserved in
+`runs/de_v4_reset_contract_smoke_01/`; it stopped because Icarus does not
+implement the existing `$stable()` SVA checks. The successful retry defines
+`SYNTHESIS` to exclude those unsupported simulation assertions and is in
+`runs/de_v4_reset_contract_smoke_02/`. Candidate source SHA-256 is
+`db1f1783c0f238baf85944be5851fabf0dbf4bf88516504143b42487a4781ef5`, and
+the testbench SHA-256 is
+`28b8d0ec0006c6798fce69c8fb9901008be604e8b9e4da9522639b7f7e3a2bb5`.
+
+
+## Independent-reset Formal v5 disposition — 2026-11-18 22:55 SGT
+
+`runs/de_candidate3_independent_reset_formal_06/console_retry03.log` completed with 17/17 assertions proven, 20/20 non-vacuous goals and 6/6 covers. Seven lossless pending-bank atomicity slices all proved with `MAX_TAPS=4`, and a tap-change cover confirmed reachability. No assertion was weakened and no environment assumption was added. Exact clocks, assumptions, source SHA-256, limits and reproduction command are in `docs/verification/vcu118_de_closure_20261118/formal_disposition_20261118.md`.
+
+This closes the scoped candidate mailbox digital proof only. It does not disposition the Runtime architecture mailbox, asynchronous reset output CDC, SpyGlass reset-domain groups, physical reset pulse/glitch behavior, routed timing or board PA mute. V4 had a vacuous final tap slice at `MAX_TAPS=1` and was stopped; both v4 and startup-failure evidence remain in their run directories.
+
+## Routed synthesis timing root cause — 2026-11-18 23:37 SGT
+
+The first current EF1 synthesis reports identify two different inter-clock
+issues; they must not be collapsed into one generic CDC waiver. The
+`−0.827 ns` path is recovery from `core_abort_sync/sync_q_reg[1]/C` to the
+asynchronous `CLR` of `u_product/u_cdc/g_xpm_fifo.u_async_fifo/rd_reset_in_wr_reg[0]`
+in the AXIS domain (0.720 ns data delay, −0.009 ns skew, 0.035 ns uncertainty,
+6,994-load unplaced reset fanout). MASH A reports the same path at `−0.833 ns`.
+The endpoint is the first local async-assert/sync-release reset guard stage;
+the prepared exception is limited to CLR pins of the local reset guards, not
+their D pins or either clock domain.
+
+The independent worst mailbox path is `arch_mailbox_reg[0]/C` at `s_axil_aclk`
+to `arch_pending_core_reg[0]/D` at `core_clk`: `−0.283 ns`, 0.276 ns data
+delay, −0.008 ns skew, with 101 failing endpoints across coefficient and
+runtime-mode bundles. Both bundles are held during their four-phase handshake.
+Prepared constraints bound datapath delay and bus skew to one Core period; the
+data buses are not false-pathed. Formal v5 proves the DPD pending bank on the
+reset-epoch candidate; the separate mode mailbox lacks a completed formal
+disposition. Formal v6 is prepared with source-hold, exact capture, pending
+stability and apply-gating assertions plus architecture covers, but has not
+run. Therefore the mailbox timing exception is not yet approved for use.
+
+Full evidence and reproduction are in
+`timing_root_cause_20261118.md`. Current EF1/MASH A/B implementations use Tcl
+v3 and the original config RTL, so their eventual routed data is exploratory.
+Corrected constraint/RTL candidates have SHA manifests in
+`runs/de_resetfix_ppa_06/candidate3/`, but no routed result exists yet. The
+current synthesis path findings do not close reset CDC/RDC, parent clock
+timing, or product signoff.
+
+## Runtime mode-mailbox Formal refresh — 2026-11-19 09:07 SGT
+
+The independent-reset v7 harness passed all 25 assertions, all 28
+non-vacuity goals, and all 11 covers. The v6-only non-convergence was caused
+by a checker that sampled AXI-domain `arch_req_q` on `core_clk`; it treated a
+legal post-AXI-reset write during Core reset recovery as stale. V7 samples the
+Core-synchronized request `arch_req_c2` and requires request rise to follow an
+accepted successful AXI-Lite architecture write. The source-side abort check
+separately proves request/busy/ack clearing while the AXI reset epoch gate is
+closed. No assumption was added and no assertion was weakened. The failed v6
+run remains preserved. Full details, hashes and command are in
+`formal_disposition_20261118.md`.
+
+This closes the candidate3 block-level mailbox properties only. It does not
+close the three historical output-cone Clock_sync06 findings, the 45,778
+Generic Runtime RDC messages/239 groups, current-source SpyGlass, parent reset
+glitch/pulse behavior, physical PA mute, or product-level CDC/RDC. No waivers
+have been granted; those groups remain OPEN_REVIEW.
+
+## Exact structural tally of the 45,778-message Runtime RDC run — 2026-11-19
+
+Recomputed directly from `runtime_candidate_rdc_groups.csv` (239 rows): every
+row is `Ar_resetcross01`, every tool reason is `Qualifier not found`, and every
+disposition is `OPEN_REVIEW`. There are 137 Q→EN groups/36,439 messages and
+102 Q→D groups/9,339 messages. Destination-reset/crossing buckets are:
+
+| Destination reset | Crossing | Groups | Messages | Current evidence-based interpretation |
+|---|---|---:|---:|---|
+| `s_axis_aresetn` | Q→EN | 66 | 31,038 | Reset-domain enable gating; prove source-valid/enable isolation through reset release. |
+| `NULL` | Q→D | 27 | 8,791 | Unreset payload/state capture; prove valid/occupancy prevents stale data use. |
+| `NULL` | Q→EN | 55 | 5,346 | Unreset storage/control enable; inspect exact destination and reset-qualified write/read enable. |
+| `s_axis_aresetn` | Q→D | 72 | 533 | Reset-domain state/data path; verify reset sequencing and whether captured value is consumed. |
+| Other reset/set forms | Q→D or Q→EN | 19 | 70 | Low-count reset/set combinations; review each hierarchy row individually. |
+
+The CSV also shows 232 groups in `core_clk`, four in `s_axil_aclk`, and three
+in `s_axis_aclk`. This is a mechanism-level classification; it is not a claim
+that all rows are safe or that they represent 239 independent RTL bugs. The
+confirmed analyzer root cause is that SpyGlass could not prove the required
+reset qualifier. A product root cause requires exact-source checks of FIFO
+valid/occupancy, mailbox hold/commit, reset-release ordering, and data use.
+No group was waived. The older 10,539-message run is frontend-only and used a
+different top/scope; a numerical delta cannot show closure.
+
+
+## Exact-source candidate4 SpyGlass rerun — 2026-11-19 11:16 SGT
+
+Run: `runs/de_resetfix_spyglass_candidate4_04/`, SpyGlass V-2023.12-SP1,
+`thermo5_ppa_top_v4`, candidate A midpoint cubic, reset/config candidate3,
+frontend candidate3, Runtime abort wrapper v4, Generic FIFO (`FPGA_USE_XPM_FIFO=0`),
+Core 218.75 MHz / AXIS 125 MHz / AXI-Lite 100 MHz. The Tcl and SGDC source
+hashes are recorded in `source_sha256.txt`; no waivers were loaded.
+
+- Setup: 0 errors, 23 warnings. CDC: 0 errors, 0 unsynchronized crossings,
+  12 convergences, 0 waivers. The prior three output-cone `Clock_sync06`
+  findings do not reproduce for these exact sources. This does not establish
+  parent reset pulse/glitch width or physical PA mute.
+- RDC: 17,895 `Ar_resetcross01` Errors, all `Qualifier not found`, 0 waived;
+  plus 12 informational conventional multi-flop crossings. The native matrix
+  and 17.9 MB report are preserved under `runs/de_resetfix_spyglass_candidate4_04/rdc/`.
+- A reproducible-data triage grouped all 17,907 native rows into 86 normalized
+  endpoint/reset signatures, preserved in
+  `runs/de_resetfix_spyglass_candidate4_04/rdc_triage_02/structural_signatures.csv`.
+  Textual buckets are MASH state/enable 5,754; Interpolator 2/FIFO payload
+  5,105; DPD state/history 3,700; Interpolator 1 elastic payload 2,864;
+  configuration/reset epoch 114; Generic asynchronous FIFO 179; and other
+  frontend/control 191. All 86 signatures remain `OPEN_REVIEW`.
+- The largest reset-pair bucket is `core_epoch_n -> NULL` (10,223), followed by
+  `axil_epoch_n -> core_epoch_n` (2,460), `abort_arst_n -> axil_epoch_n`
+  (2,194), `axil_epoch_n -> NULL` (1,665), and `abort_arst_n -> NULL`
+  (1,205). `NULL` means SpyGlass did not identify a destination reset; it does
+  not by itself prove stale data is consumed. FIFO payload and DPD history
+  must be checked against reset-qualified valid/occupancy before any disposition.
+- This candidate4 top/parameter/reset model is not numerically comparable to
+  either the historical 45,778-message/239-group Runtime run or the earlier
+  10,539-message frontend-only run. No RTL fix or waiver is inferred from the
+  lower count.
+
+Status: **CDC PASS for this exact static analysis scope; RDC FAIL / OPEN_REVIEW;
+product reset/CDC signoff BLOCKED**. Reproduction:
+`runs/de_resetfix_spyglass_candidate4_04/run.sh`; machine-readable tally:
+`runs/de_resetfix_spyglass_candidate4_04/rdc_triage_02/summary.json`.
+
+Reproduction uses:
+python3 research/vcu118_arch/cluster_candidate4_rdc_csv.py --input runs/de_resetfix_spyglass_candidate4_04/rdc/abort_candidate4/thermo5_ppa_top_v4/rdc/rdc_verify_struct/spyglass_reports/clock-reset/Ar_resetcross01.csv --out runs/de_resetfix_spyglass_candidate4_04/rdc_triage_NEW
+
+Parser SHA-256: 50354396cca54d753add8dfb7e78adf1e0f3f410e452be1627e92b09b2f74597.

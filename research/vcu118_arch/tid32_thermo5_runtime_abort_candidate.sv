@@ -72,20 +72,27 @@ module tid32_thermo5_runtime_abort_candidate #(
   // Research-only: any input reset aborts the source/Core/serializer epoch;
   // AXI-Lite itself remains responsive when only Core reset is asserted.
   wire logic abort_arst_n = s_axil_aresetn && s_axis_aresetn && core_aresetn;
-  wire logic axis_epoch_n, core_epoch_n;
+  wire logic axil_epoch_n, axis_epoch_n, core_epoch_n;
   wire logic [3:0] pa_valid_internal;
+  // AXI-Lite has its own reset contract. Core-only reset must leave the AXI
+  // transport alive so an accepted response can complete.
+  dsm_reset_sync axil_reset_sync (.clk(s_axil_aclk),.arst_n(s_axil_aresetn),.srst_n(axil_epoch_n));
   dsm_reset_sync axis_abort_sync (.clk(s_axis_aclk),.arst_n(abort_arst_n),.srst_n(axis_epoch_n));
   dsm_reset_sync core_abort_sync (.clk(core_clk),.arst_n(abort_arst_n),.srst_n(core_epoch_n));
-  assign serializer_epoch_aresetn = abort_arst_n && core_epoch_n;
-  assign source_epoch_aresetn = abort_arst_n && axis_epoch_n;
-  assign pa_valid = abort_arst_n ? pa_valid_internal : 4'b0;
+  // The local synchronizer outputs already assert asynchronously from the
+  // shared abort reset and release only after two local clock edges. Keep each
+  // exported epoch in its destination domain instead of reintroducing the
+  // unrelated reset inputs as a combinational output fan-in.
+  assign serializer_epoch_aresetn = core_epoch_n;
+  assign source_epoch_aresetn = axis_epoch_n;
+  assign pa_valid = core_epoch_n ? pa_valid_internal : 4'b0;
 
   tid32_thermo5_axi_lite_axis_frontend_tx #(
     .W(W),.GAIN_W(GAIN_W),.STEP(STEP),.DPD_MAX_TAPS(DPD_MAX_TAPS),
     .INTERP_TAPS(INTERP_TAPS),.INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC),
     .BYPASS_DPD(BYPASS_DPD),.FPGA_USE_XPM_FIFO(FPGA_USE_XPM_FIFO),
     .TIDSM_ORDER(2),.ENABLE_RUNTIME_DSM(1'b1)
-  ) u_product(.s_axis_aresetn(axis_epoch_n),.core_aresetn(core_epoch_n),
+  ) u_product(.s_axil_aresetn(axil_epoch_n),.s_axis_aresetn(axis_epoch_n),.core_aresetn(core_epoch_n),
               .pa_valid(pa_valid_internal),.*);
 endmodule
 `default_nettype wire
