@@ -1,3 +1,27 @@
+# 2026-11-21 20:37 SGT — Compile-time timing closure checkpoint
+
+- Changed: `dv/verif/block/interp/run_xsim_centered_cubic_sustained.ps1` now
+  invokes Vivado batch tools through `Start-Process` and captures each process
+  exit code and stdout/stderr. Commit: `d89f56e0b48c2d74b67d5a8380ee1dd777b81750`.
+- Checks: differential centered-cubic XSim PASS (19 inputs / 16 outputs,
+  reset/STOP flush); sustained XSim PASS (1025 inputs / 1024 outputs, zero
+  bubbles); compile-time EF1/EF2/MASH XPM Golden PASS (56 words each); Runtime
+  XSim PASS (448 words, 8 streams, 6/6 transitions, 715 stalls, 185 partial
+  stalls, one reset); Python reference-model unit tests PASS (66/66).
+- Reset-leaf audit is complete as an endpoint enumeration, but its safety
+  criterion for a broad reset-port timing exception is not met. Reset inputs
+  also reach non-ASYNC_REG registers and non-reset pins, so no exception was
+  added. No new routed timing was run. Historical compile-time OOC timing still
+  fails setup at EF1 `−2.712 ns` and MASH `−2.818 ns`; the critical EF1 path is
+  the synchronous Interp2-to-FIFO datapath. This checkpoint is not timing
+  closure, Full-Top signoff, or DE Freeze.
+- Evidence: `runs/de_timing_20261121/closure_run_evidence.json`,
+  `python_refmodel_unittest_manifest.json`, existing reset audit and routed DCP
+  reports. All run products remain local under ignored `runs/`; no old DCP, VCD,
+  CSV, or log was overwritten. Work remains on the independent research branch.
+- Limitations: Formal, CDC/RDC disposition, reset protocol closure, fresh
+  EF1/MASH route, and parent-board timing constraints remain open.
+
 # 2026-11-21 17:32 SGT — Compile-time DSM final evidence and required smoke
 
 - Completed new-top compile-time EF1, EF2, and MASH synthesis on Vivado 2026.1

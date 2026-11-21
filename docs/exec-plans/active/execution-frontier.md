@@ -1,3 +1,39 @@
+# 2026-11-21 20:37 SGT — Compile-time timing closure checkpoint; reset exception gate not met
+
+- Active branch is `work/thermo5-compiletime-timing`. Functional evidence below
+  was generated from source HEAD `d89f56e0b48c2d74b67d5a8380ee1dd777b81750`;
+  the tracked worktree was clean for those runs. The original architecture-research branch remains at
+  `01a0b1b505e460cc4fea5aaf30f04df8f04693e7`. No product RTL or Golden was
+  changed in this checkpoint.
+- Fixed the Windows PowerShell XSim runner's batch-process exit-code capture.
+  Centered-cubic differential XSim passes against frozen commit
+  `dfa34dbd4848499448f2ddb146ead9f324db8490` (19 inputs, 16 outputs, reset and
+  STOP flush checks). Sustained XSim passes at 1025 input / 1024 output words,
+  zero bubbles. Compile-time EF1/EF2/MASH each pass 56-word XPM-backed Golden;
+  Runtime Top passes 448 words across 8 streams, 6/6 mode transitions, 715
+  stalls, 185 partial stalls and one reset. Python reference-model tests pass
+  66/66. All new logs and manifests are unique under
+  `runs/de_timing_20261121/` or `runs/centered_cubic_*_xsim_*`.
+- Read-only reset-leaf enumeration on the preserved EF1 synthesized DCP found
+  non-synchronizer loads on every reset port: AXI-Lite reset 585 leaves / 575
+  non-ASYNC_REG; AXIS reset 92 leaves / 82 non-ASYNC_REG; Core reset 45,228
+  leaves / 45,205 non-ASYNC_REG. Therefore the plan's reset-port false-path
+  safety gate is not met. No reset exception was added and no new route was
+  launched. This enumeration is not itself a reset-protocol failure proof.
+- Latest available compile-time OOC routed evidence remains a real setup FAIL:
+  EF1 WNS/TNS `−2.712/−6264.759 ns`, WHS/THS `+0.027/0 ns`; MASH WNS/TNS
+  `−2.818/−4411.104 ns`, WHS/THS `+0.029/0 ns`. EF1's worst synchronous
+  `core_clk` path is Interp2 `q_count_reg[0]` to the Interp2-to-TID FIFO data
+  register: 7.263 ns data delay (4.652 logic / 2.611 route), 24 logic levels,
+  skew `−0.010 ns`. This existing DCP/report was not rerun in this checkpoint;
+  source manifest is absent, so it is historical OOC evidence only.
+- Open: audit/split reset uses before approving any reset exception; optimize
+  the actual Interp2 arithmetic/saturation/FIFO path with a bit-true and latency
+  contract; rerun formal/CDC/RDC and fresh EF1/MASH routed PPA afterward. Do
+  not claim timing closure or DE Freeze.
+- Detailed run commands, SHA-256 values, reports and limitations are in
+  `docs/verification/compiletime_architecture_20261121/timing_closure_checkpoint_20261121.md`.
+
 # 2026-11-21 17:28 SGT — Compile-time DSM architecture finalization complete; DE closure remains open
 
 - New Product Top static configurations 0/1/2 pass the XPM-backed 56-word
