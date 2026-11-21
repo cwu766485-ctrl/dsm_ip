@@ -28,6 +28,46 @@ $tb = if ($Testbench -eq 'sustained') {
 }
 $log = Join-Path $work 'runner.log'
 $envLog = Join-Path $work 'environment.txt'
+$manifestPath = Join-Path $work 'run_manifest.json'
+$git = (Get-Command git.exe -ErrorAction Stop).Source
+$head = (& $git -C $repo rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0 -or !$head) { throw 'Could not record source HEAD before simulation.' }
+$manifest = [ordered]@{
+  source_head = $head
+  testbench = $Testbench
+  reference_commit = $ReferenceCommit
+  vivado_root = $VivadoRoot
+  vivado_version = 'Pending version probe'
+  commands = [ordered]@{}
+  status = 'PREPARED'
+}
+function Save-Manifest {
+  $manifest | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+}
+function Format-CmdArgument([string]$value) {
+  if ($value -match '[\s&()]') { return '"' + $value.Replace('"','\"') + '"' }
+  return $value
+}
+function Invoke-BatchTool([string]$tool, [string]$stage, [string[]]$arguments) {
+  $cmdPath = Join-Path $work "$stage.cmd"
+  $argsText = ($arguments | ForEach-Object { Format-CmdArgument $_ }) -join ' '
+  $commandLine = 'call "{0}" {1}' -f $tool, $argsText
+  @('@echo off', $commandLine, 'exit /b %errorlevel%') |
+    Set-Content -LiteralPath $cmdPath -Encoding ASCII
+  $manifest.commands[$stage] = $commandLine
+  $manifest.status = "${stage}_RUNNING"
+  Save-Manifest
+  $commandLine | Tee-Object -FilePath $log -Append
+  & cmd.exe /d /c $cmdPath 2>&1 | Tee-Object -FilePath $log -Append
+  if ($LASTEXITCODE -ne 0) {
+    $manifest.status = "${stage}_FAIL"
+    Save-Manifest
+    throw "$stage failed (exit=$LASTEXITCODE); see $log"
+  }
+  $manifest.status = "${stage}_PASS"
+  Save-Manifest
+}
+Save-Manifest
 @(
   "VivadoRoot=$VivadoRoot"
   "XILINX_VIVADO=$env:XILINX_VIVADO"
@@ -41,14 +81,23 @@ $envLog = Join-Path $work 'environment.txt'
 
 foreach ($tool in @($xvlog,$xelab,$xsim)) {
   "`n### $tool -version" | Add-Content -LiteralPath $envLog
-  & $tool -version 2>&1 | Add-Content -LiteralPath $envLog
-  if ($LASTEXITCODE -ne 0) { throw "Tool version probe failed: $tool (exit=$LASTEXITCODE)" }
+  $versionCmd = Join-Path $work 'tool_version.cmd'
+  @('@echo off', ('call "{0}" -version' -f $tool), 'exit /b %errorlevel%') |
+    Set-Content -LiteralPath $versionCmd -Encoding ASCII
+  $versionOutput = & cmd.exe /d /c $versionCmd 2>&1
+  $versionOutput | Add-Content -LiteralPath $envLog
+  if ($LASTEXITCODE -ne 0) {
+    $manifest.status = 'VERSION_PROBE_FAIL'
+    Save-Manifest
+    throw "Tool version probe failed: $tool (exit=$LASTEXITCODE)"
+  }
+  $manifest.vivado_version = (($versionOutput | Select-String -Pattern 'Vivado Simulator v' | Select-Object -First 1).Line)
+  Save-Manifest
 }
 
 Push-Location $work
 try {
   if ($Testbench -eq 'differential') {
-    $git = (Get-Command git.exe -ErrorAction Stop).Source
     $reference = Join-Path $work 'dsm_interp_x2_centered_cubic_vector_ref.sv'
     $source = & $git -C $repo show "${ReferenceCommit}:rtl/interp/dsm_interp_x2_centered_cubic_vector.sv"
     if ($LASTEXITCODE -ne 0 -or !$source) { throw "Could not extract reference RTL from $ReferenceCommit" }
@@ -68,20 +117,17 @@ try {
     $passMarker = 'CENTERED_CUBIC_SUSTAINED_PASS'
   }
 
-  "xvlog -sv -log xvlog.log $($sources -join ' ')" | Tee-Object -FilePath $log
-  & $xvlog -sv -log xvlog.log @sources 2>&1 | Tee-Object -FilePath $log -Append
-  if ($LASTEXITCODE -ne 0) { throw "xvlog failed (exit=$LASTEXITCODE); see $log" }
-
-  "xelab $top -s sim_centered_cubic -log xelab.log" | Tee-Object -FilePath $log -Append
-  & $xelab $top -s sim_centered_cubic -log xelab.log 2>&1 | Tee-Object -FilePath $log -Append
-  if ($LASTEXITCODE -ne 0) { throw "xelab failed (exit=$LASTEXITCODE); see $log" }
-
-  'xsim sim_centered_cubic -runall -log xsim.log' | Tee-Object -FilePath $log -Append
-  & $xsim sim_centered_cubic -runall -log xsim.log 2>&1 | Tee-Object -FilePath $log -Append
-  if ($LASTEXITCODE -ne 0) { throw "xsim failed (exit=$LASTEXITCODE); see $log" }
+  Invoke-BatchTool $xvlog 'xvlog' (@('-sv','-log','xvlog.log') + $sources)
+  Invoke-BatchTool $xelab 'xelab' @($top,'-s','sim_centered_cubic','-log','xelab.log')
+  Invoke-BatchTool $xsim 'xsim' @('sim_centered_cubic','-runall','-log','xsim.log')
   if (!(Select-String -LiteralPath 'xsim.log' -Pattern $passMarker -Quiet)) {
+    $manifest.status = 'FAIL_MARKER_MISSING'
+    Save-Manifest
     throw "PASS marker '$passMarker' is missing; see $(Join-Path $work 'xsim.log')"
   }
+  $manifest.status = 'PASS'
+  $manifest.pass_marker = $passMarker
+  Save-Manifest
 } finally {
   Pop-Location
 }
