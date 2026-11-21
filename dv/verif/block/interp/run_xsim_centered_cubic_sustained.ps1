@@ -1,7 +1,9 @@
 param(
   [string]$VivadoRoot = 'D:\AMDDesignTools\2026.1\Vivado',
   [ValidateSet('sustained','differential')][string]$Testbench = 'sustained',
-  [string]$ReferenceCommit = 'dfa34dbd4848499448f2ddb146ead9f324db8490'
+  [string]$ReferenceCommit = 'dfa34dbd4848499448f2ddb146ead9f324db8490',
+  [string]$SourceHead = '',
+  [string]$ReferenceRTLPath = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -29,9 +31,16 @@ $tb = if ($Testbench -eq 'sustained') {
 $log = Join-Path $work 'runner.log'
 $envLog = Join-Path $work 'environment.txt'
 $manifestPath = Join-Path $work 'run_manifest.json'
-$git = (Get-Command git.exe -ErrorAction Stop).Source
-$head = (& $git -C $repo rev-parse HEAD).Trim()
-if ($LASTEXITCODE -ne 0 -or !$head) { throw 'Could not record source HEAD before simulation.' }
+$head = $SourceHead
+if (!$head) {
+  $gitCommand = Get-Command git.exe -ErrorAction SilentlyContinue
+  if ($gitCommand) {
+    $head = (& $gitCommand.Source -C $repo rev-parse HEAD | Select-Object -First 1)
+    if ($LASTEXITCODE -ne 0) { $head = '' }
+  }
+}
+if (!$head) { throw 'Supply -SourceHead when git.exe is unavailable to Windows PowerShell.' }
+$head = $head.Trim()
 $manifest = [ordered]@{
   source_head = $head
   testbench = $Testbench
@@ -99,9 +108,17 @@ Push-Location $work
 try {
   if ($Testbench -eq 'differential') {
     $reference = Join-Path $work 'dsm_interp_x2_centered_cubic_vector_ref.sv'
-    $source = & $git -C $repo show "${ReferenceCommit}:rtl/interp/dsm_interp_x2_centered_cubic_vector.sv"
-    if ($LASTEXITCODE -ne 0 -or !$source) { throw "Could not extract reference RTL from $ReferenceCommit" }
-    $sourceText = ($source -join "`n").Replace(
+    if ($ReferenceRTLPath) {
+      if (!(Test-Path -LiteralPath $ReferenceRTLPath -PathType Leaf)) { throw "Reference RTL not found: $ReferenceRTLPath" }
+      $sourceText = [System.IO.File]::ReadAllText($ReferenceRTLPath)
+    } else {
+      $gitCommand = Get-Command git.exe -ErrorAction SilentlyContinue
+      if (!$gitCommand) { throw 'Supply -ReferenceRTLPath when git.exe is unavailable to Windows PowerShell.' }
+      $source = & $gitCommand.Source -C $repo show "${ReferenceCommit}:rtl/interp/dsm_interp_x2_centered_cubic_vector.sv"
+      if ($LASTEXITCODE -ne 0 -or !$source) { throw "Could not extract reference RTL from $ReferenceCommit" }
+      $sourceText = ($source -join "`n")
+    }
+    $sourceText = $sourceText.Replace(
       'module dsm_interp_x2_centered_cubic_vector #(',
       'module dsm_interp_x2_centered_cubic_vector_ref #(')
     if ($sourceText -notmatch 'module dsm_interp_x2_centered_cubic_vector_ref') {
