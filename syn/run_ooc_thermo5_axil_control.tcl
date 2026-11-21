@@ -76,8 +76,10 @@ synth_design -top tid32_thermo5_axi_lite_axis_frontend_tx \
   -part $part -mode out_of_context -flatten_hierarchy none \
   -directive AreaOptimized_high -generic $effective_generics
 if {[get_property PART [current_design]] ne $part} { error "Elaborated part mismatch" }
-if {[get_property NAME [current_design]] ne "tid32_thermo5_axi_lite_axis_frontend_tx"} {
-  error "Elaborated top does not match the requested AXI-Lite product top"
+foreach required_port {s_axil_awaddr s_axis_i_vec core_clk pa_valid} {
+  if {[llength [get_ports -quiet $required_port]] == 0} {
+    error "Elaborated AXI-Lite product is missing required top port $required_port"
+  }
 }
 set dpd_cells [get_cells -hier -filter {NAME =~ *u_memory_dpd*}]
 set fifo_cells [get_cells -hier -filter {REF_NAME =~ *xpm_fifo_async*}]

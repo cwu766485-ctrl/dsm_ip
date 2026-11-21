@@ -1,3 +1,88 @@
+# 2026-11-21 17:32 SGT — Compile-time DSM final evidence and required smoke
+
+- Completed new-top compile-time EF1, EF2, and MASH synthesis on Vivado 2026.1
+  Build 6511674 / VCU118 part `xcvu9p-flga2104-2L-e`. Each generated netlist
+  contains only its selected DSM, prunes the other DSM/runtime backend, and has
+  zero blackboxes and latches. All three independent XPM-backed 56-word Golden
+  XSim tests pass; the preserved Runtime Top regression passes.
+- Completed full OOC route for the new EF1 and MASH Product Top. EF1 routed
+  WNS/TNS `−2.712/−6264.759 ns`, WHS/THS `+0.027/0 ns`; MASH
+  `−2.818/−4411.104 ns`, `+0.029/0 ns`. Both fail setup on the shared centered
+  Interp2-to-FIFO path. Routed utilization, power, worst-20 timing, clock
+  interaction, exception reports, and DCP SHA-256 values are in
+  `docs/verification/compiletime_architecture_20261121/`.
+- The routed clock interaction reports show AXIS-to-Core `No Common Clock` /
+  `Partial False Path (unsafe)`; CDC closure is therefore OPEN. Three reset
+  input ports have no I/O delay. These are OOC part results, not board timing.
+  EF2 synthesis remains a real timing FAIL (`−93.246 ns`, 419 levels/194
+  CARRY8); route NOT_RUN.
+- Fixed the required AXI-Lite OOC Tcl's stale design-name assertion by
+  checking required top-level ports. The PowerShell wrapper yielded empty logs;
+  those unique partial outputs were retained. A direct `cmd.exe` full run
+  completed on ZU15EG and is a timing FAIL: WNS/TNS `−0.283/−0.542 ns`, WHS
+  `+0.015 ns`, two setup endpoints. Its worst path is Core-to-AXI-Lite status
+  into a synchronizer first-stage D pin. Clock interaction says `No Common
+  Clock` / `Partial False Path (unsafe)`; no broad exception was added. The
+  exact DCP, reports, and console are retained under
+  `runs/de_compiletime_20261121_01/required_axil_ooc_direct02/`.
+- Checks recorded: three compile-time XSim Golden runs, Runtime regression,
+  EF1 directed frontend smoke, all-three synthesis structure checks, EF1/MASH
+  routed implementation, Python compile and Git whitespace check. VCS is not
+  installed here. No CDC/RDC, Formal, parent XDC, GTY, RF, or full UVM signoff
+  is claimed. No previous DCP/VCD/log was overwritten. Artifact and source
+  SHA-256 values are recorded in
+  `docs/verification/compiletime_architecture_20261121/sha256_manifest.tsv`.
+
+# 2026-11-21 12:57 SGT — Compile-time DSM architecture regression and PPA update
+
+- Changed: compile-time product RTL, compile-time XSim UVM test/runner,
+  VCU118-part OOC PPA Tcl, architecture/ppa/handoff reports, execution frontier.
+- Functional checks: three static DSM configurations each passed 56-word
+  independent PA Golden XSim with XPM FIFO. Existing Runtime Top passed 8
+  architecture streams/6 transitions with 448 words, randomized stalls,
+  partial stalls, and one reset. EF1 standalone directed XSim smoke passed.
+  `python3 -m py_compile` and `git diff --check` passed.
+- VCS regression is BLOCKED (VCS executable unavailable). No full UVM coverage,
+  CDC/RDC/formal, serializer/GTY, board timing, or physical RF claim is made.
+- Synthesis for all three new product-top configurations passed selected
+  hierarchy pruning/zero-blackbox/zero-latch checks. Synthesized OOC timing:
+  EF1 `−1.823/−2315.093 ns` WNS/TNS, MASH `−1.823/−2314.901 ns`, EF2
+  `−93.246/−43219.352 ns`. EF2 worst feedback is 419 logic levels including
+  194 CARRY8. EF1's first route failed at `opt_design` with `[Synth 20-411]`;
+  MASH route and fresh EF1 route from saved DCP are ongoing.
+- A Q-pin max-delay experiment produced Vivado `Constraints 18-515` path
+  segmentation warnings; it was stopped and preserved as invalid. The PPA Tcl
+  uses clock-pin C startpoints and destination D endpoints. OOC reports remain
+  provisional because board `HD.CLK_SRC`/I/O constraints and reset input delays
+  are absent. No existing experiment artifact was overwritten. No commit or
+  merge yet.
+
+## 2026-11-21 12:19 SGT — PPA Tcl report command correction
+
+- The EF1 compile-time synthesis completed with no critical warnings and
+  passed the one-DSM hierarchy, zero-blackbox, and zero-latch checks. Its first
+  flow attempt then stopped because `report_hierarchy` is unsupported by the
+  installed Vivado Tcl. Preserved that log and replaced the command with
+  hierarchical utilization reporting; rerunning EF1 P&R in a new directory.
+- Arch1 synthesis was launched with the initial Tcl and may need a fresh rerun.
+  No existing artifacts were overwritten.
+
+## 2026-11-21 12:13 SGT — Compile-time DSM product top study
+
+- Added a compile-time single-DSM product wrapper and generate backend for
+  EF1, EF2, and MASH 1-1. The shared frontend skips its legacy TID core when an
+  external DSM owns the output; the existing Runtime Top remains the baseline.
+- Added a dedicated XPM-backed PA Golden regression for each architecture and
+  a Vivado 2026.1 OOC routed PPA flow for the new top. EF1, EF2, and MASH each
+  pass the 56-word XSim bit-true test; the legacy EF1 frontend directed XSim
+  smoke passes in a fresh run directory.
+- Vivado EF1 routing is active. EF2 synthesis and MASH routing are pending.
+  Synopsys VCS is not available in the current WSL invocation. CDC/RDC, full
+  Formal, parent board constraints, and full UVM signoff remain open.
+- No previous DCP, VCD, report, or log was overwritten. Checks run: compile-
+  time XSim for three architectures, legacy directed XSim, Python compile and
+  `git diff --check`. No commit or merge yet.
+
 ## 2026-11-20 23:37 SGT — EF1 and MASH A candidate4 v11 routed OOC implementations
 
 - Completed EF1 candidate4 v11 synthesis, placement, physical optimization and

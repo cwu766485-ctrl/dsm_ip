@@ -14,7 +14,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
   parameter int TIDSM_ORDER = 2,
-  parameter bit ENABLE_RUNTIME_DSM = 1'b0
+  parameter bit ENABLE_RUNTIME_DSM = 1'b0,
+  parameter int STATIC_DSM_ARCH = -1
 ) (
   input  wire logic         s_axil_aclk,
   input  wire logic         s_axil_aresetn,
@@ -291,7 +292,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .TIDSM_ORDER(TIDSM_ORDER),
     .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
     .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD),
-    .USE_EXTERNAL_DSM(ENABLE_RUNTIME_DSM)
+    .USE_EXTERNAL_DSM(ENABLE_RUNTIME_DSM || (STATIC_DSM_ARCH >= 0))
   ) u_frontend (
     .clk(core_clk), .rst_n(core_aresetn), .enable(core_datapath_enable),
     .in_valid(core_valid), .in_ready(core_ready), .in_frame_start(core_frame_start),
@@ -308,7 +309,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
     .pre_dsm_config_id(pre_config),.pre_dsm_reset_epoch(pre_epoch)
   );
 
-  assign active_dsm_arch = ENABLE_RUNTIME_DSM ? runtime_arch : (TIDSM_ORDER==1 ? 2'd0 : 2'd1);
+  assign active_dsm_arch = ENABLE_RUNTIME_DSM ? runtime_arch :
+                           (STATIC_DSM_ARCH >= 0 ? 2'(STATIC_DSM_ARCH) :
+                            (TIDSM_ORDER==1 ? 2'd0 : 2'd1));
   generate
     if(ENABLE_RUNTIME_DSM) begin : g_runtime_dsm
       thermo5_runtime_dsm_backend #(.W(W),.STEP_EF2(STEP)) u_backend(
@@ -321,7 +324,18 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
         .out_config_id(pa_config_id),.out_epoch(),
         .weighted_contract(pa_contract_weighted),.channel_mask(pa_channel_mask),
         .overflow_error(backend_overflow));
-    end else begin : g_static_dsm
+    end else if(STATIC_DSM_ARCH >= 0) begin : g_compiletime_dsm
+      thermo5_compiletime_dsm_backend #(.W(W),.DSM_ARCH(STATIC_DSM_ARCH)) u_backend(
+        .clk(core_clk),.rst_n(core_aresetn),
+        .in_valid(pre_valid),.in_ready(pre_ready),.in_i_vec(pre_i),.in_q_vec(pre_q),
+        .in_frame_start(pre_fs),.in_frame_end(pre_fe),.in_tail(pre_tail),
+        .in_config_id(pre_config),.in_epoch(pre_epoch),
+        .pa_valid(pa_valid),.pa_ready(pa_ready),.pa_data(pa_data),
+        .out_frame_start(pa_frame_start),.out_frame_end(pa_frame_end),.out_tail(pa_tail),
+        .out_config_id(pa_config_id),.out_epoch(),
+        .weighted_contract(pa_contract_weighted),.channel_mask(pa_channel_mask),
+        .overflow_error(backend_overflow));
+    end else begin : g_legacy_static_dsm
       assign pa_valid=legacy_pa_valid;
       for(genvar p=0;p<4;p=p+1) assign pa_data[p]=legacy_pa_data[p];
       assign pa_contract_weighted=0;assign pa_channel_mask=4'hf;
@@ -333,6 +347,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   initial begin
     if (DPD_MAX_TAPS < 1 || DPD_MAX_TAPS > 4)
       $error("DPD_MAX_TAPS must be in [1,4]; got %0d", DPD_MAX_TAPS);
+    if (STATIC_DSM_ARCH < -1 || STATIC_DSM_ARCH > 2)
+      $error("STATIC_DSM_ARCH must be -1 (legacy/runtime) or 0/1/2; got %0d", STATIC_DSM_ARCH);
   end
 
 endmodule

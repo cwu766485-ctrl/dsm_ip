@@ -65,9 +65,12 @@ package thermo5_runtime_uvm_pkg;
     function new(string name,uvm_component parent);super.new(name,parent);imp=new("imp",this);endfunction
     function void build_phase(uvm_phase phase);
       string path;int fd,scan;bit [63:0] value;
-      if(!$value$plusargs("VEC_DIR=%s",vector_dir)) `uvm_fatal("NOVEC","Pass runtime VEC_DIR")
-      if(!$value$plusargs("CORE_WORDS=%d",words)) words=56;
-      void'($value$plusargs("CAP_DIR=%s",capture_dir));
+      if(!uvm_config_db#(string)::get(this,"","vector_dir",vector_dir) &&
+         !$value$plusargs("VEC_DIR=%s",vector_dir)) `uvm_fatal("NOVEC","Pass runtime VEC_DIR")
+      if(!uvm_config_db#(int)::get(this,"","core_words",words))
+        if(!$value$plusargs("CORE_WORDS=%d",words)) words=56;
+      if(!uvm_config_db#(string)::get(this,"","capture_dir",capture_dir))
+        void'($value$plusargs("CAP_DIR=%s",capture_dir));
       for(int a=0;a<3;a++) for(int p=0;p<(a==2?2:4);p++) begin
         path=$sformatf("%s/arch%0d_pa%0d.mem",vector_dir,a,p);fd=$fopen(path,"r");
         if(!fd) `uvm_fatal("VECOPEN",path)
@@ -107,4 +110,5 @@ package thermo5_runtime_uvm_pkg;
   endclass
 
   `include "thermo5_runtime_switch_test.svh"
+  `include "thermo5_compiletime_bittrue_test.svh"
 endpackage

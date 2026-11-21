@@ -244,21 +244,30 @@ module tid32_thermo5_frontend_tx #(
     .out_i_vec(i2_fifo_i), .out_q_vec(i2_fifo_q)
   );
 
-  tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES),
-    .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER)) u_tid (
-    .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid && !USE_EXTERNAL_DSM), .in_ready(legacy_tid_ready),
-    .in_i_poly_vec(i2_fifo_i), .in_q_poly_vec(i2_fifo_q),
-    .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
-  );
-  assign tid_ready = USE_EXTERNAL_DSM ? pre_dsm_ready : legacy_tid_ready;
-  assign pre_dsm_valid = USE_EXTERNAL_DSM && i2_fifo_valid;
-  assign pre_dsm_i_vec = USE_EXTERNAL_DSM ? i2_fifo_i : '0;
-  assign pre_dsm_q_vec = USE_EXTERNAL_DSM ? i2_fifo_q : '0;
   generate
     if(USE_EXTERNAL_DSM) begin : g_pre_metadata
+      // The compile-time/runtime product backends own all DSM instances.
+      // Do not elaborate the legacy EF1/EF2 core in this shared frontend.
+      assign legacy_tid_ready = 1'b0;
+      assign tid_ready = pre_dsm_ready;
+      assign pa_valid = '0;
+      for(genvar p=0;p<4;p=p+1) assign pa_data[p] = '0;
+      assign pre_dsm_valid = i2_fifo_valid;
+      assign pre_dsm_i_vec = i2_fifo_i;
+      assign pre_dsm_q_vec = i2_fifo_q;
       assign {pre_dsm_reset_epoch,pre_dsm_config_id,pre_dsm_tail,
               pre_dsm_frame_end,pre_dsm_frame_start} = pre_meta;
     end else begin : g_no_pre_metadata
+      tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES),
+        .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER)) u_tid (
+        .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid), .in_ready(legacy_tid_ready),
+        .in_i_poly_vec(i2_fifo_i), .in_q_poly_vec(i2_fifo_q),
+        .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
+      );
+      assign tid_ready = legacy_tid_ready;
+      assign pre_dsm_valid = 1'b0;
+      assign pre_dsm_i_vec = '0;
+      assign pre_dsm_q_vec = '0;
       assign {pre_dsm_reset_epoch,pre_dsm_config_id,pre_dsm_tail,
               pre_dsm_frame_end,pre_dsm_frame_start} = '0;
     end
