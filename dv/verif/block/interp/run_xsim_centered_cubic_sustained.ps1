@@ -63,15 +63,22 @@ function Invoke-BatchTool([string]$tool, [string]$stage, [string[]]$arguments) {
   $commandLine = 'call "{0}" {1}' -f $tool, $argsText
   @('@echo off', $commandLine, 'exit /b %errorlevel%') |
     Set-Content -LiteralPath $cmdPath -Encoding ASCII
+  $stdoutPath = Join-Path $work "$stage.stdout.log"
+  $stderrPath = Join-Path $work "$stage.stderr.log"
   $manifest.commands[$stage] = $commandLine
   $manifest.status = "${stage}_RUNNING"
   Save-Manifest
   $commandLine | Tee-Object -FilePath $log -Append
-  & cmd.exe /d /c $cmdPath 2>&1 | Tee-Object -FilePath $log -Append
-  if ($LASTEXITCODE -ne 0) {
+  $process = Start-Process -FilePath 'cmd.exe' `
+    -ArgumentList @('/d','/c',('"{0}"' -f $cmdPath)) `
+    -WorkingDirectory $work -Wait -PassThru -NoNewWindow `
+    -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
+  if (Test-Path -LiteralPath $stdoutPath) { Get-Content -LiteralPath $stdoutPath | Tee-Object -FilePath $log -Append }
+  if (Test-Path -LiteralPath $stderrPath) { Get-Content -LiteralPath $stderrPath | Tee-Object -FilePath $log -Append }
+  if ($process.ExitCode -ne 0) {
     $manifest.status = "${stage}_FAIL"
     Save-Manifest
-    throw "$stage failed (exit=$LASTEXITCODE); see $log"
+    throw "$stage failed (exit=$($process.ExitCode)); see $log"
   }
   $manifest.status = "${stage}_PASS"
   Save-Manifest
@@ -93,12 +100,20 @@ foreach ($tool in @($xvlog,$xelab,$xsim)) {
   $versionCmd = Join-Path $work 'tool_version.cmd'
   @('@echo off', ('call "{0}" -version' -f $tool), 'exit /b %errorlevel%') |
     Set-Content -LiteralPath $versionCmd -Encoding ASCII
-  $versionOutput = & cmd.exe /d /c $versionCmd 2>&1
+  $versionStdout = Join-Path $work 'tool_version.stdout.log'
+  $versionStderr = Join-Path $work 'tool_version.stderr.log'
+  $versionProcess = Start-Process -FilePath 'cmd.exe' `
+    -ArgumentList @('/d','/c',('"{0}"' -f $versionCmd)) `
+    -WorkingDirectory $work -Wait -PassThru -NoNewWindow `
+    -RedirectStandardOutput $versionStdout -RedirectStandardError $versionStderr
+  $versionOutput = @()
+  if (Test-Path -LiteralPath $versionStdout) { $versionOutput += Get-Content -LiteralPath $versionStdout }
+  if (Test-Path -LiteralPath $versionStderr) { $versionOutput += Get-Content -LiteralPath $versionStderr }
   $versionOutput | Add-Content -LiteralPath $envLog
-  if ($LASTEXITCODE -ne 0) {
+  if ($versionProcess.ExitCode -ne 0) {
     $manifest.status = 'VERSION_PROBE_FAIL'
     Save-Manifest
-    throw "Tool version probe failed: $tool (exit=$LASTEXITCODE)"
+    throw "Tool version probe failed: $tool (exit=$($versionProcess.ExitCode))"
   }
   $manifest.vivado_version = (($versionOutput | Select-String -Pattern 'Vivado Simulator v' | Select-Object -First 1).Line)
   Save-Manifest
