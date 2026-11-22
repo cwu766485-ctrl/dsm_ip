@@ -11,6 +11,8 @@ if {$arch ni {0 1 2} || $do_route ni {0 1}} {error "invalid architecture or rout
 if {$source_dcp ne "" && (!$do_route || ![file isfile $source_dcp])} {error "DCP reuse requires route=1 and an existing source checkpoint"}
 if {[file exists $out]} {error "refusing to overwrite output directory"}
 set repo [file normalize [file join [file dirname [info script]] ../..]]
+set timing_xdc [file join $repo research vcu118_arch compiletime_timing_budget.xdc]
+if {![file isfile $timing_xdc]} {error "timing XDC not found: $timing_xdc"}
 file mkdir $out
 cd $out
 create_project -in_memory -part xcvu9p-flga2104-2L-e
@@ -27,6 +29,7 @@ close $version_file
 if {$source_dcp ne ""} {
   open_checkpoint $source_dcp
   reset_timing
+  read_xdc $timing_xdc
   puts "COMPILETIME_SOURCE_DCP_REUSED $source_dcp"
 } else {
 foreach x {xpm_cdc xpm_memory xpm_fifo} {
@@ -38,9 +41,53 @@ foreach line [split [read $filelist] \n] {
   if {[string match rtl/* $line]} {read_verilog -sv [file join $repo $line]}
 }
 close $filelist
+read_xdc $timing_xdc
 synth_design -top tid32_thermo5_compiletime_tx -part xcvu9p-flga2104-2L-e \
   -mode out_of_context -generic DSM_ARCH=$arch
 }
+
+# Apply the provisional OOC interface budget only after the ports and
+# synthesized design exist. XDC is kept to native constraint commands; Tcl
+# foreach logic belongs here, not in an XDC file.
+set io_input_count 0
+foreach p [get_ports -filter {DIRECTION == IN && NAME !~ *clk*}] {
+  set n [get_property NAME $p]
+  if {$n eq "common_aresetn"} {
+    # One asynchronous reset input feeds three local reset synchronizers.
+    # Constrain its arrival against each destination clock for recovery/removal
+    # analysis; this is not a reset-wide false path.
+    foreach c {s_axil_aclk s_axis_aclk core_clk} {
+      set_input_delay -max 0.2 -clock [get_clocks $c] $p
+      set_input_delay -min 0.2 -clock [get_clocks $c] $p
+    }
+    incr io_input_count
+    continue
+  } elseif {[string match s_axil_* $n]} {
+    set c s_axil_aclk
+  } elseif {[string match s_axis_* $n]} {
+    set c s_axis_aclk
+  } else {
+    set c core_clk
+  }
+  set_input_delay -max 0.2 -clock [get_clocks $c] $p
+  set_input_delay -min 0.2 -clock [get_clocks $c] $p
+  incr io_input_count
+}
+set io_output_count 0
+foreach p [get_ports -filter {DIRECTION == OUT}] {
+  set n [get_property NAME $p]
+  if {[string match s_axil_* $n] || $n in {cfg_busy cfg_done cfg_error dsm_switch_busy}} {
+    set c s_axil_aclk
+  } elseif {[string match s_axis_* $n]} {
+    set c s_axis_aclk
+  } else {
+    set c core_clk
+  }
+  set_output_delay -max 0.2 -clock [get_clocks $c] $p
+  set_output_delay -min 0.0 -clock [get_clocks $c] $p
+  incr io_output_count
+}
+puts "OOC_IO_BUDGET inputs=$io_input_count min_max_ns=0.2 outputs=$io_output_count min_ns=0.0 max_ns=0.2"
 
 # Confirm the generated netlist contains the selected backend and no other
 # compile-time backend or runtime backend. Fail closed if hierarchy naming
@@ -66,21 +113,6 @@ puts "COMPILETIME_HIERARCHY_PASS DSM_ARCH=$arch selected=$selected blackboxes=[l
 puts "COMPILETIME_LATCH_CHECK_PASS latch_cells=[llength $latch_cells]"
 report_utilization -hierarchical -file hierarchy.rpt
 report_utilization -hierarchical -file synth_utilization_hierarchical.rpt
-
-create_clock -name core_clk -period 4.571428571 [get_ports core_clk]
-create_clock -name s_axis_aclk -period 8.000 [get_ports s_axis_aclk]
-create_clock -name s_axil_aclk -period 10.000 [get_ports s_axil_aclk]
-foreach p [get_ports -filter {DIRECTION == IN && NAME !~ *clk*}] {
-  set n [get_property NAME $p]
-  if {$n in {s_axil_aresetn s_axis_aresetn core_aresetn}} {continue}
-  if {[string match s_axil_* $n]} {set c s_axil_aclk} elseif {[string match s_axis_* $n]} {set c s_axis_aclk} else {set c core_clk}
-  set_input_delay 0.2 -clock [get_clocks $c] $p
-}
-foreach p [get_ports -filter {DIRECTION == OUT}] {
-  set n [get_property NAME $p]
-  if {[string match s_axil_* $n] || $n in {cfg_busy cfg_done cfg_error dsm_switch_busy}} {set c s_axil_aclk} elseif {[string match s_axis_* $n]} {set c s_axis_aclk} else {set c core_clk}
-  set_output_delay 0.2 -clock [get_clocks $c] $p
-}
 
 # Local async-assert/sync-release reset synchronizers: exception only to the
 # asynchronous CLR pins of cells explicitly tagged ASYNC_REG.
@@ -117,6 +149,42 @@ proc add_sync1_exception {patterns label} {
 add_sync1_exception {*u_cfg/cfg_req_sync1_reg* *u_cfg/run_sync1_reg*} axil_to_core
 add_sync1_exception {*u_cfg/cfg_ack_sync1_reg* *u_cfg/tx_active_sync1_reg* *u_cfg/draining_sync1_reg*} core_to_axil
 add_sync1_exception {*run_s1_reg*} axil_to_axis
+add_sync1_exception {*u_product/arch_locked_c1_reg* *u_product/ingress_closed_c1_reg* *u_product/source_error_c1_reg*} axis_to_core
+
+# In the compile-time common-reset FIFO mode, the XPM reset-level synchronizer
+# samples the write-domain local reset solely to generate XPM's wr_clk-aligned
+# reset. Exempt only its first D stage; stage one remains normally timed.
+set fifo_reset_first_stage {}
+foreach c [get_cells -hier -filter {NAME =~ *wr_reset_sync_reg*}] {
+  set n [get_property NAME $c]
+  if {![regexp {wr_reset_sync_reg\[0\]$} $n]} {continue}
+  set attr [string toupper [get_property ASYNC_REG $c]]
+  if {$attr ni {TRUE 1}} {error "FIFO reset first stage lacks ASYNC_REG: $n"}
+  lappend fifo_reset_first_stage $c
+}
+if {[llength $fifo_reset_first_stage] != 1} {
+  error "expected one common-epoch FIFO reset synchronizer stage zero, found [llength $fifo_reset_first_stage]"
+}
+set fifo_reset_first_stage_d [get_pins -of_objects $fifo_reset_first_stage -filter {REF_PIN_NAME == D}]
+if {[llength $fifo_reset_first_stage_d] != 1} {error "FIFO reset first-stage D pin count mismatch"}
+set_false_path -to $fifo_reset_first_stage_d
+puts "COMMON_EPOCH_FIFO_RESET_SYNC1_D_ENDPOINTS [llength $fifo_reset_first_stage_d]"
+
+# The read side waits for the AXIS-domain reset to release through a two-flop
+# ASYNC_REG chain before exposing FWFT valid. Exempt only its asynchronous CLR
+# pins; the stage-to-stage path remains timed in core_clk.
+set fifo_read_reset_guard [get_cells -hier -filter {NAME =~ *wr_reset_in_rd_reg*}]
+if {[llength $fifo_read_reset_guard] != 2} {
+  error "expected two common-epoch read reset guard flops, found [llength $fifo_read_reset_guard]"
+}
+foreach c $fifo_read_reset_guard {
+  set attr [string toupper [get_property ASYNC_REG $c]]
+  if {$attr ni {TRUE 1}} {error "read reset guard lacks ASYNC_REG: [get_property NAME $c]"}
+}
+set fifo_read_reset_guard_clr [get_pins -of_objects $fifo_read_reset_guard -filter {REF_PIN_NAME == CLR}]
+if {[llength $fifo_read_reset_guard_clr] != 2} {error "read reset guard CLR count mismatch"}
+set_false_path -to $fifo_read_reset_guard_clr
+puts "COMMON_EPOCH_FIFO_READ_RESET_GUARD_CLR_ENDPOINTS [llength $fifo_read_reset_guard_clr]"
 
 # The XPM reset synchronizer's stage-zero D endpoints are asynchronous; require
 # exactly the two generated first stages and verify ASYNC_REG before exception.
@@ -180,6 +248,7 @@ foreach src_cell $gray_sources {
 if {$gray_pairs == 0} {error "no XPM Gray pointer groups paired"}
 
 report_cdc -file synthesized_cdc.rpt
+report_cdc -details -file synthesized_cdc_details.rpt
 report_exceptions -file exceptions.rpt
 report_clock_interaction -delay_type min_max -file clock_interaction.rpt
 check_timing -verbose -file check_timing.rpt
@@ -198,6 +267,7 @@ if {$do_route} {
   }
   write_checkpoint routed.dcp
   report_cdc -file routed_cdc.rpt
+  report_cdc -details -file routed_cdc_details.rpt
   report_utilization -file routed_utilization.rpt
   report_timing_summary -delay_type min_max -report_unconstrained -file routed_timing_summary.rpt
   report_timing -delay_type max -max_paths 20 -nworst 20 -file setup_worst20.rpt

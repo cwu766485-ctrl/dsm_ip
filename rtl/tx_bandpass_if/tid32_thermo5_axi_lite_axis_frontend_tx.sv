@@ -13,6 +13,7 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   parameter bit INTERP_CENTERED_CUBIC = 1'b1,
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
+  parameter bit COMMON_RESET_EPOCH = 1'b0,
   parameter int TIDSM_ORDER = 2,
   parameter bit ENABLE_RUNTIME_DSM = 1'b0,
   parameter int STATIC_DSM_ARCH = -1
@@ -269,7 +270,8 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   assign core_run_request = core_enable;
 
   dsm_axis14_to_core8_cdc #(
-    .W(W), .GAIN_W(GAIN_W), .USE_XPM_FIFO(FPGA_USE_XPM_FIFO)
+    .W(W), .GAIN_W(GAIN_W), .USE_XPM_FIFO(FPGA_USE_XPM_FIFO),
+    .COMMON_RESET_EPOCH(COMMON_RESET_EPOCH)
   ) u_cdc (
     .s_axis_aclk(s_axis_aclk), .s_axis_aresetn(s_axis_aresetn),
     .s_axis_tvalid(cdc_s_valid), .s_axis_tready(cdc_s_ready),

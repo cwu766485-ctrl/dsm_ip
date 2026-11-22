@@ -1,0 +1,8 @@
+# Compile-time product clocks are asynchronous until the VCU118 parent proves
+# a clock relationship. One common asynchronous reset starts/aborts all three
+# domains; local deassertion is synchronized in the product top.
+current_design tid32_thermo5_compiletime_tx
+clock -name s_axil_aclk -domain axil -period 10 -edge {0 5}
+clock -name s_axis_aclk -domain source -period 8 -edge {0 4}
+clock -name core_clk -domain core -period 4.571428571 -edge {0 2.285714286}
+reset -name common_aresetn -value 0 -async

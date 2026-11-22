@@ -1,3 +1,173 @@
+# 2026-11-22 — Timing strategy trials and CDC/RDC status
+
+- Changed: added `research/vcu118_arch/place_explore_from_synth.tcl` and `docs/verification/thermo5_compiletime_timing_cdc_closure_20261122.md`; updated the active execution frontier. Existing RTL, DCPs, VCDs, reports, and prior logs were preserved.
+- Reason: explain the timing gap using same-source routed evidence, test implementation-only placement/routing alternatives, and record the current CDC/RDC disposition without broad exceptions.
+- Checks: Vivado 2026.1 routed EF1 and MASH compile-time OOC candidates. EF1 Explore variants all retained WNS/WHS `+0.025/+0.026 ns`; MASH route Explore retained `+0.108/+0.015 ns`; TNS/THS remained zero. EF1 Explore DRC/route verification completed without errors. `git diff --check` is run after this documentation update.
+- Limitations: neither design reaches the preferred +0.15 ns setup reserve. Current SpyGlass RDC is blocked by unavailable `checker 2023.12` license; no waivers or RDC PASS are claimed. Parent-level clocks/pin constraints, full-top formal/UVM, long-stream GTY and RF remain open.
+
+# 2026-11-22 14:41 SGT — EF1 routed timing and MASH route restart
+
+- Changed: `docs/exec-plans/active/execution-frontier.md`,
+  `research/vcu118_arch/route_physopt_from_placed.tcl`, and a unique ignored
+  launcher under `runs/de_timing_20261122/`.
+- Reason: capture the current compile-time EF1 routed result and prepare a
+  physical-only `AggressiveExplore` trial from the preserved placed DCP; launch
+  MASH-only with the same product top, XDC, part and clocks.
+- Checks: EF1 full OOC route completed on Vivado 2026.1 build 6511674 with
+  WNS/TNS `+0.025/0 ns`, WHS/THS `+0.026/0 ns`, zero failing/unconstrained
+  endpoints; CDC 125 Safe / 0 Unsafe / 0 Unknown; all four bus-skew groups
+  meet limits. The current worst path is DPD DSP48E2/carry, 4.231 ns data
+  delay (2.625 ns cell, 1.606 ns route), skew −0.017 ns. MASH synthesis passed
+  with zero errors and its 131 CDC paths classified Safe; placement is still
+  running, so no MASH routed claim is made.
+- Limitations: EF1 is OOC and has only +0.025 ns setup margin, below the
+  planned +0.15 ns reserve; missing `HD.CLK_SRC` and `HD.PARTPIN_LOCS` keep
+  parent/board timing open. Current-source SpyGlass has not yet run; no RDC
+  waiver or closure is claimed. MASH route and EF1 physical-strategy trial
+  remain pending.
+
+# 2026-11-22 11:37 SGT — Common-reset XPM FIFO CDC refinement
+
+- Changed: `rtl/axis/dsm_xpm_async_fifo.sv`,
+  `rtl/axis/dsm_axis14_to_core8_cdc.sv`,
+  `rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv`,
+  `rtl/tx_bandpass_if/tid32_thermo5_compiletime_tx.sv`, and
+  `research/vcu118_arch/run_compiletime_ppa.tcl`.
+- Reason: the compile-time product now uses its agreed common reset epoch.
+  Removed the redundant Core-reset sampler into the AXIS clock domain while
+  retaining the source-reset-release synchronizer in the read domain, which
+  prevents stale FWFT data if Core reset releases before AXIS reset. Its
+  asynchronous CLR exception is limited to the two ASYNC_REG guard flops; the
+  synchronizer's stage-to-stage path remains timed. The legacy independent
+  reset implementation remains the default for Runtime Top.
+- Checks: EF1 and MASH compile-time XPM-backed 32-beat/56-word Golden tests
+  passed at seed 610216 in `runs/de_timing_20261122/compiletime_arch{0,2}_common_epoch03/`.
+  Runtime Top XPM regression passed 448 words, 8 streams, 6/6 transitions,
+  715 stalls, and one reset in `runs/de_timing_20261122/runtime_xsim_common_epoch02/`.
+  The documented VCS regression was rerun and remains blocked by 10 existing
+  `u_frontend.u_tid` cross-module-reference errors in
+  `dv/uvm/tb/thermo5_sku_uvm_tb.sv`; evidence is in
+  `runs/de_timing_20261122/vcs_common_epoch03/compile.log`.
+- Timing: the first common-reset experiment was stopped before synthesis
+  reports after read-release ordering review; its log/output were retained in
+  `ef1_common_epoch02*`. The corrected full EF1 route is in progress at
+  `runs/de_timing_20261122/ef1_common_epoch03*`. No new routed result is
+  claimed yet. SpyGlass remains blocked by unavailable `checker` license; no
+  RDC waiver or pass is claimed.
+
+# 2026-11-22 10:35 SGT — EF1 route recovery and CDC/RDC root-cause update
+
+- Changed: `research/vcu118_arch/resume_route_from_placed.tcl`,
+  `docs/exec-plans/active/execution-frontier.md`. No RTL, Golden, or existing
+  implementation evidence was changed. A new unique route-resume directory is
+  in use.
+- Reason: the prior route05 process stopped after placement and at the start
+  of `route_design`; preserve its DCP and resume from its saved placement
+  without replacing any artifact. Explain the timing gap from source/flow
+  evidence rather than compare unlike snapshots.
+- Evidence: route05 fresh synthesis reports WNS/TNS `+1.140/0 ns`, WHS/THS
+  `+0.039/0 ns`; post-placement estimated WNS `+0.040 ns`. The newly resumed
+  route has opened the placed checkpoint, verified core/AXIS/AXI-Lite periods
+  of 4.571/8/10 ns, completed exception/clock/check_timing reports and started
+  route. Vivado still flags missing OOC `HD.CLK_SRC` and vector `HD.PARTPIN_LOCS`.
+  The current CDC report has 2 unsafe XPM FIFO remote-reset paths; mailbox and
+  Gray-pointer crossings retain scoped max-delay/bus-skew constraints.
+- Root-cause interpretation: the historic `−2.712 ns` EF1 / `−2.818 ns` MASH
+  results are from the pre-pipeline centered-cubic source and a different
+  boundary-constraint stage. The critical path traversed 24 logic levels and
+  7.26 ns of arithmetic/packing against a 4.57 ns period; wide FIFO buses
+  replicated the same failing cone into thousands of endpoints. The present
+  source includes the verified two-stage cubic ECO; the path moved to the DPD
+  DSP cascade. Its routed margin is still pending and may remain small.
+- RDC: prior 17,895 `Qualifier not found` errors belong to the independent-reset
+  runtime abort candidate with generic FIFO payload memories. This is a stale
+  design/model scope for compile-time EF1/MASH using XPM. `sg_shell` is not
+  available here, so no current-product SpyGlass run/disposition or waiver is
+  claimed. Parent common-reset assertion and synchronized per-domain release
+  remain required product integration contract.
+- Limitations/next: fresh MASH synthesis/route and EF1 routed summary are
+  pending; RDC rerun remains NOT_RUN. OOC clock/pin boundaries and board-level
+  signoff remain open. No timing, CDC/RDC, or DE Freeze PASS is claimed yet.
+
+# 2026-11-22 10:46 SGT — Common-reset product contract and XSim regression
+
+- Changed: `rtl/tx_bandpass_if/tid32_thermo5_compiletime_tx.sv`,
+  `dv/uvm/tb/thermo5_compiletime_uvm_tb.sv`,
+  `research/vcu118_arch/run_compiletime_ppa.tcl`, new
+  `research/vcu118_arch/compiletime_product.sgdc`,
+  `research/vcu118_arch/run_compiletime_spyglass.tcl`, compile-time report,
+  and execution frontier. Existing evidence was not overwritten.
+- Reason: enforce the agreed reset epoch at the compile-time product boundary:
+  common asynchronous assertion aborts all in-flight work, with local
+  synchronous release in each unrelated clock domain. PPA applies the common
+  reset arrival budget to each destination clock. SpyGlass configuration
+  targets the exact compile-time product/XPM FIFO and declares the clocks
+  asynchronous; it contains no waivers.
+- Checks: Vivado/XSim 2026.1 compile-time EF1 (`DSM_ARCH=0`) and MASH 1-1
+  (`DSM_ARCH=2`) XPM-backed Bit-True regressions both PASS at seed 610216,
+  32 source beats / 56 PA words. Logs and vectors are preserved under
+  `runs/de_timing_20261122/compiletime_arch{0,2}_common_reset/`.
+- SpyGlass: executable is present at the Rocky WSL installation, but the
+  current `checker` license checkout failed because the configured license
+  service could not be reached. No fresh SpyGlass report was produced; current
+  product CDC/RDC remains BLOCKED_LICENSE. The failed attempt is preserved at
+  `runs/de_timing_20261122/sg_arch0_cdc_console.log`.
+- Timing: the running resume route uses a DCP generated before the common-reset
+  top change. Its intermediate global route WNS/WHS `+0.050/+0.026 ns` is
+  baseline-only. Fresh EF1/MASH synthesis and routing on the changed source
+  remain NOT_RUN. No timing or RDC PASS is claimed.
+
+# 2026-11-21 23:46 SGT — Correct constraint application and route retry
+
+- Changed: `research/vcu118_arch/run_compiletime_ppa.tcl`,
+  `research/vcu118_arch/compiletime_timing_budget.xdc`, and the active
+  execution frontier. No RTL, Golden, or prior implementation artifact was
+  changed.
+- Reason: route03's preserved log shows XDC parser Critical Warnings for Tcl
+  `foreach`; the run stopped after synthesis, before implementation. The XDC
+  now contains only `create_clock` commands. Tcl applies 0.2 ns min/max input
+  delays and 0.0/0.2 ns min/max output delays after synthesis or DCP load,
+  covering the reset ports without adding a reset-wide false path. The exact
+  ASYNC_REG-validated first-stage exception for `arch_locked_c1` remains.
+- Checks: `git diff --check` passed. Vivado 2026.1 direct batch-launcher probe
+  passed. Route04 launch failed because `vivado` was not resolved in its child
+  shell; its failed console log is preserved. Route03's XDC parser failure and
+  reports are preserved and excluded from PPA comparison. A fresh route05 will
+  invoke `vivado.bat` by absolute path.
+- Limitations: the only completed route is route02's narrow OOC result
+  (WNS +0.010 ns, WHS +0.027 ns); it is not parent/board signoff. Product CDC
+  and RDC remain OPEN; SpyGlass RDC was not run. MASH routed closure remains
+  NOT_RUN.
+
+# 2026-11-21 23:35 SGT — EF1 OOC timing and CDC constraint correction
+
+- Changed: `research/vcu118_arch/run_compiletime_ppa.tcl`, new
+  `research/vcu118_arch/compiletime_timing_budget.xdc`, and the active
+  execution frontier. No RTL or Golden changed.
+- Reason: the fresh EF1 route showed that the two-stage centered-cubic ECO
+  removed the old Interp2-to-FIFO critical chain; the new worst path is the DPD
+  DSP cascade. The first attempt's artificial hold explosion came from a
+  zero-min input budget and was retained as a failed experiment. The corrected
+  route uses 0.2 ns min/max input budgets and endpoint-scoped CDC/reset
+  exceptions. It also exposed a missing `arch_locked_c1` synchronizer first-D
+  exception and the need to read timing constraints before synthesis.
+- Checks: Vivado 2026.1 / `xcvu9p-flga2104-2L-e`, EF1 compile-time OOC route
+  completed in `runs/de_timing_20261121/eco_route02_arch0/`: WNS/TNS
+  `+0.010/0 ns`, WHS/THS `+0.027/0 ns`, zero failing/unconstrained endpoints.
+  Worst path is DPD DSP `r4_full_s2[0]` → `p_49_out__0`, 4.243 ns data
+  (2.673 ns cell, 1.570 ns routed), 10 logic levels, −0.017 ns skew. Resource
+  counts: 50,053 LUT, 53,495 FF, 496 DSP, 6.5 BRAM tiles, 4,777 CARRY8.
+  `check_timing` has no missing input/output delays or unconstrained endpoints.
+  `git diff --check` passed.
+- Limitations: route02 is OOC and has only 10 ps WNS margin; `HD.CLK_SRC` and
+  vector-port `HD.PARTPIN_LOCS` are absent, so parent-clock/boundary timing is
+  not modeled. Vivado CDC still reports 2 CDC-11 reset Critical, 99 CDC-15
+  bundled mailbox warnings, 3 CDC-6 Gray-pointer warnings, and 1 CDC-26
+  potential LUTRAM collision. SpyGlass is unavailable, so current RDC is OPEN.
+  A fresh timing-driven EF1 resynthesis/route is running as route03 with the
+  XDC read before synthesis and exact `arch_locked_c1` first-stage D exception;
+  MASH route and parent-level CDC/RDC remain OPEN.
+
 # 2026-11-21 20:37 SGT — Compile-time timing closure checkpoint
 
 - Changed: `dv/verif/block/interp/run_xsim_centered_cubic_sustained.ps1` now

@@ -14,7 +14,8 @@ module dsm_axis14_to_core8_cdc #(
   parameter int FIFO_ADDR_W = 4,
   parameter int SRC_LANES = 14,
   parameter int CORE_LANES = 8,
-  parameter bit USE_XPM_FIFO = 1'b0
+  parameter bit USE_XPM_FIFO = 1'b0,
+  parameter bit COMMON_RESET_EPOCH = 1'b0
 ) (
   input  wire logic                                  s_axis_aclk,
   input  wire logic                                  s_axis_aresetn,
@@ -79,11 +80,12 @@ module dsm_axis14_to_core8_cdc #(
 
   generate
     if (USE_XPM_FIFO) begin : g_xpm_fifo
-      // The XPM wrapper synchronizes both local reset requests into wr_clk
-      // before asserting its required wr_clk-synchronous common reset. The
-      // parent asserts both domains in one reset epoch; each public handshake
-      // remains gated by its own local reset.
-      dsm_xpm_async_fifo #(.DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W)) u_async_fifo (
+      // COMMON_RESET_EPOCH is enabled only by the compile-time product top,
+      // whose reset contract has shared async assertion and local sync release.
+      dsm_xpm_async_fifo #(
+        .DATA_W(FIFO_W), .ADDR_W(FIFO_ADDR_W),
+        .COMMON_RESET_EPOCH(COMMON_RESET_EPOCH)
+      ) u_async_fifo (
         .wr_clk(s_axis_aclk), .wr_rst_n(s_axis_aresetn), .wr_data_vec(fifo_wr_data),
         .wr_valid(s_axis_tvalid), .wr_ready(fifo_wr_ready), .wr_full(s_axis_fifo_full),
         .rd_clk(core_clk), .rd_rst_n(core_aresetn), .rd_data(fifo_rd_data),
