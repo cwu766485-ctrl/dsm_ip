@@ -1,3 +1,10 @@
+## 2026-11-23 19:15 SGT — XPM port model and reset probes
+
+- Files: `dv/verif/axis/tb_thermo5_xpm_prefill_reset.sv`, `docs/verification/thermo5-linux-cdc-rdc-round5-20261123.md`, execution frontier.
+- Reason: validate opt-in port associations and test XPM reset/prefill and configuration abort after license recovery.
+- Checks: EF1/MASH XPM CDC/RDC with candidate SGDC, VCS product-width XPM FIFO reset/prefill and compile-time configuration abort. Tool outputs, commands, hashes and limitations are recorded in the report.
+- Remaining: original CDC/RDC errors, formal reset/payload proofs, product regression and physical timing remain OPEN; no RTL change or waiver.
+
 ## 2026-11-23 19:10 SGT — CDC/RDC port model checkpoint
 
 - Files: `research/vcu118_arch/run_compiletime_spyglass.tcl`, `research/vcu118_arch/compiletime_product_ports_candidate.sgdc`, `docs/verification/thermo5-linux-cdc-rdc-round4-20261123.md`, and execution frontier.

@@ -1,3 +1,9 @@
+# 2026-11-23 19:15 SGT — Round 5 XPM port model and reset probes, OPEN
+
+- Product baseline `b9cc9ac`; candidate port SGDC was read in all four EF1/MASH CDC/RDC runs, but requires parent-domain approval. Counts remain 8/8 CDC errors and 4,417/5,125 RDC errors, zero waivers; all original findings OPEN.
+- VCS configuration common-reset abort/restart passed with compile-time `ENABLE_RUNTIME_DSM=0`. New 466-bit XPM FIFO prefill/reset directed probe passed four epochs and 32 checked words; it is not a whole-product or arbitrary-clock proof.
+- Next: close Gray/FWFT and reset crossings with precise formal/structural and physical evidence; prove full payload/epoch integrity and resolve existing formal setup warnings. No DE freeze. See `docs/verification/thermo5-linux-cdc-rdc-round5-20261123.md`; preserve `runs/linux_cdc_rdc_round5/`.
+
 # 2026-11-23 19:10 SGT — Round 4 port model and CDC/RDC audit, OPEN
 
 - Baseline `b2c364f`; no product RTL or default SGDC change. Port-domain candidate is opt-in and NOT tool validated. Current SpyGlass and VCS runs failed to obtain licenses; raw logs are preserved under `runs/linux_cdc_rdc_round4/`.
