@@ -37,7 +37,9 @@ foreach line [split [read $fd] \n] {
   if {[string match rtl/* $line]} {read_file -type verilog [file join $root $line]}
 }
 close $fd
-read_file -type sgdc [file join $root research vcu118_arch compiletime_product.sgdc]
+set sgdc [file join $root research vcu118_arch compiletime_product.sgdc]
+if {[info exists ::env(THERMO5_CTIME_SGDC)]} {set sgdc [file normalize $::env(THERMO5_CTIME_SGDC)]}
+read_file -type sgdc $sgdc
 current_goal $goal
 run_goal
 write_report moresimple > [file join $out moresimple.rpt]

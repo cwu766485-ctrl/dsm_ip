@@ -1,3 +1,10 @@
+## 2026-11-23 19:10 SGT — CDC/RDC port model checkpoint
+
+- Files: `research/vcu118_arch/run_compiletime_spyglass.tcl`, `research/vcu118_arch/compiletime_product_ports_candidate.sgdc`, `docs/verification/thermo5-linux-cdc-rdc-round4-20261123.md`, and execution frontier.
+- Reason: prepare an opt-in port clock model and audit runtime-idle, FWFT count and original RDC reset paths without broad exclusions.
+- Checks: static source and 9,542 exact RDC records reviewed as described; SpyGlass and VCS attempts failed license checkout, therefore no new PASS. Candidate constraints remain unvalidated and default SGDC unchanged.
+- Remaining: validate candidate, CDC/RDC closure, product reset proof, full regression and timing review. No RTL change, waiver or DE freeze.
+
 ## 2026-11-23 15:36 SGT — Generic AFIFO evaluation
 
 - Files: `research/vcu118_arch/run_compiletime_spyglass.tcl`, `docs/verification/thermo5-linux-cdc-rdc-round3-afifo-20261123.md`, execution frontier.

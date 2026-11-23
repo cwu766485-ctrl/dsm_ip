@@ -1,0 +1,18 @@
+# EXPERIMENTAL: syntax and port associations NOT validated by SpyGlass.
+# Do not use as signoff constraints until a clean tool run and domain audit.
+# Compile-time product clocks are asynchronous until the VCU118 parent proves
+# a clock relationship. One common asynchronous reset starts/aborts all three
+# domains; local deassertion is synchronized in the product top.
+current_design tid32_thermo5_compiletime_tx
+clock -name s_axil_aclk -domain axil -period 10 -edge {0 5}
+clock -name s_axis_aclk -domain source -period 8 -edge {0 4}
+clock -name core_clk -domain core -period 4.571428571 -edge {0 2.285714286}
+reset -name common_aresetn -value 0 -async
+# Functional interface clock ownership, not physical I/O delay constraints.
+# No waiver, sync-cell abstraction, quasi-static assumption or gray assertion.
+input -name {s_axil_awaddr s_axil_awvalid s_axil_wdata s_axil_wstrb s_axil_wvalid s_axil_bready s_axil_araddr s_axil_arvalid s_axil_rready} -clock s_axil_aclk
+input -name {s_axis_tvalid s_axis_tlast s_axis_i_vec s_axis_q_vec s_axis_tuser_frame_start s_axis_tuser_frame_gain} -clock s_axis_aclk
+input -name {pa_ready} -clock core_clk
+output -name {s_axil_awready s_axil_wready s_axil_bresp s_axil_bvalid s_axil_arready s_axil_rdata s_axil_rresp s_axil_rvalid cfg_busy cfg_done cfg_error dsm_switch_busy} -clock s_axil_aclk
+output -name {s_axis_tready s_axis_fifo_full} -clock s_axis_aclk
+output -name {core_underflow core_protocol_error core_run_request core_tx_active pa_valid pa_data active_dsm_arch pa_contract_weighted pa_channel_mask pa_frame_start pa_frame_end pa_tail pa_config_id} -clock core_clk

@@ -1,3 +1,10 @@
+# 2026-11-23 19:10 SGT — Round 4 port model and CDC/RDC audit, OPEN
+
+- Baseline `b2c364f`; no product RTL or default SGDC change. Port-domain candidate is opt-in and NOT tool validated. Current SpyGlass and VCS runs failed to obtain licenses; raw logs are preserved under `runs/linux_cdc_rdc_round4/`.
+- Runtime idle source review: compile-time product disables the only runtime-architecture consumer; DPD config commit has a distinct path. FWFT count is registered pointer difference and must be proved at actual prefill usage; do not assume universal conservative count.
+- EF1/MASH original errors remain OPEN. All destinations in original RDC records are unreset, with 32 source Set records in each; no exception or waiver was made. Detailed checkpoint and commands: `docs/verification/thermo5-linux-cdc-rdc-round4-20261123.md`.
+- Next: restore licenses, validate candidate SGDC and all setup warnings, run EF1/MASH CDC/RDC and targeted reset/config tests, then resolve formal and physical timing obligations. No DE Freeze.
+
 # 2026-11-23 15:36 SGT — Round 3 Generic AFIFO evaluation, OPEN
 
 - Baseline `2fc960a`, product RTL unchanged. `run_compiletime_spyglass.tcl` permits explicit Generic FIFO selection for analysis; XPM remains default. Report: `docs/verification/thermo5-linux-cdc-rdc-round3-afifo-20261123.md`.
