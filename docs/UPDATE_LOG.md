@@ -1,3 +1,10 @@
+## 2026-11-23 14:40 SGT — CDC/RDC review and DPD reset experiment
+
+- Files: `research/vcu118_arch/formal_dpd_reset_epoch.{sv,tcl}`, `tools/hw/thermo5_compiletime_vcs_filelist.py`, `docs/verification/thermo5-linux-cdc-rdc-review-20261123.md`, review matrices and exact path inventories, execution frontier.
+- Reason: retain individual CDC/RDC paths, retry tool flows after license restoration, and evaluate DPD lane reset-valid provenance.
+- Checks: both EF1/MASH CDC and RDC re-executed with errors retained; XPM UVM directed tests and standalone reset test passed; local formal assertions and activity covers returned results with one reset setup issue. Details and hashes in review report.
+- Remaining: all CDC/RDC error dispositions and system-level reset/formal, full regression, routed review and DE freeze are OPEN. No waiver or RTL change.
+
 ## 2026-11-23 11:20 SGT — Linux CDC/RDC bring-up
 
 - Files: `research/vcu118_arch/run_compiletime_spyglass.tcl`, `docs/verification/thermo5-linux-cdc-rdc-bringup-20261123.md`, grouped RDC CSVs, and execution frontier.

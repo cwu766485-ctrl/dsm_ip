@@ -1,0 +1,94 @@
+rule,source,line,reported_errors,provisional_group,required_evidence,status
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,1279,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,1406,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,1407,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,1897,42,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,1942,20,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,764,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,801,4,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv,802,4,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_memory/hdl/xpm_memory.sv,1452,64,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_memory/hdl/xpm_memory.sv,3028,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_memory/hdl/xpm_memory.sv,3102,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,AMD-XPM/xpm_memory/hdl/xpm_memory.sv,3139,10,XPM FIFO / memory,Reset/busy and stale-data masking in both domains,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,236,64,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,237,64,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,245,207,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,246,143,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,247,143,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,248,143,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,249,143,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,250,143,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,253,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,254,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,255,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,256,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,257,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,258,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,259,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,260,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,261,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,262,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,265,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,266,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,267,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,268,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,269,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,270,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,271,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,272,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,273,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,277,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,278,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,279,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,280,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,281,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,282,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,283,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,284,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,285,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,288,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,289,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,290,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,291,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,292,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,293,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,294,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,295,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,298,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,299,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,300,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,302,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,304,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,305,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,308,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,309,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,310,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,311,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,314,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,315,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,316,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,317,48,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,329,95,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/dpd/dpd_memory_poly.v,330,95,DPD data and valid,Reset valid provenance and output payload correctness per stage,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,111,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,112,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,113,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,116,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,117,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,122,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,123,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,124,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,127,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,129,10,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,135,11,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,136,12,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,137,12,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,139,12,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,140,12,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,141,12,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/frontend/dsm_frame_gain_vector.sv,142,12,Frame gain data and valid,Reset valid/metadata and stale-data masking,OPEN
+Ar_resetcross01,rtl/tx_bandpass_if/thermo5_compiletime_dsm_backend.sv,67,72,DSM backend,Valid propagation and architecture-specific PA output,OPEN
+Ar_resetcross01,rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv,342,124,Frame / elastic / epoch,"Queue reset, accepted transaction and drain contract",OPEN
+Ar_resetcross01,rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv,343,124,Frame / elastic / epoch,"Queue reset, accepted transaction and drain contract",OPEN
+Ar_resetcross01,rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv,344,70,Frame / elastic / epoch,"Queue reset, accepted transaction and drain contract",OPEN

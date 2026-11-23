@@ -1,3 +1,10 @@
+# 2026-11-23 14:40 SGT — CDC/RDC path inventory and scoped reset proof, OPEN
+
+- Baseline `2bbe3b94ce1a0c6f33176d0da45c56916c95ce06`, independent branch `work/thermo5-linux-cdc-rdc`; no RTL or constraint changes. Remote long-lived branches remain untouched.
+- Reran EF1/MASH CDC and structural RDC after license restoration: respectively 8/8 CDC errors and 4,417/5,125 RDC errors; zero waivers. Exact path inventories retain every message. See `docs/verification/thermo5-linux-cdc-rdc-review-20261123.md`.
+- Current XPM EF1 and MASH 56-word UVM directed bit-true tests passed; standalone reset contract passed. DPD lane valid-provenance assertions proved and three activities covered, but reset setup reports one issue, so formal remains OPEN. Whole-system reset/abort/epoch, full regressions and DE freeze remain OPEN.
+- Next: analyze each CDC path and RDC cone using true product clocks/reset and physical constraints; resolve formal reset setup and prove old data cannot become valid across the full chain. Preserve `runs/linux_cdc_rdc_round2` logs and reports.
+
 # 2026-11-23 11:20 SGT — Linux EF1/MASH CDC/RDC bring-up, OPEN
 
 - Independent worktree `work/thermo5-linux-cdc-rdc`, based on `1391a30f04c76117864ab82fb8fb5b23d60c0868`; original worktree left untouched. The current product RTL is unchanged.
