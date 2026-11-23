@@ -6,6 +6,9 @@ set root [file normalize $::env(THERMO5_CTIME_ROOT)]
 set out [file normalize $::env(THERMO5_CTIME_OUT)]
 set arch $::env(THERMO5_CTIME_ARCH)
 set goal $::env(THERMO5_CTIME_GOAL)
+set use_xpm 1
+if {[info exists ::env(THERMO5_CTIME_XPM)]} {set use_xpm $::env(THERMO5_CTIME_XPM)}
+if {$use_xpm ni {0 1}} {error "THERMO5_CTIME_XPM must be 0 or 1"}
 if {$arch ni {0 2}} {error "only EF1 (0) and MASH 1-1 (2) are in this closure run"}
 if {![string match "cdc/*" $goal] && ![string match "rdc/*" $goal]} {
   error "expected a CDC or RDC goal, got $goal"
@@ -19,12 +22,14 @@ set_option enableSV09 yes
 set_option pragma {synopsys synthesis}
 set_option top tid32_thermo5_compiletime_tx
 set_option param tid32_thermo5_compiletime_tx.DSM_ARCH=$arch
-set_option param tid32_thermo5_compiletime_tx.FPGA_USE_XPM_FIFO=1
+set_option param tid32_thermo5_compiletime_tx.FPGA_USE_XPM_FIFO=$use_xpm
 set_option mthresh 32768
 
-set vivado [file normalize $::env(VIVADO_ROOT)]
-foreach xpm {xpm_cdc xpm_memory xpm_fifo} {
-  read_file -type verilog [file join $vivado data ip xpm $xpm hdl ${xpm}.sv]
+if {$use_xpm} {
+  set vivado [file normalize $::env(VIVADO_ROOT)]
+  foreach xpm {xpm_cdc xpm_memory xpm_fifo} {
+    read_file -type verilog [file join $vivado data ip xpm $xpm hdl ${xpm}.sv]
+  }
 }
 set fd [open [file join $root dv uvm sim thermo5_sku_filelist.f] r]
 foreach line [split [read $fd] \n] {

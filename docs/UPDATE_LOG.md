@@ -1,3 +1,10 @@
+## 2026-11-23 15:36 SGT — Generic AFIFO evaluation
+
+- Files: `research/vcu118_arch/run_compiletime_spyglass.tcl`, `docs/verification/thermo5-linux-cdc-rdc-round3-afifo-20261123.md`, execution frontier.
+- Reason: enable explicit Generic FIFO analysis without changing the default XPM product and compare current-source reset and product behavior.
+- Checks: two Generic FIFO VCS directed tests, EF1/MASH Generic 56-word bit-true UVM, EF1/MASH Generic CDC/RDC, and existing Generic FIFO formal. Results, tool versions, hashes and commands appear in the report.
+- Remaining: Generic and XPM CDC/RDC, whole-product reset proof, physical constraints/timing and DE freeze remain OPEN; no RTL replacement or waiver.
+
 ## 2026-11-23 14:40 SGT — CDC/RDC review and DPD reset experiment
 
 - Files: `research/vcu118_arch/formal_dpd_reset_epoch.{sv,tcl}`, `tools/hw/thermo5_compiletime_vcs_filelist.py`, `docs/verification/thermo5-linux-cdc-rdc-review-20261123.md`, review matrices and exact path inventories, execution frontier.

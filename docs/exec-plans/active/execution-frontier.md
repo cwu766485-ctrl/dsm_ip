@@ -1,3 +1,10 @@
+# 2026-11-23 15:36 SGT — Round 3 Generic AFIFO evaluation, OPEN
+
+- Baseline `2fc960a`, product RTL unchanged. `run_compiletime_spyglass.tcl` permits explicit Generic FIFO selection for analysis; XPM remains default. Report: `docs/verification/thermo5-linux-cdc-rdc-round3-afifo-20261123.md`.
+- VCS Generic FIFO full/reset and skew-release tests PASS; Generic EF1/MASH 56-word XPM-disabled bit-true UVM directed tests PASS. These do not establish cycle equivalence or physical resource mapping.
+- SpyGlass Generic EF1/MASH CDC: 1/1 errors; RDC: 4,379/5,087 errors; no waivers. Generic formal: 4 proven, 4 inconclusive assertions; 1 covered, 1 inconclusive cover; reset setup check disabled in existing harness. XPM original findings unchanged and OPEN.
+- Next: verify XPM Gray and reset paths, close Generic formal, conduct product reset-under-traffic checks, and review Generic synchronizer attributes and end-to-end physical Gray constraints before any replacement. Preserve `runs/linux_cdc_rdc_round3/`; DE Freeze OPEN.
+
 # 2026-11-23 14:40 SGT — CDC/RDC path inventory and scoped reset proof, OPEN
 
 - Baseline `2bbe3b94ce1a0c6f33176d0da45c56916c95ce06`, independent branch `work/thermo5-linux-cdc-rdc`; no RTL or constraint changes. Remote long-lived branches remain untouched.
