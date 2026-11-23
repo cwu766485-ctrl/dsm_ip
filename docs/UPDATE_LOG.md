@@ -1,3 +1,10 @@
+## 2026-11-23 11:20 SGT — Linux CDC/RDC bring-up
+
+- Files: `research/vcu118_arch/run_compiletime_spyglass.tcl`, `docs/verification/thermo5-linux-cdc-rdc-bringup-20261123.md`, grouped RDC CSVs, and execution frontier.
+- Reason: enable the existing SpyGlass flow to read XPM SV2009 and synthesis pragmas and establish current EF1/MASH CDC/RDC findings without waiver.
+- Checks: product CDC and RDC goal runs for EF1 and MASH, scoped VCS reset simulation, scoped VC Formal common-reset harness. Exact results, commands, hashes and limitations are in the bring-up report.
+- Remaining: CDC/RDC errors and reset setup issues unresolved; no product UVM, final formal, DE or Linux DV signoff.
+
 # 2026-11-22 — Timing strategy trials and CDC/RDC status
 
 - Changed: added `research/vcu118_arch/place_explore_from_synth.tcl` and `docs/verification/thermo5_compiletime_timing_cdc_closure_20261122.md`; updated the active execution frontier. Existing RTL, DCPs, VCDs, reports, and prior logs were preserved.

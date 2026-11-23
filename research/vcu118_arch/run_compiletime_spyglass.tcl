@@ -14,6 +14,9 @@ if {[file exists $out]} {error "refusing to overwrite existing run directory: $o
 file mkdir $out
 new_project $out/thermo5_compiletime.prj
 set_option enableSV yes
+set_option enableSV09 yes
+# AMD XPM marks simulation-only code with the synthesis pragma family.
+set_option pragma {synopsys synthesis}
 set_option top tid32_thermo5_compiletime_tx
 set_option param tid32_thermo5_compiletime_tx.DSM_ARCH=$arch
 set_option param tid32_thermo5_compiletime_tx.FPGA_USE_XPM_FIFO=1

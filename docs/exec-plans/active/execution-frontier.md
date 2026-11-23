@@ -1,3 +1,10 @@
+# 2026-11-23 11:20 SGT — Linux EF1/MASH CDC/RDC bring-up, OPEN
+
+- Independent worktree `work/thermo5-linux-cdc-rdc`, based on `1391a30f04c76117864ab82fb8fb5b23d60c0868`; original worktree left untouched. The current product RTL is unchanged.
+- SpyGlass XPM read now recognizes SV2009 and synthesis translate pragmas. Both product CDC runs completed with 8 errors each; EF1 RDC has 4,417 and MASH RDC 5,125 errors, all `Ar_resetcross01`; no waivers. All require disposition. Raw per-source grouping and reproducible commands: `docs/verification/thermo5-linux-cdc-rdc-bringup-20261123.md`.
+- Standalone reset release simulation passed. The common-reset AXI-Lite formal harness has 2 non-vacuous proven assertions and 2 covered properties; it constrains external `rst_n` and disables reset setup checking, so whole-system reset proof remains OPEN.
+- Next: review XPM Gray and reset crossing constraints, group and check RDC state/data paths, then complete product-level reset proofs and three-configuration UVM. Preserve local raw evidence before cleanup. No DE or Linux DV signoff.
+
 # 2026-11-22 — EF1/MASH physical exploration and closure status
 
 - Current result supersedes the earlier “MASH implementation in progress” note below. Branch/HEAD remain `work/thermo5-compiletime-timing` / `16e0605dede359b83ee371319eba4e88d5d9bca0`; no RTL was changed in this timing exploration.
