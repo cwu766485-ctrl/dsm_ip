@@ -1,3 +1,12 @@
+# 2026-11-23 20:29 SGT — Round 6 CDC/RDC closure checkpoint, OPEN
+
+- Branch/source HEAD: `work/thermo5-linux-cdc-rdc` / `2901ccd493f259fe2627f985703074d81b5d9ab4`. No product RTL or constraint change was made; only the 466-bit XPM reset/epoch test and evidence files were added.
+- Fresh no-waiver SpyGlass: EF1/MASH CDC 8/8 errors; RDC 4,417/5,125 `Ar_resetcross01` errors across 93/94 source-line groups. All 16 CDC IDs match Round 5; 9,542 complete RDC paths are retained in the Round 6 compressed inventory. All findings remain OPEN.
+- VCS: EF1 and MASH 56-word XPM product bit-true tests PASS, seed 610216, zero UVM warnings/errors/fatals. The width-466/depth-16 XPM wrapper reset/phase test passes 16/16 trials with source VALID/payload and FIFO VALID/data stall-hold checkers; it fills the FIFO and verifies a blocked seventeenth write. The first draft's results were invalidated after review found that source VALID could be withdrawn while stalled; corrected results replace them. This is targeted evidence, not full product reset signoff.
+- VC Formal: local DPD valid-provenance/reset-clear properties returned 2 proofs and 3 covers, but reset setup reports one violation for `epoch_valid`/`dut.valid_pipe`; whole-product reset proof remains OPEN. No assertion was weakened.
+- Physical: XPM Gray max-delay/bus-skew constraint code inspected; no fresh routed endpoint/skew audit. DE Freeze remains NOT READY. Original logs/reports are preserved under ignored `runs/linux_cdc_rdc_round6/` and hashed in the evidence manifest.
+- Next: resolve formal runtime-reset setup semantics without vacuity, prove full-chain payload/config/epoch validity through PA on reset/abort/drain/restart, then audit exact routed Gray-bus endpoints. Keep all 187 RDC source-line groups and 16 CDC findings OPEN until evidence closes them; do not merge `thermo5`.
+
 # 2026-11-23 19:15 SGT — Round 5 XPM port model and reset probes, OPEN
 
 - Product baseline `b9cc9ac`; candidate port SGDC was read in all four EF1/MASH CDC/RDC runs, but requires parent-domain approval. Counts remain 8/8 CDC errors and 4,417/5,125 RDC errors, zero waivers; all original findings OPEN.

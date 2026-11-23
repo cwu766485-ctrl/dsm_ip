@@ -1,0 +1,101 @@
+{
+  "round": 6,
+  "test": {
+    "testname": "thermo5_sku_axil_reset_sweep_test",
+    "seed": 610802,
+    "scenario": "Four resets after legal partial 14:8 source prefixes; five reset epochs at CDC residual values 2,4,6,10,12; then a full 56-word product replay and graceful drain.",
+    "result": "PASS_WITH_COMPILE_WARNINGS",
+    "uvm_warning": 0,
+    "uvm_error": 0,
+    "uvm_fatal": 0,
+    "asserted_pass_marker": "THERMO5_AXIL_RESET_SWEEP_UVM_PASS",
+    "scoreboard": {
+      "epochs": 10,
+      "source_beats": 32,
+      "source_samples": 448,
+      "cdc_words": 56,
+      "cdc_samples": 448,
+      "pa_words": 56,
+      "discarded_on_reset": 634,
+      "queued_samples_after_drain": 0,
+      "cdc_data_mismatch": 0,
+      "cdc_metadata_mismatch": 0,
+      "epoch_mismatch": 0,
+      "index_mismatch": 0,
+      "underflow": 0,
+      "predictor_mismatches": 0
+    }
+  },
+  "source_head_sha": "2901ccd493f259fe2627f985703074d81b5d9ab4",
+  "working_tree_scope": "Verification-only hierarchy correction in dv/uvm/tb/thermo5_sku_uvm_tb.sv; product RTL and constraints unchanged.",
+  "product_configuration": {
+    "wrapper": "tid32_thermo5_axi_lite_axis_frontend_tx",
+    "fifo": "Vivado XPM asynchronous FIFO",
+    "fifo_width_bits": 466,
+    "fifo_depth_words": 16,
+    "dpd_max_taps": 1,
+    "interpolator": "Centered-Cubic x2 + x2",
+    "tidsm_order": 2,
+    "step": 5120,
+    "default_dpd": "Identity",
+    "clock_periods_ns": {
+      "axis": 8.0,
+      "core": 4.572,
+      "axil": 10.0
+    },
+    "reset": "Common asynchronous assertion; AXI-Lite deassertion synchronized to AXI-Lite clock; DUT domains use product reset logic."
+  },
+  "tool": {
+    "vcs": "V-2023.12-SP1 Full64",
+    "vivado_xpm_source": "2026.1",
+    "host": "Rocky Linux 8.10 WSL2 x86_64"
+  },
+  "compile_run": {
+    "command": "VCS_HOME=/opt/Synopsys/vcs/V-2023.12-SP1 PATH=/opt/Synopsys/vcs/V-2023.12-SP1/bin:$PATH VCS_ARCH_OVERRIDE=linux make -C dv/uvm/sim thermo5-tx-product-axil-reset-sweep THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=/mnt/d/AMDDesignTools/2026.1 THERMO5_OUT=$PWD/runs/linux_cdc_rdc_round6/<unique-output> THERMO5_VECTORS=$PWD/runs/linux_cdc_rdc_round6/axil_reset_sweep_frontend_vectors THERMO5_COVERAGE=0 UVM_VERBOSITY=UVM_LOW",
+    "exit_status": 0,
+    "compile_log": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm_fix1/compile.log",
+    "compile_log_sha256": "1c49d93bf11c6e40744577347c5316963c96d8d5639f3eb72fa6e9642cf717fd",
+    "run_log": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm_fix1/thermo5_sku_axil_reset_sweep_test_seed610802.log",
+    "run_log_sha256": "8b809358cbfa2a2aebc728db0b935654c79404a1342be5e635364b75b114edfb",
+    "trace": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm_fix1/reset_sweep_trace.jsonl",
+    "trace_sha256": "ebff2e6a2b626228e8cd43e5d871113de62093adeb489883a83cf75cc7b3b095",
+    "coverage": "disabled for this directed regression; no code coverage delta is claimed.",
+    "compile_warnings": [
+      "Lint-[TFIPC-L]: testbench leaves eight optional wrapper output ports unconnected.",
+      "Warning-[INTFDV]: VCS does not support selective VCD dumping of the interface/program/package."
+    ]
+  },
+  "testbench_hierarchy_repair": {
+    "failure": "Initial AXI-Lite product sweep compile failed with VCS XMRE because 12 EF2 observation references omitted the elaborated g_no_pre_metadata generate scope.",
+    "initial_compile_log": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm/compile.log",
+    "initial_compile_log_sha256": "2864d25fb0629ec103b143fab48da308e0ffed6bc28113f3e1c43e2f527d4f25",
+    "initial_dut_observation_source_sha256": "74a4411cec6f27e97963b8da457991cb135ad9676d6de42cfb483f0ea722f449",
+    "repair": "Updated the UVM observation path to dut.u_frontend.g_no_pre_metadata.u_tid; no DUT logic changed.",
+    "verified_pass_with_corrected_path": true
+  },
+  "source_hashes": {
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "3de7ab4c9529a57ba7f2a114d1bd64ebe013b4c9dd15e71580812e19a7cc04cc",
+    "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_reset_sweep_test.svh": "cf249f7a2800e25356a989ce327b1a75c415d10786484167f104f17310edaab1",
+    "dv/uvm/sim/thermo5_sku_filelist.f": "80f2ee7c876336595079df1a62ee45e072cdd416fdb461005cd0e5821c0016b7",
+    "dv/uvm/sim/Makefile": "3f83a9c60c6689cff75531dd8da4bcd5b9f2dc4a53c960a7b07000e50582d5c7",
+    "dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py": "60f79a44887ddb1f854360537f29ee29cd9bb6f7c2f913cfe2e4fbdc2b5fae63"
+  },
+  "vector_sha256": {
+    "tid32_thermo5_frontend_ef2_i.mem": "87f44ab91544ff40dfba149f3ec4a59fe99ba9540631279d7a94528da856cb5f",
+    "tid32_thermo5_frontend_ef2_q.mem": "17f55745f35f5c9ec5ce4644f9ee710a355ef282e3da0e8748ed4025193ff3c4",
+    "tid32_thermo5_frontend_frame_gain.mem": "023f8010589b9d76003fdac748fb2c12bf7b592fc344e9cc697062c07f901811",
+    "tid32_thermo5_frontend_frame_start.mem": "a544490f60a4807444889abd49ee4f65153775725cc71ea68306e4e9889f4a33",
+    "tid32_thermo5_frontend_i.mem": "13713eaab0ad674c41effd3db937faba8476f748103e5a4f040af30e4d37dd04",
+    "tid32_thermo5_frontend_pa0.mem": "c817d7c0ecb1e3adb2f4e64b222e2be2c07044ac6b64d6c784473e1b30ce1db3",
+    "tid32_thermo5_frontend_pa1.mem": "0d59efbdfcfba7cdf7a4d088da9f3f9764dba894214b72c5b8a8a4e281edaefa",
+    "tid32_thermo5_frontend_pa2.mem": "457cdc7989f1c3aada62cf38bd08dee959a368a0c2750078cccaa69986e377d0",
+    "tid32_thermo5_frontend_pa3.mem": "a602e92c4621d4cb5897941512522e5200a4bbc6f49ed45b9e688815f1f378bd",
+    "tid32_thermo5_frontend_q.mem": "b1669636fa94f52f12f8733620a728c005fcb066a0f7f88c050a1b4b1bf1a5de"
+  },
+  "limitations": [
+    "This is an AXI-Lite product-directed reset regression, not a proof of all asynchronous clock phases or all possible source/PA schedules.",
+    "SpyGlass CDC/RDC findings remain open.",
+    "Product reset Formal remains open because the current harness setup checker reports a runtime-reset setup violation.",
+    "No fresh routed endpoint/bus-skew audit was run."
+  ]
+}

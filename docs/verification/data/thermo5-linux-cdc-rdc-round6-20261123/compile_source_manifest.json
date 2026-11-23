@@ -1,0 +1,173 @@
+{
+  "filelist_path": "runs/linux_cdc_rdc_round6/compiletime_filelist.f",
+  "filelist_sha256": "b4b75c6332b556312e35faef7c9f0f2429df50d8e5dfc240e746e57a5be31843",
+  "include_dirs": [
+    "dv/uvm/agent/axis",
+    "dv/uvm/agent/axi_lite_thermo5",
+    "dv/uvm/agent/rf",
+    "dv/uvm/env/thermo5",
+    "dv/uvm/sequences/thermo5",
+    "dv/uvm/tests/thermo5",
+    "dv/uvm/tests/thermo5/axil",
+    "dv/uvm/tests/thermo5_runtime"
+  ],
+  "source_files": [
+    {
+      "path": "rtl/axis/dsm_reset_sync.sv",
+      "sha256": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f"
+    },
+    {
+      "path": "rtl/axis/dsm_frame_power_ctrl.sv",
+      "sha256": "52704291f8653e42fdb541df2017043618901137d86f53ba6a892623fad13fd7"
+    },
+    {
+      "path": "rtl/axis/dsm_async_fifo.sv",
+      "sha256": "1af57d6d8810cbf882add01ce4a268df94244a4dfb827694f3f0328b29012e61"
+    },
+    {
+      "path": "rtl/axis/dsm_xpm_async_fifo.sv",
+      "sha256": "6c264382fd971eecd7b8aaec912cb9758d65c3c869c5920efddcdf36d37badf6"
+    },
+    {
+      "path": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "sha256": "dc6a1943eb338e0bafaf23a97f752e886406ddb533ab251760f999983a6d85b4"
+    },
+    {
+      "path": "rtl/frontend/dsm_frame_gain_vector.sv",
+      "sha256": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7"
+    },
+    {
+      "path": "rtl/gt/gt_tx_user_bridge.sv",
+      "sha256": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450"
+    },
+    {
+      "path": "rtl/gt/gt_tx_raw64_boundary.sv",
+      "sha256": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e"
+    },
+    {
+      "path": "rtl/dpd/dpd_poly.v",
+      "sha256": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a"
+    },
+    {
+      "path": "rtl/dpd/dpd_memory_poly.v",
+      "sha256": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156"
+    },
+    {
+      "path": "rtl/dpd/dpd_vector16_memory_poly.sv",
+      "sha256": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a"
+    },
+    {
+      "path": "rtl/dpd/dpd_vector_elastic_buffer.sv",
+      "sha256": "f125e11aaa97b0ac52e5d013948dec32eb6587aaee883ec011bcb5544ea0d38d"
+    },
+    {
+      "path": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+      "sha256": "6fe3de2dc518d7c923aa52935190c06b8829bfc0fb8a9500de1256c54fc3c433"
+    },
+    {
+      "path": "rtl/interp/dsm_interp_x2_polyphase_vector.sv",
+      "sha256": "74dac42f69e8c8e5e859d3afddf9facaa66439398967984f1bc3001588977309"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv",
+      "sha256": "0ff8b1f6ddc0285bb61c068088b79dea3c0045402a7c0b451b78e9ea84cc19cf"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+      "sha256": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv",
+      "sha256": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv",
+      "sha256": "fca4fe4778f1f6233a177092080765050324eae5a0671f9dfff9b2913cf4782a"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv",
+      "sha256": "9141a1510ea9527f4b0a20c4347f925892c8d52baf389810af5bc57753118c2a"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_mash_cartesian_stage.sv",
+      "sha256": "28019eca9478e76a4a1a183c3a14c6af9e147fd1c1c03cd1aee8c60b70039639"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_mash11_core.sv",
+      "sha256": "7ec39d1b90f7b8780725927046945d0d6c0689efe302c4e62bdb55136fb90e24"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_mash_weighted_encoder.sv",
+      "sha256": "5a484efc9e96809d79ad7af3376daba46e3acb6c9cc6d88d025218f27fe6aa06"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_mash_backend.sv",
+      "sha256": "665bf332e6edfc7bfbc411fd8d960a869d5249d68b30ed0f4d4c18d3713edb42"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_runtime_dsm_backend.sv",
+      "sha256": "9a0c6ff9ec43892e5cd1768f7bddd5359cdce49f88acbe3e11493dec149e8ec2"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_compiletime_dsm_backend.sv",
+      "sha256": "cfe702880ccd6dcde984447f8787754bc79d1b09b39ae818a7874fed3a42ac07"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "sha256": "8fb650d7b030819e2d5ccbe7225ff5304af264445ce45aaa54ccd300ea75ed13"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+      "sha256": "f68c45609613773b62fe83d55680ecc18141b465b499c0546a5977d770b4f71f"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_thermo5_runtime_tx.sv",
+      "sha256": "727552fcfc99250a1655f55145dbebe8b928313cd1407303f08164e2ff592187"
+    },
+    {
+      "path": "rtl/tx_bandpass_if/tid32_thermo5_compiletime_tx.sv",
+      "sha256": "610b3c9fa4f3820c985342ac77fdf6fecab0962809ea43311f7e6d9765997f3f"
+    },
+    {
+      "path": "dv/uvm/agent/interfaces/thermo5_runtime_if.sv",
+      "sha256": "29d011751fe7f95350a385452a056d970b44123ac4e1a9a275740553a593ad5d"
+    },
+    {
+      "path": "dv/uvm/env/thermo5_runtime/thermo5_runtime_uvm_pkg.sv",
+      "sha256": "e4ac460981bfa8582a4386ad81ecfb4879a534f0f4474f17742820a481688b65"
+    },
+    {
+      "path": "dv/uvm/tb/thermo5_compiletime_uvm_tb.sv",
+      "sha256": "44cea5f016d7c831f3aded1674fb875f2159be3e0af0933396800d380088a74a"
+    },
+    {
+      "path": "AMD-XPM/xpm_cdc/hdl/xpm_cdc.sv",
+      "sha256": "27592359d8363d7e6575298f9d0faa7c9f9258ea77f19c9a38946fbaf3783f09"
+    },
+    {
+      "path": "AMD-XPM/xpm_memory/hdl/xpm_memory.sv",
+      "sha256": "2ffcfc104eae061b7fefc3bda9d123d466c12df6363748284c1ca349b00cf75a"
+    },
+    {
+      "path": "AMD-XPM/xpm_fifo/hdl/xpm_fifo.sv",
+      "sha256": "6cca60982fce0a6315dcc4c2f41082603efe40dbd77f52a5aebdbcb975aeaeb1"
+    },
+    {
+      "path": "/mnt/d/AMDDesignTools/2026.1/data/verilog/src/glbl.v",
+      "sha256": "6270251cf35e1fce3119fc79f8fb968912f7983027e43cf030409ba68f048936"
+    },
+    {
+      "path": "dv/uvm/tests/thermo5_runtime/thermo5_runtime_switch_test.svh",
+      "sha256": "6b7697d952bd83c57c578caf4bc366f03d812094c8ff0353f32948e09f401b9a"
+    },
+    {
+      "path": "dv/uvm/tests/thermo5_runtime/thermo5_compiletime_bittrue_test.svh",
+      "sha256": "c3ee6729c36e7e2107395ff20e61d3d4f0e9c9cefb10cdf18b9743ff8f92a539"
+    }
+  ],
+  "note": "Product UVM compile source list is separate from the standalone product-width XPM FIFO reset test. The standalone runner compiles Vivado XPM sources and glbl.v.",
+  "reset_testbench_path": "dv/verif/axis/tb_thermo5_xpm_reset_epoch_random.sv",
+  "reset_testbench_sha256": "23129559e8eea93867fd63865c976303fb3fb2602e98fa7c92d1ac15ae814eea",
+  "reset_test_runner_path": "dv/verif/scripts/run_thermo5_xpm_reset_epoch_random.sh",
+  "reset_test_runner_sha256": "9b62fb85e9633d7efb82fd8ee375222531dcc0573040c7f52ad7d2bd2a91b4c4"
+}

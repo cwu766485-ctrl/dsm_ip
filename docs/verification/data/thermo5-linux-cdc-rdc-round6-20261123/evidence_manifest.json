@@ -1,0 +1,293 @@
+{
+  "round": "6",
+  "generated_local_time": "2026-11-23",
+  "repository_branch": "work/thermo5-linux-cdc-rdc",
+  "source_head_sha": "2901ccd493f259fe2627f985703074d81b5d9ab4",
+  "source_head_short": "2901ccd",
+  "base_product_rtl_reference": "b9cc9ac (Round 5 product RTL baseline); git diff confirms no rtl/research/vcu118_arch changes between that baseline and Round 6 HEAD",
+  "product_config": {
+    "architectures": [
+      "EF1 DSM_ARCH=0",
+      "MASH 1-1 DSM_ARCH=2"
+    ],
+    "W": 16,
+    "GAIN_W": 16,
+    "DPD_MAX_TAPS": 1,
+    "INTERP_TAPS": 2,
+    "INTERP_CENTERED_CUBIC": true,
+    "BYPASS_DPD": false,
+    "FPGA_USE_XPM_FIFO": true,
+    "COMMON_RESET_EPOCH": true,
+    "FIFO_WIDTH_BITS": 466,
+    "FIFO_ADDR_W": 4,
+    "FIFO_DEPTH": 16,
+    "CDC_SYNC_STAGES": 2,
+    "READ_MODE": "fwft",
+    "FIFO_READ_LATENCY": 0,
+    "USE_ADV_FEATURES": "0400"
+  },
+  "constraints": {
+    "sgdc": "research/vcu118_arch/compiletime_product.sgdc",
+    "sgdc_sha256": "84bfa1507572d5ee0c0f83f12021e4e76bbf02a39886587b534573ac8b399c2d",
+    "clock_domains": {
+      "s_axil_aclk": "10 ns",
+      "s_axis_aclk": "8 ns",
+      "core_clk": "4.571428571 ns"
+    },
+    "all_async_unrelated": true,
+    "reset": "common_aresetn async assertion, per-domain synchronized deassertion"
+  },
+  "tools": {
+    "VCS": "V-2023.12-SP1_Full64",
+    "SpyGlass": "V-2023.12-SP1 linux64",
+    "VC_Formal": "V-2023.12-SP2 linux64",
+    "Vivado_XPM_source": "2026.1",
+    "host": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-centos-8.10-Green_Obsidian",
+    "kernel": "6.6.87.2-microsoft-standard-WSL2"
+  },
+  "product_runs": {
+    "EF1_CDC": {
+      "status": "FAIL_OPEN_FINDINGS",
+      "exit_status": 0,
+      "errors": 8,
+      "warnings": 81,
+      "waived": 0,
+      "log": "runs/linux_cdc_rdc_round6/ef1_final_cdc.log"
+    },
+    "MASH_CDC": {
+      "status": "FAIL_OPEN_FINDINGS",
+      "exit_status": 0,
+      "errors": 8,
+      "warnings": 83,
+      "waived": 0,
+      "log": "runs/linux_cdc_rdc_round6/mash_raw_cdc01.log"
+    },
+    "EF1_RDC": {
+      "status": "FAIL_OPEN_FINDINGS",
+      "exit_status": 0,
+      "errors": 4417,
+      "warnings": 74,
+      "waived": 0,
+      "all_errors": "Ar_resetcross01",
+      "unique_source_line_groups": 93,
+      "log": "runs/linux_cdc_rdc_round6/ef1_final_rdc.log"
+    },
+    "MASH_RDC": {
+      "status": "FAIL_OPEN_FINDINGS",
+      "exit_status": 0,
+      "errors": 5125,
+      "warnings": 76,
+      "waived": 0,
+      "all_errors": "Ar_resetcross01",
+      "unique_source_line_groups": 94,
+      "log": "runs/linux_cdc_rdc_round6/mash_final_rdc.log"
+    },
+    "EF1_UVM_56_word_bittrue": {
+      "status": "PASS",
+      "seed": 610216,
+      "UVM_WARNING": 0,
+      "UVM_ERROR": 0,
+      "UVM_FATAL": 0,
+      "exit_status": 0,
+      "log": "runs/linux_cdc_rdc_round6/ef1_product_vcs/run.log"
+    },
+    "MASH_UVM_56_word_bittrue": {
+      "status": "PASS_WITH_COMPILE_WARNING",
+      "seed": 610216,
+      "UVM_WARNING": 0,
+      "UVM_ERROR": 0,
+      "UVM_FATAL": 0,
+      "exit_status": 0,
+      "compile_warning": "thermo5_mash11_core u_stage2 has fewer port connections than module definition",
+      "log": "runs/linux_cdc_rdc_round6/mash_product_vcs/run.log"
+    },
+    "XPM_FIFO_RESET_PHASE_RANDOM": {
+      "status": "PASS_SCOPED_TEST_ONLY",
+      "width_bits": 466,
+      "depth": 16,
+      "phase_trials": 16,
+      "all_trials_pass": true,
+      "epochs_per_trial": 14,
+      "source_protocol": "source VALID and payload held through a blocked seventeenth write until reset; source hold checker active",
+      "sink_protocol": "XPM FIFO VALID/data hold checked under randomized sink stalls",
+      "smoke_seed": 101,
+      "smoke_outputs_checked": 261,
+      "smoke_aborted_words": 63,
+      "smoke_write_stall_cycles": 6,
+      "smoke_read_stall_cycles": 170,
+      "phase_summary": "docs/verification/data/thermo5-linux-cdc-rdc-round6-20261123/xpm_reset_epoch_phase_summary.csv",
+      "raw_logs": "runs/linux_cdc_rdc_round6/vcs_xpm_random_script_final2/",
+      "note": "Wrapper-level dynamic test; not full product DPD-to-PA formal proof or routed CDC signoff."
+    },
+    "DPD_RESET_FORMAL": {
+      "status": "OPEN_SETUP_VIOLATION",
+      "assertions_proven": 2,
+      "covers_hit": 3,
+      "reset_setup_violations": 1,
+      "violation": "epoch_valid and dut.valid_pipe reset may remain active after formal reset save point",
+      "note": "Results are local DPD valid-provenance/reset-clearing only; not end-to-end product reset proof."
+    },
+    "Routed_XDC_endpoint_audit": {
+      "status": "NOT_RUN",
+      "note": "No fresh routed implementation; Tcl contains Gray max-delay/bus-skew constraints but this round did not verify routed endpoints or measured skew."
+    },
+    "AXIL_PRODUCT_RESET_SWEEP": {
+      "status": "PASS_WITH_COMPILE_WARNINGS",
+      "seed": 610802,
+      "compile_exit_status": 0,
+      "run_exit_status": 0,
+      "scenario": "Four partial-frame reset epochs, five CDC residual reset epochs, complete 56-word bit-true replay and graceful drain.",
+      "UVM_WARNING": 0,
+      "UVM_ERROR": 0,
+      "UVM_FATAL": 0,
+      "scoreboard": "56 CDC/PA words checked; 0 data/metadata/epoch/index mismatches; 0 underflow; queues empty after drain.",
+      "compile_log": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm_fix1/compile.log",
+      "run_log": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm_fix1/thermo5_sku_axil_reset_sweep_test_seed610802.log",
+      "trace": "runs/linux_cdc_rdc_round6/axil_reset_sweep_xpm_fix1/reset_sweep_trace.jsonl",
+      "manifest": "docs/verification/data/thermo5-linux-cdc-rdc-round6-20261123/axil_reset_sweep_manifest.json",
+      "note": "Initial compile attempt failed on 12 stale hierarchical observation references; fixed the testbench path and reran. Initial failure is retained and not counted as a test.",
+      "compile_warnings": [
+        "Eight optional wrapper outputs left open in the testbench; selective interface VCD dump unsupported."
+      ]
+    }
+  },
+  "cdc_native_ids": {
+    "EF1": [
+      "392B",
+      "392C",
+      "392A",
+      "391B",
+      "391D",
+      "391F",
+      "3926",
+      "119B"
+    ],
+    "MASH": [
+      "2131",
+      "2132",
+      "2130",
+      "2121",
+      "2123",
+      "2125",
+      "212C",
+      "A0B"
+    ]
+  },
+  "source_sha256": {
+    "rtl/axis/dsm_xpm_async_fifo.sv": "6c264382fd971eecd7b8aaec912cb9758d65c3c869c5920efddcdf36d37badf6",
+    "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+    "rtl/axis/dsm_axis14_to_core8_cdc.sv": "dc6a1943eb338e0bafaf23a97f752e886406ddb533ab251760f999983a6d85b4",
+    "rtl/tx_bandpass_if/tid32_thermo5_compiletime_tx.sv": "610b3c9fa4f3820c985342ac77fdf6fecab0962809ea43311f7e6d9765997f3f",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "fca4fe4778f1f6233a177092080765050324eae5a0671f9dfff9b2913cf4782a",
+    "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv": "8fb650d7b030819e2d5ccbe7225ff5304af264445ce45aaa54ccd300ea75ed13",
+    "rtl/tx_bandpass_if/thermo5_compiletime_dsm_backend.sv": "cfe702880ccd6dcde984447f8787754bc79d1b09b39ae818a7874fed3a42ac07",
+    "rtl/tx_bandpass_if/thermo5_mash_backend.sv": "665bf332e6edfc7bfbc411fd8d960a869d5249d68b30ed0f4d4c18d3713edb42",
+    "rtl/frontend/dsm_frame_gain_vector.sv": "ccb1219c14d87b9b52c21a731a952aad068b2f9e701e1268863d0931f9351cd7",
+    "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+    "research/vcu118_arch/compiletime_product.sgdc": "84bfa1507572d5ee0c0f83f12021e4e76bbf02a39886587b534573ac8b399c2d",
+    "research/vcu118_arch/run_compiletime_spyglass.tcl": "988ddb6e88597039832e8125c734da0f1406f81c8d35788bdb5327c9f56989a8",
+    "research/vcu118_arch/run_compiletime_ppa.tcl": "2b55592d4c7f6d74a1d1aaf3f30db4ae685d1634a854b96d69bcba46d99dba5d",
+    "dv/verif/axis/tb_thermo5_xpm_reset_epoch_random.sv": "23129559e8eea93867fd63865c976303fb3fb2602e98fa7c92d1ac15ae814eea",
+    "dv/verif/scripts/run_thermo5_xpm_reset_epoch_random.sh": "9b62fb85e9633d7efb82fd8ee375222531dcc0573040c7f52ad7d2bd2a91b4c4"
+  },
+  "xpm_source_sha256": {
+    "xpm_cdc": "27592359d8363d7e6575298f9d0faa7c9f9258ea77f19c9a38946fbaf3783f09",
+    "xpm_fifo": "6cca60982fce0a6315dcc4c2f41082603efe40dbd77f52a5aebdbcb975aeaeb1",
+    "xpm_memory": "2ffcfc104eae061b7fefc3bda9d123d466c12df6363748284c1ca349b00cf75a",
+    "vivado_glbl": "6270251cf35e1fce3119fc79f8fb968912f7983027e43cf030409ba68f048936"
+  },
+  "compile_source_manifest": "docs/verification/data/thermo5-linux-cdc-rdc-round6-20261123/compile_source_manifest.json",
+  "compile_source_manifest_sha256": "759b0b7b8fc29e105e93835b91d37220a23a6d18a6ece0aae53ec5ed3073fd71",
+  "evidence_sha256": {
+    "ef1_final_cdc.log": "916e35739d07057ee345a4bf96d713a70df7b7aa26b5ccea7688c0fe84f27742",
+    "ef1_final_cdc/moresimple.rpt": "344c71297e2c5f4f7ac2c024f2fe34c19d7dc0d125aed390da5367c2756e4af9",
+    "mash_raw_cdc01.log": "a8d2112b8ec300aee004e6bf40f806bbf8f79e2aa38616b276af134a818d363f",
+    "mash_raw_cdc01/moresimple.rpt": "76dd6e5bd0cb34a29d96a2790e8a940f2b510247b2c8130d22103d5dcc8024dc",
+    "ef1_final_rdc.log": "00248b4864eedf7e834437521d1368afb138243f812601a9ed45bbd248f43f92",
+    "ef1_final_rdc/moresimple.rpt": "f059ca91bd62e024cf494f92601576b05c011633b84e6129ee4e76e3077146e1",
+    "mash_final_rdc.log": "b37bc50bd62730d67cf4254d90faa2c4623e9cbc3166e8c68147132f99bd22fa",
+    "mash_final_rdc/moresimple.rpt": "a7d0e039775c7374478a8ead82315bf3cd71aad5d8ba39784e8fa54349b0c6d9",
+    "ef1_product_vcs/compile.log": "d5b7a400bc6ae9dd8e5f885841f0049908f30968ad894398d5c3324cb25a817a",
+    "ef1_product_vcs/run.log": "2c91235e57db973633f5bf57e38ade3d1d353237df36442a91c413073d64566d",
+    "mash_product_vcs/compile.log": "1b49a146081bde90214ffade23cf80c22cae6bd62671944de0ef8d6fdf7c05b9",
+    "mash_product_vcs/run.log": "a9418ea5f328277428b49592b36a6f65d834a6a7ae3109f5b2084c6702cd15df",
+    "formal_dpd_epoch_recheck.log": "0297a00a51ef5f0bc4ee1138a1a7fbc343d20d74cd14f60a77b2b71dc47dc1c9",
+    "formal_dpd_epoch_recheck/setup.txt": "aa7df4381204c2389837292659a2624fbe7acb31a87c00394ccb0a0bddb5f2e2",
+    "formal_dpd_epoch_recheck/properties.txt": "3fcd6b9001baf7dd0db9b718560f519943c5100bfdb43bdc595ee127fa59639f",
+    "docs/verification/data/thermo5-linux-cdc-rdc-round6-20261123/xpm_reset_epoch_phase_summary.tsv": "38684af29d111ed47de848eabb62db9633186e5c9bbb1d3e48881b5135058d44",
+    "vcs_xpm_random_script_final2/build/compile.log": "3f2bdb4fd646b25048dd3f80138bedbf2638162be6b7f04449159a50f43fc778",
+    "vcs_xpm_random_script_final2/smoke/run.log": "d23918ed31299800830b3159295a54d48ec0282dd431e2142a6431dd35d60c25",
+    "vcs_xpm_random_script_final2/sweep/summary.tsv": "38684af29d111ed47de848eabb62db9633186e5c9bbb1d3e48881b5135058d44",
+    "vcs_xpm_random_script_final2/sweep/trial_0.log": "80c7a1a46c42cfdb12b556179389c31be12db6903ba8b8b2d72da695a613407f",
+    "vcs_xpm_random_script_final2/sweep/trial_1.log": "f9117b6f9bd1edab97e22107a810c8fe646c7eedf69e2a62410ea10076ea8b13",
+    "vcs_xpm_random_script_final2/sweep/trial_2.log": "c8d387fa78995779e75f6e94021153808697133c31590d5ad6d531d5a9f86d1f",
+    "vcs_xpm_random_script_final2/sweep/trial_3.log": "1ee21bb0a6fdd82d41cebbd73543dd3ff3ab204144e4c30967729bcb2de9f18c",
+    "vcs_xpm_random_script_final2/sweep/trial_4.log": "7f6d82cbe9aea61594aabf299001ce05bc808dc49ae0b6c15a4f1380a587c1da",
+    "vcs_xpm_random_script_final2/sweep/trial_5.log": "1f91b3e46b3f8fef39855373f5df90ff38b3b2921a648e112ab87bfea7cb7560",
+    "vcs_xpm_random_script_final2/sweep/trial_6.log": "f019dcffc69fc7609630a1f8a52b0cc758eeb794faba9e196ef9db9a06de81b8",
+    "vcs_xpm_random_script_final2/sweep/trial_7.log": "cb0aacacd58c3cca1f347c0726fc26e6bd8229d4161f91689bc23704875d4668",
+    "vcs_xpm_random_script_final2/sweep/trial_8.log": "ff75adfce157a837d9b28d00e8356519512b83a802f6480efd91e878c2bc4aa0",
+    "vcs_xpm_random_script_final2/sweep/trial_9.log": "d8fe30878d043f13fc148b3ed4ca1f1e5b6ac89728055ee25b05d4de2c98cc48",
+    "vcs_xpm_random_script_final2/sweep/trial_10.log": "bb7ead5ea671cec940d2fb4f8e1ddbf3dd08db371a7519804d5686bee7fb4b22",
+    "vcs_xpm_random_script_final2/sweep/trial_11.log": "3d2d9265c57dd0459d70eee591ff94a054d3b0d68623065ed369368fafdf46e9",
+    "vcs_xpm_random_script_final2/sweep/trial_12.log": "506ab7c5b462358838733eb29c48b187fcd85f3cb6bb3b7bf10db99d7117f229",
+    "vcs_xpm_random_script_final2/sweep/trial_13.log": "e306fe66b5766ea4ad437bc49e8fbf2213f813e2455977245b5958032fa79106",
+    "vcs_xpm_random_script_final2/sweep/trial_14.log": "b6f29036787506772be0afcf206d1fb98979b5c6b2c42e4050a4d07195ec6300",
+    "vcs_xpm_random_script_final2/sweep/trial_15.log": "58793b54df83f11edd07f9c51dfed3f472b03198c8af705258919ece35bc3f6d",
+    "docs/verification/data/thermo5-linux-cdc-rdc-round6-20261123/xpm_reset_epoch_phase_summary.csv": "49021fb833d372bab311fb7819a2b7ae9ede17a669c80254d5837258479f2861",
+    "axil_reset_sweep_xpm_fix1/compile.log": "1c49d93bf11c6e40744577347c5316963c96d8d5639f3eb72fa6e9642cf717fd",
+    "axil_reset_sweep_xpm_fix1/thermo5_sku_axil_reset_sweep_test_seed610802.log": "8b809358cbfa2a2aebc728db0b935654c79404a1342be5e635364b75b114edfb",
+    "axil_reset_sweep_xpm_fix1/reset_sweep_trace.jsonl": "ebff2e6a2b626228e8cd43e5d871113de62093adeb489883a83cf75cc7b3b095",
+    "axil_reset_sweep_xpm/compile.log": "2864d25fb0629ec103b143fab48da308e0ffed6bc28113f3e1c43e2f527d4f25",
+    "axil_reset_sweep_manifest.json": "eb0866ec55a47c80fd96d570825241f89dd328395b7ff0bb18131a080816b712",
+    "cdc_closure_matrix.csv": "a227e5a035e3e9cb33cbfe7af9b495616985386531d78eaef4b838caf9b64d89",
+    "rdc_root_cause_groups.csv": "bd88278c024a2c1545287a060d31a43ef2748f1a84742ad117a1e57262c0d9cd",
+    "rdc_exact_path_inventory.csv.gz": "9798910cc7d28c38bb8d343f0d90f5551688f13fe89910efc7897c7823739c5f",
+    "xpm_reset_epoch_phase_summary.csv": "49021fb833d372bab311fb7819a2b7ae9ede17a669c80254d5837258479f2861",
+    "xpm_reset_epoch_phase_summary.tsv": "38684af29d111ed47de848eabb62db9633186e5c9bbb1d3e48881b5135058d44"
+  },
+  "disposition": "CDC/RDC closure OPEN; no product RTL/constraint ECO or waiver applied. XPM wrapper phase test and AXI-Lite product reset sweep pass their scoped checkers; CDC/RDC and product reset Formal remain open.",
+  "superseded_evidence_sha256": {
+    "vcs_xpm_random_phase_sweep/summary.tsv": "38684af29d111ed47de848eabb62db9633186e5c9bbb1d3e48881b5135058d44",
+    "vcs_xpm_random_phase_sweep/trial_0.log": "2ea022a481309a1016486860e225df2a8369ff8e3958eeda39866dbccea540e6",
+    "vcs_xpm_random_phase_sweep/trial_1.log": "acf0ec287fdd27f375e96082d5c0bc0f967dcb2d08ea329e40816fc741a8e76a",
+    "vcs_xpm_random_phase_sweep/trial_2.log": "8d18a209576b7597429ba8ae4a962aad73022f0a286685e6454b9757e48d3dac",
+    "vcs_xpm_random_phase_sweep/trial_3.log": "a988f924cb1f8f70cda4ec8a726edba23dbe9c76047e09f8b6baf4e5eea86c70",
+    "vcs_xpm_random_phase_sweep/trial_4.log": "315cdde51d651afce608fa451dccc28405702f78dece690b311d0147d121c11f",
+    "vcs_xpm_random_phase_sweep/trial_5.log": "dee3233a6ceae39351892aa36a59b3bac3baa13401a930c8a6315b09644318dd",
+    "vcs_xpm_random_phase_sweep/trial_6.log": "6e7b341301d572bacee8b6d82812e848465ce5ef88957b57f44486df22fd5f22",
+    "vcs_xpm_random_phase_sweep/trial_7.log": "5aef971afc8a06f75f4b4865d06b29cf1ae41ffbcac28b7337239cf73186dfec",
+    "vcs_xpm_random_phase_sweep/trial_8.log": "cf3313bb661a07ef64c006ebb7a63781c654c72ec8663b5f97ab039e63f7add0",
+    "vcs_xpm_random_phase_sweep/trial_9.log": "0fd6e0532d951b19ba6896993996287c3e3d350f4f5f140542d1c8156cece8a2",
+    "vcs_xpm_random_phase_sweep/trial_10.log": "9ee20192a99aa7b23d16d4eb37b356c306df7cb0bd4c203f7285c0ae12119dcb",
+    "vcs_xpm_random_phase_sweep/trial_11.log": "436992e7c2eeed81ce720d1de0aa5a66efaac840b2edbd9a8582f785d741c3e2",
+    "vcs_xpm_random_phase_sweep/trial_12.log": "e5688b8976eae61ef2cfd60daf073b41f44da7e55b87cbe3450f46719bc7dfe1",
+    "vcs_xpm_random_phase_sweep/trial_13.log": "1cf9dba1526a9b6f78709c27c6905e5129c670e28522a17cd0ddddc601e979e5",
+    "vcs_xpm_random_phase_sweep/trial_14.log": "6c6b6d4c4f02ec75037c809efe9ab67179a20c5fb80c20b2af123a0e434bfa98",
+    "vcs_xpm_random_phase_sweep/trial_15.log": "fc7411aa0ca482a8c4ab7bff1b7d881789eace6d2190ca0709c22af2d392fdbb",
+    "runs/linux_cdc_rdc_round6/vcs_xpm_random_script_final/smoke/run.log": "9e587aafa40815cba3104bb4cd46a041e277a27ef73319dd27053f26c08e3ce9",
+    "runs/linux_cdc_rdc_round6/vcs_xpm_random_script_final/build/compile.log": "5b24d9c328c241d7c4146f92db409ca38eaaf5e6c94140919484e50d16befc10"
+  },
+  "superseded_runs": [
+    {
+      "path": "runs/linux_cdc_rdc_round6/vcs_xpm_random_phase_sweep/",
+      "disposition": "SUPERSEDED_NOT_ACCEPTANCE",
+      "reason": "Initial draft withdrew source VALID under backpressure; retained locally but not counted."
+    },
+    {
+      "path": "runs/linux_cdc_rdc_round6/vcs_xpm_random_script_verified/",
+      "disposition": "SUPERSEDED_BY_STRONGER_TEST",
+      "reason": "Legal source behavior passed, but that stimulus did not exercise a write-side stall."
+    },
+    {
+      "path": "runs/linux_cdc_rdc_round6/vcs_xpm_random_script_verified2/",
+      "disposition": "SUPERSEDED_BY_STRONGER_TEST",
+      "reason": "Hold checkers passed; final test additionally guarantees a full FIFO and observes the blocked write."
+    },
+    {
+      "path": "runs/linux_cdc_rdc_round6/vcs_xpm_random_script_final/",
+      "disposition": "TEST_SETUP_INCOMPLETE",
+      "reason": "The added activity guard correctly failed because stimulus had not yet filled the FIFO; final2 adds deterministic full-FIFO stimulus."
+    }
+  ]
+}

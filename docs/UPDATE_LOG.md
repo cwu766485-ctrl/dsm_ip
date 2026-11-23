@@ -1,3 +1,27 @@
+## 2026-11-23 20:29 SGT — Round 6 CDC/RDC evidence and reset phase tests
+
+- Files: `dv/verif/axis/tb_thermo5_xpm_reset_epoch_random.sv`,
+  `docs/verification/thermo5-linux-cdc-rdc-round6-20261123.md`, Round 6 CDC/RDC
+  matrices, compressed exact RDC inventory, compile/source and run manifests,
+  and execution frontier.
+- Reason: bind fresh EF1/MASH SpyGlass findings and reset/epoch test results to
+  exact source paths/configuration, while avoiding unsupported broad waivers or
+  resets on datapaths.
+- Checks: EF1/MASH XPM product 56-word UVM bit-true tests PASS; 466-bit XPM
+  wrapper reset/clock-phase test PASS in 16/16 phase trials after adding
+  source VALID/payload and FIFO VALID/data stall-hold checkers. An initial test
+  draft could withdraw source VALID while stalled; its results were retained
+  but superseded and are excluded from the PASS count. The final test fills
+  the 16-entry FIFO, verifies a blocked seventeenth write is held until reset,
+  and saves per-trial stall/output counts. SpyGlass CDC
+  reproduced 8 errors per architecture; structural RDC reproduced 4,417 EF1
+  and 5,125 MASH errors with zero waivers. Local DPD Formal returned two
+  proven assertions and three covers but retains one reset setup violation.
+- Remaining: CDC/RDC and product reset Formal remain OPEN; no RTL/constraint
+  ECO or exception was applied. Routed endpoint/skew verification and full
+  reset/abort product regression were not run. AFIFO evidence remains separate
+  block-level evidence and does not qualify as the XPM product run.
+
 ## 2026-11-23 19:15 SGT — XPM port model and reset probes
 
 - Files: `dv/verif/axis/tb_thermo5_xpm_prefill_reset.sv`, `docs/verification/thermo5-linux-cdc-rdc-round5-20261123.md`, execution frontier.
