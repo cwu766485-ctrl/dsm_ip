@@ -13,7 +13,10 @@ class thermo5_sku_illegal_frame_test extends thermo5_sku_base_test;
     fork
       begin
         fork
-          send_source(cfg.source_beats,1);
+          // Combine the misaligned frame-start with an early TLAST so this
+          // negative stream closes both the core bad-frame and source
+          // malformed-early functional bins in the same checked epoch.
+          send_source(cfg.source_beats,1,-1,0,15);
           begin
             wait(env.source.monitor.accepted_beats>=4);
             env.control.core_on();

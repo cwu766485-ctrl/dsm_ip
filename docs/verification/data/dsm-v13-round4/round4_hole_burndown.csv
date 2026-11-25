@@ -1,0 +1,11 @@
+coverage_type,baseline_open,approval_pending,hit,not_applicable,open,open_unmapped
+Branch,1168,0,9,0,1159,0
+CODE_METRIC_AGGREGATE,24,0,0,0,24,0
+Condition,487,0,24,0,463,0
+FSM_Transitions,23,0,22,0,0,1
+FUNCTIONAL_CROSS_BIN,22,2,17,0,3,0
+FUNCTIONAL_GROUP_BINS,27,4,17,3,3,0
+Line,402,0,9,0,393,0
+MASH_REACHABILITY_OR_INTEGRATION,4,2,0,0,2,0
+SIGNOFF_GAP,1,0,0,0,1,0
+Toggle,463,0,12,0,451,0

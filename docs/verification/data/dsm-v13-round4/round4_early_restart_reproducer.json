@@ -1,0 +1,46 @@
+{
+  "classification": "Diagnostic failure; excluded from passing regressions and URG merges.",
+  "configuration": "EF1 AXI-Lite, DSM_ARCH=1, centered cubic, TIDSM order 1, step 7168",
+  "coverage_policy": "The failed diagnostic VDB is not merged and does not close any functional bin. Partial/full restart raw bins remain OPEN.",
+  "failed_test_vdb": {
+    "files": 13,
+    "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_early_restart_reproducer_test_seed440533.vdb",
+    "tree_sha256": "6b906d9e48daa45bed8714ca718f421e00fa3c23e1cda0f9660e9de76bbcb587"
+  },
+  "generated_local": "2026-11-25T22:57:26.641326+08:00",
+  "limitations": [
+    "Only the partial occupancy target was executed.",
+    "Whether early RUN during DRAINING is a supported software operation remains a contract decision.",
+    "No Product RTL was modified."
+  ],
+  "log": {
+    "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_early_restart_reproducer_test_seed440533.log",
+    "sha256": "76dfa1c35387efc329a674e21a3606470533252c340d7fdbd17c273f45845ed7"
+  },
+  "mismatch": {
+    "expected": "f90bdb99b9a9d9f9",
+    "got": "bdb89919f989d999",
+    "plane": 0,
+    "word": 45
+  },
+  "result": "Independent four-plane scoreboard fatal at output word 45, plane 0.",
+  "run_command": "/home/ray/workspace/dsm-v13-mash-uvm-round4/runs/dsm_v13_round4/ef1_axil/simv +UVM_TESTNAME=thermo5_sku_axil_early_restart_reproducer_test +VEC_DIR=runs/dsm_v13_round4/ef1_axil/restart_fifo_vectors +ntb_random_seed=440533 -cm line+cond+fsm+tgl+branch+assert -cm_dir runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_early_restart_reproducer_test_seed440533.vdb +CORE_WORDS=112 +PACKET_BEATS=32 +RESTART_FIFO_TARGET=partial -l runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_early_restart_reproducer_test_seed440533.log",
+  "scenario": "STOP during packet 1; hold PA output; observe nonempty partial ingress FIFO while STATUS[4:3]==2'b11 (RUN_ACTIVE and DRAINING); reassert RUN before drain completion.",
+  "schema": "dsm_v13_round4_early_restart_reproducer_v1",
+  "source": {
+    "path": "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_early_restart_reproducer_test.svh",
+    "sha256": "2e5a4f4b99b7c71e8d8d6f55d0be4f67909601b0ce49d738d3b3c8a42807f064"
+  },
+  "status": "FAIL_REPRODUCED",
+  "test": "thermo5_sku_axil_early_restart_reproducer_test",
+  "uvm_report_counts": {
+    "error": 0,
+    "fatal": 1,
+    "warning": 0
+  },
+  "vectors": {
+    "directory": "runs/dsm_v13_round4/ef1_axil/restart_fifo_vectors",
+    "files": 10,
+    "tree_sha256": "dcc08f6c1dafbac0cd8a601087591a58eca96c23ff00c71f702437d3bcaea78d"
+  }
+}

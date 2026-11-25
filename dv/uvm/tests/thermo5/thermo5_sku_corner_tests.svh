@@ -1,6 +1,7 @@
 // Compatibility include hub for full-IP scenario tests.
 // Each UVM test class is kept in its own file under full_ip/.
   `include "full_ip/thermo5_sku_fifo_reset_phase_test.svh"
+  `include "full_ip/thermo5_sku_fifo_full_reset_test.svh"
   `include "full_ip/thermo5_sku_prestart_empty_test.svh"
   `include "full_ip/thermo5_sku_fifo_boundary_test.svh"
   `include "full_ip/thermo5_sku_bubble_backpressure_test.svh"

@@ -22,6 +22,42 @@ class thermo5_sku_axil_reset_sweep_test extends thermo5_sku_axil_base_test;
         $sformatf("Expected product identity DPD with one active tap, got %0d",
           vif.dpd_active_taps))
 
+    // The public async FIFO is 16 source beats deep. Reset twice from its
+    // observed full state with the DSM still at reset zero, once just after a
+    // source edge and once just after a core edge. These are real occupancy
+    // and clock-phase samples, not testbench-injected covergroup hits.
+    send_source(16);
+    wait(env.source.monitor.accepted_beats==16);
+    for (int cycles=0;cycles<16 && !vif.fifo_full;cycles++) begin
+      @(posedge vif.src_clk);
+      #1ps;
+    end
+    if (!vif.fifo_full || vif.src_ready || vif.tidsm_state_zero!==4'hf)
+      `uvm_fatal("RESET_SWEEP_FULL_SOURCE_SETUP",
+        "Source-phase full-FIFO setup did not reach full FIFO/zero DSM")
+    @(posedge vif.src_clk);
+    #1ps;
+    env.control.reset_both();
+    if (!vif.fifo_empty || vif.tidsm_state_zero!==4'hf)
+      `uvm_fatal("RESET_SWEEP_FULL_SOURCE_CLEAR",
+        "Source-phase full-FIFO reset did not restore the reset state")
+
+    send_source(16);
+    wait(env.source.monitor.accepted_beats==16);
+    for (int cycles=0;cycles<16 && !vif.fifo_full;cycles++) begin
+      @(posedge vif.src_clk);
+      #1ps;
+    end
+    if (!vif.fifo_full || vif.src_ready || vif.tidsm_state_zero!==4'hf)
+      `uvm_fatal("RESET_SWEEP_FULL_CORE_SETUP",
+        "Core-phase full-FIFO setup did not reach full FIFO/zero DSM")
+    @(posedge vif.core_clk);
+    #1ps;
+    env.control.reset_both();
+    if (!vif.fifo_empty || vif.tidsm_state_zero!==4'hf)
+      `uvm_fatal("RESET_SWEEP_FULL_CORE_CLEAR",
+        "Core-phase full-FIFO reset did not restore the reset state")
+
     // Reset after accepted AXIS prefixes that stop inside a 56-sample DSP
     // frame. RUN stays low so these recovery epochs cannot create a starvation
     // event; the dynamic trace oracle checks the causal PA prefix bound.
@@ -93,15 +129,15 @@ class thermo5_sku_axil_reset_sweep_test extends thermo5_sku_axil_base_test;
     join
 
     check_full(0);
-    if (env.scoreboard.reset_epochs!=9 || env.coverage.reset_reassertions!=9)
+    if (env.scoreboard.reset_epochs!=11 || env.coverage.reset_reassertions!=11)
       `uvm_fatal("RESET_SWEEP_COUNT",
-        $sformatf("Expected four partial-frame plus five residual reset epochs; scoreboard=%0d monitor=%0d",
+        $sformatf("Expected two full-FIFO, four partial-frame, and five residual reset epochs; scoreboard=%0d monitor=%0d",
           env.scoreboard.reset_epochs,env.coverage.reset_reassertions))
     if (vif.protocol_error || vif.underflow)
       `uvm_fatal("RESET_SWEEP_DIAGNOSTIC",
         "Protocol error or underflow observed during reset sweep/replay")
     `uvm_info("SKU_PASS",
-      "THERMO5_AXIL_RESET_SWEEP_UVM_PASS four partial-DSP-frame resets, five CDC residual resets, and complete four-plane bit-true replay",
+      "THERMO5_AXIL_RESET_SWEEP_UVM_PASS two full-FIFO phase resets, four partial-DSP-frame resets, five CDC residual resets, and complete four-plane bit-true replay",
       UVM_NONE)
     phase.drop_objection(this);
   endtask

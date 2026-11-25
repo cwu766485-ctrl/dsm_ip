@@ -298,6 +298,18 @@ class thermo5_sku_axil_base_test extends thermo5_sku_bittrue_test;
         axil_write(8'h00,32'h1,2,0,resp);
         if (resp!=2'b00) `uvm_fatal("AXIL_RUN","run_request write failed")
 
+        // TAPS and coefficient writes update only the shadow bank until a
+        // separate COMMIT request. Exercise both legal configuration classes
+        // while RUN is visibly active without changing the active oracle image.
+        axil_write(8'h08,32'(expected_active_taps),0,0,resp);
+        if (resp!=2'b00) `uvm_fatal("AXIL_RUNNING_TAPS","RUN-state TAPS shadow write failed")
+        axil_write(8'h10,32'h0000_4000,0,0,resp);
+        if (resp!=2'b00) `uvm_fatal("AXIL_RUNNING_COEFF","RUN-state coefficient shadow write failed")
+        if (vif.dpd_active_taps!=expected_active_taps ||
+            vif.cfg_active_payload!==expected_cfg_payload)
+          `uvm_fatal("AXIL_RUNNING_SHADOW_APPLY",
+            "RUN-state shadow writes changed the active DPD image without COMMIT")
+
         boundary_seen=0;
         for (int cycles=0; cycles<2000 && !boundary_seen; cycles++) begin
           @(posedge vif.core_clk);

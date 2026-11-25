@@ -1,3 +1,67 @@
+# 2026-11-25 22:58 SGT - DSM V1.3 Round 4 functional denominator correction
+
+- Restored the restart FIFO `partial` and `full` coverpoint bins; removed the
+  unsupported ignore-bin reduction. Rebuilt all six Product/AXI-Lite UVM
+  elaborations and replayed their enumerated test VDBs, then regenerated all
+  seven separate URG merges and the Round 3-to-Round 4 evidence.
+- Added a standalone early-restart diagnostic. It observes a real partial FIFO
+  while AXI-Lite STATUS is RUN_ACTIVE+DRAINING, reasserts RUN, and reproduces an
+  independent four-plane scoreboard mismatch at output word 45. The failing
+  VDB is preserved for audit and excluded from the positive merge. The
+  supported RUN/DRAINING operation remains an explicit contract question; no
+  RTL was changed and no functional bin was waived.
+- Updated `docs/dsm_v13_round4_report.md`, this frontier, and the machine
+  evidence. Correct disposition of the original 2,621 records is 110 HIT,
+  3 NOT_APPLICABLE, 8 APPROVAL_PENDING, 2,499 OPEN, and 1 OPEN_UNMAPPED.
+  Functional group missing bins are 22; cross missing bins are 8, including
+  six restart × FIFO-state cells. Raw and adjusted coverage remain equal.
+- Checks: EF1 Product, EF2 Product, MASH Product, EF1 AXI-Lite, EF2 AXI-Lite,
+  and MASH AXI-Lite selected regressions replayed successfully; all seven
+  per-configuration URG merges PASS. The intentional early-restart diagnostic
+  reproduced one scoreboard fatal with zero UVM warnings/errors. Eight
+  independent DPD/interpolator block checker runs and previous MASH/frame-tail
+  Formal evidence remain recorded. PowerShell/XSim is unavailable.
+- Remaining: six restart cross cells need a resolved software contract and
+  legal evidence or approved RTL ECO; eight MASH proof-backed records await
+  independent waiver approval. Code-coverage final thresholds, serializer
+  DV-L2, MATLAB alignment, CDC/RDC, STA/PPA, and board/RF sign-off remain OPEN.
+
+# 2026-11-25 22:28 SGT - DSM V1.3 Round 4 coverage closure evidence
+
+- Changed the Round 4 UVM environment, Product/AXI-Lite directed tests, and
+  formal harness/scripts for legal reset/FIFO/configuration scenarios, MASH
+  weighted-level and input-rail reachability, frame-tail metadata, and
+  Product-only AXI-Lite coverage applicability. Added independent DPD polynomial
+  order 3/5/7 vectors and checker, and block-level coverage collection for DPD,
+  memory-polynomial, and focused interpolator tests. Product RTL and its
+  bit-true behavior were not changed.
+- Added per-test MASH AXI-Lite assertion isolation so an incomplete attempt in
+  reset sweep remains visible and is classified from its scenario evidence.
+  Added standalone block-level raw/adjusted coverage tables, source/VDB/report
+  hashes, and an exact Round 3-to-Round 4 disposition without combining
+  incompatible SKU or parameter elaborations.
+- Added `docs/dsm_v13_round4_report.md`, refreshed the execution frontier and
+  DPD block README, and generated machine evidence under
+  `docs/verification/data/dsm-v13-round4/`.
+- Reason: execute the Round 4 module-level and formal-assisted coverage plan,
+  close reachable functional scenarios, preserve unreachability candidates as
+  raw OPEN pending approval, and report exact remaining code/functional gaps.
+- Checks: seven independent VCS/URG configuration merges PASS with zero UVM
+  warning/error/fatal counts in positive runs; eight independent DPD and
+  interpolator block checker runs PASS; MASH Formal proved 4/4 assertions and
+  hit 4/4 required covers; frame-tail metadata Formal PASS; Python reference
+  suite 74/74 PASS; evidence generation PASS; `git diff --check` PASS. The
+  PowerShell/XSim flow was not available in this Linux environment.
+- Remaining limitations: raw code inventory has 2,463 OPEN bins, with no
+  Product/AXI-Lite configuration meeting final code targets. Functional total
+  scores are EF1/EF2 100%, MASH Product 98.20%, and MASH AXI-Lite 99.10%, but
+  eight MASH weighted-level raw bins and two minimum-rail × positive-Stage1
+  cross records remain pending independent waiver approval. One extra
+  matrix-only FSM row remains OPEN_UNMAPPED. MASH AXI-Lite has one
+  reset-aborted incomplete assertion attempt, retained in the report. CDC/RDC,
+  STA/PPA, MATLAB latency alignment, serializer DV-L2, and board/RF sign-off
+  remain OPEN or NOT RUN. Final DV sign-off is OPEN.
+
 # 2026-11-25 18:27 SGT - DSM V1.3 Round 3 UVM and coverage closure
 
 - Changed `dv/uvm/tests/thermo5/thermo5_sku_product_random_test.svh`, the UVM

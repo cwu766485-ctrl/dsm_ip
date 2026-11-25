@@ -19,7 +19,10 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
     bit candidate;
     candidate=0;
     while (!candidate) begin
-      @(negedge vif.core_clk);
+      // Observe the accepted candidate just after the active edge so the
+      // READY request reaches the single sink driver before the next transfer.
+      @(posedge vif.core_clk);
+      #1ps;
       candidate=(vif.pa_valid==4'hf) &&
                 (positive ? (|vif.ef2_pos_clamp_candidate) :
                             (|vif.ef2_neg_clamp_candidate));
@@ -79,7 +82,7 @@ class thermo5_sku_ef2_corner_test extends thermo5_sku_base_test;
         env.coverage.ef2_negative_clamp_events==0 ||
         env.coverage.ef2_clamp_stall_cycles==0 ||
         env.coverage.ef2_state_rail_cycles==0)
-      `uvm_fatal("EF2_COVERAGE","Both clamp polarities, clamp candidate held, and a state rail must be observed")
+      `uvm_fatal("EF2_COVERAGE","Both clamp polarities, clamp candidate hold, and a state rail must be observed")
     for (int branch=0;branch<4;branch++)
       if (env.coverage.ef2_positive_clamp_branch[branch]==0 ||
           env.coverage.ef2_negative_clamp_branch[branch]==0)

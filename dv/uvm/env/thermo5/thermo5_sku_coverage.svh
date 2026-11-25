@@ -303,9 +303,11 @@ class thermo5_sku_coverage extends uvm_component;
     cp_kind: coverpoint event_kind {
       bins source_beat = {THERMO5_EVENT_SOURCE_BEAT};
       bins pa_word = {THERMO5_EVENT_PA_WORD};
+`ifdef THERMO5_AXIL_CONTROL
       bins axil_write = {THERMO5_EVENT_AXIL_WRITE};
       bins axil_read = {THERMO5_EVENT_AXIL_READ};
       bins axil_response = {THERMO5_EVENT_AXIL_RESPONSE};
+`endif
       bins cdc_word = {THERMO5_EVENT_CDC_WORD};
       bins dsp_observation = {THERMO5_EVENT_DSP_OBSERVATION};
       bins ef2_word = {THERMO5_EVENT_EF2_WORD};

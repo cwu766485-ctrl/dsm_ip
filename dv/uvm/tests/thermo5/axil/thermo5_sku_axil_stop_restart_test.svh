@@ -92,6 +92,9 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
                 env.scoreboard.checked!=56)
               `uvm_fatal("AXIL_RESTART_EARLY_DATA",
                 "Second packet advanced before the restart request")
+            if (!vif.fifo_empty)
+              `uvm_fatal("AXIL_RESTART_FIFO_NOT_EMPTY",
+                "Legal RUN restart requires the completed STOP drain to leave the ingress FIFO empty")
             env.coverage.sample_stop_restart(3'd3);
 
             axil_write(8'h00,32'h1,2,0,resp);
@@ -163,7 +166,7 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
                 "No same-packet STOP plus PA-backpressure record was covered")
             if (env.coverage.restart_fifo_state_coverage()==0.0)
               `uvm_fatal("RESTART_FIFO_STATE_CROSS",
-                "RUN restart did not sample a FIFO occupancy state")
+                "The legal empty-FIFO restart sample was not recorded")
             `uvm_info("SKU_PASS",
               "THERMO5_AXIL_STOP_RESTART_UVM_PASS: STOP drained packet 1; packet 2 stayed blocked until RUN restarted; 112 ordered four-plane words matched oracle",
               UVM_NONE)

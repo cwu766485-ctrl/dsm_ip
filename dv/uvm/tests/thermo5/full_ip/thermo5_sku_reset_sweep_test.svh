@@ -6,6 +6,16 @@ class thermo5_sku_reset_sweep_test extends thermo5_sku_base_test;
   task run_phase(uvm_phase phase);
     int target_residual[5]='{2,4,6,10,12};
     phase.raise_objection(this);
+    // Sample both reset domains with a genuinely empty ingress FIFO before
+    // exercising the existing partial-residual sweep. Allow the core monitor
+    // to publish this reset epoch before the first source transaction.
+    wait(vif.src_rst_n && vif.core_rst_n);
+    repeat(2) @(posedge vif.core_clk);
+    env.control.reset_both();
+    repeat(2) @(posedge vif.core_clk);
+    if (!vif.fifo_empty || vif.tidsm_state_zero!==4'hf)
+      `uvm_fatal("RESET_SWEEP_EMPTY_SETUP",
+        "Empty-FIFO reset did not retain the public empty/zero state")
     fork
       begin
         for (int epoch=0;epoch<5;epoch++) begin
@@ -33,9 +43,9 @@ class thermo5_sku_reset_sweep_test extends thermo5_sku_base_test;
             wait(env.scoreboard.checked==cfg.core_words);
             env.control.core_off();
             check_full(0);
-            if (env.scoreboard.reset_epochs!=5 || env.coverage.reset_reassertions!=5)
-              `uvm_fatal("RESET_SWEEP","Five reset epochs were not observed")
-            `uvm_info("SKU_PASS","THERMO5_RESET_SWEEP_UVM_PASS five residual resets and 56-word replay",UVM_NONE)
+            if (env.scoreboard.reset_epochs!=6 || env.coverage.reset_reassertions!=6)
+              `uvm_fatal("RESET_SWEEP","Empty-FIFO plus five residual reset epochs were not observed")
+            `uvm_info("SKU_PASS","THERMO5_RESET_SWEEP_UVM_PASS empty-FIFO reset, five residual resets, and 56-word replay",UVM_NONE)
           end
         join
       end

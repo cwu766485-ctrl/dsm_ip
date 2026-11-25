@@ -1,6 +1,6 @@
 // AXI-Lite-controlled EF2 saturation qualification.  This mirrors the
-// generic EF2 corner test while starting/stopping the actual AXI-Lite DUT
-// through its public control register.
+// generic EF2 corner test while controlling the actual AXI-Lite DUT through
+// its public RUN register. Each 32-beat packet is also a vector frame.
 class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_ef2_corner_test)
 
@@ -12,11 +12,27 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
   endfunction
 
   virtual function void configure_case();
+    integer fd;
+    integer scan_result;
+    logic [15:0] marker;
+    string path;
     super.configure_case();
-    cfg.frame_starts=3;
     cfg.expect_pa=1;
     if (cfg.core_words!=2072)
       `uvm_fatal("EF2_WORDS","Use CORE_WORDS=2072 with the long EF2 corner vectors")
+    path=$sformatf("%s/tid32_thermo5_frontend_frame_start.mem",cfg.vector_dir);
+    fd=$fopen(path,"r");
+    if (fd==0) `uvm_fatal("EF2_FRAME_FILE",$sformatf("Cannot open %s",path))
+    scan_result=$fscanf(fd,"%h",marker);
+    cfg.frame_starts=0;
+    while (scan_result==1) begin
+      if (marker[0]) cfg.frame_starts++;
+      scan_result=$fscanf(fd,"%h",marker);
+    end
+    $fclose(fd);
+    if (scan_result!=-1 || cfg.frame_starts!=cfg.source_beats/32)
+      `uvm_fatal("EF2_FRAME_COUNT",
+        $sformatf("Expected one frame start per 32-beat packet, found %0d",cfg.frame_starts))
   endfunction
 
   task automatic stall_candidate(input bit positive);
@@ -115,26 +131,55 @@ class thermo5_sku_axil_ef2_corner_test extends thermo5_sku_axil_base_test;
               `uvm_fatal("EF2_CONFIG","AXI-Lite EF2 qualification requires TIDSM_ORDER=2")
             wait(vif.src_rst_n && vif.core_rst_n);
             wait_axil_reset_release();
-            wait(env.source.monitor.accepted_beats>=4);
+            // Match the supported AXI-Lite startup contract: prefill the
+            // sixteen-beat ingress FIFO before enabling RUN.
+            wait(env.source.monitor.accepted_beats>=16);
             axil_write(8'h00,32'h1,0,0,resp);
             if (resp!=2'b00) `uvm_fatal("EF2_RUN","Could not start AXI-Lite EF2 traffic")
 
-            // STOP while the packet is open. The wrapper must accept through
-            // TLAST and drain the remaining EF2 stream without underflow.
-            wait(env.source.monitor.accepted_beats>=20);
-            axil_write(8'h00,32'd0,0,1,resp);
-            if (resp!=2'b00) `uvm_fatal("EF2_STOP","Could not request graceful AXI-Lite drain")
-
-            stall_candidate(1'b1);
-            stall_candidate(1'b0);
-            stall_state_rail();
+            fork
+              begin
+                stall_candidate(1'b1);
+                stall_candidate(1'b0);
+                stall_state_rail();
+              end
+              begin
+                // Ask STOP near the final 32-beat packet. The wrapper then
+                // accepts through TLAST and drains without leaving RUN active
+                // after the finite source stream is exhausted.
+                wait(env.source.monitor.accepted_beats>=cfg.source_beats-32);
+                axil_write(8'h00,32'd0,0,1,resp);
+                if (resp!=2'b00)
+                  `uvm_fatal("EF2_STOP","Could not stop the final EF2 packet")
+              end
+            join
             for (int cycles=0;cycles<100000 &&
                  env.scoreboard.checked!=cfg.core_words;cycles++)
               @(posedge vif.core_clk);
             if (env.scoreboard.checked!=cfg.core_words)
               `uvm_fatal("EF2_STREAM_TIMEOUT",
                 $sformatf("checked=%0d expected=%0d",env.scoreboard.checked,cfg.core_words))
-            check_full();
+            if (env.source.monitor.accepted_beats!=cfg.source_beats ||
+                env.scoreboard.source_checked!=cfg.source_beats ||
+                env.scoreboard.checked!=cfg.core_words ||
+                env.source.monitor.accepted_last_count!=cfg.source_beats/32 ||
+                env.coverage.frame_starts!=cfg.frame_starts ||
+                env.coverage.pa_words!=cfg.core_words)
+              `uvm_fatal("EF2_STREAM_COUNTS",
+                $sformatf("source=%0d/%0d source_checked=%0d PA=%0d/%0d TLAST=%0d/%0d frames=%0d/%0d",
+                  env.source.monitor.accepted_beats,cfg.source_beats,
+                  env.scoreboard.source_checked,env.scoreboard.checked,cfg.core_words,
+                  env.source.monitor.accepted_last_count,cfg.source_beats/32,
+                  env.coverage.frame_starts,cfg.frame_starts))
+            for (int lane=0;lane<16;lane++)
+              if (vif.dpd_sample_count[lane]!==cfg.core_words+cfg.frame_starts ||
+                  vif.dpd_saturation_count[lane]!==0)
+                `uvm_fatal("EF2_DPD_COUNT",
+                  $sformatf("lane=%0d samples=%0d expected=%0d saturation=%0d",
+                    lane,vif.dpd_sample_count[lane],cfg.core_words+cfg.frame_starts,
+                    vif.dpd_saturation_count[lane]))
+            if (!env.unified_scoreboard.check_expected_queues_drained("ef2-axil-corner"))
+              `uvm_fatal("EF2_QUEUE","Expected queues did not drain after EF2 saturation replay")
             if (env.coverage.ef2_positive_clamp_events==0 ||
                 env.coverage.ef2_negative_clamp_events==0 ||
                 env.coverage.ef2_clamp_stall_cycles==0 ||

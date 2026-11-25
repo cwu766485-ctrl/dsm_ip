@@ -77,6 +77,7 @@ THERMO5_COV_ARGS = $(if $(filter 1,$(THERMO5_COVERAGE)),-cm $(THERMO5_COV_METRIC
 THERMO5_COV_HIER ?=
 THERMO5_COV_HIER_ARGS := $(if $(and $(filter 1,$(THERMO5_COVERAGE)),$(strip $(THERMO5_COV_HIER))),-cm_hier $(THERMO5_COV_HIER),)
 DSM_V13_OUT ?= $(ROOT)/runs/dsm_v13_round2
+DSM_V13_R4_OUT ?= $(ROOT)/runs/dsm_v13_round4
 DSM_V13_MASH_OUT := $(DSM_V13_OUT)/mash11_core
 DSM_V13_MASH_SOURCE := $(DSM_V13_MASH_OUT)/source
 DSM_V13_MASH_VECTORS := $(DSM_V13_MASH_OUT)/vectors
@@ -196,7 +197,7 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         dsm-v13-product-random-regression dsm-v13-round3-regression \
         dsm-v13-round3-baseline-audit dsm-v13-round3-urg \
         dsm-v13-round3-axil-register-access dsm-v13-round3-formal \
-        dsm-v13-round3-evidence \
+        dsm-v13-round3-evidence dsm-v13-round4-urg \
         dsm-v13-coverage-audit dsm-v13-closure-check
 
 help:
@@ -776,6 +777,12 @@ dsm-v13-round3-evidence: dsm-v13-multi-sku-regression \
 	@$(PYTHON) $(ROOT)/dv/uvm/sim/generate_dsm_v13_round3_evidence.py \
 	  --run-dir $(DSM_V13_OUT) --product-random $(DSM_V13_PRODUCT_RANDOM_OUT) \
 	  --axil-random $(DSM_V13_RANDOM_OUT) --formal-dir $(DSM_V13_OUT)/formal_mash_reachability
+
+# Round 4 focused functional matrix is merged from its explicitly enumerated,
+# passing test VDBs only. Product, AXI-Lite, and SKU elaborations stay separate.
+dsm-v13-round4-urg:
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/run_dsm_v13_round4_urg.py \
+	  --run-dir $(DSM_V13_R4_OUT) --urg "$(URG)"
 
 dsm-v13-coverage-audit:
 	@$(PYTHON) $(ROOT)/dv/uvm/sim/audit_dsm_v13_round2.py --mode coverage

@@ -1,0 +1,174 @@
+{
+  "assumption_audit": {
+    "frame_metadata": "Only legal source ready/valid stability is assumed; exact Product centered-cubic geometries and packet/frame marker schedule are instantiated.",
+    "mash": "The only environment constraint is source payload stability while valid is held without ready; reset is the harness's real reset sequence.",
+    "nonvacuity": "MASH required Covers are all hit. Frame metadata source stability is non-vacuous; legal packet-end/tail transfer Covers are hit; the two active q1_tail antecedent Covers are proven uncoverable.",
+    "waiver": "No URG exclusion has been applied. MASH proposal records remain APPROVAL_PENDING."
+  },
+  "legal_frame_metadata": {
+    "errors": [],
+    "jobs": [
+      {
+        "argv": [
+          "vcf",
+          "-batch",
+          "-fmode",
+          "FPV",
+          "-f",
+          "/home/ray/workspace/dsm-v13-mash-uvm-round4/dv/uvm/formal/run_thermo5_gap_fpv.tcl"
+        ],
+        "assertions": [
+          [
+            "proven",
+            "thermo5_frame_tail_legal_metadata_harness.a_append_legal_frame_end_context"
+          ],
+          [
+            "proven",
+            "thermo5_frame_tail_legal_metadata_harness.a_plain_legal_frame_end_context"
+          ]
+        ],
+        "black_box_instances": [
+          "0"
+        ],
+        "covers": [
+          [
+            "uncoverable",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_active_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_output_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_packet_end"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_subframe_start"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_append_tail_transfer"
+          ],
+          [
+            "uncoverable",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_active_bin"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_output_transfer"
+          ],
+          [
+            "covered",
+            "thermo5_frame_tail_legal_metadata_harness.c_plain_tail_consumed"
+          ]
+        ],
+        "duration_seconds": 34.26,
+        "exit_code": 0,
+        "kind": "frame_tail_legal_metadata",
+        "log": "/home/ray/workspace/dsm-v13-mash-uvm-round4/runs/dsm_v13_round4/formal_frame_tail/frame_tail_legal_metadata/console.log",
+        "properties": "/home/ray/workspace/dsm-v13-mash-uvm-round4/runs/dsm_v13_round4/formal_frame_tail/frame_tail_legal_metadata/properties.txt",
+        "setup": "/home/ray/workspace/dsm-v13-mash-uvm-round4/runs/dsm_v13_round4/formal_frame_tail/frame_tail_legal_metadata/setup.txt",
+        "status": "PASS",
+        "tool_banner": "Version V-2023.12-SP2 for linux64 - Jun 03, 2024",
+        "top": "thermo5_frame_tail_legal_metadata_harness"
+      }
+    ],
+    "scope": {
+      "counter": "MAX_TAPS=1 identity; at most 2072 accepted inputs per reset epoch",
+      "frame_tail_legal_metadata": "Exact centered-cubic product stage geometries and legal frame-marker schedules: stage 1 accepts 7 vectors of 8 lanes per 56-sample DSP frame, with frame_start on each frame and TLAST/frame_end only on vector 56 of an eight-frame, 448-sample packet. Stage 2 accepts 8 vectors of 16 lanes per DSP frame, with the final synthetic tail tagged end/tail. The two production interpolator RTL stages are directly composed with ready/valid backpressure. Intermediate elastic FIFOs and DPD are omitted; this result alone does not disposition Raw URG bins.",
+      "reset": "runtime reset changes only on falling edge; active-edge collisions excluded"
+    },
+    "source": {
+      "git_revision": "9ae4e3fc574c34149930dca055d83528458be553",
+      "git_status": [
+        " M docs/exec-plans/active/execution-frontier.md",
+        " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_candidate_audit.csv",
+        " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_github_local_waiver_diff.csv",
+        " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_raw_vs_whatif_metrics.csv",
+        " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_remaining_root_cause_summary.csv",
+        " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_toggle_root_cause_audit.csv",
+        " M docs/verification/data/thermo5-r12-whatif-20261106/thermo5_tx_round12_toggle_signal_groups.csv",
+        " M docs/verification/data/thermo5-r12/thermo5-tx-waivers-resolved-by-raw-hit.csv",
+        " M dv/uvm/env/thermo5/thermo5_sku_coverage.svh",
+        " M dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv",
+        " M dv/uvm/formal/dsm_v13_mash11_reachability_harness.sv",
+        " M dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.py",
+        " M dv/uvm/sim/Makefile",
+        " M dv/uvm/tests/thermo5/axil/thermo5_sku_axil_config_test.svh",
+        " M dv/uvm/tests/thermo5/axil/thermo5_sku_axil_ef2_corner_test.svh",
+        " M dv/uvm/tests/thermo5/axil/thermo5_sku_axil_reset_sweep_test.svh",
+        " M dv/uvm/tests/thermo5/axil/thermo5_sku_axil_stop_restart_test.svh",
+        " M dv/uvm/tests/thermo5/full_ip/thermo5_sku_ef2_corner_test.svh",
+        " M dv/uvm/tests/thermo5/full_ip/thermo5_sku_illegal_frame_test.svh",
+        " M dv/uvm/tests/thermo5/full_ip/thermo5_sku_reset_sweep_test.svh",
+        " M dv/uvm/tests/thermo5/thermo5_sku_corner_tests.svh",
+        " M tools/hw/check_thermo5_axil_illegal_frame.py",
+        "?? dv/uvm/sim/generate_dsm_v13_mash11_rail_history.py",
+        "?? dv/uvm/sim/run_dsm_v13_round4_urg.py",
+        "?? dv/uvm/tests/thermo5/axil/thermo5_sku_axil_mash11_rail_history_test.svh",
+        "?? dv/uvm/tests/thermo5/full_ip/thermo5_sku_fifo_full_reset_test.svh"
+      ],
+      "worktree_dirty": true
+    },
+    "source_sha256": {
+      "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f",
+      "dv/uvm/formal/run_thermo5_gap_fpv.tcl": "e6ce40e4c6384beccd0a3f40e765ae24425f1c4833859ad591c6895c05fa72d5",
+      "dv/uvm/formal/thermo5_cdc_data_empty_harness.sv": "f52c1e1f7bfdfb408610f3de97f5576939fa57617bbb2be2e84e2c6e345cb054",
+      "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+      "dv/uvm/formal/thermo5_dpd_counter_harness.sv": "a2e07ef87ae1beaef3753a3da928b7b723a2cc83da4293f1d8720c6d379d670e",
+      "dv/uvm/formal/thermo5_dpd_identity_harness.sv": "dada30a04dd29000e5466761a4b507b399d701157fd24c77c972ea24a1d052ec",
+      "dv/uvm/formal/thermo5_ef2_pair_equiv_harness.sv": "01f50fb9661bf9c27dedb167f52d119ee5fdd208e9404922688476c0e95e6e63",
+      "dv/uvm/formal/thermo5_ef2_product_params_harness.sv": "b0788025551a3ff51d1d67716951a6956653d6ec525bf26e904d760172f0bd8f",
+      "dv/uvm/formal/thermo5_ef2_stability_harness.sv": "1dd30a90ebd8e2573b88bf6fd1a393f3a58300d6d1e58010c1d78ee95117570e",
+      "dv/uvm/formal/thermo5_frame_tail_harness.sv": "6ab2649b125b60c69f2cf758c60f330f7872f9302ec276f8a0c6930e2c94b2a6",
+      "dv/uvm/formal/thermo5_generic_cdc_harness.sv": "431c529a075db6517af42dd3c661702617e4039b26d78d3f2075eb24c4ba023d",
+      "dv/uvm/formal/thermo5_reset_harness.sv": "101f378d60263ff2f4c93bf156dff6415c682452173fd72586727fd35f1b37ed",
+      "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+      "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+      "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+      "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+      "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+      "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+      "rtl/gt/gt_tx_user_bridge.sv": "204c474029094b8bb7f66faa188503b311621d11aa0b544b9f1a6204550d3450",
+      "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+      "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584"
+    },
+    "status": "PASS"
+  },
+  "mash_reachability": {
+    "assertions_proven": true,
+    "command": [
+      "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+      "-batch",
+      "-fmode",
+      "FPV",
+      "-f",
+      "/home/ray/workspace/dsm-v13-mash-uvm-round4/dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.tcl"
+    ],
+    "covers_hit": true,
+    "duration_seconds": 24.9,
+    "required_assertions": [
+      "a_atomic_four_plane_valid",
+      "a_held_word_stable",
+      "a_no_unreachable_weighted_level",
+      "a_minimum_rail_never_stage1_positive"
+    ],
+    "required_covers": [
+      "c_accepted_sample",
+      "c_output_stall",
+      "c_reset_restart",
+      "c_startup_plus_two"
+    ],
+    "returncode": 0,
+    "schema": "dsm_v13_mash11_reachability_fpv_v2",
+    "source_revision": "9ae4e3fc574c34149930dca055d83528458be553",
+    "status": "PASS",
+    "timed_out": false,
+    "timeout_seconds": 900,
+    "vcf": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+    "waiver_status": "NO_WAIVER_REQUESTED"
+  },
+  "schema": "dsm_v13_round4_formal_evidence_v1"
+}

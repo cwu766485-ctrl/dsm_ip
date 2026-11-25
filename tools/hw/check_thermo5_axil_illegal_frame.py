@@ -13,12 +13,17 @@ class ExpectedNegativeCheckError(ValueError):
     pass
 
 
+# This one-quantum negative test closes a malformed marker at the first
+# centered-cubic stage. The stage-2 assertion is not expected to fail because
+# the test does not issue same-frame data after a stage-2 tail.
 EXPECTED_EVENTS = (
     (
         "cdc_frame_alignment",
         re.compile(
             r'^"rtl/axis/dsm_axis14_to_core8_cdc\.sv", 262: '
-            r'thermo5_sku_uvm_tb\.dut\.u_cdc\.unnamed\$\$_1: '
+            r'(?:thermo5_sku_uvm_tb|'
+            r'dsm_v13_multi_sku_uvm_tb\.g_product\.selected_product_sku)'
+            r'\.dut\.u_cdc\.unnamed\$\$_1: '
             r"started at \d+ps failed at \d+ps$",
             re.MULTILINE,
         ),
@@ -28,18 +33,10 @@ EXPECTED_EVENTS = (
         "centered_cubic_stage1_frame_tail",
         re.compile(
             r'^"rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", 310: '
-            r'thermo5_sku_uvm_tb\.dut\.u_frontend\.g_interp1_centered\.'
+            r'(?:thermo5_sku_uvm_tb|'
+            r'dsm_v13_multi_sku_uvm_tb\.g_product\.selected_product_sku)'
+            r'\.dut\.u_frontend\.g_interp1_centered\.'
             r'u_interp_1\.unnamed\$\$_1: started at \d+ps failed at \d+ps$',
-            re.MULTILINE,
-        ),
-        "centered cubic frame-end vector was followed by same-frame data",
-    ),
-    (
-        "centered_cubic_stage2_frame_tail",
-        re.compile(
-            r'^"rtl/interp/dsm_interp_x2_centered_cubic_vector\.sv", 310: '
-            r'thermo5_sku_uvm_tb\.dut\.u_frontend\.g_interp2_centered\.'
-            r'u_interp_2\.unnamed\$\$_1: started at \d+ps failed at \d+ps$',
             re.MULTILINE,
         ),
         "centered cubic frame-end vector was followed by same-frame data",
@@ -60,10 +57,10 @@ def audit_log_text(text: str) -> dict[str, object]:
 
     cdc_message = EXPECTED_EVENTS[0][2]
     cubic_message = EXPECTED_EVENTS[1][2]
-    if text.count(cdc_message) != 1 or text.count(cubic_message) != 2:
+    if text.count(cdc_message) != 1 or text.count(cubic_message) != 1:
         raise ExpectedNegativeCheckError(
-            "expected CDC assertion message once and centered-cubic frame-tail "
-            f"message twice; found {text.count(cdc_message)} and "
+            "expected CDC and centered-cubic stage-1 assertion messages once; "
+            f"found {text.count(cdc_message)} and "
             f"{text.count(cubic_message)}"
         )
 

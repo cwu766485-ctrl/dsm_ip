@@ -12,9 +12,10 @@ fi
 mkdir -p "$out"
 cd "$root"
 "$VCS_HOME/bin/vcs" -full64 -sverilog -timescale=1ns/1ps \
+  -cm line+cond+tgl+branch \
   rtl/dpd/dpd_poly.v rtl/dpd/dpd_memory_poly.v \
   dv/verif/block/dpd/tb/tb_dpd_identity_exhaustive.sv \
   -top tb_dpd_identity_exhaustive -Mdir="$out/csrc" \
   -o "$out/simv" -l "$out/compile.log"
-"$out/simv" -l "$out/run.log"
+"$out/simv" -cm line+cond+tgl+branch -cm_dir "$out/coverage.vdb" -l "$out/run.log"
 grep 'DPD_IDENTITY_EXHAUSTIVE_PASS' "$out/run.log"

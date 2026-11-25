@@ -49,6 +49,7 @@ def main() -> int:
     required_assertions = (
         "a_atomic_four_plane_valid", "a_held_word_stable",
         "a_no_unreachable_weighted_level",
+        "a_minimum_rail_never_stage1_positive",
     )
     required_covers = (
         "c_accepted_sample", "c_output_stall", "c_reset_restart",
@@ -63,7 +64,7 @@ def main() -> int:
         for name in required_covers)
     closure_pass = returncode == 0 and not timed_out and assertions_proven and covers_hit
     evidence = {
-        "schema": "dsm_v13_mash11_reachability_fpv_v1",
+        "schema": "dsm_v13_mash11_reachability_fpv_v2",
         "command": command,
         "vcf": executable,
         "returncode": returncode,
