@@ -56,6 +56,9 @@ interface thermo5_sku_if(input logic src_clk, core_clk);
   logic [3:0] ef2_pos_clamp_event, ef2_neg_clamp_event;
   logic [3:0] ef2_pos_clamp_candidate, ef2_neg_clamp_candidate;
   logic [3:0] ef2_state_at_rail, ef2_state_zero;
+  // SKU-neutral state observation for shared reset tests. EF2-specific
+  // corner checks continue to use ef2_state_zero above.
+  logic [3:0] tidsm_state_zero;
   logic ef2_clamp_stalled, ef2_tidsm_stalled;
   logic signed [19:0] ef2_err1_i[0:3], ef2_err2_i[0:3];
   logic signed [19:0] ef2_err1_q[0:3], ef2_err2_q[0:3];

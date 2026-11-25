@@ -11,6 +11,8 @@ class thermo5_pa_monitor extends uvm_component;
   bit reset_active;
   bit output_started = 0;
   thermo5_sku_config cfg;
+  integer trace_fd = 0;
+  string trace_path;
   function new(string name, uvm_component parent);
     super.new(name,parent); ap=new("ap",this);
   endfunction
@@ -19,6 +21,12 @@ class thermo5_pa_monitor extends uvm_component;
     if (!uvm_config_db#(virtual thermo5_sku_if)::get(this,"","vif",vif) ||
         !uvm_config_db#(thermo5_sku_config)::get(this,"","cfg",cfg))
       `uvm_fatal("NOVIF","thermo5 monitor interface is missing")
+    if ($value$plusargs("PA_TRACE_FILE=%s",trace_path)) begin
+      trace_fd=$fopen(trace_path,"w");
+      if (trace_fd==0)
+        `uvm_fatal("PA_TRACE",$sformatf("Cannot open PA trace %s",trace_path))
+      $fdisplay(trace_fd,"time_ps,epoch,word_index,plane0,plane1,plane2,plane3");
+    end
   endfunction
   task run_phase(uvm_phase phase);
     thermo5_pa_word tr;
@@ -51,6 +59,10 @@ class thermo5_pa_monitor extends uvm_component;
           tr.word_index=accepted_words-1;
           for (int p=0;p<4;p++) tr.plane[p]=vif.pa_data[p];
           ap.write(tr);
+          if (trace_fd!=0)
+            $fdisplay(trace_fd,"%0d,%0d,%0d,%016h,%016h,%016h,%016h",
+              longint'($realtime*1000.0),tr.epoch,tr.word_index,
+              tr.plane[0],tr.plane[1],tr.plane[2],tr.plane[3]);
         end
       end else begin
         if (!reset_active) reset_epoch++;
@@ -62,4 +74,8 @@ class thermo5_pa_monitor extends uvm_component;
       end
     end
   endtask
+  function void final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    if (trace_fd!=0) $fclose(trace_fd);
+  endfunction
 endclass

@@ -31,3 +31,4 @@ rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv
 dv/uvm/tests/thermo5/axil/thermo5_sku_outstanding_guard_sva.sv
 dv/uvm/env/thermo5/thermo5_sku_uvm_pkg.sv
 dv/uvm/tb/thermo5_sku_uvm_tb.sv
+dv/uvm/tb/dsm_v13_multi_sku_uvm_tb.sv

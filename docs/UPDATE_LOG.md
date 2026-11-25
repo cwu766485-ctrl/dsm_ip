@@ -6371,3 +6371,35 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   regression results.
 - Product RTL, product parameters, official waivers, and URG exclusions remain
   unchanged. Round 14 full product regression and fresh Raw URG are not yet run.
+# 2026-11-25 — DSM V1.3 multi-SKU UVM and MASH 1-1 Round 1
+
+- Created isolated branch/worktree `work/dsm-v13-mash-uvm-round1` from
+  baseline `c8fe4299e4d87ead3daca41800ce6c331e6c0ea6`; the CDC/RDC worktree was
+  not modified. Product RTL was not changed.
+- Added a compile-time multi-SKU UVM selector for EF1, EF2, and an imported
+  legacy MASH 1-1 block; added independent float/fixed MASH reference models,
+  vector generation, scoreboard, assertions, traces, coverage reports, and
+  repeatable Make targets. The MASH core/wrapper were imported byte-for-byte
+  from source revision `8d260dacbece071bc3f53546fd2b2ee3d08c64cb` to ignored
+  run output, not added to Product RTL.
+- Fixed the EF1 reset test's architecture-specific state observation and
+  generated a dedicated short-frame FIFO-empty oracle. Both fixes are in
+  verification infrastructure and preserve Product behavior.
+- Added the Round 1 audit, SKU contract/gap matrix, verification plan, results,
+  coverage closure, digital/RF comparison, failed-seed record, regression
+  summary, coverage hole matrix, assertion report, source manifest, and
+  SHA-256 evidence under `docs/dsm_v13_*.md` and
+  `docs/verification/data/dsm-v13-round1/`.
+- Checks: fresh combined EF1/EF2/MASH UVM regression PASS; separate EF1/EF2
+  AXI-Lite configuration tests PASS; ten MASH directed-plus-random seeds
+  PASS (39,400 rows / 35,432 accepted transactions); Python reference suite
+  72/72 PASS; original default Thermo5 top regressions PASS for EF1/EF2;
+  Make help target shows the new regression targets; RTL PA capture analysis
+  PASS; URG reports generated separately for each SKU/build; source and raw
+  log hashes recorded.
+- Coverage closure remains OPEN: code coverage targets are not met, and MASH
+  Product Top/AXIS/AXI-Lite/FIFO/lane/PA/serializer and MATLAB alignment
+  contracts remain undefined. A compile-time common selector is present, but
+  a shared class-based UVM environment spanning MASH and Thermo5 remains OPEN.
+  Formal, CDC/RDC, PPA, standard RF metrics, and hardware BER were not run. No
+  waiver or suppression was added.

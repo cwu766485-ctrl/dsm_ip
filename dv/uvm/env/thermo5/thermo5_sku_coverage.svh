@@ -45,6 +45,8 @@ class thermo5_sku_coverage extends uvm_component;
   int unsigned pending_tlast_output_targets[$];
   int unsigned pending_tlast_cdc_output_targets[$];
   bit seen_src_release, last_src_rst_n, ef2_state_nonzero_seen;
+  bit tidsm_state_nonzero_seen;
+  int reset_nonzero_tidsm_state_events;
   packet_cross_record_t packet_cross[longint unsigned];
   longint unsigned packet_cross_keys[$];
   int unsigned last_source_epoch, last_source_packet_id;
@@ -583,6 +585,7 @@ class thermo5_sku_coverage extends uvm_component;
               void'(pending_tlast_output_targets.pop_front());
           end
           if (vif.ef2_state_zero !== 4'hf) ef2_state_nonzero_seen=1'b1;
+          if (vif.tidsm_state_zero !== 4'hf) tidsm_state_nonzero_seen=1'b1;
         end
       end
       forever begin
@@ -593,19 +596,23 @@ class thermo5_sku_coverage extends uvm_component;
         pending_tlast_cdc_output_targets.delete();
         if (ef2_state_nonzero_seen && vif.ef2_order2_enabled)
           reset_nonzero_ef2_state_events++;
+        if (tidsm_state_nonzero_seen)
+          reset_nonzero_tidsm_state_events++;
         ef2_state_nonzero_seen=1'b0;
+        tidsm_state_nonzero_seen=1'b0;
       end
     join
   endtask
 
   function void report_phase(uvm_phase phase);
     super.report_phase(phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset_nonzero_tidsm=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
       accepted_cdc_output_words_epoch,cdc_frame_end_events,
       cdc_end_remaining_false_arm_events,
       tlast_pa_stall_cycles,stop_partial_pa_stall_cycles,
-      commit_pending_while_stopped_cycles,reset_nonzero_ef2_state_events,reset_reassertions,
+      commit_pending_while_stopped_cycles,reset_nonzero_ef2_state_events,
+      reset_nonzero_tidsm_state_events,reset_reassertions,
       underflow_cycles,underflow_before_last_source,protocol_error_cycles,pa_stall_cycles,
       pa_partial_ready_stall_cycles,pa_words,
       signed_min_beats,signed_max_beats,

@@ -55,8 +55,8 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
             `uvm_fatal("RESET_TAIL_HOLD","Final PA word did not remain held")
         end
         env.control.reset_both(1'b1);
-        if (vif.ef2_state_zero!==4'hf)
-          `uvm_fatal("RESET_TAIL_EF2_STATE","EF2 state did not clear with the centered tail")
+        if (vif.tidsm_state_zero!==4'hf)
+          `uvm_fatal("RESET_TAIL_TIDSM_STATE","Selected TIDSM state did not clear with the centered tail")
       end
     join
 
@@ -71,11 +71,11 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
         check_full(0);
       end
     join
-    if (env.coverage.reset_nonzero_ef2_state_events<2)
-      `uvm_fatal("RESET_EF2_COVERAGE",
-        $sformatf("Expected two resets from nonzero EF2 state, observed %0d",
-          env.coverage.reset_nonzero_ef2_state_events))
-    `uvm_info("SKU_PASS","THERMO5_CENTERED_TAIL_RESET_PASS final PA tail held under partial ready, reset cleared EF2, bit-true replay passed",UVM_NONE)
+    if (env.coverage.reset_nonzero_tidsm_state_events<2)
+      `uvm_fatal("RESET_TIDSM_COVERAGE",
+        $sformatf("Expected two resets from nonzero selected-TIDSM state, observed %0d",
+          env.coverage.reset_nonzero_tidsm_state_events))
+    `uvm_info("SKU_PASS","THERMO5_CENTERED_TAIL_RESET_PASS final PA tail held under partial ready, reset cleared selected TIDSM state, bit-true replay passed",UVM_NONE)
   endtask
 
   task run_phase(uvm_phase phase);
@@ -88,18 +88,18 @@ class thermo5_sku_reset_test extends thermo5_sku_base_test;
             wait(env.source.monitor.accepted_beats>=4);
             env.control.core_on();
             wait(env.source.monitor.accepted_beats==24 && env.scoreboard.checked>=4);
-            for (int cycles=0; cycles<1000 && vif.ef2_state_zero==4'hf; cycles++)
+            for (int cycles=0; cycles<1000 && vif.tidsm_state_zero==4'hf; cycles++)
               @(posedge vif.core_clk);
-            if (vif.ef2_state_zero==4'hf)
-              `uvm_fatal("RESET_EF2_SETUP","EF2 state did not become nonzero before reset")
+            if (vif.tidsm_state_zero==4'hf)
+              `uvm_fatal("RESET_TIDSM_SETUP","Selected TIDSM state did not become nonzero before reset")
           end
         join
         @(negedge vif.core_clk);
         // Assert both resets while enable is high to exercise the two
         // reset-with-enable condition bins at each interpolation instance.
         env.control.reset_both(1'b1);
-        if (vif.ef2_state_zero!==4'hf)
-          `uvm_fatal("RESET_EF2_STATE","EF2 state did not clear after active-stream reset")
+        if (vif.tidsm_state_zero!==4'hf)
+          `uvm_fatal("RESET_TIDSM_STATE","Selected TIDSM state did not clear after active-stream reset")
         fork
           send_source(cfg.source_beats);
           begin

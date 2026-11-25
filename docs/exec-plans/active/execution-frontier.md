@@ -1,6 +1,52 @@
 # Execution frontier
 
-## Current execution state: Thermo5 TX Round 14 — integration and baseline in progress (2026-11-07)
+## Current execution state: DSM V1.3 Multi-SKU UVM Round 1 (2026-11-25)
+
+Working tree: `/home/ray/workspace/dsm-v13-mash-uvm-round1`, branch
+`work/dsm-v13-mash-uvm-round1`, based on `c8fe4299e4d87ead3daca41800ce6c331e6c0ea6`.
+This is an isolated DV worktree; the active CDC/RDC worktree was not touched.
+Product RTL remains unchanged.
+
+Fresh VCS/URG V-2023.12-SP1 runs completed for EF1 Product, EF2 Research,
+MASH 1-1 block experiment, and separate EF1/EF2 AXI-Lite configurations. The
+unified elaboration-time selector selected one architecture per run. All
+positive UVM tests passed with zero warnings/errors/fatals; the protocol
+negative test observed its expected sticky error. The Python reference suite
+passed 72/72. Ten MASH seeds completed 39,400 vector rows and checked 35,432
+accepted transactions. EF1 and EF2 captured all four 64-bit PA planes for the
+56-word replay and passed the independent comparison.
+
+The original default Thermo5 top and `thermo5-vcs-regression` entrypoint were
+also rebuilt and passed for EF1 and EF2. The selector unifies SKU elaboration
+and regression invocation; MASH still uses a separate block-level UVM agent,
+not a shared Product class environment.
+
+Round 1 report: `docs/dsm_v13_round1_report.md`. SKU contract and MASH Product
+integration gaps: `docs/dsm_v13_sku_contract.md`. Per-run log and source hashes,
+coverage dashboards, assertion results, and captured signal metrics are indexed
+in `docs/verification/data/dsm-v13-round1/`.
+
+Current disposition:
+
+- **PASS:** stated EF1/EF2 directed Product matrix, EF1/EF2 AXI-Lite tests,
+  MASH legacy block-level experiment, Python suite, and captured digital PA
+  bit-true checks.
+- **OPEN:** MASH Product Top and its AXIS/AXI-Lite/FIFO/lane/PA/serializer
+  contracts; MASH RTL versus MATLAB latency alignment; all code coverage target
+  gaps; requested longer standard/stress random budgets.
+- **NOT RUN:** Formal, CDC/RDC, synthesis/PPA, standard calibrated RF metrics,
+  hardware BER, and physical board tests.
+
+Next: obtain an approved MASH Product SKU contract (numeric scale/rounding,
+input and lane mapping, PA code/serializer mapping, AXI-Lite behavior, latency,
+throughput, reset/epoch semantics). Then integrate at Product Top without
+changing EF1/EF2 contracts, extend the independent scoreboard to all metadata
+and PA outputs, and close exact per-SKU coverage holes. Keep this work on its
+branch until separately reviewed; do not merge as part of this DV task.
+
+## Previous execution state: Thermo5 TX Round 14 — integration and baseline in progress (2026-11-07)
+
+## Historical details: Thermo5 TX Round 14 integration preflight (2026-11-07)
 
 The requested order is PR #42, then PR #43, followed by a single-source
 regression and refreshed Raw URG baseline. Neither PR has been merged yet.
@@ -45,7 +91,7 @@ pending independent review; no Raw or Adjusted denominator changes are allowed.
 
 ## Previous execution state: Thermo5 TX Linux DV Final Signoff Round 13 (2026-11-07)
 
-## Current execution state: Thermo5 TX Linux DV Final Signoff Round 13 (2026-11-07)
+## Historical execution state: Thermo5 TX Linux DV Final Signoff Round 13 (2026-11-07)
 
 Working checkout: branch `codex/thermo5-round13-closure`, HEAD
 `fd65aae8fead67b736205610e59d1f706088774a`. Product compile-source commit
@@ -99,7 +145,7 @@ tool environment and current run status; it remains as historical context.
 
 ## Superseded execution snapshot: Thermo5 TX Final Coverage Closure Round 13 (2026-11-07)
 
-## Current execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
+## Historical execution state: Thermo5 TX Linux DV closure Round 12 (2026-11-06)
 
 Latest integrated `thermo5` base is `73577475230a9c4e51273ac7071437f0a7373d48`;
 the tested closure branch is `codex/thermo5-linux-dv-signoff-closure` at
@@ -316,7 +362,7 @@ scenario pairing, then continue exact-bin coverage/Formal/waiver review. The
 source-level status and evidence index are in
 `docs/verification/thermo5-tx-final-integration-20261104.md`.
 
-## Current execution state: TX UVM observation event bus (2026-11-04)
+## Historical execution state: TX UVM observation event bus (2026-11-04)
 
 Started from PR #38 head `184c68b6d704998f5126a75a8f86d7577bb69a1a` on the
 independent branch `codex/thermo5-tx-platform-observation`. Implementation
@@ -508,7 +554,7 @@ the frozen TX algorithm.
 
 ## Previous execution state: TX branch consolidation and cleanup (2026-11-02)
 
-## Current execution state: Thermo5 TX branch consolidation and cleanup (2026-11-02)
+## Historical execution state: Thermo5 TX branch consolidation and cleanup (2026-11-02)
 
 TX Coverage Closure Round 1 (PR #24) and System UVM Phase 0–2 (PR #25) have
 both been merged into `thermo5`. PR #24 merged at

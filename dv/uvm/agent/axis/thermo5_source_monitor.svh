@@ -9,6 +9,8 @@ class thermo5_source_monitor extends uvm_component;
   int unsigned valid_gap_cycles;
   bit valid_gap_tracking;
   bit stalled;
+  integer trace_fd = 0;
+  string trace_path;
   logic [223:0] held_i, held_q;
   logic held_start, held_last;
   logic signed [15:0] held_gain;
@@ -19,6 +21,12 @@ class thermo5_source_monitor extends uvm_component;
     super.build_phase(phase);
     if (!uvm_config_db#(virtual thermo5_sku_if)::get(this,"","vif",vif))
       `uvm_fatal("NOVIF","thermo5 source interface is missing")
+    if ($value$plusargs("SOURCE_TRACE_FILE=%s",trace_path)) begin
+      trace_fd=$fopen(trace_path,"w");
+      if (trace_fd==0)
+        `uvm_fatal("SOURCE_TRACE",$sformatf("Cannot open source trace %s",trace_path))
+      $fdisplay(trace_fd,"time_ps,epoch,beat_index,frame_start,frame_gain,tlast");
+    end
   endfunction
   task run_phase(uvm_phase phase);
     thermo5_source_item tr;
@@ -58,6 +66,10 @@ class thermo5_source_monitor extends uvm_component;
           tr.packet_id=accepted_packet_id;
           tr.beat_index=accepted_beats;
           tr.valid_gap_cycles=valid_gap_cycles;
+          if (trace_fd!=0)
+            $fdisplay(trace_fd,"%0d,%0d,%0d,%0d,%0d,%0d",
+              longint'($realtime*1000.0),reset_epoch,accepted_beats,
+              vif.frame_start,$signed(vif.frame_gain),vif.src_last);
           accepted_beats++;
           if (vif.src_last) accepted_last_count++;
           vif.accepted_beats=accepted_beats;
@@ -69,4 +81,8 @@ class thermo5_source_monitor extends uvm_component;
       end
     end
   endtask
+  function void final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    if (trace_fd!=0) $fclose(trace_fd);
+  endfunction
 endclass

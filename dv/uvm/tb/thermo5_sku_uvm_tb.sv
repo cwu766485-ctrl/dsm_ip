@@ -1,6 +1,10 @@
 `timescale 1ns/1ps
 
-module thermo5_sku_uvm_tb;
+`ifdef THERMO5_TIDSM_ORDER
+module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=`THERMO5_TIDSM_ORDER);
+`else
+module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
+`endif
   import uvm_pkg::*;
   import thermo5_sku_uvm_pkg::*;
 `ifdef THERMO5_XPM_FIFO
@@ -18,11 +22,7 @@ module thermo5_sku_uvm_tb;
 `else
   localparam bit USE_LOW_POWER_CTRL = 1'b0;
 `endif
-`ifdef THERMO5_TIDSM_ORDER
-  localparam int USE_TIDSM_ORDER = `THERMO5_TIDSM_ORDER;
-`else
-  localparam int USE_TIDSM_ORDER = 2;
-`endif
+  localparam int USE_TIDSM_ORDER = DSM_ARCH;
 `ifdef THERMO5_STEP
   localparam int USE_STEP = `THERMO5_STEP;
 `else
@@ -177,6 +177,35 @@ module thermo5_sku_uvm_tb;
         assign bus.ef2_err2_i[b] = '0;
         assign bus.ef2_err1_q[b] = '0;
         assign bus.ef2_err2_q[b] = '0;
+      end
+    end
+  endgenerate
+  generate
+    if (USE_TIDSM_ORDER == 2) begin : g_selected_ef2_state
+      assign bus.tidsm_state_zero = bus.ef2_state_zero;
+    end else begin : g_selected_ef1_state
+      for (genvar b = 0; b < 4; b = b + 1) begin : g_branch_state
+        wire [31:0] vi_zero;
+        wire [31:0] vq_zero;
+        wire [7:0] feedback_i_zero;
+        wire [7:0] feedback_q_zero;
+        wire [7:0] bank_enable_zero;
+        for (genvar lane = 0; lane < 32; lane = lane + 1) begin : g_lane
+          assign vi_zero[lane] =
+            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_i[lane] == '0);
+          assign vq_zero[lane] =
+            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_q[lane] == '0);
+        end
+        for (genvar bank = 0; bank < 8; bank = bank + 1) begin : g_bank
+          assign feedback_i_zero[bank] =
+            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_i_feedback_local[bank] == '0);
+          assign feedback_q_zero[bank] =
+            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_q_feedback_local[bank] == '0);
+          assign bank_enable_zero[bank] =
+            !dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.bank_enable[bank];
+        end
+        assign bus.tidsm_state_zero[b] = (&vi_zero) && (&vq_zero) &&
+          (&feedback_i_zero) && (&feedback_q_zero) && (&bank_enable_zero);
       end
     end
   endgenerate

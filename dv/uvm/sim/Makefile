@@ -39,6 +39,7 @@ THERMO5_XPM_SOURCES := $(THERMO5_XPM_ROOT)/data/verilog/src/glbl.v \
   $(THERMO5_XPM_ROOT)/data/ip/xpm/xpm_fifo/hdl/xpm_fifo.sv
 THERMO5_XPM_ARGS := $(if $(filter xpm,$(THERMO5_FIFO_IMPL)),+define+THERMO5_XPM_FIFO $(THERMO5_XPM_SOURCES) -top glbl,)
 THERMO5_VECTORS := $(ROOT)/runs/uvm_thermo5_i2_d1/vectors
+THERMO5_FIFO_EMPTY_VECTORS ?= $(THERMO5_OUT)/fifo_empty_vectors
 THERMO5_LONG_VECTORS ?= $(ROOT)/runs/thermo5_axil_tlast_112_vectors
 THERMO5_CENTERED_LP_VECTORS ?= $(ROOT)/runs/thermo5_centered_low_power_vectors
 THERMO5_NONLINEAR_SHORT_VECTORS ?= $(ROOT)/runs/thermo5_centered_nonlinear_short_vectors
@@ -51,6 +52,10 @@ THERMO5_STOP_RESTART_STEP ?= 5120
 THERMO5_FILELIST := $(UVM_ROOT)/sim/thermo5_sku_filelist.f
 THERMO5_EXTRA_ARGS ?=
 THERMO5_TESTNAME ?= thermo5_sku_bittrue_test
+THERMO5_EXTRA_SRCS ?=
+THERMO5_TOP_ARGS ?=
+THERMO5_CHECK_VECTORS ?= 1
+THERMO5_PASS_PATTERN ?= THERMO5_.*_PASS
 THERMO5_USE_AXIL ?= 0
 THERMO5_TOP ?= thermo5_sku_uvm_tb
 THERMO5_CENTERED_CUBIC ?= 1
@@ -67,9 +72,21 @@ THERMO5_DPD_ARGS := $(if $(strip $(THERMO5_DPD_MAX_TAPS)),+define+THERMO5_DPD_MA
 THERMO5_DEBUG_ARGS := $(if $(filter 1,$(THERMO5_USE_AXIL)),-debug_access+all,)
 THERMO5_RUN_LOG := $(THERMO5_OUT)/$(THERMO5_TESTNAME)_seed$(UVM_SEED).log
 THERMO5_COVERAGE ?= 1
-THERMO5_COV_ARGS := $(if $(filter 1,$(THERMO5_COVERAGE)),-cm line+cond+fsm+tgl+branch+assert,)
+THERMO5_COV_METRICS ?= line+cond+fsm+tgl+branch+assert
+THERMO5_COV_ARGS = $(if $(filter 1,$(THERMO5_COVERAGE)),-cm $(THERMO5_COV_METRICS),)
 THERMO5_COV_HIER ?=
 THERMO5_COV_HIER_ARGS := $(if $(and $(filter 1,$(THERMO5_COVERAGE)),$(strip $(THERMO5_COV_HIER))),-cm_hier $(THERMO5_COV_HIER),)
+DSM_V13_OUT ?= $(ROOT)/runs/dsm_v13_round1
+DSM_V13_MASH_OUT := $(DSM_V13_OUT)/mash11
+DSM_V13_MASH_SOURCE := $(DSM_V13_MASH_OUT)/source
+DSM_V13_MASH_VECTORS := $(DSM_V13_MASH_OUT)/vectors
+DSM_V13_MASH_SOURCE_REV ?= 8d260dacbece071bc3f53546fd2b2ee3d08c64cb
+DSM_V13_COV := line+cond+tgl+branch+assert
+DSM_V13_MASH_ELAB_SRCS := $(DSM_V13_MASH_SOURCE)/dsm_core_mash11.sv \
+	$(DSM_V13_MASH_SOURCE)/mash11_multipa_tx.sv \
+	dv/uvm/agent/interfaces/mash11_sku_if.sv \
+	dv/uvm/env/mash11/mash11_sku_uvm_pkg.sv
+DSM_V13_TOP := dsm_v13_multi_sku_uvm_tb
 GT_PARENT_FAULT_OUT ?= $(ROOT)/runs/thermo5_gt_parent_fault_vcs
 GT_PARENT_FAULT_SRCS := \
 	dv/verif/integration/gt_parent_fault/tb_thermo5_gt_parent_link_fault.sv \
@@ -145,7 +162,12 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         thermo5-axil-vcs-parameter-guard thermo5-axil-vcs-regression thermo5-axil-product-vcs-regression thermo5-axil-cfg-unit-vcs \
         thermo5-tx-product-axil-reset-sweep thermo5-tx-product-axil-reset-release-source \
         thermo5-tx-product-axil-coeff-transport \
-        thermo5-dpd-bittrue-vcs
+        thermo5-dpd-bittrue-vcs \
+        dsm-v13-mash11-vcs dsm-v13-mash11-run dsm-v13-mash11-regression \
+        dsm-v13-mash11-source \
+        dsm-v13-mash11-random-smoke dsm-v13-ef1-regression \
+        dsm-v13-ef2-regression dsm-v13-ef1-axil-config \
+        dsm-v13-ef2-axil-config dsm-v13-multi-sku-regression
 
 help:
 	@echo "Primary targets:"
@@ -178,6 +200,9 @@ help:
 	@echo "  make thermo5-vcs-multiseed   Run ten seeds each of PA stalls and FIFO boundary"
 	@echo "  make thermo5-vcs-regression THERMO5_FIFO_IMPL=xpm THERMO5_XPM_ROOT=<Vivado root>"
 	@echo "  make thermo5-coverage-merge  Merge passing thermo5 VCS VDBs with URG"
+	@echo "  make dsm-v13-multi-sku-regression DSM_V13_OUT=<run-dir>  Run EF1, EF2, MASH 1-1 and AXI-Lite selector regressions"
+	@echo "  make dsm-v13-mash11-random-smoke DSM_V13_OUT=<run-dir>  Run ten seeded MASH block streams"
+	@echo "  make dsm-v13-ef1-regression / dsm-v13-ef2-regression  Run one Thermo5 Product SKU through the selector"
 	@echo "  make formal-check-tools  Probe the Linux EDA environment for a formal engine"
 	@echo "  IP functional closure: ./dv/uvm/sim/run_ip_coverage_linux.sh"
 	@echo "  PowerShell bridge: .\\dv\\uvm\\sim\\run_ip_coverage_bridge.ps1"
@@ -218,12 +243,13 @@ thermo5-vcs:
 	  test -n '$(THERMO5_XPM_ROOT)' || { echo "ERROR: set THERMO5_XPM_ROOT to the Vivado installation root"; exit 2; }; \
 	  for src in $(THERMO5_XPM_SOURCES); do test -f "$$src" || { echo "ERROR: missing XPM source $$src"; exit 2; }; done; \
 	fi
-	@test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 vectors with MATLAB or generate_thermo5_frontend_vectors.py first"; exit 2; }
+	@if [ '$(THERMO5_CHECK_VECTORS)' = 1 ]; then test -f $(THERMO5_VECTORS)/tid32_thermo5_frontend_pa3.mem || { echo "ERROR: generate thermo5 vectors with MATLAB or generate_thermo5_frontend_vectors.py first"; exit 2; }; fi
 	@mkdir -p $(THERMO5_OUT)
 	@cd $(ROOT) && $(VCS) -full64 -sverilog -ntb_opts uvm +lint=TFIPC-L \
-		-timescale=1ns/1ps -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) $(THERMO5_DPD_ARGS) \
+		-timescale=1ns/1ps $(THERMO5_EXTRA_SRCS) -f $(THERMO5_FILELIST) $(THERMO5_XPM_ARGS) $(THERMO5_DUT_ARGS) $(THERMO5_DPD_ARGS) \
 		-top $(THERMO5_TOP) -Mdir=$(THERMO5_OUT)/csrc \
 		$(THERMO5_COV_ARGS) $(THERMO5_COV_HIER_ARGS) $(THERMO5_DEBUG_ARGS) \
+		$(THERMO5_TOP_ARGS) \
 		-o $(THERMO5_OUT)/simv -l $(THERMO5_OUT)/compile.log
 
 thermo5-vcs-run: thermo5-vcs thermo5-vcs-run-only
@@ -361,8 +387,113 @@ thermo5-vcs-run-only:
 		$(THERMO5_EXTRA_ARGS) -l $(THERMO5_RUN_LOG)
 	@grep -q 'UVM_ERROR *: *0' $(THERMO5_RUN_LOG)
 	@grep -q 'UVM_FATAL *: *0' $(THERMO5_RUN_LOG)
-	@grep -q 'THERMO5_.*_PASS' $(THERMO5_RUN_LOG)
+	@grep -q '$(THERMO5_PASS_PATTERN)' $(THERMO5_RUN_LOG)
 	@! grep -q 'DSM frame_start was not aligned' $(THERMO5_RUN_LOG)
+
+# The V1.3 compile-time selector elaborates exactly one SKU in the shared UVM
+# top. MASH RTL is imported byte-for-byte from the recorded source revision.
+dsm-v13-mash11-source:
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/prepare_mash11_source.py \
+	  --repo $(ROOT) --output-dir $(DSM_V13_MASH_SOURCE) \
+	  --source-rev $(DSM_V13_MASH_SOURCE_REV)
+
+dsm-v13-mash11-vcs: dsm-v13-mash11-source
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_mash11_vectors.py \
+	  --output-dir $(DSM_V13_MASH_VECTORS) --seed 130011 --input-width 16 --accumulator-width 18
+	@$(MAKE) --no-print-directory thermo5-vcs \
+	  THERMO5_OUT=$(DSM_V13_MASH_OUT) THERMO5_CHECK_VECTORS=0 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=3 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)" \
+	  THERMO5_COVERAGE=1 THERMO5_COV_METRICS=$(DSM_V13_COV)
+
+dsm-v13-mash11-run: dsm-v13-mash11-vcs
+	@test -x $(DSM_V13_MASH_OUT)/simv || { echo "ERROR: run dsm-v13-mash11-vcs first"; exit 2; }
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_OUT=$(DSM_V13_MASH_OUT) THERMO5_CHECK_VECTORS=0 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=3 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)" \
+	  THERMO5_COV_METRICS=$(DSM_V13_COV) \
+	  THERMO5_TESTNAME=mash11_vector_test THERMO5_PASS_PATTERN=DSM_V13_MASH11_UVM_PASS \
+	  THERMO5_VECTORS=$(DSM_V13_MASH_VECTORS) UVM_SEED=130011 \
+	  THERMO5_EXTRA_ARGS=+MASH_VECTORS=$(DSM_V13_MASH_VECTORS)
+
+dsm-v13-mash11-regression: dsm-v13-mash11-run
+
+dsm-v13-mash11-random-smoke: dsm-v13-mash11-vcs
+	@set -e; for seed in 130011 130012 130013 130014 130015 130016 130017 130018 130019 130020; do \
+	  vecdir=$(DSM_V13_MASH_OUT)/vectors_seed$$seed; \
+	  logfile=$(DSM_V13_MASH_OUT)/run_seed$$seed.log; \
+	  $(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_mash11_vectors.py \
+	    --output-dir $$vecdir --seed $$seed --input-width 16 --accumulator-width 18; \
+	  cd $(ROOT) && $(DSM_V13_MASH_OUT)/simv \
+	    +UVM_TESTNAME=mash11_vector_test +MASH_VECTORS=$$vecdir \
+	    +ntb_random_seed=$$seed -cm $(DSM_V13_COV) -cm_dir $$vecdir.vdb -l $$logfile; \
+	  grep -q 'UVM_ERROR *: *0' $$logfile; \
+	  grep -q 'UVM_FATAL *: *0' $$logfile; \
+	  grep -q 'UVM_WARNING *: *0' $$logfile; \
+	  grep -q 'DSM_V13_MASH11_UVM_PASS' $$logfile; \
+	done
+
+dsm-v13-ef1-regression: dsm-v13-mash11-source
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(DSM_V13_OUT)/ef1_vectors --words 56 --seed 130001 \
+	  --interp-mode centered_cubic --dpd-profile identity --step 7168 \
+	  --tidsm-order 1 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs-regression \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef1 THERMO5_VECTORS=$(DSM_V13_OUT)/ef1_vectors \
+	  THERMO5_TIDSM_ORDER=1 THERMO5_STEP=7168 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=1 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)"
+
+dsm-v13-ef2-regression: dsm-v13-mash11-source
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(DSM_V13_OUT)/ef2_vectors --words 56 --seed 130002 \
+	  --interp-mode centered_cubic --dpd-profile identity --step 5120 \
+	  --tidsm-order 2 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs-regression \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef2 THERMO5_VECTORS=$(DSM_V13_OUT)/ef2_vectors \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=2 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)"
+
+dsm-v13-ef1-axil-config: dsm-v13-mash11-source
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(DSM_V13_OUT)/ef1_axil_vectors --words 56 --seed 130201 \
+	  --interp-mode centered_cubic --dpd-profile identity --step 7168 \
+	  --tidsm-order 1 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef1_axil THERMO5_VECTORS=$(DSM_V13_OUT)/ef1_axil_vectors \
+	  THERMO5_TIDSM_ORDER=1 THERMO5_STEP=7168 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=1 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)"
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef1_axil THERMO5_VECTORS=$(DSM_V13_OUT)/ef1_axil_vectors \
+	  THERMO5_TIDSM_ORDER=1 THERMO5_STEP=7168 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=1 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)" \
+	  THERMO5_TESTNAME=thermo5_sku_axil_config_test UVM_SEED=130201 \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+
+dsm-v13-ef2-axil-config: dsm-v13-mash11-source
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_frontend_vectors.py \
+	  --output-dir $(DSM_V13_OUT)/ef2_axil_vectors --words 56 --seed 130202 \
+	  --interp-mode centered_cubic --dpd-profile identity --step 5120 \
+	  --tidsm-order 2 --frame-start-words 1,15,36 --frame-gains 16384,14336,12288
+	@$(MAKE) --no-print-directory thermo5-vcs THERMO5_USE_AXIL=1 \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef2_axil THERMO5_VECTORS=$(DSM_V13_OUT)/ef2_axil_vectors \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=2 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)"
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only THERMO5_USE_AXIL=1 \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef2_axil THERMO5_VECTORS=$(DSM_V13_OUT)/ef2_axil_vectors \
+	  THERMO5_TIDSM_ORDER=2 THERMO5_STEP=5120 THERMO5_DPD_MAX_TAPS=1 \
+	  THERMO5_TOP=$(DSM_V13_TOP) THERMO5_TOP_ARGS=-pvalue+$(DSM_V13_TOP).DSM_ARCH=2 \
+	  THERMO5_EXTRA_SRCS="$(DSM_V13_MASH_ELAB_SRCS)" \
+	  THERMO5_TESTNAME=thermo5_sku_axil_config_test UVM_SEED=130202 \
+	  THERMO5_EXTRA_ARGS='+CORE_WORDS=56 +PACKET_BEATS=32'
+
+dsm-v13-multi-sku-regression: dsm-v13-ef1-regression dsm-v13-ef2-regression \
+	dsm-v13-mash11-regression dsm-v13-ef1-axil-config dsm-v13-ef2-axil-config
 
 thermo5-vcs-negative:
 	@test -x $(THERMO5_OUT)/simv || { echo "ERROR: run thermo5-vcs first"; exit 2; }
@@ -573,7 +704,11 @@ thermo5-vcs-regression: thermo5-vcs
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=1 THERMO5_TESTNAME=thermo5_sku_bittrue_test THERMO5_EXTRA_ARGS=+STRESS_PA_READY
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=2 THERMO5_TESTNAME=thermo5_sku_bubble_backpressure_test
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=2 THERMO5_TESTNAME=thermo5_sku_fifo_boundary_test
-	@$(MAKE) thermo5-vcs-run-only UVM_SEED=5 THERMO5_TESTNAME=thermo5_sku_fifo_empty_test
+	@$(PYTHON) $(ROOT)/dv/uvm/refmodel/python/generate_thermo5_fifo_empty_vectors.py \
+	  --input-dir $(THERMO5_VECTORS) --output-dir $(THERMO5_FIFO_EMPTY_VECTORS) \
+	  --step $(THERMO5_STEP) --tidsm-order $(THERMO5_TIDSM_ORDER)
+	@$(MAKE) thermo5-vcs-run-only UVM_SEED=5 THERMO5_TESTNAME=thermo5_sku_fifo_empty_test \
+	  THERMO5_VECTORS=$(THERMO5_FIFO_EMPTY_VECTORS)
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=3 THERMO5_TESTNAME=thermo5_sku_reset_test
 	@$(MAKE) thermo5-vcs-run-only UVM_SEED=6 THERMO5_TESTNAME=thermo5_sku_reset_sweep_test
 	@$(MAKE) thermo5-vcs-negative UVM_SEED=4

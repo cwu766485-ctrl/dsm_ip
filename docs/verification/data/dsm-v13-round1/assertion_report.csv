@@ -1,0 +1,9 @@
+property_or_checker,scope,source,status,attempts,successes_or_matches,failures,incomplete,notes
+p_reset_clears_output_valid,MASH11,dv/uvm/agent/interfaces/mash11_sku_if.sv:12-16,PASS_SIM,43461,99,0,0,reset clear property; URG source instance
+p_valid_matches_previous_input,MASH11,dv/uvm/agent/interfaces/mash11_sku_if.sv:18-22,PASS_SIM,43461,43362,0,0,out_valid alignment; URG source instance
+p_payload_holds_after_disabled_sample,MASH11,dv/uvm/agent/interfaces/mash11_sku_if.sv:24-29,PASS_SIM,43461,4410,0,0,idle payload stability; URG source instance
+cover_reset_to_valid,MASH11,dv/uvm/agent/interfaces/mash11_sku_if.sv:31,PASS_COVER,43461,44,0,0,Reset release followed by valid input
+cover_valid_bubble_valid,MASH11,dv/uvm/agent/interfaces/mash11_sku_if.sv:32,PASS_COVER,43461,3108,0,0,"Valid, bubble, then valid"
+uvm_reg_map_do_read,UVM package,Synopsys UVM source,NOT RUN,0,0,0,0,No attempt in this test; not a MASH property
+uvm_reg_map_do_write,UVM package,Synopsys UVM source,NOT RUN,0,0,0,0,No attempt in this test; not a MASH property
+mash_scoreboard_transaction_compare,MASH11,dv/uvm/env/mash11/mash11_sku_uvm_pkg.sv:170-206,PASS_SIM,35432,35432,0,0,"Across ten random smoke seeds; each compared stage1, stage2, level, sign; source logs zero UVM errors"

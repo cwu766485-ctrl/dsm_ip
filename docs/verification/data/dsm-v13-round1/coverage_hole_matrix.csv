@@ -1,0 +1,39 @@
+sku,build,metric_or_bin,observed,target,status,disposition_or_evidence
+EF1,product_core,line,88.26,95,OPEN,URG dashboard
+EF1,product_core,branch,74.77,95,OPEN,URG dashboard
+EF1,product_core,condition,87.63,95,OPEN,URG dashboard
+EF1,product_core,toggle,82.38,90,OPEN,URG dashboard
+EF1,product_core,fsm,100,100,PASS,All reported FSM states/transitions covered
+EF1,product_core,assertion,86.21,not specified by Round 1,OPEN,No global assertion coverage target waived
+EF2,product_core,line,82.63,95,OPEN,URG dashboard
+EF2,product_core,branch,62.22,95,OPEN,URG dashboard
+EF2,product_core,condition,62.54,95,OPEN,URG dashboard
+EF2,product_core,toggle,80.07,90,OPEN,URG dashboard
+EF2,product_core,fsm,100,100,PASS,All reported FSM states/transitions covered
+EF2,product_core,assertion,76.47,not specified by Round 1,OPEN,No global assertion coverage target waived
+MASH11,block,line,90.77,95,OPEN,No product top
+MASH11,block,branch,71.43,95,OPEN,No product top
+MASH11,block,condition,100,95,PASS,No product top
+MASH11,block,toggle,98.45,90,PASS,No product top
+MASH11,block,fsm,,100,NOT RUN,No FSM structure in current MASH core/wrapper
+MASH11,block,assertion,71.43,not specified by Round 1,OPEN,3 SVA proven by simulation; URG includes two UVM package no-attempt assertions
+EF1,axil_config_build,line,79.17,95,OPEN,Separate AXI-Lite build
+EF1,axil_config_build,branch,55.84,95,OPEN,Separate AXI-Lite build
+EF1,axil_config_build,condition,80.47,95,OPEN,Separate AXI-Lite build
+EF1,axil_config_build,toggle,78.1,90,OPEN,Separate AXI-Lite build
+EF1,axil_config_build,fsm,68.18,100,OPEN,Separate AXI-Lite build
+EF1,axil_config_build,assertion,87.1,not specified by Round 1,OPEN,Separate AXI-Lite build
+EF2,axil_config_build,line,75.32,95,OPEN,Separate AXI-Lite build
+EF2,axil_config_build,branch,49.94,95,OPEN,Separate AXI-Lite build
+EF2,axil_config_build,condition,56.94,95,OPEN,Separate AXI-Lite build
+EF2,axil_config_build,toggle,75.9,90,OPEN,Separate AXI-Lite build
+EF2,axil_config_build,fsm,68.18,100,OPEN,Separate AXI-Lite build
+EF2,axil_config_build,assertion,78.95,not specified by Round 1,OPEN,Separate AXI-Lite build
+MASH11,block,functional_level_-3,288,hit,PASS,Baseline level histogram
+MASH11,block,functional_level_-2,0,hit,OPEN,No hit and no reachability proof
+MASH11,block,functional_level_-1,1497,hit,PASS,Baseline level histogram
+MASH11,block,functional_level_0,0,hit,OPEN,No hit and no reachability proof
+MASH11,block,functional_level_+1,1466,hit,PASS,Baseline level histogram
+MASH11,block,functional_level_+2,4,hit,PASS,Reset transient observed
+MASH11,block,functional_level_+3,296,hit,PASS,Baseline level histogram
+MASH11,product_integration,AXIS/AXI-Lite/FIFO/PA/serializer,0,defined,OPEN,No product contract or product top
