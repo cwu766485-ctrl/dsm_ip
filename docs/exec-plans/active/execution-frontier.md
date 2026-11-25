@@ -45,14 +45,18 @@ FSM-transition holes were hit; one extra matrix-only row remains
 `OPEN_UNMAPPED`. Machine evidence and the detailed report are in
 `docs/verification/data/dsm-v13-round4/` and `docs/dsm_v13_round4_report.md`.
 
+**Publication:** Round 4 change set `cf06143` is committed and pushed to
+`origin/work/dsm-v13-mash-uvm-round4`; no merge was performed. The commit
+contains only Round 4 files. The seven pre-existing Round 12 CSV edits remain
+unstaged and untouched. Final evidence/hash audit, Python reference tests
+(74/74), and staged whitespace checks passed.
+
 **Remaining:** final DV sign-off and functional convergence are not achieved.
 Resolve whether software may reassert RUN before STATUS leaves DRAINING; if it
 may, treat the reproduced mismatch as a design bug requiring a separately
 approved RTL ECO. If it may not, document the exact rule and formally audit the
 restart bins before proposing any exclusion. Independently review the eight
 MASH waiver candidates; do not apply waivers. Raw code targets remain OPEN.
-Re-run final evidence/hash checks after docs are complete, run Python reference
-tests and `git diff --check`, then commit and push only Round 4 changes.
 PowerShell/XSim, CDC/RDC, STA/PPA, MATLAB latency alignment, serializer DV-L2,
 and board/RF sign-off remain NOT RUN or OPEN.
 

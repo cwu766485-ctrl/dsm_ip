@@ -25,6 +25,21 @@
   legal evidence or approved RTL ECO; eight MASH proof-backed records await
   independent waiver approval. Code-coverage final thresholds, serializer
   DV-L2, MATLAB alignment, CDC/RDC, STA/PPA, and board/RF sign-off remain OPEN.
+  This corrected functional score supersedes the preliminary Round 4 totals in
+  the 22:28 entry below.
+
+# 2026-11-25 23:04 SGT - DSM V1.3 Round 4 publication
+
+- Committed the Round 4 implementation and evidence as `cf06143` and pushed
+  `work/dsm-v13-mash-uvm-round4` to `origin`; no merge was performed. The
+  commit contains only Round 4 files. Seven pre-existing dirty Round 12 CSVs
+  remain unstaged and untouched.
+- Final Round 4 evidence/hash audit passed, Python reference tests passed
+  74/74, and staged whitespace validation passed. PowerShell/XSim was
+  unavailable and was not run.
+- Remaining: the early-RUN-during-DRAINING contract question, six restart
+  cross cells, eight MASH waiver candidates, raw code-coverage targets, and
+  final DV sign-off remain OPEN. No waiver or RTL change was made.
 
 # 2026-11-25 22:28 SGT - DSM V1.3 Round 4 coverage closure evidence
 
