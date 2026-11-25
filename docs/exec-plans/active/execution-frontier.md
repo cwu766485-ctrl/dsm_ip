@@ -1,6 +1,47 @@
 # Execution frontier
 
-## Current execution state: DSM V1.3 Multi-SKU UVM Round 2 (2026-11-25)
+## Current execution state: DSM V1.3 Round 3 coverage-driven closure (2026-11-25)
+
+Working tree: `/home/ray/workspace/dsm-v13-mash-uvm-round3`, branch
+`work/dsm-v13-mash-uvm-round3`, based on Round 2 HEAD
+`83bbb608fafa6406a1406c19669dd050c7a0e03d`. Round 2 and the active CDC/RDC
+worktrees remain untouched. Seven pre-existing dirty Thermo5 Round 12 CSVs in
+this worktree were preserved and are not part of the Round 3 change set.
+
+**Platform upgrades and simulation: PASS.** Added Product-only constrained
+random and state-driven reset/held-output scenarios, three-SKU AXI-Lite
+register-access regression, Round 2 OPEN-record baseline audit, exact Round 3
+coverage disposition/evidence generation, and a real-RTL MASH 1-1 formal
+reachability harness. Seven independent VCS/URG configurations passed with
+56 test VDBs in the final merge and 47 UVM report summaries showing zero
+warnings/errors/fatals. Product random passed 12/12 campaigns (9,216 accepted
+AXIS beats, 16,128 matched PA words); AXI-Lite smoke passed 3/3. Python
+reference tests passed 74/74. Formal proved 3/3 assertions and hit 4/4 required
+covers with no waiver.
+
+**Coverage disposition: OPEN.** The frozen Round 2 audit retained all 2,887
+OPEN records. Exact fresh raw-bin/functional-bin evidence closes 266; 2,621
+remain OPEN. The raw current inventory still contains 2,500 uncovered RTL
+code bins. Six Product/AXI-Lite functional scores are 90.26%–94.35%; 27
+functional-bin records and 22 cross records remain OPEN. Every code metric is
+unchanged or improved over Round 2, but no waiver/exclusion was applied and
+the final targets are not met. MASH raw weighted levels `-4`, `-2`, `0`, and
+`+4` remain visible despite formal unreachability evidence.
+
+Evidence and detailed deltas are in `docs/dsm_v13_round3_report.md` and
+`docs/verification/data/dsm-v13-round3/`. XSim, MATLAB bit-true alignment,
+CDC/RDC, synthesis/PPA, physical serializer and board/RF checks remain NOT
+RUN or OPEN. No 100,000-beat stress seed was run; random budgets were reduced
+to four short Product campaigns per SKU and one AXI-Lite smoke per SKU.
+
+**Next:** keep final sign-off OPEN. Continue with exact reset/FIFO and
+configuration/RUN holes, MASH input-range cross analysis, then module-level
+RTL hole closure. Use per-batch URG deltas to decide whether additional seeds
+are useful; stop broad random additions when they produce no new hits. Do not
+apply a waiver or claim DV-L2 serializer sign-off without independent review
+and physical integration evidence.
+
+## Previous execution state: DSM V1.3 Multi-SKU UVM Round 2 (2026-11-25)
 
 Working tree: `/home/ray/workspace/dsm-v13-mash-uvm-round2`, branch
 `work/dsm-v13-mash-uvm-round2`, based on Round 1 HEAD

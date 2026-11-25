@@ -1,3 +1,33 @@
+# 2026-11-25 18:27 SGT - DSM V1.3 Round 3 UVM and coverage closure
+
+- Changed `dv/uvm/tests/thermo5/thermo5_sku_product_random_test.svh`, the UVM
+  package, and `dv/uvm/sim/Makefile` to add Product-only random runs with real
+  FIFO-full/source-gap/PA-stall evidence, reset while a four-plane output is
+  held, reset epoch checking, and a three-SKU AXI-Lite register-access run.
+- Added the Round 2 OPEN-record audit, Round 3 Product random runner, same-SKU
+  URG merger, evidence extractor, and MASH 1-1 RTL reachability harness/FPV
+  runner. Added `docs/dsm_v13_round3_report.md` and updated the execution
+  frontier. Generated configuration-local coverage, functional/cross/assertion
+  matrices, exact R2-to-R3 dispositions, and hashes under
+  `docs/verification/data/dsm-v13-round3/`.
+- Reason: execute the Round 3 coverage plan on an isolated branch based on
+  Round 2 without touching the CDC/RDC worktree; close the missing Product
+  random runs, verify AXI-Lite access and reset/output behavior, prove the MASH
+  raw-level reachability contract, and preserve fail-closed coverage evidence.
+- Checks: seven-configuration VCS/URG regression PASS; 12/12 Product random and
+  3/3 AXI-Lite random campaigns PASS; AXI-Lite register-access runs PASS for
+  EF1/EF2/MASH with zero predictor mismatches; Python reference suite 74/74;
+  VC Formal 3/3 assertions proven and 4/4 covers hit; Round 2 baseline audit
+  2,887/2,887 OPEN rows PASS; 47 UVM report summaries with zero warnings,
+  errors, or fatals. Evidence generator reports 266 closed records and 2,621
+  still OPEN without any waiver or denominator adjustment.
+- Remaining limitations: raw code, functional, and cross targets are not all
+  met; no 100,000-beat stress campaign was run; four formally unreachable
+  MASH raw bins remain visible and unwaived; assertion inventories still have
+  unattempted properties. XSim, MATLAB bit-true latency comparison, CDC/RDC,
+  synthesis/PPA, physical serializer (DV-L2), and board/RF checks were not run.
+  Final DV sign-off remains OPEN.
+
 # 2026-11-25 14:45 SGT - DSM V1.3 Round 2 coverage-applicability and URG flow fixes
 
 - Changed `dv/uvm/env/thermo5/thermo5_sku_coverage.svh` so the MASH Product

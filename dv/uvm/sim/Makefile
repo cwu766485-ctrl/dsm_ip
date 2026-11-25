@@ -85,9 +85,16 @@ DSM_V13_MASH_PRODUCT_VECTORS := $(DSM_V13_MASH_PRODUCT_OUT)/vectors
 DSM_V13_MASH_AXIL_OUT := $(DSM_V13_OUT)/mash11_axil
 DSM_V13_MASH_AXIL_VECTORS := $(DSM_V13_MASH_AXIL_OUT)/vectors
 DSM_V13_RANDOM_OUT := $(DSM_V13_OUT)/random
+DSM_V13_R2_RANDOM_OUT ?=
 DSM_V13_SMOKE_SEEDS ?= 10
 DSM_V13_STANDARD_SEEDS ?= 50
 DSM_V13_STRESS_SEEDS ?= 10
+DSM_V13_PRODUCT_RANDOM_OUT ?= $(DSM_V13_OUT)/product_random
+DSM_V13_PRODUCT_SMOKE_SEEDS ?= 10
+DSM_V13_PRODUCT_SCENARIO_SEEDS ?= 30
+DSM_V13_PRODUCT_RESET_SEEDS ?= 20
+DSM_V13_PRODUCT_HOLE_SEEDS ?= 20
+DSM_V13_PRODUCT_STRESS_SEEDS ?= 2
 DSM_V13_MASH_SOURCE_REV ?= 8d260dacbece071bc3f53546fd2b2ee3d08c64cb
 DSM_V13_COV := line+cond+tgl+branch+assert
 DSM_V13_PRODUCT_COV_HIER := $(ROOT)/dv/uvm/sim/dsm_v13_product_dut_coverage.hier
@@ -186,6 +193,10 @@ UVM_ARGS := +UVM_TESTNAME=$(UVM_TESTNAME) \
         dsm-v13-ef1-axil-graceful-stop dsm-v13-ef2-axil-config \
         dsm-v13-ef2-axil-graceful-stop dsm-v13-multi-sku-regression \
         dsm-v13-multi-sku-random-regression dsm-v13-multi-sku-urg \
+        dsm-v13-product-random-regression dsm-v13-round3-regression \
+        dsm-v13-round3-baseline-audit dsm-v13-round3-urg \
+        dsm-v13-round3-axil-register-access dsm-v13-round3-formal \
+        dsm-v13-round3-evidence \
         dsm-v13-coverage-audit dsm-v13-closure-check
 
 help:
@@ -224,6 +235,13 @@ help:
 	@echo "  make dsm-v13-mash11-core-regression DSM_V13_OUT=<run-dir>  Run separate scalar MASH wrapper/core test"
 	@echo "  make dsm-v13-mash11-random-smoke DSM_V13_OUT=<run-dir>  Run ten seeded MASH block/core streams"
 	@echo "  make dsm-v13-multi-sku-random-regression DSM_V13_OUT=<run-dir>  Run 10/50/10 packet campaigns per Product SKU"
+	@echo "  make dsm-v13-product-random-regression DSM_V13_OUT=<run-dir>  Run Product-only constrained-random and reset campaigns per SKU"
+	@echo "  make dsm-v13-round3-regression DSM_V13_OUT=<run-dir>  Run Round 2 directed suite plus Round 3 Product random campaigns"
+	@echo "  make dsm-v13-round3-baseline-audit  Freeze and cluster Round 2 OPEN coverage records"
+	@echo "  make dsm-v13-round3-urg DSM_V13_OUT=<run-dir>  Merge same-configuration Round 3 directed and random VDBs"
+	@echo "  make dsm-v13-round3-axil-register-access  Check register map/protocol independently for all AXI-Lite SKUs"
+	@echo "  make dsm-v13-round3-formal DSM_V13_OUT=<run-dir>  Prove MASH Product output-level reachability"
+	@echo "  make dsm-v13-round3-evidence DSM_V13_OUT=<run-dir>  Run final same-configuration URG merge and extract closure evidence"
 	@echo "  make dsm-v13-multi-sku-urg DSM_V13_OUT=<run-dir>  Merge URG databases per SKU and elaboration configuration"
 	@echo "  make dsm-v13-coverage-audit  Validate Round 2 coverage/evidence data structure"
 	@echo "  make dsm-v13-closure-check  Enforce the fail-closed Round 2 DV closure gate"
@@ -712,6 +730,52 @@ dsm-v13-multi-sku-random-regression:
 dsm-v13-multi-sku-urg:
 	@$(PYTHON) $(ROOT)/dv/uvm/sim/run_dsm_v13_round2_urg.py \
 	  --out $(DSM_V13_OUT) --random-out $(DSM_V13_RANDOM_OUT) --urg "$(URG)"
+
+dsm-v13-product-random-regression:
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/run_dsm_v13_round3_product_random.py \
+	  --out $(DSM_V13_PRODUCT_RANDOM_OUT) \
+	  --smoke-seeds $(DSM_V13_PRODUCT_SMOKE_SEEDS) \
+	  --scenario-seeds $(DSM_V13_PRODUCT_SCENARIO_SEEDS) \
+	  --reset-seeds $(DSM_V13_PRODUCT_RESET_SEEDS) \
+	  --hole-directed-seeds $(DSM_V13_PRODUCT_HOLE_SEEDS) \
+	  --stress-seeds $(DSM_V13_PRODUCT_STRESS_SEEDS)
+
+dsm-v13-round3-regression: dsm-v13-multi-sku-regression dsm-v13-product-random-regression \
+	dsm-v13-round3-axil-register-access
+
+dsm-v13-round3-axil-register-access:
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef1_axil THERMO5_USE_AXIL=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_register_access_test UVM_SEED=130241 \
+	  THERMO5_VECTORS=$(DSM_V13_OUT)/ef1_axil_vectors
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_OUT=$(DSM_V13_OUT)/ef2_axil THERMO5_USE_AXIL=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_register_access_test UVM_SEED=130242 \
+	  THERMO5_VECTORS=$(DSM_V13_OUT)/ef2_axil_vectors
+	@$(MAKE) --no-print-directory thermo5-vcs-run-only \
+	  THERMO5_OUT=$(DSM_V13_OUT)/mash11_axil THERMO5_USE_AXIL=1 \
+	  THERMO5_TESTNAME=thermo5_sku_axil_register_access_test UVM_SEED=130243 \
+	  THERMO5_VECTORS=$(DSM_V13_OUT)/mash11_axil_vectors
+
+dsm-v13-round3-baseline-audit:
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/audit_dsm_v13_round3_baseline.py
+
+dsm-v13-round3-urg:
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/run_dsm_v13_round3_urg.py \
+	  --directed-out $(DSM_V13_OUT) --axil-random-out $(DSM_V13_RANDOM_OUT) \
+	  --product-random-out $(DSM_V13_PRODUCT_RANDOM_OUT) --urg "$(URG)" \
+	  $(if $(strip $(DSM_V13_R2_RANDOM_OUT)),--round2-axil-random-out "$(DSM_V13_R2_RANDOM_OUT)",)
+
+dsm-v13-round3-formal:
+	@$(PYTHON) $(ROOT)/dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.py \
+	  --out-dir $(DSM_V13_OUT)/formal_mash_reachability
+
+dsm-v13-round3-evidence: dsm-v13-multi-sku-regression \
+	dsm-v13-product-random-regression dsm-v13-round3-axil-register-access \
+	dsm-v13-round3-formal dsm-v13-round3-urg
+	@$(PYTHON) $(ROOT)/dv/uvm/sim/generate_dsm_v13_round3_evidence.py \
+	  --run-dir $(DSM_V13_OUT) --product-random $(DSM_V13_PRODUCT_RANDOM_OUT) \
+	  --axil-random $(DSM_V13_RANDOM_OUT) --formal-dir $(DSM_V13_OUT)/formal_mash_reachability
 
 dsm-v13-coverage-audit:
 	@$(PYTHON) $(ROOT)/dv/uvm/sim/audit_dsm_v13_round2.py --mode coverage

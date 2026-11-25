@@ -61,6 +61,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_env.svh"
   `include "thermo5_sku_base_test.svh"
   `include "thermo5_sku_bittrue_test.svh"
+  `include "thermo5_sku_product_random_test.svh"
   `include "thermo5_sku_corner_tests.svh"
   `include "thermo5_axil_access_sequence.svh"
   `include "thermo5_sku_virtual_sequence.svh"

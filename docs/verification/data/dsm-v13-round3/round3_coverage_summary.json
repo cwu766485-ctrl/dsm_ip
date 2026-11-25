@@ -1,0 +1,542 @@
+{
+  "axil_random": {
+    "accepted_axis_beats": 3072,
+    "accepted_tlast": 96,
+    "campaign_count": 3,
+    "campaigns": [
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "smoke",
+        "log_sha256": "46c3a950b797f97689caf2804f2ba0086f169be45c5f21ede328c167f45a71f2",
+        "matched_pa_words": 1792,
+        "seed": 131000,
+        "simulation_seconds": null,
+        "sku": "ef1",
+        "status": "PASS"
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "smoke",
+        "log_sha256": "68ea973428154acd40cff60ecc4547d7ef1f0daef14151a7dc5375b6dd83f9f2",
+        "matched_pa_words": 1792,
+        "seed": 1131000,
+        "simulation_seconds": null,
+        "sku": "ef2",
+        "status": "PASS"
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "smoke",
+        "log_sha256": "a595a63ce0bc71cd3a27e311bb7362d41c9331e32a9b5eb36a585035a9d373f9",
+        "matched_pa_words": 1792,
+        "seed": 2131000,
+        "simulation_seconds": null,
+        "sku": "mash11",
+        "status": "PASS"
+      }
+    ],
+    "matched_pa_words": 5376,
+    "passing_campaign_count": 3,
+    "requested_seed_budget": {
+      "smoke": {
+        "accepted_axis_beats_per_seed": 1024,
+        "seeds": 1
+      },
+      "standard": {
+        "accepted_axis_beats_per_seed": 10016,
+        "seeds": 0
+      },
+      "stress": {
+        "accepted_axis_beats_per_seed": 100000,
+        "seeds": 0
+      }
+    },
+    "status": "PASS"
+  },
+  "baseline_open_records": 2887,
+  "baseline_source_revision": "83bbb608fafa6406a1406c19669dd050c7a0e03d",
+  "configuration_count": 7,
+  "configurations": {
+    "ef1_axil": {
+      "axil_random_vdb_count": 1,
+      "directed_test_vdb_count": 5,
+      "product_random_vdb_count": 0,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/ef1_axil",
+      "round2_axil_random_vdb_count": 3,
+      "status": "PASS",
+      "test_vdb_count": 9
+    },
+    "ef1_product": {
+      "axil_random_vdb_count": 0,
+      "directed_test_vdb_count": 7,
+      "product_random_vdb_count": 4,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/ef1",
+      "round2_axil_random_vdb_count": 0,
+      "status": "PASS",
+      "test_vdb_count": 11
+    },
+    "ef2_axil": {
+      "axil_random_vdb_count": 1,
+      "directed_test_vdb_count": 5,
+      "product_random_vdb_count": 0,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/ef2_axil",
+      "round2_axil_random_vdb_count": 3,
+      "status": "PASS",
+      "test_vdb_count": 9
+    },
+    "ef2_product": {
+      "axil_random_vdb_count": 0,
+      "directed_test_vdb_count": 7,
+      "product_random_vdb_count": 4,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/ef2",
+      "round2_axil_random_vdb_count": 0,
+      "status": "PASS",
+      "test_vdb_count": 11
+    },
+    "mash11_axil": {
+      "axil_random_vdb_count": 1,
+      "directed_test_vdb_count": 5,
+      "product_random_vdb_count": 0,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/mash11_axil",
+      "round2_axil_random_vdb_count": 3,
+      "status": "PASS",
+      "test_vdb_count": 9
+    },
+    "mash11_product": {
+      "axil_random_vdb_count": 0,
+      "directed_test_vdb_count": 2,
+      "product_random_vdb_count": 4,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/mash11_product",
+      "round2_axil_random_vdb_count": 0,
+      "status": "PASS",
+      "test_vdb_count": 6
+    },
+    "mash11_wrapper_core": {
+      "axil_random_vdb_count": 0,
+      "directed_test_vdb_count": 1,
+      "product_random_vdb_count": 0,
+      "report": "runs/dsm_v13_round3/directed/round3_urg/mash11_core",
+      "round2_axil_random_vdb_count": 0,
+      "status": "PASS",
+      "test_vdb_count": 1
+    }
+  },
+  "coverage_policy": "Raw equals adjusted; no waivers or exclusions approved; no cross-SKU or cross-elaboration VDB merge.",
+  "final_dv_signoff": false,
+  "generated_utc": "2026-11-25T10:26:08.200249+00:00",
+  "limitations": [
+    "Raw code, functional group and cross targets are not all met; final DV sign-off remains OPEN.",
+    "Product/random regression budgets were shortened to one seed per smoke/scenario/reset/hole-directed campaign and zero 100,000-beat stress seeds based on observed coverage gain and runtime.",
+    "MASH physical PA weight/polarity, serializer output, and MATLAB latency alignment remain OPEN; the four-plane mapping remains a digital candidate only.",
+    "No waiver was granted for the four proven-unreachable MASH raw levels; raw bins remain reported.",
+    "PowerShell/XSim and MATLAB/Octave were unavailable in this Linux environment; CDC/RDC, synthesis/PPA, and physical board/RF checks were not run."
+  ],
+  "mash_formal_reachability": {
+    "assertions_proven": true,
+    "command": [
+      "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+      "-batch",
+      "-fmode",
+      "FPV",
+      "-f",
+      "/home/ray/workspace/dsm-v13-mash-uvm-round3/dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.tcl"
+    ],
+    "covers_hit": true,
+    "duration_seconds": 78.07,
+    "required_assertions": [
+      "a_atomic_four_plane_valid",
+      "a_held_word_stable",
+      "a_no_unreachable_weighted_level"
+    ],
+    "required_covers": [
+      "c_accepted_sample",
+      "c_output_stall",
+      "c_reset_restart",
+      "c_startup_plus_two"
+    ],
+    "returncode": 0,
+    "schema": "dsm_v13_mash11_reachability_fpv_v1",
+    "source_revision": "83bbb608fafa6406a1406c19669dd050c7a0e03d",
+    "status": "PASS",
+    "timed_out": false,
+    "timeout_seconds": 600,
+    "vcf": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+    "waiver_status": "NO_WAIVER_REQUESTED"
+  },
+  "product_random": {
+    "accepted_axis_beats": 9216,
+    "accepted_tlast": 12,
+    "campaign_count": 12,
+    "campaigns": [
+      {
+        "accepted_axis_beats": 512,
+        "campaign": "smoke",
+        "log_sha256": "63d00769258c82412099ac024526372eff75f662bafbf7685b7c9a9945969517",
+        "matched_pa_words": 896,
+        "seed": 330000,
+        "simulation_seconds": 16.93,
+        "sku": "ef1",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "1fd5588267e8e81c6620d420d268fffbc20535d26f6eb42c96f9ec86f083b2f8",
+          "tid32_thermo5_frontend_ef2_q.mem": "023d4fe3b02747ef53a678b2e0535645dc41ff412dfff0c1b282e37de3cf9616",
+          "tid32_thermo5_frontend_frame_gain.mem": "598e8a0494dc3517a8d6e4691446566c3db3cc3f7127998be065f416659eea76",
+          "tid32_thermo5_frontend_frame_start.mem": "4ce25f911f91129da89353c4edd294f838ab076841341f77842adf49b356b54d",
+          "tid32_thermo5_frontend_i.mem": "1c42b5777cc8922dc6b8ede520551746d138bcf6a085d6e1433f6279dad1456a",
+          "tid32_thermo5_frontend_pa0.mem": "478938f3fadcbee8fb8c537f44fb7a9a590850acbfa3ad2e850fe2b929e8f084",
+          "tid32_thermo5_frontend_pa1.mem": "165f0a7ce10d84dc2a1c4f2efef43f58b1e94284f4d349c2625a8ad201d0eb4b",
+          "tid32_thermo5_frontend_pa2.mem": "7e45ded472fcf19e08cf0cdd1c60bd686f89aa1d2c115ec9a2b1cc2acf548694",
+          "tid32_thermo5_frontend_pa3.mem": "5e6442d0097d7d96b27f9dbef29f6c1ad12a41cdb7b0dc25e7198d0c1fbb0134",
+          "tid32_thermo5_frontend_q.mem": "72e2409d1161306e6ff3f514a9b37b52d081fb534a593392e06b4b7cd54e1fae"
+        }
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "scenario",
+        "log_sha256": "0c793c20e7c46b76af575a22e6c81df0b6c94f454bba30b354eda39453fd0daf",
+        "matched_pa_words": 1792,
+        "seed": 330001,
+        "simulation_seconds": 13.674,
+        "sku": "ef1",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "4edccffb0e196db95b8f97a06c60c400868e30ac421cc9e1a7a0a9dd07f3e62b",
+          "tid32_thermo5_frontend_ef2_q.mem": "460adf6374aeeec68192478d07208193b51eb9cc7137827872a2196772a4ef5e",
+          "tid32_thermo5_frontend_frame_gain.mem": "7381916a69e0806e245b2528b77f423d9a7e603b3bf3038e9f0e2a3d5d1a6a3c",
+          "tid32_thermo5_frontend_frame_start.mem": "14cabb7f3ac9cb21392ec1a5cdce066ad37fc3ecaa44248a276591ac6b94737c",
+          "tid32_thermo5_frontend_i.mem": "69b53194d7cdb05d08771d2f52ae4647002f4f19f144153c40f6b7bd15b8a0bc",
+          "tid32_thermo5_frontend_pa0.mem": "3ae57fda6809148d38cb83b3ea997dbdb6cbd7b2ff1401526683cbb58df4606a",
+          "tid32_thermo5_frontend_pa1.mem": "9704d9a7a881cf2b2b97b0d964f649887eab60a04b82161debea17d2272a7396",
+          "tid32_thermo5_frontend_pa2.mem": "a6fe50bb57bbae810f65dedddb92f80d245cfc9e5b4ba95d4ef74986188486f2",
+          "tid32_thermo5_frontend_pa3.mem": "3f52361fd547cb77d7c52bf2c3ba1b820a486e9551c566511eb63dab0814ed75",
+          "tid32_thermo5_frontend_q.mem": "a0e6e20acdf266ea6a660e289f87d783c47e584b3fa827309a3c2e1df4e8330d"
+        }
+      },
+      {
+        "accepted_axis_beats": 512,
+        "campaign": "reset",
+        "log_sha256": "44000998d2712d300abcd8658a95842d728b4de99d0ff52b727a4abab0dbf6de",
+        "matched_pa_words": 896,
+        "seed": 330002,
+        "simulation_seconds": 6.793,
+        "sku": "ef1",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "0862f83250b0912f12ec970092a1cb2136e17413d75318e6aaba7e24838c9fad",
+          "tid32_thermo5_frontend_ef2_q.mem": "631349a617e81f6a7acfca6a93f8848be2d0cc1c438db4fba7c528203a70a5d5",
+          "tid32_thermo5_frontend_frame_gain.mem": "56215dc2cc478e8ab1105fdde52f9d724904d7a5ec9d05dc8eded41ac9bc10a7",
+          "tid32_thermo5_frontend_frame_start.mem": "4ce25f911f91129da89353c4edd294f838ab076841341f77842adf49b356b54d",
+          "tid32_thermo5_frontend_i.mem": "eeb40ead65daaaa9273b089eb888b26ccb03007b16f191aedec49e559a3d18d3",
+          "tid32_thermo5_frontend_pa0.mem": "43804b8738cf4fc6ee47280cff219f3faabdf009dcd6c3a35b6e4c1415214961",
+          "tid32_thermo5_frontend_pa1.mem": "c063d5ecf3bd92948db02729a6c1c72f89e754b214b55f3ad57591d8ead94088",
+          "tid32_thermo5_frontend_pa2.mem": "a5cb37002aef36bdf0c847f3c11ecadf22d2494f91d7407c2f6d991a33e31907",
+          "tid32_thermo5_frontend_pa3.mem": "45ad85421183998b4edd1f3450e233bb7fd0536c6a25483c5fdc7c895b1f801e",
+          "tid32_thermo5_frontend_q.mem": "2468cfce25b9df2df70fc61786040b97f6b303eb50ce1f8659c57dd87b411dd2"
+        }
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "hole_directed",
+        "log_sha256": "3c7625da9a12912f20b7a981c286444d40fa2eef9c2634c199b0dd44ccff0d89",
+        "matched_pa_words": 1792,
+        "seed": 330003,
+        "simulation_seconds": 10.331,
+        "sku": "ef1",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "156fc6a6f3e2fd8d0dfa77c622bf43bff2bf2d70e938b9f7b19a8f8082c94b5e",
+          "tid32_thermo5_frontend_ef2_q.mem": "23320af7b4b56393172080ec1bdc2838d25e5373ae5663dc1690a85831eb5ae6",
+          "tid32_thermo5_frontend_frame_gain.mem": "ffb243aabd3abd3bc98a529e56b9db0a52be802a8d26b78e717f5cf99ce92ad4",
+          "tid32_thermo5_frontend_frame_start.mem": "14cabb7f3ac9cb21392ec1a5cdce066ad37fc3ecaa44248a276591ac6b94737c",
+          "tid32_thermo5_frontend_i.mem": "c52acf061fb5ad635693a7cfdecff120783a44df6da03f8121a7f44f3afa6242",
+          "tid32_thermo5_frontend_pa0.mem": "d11e03cff9bcec5bf783eea6913006042d77aa22ccbfdf79d4a894713f0f9e94",
+          "tid32_thermo5_frontend_pa1.mem": "efeb229c1e4d113c14a31d2a7a5594046d6089984542718b0adfd4fe8fea034f",
+          "tid32_thermo5_frontend_pa2.mem": "15364213fc6e75d0e7ad77f8be7a1e2dd1cf0cd025349a1abc6b273b052c61d7",
+          "tid32_thermo5_frontend_pa3.mem": "f5dcfc035234d3690115dd14b52f34dbfcad0b3878dabc4b22af1d371e5a0f09",
+          "tid32_thermo5_frontend_q.mem": "9fb52f5e81f0c4f6fcd20e64bba8f5a341c0c8cbceeca5d29bd13bd8ba887e9f"
+        }
+      },
+      {
+        "accepted_axis_beats": 512,
+        "campaign": "smoke",
+        "log_sha256": "b1c78bed1a191bcfa848629109bbd87892a9d289162e4ad700907a2a92ca51be",
+        "matched_pa_words": 896,
+        "seed": 1330000,
+        "simulation_seconds": 2.899,
+        "sku": "ef2",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "b0f1de8499e065aa38f54863d9676ebe081ffd65b631182c72a04fad5fa7c236",
+          "tid32_thermo5_frontend_ef2_q.mem": "adc4fa22caa32fbfcc8dd898d1c460439cbc58526b2376c05fd6d206183c0692",
+          "tid32_thermo5_frontend_frame_gain.mem": "5f24803b1ee62b7d1741b8252c3c2d3be27477b71c2cbb189a6e78f86ca3ccb1",
+          "tid32_thermo5_frontend_frame_start.mem": "4ce25f911f91129da89353c4edd294f838ab076841341f77842adf49b356b54d",
+          "tid32_thermo5_frontend_i.mem": "9ddf69dda5cc99ae789c1330adbc862f6ac1769a4c41d824a4cc14bdae23ec25",
+          "tid32_thermo5_frontend_pa0.mem": "40ebee07799b7f63831a88e1d7ed2aff859f86614e982ba617e254a012c7539b",
+          "tid32_thermo5_frontend_pa1.mem": "32285e61d2b2d7ef921f778ba51dc9d6f978b30682d384734d91a15e7beb09df",
+          "tid32_thermo5_frontend_pa2.mem": "410f575fa7667e545c2eda5fd2f3a4f4095119c45a0690c2c5115775325f333e",
+          "tid32_thermo5_frontend_pa3.mem": "de666b22c72cf5680fa9b7a4f08857d0dfe9308fbcf361b46e34f106336d162a",
+          "tid32_thermo5_frontend_q.mem": "c3d64386f65e90e6a66fe4919da460c36047a5caacab1ec5fe853fd2e0a95d79"
+        }
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "scenario",
+        "log_sha256": "736e7f0be143e66cb9b6c9b03c005b1b54703e94609baa0809d4ed9a9706470d",
+        "matched_pa_words": 1792,
+        "seed": 1330001,
+        "simulation_seconds": 3.668,
+        "sku": "ef2",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "2e19cbe85f957203449d55bdd0b6414ef0876719a687edd231c4aac33f1bd711",
+          "tid32_thermo5_frontend_ef2_q.mem": "627d7a276f9d7b77d51a9beb7a7c5516b591350bf8e1ada2cea234fa755595a0",
+          "tid32_thermo5_frontend_frame_gain.mem": "96354e020c59736a9dc0cc38e4e5048e1ac846d9ee4c241b1450a80cfbfa224f",
+          "tid32_thermo5_frontend_frame_start.mem": "14cabb7f3ac9cb21392ec1a5cdce066ad37fc3ecaa44248a276591ac6b94737c",
+          "tid32_thermo5_frontend_i.mem": "991e97c2e6bb95ea134e8d527af904739e361006d43b5d111713f57d7e23bfdb",
+          "tid32_thermo5_frontend_pa0.mem": "d495f237fb48dded0b3f841173b48788730775d02207cfbe968e2aa6af117bd3",
+          "tid32_thermo5_frontend_pa1.mem": "29fa5879316bfe5db793fdb9b37b807492e04bb5ab9c57964ac962581421dc34",
+          "tid32_thermo5_frontend_pa2.mem": "acdc32281ca2d197be14220caccd5fb075c8ee9b6d193f65411ee7f2f689e376",
+          "tid32_thermo5_frontend_pa3.mem": "a7cb5524414af66607b3b539d90bbac227f953619e8df639e85a37440963e609",
+          "tid32_thermo5_frontend_q.mem": "cb9dcb8c887310fb4dac69f6b5f9994af5c617830c74d3f9afc4b56c6e1f5552"
+        }
+      },
+      {
+        "accepted_axis_beats": 512,
+        "campaign": "reset",
+        "log_sha256": "9bf94c900547f9c3ffcc6b5e0598b7d9701684ed7c56977328886b65aa36a5ff",
+        "matched_pa_words": 896,
+        "seed": 1330002,
+        "simulation_seconds": 5.296,
+        "sku": "ef2",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "3c9ade10cfbe5d49ca9b2ff8bf9100ba473c1ab3a8b6f0b74c35b9d62f1157cd",
+          "tid32_thermo5_frontend_ef2_q.mem": "c0e5a7133250ed2e51681df1508e010de835b29c6e7560532caa39ab28c482ef",
+          "tid32_thermo5_frontend_frame_gain.mem": "7227729174ff9ca77b6ee38bd094ae342e43abe84646a9dd47ca83b97cacf132",
+          "tid32_thermo5_frontend_frame_start.mem": "4ce25f911f91129da89353c4edd294f838ab076841341f77842adf49b356b54d",
+          "tid32_thermo5_frontend_i.mem": "eeb40ead65daaaa9273b089eb888b26ccb03007b16f191aedec49e559a3d18d3",
+          "tid32_thermo5_frontend_pa0.mem": "31af6765cfa2ce74b360e5454e55a377742aa77aecf21b69ff0fd7c0491d8ab4",
+          "tid32_thermo5_frontend_pa1.mem": "715dcc30460c48f409b8ec9e3a0508badc4dddf507898ced362d77eba654b560",
+          "tid32_thermo5_frontend_pa2.mem": "d5d587bcaea0ee32c26cd72eb06e42283356784d37bb5762c13da235145b0100",
+          "tid32_thermo5_frontend_pa3.mem": "35de3fa277dc106be5d79e6be1b2e982c3dcef47e488f51f3bd293dbee851dcd",
+          "tid32_thermo5_frontend_q.mem": "2468cfce25b9df2df70fc61786040b97f6b303eb50ce1f8659c57dd87b411dd2"
+        }
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "hole_directed",
+        "log_sha256": "259eb55b3cba62e0815d02c0bc6b92b47a3bae7730278527b64a77df7c70db5e",
+        "matched_pa_words": 1792,
+        "seed": 1330003,
+        "simulation_seconds": 4.72,
+        "sku": "ef2",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "156fc6a6f3e2fd8d0dfa77c622bf43bff2bf2d70e938b9f7b19a8f8082c94b5e",
+          "tid32_thermo5_frontend_ef2_q.mem": "23320af7b4b56393172080ec1bdc2838d25e5373ae5663dc1690a85831eb5ae6",
+          "tid32_thermo5_frontend_frame_gain.mem": "ffb243aabd3abd3bc98a529e56b9db0a52be802a8d26b78e717f5cf99ce92ad4",
+          "tid32_thermo5_frontend_frame_start.mem": "14cabb7f3ac9cb21392ec1a5cdce066ad37fc3ecaa44248a276591ac6b94737c",
+          "tid32_thermo5_frontend_i.mem": "c52acf061fb5ad635693a7cfdecff120783a44df6da03f8121a7f44f3afa6242",
+          "tid32_thermo5_frontend_pa0.mem": "ac93e60dcf7efb14854c61ac0bba1854acb2b12e7b2722a02fda2a535a1907fc",
+          "tid32_thermo5_frontend_pa1.mem": "5492c3a771b9a8290eab4e91db4e2e489e69b17ba83193860bd49f0451ef4e21",
+          "tid32_thermo5_frontend_pa2.mem": "38cdc35c2f7ee748b18a68c4f6b648d4820e58ba84967e3a5c501989693ccc47",
+          "tid32_thermo5_frontend_pa3.mem": "15168f6c3e9fe52095c6b948c19db596d4b752c947c1a57fa37d5ec2a8426025",
+          "tid32_thermo5_frontend_q.mem": "9fb52f5e81f0c4f6fcd20e64bba8f5a341c0c8cbceeca5d29bd13bd8ba887e9f"
+        }
+      },
+      {
+        "accepted_axis_beats": 512,
+        "campaign": "smoke",
+        "log_sha256": "6ff8affc5b88972b270b4d07fd7a70e923e30ec492d8f68635736a3f61b2c884",
+        "matched_pa_words": 896,
+        "seed": 2330000,
+        "simulation_seconds": 2.553,
+        "sku": "mash11",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "634c3364de56ac8900458c6c5b0b63ae3666ae16b4c427b0db89f202fab1b27f",
+          "tid32_thermo5_frontend_ef2_q.mem": "bea8cb52e307d45fc560815399aabd253c64f50935485c4b9320fdb86eedd048",
+          "tid32_thermo5_frontend_frame_gain.mem": "113d2994569177e1be3e85e164707e8ffb8ccf3962bdcb2b593134370fb001ce",
+          "tid32_thermo5_frontend_frame_start.mem": "4ce25f911f91129da89353c4edd294f838ab076841341f77842adf49b356b54d",
+          "tid32_thermo5_frontend_i.mem": "ad29fe93b067ff8d8cde6d19b15b92a134e62e7b8529b8cb30b8b583f8810d6e",
+          "tid32_thermo5_frontend_pa0.mem": "d480a12bfb148a2bacea76af6b77681160acd444e6e2764a0b3f9306e3caa156",
+          "tid32_thermo5_frontend_pa1.mem": "333dd4666541d2641d7c1e81c32c7d056e55383033a47a0e68ee9ea02d70b62a",
+          "tid32_thermo5_frontend_pa2.mem": "213de256441df1d9a4db95c1f440895b21e98ececa236fb615a6d073db2c0d10",
+          "tid32_thermo5_frontend_pa3.mem": "5bfae3fdaafcb884281d0ff393f2b0bac1c0f787c9b009e0feebef3efa0d352c",
+          "tid32_thermo5_frontend_q.mem": "598e646950dc3257277f31d311cf08dd9c39f8b5cb0b30c58d19bf15a5c7d77f"
+        }
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "scenario",
+        "log_sha256": "f22db4c56a946553695c7a8022fafc5abb5590c04be9e2caf67b57302082d25c",
+        "matched_pa_words": 1792,
+        "seed": 2330001,
+        "simulation_seconds": 1.615,
+        "sku": "mash11",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "8627eeabdc585f61100238dd3f686be73b7283c0629e601721f1ced4e4ab18b5",
+          "tid32_thermo5_frontend_ef2_q.mem": "a6f22986a0fb697294e60043a460ca86d96d70f96f8027f2287e13bb7d14de2e",
+          "tid32_thermo5_frontend_frame_gain.mem": "9c2417dce06fb97030ea65eb29434c02aa2d17347d941743d03083b26b34fcbb",
+          "tid32_thermo5_frontend_frame_start.mem": "14cabb7f3ac9cb21392ec1a5cdce066ad37fc3ecaa44248a276591ac6b94737c",
+          "tid32_thermo5_frontend_i.mem": "c763fc4d703bab27b6b7555431ab86ca42910c7682bf39d785a3b9f94e207274",
+          "tid32_thermo5_frontend_pa0.mem": "f9d6da32f5366fc359ad6add11e003e013f34f4cf6e9556b85b91c9fe599ae02",
+          "tid32_thermo5_frontend_pa1.mem": "ac3ecceb20d3808d5f99d9bc20d11388bd00d0899fb5121218044e22fb4ad2c0",
+          "tid32_thermo5_frontend_pa2.mem": "f6d122fc893e8a9dbfc8b9b0be4aeebd88bb4b55e515124f6faecf2972ef4741",
+          "tid32_thermo5_frontend_pa3.mem": "4aafb5d385027574c071e6d8a4642338a1af1d34fa7eb602c102aa43122f5e1c",
+          "tid32_thermo5_frontend_q.mem": "bfacbeaad82d36fa10d1cbe6930e8026e5bd6f5b9aa02bfe98136a1be7d6e484"
+        }
+      },
+      {
+        "accepted_axis_beats": 512,
+        "campaign": "reset",
+        "log_sha256": "74fa51c1eb0d3a66c242d2928d812d2aabfc2b7240eb9f0c5a71d1bccf6be65a",
+        "matched_pa_words": 896,
+        "seed": 2330002,
+        "simulation_seconds": 1.148,
+        "sku": "mash11",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "275e416230971bfbbafeca4fae649bca8204b18f8a23d20ce9698904ac3f8d79",
+          "tid32_thermo5_frontend_ef2_q.mem": "8add623770c0956d5f01244aee280d326069853cf5e176c2cb187597b4ed86bc",
+          "tid32_thermo5_frontend_frame_gain.mem": "2ba219a69b8b410f40e5969ef2a910684d8cba818f76a014471641486c75526b",
+          "tid32_thermo5_frontend_frame_start.mem": "4ce25f911f91129da89353c4edd294f838ab076841341f77842adf49b356b54d",
+          "tid32_thermo5_frontend_i.mem": "eeb40ead65daaaa9273b089eb888b26ccb03007b16f191aedec49e559a3d18d3",
+          "tid32_thermo5_frontend_pa0.mem": "68c18332168bfb182e4305909d4d5a3826a4b3af99715ff690520cb1eef769c4",
+          "tid32_thermo5_frontend_pa1.mem": "15bde2939a3d3aacc67c351490ae08065783d21770333ed69363322a9fd750d5",
+          "tid32_thermo5_frontend_pa2.mem": "e7566d708b26d7715cacc867a52a9d89bbe905d4efd606bd93de16d15ebc83d8",
+          "tid32_thermo5_frontend_pa3.mem": "311140e0116ecb19e89c98962387d7c7c6764c4437f18133f5a930ae98ac9612",
+          "tid32_thermo5_frontend_q.mem": "2468cfce25b9df2df70fc61786040b97f6b303eb50ce1f8659c57dd87b411dd2"
+        }
+      },
+      {
+        "accepted_axis_beats": 1024,
+        "campaign": "hole_directed",
+        "log_sha256": "a6156f2359d0f1bff576b810d19e5f0db2b16b5cbd7e517d6576193e385ced74",
+        "matched_pa_words": 1792,
+        "seed": 2330003,
+        "simulation_seconds": 1.652,
+        "sku": "mash11",
+        "status": "PASS",
+        "vectors_sha256": {
+          "tid32_thermo5_frontend_ef2_i.mem": "156fc6a6f3e2fd8d0dfa77c622bf43bff2bf2d70e938b9f7b19a8f8082c94b5e",
+          "tid32_thermo5_frontend_ef2_q.mem": "23320af7b4b56393172080ec1bdc2838d25e5373ae5663dc1690a85831eb5ae6",
+          "tid32_thermo5_frontend_frame_gain.mem": "ffb243aabd3abd3bc98a529e56b9db0a52be802a8d26b78e717f5cf99ce92ad4",
+          "tid32_thermo5_frontend_frame_start.mem": "14cabb7f3ac9cb21392ec1a5cdce066ad37fc3ecaa44248a276591ac6b94737c",
+          "tid32_thermo5_frontend_i.mem": "c52acf061fb5ad635693a7cfdecff120783a44df6da03f8121a7f44f3afa6242",
+          "tid32_thermo5_frontend_pa0.mem": "7a8f2d0a212382baaf35151b23de6540692b991a7bcc6d76da1d8c974a4626ad",
+          "tid32_thermo5_frontend_pa1.mem": "0922a84991af16390b1ff51c0d6dbc2cb70f82585e9f40956825264007d4d264",
+          "tid32_thermo5_frontend_pa2.mem": "1bfd5f3b497f6a36cbf41c5129106653317a170336fb09137268e123a5b75186",
+          "tid32_thermo5_frontend_pa3.mem": "f824887071659469badfe04489483d82d1bc80f6902dceca7e7a702c45e0dcb2",
+          "tid32_thermo5_frontend_q.mem": "9fb52f5e81f0c4f6fcd20e64bba8f5a341c0c8cbceeca5d29bd13bd8ba887e9f"
+        }
+      }
+    ],
+    "matched_pa_words": 16128,
+    "passing_campaign_count": 12,
+    "requested_seed_budget": {
+      "hole_directed": {
+        "beats_per_seed": 1024,
+        "seeds": 1
+      },
+      "reset": {
+        "beats_per_seed": 512,
+        "seeds": 1
+      },
+      "scenario": {
+        "beats_per_seed": 1024,
+        "seeds": 1
+      },
+      "smoke": {
+        "beats_per_seed": 512,
+        "seeds": 1
+      },
+      "stress": {
+        "beats_per_seed": 100000,
+        "seeds": 0
+      }
+    },
+    "status": "PASS"
+  },
+  "python_reference_tests": {
+    "passed": 74,
+    "status": "PASS"
+  },
+  "raw_coverage_status": "OPEN",
+  "raw_rtl_open_bin_count": 2500,
+  "round3_cross_open_count": 22,
+  "round3_disposition": {
+    "by_type": {
+      "Branch": {
+        "baseline_open": 1206,
+        "closed": 38,
+        "remaining_open": 1168
+      },
+      "CODE_METRIC_AGGREGATE": {
+        "baseline_open": 24,
+        "closed": 0,
+        "remaining_open": 24
+      },
+      "Condition": {
+        "baseline_open": 526,
+        "closed": 39,
+        "remaining_open": 487
+      },
+      "FSM_Transitions": {
+        "baseline_open": 23,
+        "closed": 0,
+        "remaining_open": 23
+      },
+      "FUNCTIONAL_CROSS_BIN": {
+        "baseline_open": 31,
+        "closed": 9,
+        "remaining_open": 22
+      },
+      "FUNCTIONAL_GROUP_BINS": {
+        "baseline_open": 40,
+        "closed": 13,
+        "remaining_open": 27
+      },
+      "Line": {
+        "baseline_open": 493,
+        "closed": 91,
+        "remaining_open": 402
+      },
+      "MASH_REACHABILITY_OR_INTEGRATION": {
+        "baseline_open": 4,
+        "closed": 0,
+        "remaining_open": 4
+      },
+      "SIGNOFF_GAP": {
+        "baseline_open": 1,
+        "closed": 0,
+        "remaining_open": 1
+      },
+      "Toggle": {
+        "baseline_open": 539,
+        "closed": 76,
+        "remaining_open": 463
+      }
+    },
+    "closed_by_exact_raw_hit_or_functional_bin": 266,
+    "remaining_open": 2621
+  },
+  "round3_functional_group_open_count": 33,
+  "round3_metrics_open_count": 30,
+  "run_directory": "runs/dsm_v13_round3/directed",
+  "schema": "dsm_v13_round3_coverage_evidence_v1",
+  "serializer_scope": {
+    "DV_L1": "AXIS to four parallel 64-bit PA planes; product URG and bit-true checks are in scope.",
+    "DV_L2": "Parallel PA to physical serializer is not integrated; six serializer-position/reset baseline items remain OPEN."
+  },
+  "source_revision": "83bbb608fafa6406a1406c19669dd050c7a0e03d",
+  "unexpected_assertion_failures": 0,
+  "urg_status": "PASS",
+  "uvm_report_counts": {
+    "test_logs": 47,
+    "uvm_errors": 0,
+    "uvm_fatals": 0,
+    "uvm_warnings": 0
+  }
+}

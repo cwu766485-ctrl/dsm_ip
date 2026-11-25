@@ -1,0 +1,306 @@
+{
+  "applicability_policy": "Raw Round 2 denominators and all 2,887 OPEN dispositions are preserved. Product-only AXI-Lite transaction-bin exclusions are proposals only; no denominator adjustment or waiver is approved.",
+  "code_record_count": 2787,
+  "configuration_summary": [
+    {
+      "configuration": "All selected DUT builds",
+      "open_record_count": 1,
+      "type_counts": {
+        "SIGNOFF_GAP": 1
+      }
+    },
+    {
+      "configuration": "EF1 AXI-Lite",
+      "open_record_count": 474,
+      "type_counts": {
+        "Branch": 202,
+        "CODE_METRIC_AGGREGATE": 4,
+        "Condition": 88,
+        "FSM_Transitions": 6,
+        "FUNCTIONAL_CROSS_BIN": 5,
+        "FUNCTIONAL_GROUP_BINS": 7,
+        "Line": 74,
+        "Toggle": 88
+      }
+    },
+    {
+      "configuration": "EF1 Product",
+      "open_record_count": 349,
+      "type_counts": {
+        "Branch": 175,
+        "CODE_METRIC_AGGREGATE": 4,
+        "Condition": 64,
+        "FUNCTIONAL_CROSS_BIN": 2,
+        "FUNCTIONAL_GROUP_BINS": 4,
+        "Line": 42,
+        "Toggle": 58
+      }
+    },
+    {
+      "configuration": "EF2 AXI-Lite",
+      "open_record_count": 640,
+      "type_counts": {
+        "Branch": 247,
+        "CODE_METRIC_AGGREGATE": 4,
+        "Condition": 115,
+        "FSM_Transitions": 6,
+        "FUNCTIONAL_CROSS_BIN": 5,
+        "FUNCTIONAL_GROUP_BINS": 7,
+        "Line": 141,
+        "Toggle": 115
+      }
+    },
+    {
+      "configuration": "EF2 Product",
+      "open_record_count": 539,
+      "type_counts": {
+        "Branch": 230,
+        "CODE_METRIC_AGGREGATE": 4,
+        "Condition": 91,
+        "FUNCTIONAL_CROSS_BIN": 8,
+        "FUNCTIONAL_GROUP_BINS": 5,
+        "Line": 113,
+        "Toggle": 88
+      }
+    },
+    {
+      "configuration": "MASH AXI-Lite",
+      "open_record_count": 486,
+      "type_counts": {
+        "Branch": 189,
+        "CODE_METRIC_AGGREGATE": 4,
+        "Condition": 87,
+        "FSM_Transitions": 6,
+        "FUNCTIONAL_CROSS_BIN": 6,
+        "FUNCTIONAL_GROUP_BINS": 9,
+        "Line": 77,
+        "Toggle": 108
+      }
+    },
+    {
+      "configuration": "MASH Product",
+      "open_record_count": 398,
+      "type_counts": {
+        "Branch": 163,
+        "CODE_METRIC_AGGREGATE": 4,
+        "Condition": 81,
+        "FSM_Transitions": 5,
+        "FUNCTIONAL_CROSS_BIN": 5,
+        "FUNCTIONAL_GROUP_BINS": 8,
+        "Line": 46,
+        "MASH_REACHABILITY_OR_INTEGRATION": 4,
+        "Toggle": 82
+      }
+    }
+  ],
+  "generated_files": {
+    "round2_open_clusters.csv": "2ee15229f924934dadcaf8483495d84048d37931eae7c820bd940b8295c7362d",
+    "round2_open_record_audit.csv": "c786a74c95ff3de7b4320a0e538b20604acf0aad879fe634c0838db5aaf0f180"
+  },
+  "generated_utc": "2026-11-25T10:25:15.177799+00:00",
+  "module_summary": [
+    {
+      "module": "NON_RTL",
+      "open_record_count": 29,
+      "record_types": {
+        "CODE_METRIC_AGGREGATE": 24,
+        "MASH_REACHABILITY_OR_INTEGRATION": 4,
+        "SIGNOFF_GAP": 1
+      },
+      "unique_signature_count": 29
+    },
+    {
+      "module": "dv/uvm/agent/axi_lite_thermo5/thermo5_axil_monitor.svh",
+      "open_record_count": 6,
+      "record_types": {
+        "FUNCTIONAL_GROUP_BINS": 6
+      },
+      "unique_signature_count": 2
+    },
+    {
+      "module": "dv/uvm/env/thermo5/thermo5_sku_coverage.svh",
+      "open_record_count": 61,
+      "record_types": {
+        "FUNCTIONAL_CROSS_BIN": 29,
+        "FUNCTIONAL_GROUP_BINS": 32
+      },
+      "unique_signature_count": 27
+    },
+    {
+      "module": "rtl/axis/dsm_async_fifo.sv",
+      "open_record_count": 4,
+      "record_types": {
+        "Condition": 2,
+        "Toggle": 2
+      },
+      "unique_signature_count": 4
+    },
+    {
+      "module": "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+      "open_record_count": 228,
+      "record_types": {
+        "Branch": 22,
+        "Condition": 66,
+        "FSM_Transitions": 20,
+        "Line": 40,
+        "Toggle": 80
+      },
+      "unique_signature_count": 45
+    },
+    {
+      "module": "rtl/dpd/dpd_memory_poly.v",
+      "open_record_count": 141,
+      "record_types": {
+        "Branch": 6,
+        "Condition": 27,
+        "Line": 72,
+        "Toggle": 36
+      },
+      "unique_signature_count": 24
+    },
+    {
+      "module": "rtl/dpd/dpd_poly.v",
+      "open_record_count": 804,
+      "record_types": {
+        "Branch": 780,
+        "Line": 24
+      },
+      "unique_signature_count": 8
+    },
+    {
+      "module": "rtl/dpd/dpd_vector16_memory_poly.sv",
+      "open_record_count": 30,
+      "record_types": {
+        "Condition": 6,
+        "Line": 24
+      },
+      "unique_signature_count": 5
+    },
+    {
+      "module": "rtl/frontend/dsm_frame_gain_vector.sv",
+      "open_record_count": 187,
+      "record_types": {
+        "Branch": 12,
+        "Condition": 43,
+        "Line": 12,
+        "Toggle": 120
+      },
+      "unique_signature_count": 34
+    },
+    {
+      "module": "rtl/gt/gt_tx_user_bridge.sv",
+      "open_record_count": 40,
+      "record_types": {
+        "Branch": 36,
+        "Line": 4
+      },
+      "unique_signature_count": 3
+    },
+    {
+      "module": "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+      "open_record_count": 425,
+      "record_types": {
+        "Branch": 108,
+        "Condition": 226,
+        "FSM_Transitions": 3,
+        "Line": 60,
+        "Toggle": 28
+      },
+      "unique_signature_count": 65
+    },
+    {
+      "module": "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+      "open_record_count": 291,
+      "record_types": {
+        "Branch": 81,
+        "Condition": 39,
+        "Line": 90,
+        "Toggle": 81
+      },
+      "unique_signature_count": 97
+    },
+    {
+      "module": "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv",
+      "open_record_count": 368,
+      "record_types": {
+        "Branch": 118,
+        "Condition": 54,
+        "Line": 140,
+        "Toggle": 56
+      },
+      "unique_signature_count": 142
+    },
+    {
+      "module": "rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv",
+      "open_record_count": 20,
+      "record_types": {
+        "Branch": 18,
+        "Line": 2
+      },
+      "unique_signature_count": 3
+    },
+    {
+      "module": "rtl/tx_bandpass_if/tid32_mash11_weighted_pa_tx.sv",
+      "open_record_count": 66,
+      "record_types": {
+        "Branch": 10,
+        "Condition": 2,
+        "FUNCTIONAL_CROSS_BIN": 2,
+        "FUNCTIONAL_GROUP_BINS": 2,
+        "Line": 10,
+        "Toggle": 40
+      },
+      "unique_signature_count": 33
+    },
+    {
+      "module": "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv",
+      "open_record_count": 98,
+      "record_types": {
+        "Branch": 12,
+        "Condition": 32,
+        "Line": 12,
+        "Toggle": 42
+      },
+      "unique_signature_count": 33
+    },
+    {
+      "module": "rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv",
+      "open_record_count": 45,
+      "record_types": {
+        "Branch": 3,
+        "Condition": 15,
+        "Line": 3,
+        "Toggle": 24
+      },
+      "unique_signature_count": 15
+    },
+    {
+      "module": "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv",
+      "open_record_count": 44,
+      "record_types": {
+        "Condition": 14,
+        "Toggle": 30
+      },
+      "unique_signature_count": 8
+    }
+  ],
+  "open_record_count": 2887,
+  "repeated_signature_rows": 2310,
+  "schema": "dsm_v13_round3_round2_baseline_audit_v1",
+  "source_file": "docs/verification/data/dsm-v13-round2/coverage_hole_matrix.csv",
+  "source_sha256": "5a6508c424cf943e94f17b9cd695d9e46e1026623e24683e75d45d4c7f052bc3",
+  "type_counts": {
+    "Branch": 1206,
+    "CODE_METRIC_AGGREGATE": 24,
+    "Condition": 526,
+    "FSM_Transitions": 23,
+    "FUNCTIONAL_CROSS_BIN": 31,
+    "FUNCTIONAL_GROUP_BINS": 40,
+    "Line": 493,
+    "MASH_REACHABILITY_OR_INTEGRATION": 4,
+    "SIGNOFF_GAP": 1,
+    "Toggle": 539
+  },
+  "unique_code_signatures": 517,
+  "unique_exact_signatures": 577
+}
