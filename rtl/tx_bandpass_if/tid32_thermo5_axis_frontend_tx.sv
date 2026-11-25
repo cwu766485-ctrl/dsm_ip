@@ -16,7 +16,11 @@ module tid32_thermo5_axis_frontend_tx #(
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
   parameter bit ENABLE_LOW_POWER_CTRL = 1'b0,
   parameter int LP_PREFILL_WORDS = 4,
-  parameter int TIDSM_ORDER = 2
+  parameter int TIDSM_ORDER = 2,
+  parameter int DSM_ARCH = 0,
+  parameter int MASH_ACC_W = 18,
+  parameter int MASH_IN_SHIFT = 0,
+  parameter bit MASH_SATURATE = 1'b1
 ) (
   input  wire logic                            s_axis_aclk,
   input  wire logic                            s_axis_aresetn,
@@ -133,7 +137,9 @@ module tid32_thermo5_axis_frontend_tx #(
   tid32_thermo5_frontend_tx #(.W(W), .IN_LANES(8), .DPD_LANES(16), .GAIN_W(GAIN_W),
     .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER), .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
     .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD),
-    .HOLD_STATE_ON_DISABLE(ENABLE_LOW_POWER_CTRL)) u_frontend (
+    .HOLD_STATE_ON_DISABLE(ENABLE_LOW_POWER_CTRL), .DSM_ARCH(DSM_ARCH),
+    .MASH_ACC_W(MASH_ACC_W), .MASH_IN_SHIFT(MASH_IN_SHIFT),
+    .MASH_SATURATE(MASH_SATURATE)) u_frontend (
     .clk(core_clk), .rst_n(core_aresetn), .enable(frontend_enable_q),
     .in_valid(core_valid), .in_ready(core_ready), .in_frame_start(core_frame_start),
     .in_frame_end(core_frame_end),

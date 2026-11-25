@@ -13,7 +13,11 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
   parameter bit INTERP_CENTERED_CUBIC = 1'b1,
   parameter bit BYPASS_DPD = 1'b0,
   parameter bit FPGA_USE_XPM_FIFO = 1'b1,
-  parameter int TIDSM_ORDER = 2
+  parameter int TIDSM_ORDER = 2,
+  parameter int DSM_ARCH = 0,
+  parameter int MASH_ACC_W = 18,
+  parameter int MASH_IN_SHIFT = 0,
+  parameter bit MASH_SATURATE = 1'b1
 ) (
   input  wire logic         s_axil_aclk,
   input  wire logic         s_axil_aresetn,
@@ -255,7 +259,9 @@ module tid32_thermo5_axi_lite_axis_frontend_tx #(
 
   tid32_thermo5_frontend_tx #(
     .W(W), .IN_LANES(8), .DPD_LANES(16), .GAIN_W(GAIN_W), .STEP(STEP),
-    .TIDSM_ORDER(TIDSM_ORDER),
+    .TIDSM_ORDER(TIDSM_ORDER), .DSM_ARCH(DSM_ARCH),
+    .MASH_ACC_W(MASH_ACC_W), .MASH_IN_SHIFT(MASH_IN_SHIFT),
+    .MASH_SATURATE(MASH_SATURATE),
     .MAX_TAPS(DPD_MAX_TAPS), .INTERP_TAPS(INTERP_TAPS),
     .INTERP_CENTERED_CUBIC(INTERP_CENTERED_CUBIC), .BYPASS_DPD(BYPASS_DPD)
   ) u_frontend (

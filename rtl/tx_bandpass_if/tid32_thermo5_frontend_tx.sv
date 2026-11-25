@@ -28,7 +28,13 @@ module tid32_thermo5_frontend_tx #(
   parameter int STEP = 5120,
   parameter bit HOLD_STATE_ON_DISABLE = 1'b0,
   parameter bit BYPASS_DPD = 1'b0,
-  parameter int TIDSM_ORDER = 2
+  parameter int TIDSM_ORDER = 2,
+  // DSM_ARCH=0 preserves the historical TIDSM_ORDER selector. DSM_ARCH=1/2
+  // label EF1/EF2 compile-time Product builds; DSM_ARCH=3 selects MASH 1-1.
+  parameter int DSM_ARCH = 0,
+  parameter int MASH_ACC_W = 18,
+  parameter int MASH_IN_SHIFT = 0,
+  parameter bit MASH_SATURATE = 1'b1
 ) (
   input  wire logic                                      clk,
   input  wire logic                                      rst_n,
@@ -218,12 +224,32 @@ module tid32_thermo5_frontend_tx #(
     .out_i_vec(i2_fifo_i), .out_q_vec(i2_fifo_q)
   );
 
-  tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES),
-    .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER)) u_tid (
-    .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid), .in_ready(tid_ready),
-    .in_i_poly_vec(i2_fifo_i), .in_q_poly_vec(i2_fifo_q),
-    .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
-  );
+  generate
+    if (DSM_ARCH == 3) begin : g_mash11_product
+      tid32_mash11_weighted_pa_tx #(
+        .W(W), .CHANNELS(2*DPD_LANES), .ACC_W(MASH_ACC_W),
+        .IN_SHIFT(MASH_IN_SHIFT), .SATURATE(MASH_SATURATE)
+      ) u_mash11 (
+        .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid),
+        .in_ready(tid_ready), .in_i_vec(i2_fifo_i), .in_q_vec(i2_fifo_q),
+        .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
+      );
+    end else if (DSM_ARCH == 0 || DSM_ARCH == 1 || DSM_ARCH == 2) begin : g_tidsm_product
+      tid32_thermo5_fs4_multipa_tx #(.W(W), .CHANNELS(2*DPD_LANES),
+        .STEP(STEP), .TIDSM_ORDER(TIDSM_ORDER)) u_tid (
+        .clk(clk), .rst_n(rst_n), .in_valid(i2_fifo_valid), .in_ready(tid_ready),
+        .in_i_poly_vec(i2_fifo_i), .in_q_poly_vec(i2_fifo_q),
+        .pa_valid(pa_valid), .pa_data(pa_data), .pa_ready(pa_ready)
+      );
+    end else begin : g_bad_dsm_arch
+      initial $error("DSM_ARCH must be 0, 1, 2, or 3");
+      assign tid_ready = 1'b0;
+      assign pa_valid = '0;
+      for (genvar p = 0; p < 4; p++) begin : g_zero_plane
+        assign pa_data[p] = '0;
+      end
+    end
+  endgenerate
 endmodule
 
 //------------------------------------------------------------------------------
