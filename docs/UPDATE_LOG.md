@@ -6503,4 +6503,6 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   synthesis/PPA, serializer physical integration, and board/RF checks remain
   NOT RUN. The 10/50/10 seed goal was reduced to 1/1/1 per SKU for runtime.
 - Final `git diff --check`: PASS. RTL/contract and DV/evidence changes are
-  being kept in separate commits on the Round 2 branch; no merge is planned.
+  separate commits: RTL/contract `dbc531d` and DV/evidence `341cfef`. Both
+  commits were pushed to `origin/work/dsm-v13-mash-uvm-round2`; the branch is
+  not merged.

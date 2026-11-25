@@ -41,9 +41,9 @@ not be run.
 
 Reports and machine evidence are in the Round 2 `docs/dsm_v13_*` files and
 `docs/verification/data/dsm-v13-round2/`. Final Python, evidence, and audit
-checks have run; `git diff --check` passed. Explicit staging review, the
-separate RTL/contract and DV/evidence commits, and pushing this branch remain.
-Do not merge.
+checks have run; `git diff --check` passed. RTL/contract commit `dbc531d` and
+DV/evidence commit `341cfef` were pushed to
+`origin/work/dsm-v13-mash-uvm-round2`. No merge was performed.
 
 ## Previous execution state: DSM V1.3 Multi-SKU UVM Round 1 (2026-11-25)
 

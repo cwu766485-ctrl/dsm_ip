@@ -62,7 +62,7 @@
     "mash11_product": 76.57,
     "mash11_wrapper_core": null
   },
-  "generated_utc": "2026-11-25T08:17:59.681047+00:00",
+  "generated_utc": "2026-11-25T08:18:59.242052+00:00",
   "limitations": [
     "Raw DUT code metrics miss the Round 2 closure targets; no approved exclusions or waivers are applied.",
     "MASH four-plane weights/polarity remain a digital candidate and lack approved PA, serializer, MATLAB-latency and board evidence.",

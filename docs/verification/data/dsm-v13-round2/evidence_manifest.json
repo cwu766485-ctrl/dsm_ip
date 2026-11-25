@@ -3,7 +3,7 @@
   "files": {
     "docs/UPDATE_LOG.md": {
       "role": "Round 2 working-tree artifact",
-      "sha256": "ba8c335b28396370c12b715facb57cade232684a013c03a2e11d42718fe40ae4"
+      "sha256": "2f5a142bf93fd263a62339dc4aaf93e9dff256d390653734bf79d5dacaa99762"
     },
     "docs/dsm_v13_coverage_before_after.md": {
       "role": "Round 2 working-tree artifact",
@@ -31,7 +31,7 @@
     },
     "docs/exec-plans/active/execution-frontier.md": {
       "role": "Round 2 working-tree artifact",
-      "sha256": "78c5c8b721584708898ca6c9ebf9cdd2545b414df28768a832d32b9832afc62e"
+      "sha256": "f4e1c2474f6f3e505a4592327b4704d5ffca8d19daac7cb7e95eab4898257fe8"
     },
     "docs/verification/data/dsm-v13-round2/assertion_coverage.csv": {
       "role": "Round 2 extracted evidence data",
@@ -55,7 +55,7 @@
     },
     "docs/verification/data/dsm-v13-round2/regression_summary.json": {
       "role": "Round 2 extracted evidence data",
-      "sha256": "f29b3f2e740d412325a3b890560eda44a50d54d7183b227bd3b25cf5982fd878"
+      "sha256": "05646d4abc7b9f4a1abbca7dfc9d9dc3da5158be38652c4ef973d6f0a43719dd"
     },
     "dv/uvm/agent/interfaces/thermo5_sku_if.sv": {
       "role": "Round 2 working-tree artifact",
@@ -758,7 +758,7 @@
       "sha256": "f8d91f0db711a817ae25a79e789f6515ae07a83f5b2cfc9db4c91444ff5260ad"
     }
   },
-  "generated_utc": "2026-11-25T08:17:59.737948+00:00",
+  "generated_utc": "2026-11-25T08:18:59.295659+00:00",
   "random_campaign_vector_hashes": {
     "ef1": {
       "131000": {
