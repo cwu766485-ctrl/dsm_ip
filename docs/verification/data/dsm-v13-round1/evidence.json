@@ -97,7 +97,63 @@
     "runs/dsm_v13_round1/round1_final/mash11/vectors_seed130019/stimulus.csv": "b5e628744d8107d32b82fd716304b19543991addc631adeafbbf320f8079d15d",
     "runs/dsm_v13_round1/round1_final/mash11/vectors_seed130020/expected.csv": "c6c8211e355ff41d0258614ea46b19f33a3d68e270c45db558eb5acd666ba956",
     "runs/dsm_v13_round1/round1_final/mash11/vectors_seed130020/manifest.json": "53dd6c0d69a04514027b4bdfafee7628103e4cfbb6e7215ddce059a9fbc641c5",
-    "runs/dsm_v13_round1/round1_final/mash11/vectors_seed130020/stimulus.csv": "b3e478d3bf22a434db0e6fe95f35cdd4d00129e4606afcf9408a30e2969c6fb9"
+    "runs/dsm_v13_round1/round1_final/mash11/vectors_seed130020/stimulus.csv": "b3e478d3bf22a434db0e6fe95f35cdd4d00129e4606afcf9408a30e2969c6fb9",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/hierarchy.html": "ffc9f298999489135a1e5c756593d2aa438e10959cfe5d986d98a7aee9a05283",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/session.xml": "506aae8eb04810e01b8f6d01441b354432cb51ba38fd8c69f552ccd3fcea9563",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/groups.html": "cffa8066dc383691246eb120b39e0750095081531698db2b7a7fefac0cf72111",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/hierarchy.html": "fdb96cef2ace0a733df0284b2fcda1297407861656e81237de608a37447419d2",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/session.xml": "152d60796c420170021971c4f30fe6ab96462e5b5f73491768cbf4aca9ab2d22",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/groups.html": "8fb8fb53d3583bc159270f67e921b38d774e1dc84971fe54e7a110ebc6912371",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/hierarchy.html": "4f011f2ceb402dc08c214d82126441363a18a0f61a363205271c6b89d94b3e96",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/session.xml": "d48bab79890c01759cb4913bbe848352c921ca43f3cbc471878f0b4a9111b7e0",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/groups.html": "24c8e85318b24b51fa0a26b08dfdf9a8d0e49ab87b51c67500faba2c6cde9758",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/hierarchy.html": "128e11d676e3ed1a82c12ad9ff9d1fb4be9ab4ea696399e3f35f4732cb6f5cc2",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/session.xml": "71d09cb498a7b35b83d9427b3c62b662fe7f632811dcd213e6cf929818a1181a",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/groups.html": "6e258b5a79d5a0cf3bfe58973fcfd336464060ba6c056673fe41796524a6fc66",
+    "runs/dsm_v13_round1/round1_final/mash11/coverage/hierarchy.html": "6825dd5a1208924ae893473ec9e7b7f231d77911b510795d806645017b313089",
+    "runs/dsm_v13_round1/round1_final/mash11/coverage/session.xml": "c3dfa09cfd04084232e1e6203a70ded0ea49aa68f81afe7165e34f65543a53c9",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp0.html": "3f94ca344c8bb2923ad269c84495abca190302d8b80643ae1ce8d91ccb3788c0",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp1.html": "25f4a058e9c185532c60618afa2defee0ac86efd4f567162aa69db5d71e6c6b5",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp4.html": "629966c262f25004c64fc823023afbacc6ce6fa1a7a17992d008799bc25e5ca3",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp7.html": "81731db66890be058cd76eff3985bd8254c8070746646cfe2fe81d5bcb5464ed",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp2.html": "f6b54c1c7dcfeda28ed0f217315e3fd586a8222ce68c434bdcc4ec3b7240523f",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp5.html": "1db83896205e3f6bbaf9ae0a894ae35da161b43d0bcc69756e34f43d6bab5981",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp6.html": "f155264229f0af09913bcaba334154dfca748a1d4879a266523d1563a52d47ca",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp3.html": "470e0dd4e4fb6d5debfc5bb48d729385e9af37268956d416ff8dd43d1b2aa34a",
+    "runs/dsm_v13_round1/round1_final/ef1/coverage/grp8.html": "d903800b250aafa631c42bf7adfb2214249c22a1ec06e460c8a6f91f65b8285e",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp0.html": "3f94ca344c8bb2923ad269c84495abca190302d8b80643ae1ce8d91ccb3788c0",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp1.html": "25f4a058e9c185532c60618afa2defee0ac86efd4f567162aa69db5d71e6c6b5",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp4.html": "629966c262f25004c64fc823023afbacc6ce6fa1a7a17992d008799bc25e5ca3",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp7.html": "81731db66890be058cd76eff3985bd8254c8070746646cfe2fe81d5bcb5464ed",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp2.html": "73adb88bf38d5334739f568313c8d776a124401d21a68d930de21be3e8b68ad8",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp5.html": "d66c952d615becdc06eed425b3f4876703351debe87bab7dc879b52c6d2f8e58",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp6.html": "8224134e2fd44a3c7c637116d4599d496043253b1dac381a07eb90f66ca7cd1b",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp3.html": "2c995448e5bfc2150f5c7a69d0e6a33418d321016264c9d30f609cdc7ab71b3a",
+    "runs/dsm_v13_round1/round1_final/ef2/coverage/grp8.html": "6e40b7d7f009a039a032c7f6a6141d985c0d7382a1dceec6c7416b3afc04ea7e",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp8.html": "f2d4c35fd751129fd4dab1c5b1f64a885060fdc974d6a77d323888d426c07000",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp9.html": "e40d576af38f3979e343fee063958ad8de50fe7b3b42e4c5dcf7e9faade0f3a2",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp10.html": "90168885dbfcb47ab195699a029bc3a7918e7cf20ef4145c09444d16845403db",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp11.html": "ef5b8fee9a19149540ace79f8aaa9e5ab2bae014074e07e53af243bfd1776f73",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp2.html": "b7c42b5fe643515be7f14f032a9ce5f8817ccadbdcd23948a9f43e936e4424e8",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp7.html": "58ec90a6ab9a021d1b5d1532932469f499d536e2eed13d89ba2a3979acb8ae0c",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp6.html": "36d6ab2850d2a233e2effee76381f6bcdc5ba28e75af382d0d77a1c37ddfefea",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp3.html": "bd124e628e8ba10268a8732fa1acd029a45270fd8f6f5fac10e40b6a7d2190f5",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp4.html": "f2385349dda95022500e59bfe7efd7c2c7612a972c5400f05cdec764be58d641",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp0.html": "3c185a9026abc81d76ebe8d920719ef6364af60e955fba396b9c51fc62112cf3",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp1.html": "e6a22f6d6a9120ebed9948664922150593281fc4e66569fc2d2f2991bc038857",
+    "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/grp5.html": "b15ef6f66f48eea482bbbd95508edbf38f5bbd260273d112a767f1ab756eb9ca",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp8.html": "f2d4c35fd751129fd4dab1c5b1f64a885060fdc974d6a77d323888d426c07000",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp9.html": "e40d576af38f3979e343fee063958ad8de50fe7b3b42e4c5dcf7e9faade0f3a2",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp10.html": "90168885dbfcb47ab195699a029bc3a7918e7cf20ef4145c09444d16845403db",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp11.html": "ef5b8fee9a19149540ace79f8aaa9e5ab2bae014074e07e53af243bfd1776f73",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp7.html": "58ec90a6ab9a021d1b5d1532932469f499d536e2eed13d89ba2a3979acb8ae0c",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp2.html": "c69ffa1f003b1b55f3adedf3d4ae30332e345e89d201c3ef4609cfcc8651fc7e",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp6.html": "36d6ab2850d2a233e2effee76381f6bcdc5ba28e75af382d0d77a1c37ddfefea",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp3.html": "bd124e628e8ba10268a8732fa1acd029a45270fd8f6f5fac10e40b6a7d2190f5",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp4.html": "81530a7d6fd07a9cd1ccbcd7cd4caca018d9b77aeb753318505b126e5f2f4dbe",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp0.html": "3c185a9026abc81d76ebe8d920719ef6364af60e955fba396b9c51fc62112cf3",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp1.html": "19e340bcc3ceec6634c4a494c30e5c39390af0e45f7834ea8e0e2b274d629064",
+    "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp5.html": "b15ef6f66f48eea482bbbd95508edbf38f5bbd260273d112a767f1ab756eb9ca"
   },
   "cdc_rdc_worktree_modified": false,
   "date": "2026-11-25",
@@ -135,7 +191,8 @@
           "line": 79.17,
           "score": 71.58,
           "status": "OPEN",
-          "toggle": 78.1
+          "toggle": 78.1,
+          "metric_scope": "Full URG compile dashboard including UVM/testbench; not DUT-only RTL coverage."
         },
         "EF1_product_core": {
           "assertion": 86.21,
@@ -145,7 +202,8 @@
           "line": 88.26,
           "score": 80.62,
           "status": "OPEN",
-          "toggle": 82.38
+          "toggle": 82.38,
+          "metric_scope": "Full URG compile dashboard including UVM/testbench; not DUT-only RTL coverage."
         },
         "EF2_AXIL_build": {
           "assertion": 78.95,
@@ -155,7 +213,8 @@
           "line": 75.32,
           "score": 65.48,
           "status": "OPEN",
-          "toggle": 75.9
+          "toggle": 75.9,
+          "metric_scope": "Full URG compile dashboard including UVM/testbench; not DUT-only RTL coverage."
         },
         "EF2_product_core": {
           "assertion": 76.47,
@@ -165,7 +224,8 @@
           "line": 82.63,
           "score": 72.88,
           "status": "OPEN",
-          "toggle": 80.07
+          "toggle": 80.07,
+          "metric_scope": "Full URG compile dashboard including UVM/testbench; not DUT-only RTL coverage."
         },
         "MASH11_block": {
           "assertion": 71.43,
@@ -175,11 +235,325 @@
           "line": 90.77,
           "score": 86.42,
           "status": "OPEN",
-          "toggle": 98.45
+          "toggle": 98.45,
+          "metric_scope": "Full URG compile dashboard including UVM/testbench; not DUT-only RTL coverage."
         }
       },
       "status": "OPEN",
-      "tool": "URG V-2023.12-SP1"
+      "tool": "URG V-2023.12-SP1",
+      "dashboard_scope_note": "The legacy sku_specific_results are full compile/dashboard totals and include UVM/testbench objects. Use DUT instance_subtree_results for hardware-only code coverage.",
+      "source_report_sha256": {
+        "EF1": {
+          "dashboard.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1/coverage/dashboard.html",
+            "sha256": "419bf99e1ec6591dc1aed1379e69e3f35823a4d8dc42e7e7e22bc4dfa548f438"
+          },
+          "hierarchy.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1/coverage/hierarchy.html",
+            "sha256": "ffc9f298999489135a1e5c756593d2aa438e10959cfe5d986d98a7aee9a05283"
+          },
+          "session.xml": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1/coverage/session.xml",
+            "sha256": "506aae8eb04810e01b8f6d01441b354432cb51ba38fd8c69f552ccd3fcea9563"
+          },
+          "groups.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1/coverage/groups.html",
+            "sha256": "cffa8066dc383691246eb120b39e0750095081531698db2b7a7fefac0cf72111"
+          }
+        },
+        "EF2": {
+          "dashboard.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/dashboard.html",
+            "sha256": "0ac085069badab69a0da4c4dedfe4922cf7e46452120fe5b82672d050021e21e"
+          },
+          "hierarchy.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/hierarchy.html",
+            "sha256": "fdb96cef2ace0a733df0284b2fcda1297407861656e81237de608a37447419d2"
+          },
+          "session.xml": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/session.xml",
+            "sha256": "152d60796c420170021971c4f30fe6ab96462e5b5f73491768cbf4aca9ab2d22"
+          },
+          "groups.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/groups.html",
+            "sha256": "8fb8fb53d3583bc159270f67e921b38d774e1dc84971fe54e7a110ebc6912371"
+          }
+        },
+        "EF1_AXIL": {
+          "dashboard.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/dashboard.html",
+            "sha256": "e4ec00e37456d0e584bc3420b8be96b5238187ae65141994eb9070e82bbb9e38"
+          },
+          "hierarchy.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/hierarchy.html",
+            "sha256": "4f011f2ceb402dc08c214d82126441363a18a0f61a363205271c6b89d94b3e96"
+          },
+          "session.xml": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/session.xml",
+            "sha256": "d48bab79890c01759cb4913bbe848352c921ca43f3cbc471878f0b4a9111b7e0"
+          },
+          "groups.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/groups.html",
+            "sha256": "24c8e85318b24b51fa0a26b08dfdf9a8d0e49ab87b51c67500faba2c6cde9758"
+          }
+        },
+        "EF2_AXIL": {
+          "dashboard.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/dashboard.html",
+            "sha256": "5cf154accc066f2c23a662a43d2219bbf30e8ea8130149ae13cab732a1e8861d"
+          },
+          "hierarchy.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/hierarchy.html",
+            "sha256": "128e11d676e3ed1a82c12ad9ff9d1fb4be9ab4ea696399e3f35f4732cb6f5cc2"
+          },
+          "session.xml": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/session.xml",
+            "sha256": "71d09cb498a7b35b83d9427b3c62b662fe7f632811dcd213e6cf929818a1181a"
+          },
+          "groups.html": {
+            "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/groups.html",
+            "sha256": "6e258b5a79d5a0cf3bfe58973fcfd336464060ba6c056673fe41796524a6fc66"
+          }
+        },
+        "MASH11": {
+          "dashboard.html": {
+            "path": "runs/dsm_v13_round1/round1_final/mash11/coverage/dashboard.html",
+            "sha256": "b3f4d0be95046ee48a9b0102d44eb2a3c55f8aad296010774d242e0508256183"
+          },
+          "hierarchy.html": {
+            "path": "runs/dsm_v13_round1/round1_final/mash11/coverage/hierarchy.html",
+            "sha256": "6825dd5a1208924ae893473ec9e7b7f231d77911b510795d806645017b313089"
+          },
+          "session.xml": {
+            "path": "runs/dsm_v13_round1/round1_final/mash11/coverage/session.xml",
+            "sha256": "c3dfa09cfd04084232e1e6203a70ded0ea49aa68f81afe7165e34f65543a53c9"
+          }
+        }
+      },
+      "dut_instance_subtree_results": {
+        "source_csv": "docs/verification/data/dsm-v13-round1/hardware_code_coverage.csv",
+        "scope": "Selected DUT instance subtree, including child RTL; UVM/testbench excluded.",
+        "rows": [
+          {
+            "sku": "EF1",
+            "build": "Product Generic FIFO",
+            "urg_hardware_scope": "dsm_v13_multi_sku_uvm_tb.g_thermo5.selected_thermo5_sku.dut subtree",
+            "score_percent": "86.13",
+            "line_percent": "88.26",
+            "condition_percent": "77.06",
+            "toggle_percent": "83.9",
+            "fsm_percent": "100.0",
+            "branch_percent": "75.0",
+            "assertion_percent": "92.59",
+            "status": "OPEN",
+            "source_report": "runs/dsm_v13_round1/round1_final/ef1/coverage/hierarchy.html",
+            "source_report_sha256": "ffc9f298999489135a1e5c756593d2aa438e10959cfe5d986d98a7aee9a05283",
+            "source_note": "URG hierarchy instance subtree; percent only; excludes UVM/testbench."
+          },
+          {
+            "sku": "EF2",
+            "build": "Product Generic FIFO",
+            "urg_hardware_scope": "dsm_v13_multi_sku_uvm_tb.g_thermo5.selected_thermo5_sku.dut subtree",
+            "score_percent": "80.07",
+            "line_percent": "82.59",
+            "condition_percent": "67.51",
+            "toggle_percent": "81.44",
+            "fsm_percent": "100.0",
+            "branch_percent": "62.22",
+            "assertion_percent": "86.67",
+            "status": "OPEN",
+            "source_report": "runs/dsm_v13_round1/round1_final/ef2/coverage/hierarchy.html",
+            "source_report_sha256": "fdb96cef2ace0a733df0284b2fcda1297407861656e81237de608a37447419d2",
+            "source_note": "URG hierarchy instance subtree; percent only; excludes UVM/testbench."
+          },
+          {
+            "sku": "EF1",
+            "build": "AXI-Lite Generic FIFO",
+            "urg_hardware_scope": "dsm_v13_multi_sku_uvm_tb.g_thermo5.selected_thermo5_sku.dut subtree",
+            "score_percent": "79.7",
+            "line_percent": "88.2",
+            "condition_percent": "76.11",
+            "toggle_percent": "79.2",
+            "fsm_percent": "68.18",
+            "branch_percent": "73.94",
+            "assertion_percent": "92.59",
+            "status": "OPEN",
+            "source_report": "runs/dsm_v13_round1/round1_final/ef1_axil/coverage/hierarchy.html",
+            "source_report_sha256": "4f011f2ceb402dc08c214d82126441363a18a0f61a363205271c6b89d94b3e96",
+            "source_note": "URG hierarchy instance subtree; percent only; excludes UVM/testbench."
+          },
+          {
+            "sku": "EF2",
+            "build": "AXI-Lite Generic FIFO",
+            "urg_hardware_scope": "dsm_v13_multi_sku_uvm_tb.g_thermo5.selected_thermo5_sku.dut subtree",
+            "score_percent": "74.07",
+            "line_percent": "82.88",
+            "condition_percent": "66.43",
+            "toggle_percent": "76.87",
+            "fsm_percent": "68.18",
+            "branch_percent": "63.42",
+            "assertion_percent": "86.67",
+            "status": "OPEN",
+            "source_report": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/hierarchy.html",
+            "source_report_sha256": "128e11d676e3ed1a82c12ad9ff9d1fb4be9ab4ea696399e3f35f4732cb6f5cc2",
+            "source_note": "URG hierarchy instance subtree; percent only; excludes UVM/testbench."
+          },
+          {
+            "sku": "MASH11",
+            "build": "Legacy block wrapper + core",
+            "urg_hardware_scope": "dsm_v13_multi_sku_uvm_tb.g_mash11.dut subtree",
+            "score_percent": "89.99",
+            "line_percent": "90.16",
+            "condition_percent": "100.0",
+            "toggle_percent": "98.36",
+            "fsm_percent": "",
+            "branch_percent": "71.43",
+            "assertion_percent": "",
+            "status": "OPEN",
+            "source_report": "runs/dsm_v13_round1/round1_final/mash11/coverage/hierarchy.html",
+            "source_report_sha256": "6825dd5a1208924ae893473ec9e7b7f231d77911b510795d806645017b313089",
+            "source_note": "URG hierarchy instance subtree; percent only; excludes UVM/testbench. MASH core-only row is nested under wrapper row; no RTL FSM/assertion points."
+          },
+          {
+            "sku": "MASH11",
+            "build": "Legacy core only",
+            "urg_hardware_scope": "dsm_v13_multi_sku_uvm_tb.g_mash11.dut.u_mash11 subtree",
+            "score_percent": "89.04",
+            "line_percent": "89.66",
+            "condition_percent": "100.0",
+            "toggle_percent": "98.08",
+            "fsm_percent": "",
+            "branch_percent": "68.42",
+            "assertion_percent": "",
+            "status": "OPEN",
+            "source_report": "runs/dsm_v13_round1/round1_final/mash11/coverage/hierarchy.html",
+            "source_report_sha256": "6825dd5a1208924ae893473ec9e7b7f231d77911b510795d806645017b313089",
+            "source_note": "URG hierarchy instance subtree; percent only; excludes UVM/testbench. MASH core-only row is nested under wrapper row; no RTL FSM/assertion points."
+          }
+        ],
+        "closure_status": "OPEN"
+      },
+      "functional_coverage_summary": {
+        "source_csv": "docs/verification/data/dsm-v13-round1/functional_coverage.csv",
+        "sku_covergroup_scores_percent": {
+          "EF1_PRODUCT": 45.1,
+          "EF2_PRODUCT": 46.26,
+          "EF1_AXIL": 52.23,
+          "EF2_AXIL": 53.1
+        },
+        "mash11_block": {
+          "combined_output_levels_observed": 5,
+          "combined_output_level_bins_expected": 7,
+          "observed_levels": [
+            "-3",
+            "-1",
+            "+1",
+            "+2",
+            "+3"
+          ],
+          "zero_hit_levels": [
+            "-2",
+            "0"
+          ],
+          "steady_state_symbols_observed": 4,
+          "steady_state_symbols_expected": 4,
+          "accepted_transactions_checked": 35432,
+          "seed_count": 10,
+          "sampled_sva_cover_matches": {
+            "reset_release_to_valid": 44,
+            "valid_bubble_valid": 3108
+          },
+          "status": "OPEN"
+        },
+        "mash_product_functional_coverage": "NOT RUN: Product PA/lane/serializer contract not implemented",
+        "overall_status": "OPEN"
+      },
+      "functional_group_detail_report_sha256": {
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp0.html",
+          "sha256": "3f94ca344c8bb2923ad269c84495abca190302d8b80643ae1ce8d91ccb3788c0"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_tlast_drain_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp1.html",
+          "sha256": "25f4a058e9c185532c60618afa2defee0ac86efd4f567162aa69db5d71e6c6b5"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_gap_pa_fifo_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp4.html",
+          "sha256": "629966c262f25004c64fc823023afbacc6ce6fa1a7a17992d008799bc25e5ca3"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::run_prefill_gap_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp7.html",
+          "sha256": "81731db66890be058cd76eff3985bd8254c8070746646cfe2fe81d5bcb5464ed"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp2.html",
+          "sha256": "73adb88bf38d5334739f568313c8d776a124401d21a68d930de21be3e8b68ad8"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::transaction_event_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp5.html",
+          "sha256": "d66c952d615becdc06eed425b3f4876703351debe87bab7dc879b52c6d2f8e58"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp6.html",
+          "sha256": "8224134e2fd44a3c7c637116d4599d496043253b1dac381a07eb90f66ca7cd1b"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp3.html",
+          "sha256": "2c995448e5bfc2150f5c7a69d0e6a33418d321016264c9d30f609cdc7ab71b3a"
+        },
+        "Product Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2/coverage/grp8.html",
+          "sha256": "6e40b7d7f009a039a032c7f6a6141d985c0d7382a1dceec6c7416b3afc04ea7e"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_gap_pa_fifo_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp8.html",
+          "sha256": "f2d4c35fd751129fd4dab1c5b1f64a885060fdc974d6a77d323888d426c07000"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::run_prefill_gap_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp9.html",
+          "sha256": "e40d576af38f3979e343fee063958ad8de50fe7b3b42e4c5dcf7e9faade0f3a2"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_tlast_drain_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp10.html",
+          "sha256": "90168885dbfcb47ab195699a029bc3a7918e7cf20ef4145c09444d16845403db"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::stop_restart_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp11.html",
+          "sha256": "ef5b8fee9a19149540ace79f8aaa9e5ab2bae014074e07e53af243bfd1776f73"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::ef2_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp2.html",
+          "sha256": "c69ffa1f003b1b55f3adedf3d4ae30332e345e89d201c3ef4609cfcc8651fc7e"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_axil_monitor::read_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp7.html",
+          "sha256": "58ec90a6ab9a021d1b5d1532932469f499d536e2eed13d89ba2a3979acb8ae0c"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_axil_monitor::write_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp6.html",
+          "sha256": "36d6ab2850d2a233e2effee76381f6bcdc5ba28e75af382d0d77a1c37ddfefea"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::core_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp3.html",
+          "sha256": "bd124e628e8ba10268a8732fa1acd029a45270fd8f6f5fac10e40b6a7d2190f5"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::source_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp4.html",
+          "sha256": "81530a7d6fd07a9cd1ccbcd7cd4caca018d9b77aeb753318505b126e5f2f4dbe"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::transaction_event_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp0.html",
+          "sha256": "3c185a9026abc81d76ebe8d920719ef6364af60e955fba396b9c51fc62112cf3"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_sku_coverage::plane_atomic_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp1.html",
+          "sha256": "19e340bcc3ceec6634c4a494c30e5c39390af0e45f7834ea8e0e2b274d629064"
+        },
+        "AXI-Lite Generic FIFO::thermo5_sku_uvm_pkg::thermo5_axil_monitor::reset_cg": {
+          "path": "runs/dsm_v13_round1/round1_final/ef2_axil/coverage/grp5.html",
+          "sha256": "b15ef6f66f48eea482bbbd95508edbf38f5bbd260273d112a767f1ab756eb9ca"
+        }
+      }
     },
     "formal_cdc_rdc_synthesis_ppa_hardware_rf_ber": {
       "note": "Separate closure/signoff flows; not claimed by this DV round.",
@@ -411,19 +785,22 @@
     }
   },
   "machine_deliverables_sha256": {
-    "docs/UPDATE_LOG.md": "22c4a4bed3bfb83b2e2e471aaf43612fb89959dd5927b8b9c547f2a05aefc8b4",
-    "docs/dsm_v13_coverage_closure.md": "d9dfc0afd041dfe038ba41503188972703f9d7dcd07ebd6c45e844c818d8a777",
+    "docs/UPDATE_LOG.md": "0d5a8463053e4d2712d053a636fabda01061e0d31805a66fbdc53bcbad24a08a",
+    "docs/dsm_v13_coverage_closure.md": "4178e42b98f448d6a6f6f27809dee0c34e59114d699ddaa7b31844988d6c1a08",
     "docs/dsm_v13_rf_comparison.md": "46a121b2dcfa517f7d431adc7643b9f7fbadf59a062599517e72e7eb0e2cc2d5",
-    "docs/dsm_v13_round1_report.md": "e40d29bfa7d7f27e7b11a434f2ba27c3a34f943b8c54bf5e0df5ccef53bb3705",
+    "docs/dsm_v13_round1_report.md": "9a2db55556ca02f00841f294c54430dcc68968cb76589730a7344ed33927c93a",
     "docs/dsm_v13_sku_contract.md": "bc0d4b1217a2ce9d1534af11f79d9bef7cf348301173f5a04170cae282587584",
     "docs/dsm_v13_uvm_baseline_audit.md": "d744408203d04f516c6a33554811e3dea7c4531e891980f7cbd2adf77308c023",
     "docs/dsm_v13_verification_plan.md": "dcc8fefa98de0a6c7ec4b6350763c311b31db69b43cd9df1649c24d3614a299b",
-    "docs/exec-plans/active/execution-frontier.md": "11af18f35da8cf592ede22f08de3b48731a0f96885deb7ad4a88f0626b760fdb",
+    "docs/exec-plans/active/execution-frontier.md": "3d0698ebe1cf4d82525ef09f8adac21fd891052d71fdaf1b027b1dc4d886a278",
     "docs/verification/data/dsm-v13-round1/assertion_report.csv": "fd0c8db20e0e5b85e78f1ace5fc9f0031ea421a5dadf30b673cc1e7392fab713",
-    "docs/verification/data/dsm-v13-round1/coverage_hole_matrix.csv": "c94d3f6b04941ff4b88a36f804810c69cb2b95847085921c650a2c291c641838",
+    "docs/verification/data/dsm-v13-round1/coverage_hole_matrix.csv": "4c67b7d6e803544d482221d2e17ab86fa526575d6253692da915eccd4fe053fa",
     "docs/verification/data/dsm-v13-round1/failed_seed_reproducer.md": "a82dd1d2c9c91236fbb4b588ada4d074d8773c0bb11acc2b388857961fdaa706",
     "docs/verification/data/dsm-v13-round1/sku_regression_summary.csv": "2524a1025a6b4f84e7716ccf98fb8d54a782a70085d2ef9badd2129c3af087de",
-    "docs/verification/data/dsm-v13-round1/source_manifest.json": "8860bee616e4c605b9c061982f132074807d4e5f0ce8785bbee9ac074edcc8b7"
+    "docs/verification/data/dsm-v13-round1/source_manifest.json": "8860bee616e4c605b9c061982f132074807d4e5f0ce8785bbee9ac074edcc8b7",
+    "docs/dsm_v13_hardware_coverage.md": "9710e0787570c53b3af33dd8f5c30c130fb505f29180b1480abaac80eb1aaa9e",
+    "docs/verification/data/dsm-v13-round1/hardware_code_coverage.csv": "4d5117591cf26723b40b96cdc44e2646d51d6449be3150d36565ccf6f73ae29a",
+    "docs/verification/data/dsm-v13-round1/functional_coverage.csv": "97122338e087c140c6e1884b9feddf7dfd5abafd2adcea93b34e55f37b723598"
   },
   "product_rtl_modified": false,
   "raw_log_sha256": {

@@ -1,3 +1,20 @@
+# 2026-11-25 12:13 +08 - DSM V1.3 hardware and functional coverage accounting
+
+- Reclassified Round 1 URG coverage into full-compile dashboards, selected DUT
+  instance-subtree code coverage, and UVM functional coverage. Full compile
+  numbers include verification objects and are no longer labeled as
+  hardware-only metrics.
+- Added the DUT-only EF1/EF2 Product and AXI-Lite hierarchy percentages and
+  MASH wrapper/core metrics with source report hashes. Added separate
+  machine-readable UVM covergroup counts and MASH histogram/cover results.
+- Updated the coverage closure report, active execution frontier, and
+  compile-scope labels in the coverage-hole matrix. No RTL or testbench source
+  changed and no simulation was run in this reporting follow-up.
+- Checks: URG hierarchy values cross-checked against the exact DUT instance
+  rows; source report and raw-log hashes indexed in `evidence.json`; tracked
+  coverage CSVs regenerated from those source reports. Coverage closure remains
+  OPEN; no bin was waived or declared unreachable.
+
 # 2026-11-07 00:00 SGT - Thermo5 Final Coverage Closure Round 13 audit
 
 - Audited PR #42 (`644458deaf7481673c80177f1621efbff9252419`) against the

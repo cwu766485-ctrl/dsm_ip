@@ -1,44 +1,96 @@
 # DSM V1.3 Coverage Closure
 
-Coverage was merged separately by SKU and build configuration with URG
-V-2023.12-SP1. EF1 and EF2 core Product coverage is not merged with its
-AXI-Lite configuration or with the other architecture. MASH is reported
-separately and has no FSM metric because its current block wrapper has no FSM.
-No bin was deleted, waived, or treated as unreachable.
+The Round 1 URG reports are separated here into (1) complete compile dashboards,
+which include verification objects, (2) selected DUT instance-subtree code
+coverage, and (3) UVM functional coverage. Do not use the complete compile
+dashboard as a hardware-only code-coverage result. No bins were deleted,
+waived, or treated as unreachable.
 
-| SKU / build | Score | Line | Condition | Toggle | Branch | FSM | Assertion | Functional status |
+## Full compile dashboard (includes UVM/testbench)
+
+These are the historical full URG compilation totals. They include the
+verification hierarchy, so they are retained for traceability and must not be
+quoted as DUT-only RTL coverage.
+
+| SKU / build | URG score | Line | Condition | Toggle | Branch | FSM | Assertion | Status |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
-| EF1 Product core | 80.62% | 88.26% | 87.63% | 82.38% | 74.77% | 100% | 86.21% | OPEN; 56-word/full-plane, reset, stall and FIFO directed bins were exercised |
-| EF2 Research core | 72.88% | 82.63% | 62.54% | 80.07% | 62.22% | 100% | 76.47% | OPEN; same product-bound directed categories, separate architecture database |
-| MASH 1-1 block | 86.42% | 90.77% | 100.00% | 98.45% | 71.43% | N/A | 71.43% | OPEN; 3,551 directed baseline transactions plus ten seeded streams |
-| EF1 AXI-Lite build | 71.58% | 79.17% | 80.47% | 78.10% | 55.84% | 68.18% | 87.10% | OPEN; single configuration test, separate build |
-| EF2 AXI-Lite build | 65.48% | 75.32% | 56.94% | 75.90% | 49.94% | 68.18% | 78.95% | OPEN; single configuration test, separate build |
+| EF1 Product Generic FIFO | 80.62% | 88.26% | 87.63% | 82.38% | 74.77% | 100% | 86.21% | OPEN |
+| EF2 Product Generic FIFO | 72.88% | 82.63% | 62.54% | 80.07% | 62.22% | 100% | 76.47% | OPEN |
+| MASH 1-1 block | 86.42% | 90.77% | 100.00% | 98.45% | 71.43% | N/A | 71.43% | OPEN |
+| EF1 AXI-Lite Generic FIFO | 71.58% | 79.17% | 80.47% | 78.10% | 55.84% | 68.18% | 87.10% | OPEN |
+| EF2 AXI-Lite Generic FIFO | 65.48% | 75.32% | 56.94% | 75.90% | 49.94% | 68.18% | 78.95% | OPEN |
 
-The target code-coverage goals are Line >=95%, Branch >=95%, Condition >=95%,
-Toggle >=90%, all reachable FSM states/transitions 100%, and mandatory
-functional coverage 100%. None of the five builds meets all code targets.
-The MASH finite-state-machine target is not applicable to the present RTL
-structure; MASH product reset/credit/FIFO/lane cross coverage remains OPEN
-because no such product boundary exists.
+## Hardware RTL instance-subtree code coverage
 
-The MASH interface assertion report records 3 successful assertions, 0
-failures, 0 incomplete, and 2 cover properties matched. Two uncovered/no-attempt
-assertions belong to the UVM register package, not MASH. URG's aggregate
-assertion percentage includes tool/UVM objects; the per-property report is in
-`docs/verification/data/dsm-v13-round1/assertion_report.csv`.
+The table below is the hardware-only cut, read from each URG `hierarchy.html`
+row for the selected DUT instance and its child RTL. It excludes the UVM
+environment and verification interfaces. URG publishes percentages for these
+subtree rows; the source report does not provide subtree numerator/denominator
+counts. The MASH core-only row is nested under its wrapper row and is included
+as additional detail, not as another build.
 
-## Coverage hole disposition
+| SKU / elaboration | URG score | Line | Condition | Toggle | Branch | FSM | RTL assertion | Status |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| EF1 Product, Generic FIFO | 86.13% | 88.26% | 77.06% | 83.90% | 75.00% | 100.00% | 92.59% | OPEN |
+| EF2 Product, Generic FIFO | 80.07% | 82.59% | 67.51% | 81.44% | 62.22% | 100.00% | 86.67% | OPEN |
+| EF1 AXI-Lite, Generic FIFO | 79.70% | 88.20% | 76.11% | 79.20% | 73.94% | 68.18% | 92.59% | OPEN |
+| EF2 AXI-Lite, Generic FIFO | 74.07% | 82.88% | 66.43% | 76.87% | 63.42% | 68.18% | 86.67% | OPEN |
+| MASH 1-1 wrapper + core | 89.99% | 90.16% | 100.00% | 98.36% | 71.43% | N/A | N/A | OPEN |
+| MASH 1-1 core only | 89.04% | 89.66% | 100.00% | 98.08% | 68.42% | N/A | N/A | OPEN |
 
-| Hole family | Status | Evidence/disposition | Next action |
-|---|---|---|---|
-| EF1 / EF2 code lines and branches | OPEN | URG percentages below targets; not all internal arithmetic/config branches were exercised | Inspect per-bin URG report; add legal directed tests and reachable-state stimulus |
-| EF2 conditions | OPEN | 62.54% Product core and 56.94% AXI-Lite build | Identify operand/parameter conditions in exact report and target with vectors |
-| Toggle | OPEN | EF1/EF2 and AXI-Lite builds below 90%; MASH at 98.45% | Map uncovered toggles to reachable data/state values; no denominator edits |
-| Product functional crosses | OPEN | This round ran the specified directed tests, not a full cross-closure campaign | Add per-SKU frame/config/FIFO/stall/reset crosses once MASH contract exists |
-| MASH combined-level bins | OPEN | Directed scoreboard logs level histogram; -2 and 0 had no hits in current vectors, no formal reachability proof/disposition | Prove exact reachability or construct directed vector; do not remove bins |
-| MASH PA/lane/serializer coverage | OPEN | No MASH Product PA/serializer interface | Define product mapping, then add monitor, scoreboard, covergroups and sequences |
-| Long-duration/random budgets | OPEN | 10 seeds x 3,940 vector rows; shorter than requested standard/stress budgets | Run 100-seed standard and 20-seed stress when compute budget is allocated |
+The code-coverage goals are Line >=95%, Branch >=95%, Condition >=95%, Toggle
+>=90%, all reachable FSM states/transitions 100%, and mandatory functional
+coverage 100%. None of the EF1/EF2 DUT configurations meets all code goals.
+MASH line and branch are below target; MASH has no FSM or RTL assertion
+coverage points in this hierarchy. Overall code-coverage closure is **OPEN**.
 
-Exact per-SKU percentages and overall status are machine-readable in
-`docs/verification/data/dsm-v13-round1/coverage_hole_matrix.csv`. Raw URG
-reports are retained under ignored `runs/dsm_v13_round1/round1_final/*/coverage/`.
+## Functional coverage
+
+The EF1/EF2 values below are URG UVM covergroup scores, sampled from
+DUT-facing monitors. These are functional coverage results, not RTL code
+coverage.
+
+| SKU / build | UVM functional group score | Status |
+|---|---:|---|
+| EF1 Product, Generic FIFO | 45.10% | OPEN |
+| EF2 Product, Generic FIFO | 46.26% | OPEN |
+| EF1 AXI-Lite, Generic FIFO | 52.23% | OPEN |
+| EF2 AXI-Lite, Generic FIFO | 53.10% | OPEN |
+
+Product builds have uncovered `stop_restart`, `stop_tlast_drain`,
+`source_gap_pa_fifo`, and `run_prefill_gap` groups. AXI-Lite builds additionally
+have incomplete read/write transaction bins. Exact per-covergroup counts are
+in `docs/verification/data/dsm-v13-round1/functional_coverage.csv`.
+
+MASH 1-1 uses its block-level custom histogram and SVA covers rather than the
+Product UVM covergroups. Across ten seeds, 35,432 accepted outputs were checked;
+five of seven observed combined-level bins were hit (`-3`, `-1`, `+1`, `+2`,
+`+3`). The four steady-state symbols (`-3`, `-1`, `+1`, `+3`) were all observed.
+The `-2` and `0` histogram bins had no hits and remain OPEN; no reachability
+proof exists. The `+2` observations are reset transients. Both sampled SVA
+covers were hit (44 reset-release-to-valid matches and 3,108 valid-bubble-valid
+matches across 11 merged databases). This does not close MASH Product PA/lane/
+serializer coverage, because that Product integration contract is not defined.
+
+## Hole disposition and evidence
+
+| Hole family | Status | Disposition / next action |
+|---|---|---|
+| EF1 / EF2 RTL code lines, conditions and branches | OPEN | Use exact URG uncovered bins to add legal directed tests; do not alter denominators |
+| Toggle and FSM targets | OPEN | EF1/EF2 and AXI-Lite DUT subtrees are below one or more targets; MASH FSM is N/A |
+| Product functional crosses | OPEN | Close the uncovered groups and define MASH Product-level contracts before adding product crosses |
+| MASH combined-level bins | OPEN | Target `-2`/`0` with legal vectors or prove unreachability; no unreachability claim is made |
+| MASH PA/lane/serializer coverage | OPEN | Define the MASH Product mapping, then add product monitors, scoreboards, covergroups and sequences |
+| Longer random budgets | OPEN | The ten-seed MASH run is shorter than the requested 100-seed standard and 20-seed stress campaigns |
+
+Machine-readable DUT-only and functional tables are in
+`docs/verification/data/dsm-v13-round1/hardware_code_coverage.csv` and
+`docs/verification/data/dsm-v13-round1/functional_coverage.csv`. The complete
+compile coverage-hole ledger is
+`docs/verification/data/dsm-v13-round1/coverage_hole_matrix.csv`. URG report
+and raw-log SHA-256 values are indexed in
+`docs/verification/data/dsm-v13-round1/evidence.json`; full generated reports
+and simulator logs remain in the ignored `runs/` directory.
+
+This coverage report does not replace Formal, CDC/RDC, synthesis/PPA, RF, or
+hardware signoff. Those activities remain NOT RUN for this DV round.

@@ -23,7 +23,7 @@ end-to-end latency are undefined. That integration is **OPEN**.
 | MASH 1-1 block UVM | PASS | 3,551/3,551 expected outputs checked at seed 130011; 10-seed campaign also passed |
 | Python reference suite | PASS | 72/72 tests |
 | Product Top MASH integration | OPEN | Legacy block wrapper has no AXIS, AXI-Lite, FIFO, product metadata, PA planes, or serializer |
-| Code coverage closure | OPEN | Coverage goals are not met; details are SKU-specific in the coverage hole matrix |
+| Code coverage closure | OPEN | Hardware-only DUT subtree metrics and functional covergroups are split in `dsm_v13_hardware_coverage.md`; exact records are in the coverage CSVs |
 | Formal / CDC/RDC / synthesis / PPA | NOT RUN | Out of this DV round; no replacement signoff claim |
 | Standard RF metrics / hardware BER | NOT RUN | No calibrated channel mask/receiver or MASH product PA path |
 
@@ -133,3 +133,6 @@ Raw logs remain in ignored `runs/dsm_v13_round1/round1_final/` and captured
 signal traces and analysis remain in ignored `runs/dsm_v13_round1/perf_final/`.
 Their SHA-256 digests, source digests, and tool versions are indexed in
 `docs/verification/data/dsm-v13-round1/`.
+The coverage report separates full compile URG dashboards (including
+UVM/testbench objects) from hardware-only DUT instance-subtree code coverage;
+see `docs/dsm_v13_hardware_coverage.md`.

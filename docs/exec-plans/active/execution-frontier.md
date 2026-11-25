@@ -21,6 +21,14 @@ also rebuilt and passed for EF1 and EF2. The selector unifies SKU elaboration
 and regression invocation; MASH still uses a separate block-level UVM agent,
 not a shared Product class environment.
 
+Coverage has been split into hardware-only DUT instance-subtree code metrics
+and UVM functional metrics. The complete URG dashboard includes UVM/testbench
+objects and is labeled as such; it is not presented as DUT-only coverage. DUT
+code closure is OPEN for every configuration. EF1/EF2 UVM covergroup scores
+range from 45.10% to 53.10%; MASH's custom histogram observed 5/7 combined
+levels, with two bins still OPEN. Details and source report hashes are in
+`docs/dsm_v13_hardware_coverage.md` and `docs/verification/data/dsm-v13-round1/`.
+
 Round 1 report: `docs/dsm_v13_round1_report.md`. SKU contract and MASH Product
 integration gaps: `docs/dsm_v13_sku_contract.md`. Per-run log and source hashes,
 coverage dashboards, assertion results, and captured signal metrics are indexed
@@ -33,7 +41,8 @@ Current disposition:
   bit-true checks.
 - **OPEN:** MASH Product Top and its AXIS/AXI-Lite/FIFO/lane/PA/serializer
   contracts; MASH RTL versus MATLAB latency alignment; all code coverage target
-  gaps; requested longer standard/stress random budgets.
+  gaps and uncovered functional bins; requested longer standard/stress random
+  budgets.
 - **NOT RUN:** Formal, CDC/RDC, synthesis/PPA, standard calibrated RF metrics,
   hardware BER, and physical board tests.
 
