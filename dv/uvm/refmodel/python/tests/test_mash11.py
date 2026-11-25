@@ -8,6 +8,7 @@ from dsm_refmodel.mash11 import (
     saturate_or_wrap,
     simulate_transactions,
 )
+from dsm_refmodel.thermo5 import mash11_weighted_plane_code
 
 
 def assert_observation_matches(testcase, expected, observed):
@@ -56,9 +57,11 @@ class Mash11ReferenceTests(unittest.TestCase):
         steady_levels = {-3, -1, 1, 3}
         for index, item in enumerate(observed):
             if index == 0:
-                self.assertIn(item.combined_level, (0, 2))
+                self.assertEqual(item.combined_level, 2)
             else:
                 self.assertIn(item.combined_level, steady_levels)
+        self.assertNotIn(-2, {item.combined_level for item in observed})
+        self.assertNotIn(0, {item.combined_level for item in observed})
         low, high = -(1 << 17), (1 << 17) - 1
         self.assertTrue(all(low <= item.v1 <= high and low <= item.v2 <= high
                             for item in observed))
@@ -104,6 +107,17 @@ class Mash11ReferenceTests(unittest.TestCase):
                 self.assertIn(q.combined_level, (-3, -1, 1, 3))
             levels.append(q.combined_level)
         self.assertGreater(len(set(levels)), 1)
+
+    def test_weighted_pa_codebook_reconstructs_every_reachable_level(self):
+        weights = (-3, -1, 1, 3)
+        for level in (-3, -1, 1, 2, 3):
+            code = mash11_weighted_plane_code(level)
+            self.assertEqual(len(code), 4)
+            self.assertEqual(sum(weight * bit
+                                 for weight, bit in zip(weights, code)), level)
+        for level in (-2, 0, 4):
+            with self.assertRaises(ValueError):
+                mash11_weighted_plane_code(level)
 
     def test_one_sided_spectrum_uses_peak_full_scale_amplitude(self):
         import math

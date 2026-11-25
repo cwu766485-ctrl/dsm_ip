@@ -1,0 +1,176 @@
+{
+  "configuration_results": {
+    "ef1_axil": {
+      "random_vdb_count": 3,
+      "report": "runs/dsm_v13_round2/final3/urg/ef1_axil",
+      "status": "PASS",
+      "test_vdb_count": 7
+    },
+    "ef1_product": {
+      "random_vdb_count": 0,
+      "report": "runs/dsm_v13_round2/final3/urg/ef1_product",
+      "status": "PASS",
+      "test_vdb_count": 7
+    },
+    "ef2_axil": {
+      "random_vdb_count": 3,
+      "report": "runs/dsm_v13_round2/final3/urg/ef2_axil",
+      "status": "PASS",
+      "test_vdb_count": 7
+    },
+    "ef2_product": {
+      "random_vdb_count": 0,
+      "report": "runs/dsm_v13_round2/final3/urg/ef2_product",
+      "status": "PASS",
+      "test_vdb_count": 7
+    },
+    "mash11_axil": {
+      "random_vdb_count": 3,
+      "report": "runs/dsm_v13_round2/final3/urg/mash11_axil",
+      "status": "PASS",
+      "test_vdb_count": 7
+    },
+    "mash11_product": {
+      "random_vdb_count": 0,
+      "report": "runs/dsm_v13_round2/final3/urg/mash11_product",
+      "status": "PASS",
+      "test_vdb_count": 2
+    },
+    "mash11_wrapper_core": {
+      "random_vdb_count": 0,
+      "report": "runs/dsm_v13_round2/final3/urg/mash11_wrapper_core",
+      "status": "PASS",
+      "test_vdb_count": 1
+    }
+  },
+  "coverage_status": "OPEN",
+  "directed_and_random_test_logs": 38,
+  "expected_negative_assertions": 2,
+  "expected_negative_protocol_tests": [
+    "EF1 illegal frame",
+    "EF2 illegal frame"
+  ],
+  "final_dv_signoff": false,
+  "final_regression_status": "PASS",
+  "fresh_urg_status": "PASS",
+  "functional_group_scores_percent": {
+    "ef1_axil": 87.95,
+    "ef1_product": 79.54,
+    "ef2_axil": 88.66,
+    "ef2_product": 74.06,
+    "mash11_axil": 88.31,
+    "mash11_product": 76.57,
+    "mash11_wrapper_core": null
+  },
+  "generated_utc": "2026-11-25T08:17:59.681047+00:00",
+  "limitations": [
+    "Raw DUT code metrics miss the Round 2 closure targets; no approved exclusions or waivers are applied.",
+    "MASH four-plane weights/polarity remain a digital candidate and lack approved PA, serializer, MATLAB-latency and board evidence.",
+    "Raw MASH weighted-level bins remain visible; the algebraic reachability note is not a formal proof or waiver.",
+    "Formal, CDC/RDC, synthesis/PPA, serializer position/reset, and board/RF sign-off were not run."
+  ],
+  "positive_uvm_errors": 0,
+  "positive_uvm_fatals": 0,
+  "positive_uvm_warnings": 0,
+  "python_reference_tests": {
+    "passed": 74,
+    "status": "PASS"
+  },
+  "random_campaigns": {
+    "accepted_axis_beats": 333120,
+    "accepted_tlast": 10410,
+    "campaign_count": 9,
+    "matched_pa_words": 582960,
+    "requested_beats_per_campaign": {
+      "smoke": 1024,
+      "standard": 10016,
+      "stress": 100000
+    },
+    "seed_bases": [
+      131000
+    ],
+    "seed_count": 9,
+    "seeds_by_sku": {
+      "ef1": [
+        131000,
+        131001,
+        131002
+      ],
+      "ef2": [
+        1131000,
+        1131001,
+        1131002
+      ],
+      "mash11": [
+        2131000,
+        2131001,
+        2131002
+      ]
+    },
+    "seeds_per_sku_and_campaign": {
+      "ef1": {
+        "smoke": 1,
+        "standard": 1,
+        "stress": 1
+      },
+      "ef2": {
+        "smoke": 1,
+        "standard": 1,
+        "stress": 1
+      },
+      "mash11": {
+        "smoke": 1,
+        "standard": 1,
+        "stress": 1
+      }
+    },
+    "status": "PASS",
+    "summary_source": "runs/dsm_v13_round2/final3/random/regression_summary.json",
+    "transaction_conservation": {
+      "accepted_axis_beats": 333120,
+      "attempted_axis_beats": 333120,
+      "basis": "Exact source/PA counts passed; random-packet scoreboard expected queues drained; no reset flushes were requested in these campaigns.",
+      "expected_pa_words": 582960,
+      "legally_flushed_transactions": 0,
+      "matched_pa_words": 582960,
+      "pending_transactions": 0,
+      "per_sku": {
+        "ef1": {
+          "accepted_axis_beats": 111040,
+          "accepted_tlast": 3470,
+          "attempted_axis_beats": 111040,
+          "expected_pa_words": 194320,
+          "legally_flushed_transactions": 0,
+          "matched_pa_words": 194320,
+          "pending_transactions": 0,
+          "queue_drain_evidence": "random-packet check_expected_queues_drained passed for every campaign"
+        },
+        "ef2": {
+          "accepted_axis_beats": 111040,
+          "accepted_tlast": 3470,
+          "attempted_axis_beats": 111040,
+          "expected_pa_words": 194320,
+          "legally_flushed_transactions": 0,
+          "matched_pa_words": 194320,
+          "pending_transactions": 0,
+          "queue_drain_evidence": "random-packet check_expected_queues_drained passed for every campaign"
+        },
+        "mash11": {
+          "accepted_axis_beats": 111040,
+          "accepted_tlast": 3470,
+          "attempted_axis_beats": 111040,
+          "expected_pa_words": 194320,
+          "legally_flushed_transactions": 0,
+          "matched_pa_words": 194320,
+          "pending_transactions": 0,
+          "queue_drain_evidence": "random-packet check_expected_queues_drained passed for every campaign"
+        }
+      }
+    }
+  },
+  "run_directory": "runs/dsm_v13_round2/final3",
+  "schema": "dsm_v13_round2_regression_summary_v1",
+  "source_head": "522eb372436e68b17cdfa87bc38aaecdcc4831eb",
+  "urg_merge_status": "PASS",
+  "working_tree_fingerprint_sha256_at_random_run": "3e8295fbef2602356d515447e9404f189229db71113a8621222c6c0cdb1b1d23"
+}

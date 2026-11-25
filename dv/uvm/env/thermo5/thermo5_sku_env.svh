@@ -51,6 +51,7 @@ class thermo5_sku_env extends uvm_env;
     monitor=pa_sink.monitor;
     source.monitor.ap.connect(scoreboard.source_imp);
     monitor.ap.connect(scoreboard.pa_imp);
+    monitor.ap.connect(coverage.pa_cov_imp);
     source.monitor.ap.connect(event_bus.source_imp);
     monitor.ap.connect(event_bus.pa_imp);
     cdc_monitor.ap.connect(event_bus.cdc_imp);

@@ -21,6 +21,7 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
     bit [1:0] resp;
     bit [31:0] rdata;
     bit idle_seen;
+    bit pa_stall_seen;
     int expected_dpd_words;
     expected_dpd_words=cfg.core_words+cfg.frame_starts;
     phase.raise_objection(this);
@@ -45,6 +46,26 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
               `uvm_fatal("AXIL_DRAIN1_STATUS",
                 $sformatf("Expected RUN_ACTIVE+DRAINING after first STOP, status=%08x",rdata))
             env.coverage.sample_stop_restart(3'd0);
+
+            // Exercise a real four-plane PA stall while the same stopped
+            // packet is still draining. Packet-scoped coverage pairs this
+            // backpressure with the preceding STOP write and later TLAST.
+            env.pa_sink.set_ready(4'hd);
+            pa_stall_seen=0;
+            for (int cycles=0; cycles<2000 && !pa_stall_seen; cycles++) begin
+              @(posedge vif.core_clk);
+              pa_stall_seen=(vif.pa_valid==4'hf && vif.pa_ready==4'hd);
+            end
+            if (!pa_stall_seen)
+              `uvm_fatal("STOP_PA_STALL_TIMEOUT",
+                "No PA word was held under partial READY after STOP")
+            repeat (4) begin
+              @(posedge vif.core_clk);
+              if (vif.pa_valid!=4'hf || vif.pa_ready!=4'hd)
+                `uvm_fatal("STOP_PA_STALL_HOLD",
+                  "The complete PA word did not remain held during STOP backpressure")
+            end
+            env.pa_sink.set_ready(4'hf);
 
             for (int cycles=0; cycles<10000 && env.scoreboard.checked<56; cycles++)
               @(posedge vif.core_clk);
@@ -137,6 +158,12 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
               `uvm_fatal("STOP_TLAST_DRAIN_CROSS",
                 $sformatf("Expected two same-packet STOP<TLAST<DRAIN records, observed %0d",
                   env.coverage.stop_tlast_drain_hits))
+            if (env.coverage.stop_pa_backpressure_hits==0)
+              `uvm_fatal("STOP_PA_BACKPRESSURE_CROSS",
+                "No same-packet STOP plus PA-backpressure record was covered")
+            if (env.coverage.restart_fifo_state_coverage()==0.0)
+              `uvm_fatal("RESTART_FIFO_STATE_CROSS",
+                "RUN restart did not sample a FIFO occupancy state")
             `uvm_info("SKU_PASS",
               "THERMO5_AXIL_STOP_RESTART_UVM_PASS: STOP drained packet 1; packet 2 stayed blocked until RUN restarted; 112 ordered four-plane words matched oracle",
               UVM_NONE)

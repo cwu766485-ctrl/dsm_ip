@@ -1,6 +1,51 @@
 # Execution frontier
 
-## Current execution state: DSM V1.3 Multi-SKU UVM Round 1 (2026-11-25)
+## Current execution state: DSM V1.3 Multi-SKU UVM Round 2 (2026-11-25)
+
+Working tree: `/home/ray/workspace/dsm-v13-mash-uvm-round2`, branch
+`work/dsm-v13-mash-uvm-round2`, based on Round 1 HEAD
+`522eb372436e68b17cdfa87bc38aaecdcc4831eb`. Round 1 and the active CDC/RDC
+worktrees were left untouched. Round 1 evidence integrity was verified at
+327/327 source entries, 229/229 raw-log hashes, and 151/151 captured-artifact
+hashes; its source manifest SHA is
+`8860bee616e4c605b9c061982f132074807d4e5f0ce8785bbee9ac074edcc8b7`.
+Round 1 raw reports remain unchanged.
+
+**Round 2 implementation and simulation: PASS.** VCS/URG V-2023.12-SP1 final3
+completed for EF1 Product, EF1 AXI-Lite, EF2 Product, EF2 AXI-Lite, MASH
+Product, MASH AXI-Lite, and MASH wrapper/core. All seven URG merges passed;
+38 simulation logs have zero positive UVM warnings/errors/fatals. Python
+reference tests passed 74/74. Nine random campaigns (1 smoke / 1 standard /
+1 stress seed per Product SKU) accepted 333,120 AXIS beats and matched 582,960
+PA words with 10,410 TLAST markers. Expected queues drained; legal flush and
+pending counts are zero. Requested 10/50/10 seeds per SKU were reduced to
+1/1/1 due runtime cost of 100,000-beat stress seeds.
+
+MASH 1-1 Product candidate is selected at the existing Thermo5 Product top
+with `DSM_ARCH=3` and its existing AXI-Lite wrapper. The four-plane logical
+weights `{-3,-1,+1,+3}` are a candidate code contract; physical PA/polarity,
+serializer mapping, MATLAB latency alignment, and board acceptance remain
+OPEN. No new CDC path was added; CDC/RDC sign-off was not run.
+
+**Coverage disposition: OPEN.** Fresh raw/adjusted DUT metrics are equal and
+there are no approved waivers/exclusions. Group scores range 74.06%–88.66%;
+2,887 coverage-hole matrix rows remain OPEN, including 2,787 exact RTL
+line/branch/condition/toggle/FSM detail rows, 40 functional-group gaps, and
+31 cross gaps. Six serializer-position/reset rows are NOT_INTEGRATED. The
+MASH raw weighted-level bins remain visible; the reachability note is not a
+formal proof. Evidence data audit returns 0; fail-closed closure audit returns
+2 with the expected OPEN status. Formal, CDC/RDC, synthesis/PPA, serializer
+physical integration, and board/RF checks were not run. PowerShell/XSim tools
+are unavailable in this Linux environment, so the required XSim script could
+not be run.
+
+Reports and machine evidence are in the Round 2 `docs/dsm_v13_*` files and
+`docs/verification/data/dsm-v13-round2/`. Final Python, evidence, and audit
+checks have run; `git diff --check` passed. Explicit staging review, the
+separate RTL/contract and DV/evidence commits, and pushing this branch remain.
+Do not merge.
+
+## Previous execution state: DSM V1.3 Multi-SKU UVM Round 1 (2026-11-25)
 
 Working tree: `/home/ray/workspace/dsm-v13-mash-uvm-round1`, branch
 `work/dsm-v13-mash-uvm-round1`, based on `c8fe4299e4d87ead3daca41800ce6c331e6c0ea6`.

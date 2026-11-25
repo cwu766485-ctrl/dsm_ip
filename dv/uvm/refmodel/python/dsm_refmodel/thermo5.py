@@ -8,6 +8,8 @@ plain Python integers and emits the same hexadecimal .mem format.
 import random
 from pathlib import Path
 
+from .mash11 import Mash11Fixed
+
 
 LANES_IN = 8
 DATA_WIDTH = 16
@@ -381,6 +383,51 @@ def tid_word_ef2(i_values, q_values, states=None, width=16, step=5120):
     return plane_words, states, branch_stats
 
 
+def mash11_weighted_plane_code(level):
+    """Return the proposed four-plane logical code for one MASH level.
+
+    Plane weights are (-3, -1, +1, +3). The +2 reset transient is encoded as
+    plane 1 plus plane 3, whose weighted sum is also +2.
+    """
+    mapping = {
+        -3: (1, 0, 0, 0),
+        -1: (0, 1, 0, 0),
+         1: (0, 0, 1, 0),
+         2: (0, 1, 0, 1),
+         3: (0, 0, 0, 1),
+    }
+    try:
+        return mapping[int(level)]
+    except KeyError as exc:
+        raise ValueError("MASH Product level must be -3, -1, +1, +2, or +3") from exc
+
+
+def mash11_weighted_plane_word(i_values, q_values, states=None):
+    """Encode one chronological 32-lane I/Q MASH vector into four planes."""
+    if len(i_values) != len(q_values) or len(i_values) != 32:
+        raise ValueError("MASH Product requires equal 32-lane I/Q vectors")
+    if states is None:
+        states = (Mash11Fixed(input_width=16, accumulator_width=18),
+                  Mash11Fixed(input_width=16, accumulator_width=18))
+    if len(states) != 2:
+        raise ValueError("MASH Product state must contain independent I and Q models")
+
+    plane_words = [0, 0, 0, 0]
+    for lane, (sample_i, sample_q) in enumerate(zip(i_values, q_values)):
+        code_i = mash11_weighted_plane_code(states[0].step(True, sample_i).combined_level)
+        code_q = mash11_weighted_plane_code(states[1].step(True, sample_q).combined_level)
+        for plane in range(4):
+            if lane % 2 == 0:
+                bit_i, bit_q = code_i[plane], 1 - code_q[plane]
+            else:
+                bit_i, bit_q = 1 - code_i[plane], code_q[plane]
+            if bit_i:
+                plane_words[plane] |= 1 << (2 * lane)
+            if bit_q:
+                plane_words[plane] |= 1 << (2 * lane + 1)
+    return plane_words, states
+
+
 def run_frozen_frontend(i_words, q_words, frame_starts, frame_gains,
                         interp_taps=2, step=5120, tidsm_order=2):
     """Model gain, two x2 stages, identity DPD, and the four TID code planes."""
@@ -507,13 +554,27 @@ def run_centered_cubic_ef2_inputs(i_words, q_words, frame_starts, frame_gains,
 def run_centered_cubic_frontend(i_words, q_words, frame_starts, frame_gains,
                                 step=5120, dpd_coefficients=None,
                                 dpd_active_taps=None, tidsm_order=2,
-                                dpd_configs_by_frame=None):
+                                dpd_configs_by_frame=None, dsm_mode="tidsm"):
     """Generate four-plane oracle words for the streaming centered-cubic SKU.
 
     Each frame is zero-extended independently for the two centered FIR stages.
     The bit-true DPD in the UVM SKU is configured to identity; TID state remains
     continuous across frame boundaries, as in the RTL.
     """
+    if dsm_mode == "mash11":
+        ef2_words = run_centered_cubic_ef2_inputs(
+            i_words, q_words, frame_starts, frame_gains,
+            dpd_coefficients=dpd_coefficients,
+            dpd_active_taps=dpd_active_taps,
+            dpd_configs_by_frame=dpd_configs_by_frame)
+        states = None
+        output_words = []
+        for block_i, block_q in ef2_words:
+            word, states = mash11_weighted_plane_word(block_i, block_q, states)
+            output_words.append(word)
+        return output_words
+    if dsm_mode != "tidsm":
+        raise ValueError("dsm_mode must be 'tidsm' or 'mash11'")
     if tidsm_order not in (1, 2):
         raise ValueError("tidsm_order must be 1 or 2")
     ef2_words = run_centered_cubic_ef2_inputs(

@@ -95,7 +95,7 @@ class thermo5_sku_axil_packet_vseq extends uvm_sequence #(uvm_sequence_item);
     axil_write(8'h00,32'h0,resp);
     if (resp!=2'b00)
       `uvm_fatal("VSEQ_STOP","Virtual-sequence STOP request failed")
-    for (int cycle=0;cycle<20000 &&
+    for (int cycle=0;cycle<(20000+4*p_sequencer.cfg.core_words) &&
          p_sequencer.pa_monitor.accepted_words<p_sequencer.cfg.core_words;cycle++)
       @(posedge p_sequencer.pa_monitor.vif.core_clk);
     if (p_sequencer.pa_monitor.accepted_words!=p_sequencer.cfg.core_words)

@@ -1,96 +1,44 @@
-# DSM V1.3 Coverage Closure
+# DSM V1.3 Coverage Closure — Round 2
 
-The Round 1 URG reports are separated here into (1) complete compile dashboards,
-which include verification objects, (2) selected DUT instance-subtree code
-coverage, and (3) UVM functional coverage. Do not use the complete compile
-dashboard as a hardware-only code-coverage result. No bins were deleted,
-waived, or treated as unreachable.
+Date: 2026-11-25
+Raw and adjusted policy: raw data retained; no approved waiver/exclusion; adjusted equals raw.
+Decision: **OPEN**
 
-## Full compile dashboard (includes UVM/testbench)
+## Threshold results
 
-These are the historical full URG compilation totals. They include the
-verification hierarchy, so they are retained for traceability and must not be
-quoted as DUT-only RTL coverage.
+| Configuration | Line (≥95%) | Branch (≥95%) | Condition (≥95%) | Toggle (≥90%) | FSM summary | UVM group score (≥98%) |
+|---|---:|---:|---:|---:|---:|---:|
+| EF1 Product | 88.26 OPEN | 75.00 OPEN | 77.06 OPEN | 83.90 OPEN | 100.00% | 79.54% OPEN |
+| EF1 AXI-Lite | 88.35 OPEN | 74.86 OPEN | 80.03 OPEN | 79.89 OPEN | 68.18% OPEN | 87.95% OPEN |
+| EF2 Product | 82.59 OPEN | 62.22 OPEN | 67.51 OPEN | 81.44 OPEN | 100.00% | 74.06% OPEN |
+| EF2 AXI-Lite | 83.43 OPEN | 65.46 OPEN | 69.85 OPEN | 77.58 OPEN | 68.18% OPEN | 88.66% OPEN |
+| MASH Product | 87.75 OPEN | 74.58 OPEN | 74.26 OPEN | 80.33 OPEN | 77.27% OPEN | 76.57% OPEN |
+| MASH AXI-Lite | 87.91 OPEN | 74.71 OPEN | 78.14 OPEN | 75.33 OPEN | 68.18% OPEN | 88.31% OPEN |
+| MASH wrapper/core | 90.16 OPEN | 71.43 OPEN | 100.00% | 98.36% | N/A | Not integrated |
 
-| SKU / build | URG score | Line | Condition | Toggle | Branch | FSM | Assertion | Status |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| EF1 Product Generic FIFO | 80.62% | 88.26% | 87.63% | 82.38% | 74.77% | 100% | 86.21% | OPEN |
-| EF2 Product Generic FIFO | 72.88% | 82.63% | 62.54% | 80.07% | 62.22% | 100% | 76.47% | OPEN |
-| MASH 1-1 block | 86.42% | 90.77% | 100.00% | 98.45% | 71.43% | N/A | 71.43% | OPEN |
-| EF1 AXI-Lite Generic FIFO | 71.58% | 79.17% | 80.47% | 78.10% | 55.84% | 68.18% | 87.10% | OPEN |
-| EF2 AXI-Lite Generic FIFO | 65.48% | 75.32% | 56.94% | 75.90% | 49.94% | 68.18% | 78.95% | OPEN |
+FSM percentages are the URG summary metric available for each hierarchy. EF1/EF2 Product show 100% for that aggregate metric, but this does not waive other code gaps or establish the separate critical-control-branch criterion. Exact extracted FSM transition rows remain in the matrix.
 
-## Hardware RTL instance-subtree code coverage
+## Functional and cross coverage
 
-The table below is the hardware-only cut, read from each URG `hierarchy.html`
-row for the selected DUT instance and its child RTL. It excludes the UVM
-environment and verification interfaces. URG publishes percentages for these
-subtree rows; the source report does not provide subtree numerator/denominator
-counts. The MASH core-only row is nested under its wrapper row and is included
-as additional detail, not as another build.
+The six Product/AXI-Lite UVM functional group scores range from 74.06% to 88.66%; all are below 98%. The coverage data contains:
 
-| SKU / elaboration | URG score | Line | Condition | Toggle | Branch | FSM | RTL assertion | Status |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| EF1 Product, Generic FIFO | 86.13% | 88.26% | 77.06% | 83.90% | 75.00% | 100.00% | 92.59% | OPEN |
-| EF2 Product, Generic FIFO | 80.07% | 82.59% | 67.51% | 81.44% | 62.22% | 100.00% | 86.67% | OPEN |
-| EF1 AXI-Lite, Generic FIFO | 79.70% | 88.20% | 76.11% | 79.20% | 73.94% | 68.18% | 92.59% | OPEN |
-| EF2 AXI-Lite, Generic FIFO | 74.07% | 82.88% | 66.43% | 76.87% | 63.42% | 68.18% | 86.67% | OPEN |
-| MASH 1-1 wrapper + core | 89.99% | 90.16% | 100.00% | 98.36% | 71.43% | N/A | N/A | OPEN |
-| MASH 1-1 core only | 89.04% | 89.66% | 100.00% | 98.08% | 68.42% | N/A | N/A | OPEN |
+- 40 per-configuration functional group records with missed bins.
+- 31 OPEN cross rows, including source-gap/PA-backpressure/FIFO-full, reset/FIFO/DSM/clock combinations, restart/FIFO state, configuration/RUN, and MASH input-range/stage combinations.
+- Six NOT_INTEGRATED serializer-position/reset rows because the selected Product boundary terminates at parallel PA planes.
+- The MASH Product raw weighted-level group has 15/19 bins covered; `-4`, `-2`, `0`, and `+4` remain unhit. All five explicitly named legal level/code cross bins are hit.
 
-The code-coverage goals are Line >=95%, Branch >=95%, Condition >=95%, Toggle
->=90%, all reachable FSM states/transitions 100%, and mandatory functional
-coverage 100%. None of the EF1/EF2 DUT configurations meets all code goals.
-MASH line and branch are below target; MASH has no FSM or RTL assertion
-coverage points in this hierarchy. Overall code-coverage closure is **OPEN**.
+All exact group/cross names, values and source locations are in `functional_coverage.csv`, `cross_coverage.csv`, and the hole matrix. No legal bins were deleted or hidden to improve score. The single explicit source ignore-bin for simultaneous frame-start and TLAST on one accepted beat and explicit illegal-bin declarations are preserved as authored in the testbench. No coverage exclusions/waivers were applied by URG.
 
-## Functional coverage
+## Remaining OPEN work
 
-The EF1/EF2 values below are URG UVM covergroup scores, sampled from
-DUT-facing monitors. These are functional coverage results, not RTL code
-coverage.
+1. **RTL code bins:** 493 line, 1,206 branch, 526 condition, 539 toggle, and 23 FSM transition records remain individually listed with source module, line/expression or state arc. Another 24 rows summarize below-target aggregate metrics by configuration. For unhit RTL bins, reachability and sampling root cause have not yet been proven; the matrix leaves these OPEN.
+2. **Functional group bins:** hit the remaining reset-context full/partial FIFO, DSM-zero, clock-phase, malformed/extended packet, AXI-Lite read/write/error/strobe/response, EF2 clamp/stall/rail, and MASH quantizer/input-range bins with legal focused sequences or independently reviewed reachability evidence.
+3. **Cross bins:** close all 31 OPEN named cross rows, including Product source-gap/FIFO-full/PA-stall, reset-state combinations, restart/FIFO state, configuration/RUN, and MASH input-range/stage interactions.
+4. **MASH product contract:** independent review of candidate weights/polarity and raw-level reachability; align latency to MATLAB; integrate and verify actual serializer and physical PA mapping. The candidate arithmetic note is not a formal proof and is not a waiver.
+5. **Other sign-off:** formal, CDC/RDC, synthesis/PPA, physical serializer, board/RF, and calibrated performance evidence remain NOT RUN.
 
-| SKU / build | UVM functional group score | Status |
-|---|---:|---|
-| EF1 Product, Generic FIFO | 45.10% | OPEN |
-| EF2 Product, Generic FIFO | 46.26% | OPEN |
-| EF1 AXI-Lite, Generic FIFO | 52.23% | OPEN |
-| EF2 AXI-Lite, Generic FIFO | 53.10% | OPEN |
+The machine-readable hole matrix has 2,887 OPEN rows spanning 24 aggregate code metric rows, 2,787 detailed RTL line/branch/condition/toggle/FSM records, 40 functional-group gaps, 31 cross gaps, four MASH reachability/integration items, and one separate sign-off gap. Every row has a disposition and next action; source/bin details and evidence report hashes are retained.
 
-Product builds have uncovered `stop_restart`, `stop_tlast_drain`,
-`source_gap_pa_fifo`, and `run_prefill_gap` groups. AXI-Lite builds additionally
-have incomplete read/write transaction bins. Exact per-covergroup counts are
-in `docs/verification/data/dsm-v13-round1/functional_coverage.csv`.
+## Closure gate
 
-MASH 1-1 uses its block-level custom histogram and SVA covers rather than the
-Product UVM covergroups. Across ten seeds, 35,432 accepted outputs were checked;
-five of seven observed combined-level bins were hit (`-3`, `-1`, `+1`, `+2`,
-`+3`). The four steady-state symbols (`-3`, `-1`, `+1`, `+3`) were all observed.
-The `-2` and `0` histogram bins had no hits and remain OPEN; no reachability
-proof exists. The `+2` observations are reset transients. Both sampled SVA
-covers were hit (44 reset-release-to-valid matches and 3,108 valid-bubble-valid
-matches across 11 merged databases). This does not close MASH Product PA/lane/
-serializer coverage, because that Product integration contract is not defined.
-
-## Hole disposition and evidence
-
-| Hole family | Status | Disposition / next action |
-|---|---|---|
-| EF1 / EF2 RTL code lines, conditions and branches | OPEN | Use exact URG uncovered bins to add legal directed tests; do not alter denominators |
-| Toggle and FSM targets | OPEN | EF1/EF2 and AXI-Lite DUT subtrees are below one or more targets; MASH FSM is N/A |
-| Product functional crosses | OPEN | Close the uncovered groups and define MASH Product-level contracts before adding product crosses |
-| MASH combined-level bins | OPEN | Target `-2`/`0` with legal vectors or prove unreachability; no unreachability claim is made |
-| MASH PA/lane/serializer coverage | OPEN | Define the MASH Product mapping, then add product monitors, scoreboards, covergroups and sequences |
-| Longer random budgets | OPEN | The ten-seed MASH run is shorter than the requested 100-seed standard and 20-seed stress campaigns |
-
-Machine-readable DUT-only and functional tables are in
-`docs/verification/data/dsm-v13-round1/hardware_code_coverage.csv` and
-`docs/verification/data/dsm-v13-round1/functional_coverage.csv`. The complete
-compile coverage-hole ledger is
-`docs/verification/data/dsm-v13-round1/coverage_hole_matrix.csv`. URG report
-and raw-log SHA-256 values are indexed in
-`docs/verification/data/dsm-v13-round1/evidence.json`; full generated reports
-and simulator logs remain in the ignored `runs/` directory.
-
-This coverage report does not replace Formal, CDC/RDC, synthesis/PPA, RF, or
-hardware signoff. Those activities remain NOT RUN for this DV round.
+`python3 dv/uvm/sim/audit_dsm_v13_round2.py --mode coverage` returns 0 after validating the evidence structure, all seven configuration records, and manifest. `--mode closure` returns 2 and prints `DSM_V13_CLOSURE_OPEN=2887 OPEN coverage hole rows; fresh raw/adjusted URG coverage is not PASS; final DV sign-off gate is not satisfied`. This is the correct result for the current evidence.

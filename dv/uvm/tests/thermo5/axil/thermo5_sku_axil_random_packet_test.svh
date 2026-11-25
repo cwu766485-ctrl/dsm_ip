@@ -15,8 +15,9 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
 
   virtual function void configure_case();
     super.configure_case();
-    if (cfg.core_words!=56 && cfg.core_words!=112)
-      `uvm_fatal("RANDOM_WORDS","System random test supports 56 or 112 output words")
+    if (cfg.core_words<56 || cfg.core_words%56!=0)
+      `uvm_fatal("RANDOM_WORDS",
+        "System random test requires a positive integral number of 56-word packets")
     cfg.frame_starts=(cfg.core_words/56)*3;
     expected_last_count=cfg.source_beats/32;
     cfg.pa_sink_active=UVM_ACTIVE;
@@ -101,6 +102,9 @@ class thermo5_sku_axil_random_packet_test extends thermo5_sku_axil_base_test;
       `uvm_fatal("RANDOM_SCENARIO_CROSS",
         $sformatf("packet-scoped cross requires one epoch/packet with source gap, FIFO full, and PA stall; split_packet_records=%0d",
           env.coverage.split_packet_cross_count()))
+    if (env.coverage.run_prefill_gap_hits==0)
+      `uvm_fatal("RANDOM_PREFILL_GAP_CROSS",
+        "No same-packet source gap after RUN was observed following ingress prefill")
     `uvm_info("SKU_PASS",
       $sformatf("THERMO5_TX_RANDOM_PACKET_PASS source=%0d PA=%0d TLAST=%0d source_stall=%0d PA_stall=%0d FIFO_full=%0d",
         source_beats,env.scoreboard.checked,expected_last_count,

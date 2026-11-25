@@ -22,7 +22,7 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
 `else
   localparam bit USE_LOW_POWER_CTRL = 1'b0;
 `endif
-  localparam int USE_TIDSM_ORDER = DSM_ARCH;
+  localparam int USE_TIDSM_ORDER = (DSM_ARCH == 1) ? 1 : 2;
 `ifdef THERMO5_STEP
   localparam int USE_STEP = `THERMO5_STEP;
 `else
@@ -64,7 +64,7 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
   logic [15:0] identity_c1 = 16'd16384;
 `ifdef THERMO5_AXIL_CONTROL
   tid32_thermo5_axi_lite_axis_frontend_tx #(
-    .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),
+    .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),.DSM_ARCH(DSM_ARCH),
     .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
     .DPD_MAX_TAPS(USE_DPD_MAX_TAPS),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO)
   ) dut (
@@ -95,7 +95,7 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
   assign bus.cfg_active_payload=dut.u_cfg.cfg_active_core;
 `else
   tid32_thermo5_axis_frontend_tx #(
-    .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),
+    .STEP(USE_STEP),.TIDSM_ORDER(USE_TIDSM_ORDER),.DSM_ARCH(DSM_ARCH),
     .INTERP_TAPS(2),.INTERP_CENTERED_CUBIC(USE_CENTERED_CUBIC),
     .DPD_MAX_TAPS(1),.BYPASS_DPD(1'b0),.FPGA_USE_XPM_FIFO(USE_XPM_FIFO),
     .ENABLE_LOW_POWER_CTRL(USE_LOW_POWER_CTRL)
@@ -127,24 +127,29 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
   assign bus.core_tx_active=1'b0;
 `endif
   assign bus.centered_cubic_enabled = USE_CENTERED_CUBIC;
-  assign bus.ef2_order2_enabled = (USE_TIDSM_ORDER == 2);
+  assign bus.ef2_order2_enabled = (DSM_ARCH == 2);
+`ifdef THERMO5_AXIL_CONTROL
+  assign bus.fifo_empty = dut.u_cdc.fifo_rd_empty;
+`else
+  assign bus.fifo_empty = dut.u_cdc.fifo_rd_empty;
+`endif
   generate
-    if (USE_TIDSM_ORDER == 2) begin : g_ef2_observe
+    if (DSM_ARCH == 2) begin : g_ef2_observe
       for (genvar b = 0; b < 4; b = b + 1) begin : g_branch_observe
-        wire ef2_valid = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.in_valid;
-        wire ef2_ready = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.in_ready;
-        wire ef2_pos = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.clamp_positive_comb;
-        wire ef2_neg = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.clamp_negative_comb;
-        wire [19:0] e1i = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err1_i_q;
-        wire [19:0] e2i = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err2_i_q;
-        wire [19:0] e1q = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err1_q_q;
-        wire [19:0] e2q = dut.u_frontend.u_tid.g_branch[b].g_order2.u_tid.err2_q_q;
+        wire ef2_valid = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.in_valid;
+        wire ef2_ready = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.in_ready;
+        wire ef2_pos = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.clamp_positive_comb;
+        wire ef2_neg = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.clamp_negative_comb;
+        wire [19:0] e1i = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.err1_i_q;
+        wire [19:0] e2i = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.err2_i_q;
+        wire [19:0] e1q = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.err1_q_q;
+        wire [19:0] e2q = dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order2.u_tid.err2_q_q;
         assign bus.ef2_pos_clamp_event[b] = ef2_valid && ef2_ready && ef2_pos;
         assign bus.ef2_neg_clamp_event[b] = ef2_valid && ef2_ready && ef2_neg;
         assign bus.ef2_pos_clamp_candidate[b] =
-          dut.u_frontend.u_tid.in_valid && ef2_pos;
+          dut.u_frontend.g_tidsm_product.u_tid.in_valid && ef2_pos;
         assign bus.ef2_neg_clamp_candidate[b] =
-          dut.u_frontend.u_tid.in_valid && ef2_neg;
+          dut.u_frontend.g_tidsm_product.u_tid.in_valid && ef2_neg;
         assign bus.ef2_state_at_rail[b] =
           (e1i == 20'sh7ffff) || (e1i == -20'sh80000) ||
           (e2i == 20'sh7ffff) || (e2i == -20'sh80000) ||
@@ -158,7 +163,8 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
         assign bus.ef2_err2_q[b] = e2q;
       end
       assign bus.ef2_tidsm_stalled =
-        dut.u_frontend.u_tid.in_valid && !dut.u_frontend.u_tid.in_ready &&
+        dut.u_frontend.g_tidsm_product.u_tid.in_valid &&
+        !dut.u_frontend.g_tidsm_product.u_tid.in_ready &&
         (bus.pa_valid == 4'hf) && (bus.pa_ready != 4'hf);
       assign bus.ef2_clamp_stalled =
         (|bus.ef2_pos_clamp_candidate || |bus.ef2_neg_clamp_candidate) &&
@@ -181,8 +187,16 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
     end
   endgenerate
   generate
-    if (USE_TIDSM_ORDER == 2) begin : g_selected_ef2_state
+    if (DSM_ARCH == 2) begin : g_selected_ef2_state
       assign bus.tidsm_state_zero = bus.ef2_state_zero;
+    end else if (DSM_ARCH == 3) begin : g_selected_mash_state
+      wire mash_i_zero = (dut.u_frontend.g_mash11_product.u_mash11.state_i_q.e1 == '0) &&
+                         (dut.u_frontend.g_mash11_product.u_mash11.state_i_q.e2 == '0) &&
+                         (dut.u_frontend.g_mash11_product.u_mash11.state_i_q.e1_to_stage2 == '0);
+      wire mash_q_zero = (dut.u_frontend.g_mash11_product.u_mash11.state_q_q.e1 == '0) &&
+                         (dut.u_frontend.g_mash11_product.u_mash11.state_q_q.e2 == '0) &&
+                         (dut.u_frontend.g_mash11_product.u_mash11.state_q_q.e1_to_stage2 == '0);
+      assign bus.tidsm_state_zero = {2'b11,mash_q_zero,mash_i_zero};
     end else begin : g_selected_ef1_state
       for (genvar b = 0; b < 4; b = b + 1) begin : g_branch_state
         wire [31:0] vi_zero;
@@ -192,17 +206,17 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
         wire [7:0] bank_enable_zero;
         for (genvar lane = 0; lane < 32; lane = lane + 1) begin : g_lane
           assign vi_zero[lane] =
-            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_i[lane] == '0);
+            (dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order1.u_tid.v_i[lane] == '0);
           assign vq_zero[lane] =
-            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_q[lane] == '0);
+            (dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order1.u_tid.v_q[lane] == '0);
         end
         for (genvar bank = 0; bank < 8; bank = bank + 1) begin : g_bank
           assign feedback_i_zero[bank] =
-            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_i_feedback_local[bank] == '0);
+            (dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order1.u_tid.v_i_feedback_local[bank] == '0);
           assign feedback_q_zero[bank] =
-            (dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.v_q_feedback_local[bank] == '0);
+            (dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order1.u_tid.v_q_feedback_local[bank] == '0);
           assign bank_enable_zero[bank] =
-            !dut.u_frontend.u_tid.g_branch[b].g_order1.u_tid.bank_enable[bank];
+            !dut.u_frontend.g_tidsm_product.u_tid.g_branch[b].g_order1.u_tid.bank_enable[bank];
         end
         assign bus.tidsm_state_zero[b] = (&vi_zero) && (&vq_zero) &&
           (&feedback_i_zero) && (&feedback_q_zero) && (&bank_enable_zero);
@@ -329,6 +343,7 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
 `endif
   initial begin
     string testname;
+    bus.dsm_arch = DSM_ARCH;
     uvm_config_db#(virtual thermo5_sku_if)::set(null,"uvm_test_top*","vif",bus);
 `ifdef THERMO5_AXIL_CONTROL
     uvm_config_db#(virtual thermo5_axil_if)::set(null,"uvm_test_top.env.axil.*","vif",axil_bus);

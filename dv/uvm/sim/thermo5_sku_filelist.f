@@ -24,6 +24,7 @@ rtl/interp/dsm_interp_x2_polyphase_vector.sv
 rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv
 rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv
 rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv
+rtl/tx_bandpass_if/tid32_mash11_weighted_pa_tx.sv
 rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv
 rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv
 rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv

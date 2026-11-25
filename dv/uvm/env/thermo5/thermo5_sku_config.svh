@@ -12,6 +12,7 @@ class thermo5_sku_config extends uvm_object;
   bit expect_pa = 1;
   bit ef2_reference_enable;
   bit axil_control;
+  int unsigned dsm_arch = 2;
   uvm_active_passive_enum pa_sink_active = UVM_ACTIVE;
   function new(string name = "thermo5_sku_config"); super.new(name); endfunction
 endclass

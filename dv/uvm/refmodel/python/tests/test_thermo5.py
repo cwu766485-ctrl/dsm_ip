@@ -15,6 +15,7 @@ from dsm_refmodel.thermo5 import (
     nonlinear_test_dpd_coefficients,
     nonlinear_test_dpd_coefficients_4tap,
     one_tap_complex_coefficients,
+    mash11_weighted_plane_code,
     write_vectors,
 )
 
@@ -154,6 +155,43 @@ class Thermo5ReferenceTests(unittest.TestCase):
         output = run_centered_cubic_frontend(
             i_words, q_words, starts, gains, step=5120, tidsm_order=2)
         self.assertEqual(len(output), len(i_words))
+
+    def test_centered_mash11_product_oracle_uses_weighted_pa_planes(self):
+        i_words, q_words, starts, gains = generate_source_vectors(
+            words=14, seed=22731, frame_start_words=(1, 8),
+            frame_gains=(16384, 14336))
+        output = run_centered_cubic_frontend(
+            i_words, q_words, starts, gains, dsm_mode="mash11")
+        self.assertEqual(len(output), len(i_words))
+        self.assertTrue(all(len(word) == 4 for word in output))
+        self.assertTrue(all(0 <= plane < (1 << 64)
+                            for word in output for plane in word))
+
+        weights = (-3, -1, 1, 3)
+        # The first accepted scalar I sample in a reset epoch is the +2
+        # cancellation transient. Its I code is direct on lane zero; Q is
+        # complemented there by the inherited Fs/4 packing convention.
+        first_i = [(plane >> 0) & 1 for plane in output[0]]
+        first_q = [(plane >> 1) & 1 for plane in output[0]]
+        self.assertEqual(sum(w * b for w, b in zip(weights, first_i)), 2)
+        self.assertEqual(sum(w * (1 - b) for w, b in zip(weights, first_q)), 2)
+
+        levels = set()
+        for word in output:
+            for lane in range(32):
+                for bit_index in (2 * lane, 2 * lane + 1):
+                    code = [(plane >> bit_index) & 1 for plane in word]
+                    if bit_index % 2 == 0:
+                        if lane % 2:
+                            code = [1 - bit for bit in code]
+                    else:
+                        if lane % 2 == 0:
+                            code = [1 - bit for bit in code]
+                    level = sum(w * b for w, b in zip(weights, code))
+                    self.assertIn(level, (-3, -1, 1, 2, 3))
+                    self.assertEqual(code, list(mash11_weighted_plane_code(level)))
+                    levels.add(level)
+        self.assertTrue({-3, -1, 1, 2, 3}.issubset(levels))
 
     def test_memory_polynomial_unity_and_nonlinear_q_formats(self):
         samples = [(16384, 0), (0, -8192), (12000, 7000)]

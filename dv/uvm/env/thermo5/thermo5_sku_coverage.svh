@@ -14,6 +14,7 @@ class thermo5_sku_coverage extends uvm_component;
     bit source_gap_after_run;
     bit tlast_seen;
     bit stop_before_tlast;
+    bit pa_stall_after_stop;
     bit tlast_after_stop;
     bit drain_after_tlast;
     bit finalized;
@@ -23,6 +24,7 @@ class thermo5_sku_coverage extends uvm_component;
   } packet_cross_record_t;
 
   uvm_analysis_imp_event#(thermo5_transaction_event,thermo5_sku_coverage) event_imp;
+  uvm_analysis_imp_pa_cov#(thermo5_pa_word,thermo5_sku_coverage) pa_cov_imp;
   virtual thermo5_sku_if vif;
   thermo5_sku_config cfg;
   int unsigned event_counts[10];
@@ -52,11 +54,16 @@ class thermo5_sku_coverage extends uvm_component;
   int unsigned last_source_epoch, last_source_packet_id;
   bit last_source_packet_valid;
   bit run_active;
+  bit stop_armed_for_restart;
   longint unsigned stop_candidate_key;
   bit stop_candidate_valid;
   int unsigned output_words_per_packet;
   int unsigned source_gap_pa_fifo_full_hits, run_prefill_gap_hits;
-  int unsigned stop_tlast_drain_hits;
+  int unsigned stop_tlast_drain_hits, stop_pa_backpressure_hits;
+  time last_src_posedge_time, last_core_posedge_time;
+  int unsigned mash_pa_words, mash_pa_symbols, mash_invalid_code_symbols;
+  int unsigned mash_code_hits[16];
+  int unsigned mash_level_hits[-4:4];
 
   function automatic longint unsigned packet_key(int unsigned epoch,
                                                    int unsigned packet_id);
@@ -112,6 +119,60 @@ class thermo5_sku_coverage extends uvm_component;
     x_stop_tlast_drain: cross cp_stop, cp_tlast, cp_drain;
   endgroup
 
+`ifdef THERMO5_AXIL_CONTROL
+  covergroup stop_pa_backpressure_cg with function sample(bit stop_seen,
+                                                           bit pa_backpressure_seen);
+    option.per_instance = 1;
+    cp_stop: coverpoint stop_seen iff (stop_seen) { bins observed={1}; }
+    cp_pa_backpressure: coverpoint pa_backpressure_seen iff (pa_backpressure_seen) {
+      bins observed={1};
+    }
+    x_stop_pa_backpressure: cross cp_stop, cp_pa_backpressure;
+  endgroup
+`endif
+
+`ifdef THERMO5_AXIL_CONTROL
+  covergroup restart_fifo_state_cg with function sample(bit restart_seen,
+                                                         int unsigned fifo_state);
+    option.per_instance = 1;
+    cp_restart: coverpoint restart_seen { bins restart={1}; }
+    cp_fifo_state: coverpoint fifo_state {
+      bins empty={0}; bins partial={1}; bins full={2};
+    }
+    x_restart_fifo_state: cross cp_restart, cp_fifo_state;
+  endgroup
+`endif
+
+  covergroup reset_context_cg with function sample(bit source_domain,
+                                                    int unsigned fifo_state,
+                                                    bit dsm_nonzero,
+                                                    bit core_edge_after_source);
+    option.per_instance = 1;
+    cp_reset_domain: coverpoint source_domain { bins source={1}; bins core={0}; }
+    cp_fifo_state: coverpoint fifo_state {
+      bins empty={0}; bins partial={1}; bins full={2};
+    }
+    cp_dsm_state: coverpoint dsm_nonzero { bins zero={0}; bins active={1}; }
+    cp_clock_phase: coverpoint core_edge_after_source {
+      bins source_edge_recent={0}; bins core_edge_recent={1};
+    }
+    x_reset_fifo_state: cross cp_reset_domain, cp_fifo_state;
+    x_reset_dsm_state: cross cp_reset_domain, cp_dsm_state;
+    x_reset_clock_phase: cross cp_reset_domain, cp_clock_phase;
+  endgroup
+
+`ifdef THERMO5_AXIL_CONTROL
+  covergroup config_run_cg with function sample(int unsigned config_kind,
+                                                 bit run_state);
+    option.per_instance = 1;
+    cp_config_kind: coverpoint config_kind {
+      bins control={0}; bins taps={1}; bins coefficient={2}; bins other={3};
+    }
+    cp_run_state: coverpoint run_state { bins stopped={0}; bins running={1}; }
+    x_config_run_state: cross cp_config_kind, cp_run_state;
+  endgroup
+`endif
+
   covergroup source_cg with function sample(bit full, bit stalled, bit start,
                                               bit reset_low, bit signed_min,
                                               bit signed_max, bit packet_end,
@@ -135,6 +196,13 @@ class thermo5_sku_coverage extends uvm_component;
       ignore_bins start_and_end_same_beat =
         binsof(cp_start.frame) && binsof(cp_packet_end.accepted_end);
     }
+  endgroup
+
+  covergroup axis_valid_ready_cg with function sample(bit valid, bit ready);
+    option.per_instance = 1;
+    cp_valid: coverpoint valid { bins low={0}; bins high={1}; }
+    cp_ready: coverpoint ready { bins low={0}; bins high={1}; }
+    x_valid_ready: cross cp_valid, cp_ready;
   endgroup
 
   covergroup core_cg with function sample(bit underflow, bit illegal, bit pa_stall, bit pa_word);
@@ -198,6 +266,38 @@ class thermo5_sku_coverage extends uvm_component;
     }
   endgroup
 
+  // Sample only accepted four-plane PA words through the passive PA monitor.
+  // Raw weighted levels -2 and 0 remain explicit bins so any later encoding
+  // or RTL change that reaches them is visible in the same report.
+  covergroup mash11_product_cg with function sample(int signed level,
+                                                     logic [3:0] plane_code);
+    option.per_instance = 1;
+    option.cross_auto_bin_max = 0;
+    cp_raw_weighted_level: coverpoint level {
+      bins minus4={-4}; bins minus3={-3}; bins minus2={-2};
+      bins minus1={-1}; bins zero={0}; bins plus1={1};
+      bins plus2={2}; bins plus3={3}; bins plus4={4};
+    }
+    cp_plane_code: coverpoint plane_code {
+      bins level_minus3={4'b0001}; bins level_minus1={4'b0010};
+      bins level_plus1={4'b0100}; bins level_plus2_startup={4'b1010};
+      bins level_plus3={4'b1000};
+      bins other_codes=default;
+    }
+    x_level_x_code: cross cp_raw_weighted_level, cp_plane_code {
+      bins minus3_code = binsof(cp_raw_weighted_level.minus3) &&
+                         binsof(cp_plane_code.level_minus3);
+      bins minus1_code = binsof(cp_raw_weighted_level.minus1) &&
+                         binsof(cp_plane_code.level_minus1);
+      bins plus1_code = binsof(cp_raw_weighted_level.plus1) &&
+                        binsof(cp_plane_code.level_plus1);
+      bins startup_plus2_code = binsof(cp_raw_weighted_level.plus2) &&
+                                binsof(cp_plane_code.level_plus2_startup);
+      bins plus3_code = binsof(cp_raw_weighted_level.plus3) &&
+                        binsof(cp_plane_code.level_plus3);
+    }
+  endgroup
+
   covergroup transaction_event_cg with function sample(bit [3:0] event_kind);
     option.per_instance = 1;
     cp_kind: coverpoint event_kind {
@@ -215,12 +315,102 @@ class thermo5_sku_coverage extends uvm_component;
   endgroup
 
   function new(string name, uvm_component parent);
+    thermo5_sku_config constructor_cfg;
     super.new(name,parent);
-    source_cg=new(); core_cg=new(); plane_atomic_cg=new(); ef2_cg=new();
-    stop_restart_cg=new(); transaction_event_cg=new();
-    source_gap_pa_fifo_cg=new(); run_prefill_gap_cg=new();
-    stop_tlast_drain_cg=new();
+    source_cg=new(); core_cg=new(); plane_atomic_cg=new();
+    axis_valid_ready_cg=new();
+    transaction_event_cg=new();
+    source_gap_pa_fifo_cg=new();
+    // Architecture- and control-specific groups are instantiated only when
+    // the elaborated SKU exposes the corresponding behavior. This keeps the
+    // mandatory denominator honest without deleting any legal bins.
+    if (uvm_config_db#(thermo5_sku_config)::get(this,"","cfg",constructor_cfg)) begin
+      if (constructor_cfg.dsm_arch==2) ef2_cg=new();
+      if (constructor_cfg.dsm_arch==3) mash11_product_cg=new();
+      if (constructor_cfg.axil_control) begin
+        stop_restart_cg=new();
+        run_prefill_gap_cg=new();
+        stop_tlast_drain_cg=new();
+      end
+    end
+`ifdef THERMO5_AXIL_CONTROL
+    stop_pa_backpressure_cg=new();
+    restart_fifo_state_cg=new(); reset_context_cg=new(); config_run_cg=new();
+`else
+    reset_context_cg=new();
+`endif
     event_imp=new("event_imp",this);
+    pa_cov_imp=new("pa_cov_imp",this);
+  endfunction
+
+  function real stop_restart_coverage();
+    if (cfg!=null && cfg.axil_control) return stop_restart_cg.get_coverage();
+    return 0.0;
+  endfunction
+
+  function real run_prefill_gap_coverage();
+    if (cfg!=null && cfg.axil_control) return run_prefill_gap_cg.get_coverage();
+    return 0.0;
+  endfunction
+
+  function real stop_tlast_drain_coverage();
+    if (cfg!=null && cfg.axil_control) return stop_tlast_drain_cg.get_coverage();
+    return 0.0;
+  endfunction
+
+  function real ef2_coverage();
+    if (cfg!=null && cfg.dsm_arch==2) return ef2_cg.get_coverage();
+    return 0.0;
+  endfunction
+
+  function automatic bit decode_mash11_plane_code(logic [3:0] code,
+                                                   output int signed level);
+    case (code)
+      4'b0001: level=-3;
+      4'b0010: level=-1;
+      4'b0100: level=1;
+      4'b1010: level=2;
+      4'b1000: level=3;
+      default: begin level=0; return 0; end
+    endcase
+    return 1;
+  endfunction
+
+  function void write_pa_cov(thermo5_pa_word tr);
+    logic [3:0] code_i, code_q;
+    int signed level_i, level_q;
+    bit code_valid;
+    if (cfg.dsm_arch!=3) return;
+    mash_pa_words++;
+    for (int lane=0;lane<32;lane++) begin
+      code_i='0;
+      code_q='0;
+      for (int plane=0;plane<4;plane++) begin
+        code_i[plane]=tr.plane[plane][2*lane] ^ (lane%2!=0);
+        code_q[plane]=tr.plane[plane][2*lane+1] ^ (lane%2==0);
+      end
+      level_i=-3*int'(code_i[0])-int'(code_i[1])+
+              int'(code_i[2])+3*int'(code_i[3]);
+      level_q=-3*int'(code_q[0])-int'(code_q[1])+
+              int'(code_q[2])+3*int'(code_q[3]);
+      for (int component=0;component<2;component++) begin
+        logic [3:0] code;
+        int signed level, decoded_level;
+        code=(component==0) ? code_i : code_q;
+        level=(component==0) ? level_i : level_q;
+        if (level>=-4 && level<=4) mash_level_hits[level]++;
+        mash_code_hits[code]++;
+        mash11_product_cg.sample(level,code);
+        code_valid=decode_mash11_plane_code(code,decoded_level);
+        if (!code_valid || decoded_level!=level) begin
+          mash_invalid_code_symbols++;
+          `uvm_error("MASH_PA_CODE",
+            $sformatf("epoch=%0d word=%0d lane=%0d component=%s plane_code=%b weighted_level=%0d",
+              tr.epoch,tr.word_index,lane,component==0 ? "I" : "Q",code,level))
+        end
+        mash_pa_symbols++;
+      end
+    end
   endfunction
 
   function void write_event(thermo5_transaction_event tr);
@@ -236,6 +426,7 @@ class thermo5_sku_coverage extends uvm_component;
         packet_cross_keys.delete();
         last_source_packet_valid=0;
         run_active=0;
+        stop_armed_for_restart=0;
         stop_candidate_valid=0;
       end
       THERMO5_EVENT_SOURCE_BEAT: begin
@@ -263,11 +454,28 @@ class thermo5_sku_coverage extends uvm_component;
         last_source_packet_valid=1;
       end
       THERMO5_EVENT_AXIL_WRITE: begin
+`ifdef THERMO5_AXIL_CONTROL
+        if (tr.axil_addr==8'h00)
+          config_run_cg.sample(0,tr.axil_data[0]);
+        else if (tr.axil_addr==8'h08)
+          config_run_cg.sample(1,run_active);
+        else if (tr.axil_addr>=8'h10 && tr.axil_addr<=8'h3c)
+          config_run_cg.sample(2,run_active);
+        else
+          config_run_cg.sample(3,run_active);
+`endif
         if (tr.axil_addr==8'h00 && tr.axil_strb[0]) begin
           if (last_source_packet_valid) begin
             key=packet_key(last_source_epoch,last_source_packet_id);
             record=get_packet_record(last_source_epoch,last_source_packet_id);
             if (tr.axil_data[0]) begin
+`ifdef THERMO5_AXIL_CONTROL
+              if (stop_armed_for_restart) begin
+                restart_fifo_state_cg.sample(1'b1,
+                  vif.fifo_empty ? 0 : (vif.fifo_full ? 2 : 1));
+                stop_armed_for_restart=0;
+              end
+`endif
               run_active=1;
               if (!record.run_seen && record.source_beats!=0 && !record.tlast_seen)
                 record.prefill_before_run=1;
@@ -283,6 +491,7 @@ class thermo5_sku_coverage extends uvm_component;
                 stop_candidate_key=key;
                 stop_candidate_valid=1;
               end
+              if (run_active) stop_armed_for_restart=1;
               run_active=0;
             end
             packet_cross[key]=record;
@@ -310,14 +519,14 @@ class thermo5_sku_coverage extends uvm_component;
   endfunction
 
   function void sample_stop_restart(bit [2:0] event_code);
-    stop_restart_cg.sample(event_code);
+    if (cfg!=null && cfg.axil_control) stop_restart_cg.sample(event_code);
   endfunction
 
   function void finalize_packet_crosses(bit integrity_pass);
     packet_cross_record_t record;
     longint unsigned key;
     int sampled_gap_fifo_pa=0, sampled_run_prefill_gap=0;
-    int sampled_stop_tlast_drain=0;
+    int sampled_stop_tlast_drain=0, sampled_stop_pa_backpressure=0;
     if (!integrity_pass) begin
       `uvm_error("COVERAGE_INTEGRITY","Scenario crosses cannot be finalized without a passing DUT integrity check")
       return;
@@ -334,35 +543,66 @@ class thermo5_sku_coverage extends uvm_component;
         source_gap_pa_fifo_full_hits++;
         sampled_gap_fifo_pa++;
       end
-      if (record.run_seen && record.prefill_before_run &&
+      if (cfg.axil_control && record.run_seen && record.prefill_before_run &&
           record.source_gap_after_run) begin
         run_prefill_gap_cg.sample(1'b1,1'b1,1'b1);
         run_prefill_gap_hits++;
         sampled_run_prefill_gap++;
       end
-      if (record.stop_before_tlast && record.tlast_after_stop &&
+      if (cfg.axil_control && record.stop_before_tlast && record.tlast_after_stop &&
           record.drain_after_tlast) begin
         stop_tlast_drain_cg.sample(1'b1,1'b1,1'b1);
         stop_tlast_drain_hits++;
         sampled_stop_tlast_drain++;
       end
+`ifdef THERMO5_AXIL_CONTROL
+      if (record.stop_before_tlast && record.pa_stall_after_stop) begin
+        stop_pa_backpressure_cg.sample(1'b1,1'b1);
+        stop_pa_backpressure_hits++;
+        sampled_stop_pa_backpressure++;
+      end
+`endif
       `uvm_info("PACKET_CROSS_AUDIT",
-        $sformatf("epoch=%0d packet=%0d source_gap=%b fifo_full=%b pa_stall=%b run=%b prefill=%b gap_after_run=%b stop_before_tlast=%b tlast_after_stop=%b drain_after_tlast=%b integrity=PASS",
+        $sformatf("epoch=%0d packet=%0d source_gap=%b fifo_full=%b pa_stall=%b run=%b prefill=%b gap_after_run=%b stop_before_tlast=%b pa_stall_after_stop=%b tlast_after_stop=%b drain_after_tlast=%b integrity=PASS",
           record.epoch,record.packet_id,record.source_gap,record.fifo_full,
           record.pa_stall,record.run_seen,record.prefill_before_run,
-          record.source_gap_after_run,record.stop_before_tlast,
+          record.source_gap_after_run,record.stop_before_tlast,record.pa_stall_after_stop,
           record.tlast_after_stop,record.drain_after_tlast),UVM_MEDIUM)
     end
     `uvm_info("PACKET_CROSS_FINALIZE",
-      $sformatf("integrity=PASS packet_records=%0d gap_fifo_pa=%0d run_prefill_gap=%0d stop_tlast_drain=%0d",
+      $sformatf("integrity=PASS packet_records=%0d gap_fifo_pa=%0d run_prefill_gap=%0d stop_tlast_drain=%0d stop_pa_backpressure=%0d",
         packet_cross_keys.size(),sampled_gap_fifo_pa,sampled_run_prefill_gap,
-        sampled_stop_tlast_drain),UVM_LOW)
+        sampled_stop_tlast_drain,sampled_stop_pa_backpressure),UVM_LOW)
   endfunction
 
   function void sample_random_packet_crosses();
     // Legacy call site retained: it occurs only after the test has completed
     // its independent source/CDC/EF2/PA and STATUS checks.
     finalize_packet_crosses(1'b1);
+  endfunction
+
+  function real stop_pa_backpressure_coverage();
+`ifdef THERMO5_AXIL_CONTROL
+    return stop_pa_backpressure_cg.get_coverage();
+`else
+    return 0.0;
+`endif
+  endfunction
+
+  function real restart_fifo_state_coverage();
+`ifdef THERMO5_AXIL_CONTROL
+    return restart_fifo_state_cg.get_coverage();
+`else
+    return 0.0;
+`endif
+  endfunction
+
+  function real config_run_coverage();
+`ifdef THERMO5_AXIL_CONTROL
+    return config_run_cg.get_coverage();
+`else
+    return 0.0;
+`endif
   endfunction
 
   function bit has_source_gap_fifo_pa_packet();
@@ -391,6 +631,7 @@ class thermo5_sku_coverage extends uvm_component;
     source_gap_pa_fifo_full_hits=0;
     run_prefill_gap_hits=0;
     stop_tlast_drain_hits=0;
+    stop_pa_backpressure_hits=0;
     record='0;
     record.epoch=32'hffff_fffe;
     record.packet_id=0;
@@ -441,6 +682,7 @@ class thermo5_sku_coverage extends uvm_component;
     fork
       forever begin
         @(posedge vif.src_clk);
+        last_src_posedge_time=$time;
         accepted_min=0;
         accepted_max=0;
         accepted_last=vif.src_valid && vif.src_ready && vif.src_last;
@@ -459,6 +701,7 @@ class thermo5_sku_coverage extends uvm_component;
                          vif.src_valid && vif.src_ready && vif.frame_start,
                          !vif.src_rst_n, accepted_min, accepted_max,
                          accepted_last, sampled_packet_quanta);
+        axis_valid_ready_cg.sample(vif.src_valid,vif.src_ready);
         if (seen_src_release && last_src_rst_n && !vif.src_rst_n) reset_reassertions++;
         if (!vif.src_rst_n) packet_beats_since_boundary=0;
         if (!vif.src_rst_n) begin
@@ -503,11 +746,13 @@ class thermo5_sku_coverage extends uvm_component;
       end
       forever begin
         @(posedge vif.core_clk);
+        last_core_posedge_time=$time;
         plane_atomic_cg.sample(vif.pa_valid, vif.pa_ready);
-        ef2_cg.sample(|vif.ef2_pos_clamp_event, |vif.ef2_neg_clamp_event,
-                      |vif.ef2_pos_clamp_candidate, |vif.ef2_neg_clamp_candidate,
-                      vif.ef2_clamp_stalled, vif.ef2_tidsm_stalled,
-                      |vif.ef2_state_at_rail);
+        if (cfg.dsm_arch==2)
+          ef2_cg.sample(|vif.ef2_pos_clamp_event, |vif.ef2_neg_clamp_event,
+                        |vif.ef2_pos_clamp_candidate, |vif.ef2_neg_clamp_candidate,
+                        vif.ef2_clamp_stalled, vif.ef2_tidsm_stalled,
+                        |vif.ef2_state_at_rail);
         core_cg.sample(vif.underflow, vif.protocol_error,
                        vif.pa_valid==4'hf && vif.pa_ready!=4'hf,
                        vif.pa_valid==4'hf && vif.pa_ready==4'hf);
@@ -519,6 +764,9 @@ class thermo5_sku_coverage extends uvm_component;
             packet_record_key=packet_key(last_source_epoch,output_packet_id);
             packet_record=get_packet_record(last_source_epoch,output_packet_id);
             packet_record.pa_stall=1;
+            if (packet_record.stop_before_tlast && !vif.core_run_request &&
+                vif.core_tx_active)
+              packet_record.pa_stall_after_stop=1;
             packet_cross[packet_record_key]=packet_record;
           end
           if (!cfg.illegal_frame) begin
@@ -590,6 +838,10 @@ class thermo5_sku_coverage extends uvm_component;
       end
       forever begin
         @(negedge vif.core_rst_n);
+        reset_context_cg.sample(1'b0,
+          vif.fifo_empty ? 0 : (vif.fifo_full ? 2 : 1),
+          |(vif.tidsm_state_zero ^ 4'hf),
+          last_core_posedge_time>last_src_posedge_time);
         accepted_output_words_epoch=0;
         pending_tlast_output_targets.delete();
         accepted_cdc_output_words_epoch=0;
@@ -601,12 +853,19 @@ class thermo5_sku_coverage extends uvm_component;
         ef2_state_nonzero_seen=1'b0;
         tidsm_state_nonzero_seen=1'b0;
       end
+      forever begin
+        @(negedge vif.src_rst_n);
+        reset_context_cg.sample(1'b1,
+          vif.fifo_empty ? 0 : (vif.fifo_full ? 2 : 1),
+          |(vif.tidsm_state_zero ^ 4'hf),
+          last_core_posedge_time>last_src_posedge_time);
+      end
     join
   endtask
 
   function void report_phase(uvm_phase phase);
     super.report_phase(phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset_nonzero_tidsm=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset_nonzero_tidsm=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d stop_pa_backpressure_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f stop_pa_backpressure_cg=%.1f restart_fifo_state_cg=%.1f reset_context_cg=%.1f config_run_cg=%.1f axis_valid_ready_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
       accepted_cdc_output_words_epoch,cdc_frame_end_events,
       cdc_end_remaining_false_arm_events,
@@ -619,11 +878,25 @@ class thermo5_sku_coverage extends uvm_component;
       ef2_positive_clamp_events,ef2_negative_clamp_events,
       ef2_clamp_stall_cycles,ef2_tidsm_stall_cycles,ef2_state_rail_cycles,
       ef2_state_rail_stall_cycles,source_gap_pa_fifo_full_hits,run_prefill_gap_hits,
-      stop_tlast_drain_hits,source_gap_pa_fifo_cg.get_coverage(),
-      run_prefill_gap_cg.get_coverage(),stop_tlast_drain_cg.get_coverage(),
+      stop_tlast_drain_hits,stop_pa_backpressure_hits,source_gap_pa_fifo_cg.get_coverage(),
+      run_prefill_gap_coverage(),stop_tlast_drain_coverage(),
+      stop_pa_backpressure_coverage(),restart_fifo_state_coverage(),
+      reset_context_cg.get_coverage(),config_run_coverage(),
+      axis_valid_ready_cg.get_coverage(),
       source_cg.get_coverage(),core_cg.get_coverage(),
-      plane_atomic_cg.get_coverage(),stop_restart_cg.get_coverage(),
-      ef2_cg.get_coverage()),UVM_NONE)
+      plane_atomic_cg.get_coverage(),stop_restart_coverage(),
+      ef2_coverage()),UVM_NONE)
+    if (cfg.dsm_arch==3) begin
+      `uvm_info("MASH_PRODUCT_COVERAGE",
+        $sformatf("pa_words=%0d symbols=%0d invalid_codes=%0d weighted_levels[-4..4]=[%0d,%0d,%0d,%0d,%0d,%0d,%0d,%0d,%0d] code_hits[1,2,4,8,10]=[%0d,%0d,%0d,%0d,%0d] cg=%.1f",
+            mash_pa_words,mash_pa_symbols,mash_invalid_code_symbols,
+            mash_level_hits[-4],mash_level_hits[-3],mash_level_hits[-2],
+            mash_level_hits[-1],mash_level_hits[0],mash_level_hits[1],
+            mash_level_hits[2],mash_level_hits[3],mash_level_hits[4],
+            mash_code_hits[1],mash_code_hits[2],mash_code_hits[4],
+            mash_code_hits[8],mash_code_hits[10],mash11_product_cg.get_coverage()),
+          UVM_NONE)
+    end
     `uvm_info("THERMO5_EVENT_COVERAGE",
       $sformatf("stream=%.1f%% src=%0d pa=%0d axil_wr=%0d axil_rd=%0d axil_rsp=%0d cdc=%0d dsp=%0d ef2=%0d ef2_stall=%0d reset=%0d",
         transaction_event_cg.get_coverage(),

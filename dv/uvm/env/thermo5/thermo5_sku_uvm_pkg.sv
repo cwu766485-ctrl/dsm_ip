@@ -32,6 +32,7 @@ package thermo5_sku_uvm_pkg;
   `uvm_analysis_imp_decl(_dsp_evt)
   `uvm_analysis_imp_decl(_ef2_evt)
   `uvm_analysis_imp_decl(_event)
+  `uvm_analysis_imp_decl(_pa_cov)
   `include "thermo5_transaction_event.svh"
   `include "thermo5_source_sequencer.svh"
   `include "thermo5_source_driver.svh"

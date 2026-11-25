@@ -53,6 +53,8 @@ def main():
     parser.add_argument("--step", type=int, default=5120)
     parser.add_argument("--tidsm-order", type=int, choices=(1, 2), default=2,
                         help="use the main-chain EF2 TIDSM (default) or first-order fallback")
+    parser.add_argument("--dsm-mode", choices=("tidsm", "mash11"), default="tidsm",
+                        help="select the Product TIDSM or candidate MASH 1-1 backend")
     parser.add_argument("--frame-start-words", default="1,15,36")
     parser.add_argument("--frame-gains", default="16384,14336,12288")
     args = parser.parse_args()
@@ -68,6 +70,8 @@ def main():
             frame_gains=_csv_ints(args.frame_gains),
         )
     ef2_words = None
+    if args.dsm_mode == "mash11" and args.interp_mode != "centered_cubic":
+        parser.error("--dsm-mode mash11 currently requires --interp-mode centered_cubic")
     if args.interp_mode == "centered_cubic":
         if args.dpd_profile == "nonlinear_test":
             coefficients, active_taps = nonlinear_test_dpd_coefficients(), 2
@@ -102,7 +106,8 @@ def main():
             i_words, q_words, starts, gains, step=args.step,
             dpd_coefficients=coefficients,
             dpd_active_taps=active_taps,
-            tidsm_order=args.tidsm_order)
+            tidsm_order=args.tidsm_order,
+            dsm_mode=args.dsm_mode)
     else:
         if args.dpd_profile != "identity":
             parser.error("--dpd-profile nonlinear_test currently requires --interp-mode centered_cubic")
@@ -116,8 +121,8 @@ def main():
                   ef2_words=ef2_words)
     print("THERMO5_PYTHON_VECTORS=PASS")
     print("source_words=%d output_words_per_plane=%d" % (len(i_words), len(pa_words)))
-    print("interp_mode=%s interp_taps=%d dpd_profile=%s dpd_c1_re_q14=%s dpd_c1_im_q14=%s dpd_c3_re_q14=%s dpd_c3_im_q14=%s dpd_c5_re_q14=%s dpd_c5_im_q14=%s tidsm_order=%d step=%d profile=%s" % (
-        args.interp_mode, args.interp_taps, args.dpd_profile,
+    print("interp_mode=%s interp_taps=%d dsm_mode=%s dpd_profile=%s dpd_c1_re_q14=%s dpd_c1_im_q14=%s dpd_c3_re_q14=%s dpd_c3_im_q14=%s dpd_c5_re_q14=%s dpd_c5_im_q14=%s tidsm_order=%d step=%d profile=%s" % (
+        args.interp_mode, args.interp_taps, args.dsm_mode, args.dpd_profile,
         args.dpd_c1_re_q14, args.dpd_c1_im_q14,
         args.dpd_c3_re_q14, args.dpd_c3_im_q14,
         args.dpd_c5_re_q14, args.dpd_c5_im_q14,

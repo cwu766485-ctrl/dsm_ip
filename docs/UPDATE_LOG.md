@@ -1,3 +1,50 @@
+# 2026-11-25 14:45 SGT - DSM V1.3 Round 2 coverage-applicability and URG flow fixes
+
+- Changed `dv/uvm/env/thermo5/thermo5_sku_coverage.svh` so the MASH Product
+  covergroup is constructed only when the pre-published SKU config selects
+  `DSM_ARCH=3`. URG showed that changing the instance weight in `build_phase`
+  still left the unused MASH group at weight 1 in EF1/EF2 reports. A fresh EF1
+  directed run and URG merge now show 11 applicable groups and no MASH-only
+  group; the MASH Product run retains its codebook group.
+- Changed `dv/uvm/sim/Makefile` so the scalar MASH wrapper/core regression
+  produces its VDB before the seven-way per-SKU URG target runs. The first
+  final batch reported `NO_MATCHING_VDBS` for this ordering issue; the core
+  seed 130011 was rerun and the subsequent seven-way URG merge passed.
+- Checks: `make dsm-v13-ef1-regression` on the conditional group change;
+  standalone URG on EF1 confirming 11 groups and no `mash11_product_cg`;
+  `make dsm-v13-mash11-core-regression` (3551/3551 checked); corrected URG
+  merge (7/7 configurations PASS). The full suite is being rerun after the
+  group-construction change.
+- Remaining limitations: this is candidate digital behavior only. Physical
+  MASH PA weights/polarity, MATLAB latency matching, Formal, CDC/RDC, PPA,
+  serializer and board evidence remain OPEN.
+
+# 2026-11-25 13:05 +08 - DSM V1.3 Round 2 baseline preflight
+
+- Created the independent `work/dsm-v13-mash-uvm-round2` worktree from Round 1
+  HEAD `522eb372436e68b17cdfa87bc38aaecdcc4831eb`; the Round 1 and CDC/RDC
+  worktrees remain unchanged.
+- Revalidated the original Round 1 package: 327/327 source-manifest entries,
+  229/229 raw-log hashes, and 151/151 captured-artifact hashes match. The
+  original source manifest digest remains
+  `8860bee616e4c605b9c061982f132074807d4e5f0ce8785bbee9ac074edcc8b7`.
+- Attempted a fresh Round 2 multi-SKU VCS baseline. Compilation did not start:
+  VCS reported that it could not connect to the Synopsys license server. This
+  is recorded as unavailable infrastructure, not a design/test failure or
+  PASS. URG is not installed in the checked executable paths.
+- Read the existing Product/AXI-Lite and imported MASH source boundaries. No
+  MASH Product RTL, PA/lane/serializer mapping, or product latency contract is
+  present in Round 1. The user selected development of a candidate MASH output
+  encoding on the existing four-plane interface; physical PA acceptance
+  remains OPEN.
+- Checks: Round 1 manifest/log/artifact hashes; `make -C dv/uvm/sim
+  check-tools PYTHON=python3.12` (VCS executable and Python found, Verdi absent);
+  fresh multi-SKU attempt stopped before compile on license-server connection.
+- Remaining limitations: current Round 2 VCS/URG runs and coverage closure are
+  not yet available; MASH PA weights/polarity and MATLAB latency alignment need
+  explicit evidence; Formal, CDC/RDC, PPA, and physical RF evidence are not
+  claimed.
+
 # 2026-11-25 12:13 +08 - DSM V1.3 hardware and functional coverage accounting
 
 - Reclassified Round 1 URG coverage into full-compile dashboards, selected DUT
@@ -6420,3 +6467,40 @@ Do not rerun the completed multi-hour synthesis just for the FM option fix.
   a shared class-based UVM environment spanning MASH and Thermo5 remains OPEN.
   Formal, CDC/RDC, PPA, standard RF metrics, and hardware BER were not run. No
   waiver or suppression was added.
+
+# 2026-11-25 16:14 SGT — DSM V1.3 Three-SKU UVM Round 2
+
+- Added the MASH 1-1 Product candidate to the existing Thermo5 top and optional
+  AXI-Lite wrapper (`DSM_ARCH=3`), including a sequential MASH core, four-plane
+  weighted PA adapter, candidate interface/arithmetic contract, independent
+  Python reference, and UVM scoreboard/monitor/coverage integration. Physical
+  PA weights, serializer mapping, and MATLAB latency alignment remain OPEN.
+- Extended the shared UVM tests and coverage model for MASH Product, STOP and
+  restart, drain/prefill, reset context, four-plane codebook, and key crosses.
+  Corrected covergroup applicability by architecture/control build without
+  deleting legal bins. Added per-SKU random regression, URG merge, evidence
+  extraction, and fail-closed audit targets.
+- Added `docs/dsm_v13_round2_report.md`,
+  `docs/dsm_v13_multi_sku_uvm_status.md`,
+  `docs/dsm_v13_verification_matrix.md`, refreshed
+  `docs/dsm_v13_coverage_closure.md`, added
+  `docs/dsm_v13_coverage_before_after.md`, and generated all seven requested
+  machine-readable evidence files under `docs/verification/data/dsm-v13-round2/`.
+  The evidence generator enumerates the source delta from the recorded Round 1
+  baseline, so the manifest includes RTL already committed in the separate
+  Product integration commit as well as the DV/evidence working-tree files.
+- Fresh final3 VCS/URG regression PASS: seven configurations, 38 UVM summary
+  logs, zero positive UVM warning/error/fatal counts. Nine random campaigns
+  (one smoke, one standard, one stress seed per Product SKU) passed with
+  333,120 accepted AXIS beats, 582,960 matched PA words, and 10,410 TLAST
+  markers. Python reference suite PASS (74/74).
+- Evidence data audit PASS. Closure audit intentionally returns exit 2 with
+  OPEN status: 2,887 open coverage-matrix rows; no code-coverage target or
+  final DV sign-off is claimed. Raw equals adjusted; no waiver/exclusion is
+  active.
+- Required Windows XSim command was not run because `powershell`, `pwsh`, and
+  `xsim` are unavailable in this Linux environment. Formal, CDC/RDC,
+  synthesis/PPA, serializer physical integration, and board/RF checks remain
+  NOT RUN. The 10/50/10 seed goal was reduced to 1/1/1 per SKU for runtime.
+- Final `git diff --check`: PASS. RTL/contract and DV/evidence changes are
+  being kept in separate commits on the Round 2 branch; no merge is planned.

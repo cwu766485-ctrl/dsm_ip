@@ -1,0 +1,4 @@
+begin
+  line+cond+tgl+branch+assert
+  +tree dsm_v13_mash11_uvm_tb.dut
+end

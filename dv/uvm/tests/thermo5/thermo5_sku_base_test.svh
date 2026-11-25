@@ -10,6 +10,7 @@ class thermo5_sku_base_test extends uvm_test;
   function new(string name, uvm_component parent); super.new(name,parent); endfunction
 
   virtual function void configure_case();
+    cfg.dsm_arch = vif.dsm_arch;
     void'($value$plusargs("CORE_WORDS=%d",cfg.core_words));
     if (cfg.core_words<56 || cfg.core_words%7!=0)
       `uvm_fatal("WORDS","CORE_WORDS must be >=56 and a multiple of seven")
@@ -109,6 +110,23 @@ class thermo5_sku_base_test extends uvm_test;
     if (!env.unified_scoreboard.check_expected_queues_drained("full-stream"))
       `uvm_fatal("UNIFIED_EXPECTED_QUEUE",
         "A normally completed stream left independent source or configuration expectations pending")
+    if (cfg.dsm_arch==3 && check_event_totals) begin
+      if (env.coverage.mash_pa_words!=cfg.core_words ||
+          env.coverage.mash_pa_symbols!=(64*cfg.core_words) ||
+          env.coverage.mash_invalid_code_symbols!=0)
+        `uvm_fatal("MASH_PRODUCT_COVERAGE",
+          $sformatf("PA words=%0d/%0d symbols=%0d/%0d invalid=%0d",
+            env.coverage.mash_pa_words,cfg.core_words,
+            env.coverage.mash_pa_symbols,64*cfg.core_words,
+            env.coverage.mash_invalid_code_symbols))
+      if (env.coverage.mash_code_hits[1]==0 ||
+          env.coverage.mash_code_hits[2]==0 ||
+          env.coverage.mash_code_hits[4]==0 ||
+          env.coverage.mash_code_hits[8]==0 ||
+          env.coverage.mash_code_hits[10]==0)
+        `uvm_fatal("MASH_PRODUCT_CODEBOOK",
+          "Directed MASH Product stream missed one or more documented weighted PA codes")
+    end
     if (require_signed_extremes &&
         (env.coverage.signed_min_beats==0 || env.coverage.signed_max_beats==0))
       `uvm_fatal("SIGNED_EXTREMES",
