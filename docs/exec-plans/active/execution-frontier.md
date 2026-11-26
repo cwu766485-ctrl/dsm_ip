@@ -1,5 +1,17 @@
 # Execution frontier
 
+## Current execution state: V1.4 coverage closure (2026-11-26)
+
+Coverage work is now on `dsm_v1.4_coverage_closure`, starting at
+Round 6 commit `ecef4a3`. Twelve two-packet Product Top simulations
+passed all stream checks, with zero exact target pop/push events and no
+new RTL code hits. Four formal runs provided 24 additional exact
+waiver candidates. All remain pending review. Official Condition is
+93.77% for each SKU. The combined Condition candidate set would bring
+both to 95.11% if approved. Continue with product-constrained Cubic
+queue and COMMIT witnesses, then remaining Line/Branch and directional
+Toggle. See `docs/dsm_v14_coverage_closure.md`.
+
 ## Current execution state: Round 6 product coverage (2026-11-26)
 
 **Gate A and Gate B remain OPEN.** The in-packet STOP replay checked

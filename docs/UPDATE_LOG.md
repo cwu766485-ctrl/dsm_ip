@@ -1,3 +1,14 @@
+# 2026-11-26 16:08 SGT - V1.4 coverage branch and foundational proofs
+
+- Published the V1.2 CDC/RDC, V1.3 UVM and V1.4 coverage branch names
+  from their existing committed histories.
+- Added the frontend control formal harness and two-packet VCS runner.
+  Twelve product cases passed and the two URG merges added no code hits.
+  Ran three CDC formal checks and a new frontend control proof.
+- Documented 24 additional instance-specific waiver candidates with
+  scope and evidence. Official coverage and final sign-off remain OPEN.
+  See `docs/dsm_v14_coverage_closure.md`.
+
 # 2026-11-26 15:52 SGT - Round 6 product DPD witness, Cubic formal and gap inventory
 
 - Upgraded the AXI-Lite bit-true test and read-only DPD probe to replay

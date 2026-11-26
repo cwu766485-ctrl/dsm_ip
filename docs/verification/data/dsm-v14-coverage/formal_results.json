@@ -1,0 +1,166 @@
+{
+  "frontend_control": {
+    "sha256": "b02ef0f01316ed5c5faff012871db9b650dc6aaa66eb8d9b85d2dc49cc06bcf7",
+    "report": "runs/v14_frontend_control_01/properties.txt",
+    "scope": "14:8 Generic FIFO gearbox with unconstrained ingress flags and core controls. Two production elastic FIFOs at 18-bit and 2-bit metadata widths have independent arbitrary handshakes and frame flags. Payload is tied zero.",
+    "properties": [
+      {
+        "property": "thermo5_v14_frontend_control_harness.a_gain_empty_has_no_flags",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.a_interp_empty_has_no_start",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.a_read_empty_complements_valid",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.a_residual_stays_in_range",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.c_gain_start_end",
+        "result": "covered (depth=2)"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.c_interp_has_start",
+        "result": "covered (depth=2)"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.c_pending_short_residual",
+        "result": "covered (depth=10)"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.c_read_empty",
+        "result": "covered (depth=2)"
+      },
+      {
+        "property": "thermo5_v14_frontend_control_harness.c_read_valid",
+        "result": "covered (depth=9)"
+      },
+      {
+        "property": "constant_9 - rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  },
+  "cdc_default_branch": {
+    "sha256": "1c7a3934adbfdff27778d6a139fdf9cfed72a89d0c25f1408e102426eae92fa9",
+    "report": "runs/v14_cdc_default_branch_01/properties.txt",
+    "scope": "14:8 Generic FIFO, continuous legal 32-beat packets, core permanently ready and enabled.",
+    "properties": [
+      {
+        "property": "thermo5_cdc_default_branch_harness.a_exact_default_path_unreachable",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_cdc_default_branch_harness.a_product_residual_legal",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_cdc_default_branch_harness.c_completed_legal_frame",
+        "result": "covered (depth=65)"
+      },
+      {
+        "property": "thermo5_cdc_default_branch_harness.c_exact_default_path",
+        "result": "uncoverable"
+      },
+      {
+        "property": "thermo5_cdc_default_branch_harness.c_product_advance",
+        "result": "covered (depth=2)"
+      },
+      {
+        "property": "constant_5 - rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  },
+  "cdc_end_branch": {
+    "sha256": "338fc60e415aa5f19ccfae734eaa99dfffa35134a743316673a8bef437cd8aca",
+    "report": "runs/v14_cdc_end_branch_01/properties.txt",
+    "scope": "14:8 Generic FIFO, continuous legal 32-beat packets, core permanently ready and enabled.",
+    "properties": [
+      {
+        "property": "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "property": "thermo5_cdc_end_branch_harness.c_completed_legal_frame",
+        "result": "covered (depth=65)"
+      },
+      {
+        "property": "thermo5_cdc_end_branch_harness.c_immediate_end_arm",
+        "result": "uncoverable"
+      },
+      {
+        "property": "thermo5_cdc_end_branch_harness.c_product_end_branch_context",
+        "result": "covered (depth=63)"
+      },
+      {
+        "property": "constant_4 - rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  },
+  "cdc_end_remaining": {
+    "sha256": "7fcc3cffea55d85c933347daf7814e292932716e62ea6ed1955323f24edd58c3",
+    "report": "runs/v14_cdc_end_remaining_01/properties.txt",
+    "scope": "14:8 Generic FIFO, source closes at 32-beat boundaries, core permanently ready and enabled. Take care when transferring this scope to integration.",
+    "properties": [
+      {
+        "property": "thermo5_cdc_end_remaining_harness.a_end_remaining_false_arm_unreachable",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.a_no_product_protocol_error",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.a_product_frame_start_aligned",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.a_product_residual_legal",
+        "result": "proven"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.a_source_ready_low_during_internal_reset",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_64beat_packet_end",
+        "result": "covered (depth=115)"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_completed_legal_frame",
+        "result": "covered (depth=65)"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_legal_end_arm",
+        "result": "covered (depth=64)"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_product_frame_start_pop",
+        "result": "covered (depth=9)"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_target_false_arm",
+        "result": "uncoverable"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_target_false_arm_protocol_clean",
+        "result": "uncoverable"
+      },
+      {
+        "property": "thermo5_cdc_end_remaining_harness.c_valid_during_internal_source_reset",
+        "result": "covered (depth=3)"
+      },
+      {
+        "property": "constant_12 - rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  }
+}
