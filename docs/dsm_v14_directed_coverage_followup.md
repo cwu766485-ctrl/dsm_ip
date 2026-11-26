@@ -10,16 +10,16 @@ evidence) remain OPEN.
 | Line | 97.52% (80) | 97.53% (76) |
 | Branch | 95.68% (23) | 95.23% (25) |
 | Condition | 93.91% (43) | 93.91% (43) |
-| Toggle | 98.58% (1,376) | 98.17% (1,416) |
-| Total open bins | 1,522 | 1,560 |
+| Toggle | 98.67% (1,284) | 98.37% (1,260) |
+| Total open bins | 1,430 | 1,404 |
 
-The SKU-local reports credit 436 and 420 new Toggle directions respectively,
+The SKU-local reports credit 528 and 576 new Toggle directions respectively,
 and one new Condition tuple per SKU. The exact Condition universe and
 rendered Line, Branch, and directional Toggle missing-set audit found no
 regression. Gate A is eight Condition hits away at the unchanged 706-bin
-adjusted denominator. The [current metrics](verification/data/dsm-v14-coverage/followup_code_coverage.csv),
+adjusted denominator. The [current metrics](verification/data/dsm-v14-coverage/iterative_code_coverage.csv),
 [Condition delta](verification/data/dsm-v14-coverage/followup_condition_delta.json)
-and [native evidence index](verification/data/dsm-v14-coverage/followup_evidence.json)
+and [native evidence index](verification/data/dsm-v14-coverage/iterative_evidence.json)
 identify the credited result.
 
 ## Full-stream checked replay
@@ -104,6 +104,42 @@ SKU. Extrapolating the 160-packet benchmarks gives about 70 and 78 CPU
 days on EF1, and 11 and 17 CPU days on MASH, for sample and saturation
 respectively. These are planning estimates, sensitive to sustained
 throughput and host load.
+
+## Bit 17–18 and directed Cubic trace replay
+
+Bit 17 hit both directions of both counters on all 16 lanes in both
+SKUs. Each SKU-local merge added 92 directions. MASH used one
+4,682-packet saturation stream to hit both counters at bit 18, adding
+64 directions in its merged result. EF1 bit 18 is still running.
+The saturation runner now requires standalone and merged URG evidence
+for both counters, so the two long runs per SKU can be combined into
+one. The MASH bit-18 run checked 262,192 backend words in 186.05 CPU
+seconds. Extrapolation gives about 18 CPU days for MASH bit 31 at
+this measured throughput.
+
+The two-SKU Cubic chain Formal model instantiates the real frontend,
+both metadata FIFOs, one-tap DPD and the architecture-specific backend.
+It uses continuous enable, legal short-packet markers (one DSP start
+per seven core words), zero payload, identity coefficients and arbitrary
+legal input stalls and PA readiness. It covers both single-entry
+replacement events for each SKU. Replaying the saved inputs in VCS,
+without modifying internal state, reproduced all four events at
+frontend edges 68/34 (EF1) and 68/38 (MASH), counting from zero after
+reset. Both queued-tail safety assertions are inconclusive. The
+[replayed inputs](verification/data/dsm-v14-coverage/cubic_chain_witnesses.json)
+bind the traces and source fingerprints.
+
+The separate Product Top replay with the same frame-marker spacing
+passed all 28 four-plane bit-true tests. Its SKU-local URG reports
+added zero code hits. Transfer the reproduced events to the public
+AXIS/PA schedule using the actual gearbox and RUN/prefill constraints
+before crediting Cubic code coverage. The CDC source-gap run covered a
+mid-packet input bubble and legal end during drain. Its L151 result
+remains inconclusive with source gaps after the initial and first
+composed pass. The separate assertion audit found zero DUT failures
+in the 121 EF1 and 123 MASH legal cases. The two expected failures
+per SKU came from the isolated illegal-frame case. The two Cubic
+`q1_tail` assertions per SKU had zero legal attempts.
 
 ## Reproduction
 

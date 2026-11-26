@@ -1,0 +1,560 @@
+{
+  "selected_reports": {
+    "ef1_axil": "runs/v14_bit17_merge_20261126/cumulative/ef1_axil",
+    "mash11_axil": "runs/v14_bit18_20261126/mash11_axil/merged"
+  },
+  "bit17": [
+    {
+      "configuration": "ef1_axil",
+      "metrics": {
+        "line": 3148,
+        "cond": 663,
+        "toggle": 95364,
+        "branch": 510
+      },
+      "results": [
+        {
+          "configuration": "ef1_axil",
+          "counter": "sample_count",
+          "bit": 17,
+          "frames": 2300,
+          "backend_words": 128800,
+          "lanes": {
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd": [
+              "Yes",
+              "Yes"
+            ]
+          },
+          "simulation_sha256": "03feaa660fc5ca6fa03ed6657e8e506053e4679bb9c648d0abc98d986563625c"
+        },
+        {
+          "configuration": "ef1_axil",
+          "counter": "saturation_count",
+          "bit": 17,
+          "frames": 2341,
+          "backend_words": 131096,
+          "lanes": {
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd": [
+              "Yes",
+              "Yes"
+            ]
+          },
+          "simulation_sha256": "ea15b9c8cb2c54c4a9778c8f0de0c676b6c5dd800c1fbee40d5b1729f00f1dc6"
+        }
+      ]
+    },
+    {
+      "configuration": "mash11_axil",
+      "metrics": {
+        "line": 3005,
+        "cond": 663,
+        "toggle": 76116,
+        "branch": 499
+      },
+      "results": [
+        {
+          "configuration": "mash11_axil",
+          "counter": "sample_count",
+          "bit": 17,
+          "frames": 2300,
+          "backend_words": 128800,
+          "lanes": {
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd": [
+              "Yes",
+              "Yes"
+            ]
+          },
+          "simulation_sha256": "868ae4f27a6aafb4b476858dc4e3f01bfc76029fc297c05ca7ff9764a4c21605"
+        },
+        {
+          "configuration": "mash11_axil",
+          "counter": "saturation_count",
+          "bit": 17,
+          "frames": 2341,
+          "backend_words": 131096,
+          "lanes": {
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd": [
+              "Yes",
+              "Yes"
+            ],
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd": [
+              "Yes",
+              "Yes"
+            ]
+          },
+          "simulation_sha256": "91c648350b91ba1564a1cc7d1a87c85bb7ba86273ae1a05581a73f75738cf4e1"
+        }
+      ]
+    }
+  ],
+  "mash11_bit18": {
+    "configuration": "mash11_axil",
+    "counter": "saturation_count",
+    "bit": 18,
+    "frames": 4682,
+    "backend_words": 262192,
+    "lanes": {
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd": [
+        "Yes",
+        "Yes"
+      ]
+    },
+    "simulation_sha256": "9ab592ead841b5dd784d91db3df40caa8a62b2023dbd30fcccc919b8c3943481",
+    "sample_lanes": {
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd": [
+        "Yes",
+        "Yes"
+      ],
+      "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd": [
+        "Yes",
+        "Yes"
+      ]
+    }
+  },
+  "legal_assertions_before_bit17": [
+    {
+      "sku": "ef1_axil",
+      "legal": {
+        "test_count": 121,
+        "dut_properties": {
+          "uncovered": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ],
+          "failed": [],
+          "unattempted": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ]
+        },
+        "asserts_sha256": "24aac98bdd7bab1a7c7a586c04e4ba7a63a87d01e70fa100f0304f38b4743d47",
+        "hierarchy_sha256": "fb025dca1f5d8bbdbce1d3cb015254cb25b1c01ba078a4aeae91f69123ae3c6e"
+      },
+      "expected_negative": {
+        "test_count": 1,
+        "dut_properties": {
+          "uncovered": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ],
+          "failed": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_cdc.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1"
+          ],
+          "unattempted": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ]
+        },
+        "asserts_sha256": "1ed9925b95fcaae7658141e96bd8d053e78c1f5fc88f5f7f82a0712655121748",
+        "hierarchy_sha256": "b7d0096fd9b08cae5cded961ffc7ebd293ed90b8ec71b5c7f5b0f26170d617e6"
+      }
+    },
+    {
+      "sku": "mash11_axil",
+      "legal": {
+        "test_count": 123,
+        "dut_properties": {
+          "uncovered": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ],
+          "failed": [],
+          "unattempted": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ]
+        },
+        "asserts_sha256": "89e6b358dad21aa4ca07653db0a1e08cf284e08e77c714c6a3cbeffb29036412",
+        "hierarchy_sha256": "dea1640cd0336677976c5beaba63b3bee1f0c104470aa75a8e5a4211a53b9a35"
+      },
+      "expected_negative": {
+        "test_count": 1,
+        "dut_properties": {
+          "uncovered": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_mash11_product.u_mash11.unnamed$$_15"
+          ],
+          "failed": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_cdc.unnamed$$_1",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_1"
+          ],
+          "unattempted": [
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_0",
+            "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp2_centered.u_interp_2.unnamed$$_1"
+          ]
+        },
+        "asserts_sha256": "c9134ee3666c71e77976cd18b0101d28faffd6bed36cf4ca5cafd4c0a3246d14",
+        "hierarchy_sha256": "76d81b7974d5ee022af6a40f572373243d655606452354fb8e125b7b62c5fa15"
+      }
+    }
+  ],
+  "native_sha256": {
+    "runs/v14_bit17_merge_20261126/exact_non_regression.json": "026a19ae4ff042516d1f05d32bd5ac28453315b3288eea66cf51680fc590e7bd",
+    "runs/v14_bit18_20261126/mash11_axil/sim.log": "9ab592ead841b5dd784d91db3df40caa8a62b2023dbd30fcccc919b8c3943481",
+    "runs/v14_bit18_20261126/mash11_axil/merged/hierarchy.html": "13a2511892b9aedad13bc1622314c4e9f20dc22c8ce80e6be4f0c17c03012acb",
+    "runs/v14_resume_20261126/cdc_gaps/properties.txt": "fca8b580c960b1ffbde50abc1ac02da6d7b68da9e2094c96cbde923a2b77b11a",
+    "runs/v14_resume_20261126/cdc_gaps/properties_a_write_phase.txt": "1ad2638a1c419b1510b1eb1a7b196533d188c4ee07214bb8a3d618d7a1208466",
+    "runs/v14_cubic_replay_20261126/delta.json": "f2dccc3802447b37c36a7d6ac4a0be9e041a71f5e52e60079220849ce65df33e"
+  },
+  "new_waivers_applied": 0
+}

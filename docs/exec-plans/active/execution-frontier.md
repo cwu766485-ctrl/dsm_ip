@@ -1,34 +1,35 @@
 # Execution frontier
 
-## Current execution state: V1.4 directed coverage and independent review (2026-11-26)
+## Current execution state: V1.4 bit 17/18 and Cubic trace replay (2026-11-26)
 
 EF1 and MASH 1-1 AXI-Lite Product Top, Centered Cubic x2+x2 and one
-DPD tap with Generic FIFO. VCS/URG credits COMMIT L333 tuple `1,0,1`
-on both SKUs. Both reach Condition 663/706 (93.91%), with eight more
-raw hits to Gate A at the current denominator. The four 67,200-word
-counter soaks hit both directions of sample and saturation bit 15 in
-each of 16 lanes per SKU. Current Adjusted Toggle is 95,272/96,648
-for EF1 and 76,024/77,440 for MASH. The two SKUs have 1,522 and 1,560
-open code bins. No new waiver is applied.
+DPD tap with Generic FIFO. Both are at Condition 663/706 (93.91%),
+eight raw hits short of Gate A at the current denominator. COMMIT
+L333 tuple `1,0,1` is credited for both. Standalone and SKU-local URG
+confirm both directions of both DPD counters at bit 17 for both SKUs
+and at bit 18 for MASH. Current Adjusted Toggle is 95,364/96,648
+for EF1 and 76,180/77,440 for MASH. The SKUs have 1,430 and 1,404
+unresolved code bins. EF1 bit 18 is active in
+`runs/v14_bit18_20261126/ef1_axil/`. Credit only completed runs.
 
-The 106-candidate packet binds original and refreshed native URG
-locators, frozen source hashes, normalized Formal properties,
-assumptions and operational witnesses. Claude Code is the independent
-DV Reviewer and the product owner is the final approver. The 48
-additional static follow-up rows form a separate pending batch.
+Four Cubic Formal witnesses replayed in VCS in the actual frontend
+chain. The 28 following Product Top cases passed all PA oracle checks
+but produced no new DUT code hits. Both queued-tail safety properties
+are inconclusive. The CDC L151 continuous-ingress proof still has open
+applicability with source gaps, and the first two source-gap proof
+passes are inconclusive on L151. COMMIT L333 `0,1,1` remains open.
+Legal-only URG found no DUT assertion failures over 121 EF1 and
+123 MASH cases, with both Cubic `q1_tail` assertions unattempted.
 
-Cubic single-entry pop/push is still open after checked PA-stall and
-boundary-gap trials. COMMIT L333 tuple `0,1,1` remains inconclusive.
-The L151 CDC false-arm assertion proved with unconstrained core controls
-and continuous legal ingress. The source-gap proof is being rerun after
-the interrupted attempt. MASH sample bit 17 has standalone native
-evidence, with the other bit-17 cases restarted in
-`runs/v14_resume_20261126/`. Do not add partial VDBs to coverage.
+The original 106-candidate independent review packet was published on
+`dsm_v1.4_coverage_closure` at `7dfdf7a`. Claude Code is the independent
+reviewer and the product owner is the final approver. The 48 static
+follow-up entries are a separate review batch. No new waiver applied.
 
-**Next:** finish the per-SKU bit-17 audits and the source-gap Formal
-result, then continue product-constrained Cubic and COMMIT proofs and
-review-disposition reconciliation. All coverage and final FSM, mandatory
-functional/cross and critical assertion sign-off gates remain OPEN.
+**Next:** finish EF1 bit 18, use the Cubic trace inputs to constrain
+an integrated product witness, continue CDC and COMMIT proof work,
+and assess high-counter execution capacity. Reconcile review results
+by exact candidate ID. Both gates and final sign-off remain OPEN.
 See `docs/dsm_v14_directed_coverage_followup.md`.
 
 ## Current execution state: V1.4 coverage closure (2026-11-26)

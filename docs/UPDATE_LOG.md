@@ -1,3 +1,18 @@
+# 2026-11-26 21:02 SGT - V1.4 bit 17/18 and Cubic chain evidence
+
+- Closed both bit-17 counters in all 16 lanes of both SKU URG reports.
+  An additional MASH saturation stream closed both bit-18 counters.
+  The runner now validates both counters in each saturation soak.
+- Added the real Cubic frontend-chain Formal harness, four passing
+  VCS trace replays and compact witnesses. The 28 Product Top
+  replays were bit-true and produced zero new code hits.
+- Reconciled 244 legal assertion VDBs separately from the two
+  expected-negative databases. Source-gap CDC proof remains
+  inconclusive on L151. Published the updated evidence and frontier.
+- EF1 bit 18 remains active. Both coverage gates and critical
+  assertion/mandatory functional sign-off remain open. No new
+  waiver applied.
+
 # 2026-11-26 20:47 SGT - V1.4 directed closure and independent review packet
 
 - Added late-COMMIT alignment, bounded counter pilots, a constant-storage

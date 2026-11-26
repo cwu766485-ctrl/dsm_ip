@@ -91,10 +91,16 @@ def main():
         if re.search(r"Warning-|Error-|UCAPI-MAP", output):
             raise RuntimeError(f"Review URG merge diagnostics: {out / f'urg_{label}.log'}")
         directions = counter_directions(report, args.sku, counter, args.bit)
+        if args.saturation:
+            sample_directions = counter_directions(report, args.sku, "sample_count", args.bit)
     result = dict(configuration=args.sku, counter=counter, bit=args.bit, frames=frames,
                   backend_words=frames * 56, lanes=directions, simulation_sha256=sha256(out / "sim.log"))
+    if args.saturation:
+        result["sample_lanes"] = sample_directions
     (out / "result.json").write_text(json.dumps(result, indent=2) + "\n")
     print(f"{args.sku}: {counter}[{args.bit}] hit both directions in {len(directions)} lanes")
+    if args.saturation:
+        print(f"{args.sku}: sample_count[{args.bit}] also hit both directions in {len(sample_directions)} lanes")
 
 
 if __name__ == "__main__":
