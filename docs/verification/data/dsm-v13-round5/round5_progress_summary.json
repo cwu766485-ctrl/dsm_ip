@@ -1,0 +1,26 @@
+{
+  "all_round1_to_round4_cases_replayed": false,
+  "code_coverage_100_percent_adjusted": false,
+  "code_exclusions_applied": 0,
+  "cumulative_urg": "PASS",
+  "cumulative_urg_summary_sha256": "35993abd1a375bc7e822642fa4d1df2967ce85fcf5cc5f7eeda3c3b2ccd62549",
+  "exact_hit_set_nonregression": "OPEN_NO_NATIVE_BIN_IDENTITIES",
+  "final_signoff": false,
+  "historical_directed_summary_sha256": "55ecf07e19d7707b3225eb9289fdca327ad12121424ae414dff3c61e388f9107",
+  "historical_random_summary_sha256": "127b9dd28e01afcd437d80932d0c935303feafab647ed38d515f1f522a985b8d",
+  "percentage_decreases": [],
+  "round3_directed_replayed_cases": 31,
+  "round3_random_replayed_cases": 15,
+  "round4_mash_wrapper_core_vdb_reused": true,
+  "round4_replayed_cases": 50,
+  "same_config_vdb_counts": {
+    "ef1_axil": 13,
+    "ef1_product": 20,
+    "ef2_axil": 14,
+    "ef2_product": 21,
+    "mash11_axil": 15,
+    "mash11_product": 13
+  },
+  "schema": "dsm_v13_round5_progress_v1",
+  "status": "OPEN"
+}

@@ -1,5 +1,28 @@
 # Execution frontier
 
+## Current execution state: DSM V1.3 Round 5 code coverage (2026-11-26)
+
+Round 5 branch `work/dsm-v13-mash-uvm-round5` is based on Round 4
+`2d2364f575d15bd2a3dafed4d45473db8cabbff1`. **Closure and sign-off are OPEN.**
+The baseline parser audit maps 2,463 module-page report rows to actual module
+names and identifies legacy identity collisions; exact instance bins and
+raw denominators remain unverified. In particular 804 rows from `dpd_poly.v`
+are reported for module `dpd_sat_signed`. No Round 5 code waivers applied.
+
+Six rebuilt configurations passed 50 Round 4, 15 historical Round 3 random,
+and 31 Round 3 directed replays. Six configuration-local cumulative URG merges passed and show no
+percentage decline against the replayed Round 4 selection. The legacy MASH
+core VDB was reused. Exact bin non-regression and the complete historical
+command inventory are OPEN; raw cumulative coverage remains below 100%.
+Product testbench coefficient ties and AXI-Lite writable coefficients are
+distinct and must be considered in reachability and product-level stimulus.
+See `docs/dsm_v13_round5_report.md` and
+`docs/verification/data/dsm-v13-round5/`.
+
+Next: extract and reconcile native instance bins and denominators, replay the
+remaining history, then apply directed/formal methods with independent
+checkers and reviewed exclusions. Do not claim 100% from aggregate percentages.
+
 ## Current execution state: DSM V1.3 Round 4 module/formal coverage closure (2026-11-26)
 
 Working checkout: `/home/ray/workspace/dsm-v13-mash-uvm-round4`, branch

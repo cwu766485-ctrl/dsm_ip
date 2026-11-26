@@ -1,0 +1,36 @@
+{
+  "adjusted_code_closure": false,
+  "approved_code_exclusions": 0,
+  "baseline_commit": "2d2364f575d15bd2a3dafed4d45473db8cabbff1",
+  "baseline_inventory_sha256": "67955a1b57e44b4d36a552d3774aef178c6247ba76ae156db4ab3823217d3557",
+  "baseline_records": 2463,
+  "definition_duplicate_fingerprints": 983,
+  "legacy_id_colliding_records": 1922,
+  "module_pages": 61,
+  "module_record_counts": {
+    "dpd_memory_poly": 142,
+    "dpd_sat_signed": 804,
+    "dpd_vector16_memory_poly": 30,
+    "dsm_axis14_to_core8_cdc": 183,
+    "dsm_frame_gain_vector": 197,
+    "dsm_interp_x2_centered_cubic_vector": 406,
+    "gt_tx_user_bridge": 40,
+    "thermo5_dpd_axi_lite_cfg": 69,
+    "tid32_cartesian_ef2_fs4_gt_tx": 352,
+    "tid32_cartesian_fs4_gt_tx": 20,
+    "tid32_mash11_weighted_pa_tx": 58,
+    "tid32_thermo5_axi_lite_axis_frontend_tx": 71,
+    "tid32_thermo5_axis_frontend_tx": 45,
+    "tid32_thermo5_frontend_tx": 46
+  },
+  "reported_instances": 566,
+  "schema": "dsm_v13_round5_baseline_audit_v1",
+  "status": "OPEN",
+  "type_record_counts": {
+    "Branch": 1120,
+    "Condition": 467,
+    "Line": 405,
+    "Toggle": 471
+  },
+  "warning": "Module-page records are not native exact instance bins; denominator reconciliation, parameters, native identities and history non-regression remain OPEN."
+}

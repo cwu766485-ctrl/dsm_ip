@@ -1,3 +1,15 @@
+# 2026-11-26 10:54 SGT - DSM V1.3 Round 5 baseline audit and history replay
+
+- Added module-aware audit, instance percentage export, preliminary parameter
+  matrix, replay and same-configuration cumulative URG scripts, coverage
+  progress and report under `dv/uvm/sim/` and `docs/verification/data/dsm-v13-round5/`.
+- Checks: 50 Round 4 VCS replays, 15 Round 3 random and 31 directed replays, seven baseline
+  URG reports, and six cumulative URG merges PASS. MASH core reused its prior
+  VDB. Raw percentages did not decrease in the cumulative selection.
+- Remaining: 100% code coverage, exact bin identity and non-regression, full
+  history replay, reachability proofs, independent exclusion review, critical
+  assertions and DV sign-off remain OPEN. No RTL changes or code exclusions.
+
 # 2026-11-26 00:04 SGT - DSM V1.3 Round 4 adjusted functional closure
 
 - Applied the user-confirmed software contracts: use the selected four-plane
