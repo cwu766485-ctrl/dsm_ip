@@ -3,6 +3,8 @@
 // scoreboard independently checks all four output planes.
 class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test;
   `uvm_component_utils(thermo5_sku_axil_frame_replacement_test)
+  int unsigned stall_after_pa_words;
+  int unsigned stall_core_cycles;
 
   function new(string name, uvm_component parent); super.new(name,parent); endfunction
 
@@ -13,6 +15,10 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
         "Use CORE_WORDS=112 for two complete 32-beat packets")
     cfg.expect_pa=1;
     cfg.frame_starts=2;
+    void'($value$plusargs("THERMO5_FRAME_REPLACEMENT_STALL_AFTER=%d",stall_after_pa_words));
+    void'($value$plusargs("THERMO5_FRAME_REPLACEMENT_STALL_CYCLES=%d",stall_core_cycles));
+    if (stall_core_cycles!=0 && (stall_after_pa_words>=cfg.core_words || stall_core_cycles>256))
+      `uvm_fatal("FRAME_REPLACEMENT_STALL","Invalid PA stall trigger or duration")
   endfunction
 
   task run_phase(uvm_phase phase);
@@ -136,6 +142,15 @@ class thermo5_sku_axil_frame_replacement_test extends thermo5_sku_axil_base_test
                 vif.interp2_centered_state[4]) interp2_single_end_pop++;
           end
         end
+      end
+      begin
+        if (stall_core_cycles!=0) begin
+          wait(vif.core_rst_n && env.scoreboard.checked>=stall_after_pa_words);
+          env.pa_sink.set_ready(4'h0);
+          repeat(stall_core_cycles) @(negedge vif.core_clk);
+          env.pa_sink.set_ready(4'hf);
+        end
+        forever @(negedge vif.core_clk);
       end
       begin
         repeat(24000) @(posedge vif.core_clk);

@@ -15,6 +15,8 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
   int unsigned gain_class_id;
   int unsigned input_profile_id;
   bit commit_after_first_boundary;
+  int unsigned late_commit_delay_cycles;
+  bit counter_pilot;
   bit require_commit_boundary_stall;
   int unsigned extra_commit_stall_cycles;
   int unsigned commit_stall_start_delay;
@@ -121,6 +123,12 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
     void'($value$plusargs("THERMO5_GAIN_CLASS_ID=%d",gain_class_id));
     void'($value$plusargs("THERMO5_INPUT_PROFILE_ID=%d",input_profile_id));
     commit_after_first_boundary=$test$plusargs("THERMO5_COMMIT_AFTER_FIRST_BOUNDARY");
+    if ($value$plusargs("THERMO5_LATE_COMMIT_DELAY_CYCLES=%d",late_commit_delay_cycles) &&
+        (!commit_after_first_boundary || late_commit_delay_cycles>128))
+      `uvm_fatal("LATE_COMMIT_DELAY","Delay requires late COMMIT and at most 128 core cycles")
+    counter_pilot=$test$plusargs("THERMO5_COUNTER_PILOT");
+    if (counter_pilot && !complex_coverage_case)
+      `uvm_fatal("COUNTER_PILOT","Counter pilot requires complex DPD coverage mode")
     round6_in_packet_stop=$test$plusargs("ROUND6_IN_PACKET_STOP");
     if (round6_in_packet_stop && (cfg.core_words!=56 || commit_after_first_boundary))
       `uvm_fatal("DPD_STOP_CONFIG","In-packet STOP scope is one packet with COMMIT before RUN")
@@ -281,6 +289,7 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
               if (!first_boundary_seen)
                 `uvm_fatal("RANDOM_DPD_FIRST_BOUNDARY",
                   "No public DPD frame boundary was observed before the scheduled COMMIT")
+              repeat(late_commit_delay_cycles) @(negedge vif.core_clk);
               axil_write(8'h00,32'h3,0,0,resp);
               if (resp!=2'b00)
                 `uvm_fatal("RANDOM_DPD_LATE_COMMIT",
@@ -394,13 +403,20 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
             if (complex_coverage_case) begin
               // Return coefficients and counters to reset values in the same
               // simulation, after the oracle and drain checks completed.
+              if (counter_pilot) begin
+                for (int lane=0; lane<16; lane++)
+                  `uvm_info("COUNTER_PILOT",
+                    $sformatf("lane=%0d samples=%0d saturation=%0d",lane,
+                      vif.dpd_sample_count[lane],vif.dpd_saturation_count[lane]),UVM_NONE)
+              end
               env.control.reset_both();
               wait_axil_reset_release();
               if (vif.cfg_active_payload!=={3'd1,64'h4000,64'd0,64'd0,64'd0,64'd0,64'd0})
                 `uvm_fatal("COMPLEX_DPD_RESET","Reset did not restore the active identity image")
               for (int lane=0; lane<16; lane++)
-                if (vif.dpd_sample_count[lane]!==0)
-                  `uvm_fatal("COMPLEX_DPD_RESET","Reset did not clear a DPD sample counter")
+                if (vif.dpd_sample_count[lane]!==0 ||
+                    (counter_pilot && vif.dpd_saturation_count[lane]!==0))
+                  `uvm_fatal("COMPLEX_DPD_RESET","Reset did not clear the DPD counters")
             end
             `uvm_info("SKU_PASS",scenario_pass_message(),UVM_NONE)
           end

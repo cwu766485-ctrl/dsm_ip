@@ -1,0 +1,57 @@
+{
+  "baseline_commit": "cc97188832d5a456bfc12e4a19bdb60b72d4e4a8",
+  "scope": "EF1 and MASH 1-1 AXI-Lite, Centered Cubic, one DPD tap, Generic FIFO",
+  "selected_run": "runs/v14_latest_20261126",
+  "native_evidence_sha256": {
+    "v14_latest_20261126/exact_missing_non_regression.json": "f37ce5c541dc0ad4b23054d9fc79cea6e5ae633baf6049015871628272261e29",
+    "v14_soak_bit15_audit_20261126/results.json": "9c70eb407f1d7e1cd7a05c29df7c11315347cbcb563d5c080a88a9aed97db5d7",
+    "v14_commit_counter_checked_20261126/cases.json": "77ce56b22fd55ca62390240f4146c191e6bb76c73eca4ae8764d09d4168603ee",
+    "v14_cdc_lemmas_20261126/properties.txt": "28f509e1a52bc45b606ed25b7841b18a4b923542cf1138c1795a670830379d4d",
+    "v14_commit_pending_fpv_20261126/properties.txt": "7e0eb35fda1e46b99fea0dd06bdb33a0bc27b0812456faaf83bcd1f7b4e51eac"
+  },
+  "bit15_native_results": [
+    {
+      "sku": "ef1_axil",
+      "cases": {
+        "sample": {
+          "cpu_seconds": 271.91,
+          "lanes": 16,
+          "sim_sha256": "49552b2cbe5f3e3ff852af82cf8321672e3c380d05377fbae96c49f13c8d2f75"
+        },
+        "saturation": {
+          "cpu_seconds": 262.81,
+          "lanes": 16,
+          "sim_sha256": "aefd1751e58f5f4691796d20143a2c6ab40f185fe151243762e291f9dbd3de97"
+        }
+      },
+      "hits": {
+        "line": 3148,
+        "cond": 663,
+        "toggle": 95272,
+        "branch": 510
+      }
+    },
+    {
+      "sku": "mash11_axil",
+      "cases": {
+        "sample": {
+          "cpu_seconds": 64.29,
+          "lanes": 16,
+          "sim_sha256": "229dae15f6de4cf77b714452202870e0dbb88373e6a9aa618241b4f645605265"
+        },
+        "saturation": {
+          "cpu_seconds": 61.13,
+          "lanes": 16,
+          "sim_sha256": "4e132783a5aa80cb15041fed24ab0c5b73b56dc48aff23c571735f91e9080528"
+        }
+      },
+      "hits": {
+        "line": 3005,
+        "cond": 663,
+        "toggle": 76024,
+        "branch": 499
+      }
+    }
+  ],
+  "new_waivers_applied": 0
+}

@@ -1,0 +1,42 @@
+{
+  "ef1_axil": {
+    "total": 741,
+    "previous_hits": 662,
+    "current_hits": 663,
+    "new_hits": [
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_cfg",
+        "thermo5_dpd_axi_lite_cfg",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        333,
+        "EXPRESSION",
+        "(cfg_req_sync2 && cfg_pending_valid && dpd_config_boundary)",
+        [
+          "1",
+          "0",
+          "1"
+        ]
+      ]
+    ]
+  },
+  "mash11_axil": {
+    "total": 741,
+    "previous_hits": 662,
+    "current_hits": 663,
+    "new_hits": [
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_cfg",
+        "thermo5_dpd_axi_lite_cfg",
+        "rtl/tx_bandpass_if/thermo5_dpd_axi_lite_cfg.sv",
+        333,
+        "EXPRESSION",
+        "(cfg_req_sync2 && cfg_pending_valid && dpd_config_boundary)",
+        [
+          "1",
+          "0",
+          "1"
+        ]
+      ]
+    ]
+  }
+}

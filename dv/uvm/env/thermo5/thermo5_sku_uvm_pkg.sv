@@ -77,6 +77,7 @@ package thermo5_sku_uvm_pkg;
   `include "thermo5_sku_axil_nonlinear_dpd_test.svh"
   `include "thermo5_sku_axil_nonlinear_bittrue_test.svh"
   `include "thermo5_sku_axil_random_dpd_bittrue_test.svh"
+  `include "thermo5_sku_axil_counter_soak_test.svh"
   `include "thermo5_sku_axil_dpd_saturation_bittrue_test.svh"
   `include "thermo5_sku_axil_nonlinear_tap4_bittrue_test.svh"
   `include "thermo5_sku_axil_ef2_corner_test.svh"

@@ -367,6 +367,7 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
     uvm_config_db#(virtual thermo5_sku_if)::set(null,"uvm_test_top*","vif",bus);
 `ifdef THERMO5_AXIL_CONTROL
     uvm_config_db#(virtual thermo5_axil_if)::set(null,"uvm_test_top.env.axil.*","vif",axil_bus);
+    uvm_config_db#(virtual thermo5_axil_if)::set(null,"uvm_test_top","axil_vif",axil_bus);
     uvm_config_db#(virtual thermo5_axil_if)::set(null,
       "uvm_test_top.env.register_predictor","axil_vif",axil_bus);
     uvm_config_db#(virtual thermo5_sku_if)::set(null,

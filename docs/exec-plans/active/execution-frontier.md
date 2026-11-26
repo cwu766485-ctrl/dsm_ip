@@ -1,5 +1,36 @@
 # Execution frontier
 
+## Current execution state: V1.4 directed coverage and independent review (2026-11-26)
+
+EF1 and MASH 1-1 AXI-Lite Product Top, Centered Cubic x2+x2 and one
+DPD tap with Generic FIFO. VCS/URG credits COMMIT L333 tuple `1,0,1`
+on both SKUs. Both reach Condition 663/706 (93.91%), with eight more
+raw hits to Gate A at the current denominator. The four 67,200-word
+counter soaks hit both directions of sample and saturation bit 15 in
+each of 16 lanes per SKU. Current Adjusted Toggle is 95,272/96,648
+for EF1 and 76,024/77,440 for MASH. The two SKUs have 1,522 and 1,560
+open code bins. No new waiver is applied.
+
+The 106-candidate packet binds original and refreshed native URG
+locators, frozen source hashes, normalized Formal properties,
+assumptions and operational witnesses. Claude Code is the independent
+DV Reviewer and the product owner is the final approver. The 48
+additional static follow-up rows form a separate pending batch.
+
+Cubic single-entry pop/push is still open after checked PA-stall and
+boundary-gap trials. COMMIT L333 tuple `0,1,1` remains inconclusive.
+The L151 CDC false-arm assertion proved with unconstrained core controls
+and continuous legal ingress. The source-gap proof is being rerun after
+the interrupted attempt. MASH sample bit 17 has standalone native
+evidence, with the other bit-17 cases restarted in
+`runs/v14_resume_20261126/`. Do not add partial VDBs to coverage.
+
+**Next:** finish the per-SKU bit-17 audits and the source-gap Formal
+result, then continue product-constrained Cubic and COMMIT proofs and
+review-disposition reconciliation. All coverage and final FSM, mandatory
+functional/cross and critical assertion sign-off gates remain OPEN.
+See `docs/dsm_v14_directed_coverage_followup.md`.
+
 ## Current execution state: V1.4 coverage closure (2026-11-26)
 
 Coverage work is now on `dsm_v1.4_coverage_closure`, starting at

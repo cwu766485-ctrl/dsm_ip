@@ -15,7 +15,12 @@ branches as run and review references. The local CDC worktree has one
 additional commit, `336c1ce`. The V1.2 branch uses the previously
 published tip.
 
-## Current evidence
+## Evidence at `cc97188`
+
+See the [directed coverage follow-up](dsm_v14_directed_coverage_followup.md)
+for the refreshed scores and the
+[independent waiver review packet](verification/data/dsm-v14-coverage/waiver-review/README.md)
+for the original 106 candidates.
 
 | Adjusted metric | EF1 AXI-Lite | MASH AXI-Lite |
 |---|---:|---:|

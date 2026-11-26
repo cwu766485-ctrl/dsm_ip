@@ -1,3 +1,21 @@
+# 2026-11-26 20:47 SGT - V1.4 directed closure and independent review packet
+
+- Added late-COMMIT alignment, bounded counter pilots, a constant-storage
+  counter soak and independent Python vectors under `dv/uvm/`. Broadened
+  the CDC Formal harness to exercise stalls and source gaps.
+- Verified the COMMIT witness, refreshed both SKU-local native URG
+  databases and checked exact code-bin non-regression. Four counter soaks,
+  four optimized benchmarks and 74 Python checks passed. The first
+  67,200-word soaks established bit 15 in all lanes of both counter types.
+- Added `docs/dsm_v14_directed_coverage_followup.md` and its machine
+  evidence. Packaged the original 106 pending candidates under
+  `docs/verification/data/dsm-v14-coverage/waiver-review/`, with independent
+  review and owner approval still required. No new waiver applied.
+- Code coverage sign-off remains OPEN. The refreshed baseline has 1,522
+  EF1 and 1,560 MASH open bins. Cubic, COMMIT L333 `0,1,1`, and final
+  FSM/functional/assertion evidence remain open. Bit-17 and source-gap
+  Formal work continue on separately tracked runs.
+
 # 2026-11-26 16:08 SGT - V1.4 coverage branch and foundational proofs
 
 - Published the V1.2 CDC/RDC, V1.3 UVM and V1.4 coverage branch names

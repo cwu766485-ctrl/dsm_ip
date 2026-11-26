@@ -1,0 +1,259 @@
+{
+  "baseline_commit": "cc97188832d5a456bfc12e4a19bdb60b72d4e4a8",
+  "baseline_rtl_tree": "4f80b23410e9603636cd8df912740c979110a4ff",
+  "configurations": {
+    "ef1_axil": [
+      1,
+      1,
+      7168
+    ],
+    "mash11_axil": [
+      3,
+      2,
+      5120
+    ]
+  },
+  "configuration_fields": [
+    "DSM_ARCH",
+    "TIDSM_ORDER",
+    "STEP"
+  ],
+  "common_configuration": "Centered Cubic x2+x2, AXI-Lite, one DPD tap, Generic FIFO",
+  "context_sha256": {
+    "dv/uvm/sim/thermo5_sku_filelist.f": "f47bebd908a70e10ec0d5ddc7924f9216d9cd15abf31791bf23c504390c1a551",
+    "dv/uvm/sim/dsm_v13_product_dut_coverage.hier": "ed1068a99a0287ec6089cdeaab1289997e597db93ba73a93b6f6df21035f4cab",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "78433c10ced907ee4deb2ea584d3cd767ec55c9f25ac43dba887b98b19e1d18b",
+    "dv/uvm/tb/dsm_v13_multi_sku_uvm_tb.sv": "ab9f36cf3ae4c2430c2fb99a5507311ed555ba90fc5a5ce30f6417ffa58c416e",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "413448944dcafb6a5f7c13864a06b4331f2b1ffa438ef19a3ca3c8092e35b916",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "e881530aa651b24caf90f638897526f42d69bf4c3db6633560483d066b7ebda9"
+  },
+  "source_ledgers_sha256": {
+    "docs/verification/data/dsm-v13-round6/round6_waiver_candidates.csv": "0d76305c29f1077e657515ab9620bde9928538134c70e10a15e9d7b7d8f49d04",
+    "docs/verification/data/dsm-v14-coverage/additional_waiver_candidates.csv": "02311af087082119bbf878fcb69be5f3ed3fc17aaafb7423b49023d6892e8cf8"
+  },
+  "candidate_csv_sha256": "2c601cdd12b48972919b8889db71ba7b2601e1b862aa95f772c657d13b9def46",
+  "groups": {
+    "cubic_stage1": {
+      "native_report": "r6_cubic_formal/properties.txt",
+      "report_sha256": "4502e3d878362b0bd964310eeb12a07f3b3b09535940ad77e54fecd75ec7fd5c",
+      "assumptions": "8 lanes, APPEND_TAIL_VECTOR=1, in_tail tied zero. Payload tied zero, enable, ready and other input flags free. Post-reset two-state sampling.",
+      "witnesses": [
+        "g_stage[1].c_nonempty",
+        "g_stage[1].g_append.c_tail_emit"
+      ],
+      "reported_properties": [
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[1].g_append.a_input_tail_never_latched",
+          "result": "proven"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[2].g_consume.a_no_generated_tail",
+          "result": "proven"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[1].c_disabled_emit_candidate",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[1].c_nonempty",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[1].c_retained_frame_start",
+          "result": "covered     (depth=4)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[1].g_append.c_tail_emit",
+          "result": "covered     (depth=3)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[2].c_disabled_emit_candidate",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[2].c_nonempty",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[2].c_retained_frame_start",
+          "result": "covered     (depth=4)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[2].g_consume.c_tail_drop",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_round6_cubic_harness.g_stage[2].g_consume.c_tail_lookahead",
+          "result": "covered     (depth=3)"
+        },
+        {
+          "name": "rst_n==1",
+          "result": "constrained                             -  constant_11"
+        }
+      ],
+      "source_sha256": {
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv": "7a15e6f8f8c489357546a01d38a15b662dd32e123f9f71f6962b29a4204999f9",
+        "dv/uvm/formal/thermo5_round6_cubic_harness.sv": "17cfa52115598b2f4d04fb8658333d1b0142be4ee052e35c23fa0809c4b6deac",
+        "dv/uvm/formal/run_thermo5_round6_cubic_fpv.tcl": "a636827d32036dc913667ff2c44da316c0e63416f0a427110ffd44808475a5ed"
+      }
+    },
+    "dpd_wrapper": {
+      "native_report": "r6_vector_ready/properties.txt",
+      "report_sha256": "fa9c34c734fa04cb5b61886dab78561368cb7c696d8c252a2ba63d33ca821b66",
+      "assumptions": "One-tap 16-lane DPD wrapper with real lane ready/valid. The property is scoped after reset; invalid-cycle payload hold is outside the claimed proof.",
+      "witnesses": [
+        "c_input_accept",
+        "c_output_stall",
+        "c_output_transfer",
+        "c_stall_release"
+      ],
+      "reported_properties": [
+        {
+          "name": "thermo5_dpd_vector_ready_harness.a_empty_output_allows_input",
+          "result": "proven                   (non_vacuous)"
+        },
+        {
+          "name": "thermo5_dpd_vector_ready_harness.a_stalled_output_is_held",
+          "result": "inconclusive(depth=13)   (non_vacuous)"
+        },
+        {
+          "name": "thermo5_dpd_vector_ready_harness.c_input_accept",
+          "result": "covered     (depth=1)"
+        },
+        {
+          "name": "thermo5_dpd_vector_ready_harness.c_line93_uncovered_tuple",
+          "result": "uncoverable"
+        },
+        {
+          "name": "thermo5_dpd_vector_ready_harness.c_output_stall",
+          "result": "covered     (depth=12)"
+        },
+        {
+          "name": "thermo5_dpd_vector_ready_harness.c_output_transfer",
+          "result": "covered     (depth=12)"
+        },
+        {
+          "name": "thermo5_dpd_vector_ready_harness.c_stall_release",
+          "result": "covered     (depth=13)"
+        },
+        {
+          "name": "rst_n==1",
+          "result": "constrained                             -  constant_7"
+        }
+      ],
+      "source_sha256": {
+        "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+        "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a",
+        "rtl/dpd/dpd_poly.v": "d694fcfd6a47f66f0e3fd23e3de84afc3092740ba8457d9df4abc576701a8e3a",
+        "dv/uvm/formal/thermo5_dpd_vector_ready_harness.sv": "dac8856e8b29cdae854cd39ce1a13e1ebac0f5e56592ac8acf796ba1c6af19cd",
+        "dv/uvm/formal/run_thermo5_dpd_vector_ready_fpv.tcl": "3268f0c6ae59b03d1def38f51ea724a9f84e75f047fa816b742ab81d539a1eca"
+      }
+    },
+    "frontend_control": {
+      "native_report": "v14_frontend_control_01/properties.txt",
+      "report_sha256": "b02ef0f01316ed5c5faff012871db9b650dc6aaa66eb8d9b85d2dc49cc06bcf7",
+      "assumptions": "Generic FIFO and 14:8 gearbox; unconstrained ingress flags and core controls. Independent 18-bit and 2-bit metadata elastic FIFOs, arbitrary handshakes and flags, payload tied zero. Known-value sampling after reset.",
+      "witnesses": [
+        "c_gain_start_end",
+        "c_interp_has_start",
+        "c_read_empty",
+        "c_read_valid"
+      ],
+      "reported_properties": [
+        {
+          "name": "thermo5_v14_frontend_control_harness.a_gain_empty_has_no_flags",
+          "result": "proven                   (non_vacuous)"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.a_interp_empty_has_no_start",
+          "result": "proven                   (non_vacuous)"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.a_read_empty_complements_valid",
+          "result": "proven"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.a_residual_stays_in_range",
+          "result": "proven"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.c_gain_start_end",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.c_interp_has_start",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.c_pending_short_residual",
+          "result": "covered     (depth=10)"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.c_read_empty",
+          "result": "covered     (depth=2)"
+        },
+        {
+          "name": "thermo5_v14_frontend_control_harness.c_read_valid",
+          "result": "covered     (depth=9)"
+        },
+        {
+          "name": "rst_n==1",
+          "result": "constrained                             -  constant_9"
+        }
+      ],
+      "source_sha256": {
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "e881530aa651b24caf90f638897526f42d69bf4c3db6633560483d066b7ebda9",
+        "dv/uvm/formal/thermo5_v14_frontend_control_harness.sv": "1b17286bc65985f7b2b8f73a93100893a64ef1eac9cc976b46c84e09a1c58540",
+        "dv/uvm/formal/run_thermo5_v14_frontend_control_fpv.tcl": "c26acd3309f21365a99ce3f691fdc1afa15a0e4248cbbc826f5dfdd29529e700"
+      }
+    },
+    "cdc_immediate_end": {
+      "native_report": "v14_cdc_end_branch_01/properties.txt",
+      "report_sha256": "338fc60e415aa5f19ccfae734eaa99dfffa35134a743316673a8bef437cd8aca",
+      "assumptions": "14:8 Generic FIFO, legal continuous 32-beat packets, core permanently enabled/ready. The mapped arm also has a static inequality independent of those traffic constraints.",
+      "witnesses": [
+        "c_completed_legal_frame",
+        "c_product_end_branch_context"
+      ],
+      "reported_properties": [
+        {
+          "name": "thermo5_cdc_end_branch_harness.a_immediate_end_arm_unreachable",
+          "result": "proven                   (non_vacuous)"
+        },
+        {
+          "name": "thermo5_cdc_end_branch_harness.c_completed_legal_frame",
+          "result": "covered     (depth=65)"
+        },
+        {
+          "name": "thermo5_cdc_end_branch_harness.c_immediate_end_arm",
+          "result": "uncoverable"
+        },
+        {
+          "name": "thermo5_cdc_end_branch_harness.c_product_end_branch_context",
+          "result": "covered     (depth=63)"
+        },
+        {
+          "name": "rst_n==1",
+          "result": "constrained                             -  constant_4"
+        }
+      ],
+      "source_sha256": {
+        "rtl/axis/dsm_reset_sync.sv": "106db4f838c8cc4274718c326c4637f149f41f473389b34bb034c58fe9b36e1f",
+        "rtl/axis/dsm_async_fifo.sv": "3bc75fefda23b2661bd3c95a147191a02df7162fc0104c037ede6fca5a08c7fc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv": "f7a31ecb55cc5dff5280d8f48e28f2cad5b74d7b1b2b552bbefdabf83fc93f56",
+        "dv/uvm/formal/thermo5_cdc_end_branch_harness.sv": "0c19fbc4345d93b438071c3a045e3276292449257ec214157789ecbc6a6a2515",
+        "dv/uvm/formal/run_thermo5_cdc_end_branch_fpv.tcl": "91051eb31da3a502ef4de232df5276aed2c05f4916e3681f2cc87cced9c6263f"
+      }
+    }
+  },
+  "by_classification": {
+    "FORMAL_PROVEN_UNREACHABLE": 22,
+    "STATIC_PARAMETER_UNREACHABLE": 72,
+    "STRUCTURAL_UNREACHABLE": 12
+  },
+  "approved": 0,
+  "applied": 0
+}
