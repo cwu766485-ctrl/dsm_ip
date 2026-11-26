@@ -1,5 +1,15 @@
 # Execution frontier
 
+## Current execution state: Round 6 strategy and DPD reachability (2026-11-26)
+
+Baseline `1c91d73`. The real DPD/FIFO slice passed VCS and hit L141
+`0,1` in local URG. The separate wrapper ready proof reports a proven
+implication and an uncoverable forbidden tuple in the scoped harness.
+Product replay and waiver applicability are OPEN. The highest-priority
+replay aligns a stage-9 bubble with the DPD-to-interpolator FIFO fill edge.
+Start a counter throughput benchmark in parallel. See
+`docs/dsm_v13_round6_closure_strategy.md`.
+
 ## Current execution state: EF1 and MASH AXI-Lite closure focus (2026-11-26)
 
 EF1 and MASH AXI-Lite Line, Branch and Toggle clear 95% adjusted.

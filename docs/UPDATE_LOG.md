@@ -1,3 +1,11 @@
+# 2026-11-26 SGT - Round 6 strategy and first DPD witness
+
+- Added a reproducible one-lane DPD and FIFO slice test and documented
+  the per-SKU product closure strategy and counting targets.
+- VCS/URG covered the exact L141 bubble/stall tuple in the slice.
+  VC Formal proved the separate wrapper ready relation in its harness.
+  Product replay and review of wrapper exclusion applicability are OPEN.
+
 # 2026-11-26 SGT - EF1 and MASH AXI-Lite coverage focus
 
 - Added complex coefficient, long-stream, runtime reset and boundary-phase
