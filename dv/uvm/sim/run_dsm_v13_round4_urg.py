@@ -350,6 +350,25 @@ def main() -> int:
             record["test_vdb_file_counts"] = {
                 str(path): sum(1 for item in path.rglob("*") if item.is_file())
                 for path in test_vdbs}
+            positive_report = run_dir / "assertions_positive_only" / name
+            positive_report.parent.mkdir(parents=True, exist_ok=True)
+            positive_vdbs = test_vdbs[:len(case["positive_logs"])]
+            positive_command = [urg, "-full64", "-dir", str(design)] + [str(path) for path in positive_vdbs] + [
+                "-report", str(positive_report), "-dbname", "dsm_v13_r4_positive_" + name]
+            positive_result = subprocess.run(positive_command, cwd=ROOT, text=True,
+                                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                              check=False)
+            positive_log = positive_report.parent / f"{name}.log"
+            positive_log.write_text(positive_result.stdout, encoding="utf-8")
+            positive_ok = positive_result.returncode == 0 and (positive_report / "asserts.html").is_file()
+            record["positive_assertion_report"] = str(positive_report)
+            record["positive_assertion_report_sha256"] = (
+                sha256(positive_report / "asserts.html") if positive_ok else "")
+            record["positive_assertion_urg_returncode"] = positive_result.returncode
+            if not positive_ok:
+                record["status"] = "FAIL"
+                record["positive_assertion_reason"] = "positive-only assertion URG report failed or is incomplete"
+                all_pass = False
         else:
             all_pass = False
 

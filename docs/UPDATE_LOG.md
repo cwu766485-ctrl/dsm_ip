@@ -1,3 +1,36 @@
+# 2026-11-26 00:04 SGT - DSM V1.3 Round 4 adjusted functional closure
+
+- Applied the user-confirmed software contracts: use the selected four-plane
+  Thermo5 MASH interface; reassert RUN only after STATUS reports both
+  RUN_ACTIVE and DRAINING clear and the ingress FIFO is empty. Updated UVM
+  coverage sampling and the legal STOP/restart checker to require exactly one
+  such observed restart.
+- Added a current-source Round 4 replay utility and positive-only assertion
+  URG reports. Rebuilt six Product/AXI-Lite configurations and replayed all 50
+  saved directed positive/negative VCS cases. Regenerated seven independent
+  URG merges and formal-assisted evidence from the current-source VDBs.
+- Applied 22 exact exclusions only to the adjusted functional view: ten MASH
+  bins backed by full-width W16/32-lane/ACC18 sequential Formal, and twelve
+  restart/FIFO bins outside the user-confirmed software contract. Raw URG bins
+  and coverage denominators remain unchanged and visible. All six adjusted
+  functional scores are 100%; adjusted mandatory-cross misses are zero.
+- Current Round 4 disposition retains all 2,621 baseline rows: 110 HIT,
+  3 NOT_APPLICABLE, 14 APPROVED_EXCLUSION disposition records, 2,493 OPEN,
+  and 1 OPEN_UNMAPPED. Raw group misses remain 22 and raw cross misses remain
+  eight. Selected raw code coverage still has 2,463 OPEN bins; final DV
+  sign-off remains OPEN. No Product RTL changed.
+- Checks: 50/50 current-source VCS replays PASS; all seven URG merges PASS;
+  MASH Formal proves 5/5 assertions, hits 4/4 required operational covers,
+  and marks all five unreachable candidates `uncoverable`; formal source and
+  output hashes verified; evidence generation and Python syntax compilation
+  PASS. The Python reference suite previously passed 74/74 and its source was
+  unchanged. PowerShell/XSim was unavailable and not run.
+- Remaining: raw Line/Branch/Condition/Toggle targets, 2,493 baseline OPEN
+  records, one OPEN_UNMAPPED row, serializer DV-L2, MATLAB latency alignment,
+  CDC/RDC, STA/PPA, and board/RF sign-off remain OPEN or NOT RUN. The
+  early-RUN-during-DRAINING mismatch reproducer remains excluded from passing
+  VDBs as an out-of-contract software sequence.
+
 # 2026-11-25 22:58 SGT - DSM V1.3 Round 4 functional denominator correction
 
 - Restored the restart FIFO `partial` and `full` coverpoint bins; removed the

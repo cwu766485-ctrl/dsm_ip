@@ -18,5 +18,21 @@ set_fml_var fml_max_mem 8GB
 set_fml_var fml_cov_gen_trace on
 set_fml_var fml_effort high
 check_fv -block
+set weighted_level_property dsm_v13_mash11_reachability_harness.a_no_unreachable_weighted_level
+set weighted_level_trace [file join $out mash11_weighted_level_counterexample.fsdb]
+if {![catch {fvtrace -property $weighted_level_property -file $weighted_level_trace}]} {
+  if {[file exists $weighted_level_trace]} {
+    fvtrace_check $weighted_level_property
+    fvtrace_report $weighted_level_property -list > [file join $out mash11_weighted_level_trace_checks.txt]
+  }
+}
+set zero_level_property dsm_v13_mash11_reachability_harness.c_output_zero
+set zero_level_trace [file join $out mash11_output_zero_witness.fsdb]
+if {![catch {fvtrace -witness $zero_level_property -file $zero_level_trace}]} {
+  if {[file exists $zero_level_trace]} {
+    fvtrace_check $zero_level_property
+    fvtrace_report $zero_level_property -list > [file join $out mash11_output_zero_trace_checks.txt]
+  }
+}
 report_fv -list > $out/properties.txt
 report_fml_engines -list -no_summary > $out/engines.txt

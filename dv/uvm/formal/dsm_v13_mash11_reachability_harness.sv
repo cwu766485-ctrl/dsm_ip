@@ -1,19 +1,23 @@
 `timescale 1ns/1ps
 `default_nettype none
 
-module dsm_v13_mash11_reachability_harness (
+module dsm_v13_mash11_reachability_harness #(
+  parameter int W = 16,
+  parameter int CHANNELS = 32,
+  parameter int ACC_W = 18
+) (
   input logic clk,
   input logic formal_reset_n,
   input logic reset_again,
   input logic in_valid,
   input logic [3:0] pa_ready,
-  input logic signed [31:0] in_i_vec,
-  input logic signed [31:0] in_q_vec
+  input logic signed [CHANNELS*W-1:0] in_i_vec,
+  input logic signed [CHANNELS*W-1:0] in_q_vec
 );
   typedef struct packed {
-    logic signed [17:0] e1;
-    logic signed [17:0] e2;
-    logic signed [17:0] e1_to_stage2;
+    logic signed [ACC_W-1:0] e1;
+    logic signed [ACC_W-1:0] e2;
+    logic signed [ACC_W-1:0] e1_to_stage2;
     logic signed [2:0] stage1_pm_prev;
     logic signed [2:0] stage2_pm_prev;
   } mash_state_t;
@@ -28,9 +32,11 @@ module dsm_v13_mash11_reachability_harness (
   wire in_ready;
   wire rst_n = formal_reset_n && !reset_again;
   wire [3:0] pa_valid;
-  wire [3:0] pa_data [0:3];
+  wire [2*CHANNELS-1:0] pa_data [0:3];
+  localparam logic signed [W-1:0] MIN_INPUT_RAIL =
+    {1'b1, {(W-1){1'b0}}};
 
-  tid32_mash11_weighted_pa_tx #(.W(16), .CHANNELS(2), .ACC_W(18),
+  tid32_mash11_weighted_pa_tx #(.W(W), .CHANNELS(CHANNELS), .ACC_W(ACC_W),
     .IN_SHIFT(0), .SATURATE(1'b1)) dut (
     .clk(clk), .rst_n(rst_n), .in_valid(in_valid), .in_ready(in_ready),
     .in_i_vec(in_i_vec), .in_q_vec(in_q_vec), .pa_valid(pa_valid),
@@ -59,11 +65,46 @@ module dsm_v13_mash11_reachability_harness (
     bit legal;
     begin
       legal=1'b1;
-      for (int lane=0; lane<2; lane++) begin
+      for (int lane=0; lane<CHANNELS; lane++) begin
         legal &= legal_level(decode_level(lane,1'b0));
         legal &= legal_level(decode_level(lane,1'b1));
       end
       all_output_symbols_legal=legal;
+    end
+  endfunction
+
+  function automatic bit has_output_level(input int signed target_level);
+    bit found;
+    begin
+      found=1'b0;
+      for (int lane=0; lane<CHANNELS; lane++) begin
+        found |= decode_level(lane,1'b0)==target_level;
+        found |= decode_level(lane,1'b1)==target_level;
+      end
+      has_output_level=found;
+    end
+  endfunction
+
+  function automatic bit all_next_symbols_legal();
+    mash_state_t state_i, state_q;
+    mash_step_t step_i, step_q;
+    logic signed [W-1:0] sample_i, sample_q;
+    bit legal;
+    begin
+      state_i=dut.state_i_q;
+      state_q=dut.state_q_q;
+      legal=1'b1;
+      for (int lane=0; lane<CHANNELS; lane++) begin
+        sample_i=$signed(in_i_vec[lane*W +: W]);
+        sample_q=$signed(in_q_vec[lane*W +: W]);
+        step_i=dut.mash_advance(state_i,sample_i);
+        step_q=dut.mash_advance(state_q,sample_q);
+        legal &= legal_level(step_i.combined_level);
+        legal &= legal_level(step_q.combined_level);
+        state_i=step_i.state_next;
+        state_q=step_q.state_next;
+      end
+      all_next_symbols_legal=legal;
     end
   endfunction
 
@@ -85,7 +126,7 @@ module dsm_v13_mash11_reachability_harness (
       state_i=initial_i_state;
       state_q=initial_q_state;
       legal=1'b1;
-      for (int lane=0; lane<2; lane++) begin
+      for (int lane=0; lane<CHANNELS; lane++) begin
         sample_i=$signed(vector_i[lane*16 +: 16]);
         sample_q=$signed(vector_q[lane*16 +: 16]);
         step_i=dut.mash_advance(state_i,sample_i);
@@ -100,6 +141,29 @@ module dsm_v13_mash11_reachability_harness (
     end
   endfunction
 
+  function automatic bit has_minimum_rail_stage1_positive();
+    mash_state_t state_i, state_q;
+    mash_step_t step_i, step_q;
+    logic signed [W-1:0] sample_i, sample_q;
+    bit found;
+    begin
+      state_i=dut.state_i_q;
+      state_q=dut.state_q_q;
+      found=1'b0;
+      for (int lane=0; lane<CHANNELS; lane++) begin
+        sample_i=$signed(in_i_vec[lane*W +: W]);
+        sample_q=$signed(in_q_vec[lane*W +: W]);
+        step_i=dut.mash_advance(state_i,sample_i);
+        step_q=dut.mash_advance(state_q,sample_q);
+        found |= (sample_i==MIN_INPUT_RAIL && step_i.stage1_pm>0);
+        found |= (sample_q==MIN_INPUT_RAIL && step_q.stage1_pm>0);
+        state_i=step_i.state_next;
+        state_q=step_q.state_next;
+      end
+      has_minimum_rail_stage1_positive=found;
+    end
+  endfunction
+
   default clocking cb @(posedge clk); endclocking
 
   // Standard ready/valid source contract; reset may assert again at any time.
@@ -110,6 +174,8 @@ module dsm_v13_mash11_reachability_harness (
     pa_valid==4'h0 || pa_valid==4'hf);
   a_no_unreachable_weighted_level: assert property (
     (pa_valid==4'hf) |-> all_output_symbols_legal());
+  a_accepted_combined_levels_legal: assert property (disable iff (!rst_n)
+    (in_valid && in_ready) |-> all_next_symbols_legal());
   a_minimum_rail_never_stage1_positive: assert property (disable iff (!rst_n)
     (in_valid && in_ready) |-> minimum_rail_stage1_stays_negative(
       in_i_vec,in_q_vec,dut.state_i_q,dut.state_q_q));
@@ -126,6 +192,12 @@ module dsm_v13_mash11_reachability_harness (
     in_valid && in_ready ##1 pa_valid==4'hf);
   c_startup_plus_two: cover property (disable iff (!rst_n)
     pa_valid==4'hf && decode_level(0,1'b0)==2);
+  c_output_minus_four: cover property (pa_valid==4'hf && has_output_level(-4));
+  c_output_minus_two: cover property (pa_valid==4'hf && has_output_level(-2));
+  c_output_zero: cover property (pa_valid==4'hf && has_output_level(0));
+  c_output_plus_four: cover property (pa_valid==4'hf && has_output_level(4));
+  c_minimum_rail_stage1_positive: cover property (disable iff (!rst_n)
+    (in_valid && in_ready && has_minimum_rail_stage1_positive()));
 endmodule
 
 `default_nettype wire

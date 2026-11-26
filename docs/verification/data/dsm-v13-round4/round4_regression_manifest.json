@@ -1,52 +1,52 @@
 {
   "assertion_isolation_reports": [
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_00/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_00/asserts.html",
       "sha256": "6251b99bc1916f3f5b7cd55e80730b95b583b625d4d6fcf04004b8656692c083",
       "test": "thermo5_sku_axil_config_test_seed440521",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_config_test_seed440521.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_config_test_seed440521.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_01/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_01/asserts.html",
       "sha256": "fd8596c57fe743fd32127052f26e8e7b6065d3b743ab1bfe5b5b3894dff413c6",
       "test": "thermo5_sku_axil_register_access_test_seed440522",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_register_access_test_seed440522.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_register_access_test_seed440522.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_02/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_02/asserts.html",
       "sha256": "5ecdfb62bad8d98c1b6f6d9e737522d668bae86d200feb423a6ba192fa661957",
       "test": "thermo5_sku_axil_reset_sweep_test_seed440523",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440523.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440523.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_03/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_03/asserts.html",
       "sha256": "d93055183e9ea253fe4525e7af5c5643651650cc1d0df4550a8272ac5ad70c85",
       "test": "thermo5_sku_axil_stop_restart_test_seed440524",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_stop_restart_test_seed440524.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_stop_restart_test_seed440524.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_04/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_04/asserts.html",
       "sha256": "7e1312ae29802257b659bfa1dca0cf7c120379e3ead7f92aa98acb4741dc4d0e",
       "test": "thermo5_sku_axil_random_packet_test_seed440525",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440525.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440525.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_05/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_05/asserts.html",
       "sha256": "115507eab05e0ddb4e4abbfffca3c69ec30a98614313be8b704886c1813ca758",
       "test": "thermo5_sku_axil_graceful_stop_test_seed440527",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440527.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440527.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_06/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_06/asserts.html",
       "sha256": "834bc1c76999c2ef18b771b3b3cba1e4c8b22b554ce38a72949076cbdfb37123",
       "test": "thermo5_sku_axil_random_packet_test_seed440526",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440526.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440526.vdb"
     },
     {
-      "path": "runs/dsm_v13_round4/assertions_isolated/mash11_axil/test_07/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/assertions_isolated/mash11_axil/test_07/asserts.html",
       "sha256": "1eebd46cd015cbcc565b10aca7e7312288e798375a6f00441f20177afecb6e74",
       "test": "thermo5_sku_axil_mash11_rail_history_test_seed440529",
-      "vdb": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_mash11_rail_history_test_seed440529.vdb"
+      "vdb": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_mash11_rail_history_test_seed440529.vdb"
     }
   ],
   "baseline_revision": "9ae4e3fc574c34149930dca055d83528458be553",
@@ -172,6 +172,12 @@
       "vector_manifest_sha256": ""
     }
   ],
+  "current_source_replay": {
+    "path": "runs/dsm_v13_round4_current_source_20261125/current_source_replay_manifest.json",
+    "replays": 50,
+    "sha256": "3bbf0cdd53308ca233a21bc31e823df035563257f62aca9a2234be70b23e9cd6",
+    "status": "PASS"
+  },
   "diagnostic_runs": [
     {
       "classification": "FAIL_REPRODUCED; excluded from passing VDB merges",
@@ -181,269 +187,269 @@
   ],
   "formal_evidence": [
     {
-      "path": "runs/dsm_v13_round4/formal_mash_reachability_v3/run_result.json",
-      "sha256": "b932a5295dd636413264857213bd9f6aa06cda9a0620e086608c48d3e4bb3195"
+      "path": "runs/dsm_v13_round4/formal_mash_reachability_32lane_final/run_result.json",
+      "sha256": "17124812b34d886fc6e4a55a533e07ec4d55355ad86682e9da8ac395326a7073"
     },
     {
       "path": "runs/dsm_v13_round4/formal_frame_tail/formal_summary.json",
       "sha256": "12bb7a3b078ed6b26b2c63284727ae7c07b9862092ecceb8e9464b40245742b7"
     }
   ],
-  "generated_utc": "2026-11-25T15:02:39.275698+00:00",
+  "generated_utc": "2026-11-25T16:06:22.051638+00:00",
   "logs": [
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/axil_illegal_frame_seed420102.log",
-      "sha256": "25b01ac656c8d1bc0e7fda2ae4ceb22d382eb0e43a0c3cb019e90cc67fce1cce"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/axil_illegal_frame_seed420102.log",
+      "sha256": "2cd0877a6d1a5abde63acaf4f51643885400611c5998edbe058ab6fb6f7555cf"
     },
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_config_test_seed440501.log",
-      "sha256": "a7f4ae84f5d215ffb6480b27fd28ea7f8bae50763cb36cc9d7f5bcc39978a167"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/thermo5_sku_axil_config_test_seed440501.log",
+      "sha256": "70e0ec900ca5a28628cbfd5fe5bd027dcae10eb9067cc2207e794513ea1516ea"
     },
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_graceful_stop_test_seed440506.log",
-      "sha256": "404230761fc84d2f0e4f09e0eca35f224ca79232ee2feed3b082d71e09c71ddf"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/thermo5_sku_axil_graceful_stop_test_seed440506.log",
+      "sha256": "bb4d2801a930cb5ffb056e843ed1ef4e92bcc4a4f438415f7712f36f196cc04b"
     },
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_random_packet_test_seed440505.log",
-      "sha256": "bbff420c12413ed4878a95afa4796a9a9183d630d718154c08bd7560d2ef945c"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/thermo5_sku_axil_random_packet_test_seed440505.log",
+      "sha256": "304db8001172ae3efbd6df5872dea6296e0b85770ef927378465f449641b921f"
     },
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_register_access_test_seed440502.log",
-      "sha256": "d98463355845c565b1015cfed2a0d1173f53a8e84a595367f7722ae3cd5f3afc"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/thermo5_sku_axil_register_access_test_seed440502.log",
+      "sha256": "49be1e6a8fcb3385c46aad68190075e7c856d43ac1aada38027b5a60d5957b9c"
     },
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_reset_sweep_test_seed440503.log",
-      "sha256": "c7967bedb09272d7c076ddf37e8927190f25688e55fcd6e36345954e5d249191"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/thermo5_sku_axil_reset_sweep_test_seed440503.log",
+      "sha256": "9b67cb9fa60ce6a871814c1517d53c686e9b9b9a152b0a3d89a115dc8660065d"
     },
     {
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/ef1_axil/thermo5_sku_axil_stop_restart_test_seed440504.log",
-      "sha256": "f25397ac22cdc036e0cf07357427b34074874edbb0225c8456213e7abcdefc52"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/thermo5_sku_axil_stop_restart_test_seed440504.log",
+      "sha256": "e53899e82de8b95f40b5a8e1ee8e36b577fa0d3f87f8cc1710c7448170da8a4c"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/illegal_frame_seed440401.log",
-      "sha256": "4b2ab79ce85b11896688a210d0247cc7b57c58d8c5b8e30731d4eddc78b38e96"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/illegal_frame_seed440401.log",
+      "sha256": "6be59afecd46c78c66845a75df44bf2f9f806b8892ea47e600f1f03fbb8a56db"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_bittrue_test_seed440410.log",
-      "sha256": "2f1d51a9c7705b749d98112e084d260fe30ee05f48aae7e8f53696f005b313d0"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_bittrue_test_seed440410.log",
+      "sha256": "cccf10ffee110fb78acf1adce5345ae4cf7ef1447ee77af8f41acc863a726d56"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_bubble_backpressure_test_seed440621.log",
-      "sha256": "cca9203318f02c5bb9987d89acfd442918db549b7f7646938d3b7ba9480ebf0f"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_bubble_backpressure_test_seed440621.log",
+      "sha256": "940f9e563900ff790e86e8b945d3011b5753c5212da4fbd37f9ba0215c57df04"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_fifo_boundary_test_seed440622.log",
-      "sha256": "24ac1f2fe56ff5ce759e7ad4c5c59c50a43f41bb5fd07a7d46cff397e676ba4b"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_fifo_boundary_test_seed440622.log",
+      "sha256": "77893d027f3a70833f57c731768f8a6681b23423f57e15598536ddc1ee835753"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_fifo_empty_test_seed440623.log",
-      "sha256": "1e6a0d92c9beca0af8d6c3899458a7c08bd3cc35d903225c2d356fd4a1a116c8"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_fifo_empty_test_seed440623.log",
+      "sha256": "452ded617d229a64eae5d35fd7e6c278eb5727575561bb9b31b79cf27274800c"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_fifo_full_reset_test_seed440412.log",
-      "sha256": "3b67dd74a42357a0f8eebf91c9322491a02a3e7ab8fd7720ef179d1f3a1042b2"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_fifo_full_reset_test_seed440412.log",
+      "sha256": "0c9ecbc577060f7117392306b617d0519e5be38af5f046c9e706601a94abc4d1"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_product_random_test_seed440414.log",
-      "sha256": "6d286d2c14741256c05e9878ebc0ae477976bf738e633fbf374ac3653224e318"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_product_random_test_seed440414.log",
+      "sha256": "4ba909a367bd95dbd54ae5ed8b5fd408cd39129e649186b79f977bc502d3fc94"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_reset_sweep_test_seed440611.log",
-      "sha256": "dadfda35e81dcb1c66da9d20654ee7c8e9ad346339df5ec115068944e432e448"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_reset_sweep_test_seed440611.log",
+      "sha256": "dc2ba1ec28e9fe5d6553b57dffac23bc1c387c49624656f7d97722a7e6502fdb"
     },
     {
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/ef1_product/thermo5_sku_reset_test_seed440624.log",
-      "sha256": "a335f552be41b6e6aea15daca786dcc374112b29ec292d93a2f584288a8281fc"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/thermo5_sku_reset_test_seed440624.log",
+      "sha256": "8205c2df3642c42c1f425082711f10a167888b1d764cd6239a25856ef58ad0f9"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/axil_illegal_frame_seed420102.log",
-      "sha256": "2584a4f09bc6f296cdd37dc80a579cf8a8f398f378371cc506fa14a7d16b0940"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/axil_illegal_frame_seed420102.log",
+      "sha256": "f4a6ee5efe86b1a664060de2f43d748c5b0e9642ee3daefa16593e0ac4111da6"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_config_test_seed440511.log",
-      "sha256": "41f4af43518e357edfe1680a01c144681682cd6fd84fb8e79bbae82b85fbf701"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_config_test_seed440511.log",
+      "sha256": "faedfaf92408b802e4119f092200123417e85c84e8d39008e4249a90f1b4b9eb"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_ef2_corner_test_seed440517.log",
-      "sha256": "54b8300e83329a69b4c86afdbdd4195b44f48ba633bda10d6916c343fa938c9d"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_ef2_corner_test_seed440517.log",
+      "sha256": "7e20133332f5fe9d24447ac441888ede164aff8c3435bee89f95603c1a40d84b"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_graceful_stop_test_seed440516.log",
-      "sha256": "e2d4760875413157dad3c14fca5c4c7c3f71bd267a6b3630d56f2b13b12e7e11"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_graceful_stop_test_seed440516.log",
+      "sha256": "db90141e2796ded229ecf6a9d8e84ebcce0a6fbbf02247575e9b9921d60ba0f0"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_random_packet_test_seed440515.log",
-      "sha256": "578704d9743a7592edf4616ea3ed1f0c981d207866ace2243571111ddced8f51"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_random_packet_test_seed440515.log",
+      "sha256": "5ba2cac9ec90703af1add83e93cf069b0987daa1070da74b7cfb803761c60b43"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_register_access_test_seed440512.log",
-      "sha256": "74da5bae900026787bb7faa42e768671d432f3f3c41e431164d31bc9f0f38608"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_register_access_test_seed440512.log",
+      "sha256": "80b5fbd210842aece9e5c66bfb4406542412b284ba5a8b5cc6347a42c8e7d8b3"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_reset_sweep_test_seed440513.log",
-      "sha256": "d6848bc7f72b57c7da5c1314f743b0874f62acbe6a3803b354d8153973f15b2f"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_reset_sweep_test_seed440513.log",
+      "sha256": "0896e74fe8b788c20251a27e7c4c2fbad205a74be5cd6de03013fb4c186ab0bf"
     },
     {
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/ef2_axil/thermo5_sku_axil_stop_restart_test_seed440514.log",
-      "sha256": "7733664750f21cadde9f99b829f68425e57fef7adb5ff4509fdedd789b46d957"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/thermo5_sku_axil_stop_restart_test_seed440514.log",
+      "sha256": "3449cf5a93c4ca9b6143c9155c5f02a8110e18bf1c45de1c545243d2f754c5a5"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/illegal_frame_seed440402.log",
-      "sha256": "4c81ec3a3b652d01dbbb2241709dc81bb6e373da33517b32633b51c46ee28be2"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/illegal_frame_seed440402.log",
+      "sha256": "eab9b8a1a5b0564f5b602d253eb622555cd6b90b996aa73497d792f7000684b0"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_bittrue_test_seed440410.log",
-      "sha256": "4f7d37c942f0b414825c085559e4db2ddac6545de0c1cb93b02c7e69269ceac2"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_bittrue_test_seed440410.log",
+      "sha256": "9830bc20dea25c982328e3d2ef04a36d0063ee332f57a7851c8639c858bd29cd"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_bubble_backpressure_test_seed440621.log",
-      "sha256": "9c139c4c4944ce0280b132144971bc1339e57d219a88d4d983a37d4d5c1d2be9"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_bubble_backpressure_test_seed440621.log",
+      "sha256": "4cf82894bcab4dae570c337e8e49f407bf76c0f116783f2ade068e56d4a844c1"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_ef2_corner_test_seed440415.log",
-      "sha256": "4e28e67e32ef6526fa1de604762d2000a4f09bf536ce75daba3a1664573708ab"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_ef2_corner_test_seed440415.log",
+      "sha256": "3f977ef800c865b196dbb6a6cdb9690ad5b1b3d977247e848ec06c61021c1b47"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_fifo_boundary_test_seed440622.log",
-      "sha256": "287ba1ced47ee0a367c94dc5c71e35f5bf9d386c64c7adc6e4beb0736e982fd1"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_fifo_boundary_test_seed440622.log",
+      "sha256": "ae98a3817a75063a797c72fc5aa0dcb0e8d86c7ea44f0a6b0949369d2e6d882d"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_fifo_empty_test_seed440623.log",
-      "sha256": "dbd75bab088a039f6bfab5af142c3733bfb749e6ab98711c5bcc0cba9ccd5188"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_fifo_empty_test_seed440623.log",
+      "sha256": "c2ba65113c15fec9808365fdea462327f0e832339f236976efa2d5c349de3f3f"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_fifo_full_reset_test_seed440412.log",
-      "sha256": "7e30586d6809b654a62fb15116bd99c972c042a24b68f233b8e88d0c704e7c71"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_fifo_full_reset_test_seed440412.log",
+      "sha256": "769ef72d8109e2c13aedc6a6f7414deb52858304dba5c75e2227c709215fcb3d"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_product_random_test_seed440414.log",
-      "sha256": "b46fa23e4fb296e00a91331d66c194073f88a14ebf963dc2f3107b5856875e9c"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_product_random_test_seed440414.log",
+      "sha256": "f4940042867fe680e81ab4b3a8262ea7f64317be19d53ca4f1451d1b3a2a59b4"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_reset_sweep_test_seed440611.log",
-      "sha256": "a112ef8f0216b0af8b9c7d7fc5504b5a24a650f9db3cee1214459d0df1adaf0f"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_reset_sweep_test_seed440611.log",
+      "sha256": "43b5678fdd8abf49ce2713ef277d592832777de66fb035d283955babe65686c6"
     },
     {
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/ef2_product/thermo5_sku_reset_test_seed440624.log",
-      "sha256": "425f463dc3c713312408932c2c3eeddd26c9c0635711957d3c8cea6381593cf6"
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/thermo5_sku_reset_test_seed440624.log",
+      "sha256": "e2b52368b93e9da6f496ccc7594375a8c3459501bffe25a14dfdb6303c4cfc87"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/axil_illegal_frame_seed420102.log",
-      "sha256": "791cb259442c58246a7747e9c58783220400093735da1e4c8f3c31494188dbd0"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/axil_illegal_frame_seed420102.log",
+      "sha256": "1b84f40ba3611f0b628d15c6d001fa554d2c1f8988d4f0765df3ca76a77a6c92"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_config_test_seed440521.log",
-      "sha256": "77f9c7ae36c11c950cdc73c022d847493fce09f13dce07c687f602cb86de568c"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_config_test_seed440521.log",
+      "sha256": "c5097a419971b28043e505eb0129bdf3ede614307651bbe8ee37db1e6e4d4d16"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_graceful_stop_test_seed440527.log",
-      "sha256": "e5009fd9832c1045a77ffc4964c5d1f09b0130ca2d9908bcab99667670c2e125"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_graceful_stop_test_seed440527.log",
+      "sha256": "3da9f7cd3ba7e2191cedf7a0c794265bb709e8b53d171ecf1cc1a4c386b09cdc"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_mash11_rail_history_test_seed440529.log",
-      "sha256": "0f04f6d22fa475856b4d711e8284d6941064eb27ba735e9bf3f571cfe8647a9e"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_mash11_rail_history_test_seed440529.log",
+      "sha256": "ceb96afc32f41745fbfbf20e19e60367883fcde3967915e98adf44fbffaf5c3d"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_random_packet_test_seed440525.log",
-      "sha256": "6ef5bf6b5e62b8ae55b0ffefc72b0e1cf89d93eac3b666f785fbe2c64f045270"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_random_packet_test_seed440525.log",
+      "sha256": "eef54b57578b814a12d87e6e27c3d700bb346022db0ad7874ea830e5cd92d02b"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_random_packet_test_seed440526.log",
-      "sha256": "a86475929b1ba79cded888a36520d0a80d6db2c2dfa75a33e56031df697d03cd"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_random_packet_test_seed440526.log",
+      "sha256": "1f6220cc4ae58667c26eaaa897e55660431e8c91356df5332fbfc87c9e1e5332"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_register_access_test_seed440522.log",
-      "sha256": "b32148b73b8d1163004a4e96d1d7dd8e8c38578fb2952a72ae0f23b910b75563"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_register_access_test_seed440522.log",
+      "sha256": "72dee657bac45ca17f8cedefa3e3aeff0c88e23fede1ebacf018296f30e04c58"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_reset_sweep_test_seed440523.log",
-      "sha256": "282dee3f22b50826d3cc49127721475948c8527baed3ca0e8ac78c798b83b83c"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_reset_sweep_test_seed440523.log",
+      "sha256": "263f82944ac27c3ddefb6ff28b738750f15892f96da6842884da8f82e4e27aaa"
     },
     {
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_stop_restart_test_seed440524.log",
-      "sha256": "f49f1522828187007341f38edbdbc29b7acce69ac64b962054b2a0e0eefcf403"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/thermo5_sku_axil_stop_restart_test_seed440524.log",
+      "sha256": "9e4145a3f5eff0fe68de31a6e2fbf03dd777ca3a35ba7e89e6b994c116bf4c09"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/illegal_frame_seed440403.log",
-      "sha256": "25b365d1fe20a4b68343d58be114dff5b026d5d996655745813d48db4e17a479"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/illegal_frame_seed440403.log",
+      "sha256": "7129de6fffd68d7747970cbfb3b3fff404c607c1f9f139e6982ce83bcc500598"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/thermo5_sku_bittrue_test_seed440410.log",
-      "sha256": "03f8bb8c85bee7b0378a67df5e2afcafe9b246bc0fefd85cf198017f2b3e390c"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/thermo5_sku_bittrue_test_seed440410.log",
+      "sha256": "7c1d0892e13a06a53a1820ae0e43a852fd4f48b757adf1815b224e642dcc0e76"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/thermo5_sku_bittrue_test_seed440416.log",
-      "sha256": "b9fe36e11a9c269c60fa9e26f08ed3cfc4a78cd9a0480de3df5cfbe5f2375f68"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/thermo5_sku_bittrue_test_seed440416.log",
+      "sha256": "dc4824c7536ed76eec6633b5f2da0cb55c232d93356c7b45b3a088a9f6e39734"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/thermo5_sku_bittrue_test_seed440418.log",
-      "sha256": "d1df98a820cb6a7a61242e077134dc9b1921d7dc8db752dc15a979d2c1f2597f"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/thermo5_sku_bittrue_test_seed440418.log",
+      "sha256": "8e7c11a3f27b5ff2cded3e9a98c448ad7de2a4070764adece588d90e3daf8b8e"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/thermo5_sku_fifo_full_reset_test_seed440412.log",
-      "sha256": "edcb28fe9015009b8dd3c88f33285d48dbab7c26c3f6e415b50787bfd428e7d4"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/thermo5_sku_fifo_full_reset_test_seed440412.log",
+      "sha256": "f82b5d6902c7fbd1b7bdb0003f5bc9f2dc3f6de10f9dae91bf98288b6c146afe"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/thermo5_sku_product_random_test_seed440414.log",
-      "sha256": "a954fc82859e52cd519595bd3a5bbac6c1b3042520235285440d03af6d9d2ab8"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/thermo5_sku_product_random_test_seed440414.log",
+      "sha256": "90920278535cda08a8112f60e9e7f7f247d03c796278784b952f74abcf8246a9"
     },
     {
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/mash11_product/thermo5_sku_reset_sweep_test_seed440611.log",
-      "sha256": "398662beae2b800b27cdddf403862de8b0b53cd1fb266f61c39994b172b9020a"
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/thermo5_sku_reset_sweep_test_seed440611.log",
+      "sha256": "203e34c8e127f165ae1dd2d4c295826eb1b5738eaa98b3e08a5f664a5cfa3755"
     },
     {
       "configuration": "mash11_wrapper_core",
-      "path": "runs/dsm_v13_round4/mash11_wrapper_core/core_seed130011.log",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_wrapper_core/core_seed130011.log",
       "sha256": "697507078a3b35558f87979e7cdd675c504997e3a3c52f8d0251569b1445b561"
     }
   ],
@@ -451,28 +457,28 @@
   "schema": "dsm_v13_round4_regression_manifest_v1",
   "source_changes": [
     {
-      "bytes": 474546,
+      "bytes": 477572,
       "path": "docs/UPDATE_LOG.md",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "d9a2995fc951b877064747f7b83c3ecf7e6eba6183d67a5f27cab95c6c7bcaae"
+      "sha256": "17adbac2f8be1bcd76249483362a9d19fd9ed67fffa8600d2c8e0882a1b211f1"
     },
     {
-      "bytes": 10193,
+      "bytes": 7695,
       "path": "docs/dsm_v13_round4_report.md",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "d75a396ca86d00a971c473646a7b0dbc9895ab79d79118fd8b7ef45dc2d7e03f"
+      "sha256": "6dc9d63697878010c76f60f5d90138c948203dd28701012a2cca727178b55788"
     },
     {
-      "bytes": 69188,
+      "bytes": 69164,
       "path": "docs/exec-plans/active/execution-frontier.md",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "8238066df3406211f77c27e706c36917e7934fce1e49da322b4068bc3c0ee903"
+      "sha256": "fbde3ad2058b781c6cada63b1680fa5977440f41be79e6b3d65e8e74e49934e8"
     },
     {
-      "bytes": 42077,
+      "bytes": 43037,
       "path": "dv/uvm/env/thermo5/thermo5_sku_coverage.svh",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "17656d7a0f4bb87897ed9252236cb996a2224909f4edbd164803e137436a5151"
+      "sha256": "2162c8918824251b7ff872ab4a8017f8ced92fe28fa13ac96125a6e2e45d957e"
     },
     {
       "bytes": 3887,
@@ -481,16 +487,22 @@
       "sha256": "6533d8e875bd72e199cb475a4cbea8b357e6577ac5aa3baeef737759ee41b89b"
     },
     {
-      "bytes": 4776,
+      "bytes": 7504,
       "path": "dv/uvm/formal/dsm_v13_mash11_reachability_harness.sv",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "110a9ec63541b8404bd182791b305c5a6d66c1e40b584e6b1b7e939d823a0043"
+      "sha256": "df70687dad20dd0f830929ba3cb701d449d3fa05ba094371008132b8bcce50c2"
     },
     {
-      "bytes": 3613,
+      "bytes": 5750,
       "path": "dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.py",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "1f9eaf24447b9ea8f799e9ef921e39e796ca5666d06004f39338ab6299ccc93e"
+      "sha256": "1fc68ebd34fd5529a7e4948a6b16e42facf3ad8894b556578dadc497630173cb"
+    },
+    {
+      "bytes": 1612,
+      "path": "dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.tcl",
+      "role": "Round 4 source, test, or documentation change",
+      "sha256": "8d77f136f47de84d445a875352944ec8a4f6c8212ff35a1c06d688c98ed2d607"
     },
     {
       "bytes": 76418,
@@ -505,16 +517,28 @@
       "sha256": "d1c51232685cf7a9adc297e39e4d0e98dd3f20921fae17e151af0acb0148bcfd"
     },
     {
-      "bytes": 56596,
+      "bytes": 74883,
       "path": "dv/uvm/sim/generate_dsm_v13_round4_evidence.py",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "a72250f3e43f5a403d74212cef6cf269c378924dbc644516f7246695e8d6c37c"
+      "sha256": "53da4e748cd64bf6e1b265c2efc4dddea40de237abe37c219766ad3310e60d78"
     },
     {
-      "bytes": 20914,
+      "bytes": 7189,
+      "path": "dv/uvm/sim/run_dsm_v13_round4_current_source.py",
+      "role": "Round 4 source, test, or documentation change",
+      "sha256": "4b9927f4f85a86d67cc5121dd9cb2bb69e7fa0a4a2fca57fd925c651de837469"
+    },
+    {
+      "bytes": 22337,
       "path": "dv/uvm/sim/run_dsm_v13_round4_urg.py",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "dfad140113c34266b7bf1ba15005c0a894611b1f2e7d9e92ee72fa7d63d7f6d1"
+      "sha256": "23dbc120017dea191eb2cfffe08526a3296a1dffa671a0bb8b0ebb92650629c8"
+    },
+    {
+      "bytes": 6960,
+      "path": "dv/uvm/tests/thermo5/axil/README.md",
+      "role": "Round 4 source, test, or documentation change",
+      "sha256": "2d5f0279bf9ca6c0ca3f1e4f787db8d75fc73d00e705b6c3c145b01829754efc"
     },
     {
       "bytes": 34102,
@@ -547,10 +571,10 @@
       "sha256": "b4f109e3d3e9337009c5d564fda73208df9766225b7f05e07b36b260f563c429"
     },
     {
-      "bytes": 9233,
+      "bytes": 9656,
       "path": "dv/uvm/tests/thermo5/axil/thermo5_sku_axil_stop_restart_test.svh",
       "role": "Round 4 source, test, or documentation change",
-      "sha256": "2b6991540b7d6a19e1ba3a88cb3dabe56ce2a846e4a217ce38075f37254bbb03"
+      "sha256": "31b4f94df81525856bdfa65d14eeaf0c30ca083dbbce1f37fd4039d3639e5c97"
     },
     {
       "bytes": 5317,
@@ -625,7 +649,7 @@
       "sha256": "5061a7807c5bd008322c94388bb38eba7ce75dc81f832dbce1110ee6fd2b0115"
     }
   ],
-  "source_revision": "9ae4e3fc574c34149930dca055d83528458be553",
+  "source_revision": "770727ed8a20dd63565122f11952c5ce13a47367",
   "tools": {
     "vc_formal": "V-2023.12-SP2",
     "vcs_urg": "V-2023.12-SP1"
@@ -634,619 +658,619 @@
     {
       "bytes": 36868,
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/urg/ef1_axil/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_axil/hierarchy.html",
       "sha256": "e1559f6d70884d03854fe7d58932bb0057c10a550575bcdebed2a918d2c613ff"
     },
     {
       "bytes": 13410,
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/urg/ef1_axil/groups.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_axil/groups.html",
       "sha256": "89401a07ba5fcadfabd126314c62006b485fcd6b9ba4a2d8ff7f8ab4ad248128"
     },
     {
       "bytes": 31380,
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/urg/ef1_axil/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_axil/asserts.html",
       "sha256": "a0a6fc3b8579a93010b450afde5a14985869259738ab50a86434e99e8627d433"
     },
     {
       "bytes": 19331,
       "configuration": "ef1_axil",
-      "path": "runs/dsm_v13_round4/urg/ef1_axil/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_axil/modlist.html",
       "sha256": "590311903c8197d2b885fa091e899fae0de1d599a02ed5cf6b2a7f281ad65565"
     },
     {
       "bytes": 36019,
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/urg/ef1_product/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_product/hierarchy.html",
       "sha256": "9af35b20c5b0a9ed6ecca88c97a88d70c3ff60a8850d8fda95b84f2602347362"
     },
     {
       "bytes": 8192,
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/urg/ef1_product/groups.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_product/groups.html",
       "sha256": "91b4b81d25ad0bc947b0d1d4a153872ccb6f27a88164c92850e31ff98de7e440"
     },
     {
       "bytes": 29825,
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/urg/ef1_product/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_product/asserts.html",
       "sha256": "74fa13cca82c1acf1eae3979d9785c006e09bea3aba6f4e5eb529b938b98e105"
     },
     {
       "bytes": 18261,
       "configuration": "ef1_product",
-      "path": "runs/dsm_v13_round4/urg/ef1_product/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef1_product/modlist.html",
       "sha256": "11baccf997950b79c23b657d274a39c93c3f9b3af8628b368dba40819830b699"
     },
     {
       "bytes": 36832,
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/urg/ef2_axil/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_axil/hierarchy.html",
       "sha256": "cc8d8b8182fc9a32a824229760c4c85ac8fe3968385481a9c85b92ef5ecf972b"
     },
     {
       "bytes": 13976,
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/urg/ef2_axil/groups.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_axil/groups.html",
       "sha256": "3fd655e565c0c8cad22a85c25ca4add601e340f70e418bb9108ef105a18448fb"
     },
     {
       "bytes": 21888,
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/urg/ef2_axil/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_axil/asserts.html",
       "sha256": "92022f4b1598aa509aae2ece65bd748e3e163b3d56f22ab1585d3971b2f1075c"
     },
     {
       "bytes": 19298,
       "configuration": "ef2_axil",
-      "path": "runs/dsm_v13_round4/urg/ef2_axil/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_axil/modlist.html",
       "sha256": "3e5747e1183886ddaaf33a8e8345227468d8955ba1dae3d875366153912d6398"
     },
     {
       "bytes": 35982,
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/urg/ef2_product/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_product/hierarchy.html",
       "sha256": "56cb753fcf1da4aa3e2fe659664300a19db8a1045902793af0268778a64d8791"
     },
     {
       "bytes": 8754,
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/urg/ef2_product/groups.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_product/groups.html",
       "sha256": "1accbeeac13232c972cf21c46bc19942fc5fc5cbd33ba86b7cf24900aa06422c"
     },
     {
       "bytes": 20330,
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/urg/ef2_product/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_product/asserts.html",
       "sha256": "670dabb91d73a9e5fcc71222bfe175e1c192154490384a04b46d519b82f88004"
     },
     {
       "bytes": 18228,
       "configuration": "ef2_product",
-      "path": "runs/dsm_v13_round4/urg/ef2_product/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/ef2_product/modlist.html",
       "sha256": "1a2dfe255e86467117388067d1f23ff9d8cdeb177318fdb8ee7f839cc80c6366"
     },
     {
       "bytes": 31851,
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/urg/mash11_axil/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_axil/hierarchy.html",
       "sha256": "58fb914f9714dd40919e6a5b1049cc38b970bb335e2f0bb0c6a7b025414a321f"
     },
     {
       "bytes": 14702,
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/urg/mash11_axil/groups.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_axil/groups.html",
       "sha256": "07ddadae65dd654b80652823462ee7e185970fd9b6417228294088572ac10a4f"
     },
     {
       "bytes": 26146,
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/urg/mash11_axil/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_axil/asserts.html",
       "sha256": "81ea601c0b9826c149632686f9b98faf3390c0f990a5d9f002dfcdcf504cc778"
     },
     {
       "bytes": 17773,
       "configuration": "mash11_axil",
-      "path": "runs/dsm_v13_round4/urg/mash11_axil/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_axil/modlist.html",
       "sha256": "4a2362ec30b373b5ae4298d7891377de9563592cfc6e580589850b87ffbc469d"
     },
     {
       "bytes": 31001,
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/urg/mash11_product/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_product/hierarchy.html",
       "sha256": "c6c77490e826a94a7d8f2b6790a2f584271d1f9fbc3134837078f5469425c39a"
     },
     {
       "bytes": 9479,
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/urg/mash11_product/groups.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_product/groups.html",
       "sha256": "f2343cd988ba1161cb915f13f5af6520736c91ccebe7cc6ca83c1c220905ef15"
     },
     {
       "bytes": 23427,
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/urg/mash11_product/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_product/asserts.html",
       "sha256": "8c347076ee1cadc92158d1aa5ddb6d48a614d0a828ca95e8beb7b880b8a7e4ea"
     },
     {
       "bytes": 16703,
       "configuration": "mash11_product",
-      "path": "runs/dsm_v13_round4/urg/mash11_product/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_product/modlist.html",
       "sha256": "4d5658d74af6fc7a9315bedf2407fa4ad1d5b7bbbc00e70fe882dc5d81a86f8e"
     },
     {
       "bytes": 5704,
       "configuration": "mash11_wrapper_core",
-      "path": "runs/dsm_v13_round4/urg/mash11_wrapper_core/hierarchy.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_wrapper_core/hierarchy.html",
       "sha256": "cf9ac4406c030253c7e261d405b65f4cca949b2f33a106af49a494c22b8fda74"
     },
     {
       "bytes": 11265,
       "configuration": "mash11_wrapper_core",
-      "path": "runs/dsm_v13_round4/urg/mash11_wrapper_core/asserts.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_wrapper_core/asserts.html",
       "sha256": "b532adf849466890366fc7c0d1f3cee7ed7fb716ace548ecff25131402eaa1c3"
     },
     {
       "bytes": 6540,
       "configuration": "mash11_wrapper_core",
-      "path": "runs/dsm_v13_round4/urg/mash11_wrapper_core/modlist.html",
+      "path": "runs/dsm_v13_round4_current_source_20261125/urg/mash11_wrapper_core/modlist.html",
       "sha256": "b3012a08e85b4662cf0a87c64c470cf3ae5a059da7559ddb27b0812772374125"
     }
   ],
   "urg_summary": {
-    "path": "runs/dsm_v13_round4/round4_urg/summary.json",
-    "sha256": "0dffc046002191d817a5cb682648cb7ab266165e818c921b673c011870bb6cf0",
+    "path": "runs/dsm_v13_round4_current_source_20261125/round4_urg/summary.json",
+    "sha256": "746cfd67e6e5e89da64332fed4c0a09a781d16f98bd91539463ca7373def9c9f",
     "status": "PASS"
   },
   "vdbs": [
     {
-      "bytes": 228000,
+      "bytes": 228305,
       "configuration": "ef1_axil",
       "files": 24,
-      "path": "runs/dsm_v13_round4/ef1_axil/simv.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/simv.vdb",
       "role": "design",
-      "tree_sha256": "84aa496b1bef7735ee86636246e6b3c300678c1efad6f19dcfbbe9d971496560"
-    },
-    {
-      "bytes": 13708,
-      "configuration": "ef1_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_config_test_seed440501.vdb",
-      "role": "test",
-      "tree_sha256": "5b3b34c7172307118d2afcd0325540576b8006ee03e9e60fce9dd855a24cec31"
-    },
-    {
-      "bytes": 12983,
-      "configuration": "ef1_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_register_access_test_seed440502.vdb",
-      "role": "test",
-      "tree_sha256": "07d3e45cec22afc40a0bbe333b3a8b5e02b1e0305d855e19f193acb320f00d8e"
+      "tree_sha256": "138dbea6653733eff565a1492ea72732b899f7aef85ab0fee7b47488148528f7"
     },
     {
       "bytes": 13753,
       "configuration": "ef1_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440503.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_thermo5_sku_axil_config_test_seed440501.vdb",
       "role": "test",
-      "tree_sha256": "db8eb526a1a70dad048e903ba99dfb51917b0da05062d589fc524b5ca4958521"
+      "tree_sha256": "729d425a818431f0b0486b5c558ba9684ad34e97ba5ab885b0a8e17d5338c12d"
     },
     {
-      "bytes": 13682,
+      "bytes": 13029,
       "configuration": "ef1_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_stop_restart_test_seed440504.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_thermo5_sku_axil_register_access_test_seed440502.vdb",
       "role": "test",
-      "tree_sha256": "db471761952baf84053ba7f09df956a93257df1185ec9afa6332f1c031e99ba8"
+      "tree_sha256": "82b44dd5bce06b8160576c3df5d7808925b3e3e71d56b8b5c1ebf890beab29ab"
     },
     {
-      "bytes": 13684,
+      "bytes": 13796,
       "configuration": "ef1_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_random_packet_test_seed440505.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440503.vdb",
       "role": "test",
-      "tree_sha256": "0c588bb600c6351f4db2a3651a85bdc1188418c13657935e5f0c16f2c6a69bae"
+      "tree_sha256": "a05ad396c4f9eae1ebec3a55ae6f45699939e8da346fde314b34563134824e5c"
     },
     {
-      "bytes": 13559,
+      "bytes": 13725,
       "configuration": "ef1_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440506.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_thermo5_sku_axil_stop_restart_test_seed440504.vdb",
       "role": "test",
-      "tree_sha256": "6b0baa873eac43e3088aa84a2ecd8a8a1ac8785774461d5ff689d75df1e2057a"
+      "tree_sha256": "0def57d14d9ac1ad376dd939dd2d33e59ef6fa9bc72d4ab90550bc654f63f0b5"
     },
     {
-      "bytes": 13670,
+      "bytes": 13731,
       "configuration": "ef1_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_axil/cov_axil_illegal_frame_seed420102.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_thermo5_sku_axil_random_packet_test_seed440505.vdb",
       "role": "test",
-      "tree_sha256": "fe35dbead8f36e11b7f70b252e7076bb62800fe11957205f5d47af7cc41b7cb7"
+      "tree_sha256": "9ee97f92f2cf899af4d9078851c1e6bc21df2ea33158da8f613bf0c039ab7726"
     },
     {
-      "bytes": 210630,
+      "bytes": 13603,
+      "configuration": "ef1_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440506.vdb",
+      "role": "test",
+      "tree_sha256": "9622d05943819a88dec7e2675505a0cfa8193c10ec43f0f50bec5698e02aad29"
+    },
+    {
+      "bytes": 13715,
+      "configuration": "ef1_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_axil/cov_axil_illegal_frame_seed420102.vdb",
+      "role": "test",
+      "tree_sha256": "c9918503a2340cc9348c62fe95cf7e945c76986076f4d4e6440bf44cd3370969"
+    },
+    {
+      "bytes": 210757,
       "configuration": "ef1_product",
       "files": 24,
-      "path": "runs/dsm_v13_round4/ef1_product/simv.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/simv.vdb",
       "role": "design",
-      "tree_sha256": "a1d280e5515f4051fe5bf7b126a95ed7c97f68c6077e2554debb12b6a3079d37"
+      "tree_sha256": "2a5eb2d8c0abe79c506af42a565a46c003c11071a37f98557e7196505f98ee60"
     },
     {
-      "bytes": 11243,
+      "bytes": 11287,
       "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_bittrue_test_seed440410.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_bittrue_test_seed440410.vdb",
       "role": "test",
-      "tree_sha256": "f4532068fb13dbe026e5de09797111435a7a8735eb0a78f7505301719732fd6d"
+      "tree_sha256": "84a621c5ae6f1e42ffdf1626f1985ee19a8d346e433ba67a36dd910ddebbb962"
     },
     {
-      "bytes": 11375,
+      "bytes": 11414,
       "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_reset_sweep_test_seed440611.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_reset_sweep_test_seed440611.vdb",
       "role": "test",
-      "tree_sha256": "a2bb0dbc3eb6c79f93f77e524a415015fa4f38a2430fe8c8bfdec1c89070d393"
+      "tree_sha256": "d842f139343fe09b99bc7daf11e5c127b1ccde1e1c721ae77e5c26be2919d2e8"
     },
     {
-      "bytes": 11334,
+      "bytes": 11378,
       "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_fifo_full_reset_test_seed440412.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_fifo_full_reset_test_seed440412.vdb",
       "role": "test",
-      "tree_sha256": "106d7f1d051fc94ea05125b47a4154a323a9f7d986f97f9850f7a21b508643d1"
+      "tree_sha256": "35183856b97fa90fce8b72dd8a7d919d391ffe2c25a8ab4fb811a3cf0cddf76c"
     },
     {
-      "bytes": 11211,
+      "bytes": 11256,
       "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_product_random_test_seed440414.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_product_random_test_seed440414.vdb",
       "role": "test",
-      "tree_sha256": "7793efe0b0b47868e0584b4545cb46c0479038753f53015e6ef6e750f8a449f0"
+      "tree_sha256": "d09d7ed58f9d4f7580c123df99563f346f11d3b07f84b5ce12f6e98c4b345e7a"
     },
     {
-      "bytes": 11255,
+      "bytes": 11301,
       "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_bubble_backpressure_test_seed440621.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_bubble_backpressure_test_seed440621.vdb",
       "role": "test",
-      "tree_sha256": "2cf8e01c85ab5f92cf773c5896db47e6109b2e96c3c038c95d156dff985b27ac"
+      "tree_sha256": "7b09413830ae57499ca643cd2cc86bf1791a9fb7cedb6de15dad0397a63269c3"
     },
     {
-      "bytes": 11269,
+      "bytes": 11311,
       "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_fifo_boundary_test_seed440622.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_fifo_boundary_test_seed440622.vdb",
       "role": "test",
-      "tree_sha256": "d6f8027fe07b7b2b68691425020db4787c1e6fa2b688e65a898248cf5e36785b"
-    },
-    {
-      "bytes": 14169,
-      "configuration": "ef1_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_fifo_empty_test_seed440623.vdb",
-      "role": "test",
-      "tree_sha256": "c3213728a59b5bf27ed26cc57a1a3a5b6649b4728910c89dfc30ae62fe5408a6"
-    },
-    {
-      "bytes": 11336,
-      "configuration": "ef1_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_thermo5_sku_reset_test_seed440624.vdb",
-      "role": "test",
-      "tree_sha256": "2eb54ec86c65b26c85d71ce7b3c349f4cd2b7450e5068cd6d88dd210015b1b3f"
-    },
-    {
-      "bytes": 11276,
-      "configuration": "ef1_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef1_product/cov_illegal_frame_seed440401.vdb",
-      "role": "test",
-      "tree_sha256": "4a18d21b4155aed7e4452f190f340aa96d48d5fa0360bc7ee670d2066ee60cf0"
-    },
-    {
-      "bytes": 231214,
-      "configuration": "ef2_axil",
-      "files": 24,
-      "path": "runs/dsm_v13_round4/ef2_axil/simv.vdb",
-      "role": "design",
-      "tree_sha256": "f85282e66f758486ff2220cd6d9e29cc533a5e6ea0c8b7ea8ac9ce1724c50794"
-    },
-    {
-      "bytes": 13987,
-      "configuration": "ef2_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_config_test_seed440511.vdb",
-      "role": "test",
-      "tree_sha256": "fb60c2d05db9eef4fd9d80c1a75311a0d73edbe21d34e65fd64f23c22ac22719"
-    },
-    {
-      "bytes": 13173,
-      "configuration": "ef2_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_register_access_test_seed440512.vdb",
-      "role": "test",
-      "tree_sha256": "aa631b7152619e55c30541b52b571b3fca8110f3bf67b47b1bedabe5e7c56211"
-    },
-    {
-      "bytes": 14003,
-      "configuration": "ef2_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440513.vdb",
-      "role": "test",
-      "tree_sha256": "95deb82b54f1fb1aa93f6a67d739cd513560ba0272347c4a72047b83909b0e38"
-    },
-    {
-      "bytes": 13963,
-      "configuration": "ef2_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_stop_restart_test_seed440514.vdb",
-      "role": "test",
-      "tree_sha256": "ea0bfc9cf82069a56a123b8d9301dc0ad79cd7b76869a957d916060779e8205c"
-    },
-    {
-      "bytes": 13951,
-      "configuration": "ef2_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_random_packet_test_seed440515.vdb",
-      "role": "test",
-      "tree_sha256": "feee8d607fde6756c0acb158b802b25aa4abc1bd6548de4a2ce87c12ee7aa3ea"
-    },
-    {
-      "bytes": 13828,
-      "configuration": "ef2_axil",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440516.vdb",
-      "role": "test",
-      "tree_sha256": "3114d108045d6c1613e51ad3b978c4ccaa8b8da2424f2fd99c55d954ea3364ee"
+      "tree_sha256": "2e6506a3522ed60a998acb75197cf9e4b09fdd8559de994e19e6c67040f32cd0"
     },
     {
       "bytes": 14213,
-      "configuration": "ef2_axil",
+      "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_thermo5_sku_axil_ef2_corner_test_seed440517.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_fifo_empty_test_seed440623.vdb",
       "role": "test",
-      "tree_sha256": "92008a42545ecb676d9b118d3ef78d409c204e3df89e0de5f8cee6e1d4bcb744"
+      "tree_sha256": "a8af1304b14e12b2890272d6ce2e89920cec1eb58ebcd1cf9a712b6cf7e9f87b"
     },
     {
-      "bytes": 13884,
-      "configuration": "ef2_axil",
+      "bytes": 11376,
+      "configuration": "ef1_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_axil/cov_axil_illegal_frame_seed420102.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_thermo5_sku_reset_test_seed440624.vdb",
       "role": "test",
-      "tree_sha256": "c6054bd0826b81da90bfc1cf4bcd8da170d144e8a2244d4c1c1b969b7159148f"
+      "tree_sha256": "729331f58f4541c473b66d50657856f8bbe7eb6e762c0e5eac9f50359a971e10"
     },
     {
-      "bytes": 213714,
+      "bytes": 11318,
+      "configuration": "ef1_product",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef1_product/cov_illegal_frame_seed440401.vdb",
+      "role": "test",
+      "tree_sha256": "3be3e35a22bcee2af18d9f24c0c5f3e596f51079de2bc0ccbd5465ade45c2dd7"
+    },
+    {
+      "bytes": 231464,
+      "configuration": "ef2_axil",
+      "files": 24,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/simv.vdb",
+      "role": "design",
+      "tree_sha256": "d23266ae54cbb2fe8354605fd2043f533a0b63156e504bfffade82737acb0db7"
+    },
+    {
+      "bytes": 14029,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_config_test_seed440511.vdb",
+      "role": "test",
+      "tree_sha256": "70e49b489fa86fc4cfb3cf9d928a0fdcb879fc03560754ca2f5a124219011f36"
+    },
+    {
+      "bytes": 13217,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_register_access_test_seed440512.vdb",
+      "role": "test",
+      "tree_sha256": "b40efeac6fe572a89febe130ebd4261ccdbc6498859d7cc81756e268d217a647"
+    },
+    {
+      "bytes": 14043,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440513.vdb",
+      "role": "test",
+      "tree_sha256": "699bbd6e296b90999d39c524e9e89376c6c6adf6493a020df36187a7f9333725"
+    },
+    {
+      "bytes": 14001,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_stop_restart_test_seed440514.vdb",
+      "role": "test",
+      "tree_sha256": "96e50dccc1ec61083cf4938c09850d683dfab4e6220340aec8c2e1d87a3dbf6c"
+    },
+    {
+      "bytes": 14001,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_random_packet_test_seed440515.vdb",
+      "role": "test",
+      "tree_sha256": "42a63b94d8ff66088270f2dd18847a68a62b0824375bdcf32ccd42875ac64f87"
+    },
+    {
+      "bytes": 13867,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440516.vdb",
+      "role": "test",
+      "tree_sha256": "b5b9e62bb473b9bff4b66df363e6d4de8ef1a944a1a7a5d119192e848553edd4"
+    },
+    {
+      "bytes": 14253,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_thermo5_sku_axil_ef2_corner_test_seed440517.vdb",
+      "role": "test",
+      "tree_sha256": "7c4cf0870eb919289e208acde6d5701a3b5e5976d992e2d921eaaf211ee50d18"
+    },
+    {
+      "bytes": 13928,
+      "configuration": "ef2_axil",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_axil/cov_axil_illegal_frame_seed420102.vdb",
+      "role": "test",
+      "tree_sha256": "0a7e322ddc69b6ef1b1858b11eab9738a7e4e985a5755a0daf7ffe389e2d0d5a"
+    },
+    {
+      "bytes": 213857,
       "configuration": "ef2_product",
       "files": 24,
-      "path": "runs/dsm_v13_round4/ef2_product/simv.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/simv.vdb",
       "role": "design",
-      "tree_sha256": "f9cbc16496df5cf564bfb191f3f1bd81858fa40afc66735271d7ae3f5ae0619a"
+      "tree_sha256": "a2030b47746b249fe3d060e81759f38b0b58a7159db19b8a19e197b279b8fae0"
     },
     {
-      "bytes": 11437,
+      "bytes": 11470,
       "configuration": "ef2_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_bittrue_test_seed440410.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_bittrue_test_seed440410.vdb",
       "role": "test",
-      "tree_sha256": "8e890013d50f4093c3babf2cbde817b2ed9c353b953f8a68b1d89a48dcd5a264"
+      "tree_sha256": "623066a140c99631c43b5459ce69cd53496be5a2b363dbb5fa824a27cb3c7a5a"
     },
     {
-      "bytes": 11608,
+      "bytes": 11638,
       "configuration": "ef2_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_reset_sweep_test_seed440611.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_reset_sweep_test_seed440611.vdb",
       "role": "test",
-      "tree_sha256": "75895b363ef9e2ddc3ab495cd0499070bbe50a28cdb62cb2e6ebaa088924b00b"
+      "tree_sha256": "6d1dd85057e978ff0332a0fc4d7450550860a4d889123ea030f6c3bff9e95c07"
     },
     {
-      "bytes": 11561,
+      "bytes": 11591,
       "configuration": "ef2_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_fifo_full_reset_test_seed440412.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_fifo_full_reset_test_seed440412.vdb",
       "role": "test",
-      "tree_sha256": "1afb571a5ca5471856dc389be63e29e40d2f25a09d6b349aedeb1753e5a06949"
+      "tree_sha256": "fd5b367845a2c798be7b5bf4c5c88c11d9aa0667650999749a5a63685998ca0a"
     },
     {
-      "bytes": 11677,
+      "bytes": 11712,
       "configuration": "ef2_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_product_random_test_seed440414.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_product_random_test_seed440414.vdb",
       "role": "test",
-      "tree_sha256": "6983b2e79a742327086a33cdd94684fd530b6f0dd86bce93e2a3b26240645070"
+      "tree_sha256": "7a93871a0266b401af0e9c4d73ceccae39f2c477abccdb86aa7896aeb6bed551"
+    },
+    {
+      "bytes": 11657,
+      "configuration": "ef2_product",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_ef2_corner_test_seed440415.vdb",
+      "role": "test",
+      "tree_sha256": "9622df64294190f3a5ceba032959ba135b6218b7447350b6f346da828520b81d"
+    },
+    {
+      "bytes": 11548,
+      "configuration": "ef2_product",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_bubble_backpressure_test_seed440621.vdb",
+      "role": "test",
+      "tree_sha256": "ff5fc271e18b9d364051523d3701270f6fb5cf29b073118bb46482b5dbf23cfe"
+    },
+    {
+      "bytes": 11524,
+      "configuration": "ef2_product",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_fifo_boundary_test_seed440622.vdb",
+      "role": "test",
+      "tree_sha256": "d4680b8c005d6de215a69c7e40fc8525d347b87b902cf5a03e14a732b770a229"
+    },
+    {
+      "bytes": 14091,
+      "configuration": "ef2_product",
+      "files": 13,
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_fifo_empty_test_seed440623.vdb",
+      "role": "test",
+      "tree_sha256": "4f2f1b3cb25f3fb055ebb29a241cb9f7f5b98180d090de99524df89c29724e4b"
     },
     {
       "bytes": 11625,
       "configuration": "ef2_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_ef2_corner_test_seed440415.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_thermo5_sku_reset_test_seed440624.vdb",
       "role": "test",
-      "tree_sha256": "809cee00166277346d5e59e3ebc647f5dc9fc02db3fc7c2d71e036fe210c5ead"
+      "tree_sha256": "1a2f205a7b6391083afb686f68b9565608b3464b76c7a72cc711f3f490bf2bd6"
     },
     {
-      "bytes": 11513,
+      "bytes": 11575,
       "configuration": "ef2_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_bubble_backpressure_test_seed440621.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/ef2_product/cov_illegal_frame_seed440402.vdb",
       "role": "test",
-      "tree_sha256": "9f2129f4eb5c970179f8af6db967ce4b0f206809ab5a2fae87c76b56ddf00c72"
+      "tree_sha256": "adc5c218972dfb591925049c0d7d2807a4f47a3f32f79bdf29e8e7307476c98b"
     },
     {
-      "bytes": 11490,
-      "configuration": "ef2_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_fifo_boundary_test_seed440622.vdb",
-      "role": "test",
-      "tree_sha256": "db2cb13e6c5c12a4b4591d27e04fb209106cd1c322c8abfeeab91901a803c304"
-    },
-    {
-      "bytes": 14059,
-      "configuration": "ef2_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_fifo_empty_test_seed440623.vdb",
-      "role": "test",
-      "tree_sha256": "65a1c13de776576d4de3cb3079f5e305678f9a0f24714c8fa806aa6666e3b3b0"
-    },
-    {
-      "bytes": 11593,
-      "configuration": "ef2_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_thermo5_sku_reset_test_seed440624.vdb",
-      "role": "test",
-      "tree_sha256": "b0f15b48408c6bed3994bf90a10f4ff4f7001d6385440c5e6eee146da615aaf7"
-    },
-    {
-      "bytes": 11540,
-      "configuration": "ef2_product",
-      "files": 13,
-      "path": "runs/dsm_v13_round4/ef2_product/cov_illegal_frame_seed440402.vdb",
-      "role": "test",
-      "tree_sha256": "bde9bc5270f568674ab217811fb29d3edebec6a5eb0ee486e0ce2669fd707792"
-    },
-    {
-      "bytes": 228546,
+      "bytes": 228797,
       "configuration": "mash11_axil",
       "files": 24,
-      "path": "runs/dsm_v13_round4/mash11_axil/simv.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/simv.vdb",
       "role": "design",
-      "tree_sha256": "1a8b9e60dda17a4baa549db04774fa97514ca64d5a1d8851283692465d5f2a2d"
+      "tree_sha256": "04cb0f53bfdeeca86848d15d7080f34dc8125d310223b81e0a5a94e468192098"
     },
     {
-      "bytes": 14460,
+      "bytes": 14503,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_config_test_seed440521.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_config_test_seed440521.vdb",
       "role": "test",
-      "tree_sha256": "53a6b0a901fb8e2b282120c253487c19fdc95383ae259a130c384b585b5b5c5f"
+      "tree_sha256": "2939d4239e589e2ffb9b7475f0c2f3c8f49d79d7f38784c96a44e7cc59b1e39f"
     },
     {
-      "bytes": 13492,
+      "bytes": 13530,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_register_access_test_seed440522.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_register_access_test_seed440522.vdb",
       "role": "test",
-      "tree_sha256": "6680b29a7a33055a692f6d3977ae21b5f886455fccd19247959592a1d26a85a7"
+      "tree_sha256": "9bef0b2636cd1c278ae7d6171c9e7a2f518582fdb57f55566900da28c07bd0e9"
     },
     {
-      "bytes": 14491,
+      "bytes": 14531,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440523.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_reset_sweep_test_seed440523.vdb",
       "role": "test",
-      "tree_sha256": "6ca2ae7d2858b84ae6693d52756bcb185eafd5ec2460e3f13f7abd7010ce319e"
+      "tree_sha256": "c80c2b427f1807734269c59b2040b4c77b1a6539fd912bca26d420e4472a2924"
     },
     {
-      "bytes": 14477,
+      "bytes": 14518,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_stop_restart_test_seed440524.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_stop_restart_test_seed440524.vdb",
       "role": "test",
-      "tree_sha256": "9d7c47f1c722571375f41a91ce08cc54c9a28a9a048f1b9f12bd0a25c5d92dfb"
+      "tree_sha256": "ebbf0552c5b201bf482a10f317e0f9f88655d899d56cd64fbad70c8cf4a09454"
     },
     {
-      "bytes": 14438,
+      "bytes": 14483,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440525.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440525.vdb",
       "role": "test",
-      "tree_sha256": "a5e9441e425b761b6f04b97cb8d10fb705bf2d9ddcaa5031cf07f5120d7cb3ae"
+      "tree_sha256": "fffcf75ad0f3c246914b2cffdb19ebcbd3bde56324872424a78d9d421d57c298"
     },
     {
-      "bytes": 14326,
+      "bytes": 14362,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440527.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_graceful_stop_test_seed440527.vdb",
       "role": "test",
-      "tree_sha256": "fa6d1c21dd7ee3dffae1163d1bffd0bcf107d4a7bb6eb453099c9d7bb45e0416"
+      "tree_sha256": "635e0dbd7c6df5b535aa2a82c91fa7b9b1987a47c375900b0d1b2d7b6d24d1f3"
     },
     {
-      "bytes": 14463,
+      "bytes": 14501,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440526.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_random_packet_test_seed440526.vdb",
       "role": "test",
-      "tree_sha256": "71f5bfdfef54ecdb7303becfe33f1cc3889788ce49dafee7735d7c6e32687816"
+      "tree_sha256": "260e36508c6477e99fcb3e3d4fae8a60e52fa7f2342eb0906fe1a4dccd78b151"
     },
     {
-      "bytes": 14655,
+      "bytes": 14690,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_thermo5_sku_axil_mash11_rail_history_test_seed440529.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_thermo5_sku_axil_mash11_rail_history_test_seed440529.vdb",
       "role": "test",
-      "tree_sha256": "a64967d9fd8b133a64cc50d5f2359357b4c87081f694d425915d4d395d09a5f3"
+      "tree_sha256": "04701209c0df3c8e5c32249aad29f46fcd2a4257796ad27c9ba1701db4a6c6df"
     },
     {
-      "bytes": 14392,
+      "bytes": 14425,
       "configuration": "mash11_axil",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_axil/cov_axil_illegal_frame_seed420102.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_axil/cov_axil_illegal_frame_seed420102.vdb",
       "role": "test",
-      "tree_sha256": "a53fc98e95484a3e42081a792a86b55c7b7d2e3466be2527cfe623becf379b47"
+      "tree_sha256": "548383b7217abb1398ac6d148a821318ee2fc09744ccaf3afacdfff1079c6740"
     },
     {
-      "bytes": 211257,
+      "bytes": 211403,
       "configuration": "mash11_product",
       "files": 24,
-      "path": "runs/dsm_v13_round4/mash11_product/simv.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/simv.vdb",
       "role": "design",
-      "tree_sha256": "71f47da2e1bf249aba2881d2ac996dec96818c68e93b0f60689b4f32e41b6cea"
+      "tree_sha256": "6fa01c2eb13d4786124ca83c1646505301b5d505e4a4376f4f89cc94092a9ee3"
     },
     {
-      "bytes": 11986,
+      "bytes": 12021,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_thermo5_sku_bittrue_test_seed440410.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_thermo5_sku_bittrue_test_seed440410.vdb",
       "role": "test",
-      "tree_sha256": "b91d1f2768d2a89b9a6a4683485fcb5383cc348f16ff79945b3cec0fca02290c"
+      "tree_sha256": "18cd8186ee32206e1a380f45b54a267f39bdc3877f59f3b1645b1b02e54727c7"
     },
     {
-      "bytes": 12150,
+      "bytes": 12180,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_thermo5_sku_reset_sweep_test_seed440611.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_thermo5_sku_reset_sweep_test_seed440611.vdb",
       "role": "test",
-      "tree_sha256": "f625394d3c031c559782b749f9eb3d3b2604b79e776fb43430237354f5462ed3"
+      "tree_sha256": "f311834ef44b71395fa6b3575aa3cb124a918f42001434efaa3cdc055f3e84c8"
     },
     {
-      "bytes": 12085,
+      "bytes": 12119,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_thermo5_sku_fifo_full_reset_test_seed440412.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_thermo5_sku_fifo_full_reset_test_seed440412.vdb",
       "role": "test",
-      "tree_sha256": "16200baabd8d6ac5b7e778ef833e4d8621939ea4b1ff79312f5294c3bb298803"
+      "tree_sha256": "58f584a8697b9fd74201d3d4a3ca58b0a84c76a207bf1905d0d3a6397156d850"
     },
     {
-      "bytes": 12108,
+      "bytes": 12144,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_thermo5_sku_product_random_test_seed440414.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_thermo5_sku_product_random_test_seed440414.vdb",
       "role": "test",
-      "tree_sha256": "ec8bbf703dccc3c1203a2447a80c7f1cde3e666c8de1c4feecb2e3de7df623ed"
+      "tree_sha256": "e04619dfe16b34bf200d79934da697313995e8a8f593c3eb592a1492c3548206"
     },
     {
-      "bytes": 12020,
+      "bytes": 12058,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_thermo5_sku_bittrue_test_seed440416.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_thermo5_sku_bittrue_test_seed440416.vdb",
       "role": "test",
-      "tree_sha256": "c261e9f35636d05b586bffc4c24154f5ff1dd741967670cf083c08418ef9dac1"
+      "tree_sha256": "ed4145225a0bc96f5801d35971a3eda838084d7cc2c26fb7a4329b21bac0ce4b"
     },
     {
-      "bytes": 12273,
+      "bytes": 12311,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_thermo5_sku_bittrue_test_seed440418.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_thermo5_sku_bittrue_test_seed440418.vdb",
       "role": "test",
-      "tree_sha256": "ff3bb30d65f78b80551e8285cbf0b5da268bf0e58b2fe7d65bf5c86ecfb830ce"
+      "tree_sha256": "56f0039771a6c55f3ae0cfea889c6d5c3d9cb230236c7aba4aa37e9f41db41f8"
     },
     {
-      "bytes": 12036,
+      "bytes": 12069,
       "configuration": "mash11_product",
       "files": 13,
-      "path": "runs/dsm_v13_round4/mash11_product/cov_illegal_frame_seed440403.vdb",
+      "path": "runs/dsm_v13_round4_current_source_20261125/mash11_product/cov_illegal_frame_seed440403.vdb",
       "role": "test",
-      "tree_sha256": "d1a9badfcadfaeb6da85c2e50e99c679b1f7a53beadbcb49a18417642a287d79"
+      "tree_sha256": "115eb41ee2614f98411789c9e47a75cf9d00b7abec52bed43c49ff492c33c209"
     },
     {
       "bytes": 97833,

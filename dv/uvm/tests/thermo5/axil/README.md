@@ -40,6 +40,14 @@ license file`; runtime remains OPEN. The test samples a six-bin STOP/restart cov
 corresponding status, packet-boundary, blocked-source, and resumed-output
 check has passed; it requires 100% event-bin coverage before reporting PASS.
 
+The software contract is to reassert RUN only after STATUS.RUN_ACTIVE and
+STATUS.DRAINING both clear and the ingress FIFO is empty. Early RUN during
+DRAINING is outside this contract. The Round 4 coverage monitor samples the
+restart/FIFO cross only after observing successful drained-idle STATUS and an
+empty FIFO; the test requires exactly one such legal restart. Raw partial/full
+restart bins remain visible for audit and are excluded only from the adjusted
+functional-coverage view.
+
 Reproduce the two-quantum packet case with MATLAB vectors and the dedicated
 Make target:
 

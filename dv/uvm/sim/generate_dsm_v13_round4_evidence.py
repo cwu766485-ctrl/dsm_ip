@@ -79,6 +79,26 @@ BLOCK_RUNS = [
 ]
 CODE_TYPES = {"Line", "Branch", "Condition", "Toggle", "FSM_Transitions", "FSM_States"}
 CODE_TARGETS = {"Line": 95.0, "Branch": 95.0, "Condition": 95.0, "Toggle": 90.0}
+MASH_FORMAL_EXCLUSIONS = {
+    ("MASH Product", "mash11_product_cg"): 4,
+    ("MASH Product", "quantizer_input_range_cg"): 1,
+    ("MASH AXI-Lite", "mash11_product_cg"): 4,
+    ("MASH AXI-Lite", "quantizer_input_range_cg"): 1,
+}
+MASH_FORMAL_CROSS_EXCLUSIONS = {
+    ("MASH Product", "x_input_range_stage1"): 1,
+    ("MASH AXI-Lite", "x_input_range_stage1"): 1,
+}
+RESTART_CONTRACT_EXCLUSIONS = {
+    ("EF1 AXI-Lite", "restart_fifo_state_cg"): 4,
+    ("EF2 AXI-Lite", "restart_fifo_state_cg"): 4,
+    ("MASH AXI-Lite", "restart_fifo_state_cg"): 4,
+}
+RESTART_CONTRACT_CROSS_EXCLUSIONS = {
+    ("EF1 AXI-Lite", "x_restart_fifo_state"): 2,
+    ("EF2 AXI-Lite", "x_restart_fifo_state"): 2,
+    ("MASH AXI-Lite", "x_restart_fifo_state"): 2,
+}
 
 
 def import_module(name: str, path: Path):
@@ -282,8 +302,12 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--run-dir", type=Path, default=DEFAULT_RUN)
     ap.add_argument("--data-dir", type=Path, default=DEFAULT_DATA)
-    ap.add_argument("--mash-formal-dir", type=Path, default=DEFAULT_RUN / "formal_mash_reachability_v3")
+    ap.add_argument("--mash-formal-dir", type=Path, default=DEFAULT_RUN / "formal_mash_reachability_32lane_final")
     ap.add_argument("--frame-formal-dir", type=Path, default=DEFAULT_RUN / "formal_frame_tail")
+    ap.add_argument("--apply-formal-mash-adjusted-exclusions", action="store_true",
+                    help="apply the user-approved 32-lane formal evidence to the adjusted functional view; raw bins remain intact")
+    ap.add_argument("--apply-drain-contract-adjusted-exclusions", action="store_true",
+                    help="apply the user-confirmed drain-only RUN contract to the adjusted functional view; raw bins remain intact")
     args = ap.parse_args()
     run_dir, data_dir = args.run_dir.resolve(), args.data_dir.resolve()
     urg_summary_path = run_dir / "round4_urg/summary.json"
@@ -302,6 +326,65 @@ def main() -> int:
         raise SystemExit("all seven independent Round 4 URG merges must PASS")
     if mash_formal.get("status") != "PASS" or frame_formal.get("status") != "PASS":
         raise SystemExit("required MASH and legal frame metadata proofs must PASS")
+    formal_dir = args.mash_formal_dir.resolve()
+    properties_path = formal_dir / "properties.txt"
+    engines_path = formal_dir / "engines.txt"
+    formal_log_path = formal_dir / "vcf.log"
+    if not all(path.is_file() for path in (properties_path, engines_path, formal_log_path)):
+        raise SystemExit("MASH Formal properties, engine, and log evidence must all be present")
+    if mash_formal.get("properties_sha256") != sha256(properties_path):
+        raise SystemExit("MASH Formal properties hash does not match run_result.json")
+    if mash_formal.get("engines_sha256") != sha256(engines_path) or mash_formal.get("vcf_log_sha256") != sha256(formal_log_path):
+        raise SystemExit("MASH Formal engine/log hashes do not match run_result.json")
+    if mash_formal.get("formal_parameters") != {"W": 16, "CHANNELS": 32, "ACC_W": 18,
+                                                 "IN_SHIFT": 0, "SATURATE": True}:
+        raise SystemExit("MASH Formal evidence does not cover the full-width W16/32-lane/ACC18 product contract")
+    formal_source_paths = (
+        ROOT / "rtl/tx_bandpass_if/tid32_mash11_weighted_pa_tx.sv",
+        ROOT / "dv/uvm/formal/dsm_v13_mash11_reachability_harness.sv",
+        ROOT / "dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.tcl",
+        ROOT / "dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.py",
+    )
+    for source in formal_source_paths:
+        rel = source.relative_to(ROOT).as_posix()
+        if mash_formal.get("source_sha256", {}).get(rel) != sha256(source):
+            raise SystemExit("MASH Formal source hash is stale: " + rel)
+    if not (mash_formal.get("assertions_proven") and mash_formal.get("covers_hit")
+            and mash_formal.get("candidate_bins_unreachable")
+            and mash_formal.get("returncode") == 0 and not mash_formal.get("timed_out")):
+        raise SystemExit("MASH Formal evidence is incomplete, vacuous, timed out, or not fail-closed")
+    restart_contract_logs: dict[str, str] = {}
+    restart_config_labels = {"ef1_axil": "EF1 AXI-Lite", "ef2_axil": "EF2 AXI-Lite",
+                             "mash11_axil": "MASH AXI-Lite"}
+    for config, label in restart_config_labels.items():
+        record = urg["configurations"].get(config, {})
+        matching_logs = [name for name in record.get("positive_log_sha256", {})
+                         if name.startswith("thermo5_sku_axil_stop_restart_test_seed")]
+        if len(matching_logs) == 1:
+            log_name = matching_logs[0]
+            log_path = run_dir / config / log_name
+            restart_contract_logs[label] = relative(log_path)
+            if args.apply_drain_contract_adjusted_exclusions:
+                expected_digest = record["positive_log_sha256"][log_name]
+                if not log_path.is_file() or sha256(log_path) != expected_digest:
+                    raise SystemExit(f"{config}: stop/restart log missing or hash-mismatched")
+                log_text = log_path.read_text(encoding="utf-8", errors="replace")
+                if ("THERMO5_AXIL_STOP_RESTART_UVM_PASS" not in log_text
+                        or "legal_restart_hits=1" not in log_text
+                        or not re.search(r"UVM_ERROR\s*:\s*0", log_text)
+                        or not re.search(r"UVM_FATAL\s*:\s*0", log_text)):
+                    raise SystemExit(f"{config}: legal drained-idle/FIFO-empty restart checker did not pass")
+        elif args.apply_drain_contract_adjusted_exclusions:
+            raise SystemExit(f"{config}: expected one passing stop/restart log for drain-contract evidence")
+
+    applied_group_exclusions: dict[tuple[str, str], int] = {}
+    applied_cross_exclusions: dict[tuple[str, str], int] = {}
+    if args.apply_formal_mash_adjusted_exclusions:
+        applied_group_exclusions.update(MASH_FORMAL_EXCLUSIONS)
+        applied_cross_exclusions.update(MASH_FORMAL_CROSS_EXCLUSIONS)
+    if args.apply_drain_contract_adjusted_exclusions:
+        applied_group_exclusions.update(RESTART_CONTRACT_EXCLUSIONS)
+        applied_cross_exclusions.update(RESTART_CONTRACT_CROSS_EXCLUSIONS)
 
     assertion_isolation_rows: list[dict] = []
     isolated_incomplete: dict[str, dict] = {}
@@ -458,46 +541,106 @@ def main() -> int:
         total_score, groups = R2.group_records(report)
         groups_path = report / "groups.html"
         group_hash = sha256(groups_path) if groups_path.is_file() else ""
+        group_adjustments: dict[str, dict[str, int | float]] = {}
+        for group in groups:
+            excluded = applied_group_exclusions.get((label, group["name"]), 0)
+            if excluded > group["missing"]:
+                raise SystemExit(f"{label}/{group['name']}: adjusted exclusion exceeds raw uncovered bins")
+            adjusted_expected = group["expected"] - excluded
+            adjusted_missing = group["missing"] - excluded
+            adjusted_covered = group["covered"]
+            adjusted_score = (100.0 * adjusted_covered / adjusted_expected
+                              if adjusted_expected else 100.0)
+            group_adjustments[group["name"]] = {
+                "excluded": excluded, "expected": adjusted_expected,
+                "covered": adjusted_covered, "missing": adjusted_missing,
+                "score": adjusted_score,
+            }
         if total_score is not None:
+            raw_expected = sum(group["expected"] for group in groups)
+            raw_covered = sum(group["covered"] for group in groups)
+            raw_missing = raw_expected - raw_covered
+            adjusted_expected = sum(int(group_adjustments[group["name"]]["expected"])
+                                     for group in groups)
+            adjusted_covered = raw_covered
+            adjusted_missing = adjusted_expected - adjusted_covered
+            adjusted_score = (100.0 * adjusted_covered / adjusted_expected
+                              if adjusted_expected else 100.0)
             func_rows.append({"sku": sku, "configuration": label,
                               "group": "ALL_APPLICABLE_GROUPS", "score_percent": f"{total_score:.2f}",
-                              "covered_bins": "", "expected_bins": "", "missing_bins": "",
+                              "covered_bins": raw_covered, "expected_bins": raw_expected,
+                              "missing_bins": raw_missing,
+                              "adjusted_score_percent": f"{adjusted_score:.2f}",
+                              "adjusted_covered_bins": adjusted_covered,
+                              "adjusted_expected_bins": adjusted_expected,
+                              "adjusted_missing_bins": adjusted_missing,
+                              "approved_exclusion_bins": raw_expected - adjusted_expected,
                               "baseline_round3_score_percent": "", "delta_percentage_points": "",
                               "status": "PASS" if total_score >= 98.0 else "OPEN",
+                              "adjusted_status": "PASS" if adjusted_missing == 0 else "OPEN",
                               "uncovered_bins": "",
                               "raw_denominator_note": "The report score is informational; exact group/cross bins follow." ,
+                              "raw_adjusted_policy": "Raw URG denominators are retained; adjusted score removes only explicitly approved exact bins.",
                               "source_report": relative(groups_path), "source_report_sha256": group_hash})
         else:
             func_rows.append({"sku": sku, "configuration": label,
                               "group": "NO_SHARED_PRODUCT_COVERGROUPS", "score_percent": "",
                               "covered_bins": "", "expected_bins": "", "missing_bins": "",
+                              "adjusted_score_percent": "", "adjusted_covered_bins": "",
+                              "adjusted_expected_bins": "", "adjusted_missing_bins": "",
+                              "approved_exclusion_bins": 0,
                               "baseline_round3_score_percent": "", "delta_percentage_points": "",
                               "status": "NOT_APPLICABLE",
+                              "adjusted_status": "NOT_APPLICABLE",
                               "uncovered_bins": "",
                               "raw_denominator_note": "Legacy wrapper/core is a separate elaboration and uses its block-level scoreboard coverage; it is not merged into Product URG.",
+                              "raw_adjusted_policy": "No shared Product functional covergroup schema applies to this isolated core elaboration.",
                               "source_report": relative(report), "source_report_sha256": ""})
         for group in groups:
             group_index[(label, group["name"])] = group
             previous = r3_func.get((label, group["name"]), {})
             prev_score = R2.numeric(previous.get("score_percent"))
+            adjusted = group_adjustments[group["name"]]
+            excluded = int(adjusted["excluded"])
             func_rows.append({"sku": sku, "configuration": label,
                               "group": group["name"], "score_percent": f"{group['score']:.2f}",
                               "covered_bins": group["covered"], "expected_bins": group["expected"],
                               "missing_bins": group["missing"],
+                              "adjusted_score_percent": f"{float(adjusted['score']):.2f}",
+                              "adjusted_covered_bins": adjusted["covered"],
+                              "adjusted_expected_bins": adjusted["expected"],
+                              "adjusted_missing_bins": adjusted["missing"],
+                              "approved_exclusion_bins": excluded,
                               "baseline_round3_score_percent": "" if prev_score is None else f"{prev_score:.2f}",
                               "delta_percentage_points": "" if prev_score is None else f"{group['score']-prev_score:+.2f}",
                               "status": "PASS" if group["missing"] == 0 else "APPROVAL_PENDING" if sku == "MASH 1-1" else "OPEN",
+                              "adjusted_status": "PASS" if adjusted["missing"] == 0 else "OPEN",
                               "uncovered_bins": "; ".join(f"{name}: {', '.join(bins)}" for name, bins in group["uncovered_bins"].items()),
+                              "raw_adjusted_policy": "Raw URG bins remain visible; only exact approved missing bins are removed from the adjusted denominator.",
                               "source_report": relative(group["page"]), "source_report_sha256": sha256(group["page"])})
             for cross in group["crosses"]:
                 cross_index[(label, cross["name"])] = {**cross, "group": group["name"], "page": group["page"]}
                 previous_cross = r3_cross.get((label, cross["name"]), {})
+                cross_excluded = applied_cross_exclusions.get((label, cross["name"]), 0)
+                if cross_excluded > cross["uncovered"]:
+                    raise SystemExit(f"{label}/{cross['name']}: adjusted exclusion exceeds raw uncovered cross bins")
+                adjusted_cross_expected = cross["expected"] - cross_excluded
+                adjusted_cross_missing = cross["uncovered"] - cross_excluded
+                adjusted_cross_covered = cross["covered"]
+                adjusted_cross_score = (100.0 * adjusted_cross_covered / adjusted_cross_expected
+                                        if adjusted_cross_expected else 100.0)
                 cross_rows.append({"sku": sku, "configuration": label,
                                    "cross_group": group["name"], "cross": cross["name"],
                                    "covered_bins": cross["covered"], "expected_bins": cross["expected"],
                                    "missing_bins": cross["uncovered"], "score_percent": f"{cross['percent']:.2f}",
+                                   "adjusted_covered_bins": adjusted_cross_covered,
+                                   "adjusted_expected_bins": adjusted_cross_expected,
+                                   "adjusted_missing_bins": adjusted_cross_missing,
+                                   "adjusted_score_percent": f"{adjusted_cross_score:.2f}",
+                                   "approved_exclusion_bins": cross_excluded,
                                    "baseline_round3_missing_bins": previous_cross.get("missing_bins", ""),
                                    "status": "HIT" if cross["uncovered"] == 0 else "APPROVAL_PENDING" if sku == "MASH 1-1" and cross["name"] == "x_input_range_stage1" else "OPEN",
+                                   "adjusted_status": "PASS" if adjusted_cross_missing == 0 else "OPEN",
                                    "uncovered_bins": "; ".join(cross["uncovered_bins"]),
                                    "source_location": cross["source_location"],
                                    "source_report": relative(group["page"]),
@@ -623,6 +766,14 @@ def main() -> int:
                 else:
                     status, reason = "HIT", "The matching current URG covergroup has zero uncovered bins."
                 evidence = relative(group["page"])
+            elif group and applied_group_exclusions.get((config, old.get("coverage_id", "")), 0) > 0 and \
+                    group["missing"] == applied_group_exclusions[(config, old.get("coverage_id", ""))]:
+                status = "APPROVED_EXCLUSION"
+                if old.get("coverage_id") == "restart_fifo_state_cg":
+                    reason = "Raw partial/full restart bins remain visible; the user-confirmed contract permits RUN only after drained-idle STATUS and an empty FIFO."
+                else:
+                    reason = "Raw MASH bins remain visible; the user-approved full-width sequential proof establishes these exact candidate bins are unreachable under the selected 4-plane contract."
+                evidence = relative(group["page"])
             elif group and config.startswith("MASH") and old.get("coverage_id") in ("mash11_product_cg", "quantizer_input_range_cg"):
                 status, reason = "APPROVAL_PENDING", "Raw bin remains uncovered; Round 4 formal proof supports a waiver proposal, not an applied exclusion."
                 evidence = relative(group["page"])
@@ -632,6 +783,14 @@ def main() -> int:
             cross = cross_index.get((config, old.get("coverage_id", "")))
             if cross and cross["uncovered"] == 0:
                 status, reason, evidence = "HIT", "All bins in the matching current cross are hit.", relative(cross["page"])
+            elif cross and applied_cross_exclusions.get((config, old.get("coverage_id", "")), 0) > 0 and \
+                    cross["uncovered"] == applied_cross_exclusions[(config, old.get("coverage_id", ""))]:
+                status = "APPROVED_EXCLUSION"
+                if old.get("coverage_id") == "x_restart_fifo_state":
+                    reason = "Raw partial/full restart cross cells remain visible; RUN is contractually legal only after drained-idle STATUS and an empty FIFO."
+                else:
+                    reason = "The raw minimum-rail × positive-Stage1 cross bin remains visible and is excluded in the adjusted view by the user-approved full-width sequential Formal proof."
+                evidence = relative(cross["page"])
             elif cross and config.startswith("MASH") and old.get("coverage_id") == "x_input_range_stage1":
                 status, reason, evidence = "APPROVAL_PENDING", "Maximum-rail × negative Stage1 hit; minimum-rail × positive Stage1 is formally proven unreachable and awaits review.", relative(cross["page"])
             else:
@@ -647,7 +806,10 @@ def main() -> int:
             evidence = next((row["source_report"] for row in code_rows if row["configuration"] == config and row["metric"] == "FSM"), "")
         elif kind == "MASH_REACHABILITY_OR_INTEGRATION":
             if old.get("coverage_id") in ("MASH_weighted_levels_minus2_zero", "MASH_weighted_levels_minus4_plus4"):
-                status, reason = "APPROVAL_PENDING", "MASH Formal proves the weighted-level set; Raw bins remain and no waiver was applied."
+                if args.apply_formal_mash_adjusted_exclusions:
+                    status, reason = "APPROVED_EXCLUSION", "The raw weighted-level bins remain in URG; the user-approved full-width sequential proof applies only to the adjusted functional view."
+                else:
+                    status, reason = "APPROVAL_PENDING", "MASH Formal proves the weighted-level set; Raw bins remain and no adjusted exclusion was applied."
                 evidence = relative(mash_formal_path)
             else:
                 status, reason = "OPEN", "Physical PA weight/polarity or MATLAB latency alignment remains outside the proved scope."
@@ -655,9 +817,11 @@ def main() -> int:
             status, reason = "OPEN", "CDC/RDC, timing/PPA, and board/RF sign-off were not run in this Round 4 DV scope."
         disposition_rows.append({**old, "round4_status": status, "round4_reason": reason,
                                  "round4_evidence": evidence,
-                                 "round4_waiver_status": "APPROVAL_PENDING" if status == "APPROVAL_PENDING" else "NONE"})
+                                 "round4_waiver_status": ("USER_APPROVED_ADJUSTED_EXCLUSION" if status == "APPROVED_EXCLUSION"
+                                                           else "APPROVAL_PENDING" if status == "APPROVAL_PENDING" else "NONE")})
 
-    remaining_rows = [row for row in disposition_rows if row["round4_status"] not in ("HIT", "NOT_APPLICABLE")]
+    remaining_rows = [row for row in disposition_rows if row["round4_status"] not in
+                      ("HIT", "NOT_APPLICABLE", "APPROVED_EXCLUSION")]
     status_counts: dict[str, int] = {}
     type_counts: dict[str, dict[str, int]] = {}
     for row in disposition_rows:
@@ -688,36 +852,89 @@ def main() -> int:
                          "evidence": disposition["round4_evidence"], "reason": disposition["round4_reason"]})
 
     waiver_rows = []
+
+    def append_adjustment(config: str, coverage_id: str, status: str,
+                          approval_status: str, applied: bool, reason: str,
+                          formal_property: str = "", proof_scope: str = "",
+                          evidence: str = "") -> None:
+        waiver_rows.append({"configuration": config, "coverage_id": coverage_id,
+                            "status": status, "approval_status": approval_status,
+                            "raw_bin_retained": "true",
+                            "adjusted_exclusion_applied": str(applied).lower(),
+                            "reason": reason, "formal_property": formal_property,
+                            "proof_scope": proof_scope, "evidence": evidence})
+
+    mash_approval = args.apply_formal_mash_adjusted_exclusions
     for config in ("MASH Product", "MASH AXI-Lite"):
-        for level in ("minus4", "minus2", "zero", "plus4"):
-            waiver_rows.append({"configuration": config, "coverage_id": f"mash11_product_cg.cp_raw_weighted_level.{level}",
-                                "status": "PROVEN_UNREACHABLE", "approval_status": "APPROVAL_PENDING",
-                                "raw_bin_retained": "true", "adjusted_exclusion_applied": "false",
-                                "formal_property": "a_no_unreachable_weighted_level",
-                                "proof_scope": "W16/ACC18, 4-plane MASH 1-1 reset-constrained DUT contract; sequential formal proof",
-                                "evidence": relative(mash_formal_path)})
-        waiver_rows.append({"configuration": config, "coverage_id": "quantizer_input_range_cg.x_input_range_stage1.minimum_rail_positive",
-                            "status": "PROVEN_UNREACHABLE", "approval_status": "APPROVAL_PENDING",
-                            "raw_bin_retained": "true", "adjusted_exclusion_applied": "false",
-                            "formal_property": "a_minimum_rail_never_stage1_positive",
-                            "proof_scope": "W16/ACC18, 4-plane MASH 1-1 reset-constrained DUT contract; exact input-range sampling",
-                            "evidence": relative(mash_formal_path)})
+        for level, prop in (("minus4", "c_output_minus_four"),
+                            ("minus2", "c_output_minus_two"),
+                            ("zero", "c_output_zero"),
+                            ("plus4", "c_output_plus_four")):
+            append_adjustment(
+                config, f"mash11_product_cg.cp_raw_weighted_level.{level}",
+                "PROVEN_UNREACHABLE",
+                "USER_APPROVED_EVIDENCE_BASED" if mash_approval else "APPROVAL_PENDING",
+                mash_approval,
+                "Four-plane raw weighted-level candidate is formally uncoverable; raw URG bin is retained.",
+                prop,
+                "W16/ACC18, 32 sequential lanes, reset-constrained MASH 1-1; exact four-plane output decoder; VCS Formal assertions and non-vacuity covers PASS",
+                relative(mash_formal_path))
+        append_adjustment(
+            config, "quantizer_input_range_cg.x_input_range_stage1.minimum_rail_positive",
+            "PROVEN_UNREACHABLE",
+            "USER_APPROVED_EVIDENCE_BASED" if mash_approval else "APPROVAL_PENDING",
+            mash_approval,
+            "Minimum input rail × positive Stage 1 is formally uncoverable at the accepted-sample boundary; raw cross bin is retained.",
+            "c_minimum_rail_stage1_positive",
+            "W16/ACC18, 32 sequential lanes, reset-constrained MASH 1-1; exact minimum-rail and Stage 1 predicate; VCS Formal assertion and candidate cover PASS",
+            relative(mash_formal_path))
+
+    restart_approval = args.apply_drain_contract_adjusted_exclusions
+    restart_contract = "User-confirmed software contract: write RUN only after successful STATUS read reports RUN_ACTIVE=0 and DRAINING=0, and ingress FIFO is empty; the legal two-packet test checks the bit-true scoreboard and exactly one qualifying restart."
+    for config in ("EF1 AXI-Lite", "EF2 AXI-Lite", "MASH AXI-Lite"):
+        for bin_name in ("partial", "full"):
+            append_adjustment(
+                config, f"restart_fifo_state_cg.cp_fifo_state.{bin_name}",
+                "OUT_OF_CONTRACT",
+                "USER_APPROVED_CONTRACT" if restart_approval else "APPROVAL_PENDING",
+                restart_approval,
+                f"Restart while STOP-drain leaves FIFO {bin_name} is outside the selected software contract; raw bin is retained.",
+                proof_scope=restart_contract,
+                evidence=restart_contract_logs.get(config, ""))
+        for bin_name in ("partial", "full"):
+            append_adjustment(
+                config, f"restart_fifo_state_cg.x_restart_fifo_state.fifo_{bin_name}",
+                "OUT_OF_CONTRACT",
+                "USER_APPROVED_CONTRACT" if restart_approval else "APPROVAL_PENDING",
+                restart_approval,
+                f"The restart × FIFO {bin_name} cell requires RUN before drained-idle STATUS and FIFO empty; raw cross cell is retained.",
+                proof_scope=restart_contract,
+                evidence=restart_contract_logs.get(config, ""))
+
     waiver_rows.append({"configuration": "MASH Product", "coverage_id": "quantizer_input_range_cg.x_input_range_stage1.maximum_rail_negative",
                         "status": "HIT", "approval_status": "NOT_REQUIRED", "raw_bin_retained": "true",
-                        "adjusted_exclusion_applied": "false", "formal_property": "",
-                        "proof_scope": "Directed product-level rail-history replay; I/Q maximum rail × negative Stage1 observed",
+                        "adjusted_exclusion_applied": "false", "reason": "Directed legal witness hit.",
+                        "formal_property": "", "proof_scope": "Product-level rail-history replay; maximum rail × negative Stage 1 observed",
                         "evidence": "runs/dsm_v13_round4/mash11_product/thermo5_sku_bittrue_test_seed440418.log"})
     waiver_rows.append({"configuration": "MASH AXI-Lite", "coverage_id": "quantizer_input_range_cg.x_input_range_stage1.maximum_rail_negative",
                         "status": "HIT", "approval_status": "NOT_REQUIRED", "raw_bin_retained": "true",
-                        "adjusted_exclusion_applied": "false", "formal_property": "",
-                        "proof_scope": "Directed product-level rail-history replay; maximum rail × negative Stage1 observed",
+                        "adjusted_exclusion_applied": "false", "reason": "Directed legal witness hit.",
+                        "formal_property": "", "proof_scope": "Product-level rail-history replay; maximum rail × negative Stage 1 observed",
                         "evidence": "runs/dsm_v13_round4/mash11_axil/thermo5_sku_axil_mash11_rail_history_test_seed440529.log"})
 
     raw_code_exact_hits = len(old_raw_keys - current_raw_keys)
     current_functional_missing = sum(int(row["missing_bins"]) for row in func_rows
-                                     if is_integer(row.get("missing_bins", "")))
+                                     if row["group"] not in ("ALL_APPLICABLE_GROUPS", "NO_SHARED_PRODUCT_COVERGROUPS")
+                                     and is_integer(row.get("missing_bins", "")))
+    current_adjusted_functional_missing = sum(int(row["adjusted_missing_bins"])
+                                               for row in func_rows
+                                               if row["group"] not in ("ALL_APPLICABLE_GROUPS", "NO_SHARED_PRODUCT_COVERGROUPS")
+                                               if is_integer(row.get("adjusted_missing_bins", "")))
     current_cross_missing = sum(int(row["missing_bins"]) for row in cross_rows
                                 if is_integer(row.get("missing_bins", "")))
+    current_adjusted_cross_missing = sum(int(row["adjusted_missing_bins"])
+                                         for row in cross_rows
+                                         if is_integer(row.get("adjusted_missing_bins", "")))
     applicable_fix_bins = sum(1 for row in baseline_functional
                               if row.get("coverage_type") == "UVM_or_RTL_covergroup"
                               and row.get("coverpoint_or_group") == "transaction_event_cg"
@@ -725,13 +942,26 @@ def main() -> int:
                               and row.get("missing_bins", "").isdigit())
     # Each Product elaboration has the same three AXI-Lite-only raw bins.
     functional_unique_hits = max(0, baseline_missing_func_bins - current_functional_missing - applicable_fix_bins)
+    adjusted_group_rows = [row for row in func_rows
+                           if row["group"] not in ("ALL_APPLICABLE_GROUPS", "NO_SHARED_PRODUCT_COVERGROUPS")]
+    applied_functional_exclusion_bins = sum(int(row["approved_exclusion_bins"])
+                                             for row in adjusted_group_rows)
+    adjusted_scores = {row["configuration"]: row["adjusted_score_percent"]
+                       for row in func_rows if row["group"] == "ALL_APPLICABLE_GROUPS"}
+    functional_adjusted_status = "PASS" if current_adjusted_functional_missing == 0 else "OPEN"
+    if not (args.apply_formal_mash_adjusted_exclusions and args.apply_drain_contract_adjusted_exclusions):
+        functional_adjusted_status = "OPEN" if current_adjusted_functional_missing else "PASS_WITHOUT_ALL_APPROVED_DISPOSITIONS"
     summary = {
         "schema": "dsm_v13_round4_coverage_evidence_v1",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "baseline_source_revision": BASELINE_REVISION,
         "source_revision_at_generation": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-        "run_directory": relative(run_dir), "coverage_policy": "Raw equals adjusted; zero approved waivers/exclusions; no cross-SKU or incompatible-elaboration merge.",
+        "run_directory": relative(run_dir),
+        "coverage_policy": "Raw URG bins and denominators are retained. The adjusted functional view excludes only user-approved exact MASH bins proven uncoverable by full-width sequential Formal and restart/FIFO cells outside the user-confirmed drain-only RUN contract. No cross-SKU or incompatible-elaboration merge.",
         "status": "OPEN", "final_dv_signoff": False,
+        "functional_coverage_closure_status": functional_adjusted_status,
+        "adjusted_functional_scores_percent": adjusted_scores,
+        "adjusted_functional_exclusion_bins": applied_functional_exclusion_bins,
         "baseline_round3_open_records": len(baseline_open),
         "round4_open_record_dispositions": status_counts,
         "round3_raw_rtl_open_bins": len(baseline_raw), "round4_raw_rtl_open_bins": len(raw_hole_rows),
@@ -740,13 +970,16 @@ def main() -> int:
         "round4_fsm_transition_hit_records": sum(row["round4_status"] == "HIT" for row in fsm_rows),
         "round3_functional_group_missing_bins": baseline_missing_func_bins,
         "round4_functional_group_missing_bins": current_functional_missing,
+        "round4_adjusted_functional_group_missing_bins": current_adjusted_functional_missing,
         "round3_cross_missing_bins_subset": baseline_missing_cross_bins,
         "round4_cross_missing_bins_subset": current_cross_missing,
+        "round4_adjusted_cross_missing_bins_subset": current_adjusted_cross_missing,
         "round3_functional_group_records": sum(row["coverage_type"] == "FUNCTIONAL_GROUP_BINS" for row in baseline_open),
         "round4_functional_group_hit_records": sum(row["coverage_type"] == "FUNCTIONAL_GROUP_BINS" and row["round4_status"] == "HIT" for row in disposition_rows),
         "round4_functional_group_not_applicable_records": sum(row["coverage_type"] == "FUNCTIONAL_GROUP_BINS" and row["round4_status"] == "NOT_APPLICABLE" for row in disposition_rows),
         "round4_functional_cross_hit_records": sum(row["coverage_type"] == "FUNCTIONAL_CROSS_BIN" and row["round4_status"] == "HIT" for row in disposition_rows),
-        "round4_formally_proven_unreachable_raw_records": sum(row["round4_status"] == "APPROVAL_PENDING" for row in disposition_rows),
+        "round4_formally_proven_unreachable_raw_records": sum(row["status"] == "PROVEN_UNREACHABLE" for row in waiver_rows),
+        "round4_user_approved_adjusted_exclusion_records": sum(row["round4_status"] == "APPROVED_EXCLUSION" for row in disposition_rows),
         "round4_assertion_isolated_incomplete_attempts": sum(int(row["incomplete"]) for row in assertion_isolation_rows),
         "round4_assertion_incomplete_disposition": ("RESET_ABORT_EXPECTED; retained in raw assertion data; not a failure or success"
                                                      if reset_abort_verified else "OPEN_REVIEW_REQUIRED"),
@@ -758,8 +991,11 @@ def main() -> int:
         "current_uncovered_functional_bins_include_crosses": current_functional_missing,
         "mash_proof_status": mash_formal["status"], "frame_metadata_formal_status": frame_formal["status"],
         "unapproved_applied_waivers": 0,
+        "raw_functional_coverage_preserved": True,
+        "restart_contract": "RUN may be reasserted only after a successful STATUS read reports RUN_ACTIVE=0 and DRAINING=0 and the ingress FIFO is empty.",
         "limitations": [
-            "MASH raw weighted levels -4, -2, 0, +4 and minimum-rail × positive Stage1 remain raw OPEN pending independent approval despite sequential formal proof.",
+            "MASH raw weighted levels -4, -2, 0, +4 and minimum-rail × positive Stage1 remain visible as raw OPEN bins; the adjusted view uses the full-width proof only for the scoped MASH 1-1 four-plane candidate.",
+            "Restart partial/full raw bins remain visible; the adjusted restart view applies only to the user-confirmed drain-only RUN software contract.",
             "All selected Product/AXI-Lite raw code metrics remain below final targets; current raw RTL hole inventory is preserved.",
             "Round 3 matrix contains non-raw duplicate/aggregate code rows; unmapped rows remain OPEN_UNMAPPED rather than being counted as hits.",
             "Physical serializer, MATLAB bit-true latency, CDC/RDC, STA/PPA, and board/RF sign-off are outside the completed evidence.",
@@ -793,7 +1029,7 @@ def main() -> int:
             "mash": "The only environment constraint is source payload stability while valid is held without ready; reset is the harness's real reset sequence.",
             "frame_metadata": "Only legal source ready/valid stability is assumed; exact Product centered-cubic geometries and packet/frame marker schedule are instantiated.",
             "nonvacuity": "MASH required Covers are all hit. Frame metadata source stability is non-vacuous; legal packet-end/tail transfer Covers are hit; the two active q1_tail antecedent Covers are proven uncoverable.",
-            "waiver": "No URG exclusion has been applied. MASH proposal records remain APPROVAL_PENDING.",
+            "coverage_adjustment": "URG raw bins and VDBs are unchanged. The user-approved adjusted functional view removes the exact 10 MASH raw bins covered by the full-width proof and 12 restart/FIFO cells outside the drain-only RUN contract.",
         },
     }
     (data_dir / "round4_formal_evidence.json").write_text(json.dumps(formal_evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -815,6 +1051,22 @@ def main() -> int:
                 path = report / name
                 if path.is_file():
                     report_records.append({"configuration": config, "path": relative(path), "sha256": sha256(path), "bytes": path.stat().st_size})
+    replay_manifest_path = run_dir / "current_source_replay_manifest.json"
+    current_source_replay = None
+    if replay_manifest_path.is_file():
+        replay_manifest = json.loads(replay_manifest_path.read_text(encoding="utf-8"))
+        replays = replay_manifest.get("replays", [])
+        if (replay_manifest.get("schema") != "dsm_v13_round4_current_source_replay_v1"
+                or len(replays) != 50
+                or any(item.get("returncode") != 0 or not item.get("tree_sha256")
+                       for item in replays)):
+            raise SystemExit("current-source replay manifest is incomplete or has a failing/unhashed VDB")
+        current_source_replay = {
+            "path": relative(replay_manifest_path),
+            "sha256": sha256(replay_manifest_path),
+            "replays": len(replays),
+            "status": "PASS",
+        }
     manifest = {"schema": "dsm_v13_round4_regression_manifest_v1",
                 "generated_utc": datetime.now(timezone.utc).isoformat(),
                 "source_revision": summary["source_revision_at_generation"],
@@ -822,6 +1074,7 @@ def main() -> int:
                 "tools": {"vcs_urg": "V-2023.12-SP1", "vc_formal": "V-2023.12-SP2"},
                 "urg_summary": {"path": relative(urg_summary_path), "sha256": sha256(urg_summary_path), "status": urg["status"]},
                 "source_changes": source_manifest(), "vdbs": vdb_records, "logs": log_records,
+                "current_source_replay": current_source_replay,
                 "urg_reports": report_records, "formal_evidence": [
                     {"path": relative(mash_formal_path), "sha256": sha256(mash_formal_path)},
                     {"path": relative(frame_formal_path), "sha256": sha256(frame_formal_path)}],
@@ -841,7 +1094,9 @@ def main() -> int:
     print("DSM_V13_R4_EVIDENCE_GENERATION=PASS")
     print(f"DSM_V13_R4_CURRENT_RAW_CODE_OPEN={len(raw_hole_rows)} baseline_exact_hits={raw_code_exact_hits}")
     print(f"DSM_V13_R4_FUNCTIONAL_GROUP_MISSING={current_functional_missing} baseline={baseline_missing_func_bins} product_not_applicable={applicable_fix_bins}")
+    print(f"DSM_V13_R4_ADJUSTED_FUNCTIONAL_GROUP_MISSING={current_adjusted_functional_missing}")
     print(f"DSM_V13_R4_FUNCTIONAL_CROSS_MISSING={current_cross_missing} baseline_subset={baseline_missing_cross_bins}")
+    print(f"DSM_V13_R4_ADJUSTED_FUNCTIONAL_CROSS_MISSING={current_adjusted_cross_missing}")
     print(f"DSM_V13_R4_BASELINE_DISPOSITIONS={status_counts}")
     print("DSM_V13_R4_EVIDENCE_DIR=" + relative(data_dir))
     return 0

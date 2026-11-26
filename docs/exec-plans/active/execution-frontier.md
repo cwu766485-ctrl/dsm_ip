@@ -1,6 +1,6 @@
 # Execution frontier
 
-## Current execution state: DSM V1.3 Round 4 module/formal coverage closure (2026-11-25)
+## Current execution state: DSM V1.3 Round 4 module/formal coverage closure (2026-11-26)
 
 Working checkout: `/home/ray/workspace/dsm-v13-mash-uvm-round4`, branch
 `work/dsm-v13-mash-uvm-round4`, based on Round 3 commit
@@ -8,26 +8,29 @@ Working checkout: `/home/ray/workspace/dsm-v13-mash-uvm-round4`, branch
 remain untouched. Seven dirty Thermo5 Round 12 CSVs were preserved and excluded
 from Round 4 changes.
 
-**Round 4 verification evidence: PASS.** Seven separate VCS/URG SKU and
-elaboration merges passed (9, 10, 7, 7, 8, 9, and 1 VDBs respectively). Legal
-positive runs have zero UVM warnings/errors/fatals. Eight separate block-level
-DPD/interpolator VCS runs pass their independent checkers. MASH sequential
-Formal proved 4/4 assertions and hit 4/4 required covers. Exact frame-tail
-metadata Formal passed its assertions with per-cover non-vacuity recorded.
+**Round 4 current-source verification: PASS.** Six Product/AXI-Lite
+elaborations were rebuilt and 50 saved directed positive/negative VCS cases
+were replayed. Seven separate URG merges passed (9, 10, 7, 7, 8, 9, and 1
+VDBs respectively); positive runs have zero UVM warnings/errors/fatals. The
+separate MASH wrapper/core VDB remains isolated. Eight block-level
+DPD/interpolator checker runs pass. Full-width MASH sequential Formal proved
+5/5 assertions, hit 4/4 operational covers, and reported all 5/5 unreachable
+candidate covers as `uncoverable`; RTL, harness, TCL, runner, property, engine,
+and log hashes were checked.
 
-**Functional coverage: OPEN.** After restoring the previously ignored
-partial/full restart FIFO bins, applicable group totals are EF1 Product 100%,
-EF2 Product 100%, MASH Product 98.20%, EF1 AXI-Lite 97.22%, EF2 AXI-Lite
-97.39%, and MASH AXI-Lite 96.63%. Eight MASH raw weighted-level bins and two
-min-rail × positive-Stage1 cross records are formally proven unreachable in
-the scoped harness but remain `APPROVAL_PENDING`; raw and adjusted coverage
-are equal. Six `restart × FIFO state` cross cells remain OPEN. A state-driven
-early-RUN diagnostic observed a partial FIFO with STATUS still RUN_ACTIVE and
-DRAINING, then reproduced a four-plane scoreboard mismatch at word 45. It is
-excluded from passing VDB merges. Whether RUN may be reasserted during DRAINING
-is awaiting an explicit contract decision. The Product-only AXI-Lite
-applicability correction is recorded as three `NOT_APPLICABLE` records, with
-the frozen baseline retained.
+**Adjusted functional coverage: PASS.** All six Product/AXI-Lite
+configurations are 100.00% in the adjusted group view with zero adjusted
+mandatory-cross misses. Raw URG remains unchanged: EF1 Product 100%, EF2
+Product 100%, MASH Product 98.20%, EF1 AXI-Lite 97.22%, EF2 AXI-Lite 97.39%,
+MASH AXI-Lite 96.63%; it retains 22 group-bin misses and eight cross-bin
+misses. The adjusted view explicitly excludes 10 full-width Formal-proven
+MASH candidate bins and 12 partial/full restart bins outside the
+user-confirmed contract. Every raw bin remains visible. RUN may be reasserted
+only after a successful STATUS read reports RUN_ACTIVE=0 and DRAINING=0, with
+ingress FIFO empty; each legal restart test checks this state and the
+four-plane scoreboard. The early-RUN reproducer still records a word-45
+mismatch and remains outside passing merges. The three Product-only AXI-Lite
+applicability rows remain `NOT_APPLICABLE`.
 
 **Raw code coverage: OPEN.** The current selected-DUT inventory has 2,463 raw
 open bins versus 2,500 in Round 3; 75 exact prior raw keys no longer appear.
@@ -37,26 +40,22 @@ Condition/Toggle are above target. Standalone DPD polynomial orders close
 Line/Branch/Condition but not Toggle; memory-polynomial, EF2-specific, and
 interpolator raw holes remain. No RTL behavior changed.
 
-Round 3 disposition is 110 `HIT`, 3 `NOT_APPLICABLE`, 8
-`APPROVAL_PENDING`, 2,499 `OPEN`, and 1 `OPEN_UNMAPPED`; the original 2,621
-rows remain represented. The denominator correction reopens six restart
-records that were previously incorrectly counted closed. Exact 22 Round 3 raw
-FSM-transition holes were hit; one extra matrix-only row remains
-`OPEN_UNMAPPED`. Machine evidence and the detailed report are in
+Round 3 disposition is 110 `HIT`, 3 `NOT_APPLICABLE`, 14
+`APPROVED_EXCLUSION`, 2,493 `OPEN`, and 1 `OPEN_UNMAPPED`; the original 2,621
+rows remain represented. Exact 22 Round 3 raw FSM-transition holes were hit;
+one extra matrix-only row remains `OPEN_UNMAPPED`. Machine evidence and the
+detailed report are in
 `docs/verification/data/dsm-v13-round4/` and `docs/dsm_v13_round4_report.md`.
 
-**Publication:** Round 4 change set `cf06143` is committed and pushed to
-`origin/work/dsm-v13-mash-uvm-round4`; no merge was performed. The commit
-contains only Round 4 files. The seven pre-existing Round 12 CSV edits remain
-unstaged and untouched. Final evidence/hash audit, Python reference tests
-(74/74), and staged whitespace checks passed.
+**Publication:** initial Round 4 change set `cf06143` is committed and pushed
+to `origin/work/dsm-v13-mash-uvm-round4`; this closure follow-up is in the local
+Round 4 worktree. No merge was performed. Seven pre-existing dirty Round 12
+CSV edits remain unstaged and untouched.
 
-**Remaining:** final DV sign-off and functional convergence are not achieved.
-Resolve whether software may reassert RUN before STATUS leaves DRAINING; if it
-may, treat the reproduced mismatch as a design bug requiring a separately
-approved RTL ECO. If it may not, document the exact rule and formally audit the
-restart bins before proposing any exclusion. Independently review the eight
-MASH waiver candidates; do not apply waivers. Raw code targets remain OPEN.
+**Remaining:** functional convergence is achieved only in the documented
+adjusted view; raw code coverage and final DV sign-off remain OPEN. PowerShell/
+XSim, CDC/RDC, STA/PPA, MATLAB latency alignment, serializer DV-L2, and board/
+RF sign-off remain NOT RUN or OPEN.
 PowerShell/XSim, CDC/RDC, STA/PPA, MATLAB latency alignment, serializer DV-L2,
 and board/RF sign-off remain NOT RUN or OPEN.
 

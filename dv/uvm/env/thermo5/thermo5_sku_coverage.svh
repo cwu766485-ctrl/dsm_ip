@@ -55,6 +55,8 @@ class thermo5_sku_coverage extends uvm_component;
   bit last_source_packet_valid;
   bit run_active;
   bit stop_armed_for_restart;
+  bit restart_idle_seen;
+  int unsigned restart_fifo_legal_empty_hits;
   longint unsigned stop_candidate_key;
   bit stop_candidate_valid;
   int unsigned output_words_per_packet;
@@ -429,6 +431,7 @@ class thermo5_sku_coverage extends uvm_component;
         last_source_packet_valid=0;
         run_active=0;
         stop_armed_for_restart=0;
+        restart_idle_seen=0;
         stop_candidate_valid=0;
       end
       THERMO5_EVENT_SOURCE_BEAT: begin
@@ -473,9 +476,16 @@ class thermo5_sku_coverage extends uvm_component;
             if (tr.axil_data[0]) begin
 `ifdef THERMO5_AXIL_CONTROL
               if (stop_armed_for_restart) begin
-                restart_fifo_state_cg.sample(1'b1,
-                  vif.fifo_empty ? 0 : (vif.fifo_full ? 2 : 1));
+                if (restart_idle_seen) begin
+                  if (vif.fifo_empty) begin
+                    restart_fifo_state_cg.sample(1'b1,0);
+                    restart_fifo_legal_empty_hits++;
+                  end else
+                    `uvm_error("AXIL_RESTART_STATUS_FIFO",
+                      "STATUS reported drained idle before RUN, but ingress FIFO was not empty")
+                end
                 stop_armed_for_restart=0;
+                restart_idle_seen=0;
               end
 `endif
               run_active=1;
@@ -493,7 +503,10 @@ class thermo5_sku_coverage extends uvm_component;
                 stop_candidate_key=key;
                 stop_candidate_valid=1;
               end
-              if (run_active) stop_armed_for_restart=1;
+              if (run_active) begin
+                stop_armed_for_restart=1;
+                restart_idle_seen=0;
+              end
               run_active=0;
             end
             packet_cross[key]=record;
@@ -501,6 +514,10 @@ class thermo5_sku_coverage extends uvm_component;
         end
       end
       THERMO5_EVENT_AXIL_RESPONSE: begin
+        if (!tr.is_write && tr.axil_addr==8'h04 &&
+            tr.axil_resp==2'b00 && tr.axil_rdata[4:3]==2'b00 &&
+            stop_armed_for_restart)
+          restart_idle_seen=1;
         if (!tr.is_write && tr.axil_addr==8'h04 &&
             tr.axil_resp==2'b00 && tr.axil_rdata[4:3]==2'b00 &&
             stop_candidate_valid) begin
@@ -599,6 +616,10 @@ class thermo5_sku_coverage extends uvm_component;
 `endif
   endfunction
 
+  function int unsigned legal_restart_fifo_empty_hits();
+    return restart_fifo_legal_empty_hits;
+  endfunction
+
   function real config_run_coverage();
 `ifdef THERMO5_AXIL_CONTROL
     return config_run_cg.get_coverage();
@@ -660,6 +681,9 @@ class thermo5_sku_coverage extends uvm_component;
     packet_cross_keys.delete();
     last_source_packet_valid=0;
     run_active=0;
+    stop_armed_for_restart=0;
+    restart_idle_seen=0;
+    restart_fifo_legal_empty_hits=0;
     stop_candidate_valid=0;
     `uvm_info("CROSS_PACKET_NEGATIVE_PASS",
       "packet 0 source gap and packet 1 FIFO-full/PA-stall did not hit the same-packet Cross",
@@ -867,7 +891,7 @@ class thermo5_sku_coverage extends uvm_component;
 
   function void report_phase(uvm_phase phase);
     super.report_phase(phase);
-    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset_nonzero_tidsm=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d stop_pa_backpressure_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f stop_pa_backpressure_cg=%.1f restart_fifo_state_cg=%.1f reset_context_cg=%.1f config_run_cg=%.1f axis_valid_ready_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
+    `uvm_info("SKU_COVERAGE",$sformatf("full=%0d source_stall=%0d frame=%0d accepted_tlast=%0d cdc_words=%0d cdc_frame_end=%0d cdc_end_false_arm=%0d tlast_pa_stall=%0d stop_partial_pa_stall=%0d commit_pending_stopped=%0d reset_nonzero_ef2=%0d reset_nonzero_tidsm=%0d reset=%0d underflow=%0d early_underflow=%0d illegal=%0d pa_stall=%0d pa_partial_ready_stall=%0d pa_words=%0d signed_min_beats=%0d signed_max_beats=%0d ef2_pos_clamp=%0d ef2_neg_clamp=%0d ef2_clamp_stall=%0d ef2_tidsm_stall=%0d ef2_rail=%0d ef2_rail_stall=%0d source_gap_pa_fifo_hits=%0d run_prefill_gap_hits=%0d stop_tlast_drain_hits=%0d stop_pa_backpressure_hits=%0d legal_restart_fifo_empty_hits=%0d source_gap_pa_fifo_cg=%.1f run_prefill_gap_cg=%.1f stop_tlast_drain_cg=%.1f stop_pa_backpressure_cg=%.1f restart_fifo_state_cg=%.1f reset_context_cg=%.1f config_run_cg=%.1f axis_valid_ready_cg=%.1f source_cg=%.1f core_cg=%.1f plane_atomic_cg=%.1f stop_restart_cg=%.1f ef2_cg=%.1f",
       fifo_full_cycles,source_stall_cycles,frame_starts,accepted_tlast_markers,
       accepted_cdc_output_words_epoch,cdc_frame_end_events,
       cdc_end_remaining_false_arm_events,
@@ -880,7 +904,8 @@ class thermo5_sku_coverage extends uvm_component;
       ef2_positive_clamp_events,ef2_negative_clamp_events,
       ef2_clamp_stall_cycles,ef2_tidsm_stall_cycles,ef2_state_rail_cycles,
       ef2_state_rail_stall_cycles,source_gap_pa_fifo_full_hits,run_prefill_gap_hits,
-      stop_tlast_drain_hits,stop_pa_backpressure_hits,source_gap_pa_fifo_cg.get_coverage(),
+      stop_tlast_drain_hits,stop_pa_backpressure_hits,restart_fifo_legal_empty_hits,
+      source_gap_pa_fifo_cg.get_coverage(),
       run_prefill_gap_coverage(),stop_tlast_drain_coverage(),
       stop_pa_backpressure_coverage(),restart_fifo_state_coverage(),
       reset_context_cg.get_coverage(),config_run_coverage(),

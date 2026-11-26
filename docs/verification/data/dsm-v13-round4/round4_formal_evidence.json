@@ -1,9 +1,9 @@
 {
   "assumption_audit": {
+    "coverage_adjustment": "URG raw bins and VDBs are unchanged. The user-approved adjusted functional view removes the exact 10 MASH raw bins covered by the full-width proof and 12 restart/FIFO cells outside the drain-only RUN contract.",
     "frame_metadata": "Only legal source ready/valid stability is assumed; exact Product centered-cubic geometries and packet/frame marker schedule are instantiated.",
     "mash": "The only environment constraint is source payload stability while valid is held without ready; reset is the harness's real reset sequence.",
-    "nonvacuity": "MASH required Covers are all hit. Frame metadata source stability is non-vacuous; legal packet-end/tail transfer Covers are hit; the two active q1_tail antecedent Covers are proven uncoverable.",
-    "waiver": "No URG exclusion has been applied. MASH proposal records remain APPROVAL_PENDING."
+    "nonvacuity": "MASH required Covers are all hit. Frame metadata source stability is non-vacuous; legal packet-end/tail transfer Covers are hit; the two active q1_tail antecedent Covers are proven uncoverable."
   },
   "legal_frame_metadata": {
     "errors": [],
@@ -139,6 +139,7 @@
   },
   "mash_reachability": {
     "assertions_proven": true,
+    "candidate_bins_unreachable": true,
     "command": [
       "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
       "-batch",
@@ -147,13 +148,26 @@
       "-f",
       "/home/ray/workspace/dsm-v13-mash-uvm-round4/dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.tcl"
     ],
+    "counterexample_trace": null,
     "covers_hit": true,
-    "duration_seconds": 24.9,
+    "duration_seconds": 124.0,
+    "engines_sha256": "42ac93372df3beb4833f2a4647687e1af170fa95a1f660358c3183b4ccdd7dca",
+    "formal_contract": "reset-constrained sequential MASH 1-1; arbitrary legal 16-bit samples across all 32 lanes; source payload stable while valid is held without ready",
+    "formal_parameters": {
+      "ACC_W": 18,
+      "CHANNELS": 32,
+      "IN_SHIFT": 0,
+      "SATURATE": true,
+      "W": 16
+    },
+    "output_zero_witness": null,
+    "properties_sha256": "d8d40419979925945f4b42aef0d1fda8c7bef98897a79869c87c7d022c892dba",
     "required_assertions": [
       "a_atomic_four_plane_valid",
       "a_held_word_stable",
       "a_no_unreachable_weighted_level",
-      "a_minimum_rail_never_stage1_positive"
+      "a_minimum_rail_never_stage1_positive",
+      "a_accepted_combined_levels_legal"
     ],
     "required_covers": [
       "c_accepted_sample",
@@ -162,12 +176,26 @@
       "c_startup_plus_two"
     ],
     "returncode": 0,
-    "schema": "dsm_v13_mash11_reachability_fpv_v2",
-    "source_revision": "9ae4e3fc574c34149930dca055d83528458be553",
+    "schema": "dsm_v13_mash11_reachability_fpv_v3",
+    "source_revision": "770727ed8a20dd63565122f11952c5ce13a47367",
+    "source_sha256": {
+      "dv/uvm/formal/dsm_v13_mash11_reachability_harness.sv": "df70687dad20dd0f830929ba3cb701d449d3fa05ba094371008132b8bcce50c2",
+      "dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.py": "1fc68ebd34fd5529a7e4948a6b16e42facf3ad8894b556578dadc497630173cb",
+      "dv/uvm/formal/run_dsm_v13_mash11_reachability_fpv.tcl": "8d77f136f47de84d445a875352944ec8a4f6c8212ff35a1c06d688c98ed2d607",
+      "rtl/tx_bandpass_if/tid32_mash11_weighted_pa_tx.sv": "4cde13b626fdc7133b2056645805ab02fae3436e3165a60b7487564099d39aee"
+    },
     "status": "PASS",
     "timed_out": false,
     "timeout_seconds": 900,
+    "unreachable_candidate_covers": [
+      "c_output_minus_four",
+      "c_output_minus_two",
+      "c_output_zero",
+      "c_output_plus_four",
+      "c_minimum_rail_stage1_positive"
+    ],
     "vcf": "/opt/Synopsys/vc_formal/V-2023.12-SP2/bin/vcf",
+    "vcf_log_sha256": "7ce64d55b916422229d99c16e07357820e8f1b2171822144f997759c9ecb1229",
     "waiver_status": "NO_WAIVER_REQUESTED"
   },
   "schema": "dsm_v13_round4_formal_evidence_v1"

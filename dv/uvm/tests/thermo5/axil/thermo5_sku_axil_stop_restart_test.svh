@@ -167,8 +167,13 @@ class thermo5_sku_axil_stop_restart_test extends thermo5_sku_axil_base_test;
             if (env.coverage.restart_fifo_state_coverage()==0.0)
               `uvm_fatal("RESTART_FIFO_STATE_CROSS",
                 "The legal empty-FIFO restart sample was not recorded")
+            if (env.coverage.legal_restart_fifo_empty_hits()!=1)
+              `uvm_fatal("RESTART_FIFO_CONTRACT",
+                $sformatf("Expected exactly one STATUS-idle and FIFO-empty RUN restart, observed %0d",
+                  env.coverage.legal_restart_fifo_empty_hits()))
             `uvm_info("SKU_PASS",
-              "THERMO5_AXIL_STOP_RESTART_UVM_PASS: STOP drained packet 1; packet 2 stayed blocked until RUN restarted; 112 ordered four-plane words matched oracle",
+              $sformatf("THERMO5_AXIL_STOP_RESTART_UVM_PASS: STOP drained packet 1; STATUS was idle and FIFO empty before RUN; legal_restart_hits=%0d; packet 2 stayed blocked until RUN restarted; 112 ordered four-plane words matched oracle",
+                env.coverage.legal_restart_fifo_empty_hits()),
               UVM_NONE)
           end
         join
