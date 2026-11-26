@@ -110,7 +110,11 @@ throughput and host load.
 Bit 17 hit both directions of both counters on all 16 lanes in both
 SKUs. Each SKU-local merge added 92 directions. MASH used one
 4,682-packet saturation stream to hit both counters at bit 18, adding
-64 directions in its merged result. EF1 bit 18 is still running.
+64 directions in its merged result. Following the product owner's
+resource decision, the EF1 bit-18 and MASH bit-19 simulations were
+stopped before validation. Their partial VDBs are outside the merge.
+Further natural high-bit runs are deferred. Reachable high-bit
+directions remain in scope and OPEN.
 The saturation runner now requires standalone and merged URG evidence
 for both counters, so the two long runs per SKU can be combined into
 one. The MASH bit-18 run checked 262,192 backend words in 186.05 CPU

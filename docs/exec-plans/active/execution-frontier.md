@@ -9,14 +9,16 @@ L333 tuple `1,0,1` is credited for both. Standalone and SKU-local URG
 confirm both directions of both DPD counters at bit 17 for both SKUs
 and at bit 18 for MASH. Current Adjusted Toggle is 95,364/96,648
 for EF1 and 76,180/77,440 for MASH. The SKUs have 1,430 and 1,404
-unresolved code bins. EF1 bit 18 is active in
-`runs/v14_bit18_20261126/ef1_axil/`. Credit only completed runs.
+unresolved code bins. The product owner deferred further natural
+high-bit runs due to execution cost. EF1 bit 18 and MASH bit 19
+were stopped before validation and their partial VDBs are excluded.
+All missing reachable counter directions remain OPEN.
 
 Four Cubic Formal witnesses replayed in VCS in the actual frontend
 chain. The 28 following Product Top cases passed all PA oracle checks
 but produced no new DUT code hits. Both queued-tail safety properties
 are inconclusive. The CDC L151 continuous-ingress proof still has open
-applicability with source gaps, and the first two source-gap proof
+applicability with source gaps, and all three source-gap proof
 passes are inconclusive on L151. COMMIT L333 `0,1,1` remains open.
 Legal-only URG found no DUT assertion failures over 121 EF1 and
 123 MASH cases, with both Cubic `q1_tail` assertions unattempted.
@@ -26,10 +28,10 @@ The original 106-candidate independent review packet was published on
 reviewer and the product owner is the final approver. The 48 static
 follow-up entries are a separate review batch. No new waiver applied.
 
-**Next:** finish EF1 bit 18, use the Cubic trace inputs to constrain
-an integrated product witness, continue CDC and COMMIT proof work,
-and assess high-counter execution capacity. Reconcile review results
-by exact candidate ID. Both gates and final sign-off remain OPEN.
+**Next:** finish the integrated EF1 Cubic reachability pilot under
+`runs/v14_cubic_product_fpv_20261126/`. Continue CDC and COMMIT proof
+work and reconcile review results by exact candidate ID. Resume
+high-bit simulation only when its execution cost is acceptable. Both gates and final sign-off remain OPEN.
 See `docs/dsm_v14_directed_coverage_followup.md`.
 
 ## Current execution state: V1.4 coverage closure (2026-11-26)

@@ -1,3 +1,14 @@
+# 2026-11-26 21:06 SGT - Defer high-bit simulation and retain control closure
+
+- Stopped the incomplete EF1 bit-18 and MASH bit-19 runs after the
+  product owner deferred further high-bit simulation. Their partial
+  databases are outside all credited URG reports.
+- Retained the reachable counter directions as OPEN and kept the
+  final 100% adjusted gate OPEN. No scope change or waiver applied.
+- Continued the integrated EF1 Cubic witness pilot using public
+  source, AXI-Lite RUN and PA controls. The RUN/prefill cover hit;
+  the exact Cubic goals were still running at this checkpoint.
+
 # 2026-11-26 21:02 SGT - V1.4 bit 17/18 and Cubic chain evidence
 
 - Closed both bit-17 counters in all 16 lanes of both SKU URG reports.
