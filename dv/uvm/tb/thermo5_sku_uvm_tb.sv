@@ -341,6 +341,26 @@ module thermo5_sku_uvm_tb #(parameter int DSM_ARCH=2);
   assign bus.interp1_centered_state = '0;
   assign bus.interp2_centered_state = '0;
 `endif
+  // Observe the candidate edge without driving any DUT state.
+  int unsigned r6_fifo_full_cycles, r6_fill_edges, r6_fill_then_bubble, r6_target_cycles;
+  bit r6_dpd_probe;
+  initial r6_dpd_probe = $test$plusargs("ROUND6_DPD_PROBE");
+  always @(posedge core_clk) if (r6_dpd_probe && bus.core_rst_n) begin
+    if (dut.u_frontend.u_dpd_to_interp_elastic.count_q == 2)
+      r6_fifo_full_cycles++;
+    if (dut.u_frontend.u_dpd_to_interp_elastic.count_q == 1 &&
+        dut.u_frontend.u_dpd_to_interp_elastic.push &&
+        !dut.u_frontend.u_dpd_to_interp_elastic.pop) begin
+      r6_fill_edges++;
+      if (!dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd.valid_pipe[9])
+        r6_fill_then_bubble++;
+    end
+    if (!dut.u_frontend.dpd_ready && !dut.u_frontend.dpd_valid)
+      r6_target_cycles++;
+  end
+  final if (r6_dpd_probe)
+    $display("ROUND6_DPD_PROBE full=%0d fill=%0d fill_bubble=%0d target=%0d",
+             r6_fifo_full_cycles,r6_fill_edges,r6_fill_then_bubble,r6_target_cycles);
   initial begin
     string testname;
     bus.dsm_arch = DSM_ARCH;

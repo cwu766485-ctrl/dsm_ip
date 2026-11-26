@@ -16,10 +16,13 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
   int unsigned input_profile_id;
   bit commit_after_first_boundary;
   bit require_commit_boundary_stall;
+  int unsigned extra_commit_stall_cycles;
+  int unsigned commit_stall_start_delay;
   bit commit_apply_seen;
   bit commit_stall_seen;
   bit commit_issued;
   bit stop_issued;
+  bit round6_in_packet_stop;
   bit status_checked;
 
   covergroup commit_boundary_stall_cg with function sample(int commit_timing,
@@ -118,7 +121,15 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
     void'($value$plusargs("THERMO5_GAIN_CLASS_ID=%d",gain_class_id));
     void'($value$plusargs("THERMO5_INPUT_PROFILE_ID=%d",input_profile_id));
     commit_after_first_boundary=$test$plusargs("THERMO5_COMMIT_AFTER_FIRST_BOUNDARY");
+    round6_in_packet_stop=$test$plusargs("ROUND6_IN_PACKET_STOP");
+    if (round6_in_packet_stop && (cfg.core_words!=56 || commit_after_first_boundary))
+      `uvm_fatal("DPD_STOP_CONFIG","In-packet STOP scope is one packet with COMMIT before RUN")
     require_commit_boundary_stall=$test$plusargs("THERMO5_REQUIRE_COMMIT_BOUNDARY_STALL");
+    void'($value$plusargs("THERMO5_EXTRA_COMMIT_STALL_CYCLES=%d",extra_commit_stall_cycles));
+    void'($value$plusargs("THERMO5_COMMIT_STALL_START_DELAY=%d",commit_stall_start_delay));
+    if (extra_commit_stall_cycles>512 || commit_stall_start_delay>128 ||
+        ((extra_commit_stall_cycles!=0 || commit_stall_start_delay!=0) && !require_commit_boundary_stall))
+      `uvm_fatal("DPD_STALL_CONFIG","Use a checked commit stall with <=128 start delay and <=512 hold cycles")
     if (complex_coverage_case) begin
       int signed coeffs[6];
       coeffs='{c1_re_q14,c1_im_q14,c3_re_q14,c3_im_q14,c5_re_q14,c5_im_q14};
@@ -283,7 +294,17 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
                   "Post-boundary COMMIT did not expose the expected pending image")
             end
 
+            if (round6_in_packet_stop) begin
+              wait(vif.core_tx_active && env.source.monitor.accepted_beats>=18);
+              if (env.source.monitor.accepted_last_count != 0)
+                `uvm_fatal("DPD_STOP_CONFIG","Expected an open packet before the STOP request")
+              axil_write(8'h00,32'd0,0,0,resp);
+              if (resp!=2'b00)
+                `uvm_fatal("RANDOM_DPD_STOP","In-packet STOP request was rejected")
+              stop_issued=1;
+            end
             if (require_commit_boundary_stall) begin
+              repeat(commit_stall_start_delay) @(posedge vif.core_clk);
               stall_count_before=env.monitor.stall_cycles;
               env.pa_sink.set_ready(4'h0);
             end
@@ -322,6 +343,7 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
                 @(posedge vif.core_clk);
                 stalled=(env.monitor.stall_cycles>stall_count_before);
               end
+              repeat(extra_commit_stall_cycles) @(posedge vif.core_clk);
               env.pa_sink.set_ready(4'hf);
               if (!stalled)
                 `uvm_fatal("RANDOM_DPD_COMMIT_STALL",
@@ -334,10 +356,12 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
             wait(env.source.monitor.accepted_beats==cfg.source_beats);
             // Close the packet promptly so the DUT enters its documented
             // drain state before any post-packet source starvation can occur.
-            axil_write(8'h00,32'd0,0,0,resp);
-            if (resp!=2'b00)
-              `uvm_fatal("RANDOM_DPD_STOP","STOP request was rejected")
-            stop_issued=1;
+            if (!stop_issued) begin
+              axil_write(8'h00,32'd0,0,0,resp);
+              if (resp!=2'b00)
+                `uvm_fatal("RANDOM_DPD_STOP","STOP request was rejected")
+              stop_issued=1;
+            end
             for (int cycles=0; cycles<12000 && !scenario_stream_complete(); cycles++)
               @(posedge vif.core_clk);
             if (!scenario_stream_complete())

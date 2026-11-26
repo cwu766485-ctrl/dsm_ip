@@ -1,0 +1,474 @@
+{
+  "ef1_axil": {
+    "total": 741,
+    "previous_hits": 643,
+    "current_hits": 662,
+    "new_hits": [
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.u_frame_gain",
+        "dsm_frame_gain_vector",
+        "rtl/frontend/dsm_frame_gain_vector.sv",
+        48,
+        "EXPRESSION",
+        "(((!s1_valid)) || s2_ready)",
+        [
+          "1",
+          "0"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1",
+        "dsm_interp_x2_centered_cubic_vector",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        67,
+        "EXPRESSION",
+        "((q_count == 2'h2) && q1_start)",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_cdc",
+        "dsm_axis14_to_core8_cdc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        261,
+        "EXPRESSION",
+        "(fifo_rd_valid && fifo_rd_ready && fifo_frame_start)",
+        [
+          "0",
+          "1",
+          "1"
+        ]
+      ]
+    ]
+  },
+  "mash11_axil": {
+    "total": 741,
+    "previous_hits": 643,
+    "current_hits": 662,
+    "new_hits": [
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.u_frame_gain",
+        "dsm_frame_gain_vector",
+        "rtl/frontend/dsm_frame_gain_vector.sv",
+        48,
+        "EXPRESSION",
+        "(((!s1_valid)) || s2_ready)",
+        [
+          "1",
+          "0"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[1].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[3].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[5].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[7].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[9].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[11].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[13].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[15].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[0].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[2].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[4].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[6].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[8].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[10].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[12].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_memory_dpd.u_memory_dpd.g_lane[14].u_dpd",
+        "dpd_memory_poly",
+        "rtl/dpd/dpd_memory_poly.v",
+        141,
+        "EXPRESSION",
+        "(out_ready | ((!valid_pipe[(PIPE_STAGES - 1)])))",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_frontend.g_interp1_centered.u_interp_1",
+        "dsm_interp_x2_centered_cubic_vector",
+        "rtl/interp/dsm_interp_x2_centered_cubic_vector.sv",
+        67,
+        "EXPRESSION",
+        "((q_count == 2'h2) && q1_start)",
+        [
+          "0",
+          "1"
+        ]
+      ],
+      [
+        "dsm_v13_multi_sku_uvm_tb.g_product.selected_product_sku.dut.u_cdc",
+        "dsm_axis14_to_core8_cdc",
+        "rtl/axis/dsm_axis14_to_core8_cdc.sv",
+        261,
+        "EXPRESSION",
+        "(fifo_rd_valid && fifo_rd_ready && fifo_frame_start)",
+        [
+          "0",
+          "1",
+          "1"
+        ]
+      ]
+    ]
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "dpd_vector_ready": {
+    "report": "runs/r6_vector_ready/properties.txt",
+    "sha256": "fa9c34c734fa04cb5b61886dab78561368cb7c696d8c252a2ba63d33ca821b66",
+    "scope": "16-lane one-tap DPD wrapper after reset. Input and sink handshakes arbitrary.",
+    "properties": [
+      {
+        "name": "thermo5_dpd_vector_ready_harness.a_empty_output_allows_input",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "name": "thermo5_dpd_vector_ready_harness.a_stalled_output_is_held",
+        "result": "inconclusive(depth=13) (non_vacuous)"
+      },
+      {
+        "name": "thermo5_dpd_vector_ready_harness.c_input_accept",
+        "result": "covered (depth=1)"
+      },
+      {
+        "name": "thermo5_dpd_vector_ready_harness.c_line93_uncovered_tuple",
+        "result": "uncoverable"
+      },
+      {
+        "name": "thermo5_dpd_vector_ready_harness.c_output_stall",
+        "result": "covered (depth=12)"
+      },
+      {
+        "name": "thermo5_dpd_vector_ready_harness.c_output_transfer",
+        "result": "covered (depth=12)"
+      },
+      {
+        "name": "thermo5_dpd_vector_ready_harness.c_stall_release",
+        "result": "covered (depth=13)"
+      },
+      {
+        "name": "constant_7 - rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  },
+  "axil_commit": {
+    "report": "runs/r6_commit_formal/properties.txt",
+    "sha256": "7e0eb35fda1e46b99fea0dd06bdb33a0bc27b0812456faaf83bcd1f7b4e51eac",
+    "scope": "AXI-Lite configuration block with externally driven DPD boundary.",
+    "properties": [
+      {
+        "name": "thermo5_axil_cfg_line93_harness.a_bvalid_excludes_line93_tuple",
+        "result": "proven (non_vacuous)"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.a_commit_pending_implies_request",
+        "result": "inconclusive(depth=10) (non_vacuous)"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.c_commit_apply",
+        "result": "covered (depth=5)"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.c_commit_no_request_pending_boundary",
+        "result": "inconclusive(depth=10)"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.c_commit_request_clear_pending_boundary",
+        "result": "covered (depth=4)"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.c_line93_uncovered_tuple",
+        "result": "uncoverable"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.c_write_fire",
+        "result": "covered (depth=4)"
+      },
+      {
+        "name": "thermo5_axil_cfg_line93_harness.c_write_response_active",
+        "result": "covered (depth=4)"
+      },
+      {
+        "name": "constant_8 - axil_rst_n==1",
+        "result": "constrained"
+      },
+      {
+        "name": "constant_9 - core_rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  },
+  "cubic_control": {
+    "report": "runs/r6_cubic_formal/properties.txt",
+    "sha256": "4502e3d878362b0bd964310eeb12a07f3b3b09535940ad77e54fecd75ec7fd5c",
+    "scope": "8-lane append and 16-lane consume stages. Payload tied zero. Ready, enable and frame flags arbitrary. Stage 1 input tail tied zero, stage 2 tail unconstrained. Covers are local.",
+    "properties": [
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[1].g_append.a_input_tail_never_latched",
+        "result": "proven"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[2].g_consume.a_no_generated_tail",
+        "result": "proven"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[1].c_disabled_emit_candidate",
+        "result": "covered (depth=2)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[1].c_nonempty",
+        "result": "covered (depth=2)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[1].c_retained_frame_start",
+        "result": "covered (depth=4)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[1].g_append.c_tail_emit",
+        "result": "covered (depth=3)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[2].c_disabled_emit_candidate",
+        "result": "covered (depth=2)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[2].c_nonempty",
+        "result": "covered (depth=2)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[2].c_retained_frame_start",
+        "result": "covered (depth=4)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[2].g_consume.c_tail_drop",
+        "result": "covered (depth=2)"
+      },
+      {
+        "name": "thermo5_round6_cubic_harness.g_stage[2].g_consume.c_tail_lookahead",
+        "result": "covered (depth=3)"
+      },
+      {
+        "name": "constant_11 - rst_n==1",
+        "result": "constrained"
+      }
+    ]
+  }
+}

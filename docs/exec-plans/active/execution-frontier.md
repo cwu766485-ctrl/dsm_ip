@@ -1,14 +1,17 @@
 # Execution frontier
 
-## Current execution state: Round 6 strategy and DPD reachability (2026-11-26)
+## Current execution state: Round 6 product coverage (2026-11-26)
 
-Baseline `1c91d73`. The real DPD/FIFO slice passed VCS and hit L141
-`0,1` in local URG. The separate wrapper ready proof reports a proven
-implication and an uncoverable forbidden tuple in the scoped harness.
-Product replay and waiver applicability are OPEN. The highest-priority
-replay aligns a stage-9 bubble with the DPD-to-interpolator FIFO fill edge.
-Start a counter throughput benchmark in parallel. See
-`docs/dsm_v13_round6_closure_strategy.md`.
+**Gate A and Gate B remain OPEN.** The in-packet STOP replay checked
+56 PA words against the oracle and hit DPD L141 across all 16 instances
+in both products. 220 checked VCS cases contribute to the SKU-local URG
+merges. Both configurations retained the original 643 exact Condition
+hits and added 19. Gate A needs nine more hits per SKU at the current
+denominator. Ten proof-backed Condition and 72 static Line candidates
+await independent review and have not been deducted. Eighty follow-up
+COMMIT cases passed without new code hits. Continue with an integrated
+boundary witness, stage-specific Cubic and CDC control proofs, and the
+counter Toggle campaign. See `docs/dsm_v13_round6_execution_report.md`.
 
 ## Current execution state: EF1 and MASH AXI-Lite closure focus (2026-11-26)
 

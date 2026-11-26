@@ -1,3 +1,18 @@
+# 2026-11-26 15:52 SGT - Round 6 product DPD witness, Cubic formal and gap inventory
+
+- Upgraded the AXI-Lite bit-true test and read-only DPD probe to replay
+  the legal in-packet STOP and PA backpressure witness.
+- Rebuilt both products, replayed 62 accepted historical cases, ran 158
+  additional passing candidates, and excluded 10 failing diagnostics
+  from the two SKU-local URG merges. 80 additional COMMIT timing
+  candidates passed in separate evaluation with zero new code hits.
+- Added exact Condition non-regression and source-level Line/Branch gap
+  audits, two Cubic formal scopes and COMMIT reachability checks. Both
+  products reached 93.77% adjusted Condition with 19 new hits each.
+- Coverage sign-off is OPEN. Ten Condition and 72 Line proposals await
+  review. See `docs/dsm_v13_round6_execution_report.md` for complete gate
+  results and relevant source, scripts and evidence.
+
 # 2026-11-26 SGT - Round 6 strategy and first DPD witness
 
 - Added a reproducible one-lane DPD and FIFO slice test and documented

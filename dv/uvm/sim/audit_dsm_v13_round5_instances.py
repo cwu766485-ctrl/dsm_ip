@@ -94,7 +94,7 @@ SINGLE_TAP_PAIR = {f"sum_{iq}_pair1_{stage}[63:0]"
                    for iq in ("i", "q") for stage in ("comb", "s8")}
 
 
-def condition_gaps(body):
+def condition_gaps(body, status="Not Covered"):
     for pre, table in re.findall(r'<pre class="code">(.*?)</pre>\s*(<table.*?</table>)',
                                  body, re.S):
         heading = html.unescape(re.sub(r"<[^>]+>", "", pre))
@@ -105,7 +105,7 @@ def condition_gaps(body):
         line, kind, text = expression.groups()
         predicate = " ".join(text.split()).split(" --", 1)[0]
         for row, _ in fragment_rows(table):
-            if row and row[-1] == "Not Covered":
+            if row and row[-1] == status:
                 yield int(line), kind, predicate, tuple(row[:-1])
 
 

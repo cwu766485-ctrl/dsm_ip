@@ -62,6 +62,19 @@ module thermo5_axil_cfg_line93_harness (
     cover property (disable iff (!axil_rst_n)
       bvalid && (dut.aw_pending || dut.aw_take) &&
       (dut.w_pending || dut.w_take));
+  // The block sees arbitrary boundary cycles. A cover hit here needs its
+  // boundary waveform reproduced through the real Product frontend.
+  a_commit_pending_implies_request: assert property (@(posedge core_clk)
+    disable iff (!core_rst_n) dut.cfg_pending_valid |-> dut.cfg_req_sync2);
+  c_commit_request_clear_pending_boundary: cover property (@(posedge core_clk)
+    disable iff (!core_rst_n)
+    dut.cfg_req_sync2 && !dut.cfg_pending_valid && dpd_config_boundary);
+  c_commit_no_request_pending_boundary: cover property (@(posedge core_clk)
+    disable iff (!core_rst_n)
+    !dut.cfg_req_sync2 && dut.cfg_pending_valid && dpd_config_boundary);
+  c_commit_apply: cover property (@(posedge core_clk)
+    disable iff (!core_rst_n)
+    dut.cfg_req_sync2 && dut.cfg_pending_valid && dpd_config_boundary);
 endmodule
 
 `default_nettype wire
