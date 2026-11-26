@@ -137,10 +137,13 @@ The separate Product Top replay with the same frame-marker spacing
 passed all 28 four-plane bit-true tests. Its SKU-local URG reports
 added zero code hits. Transfer the reproduced events to the public
 AXIS/PA schedule using the actual gearbox and RUN/prefill constraints
-before crediting Cubic code coverage. The CDC source-gap run covered a
+before crediting Cubic code coverage. The integrated EF1 Product Top
+Formal pilot used public AXIS, AXI-Lite RUN after 16 accepted beats, and
+arbitrary PA readiness. RUN/prefill covered at depth 48. Both exact
+Cubic replacement covers were inconclusive at depth 99. The CDC source-gap run covered a
 mid-packet input bubble and legal end during drain. Its L151 result
-remains inconclusive with source gaps after the initial and first
-composed pass. The separate assertion audit found zero DUT failures
+remains inconclusive with source gaps after the initial and two
+composed passes. The separate assertion audit found zero DUT failures
 in the 121 EF1 and 123 MASH legal cases. The two expected failures
 per SKU came from the isolated illegal-frame case. The two Cubic
 `q1_tail` assertions per SKU had zero legal attempts.

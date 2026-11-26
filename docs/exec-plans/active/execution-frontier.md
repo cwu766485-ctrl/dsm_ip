@@ -28,9 +28,12 @@ The original 106-candidate independent review packet was published on
 reviewer and the product owner is the final approver. The 48 static
 follow-up entries are a separate review batch. No new waiver applied.
 
-**Next:** finish the integrated EF1 Cubic reachability pilot under
-`runs/v14_cubic_product_fpv_20261126/`. Continue CDC and COMMIT proof
-work and reconcile review results by exact candidate ID. Resume
+The integrated EF1 Cubic pilot covered public RUN/prefill at depth
+48. Both exact replacement goals were inconclusive at depth 99.
+
+**Next:** refine the integrated public Cubic witness, continue CDC
+and COMMIT proof work, and reconcile review results by exact candidate
+ID. Resume
 high-bit simulation only when its execution cost is acceptable. Both gates and final sign-off remain OPEN.
 See `docs/dsm_v14_directed_coverage_followup.md`.
 

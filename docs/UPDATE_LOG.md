@@ -1,3 +1,11 @@
+# 2026-11-26 21:09 SGT - Record the integrated EF1 Cubic pilot
+
+- Retained the source-bound Product Top harness and normalized Formal
+  outcome. RUN/prefill covered at depth 48. The stage-1 and stage-2
+  replacement covers stayed inconclusive at depth 99.
+- Current product code coverage and pending waiver status remain open.
+  Native proof evidence is indexed in `iterative_evidence.json`.
+
 # 2026-11-26 21:06 SGT - Defer high-bit simulation and retain control closure
 
 - Stopped the incomplete EF1 bit-18 and MASH bit-19 runs after the
