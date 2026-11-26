@@ -1,5 +1,16 @@
 # Execution frontier
 
+## Current execution state: EF1 and MASH AXI-Lite closure focus (2026-11-26)
+
+EF1 and MASH AXI-Lite Line, Branch and Toggle clear 95% adjusted.
+Condition is 91.08% for each, with 63 open and 28 additional hits needed
+at the current adjusted denominator. EF2 is outside this sign-off scope.
+Both builds passed the complex/gain/reset and boundary-phase cases.
+The single-tap DPD and AXI-Lite write proofs passed within the documented
+scopes. See `docs/dsm_v13_round5_axil_closure_report.md` for exact RTL gaps
+and evidence. Next target the simultaneous downstream-stall/empty-DPD
+tuple and the different interpolation queue/tail contracts.
+
 ## Current execution state: DSM V1.3 Round 5 code coverage follow-up (2026-11-26)
 
 **95% closure is OPEN.** The directed arithmetic and coefficient transport

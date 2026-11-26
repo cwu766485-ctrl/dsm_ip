@@ -1,3 +1,14 @@
+# 2026-11-26 SGT - EF1 and MASH AXI-Lite coverage focus
+
+- Added complex coefficient, long-stream, runtime reset and boundary-phase
+  coverage. Both targeted builds, 24 directed cases, two legacy smoke
+  cases, two VC Formal scopes and two cumulative URG merges passed.
+- Scoped DPD, interpolator, gain and AXI-Lite waivers are recorded by
+  instance and predicate. Line, Branch and Toggle meet 95% adjusted.
+  Condition remains OPEN at 91.08% on both configurations.
+- See `docs/dsm_v13_round5_axil_closure_report.md` and the associated CSV
+  and JSON evidence. Product RTL behavior was not changed.
+
 # 2026-11-26 11:49 SGT - Round 5 code coverage follow-up
 
 - Added a checked arithmetic/transport replay, configuration-local URG

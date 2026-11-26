@@ -8,6 +8,9 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
   int signed c1_im_q14;
   int signed c3_re_q14;
   int signed c5_re_q14;
+  int signed c3_im_q14;
+  int signed c5_im_q14;
+  bit complex_coverage_case;
   int unsigned dpd_class_id;
   int unsigned gain_class_id;
   int unsigned input_profile_id;
@@ -102,6 +105,9 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
     void'($value$plusargs("THERMO5_DPD_C1_IM_Q14=%d",c1_im_q14));
     void'($value$plusargs("THERMO5_DPD_C3_RE_Q14=%d",c3_re_q14));
     void'($value$plusargs("THERMO5_DPD_C5_RE_Q14=%d",c5_re_q14));
+    complex_coverage_case=$test$plusargs("THERMO5_COMPLEX_DPD_COVERAGE");
+    void'($value$plusargs("THERMO5_DPD_C3_IM_Q14=%d",c3_im_q14));
+    void'($value$plusargs("THERMO5_DPD_C5_IM_Q14=%d",c5_im_q14));
     if (!$value$plusargs("THERMO5_DPD_CLASS_ID=%d",dpd_class_id)) begin
       if (c3_re_q14 != 0 && c5_re_q14 == 0) dpd_class_id=3;
       else if (c5_re_q14 != 0 && c3_re_q14 == 0) dpd_class_id=4;
@@ -113,23 +119,33 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
     void'($value$plusargs("THERMO5_INPUT_PROFILE_ID=%d",input_profile_id));
     commit_after_first_boundary=$test$plusargs("THERMO5_COMMIT_AFTER_FIRST_BOUNDARY");
     require_commit_boundary_stall=$test$plusargs("THERMO5_REQUIRE_COMMIT_BOUNDARY_STALL");
-    if (c1_re_q14 < 8192 || c1_re_q14 > 20480 || c1_im_q14 != 0 ||
-        c3_re_q14 < -2048 || c3_re_q14 > 2048 ||
-        c5_re_q14 < -8192 || c5_re_q14 > 8192 || dpd_class_id > 4)
-      `uvm_fatal("RANDOM_DPD_COEFF",
-        "One-tap C1/C3/C5 coefficients exceed the prequalified real Q2.14 ranges")
-    case (dpd_class_id)
-      0: if (c1_re_q14 >= 16384 || c3_re_q14 != 0 || c5_re_q14 != 0)
-        `uvm_fatal("RANDOM_DPD_CLASS","Attenuation class has inconsistent coefficients")
-      1: if (c1_re_q14 != 16384 || c3_re_q14 != 0 || c5_re_q14 != 0)
-        `uvm_fatal("RANDOM_DPD_CLASS","Identity class has inconsistent coefficients")
-      2: if (c1_re_q14 <= 16384 || c3_re_q14 != 0 || c5_re_q14 != 0)
-        `uvm_fatal("RANDOM_DPD_CLASS","Boost class has inconsistent coefficients")
-      3: if (c1_re_q14 != 16384 || c3_re_q14 == 0 || c5_re_q14 != 0)
-        `uvm_fatal("RANDOM_DPD_CLASS","C3 class has inconsistent coefficients")
-      4: if (c1_re_q14 != 16384 || c3_re_q14 != 0 || c5_re_q14 == 0)
-        `uvm_fatal("RANDOM_DPD_CLASS","C5 class has inconsistent coefficients")
-    endcase
+    if (complex_coverage_case) begin
+      int signed coeffs[6];
+      coeffs='{c1_re_q14,c1_im_q14,c3_re_q14,c3_im_q14,c5_re_q14,c5_im_q14};
+      foreach (coeffs[i])
+        if (coeffs[i] < -32768 || coeffs[i] > 32767)
+          `uvm_fatal("COMPLEX_DPD_COEFF","Coefficient must fit signed Q2.14 storage")
+    end else begin
+      if (c3_im_q14 != 0 || c5_im_q14 != 0)
+        `uvm_fatal("RANDOM_DPD_COEFF","Imaginary C3/C5 require the complex coverage case")
+      if (c1_re_q14 < 8192 || c1_re_q14 > 20480 || c1_im_q14 != 0 ||
+          c3_re_q14 < -2048 || c3_re_q14 > 2048 ||
+          c5_re_q14 < -8192 || c5_re_q14 > 8192 || dpd_class_id > 4)
+        `uvm_fatal("RANDOM_DPD_COEFF",
+          "One-tap C1/C3/C5 coefficients exceed the prequalified real Q2.14 ranges")
+      case (dpd_class_id)
+        0: if (c1_re_q14 >= 16384 || c3_re_q14 != 0 || c5_re_q14 != 0)
+          `uvm_fatal("RANDOM_DPD_CLASS","Attenuation class has inconsistent coefficients")
+        1: if (c1_re_q14 != 16384 || c3_re_q14 != 0 || c5_re_q14 != 0)
+          `uvm_fatal("RANDOM_DPD_CLASS","Identity class has inconsistent coefficients")
+        2: if (c1_re_q14 <= 16384 || c3_re_q14 != 0 || c5_re_q14 != 0)
+          `uvm_fatal("RANDOM_DPD_CLASS","Boost class has inconsistent coefficients")
+        3: if (c1_re_q14 != 16384 || c3_re_q14 == 0 || c5_re_q14 != 0)
+          `uvm_fatal("RANDOM_DPD_CLASS","C3 class has inconsistent coefficients")
+        4: if (c1_re_q14 != 16384 || c3_re_q14 != 0 || c5_re_q14 == 0)
+          `uvm_fatal("RANDOM_DPD_CLASS","C5 class has inconsistent coefficients")
+      endcase
+    end
     if (gain_class_id > 2 || input_profile_id > 3)
       `uvm_fatal("RANDOM_CFG_CLASS","Gain/profile class ID is outside the declared coverage bins")
     cfg.pa_stall_percent = 25;
@@ -148,8 +164,8 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
     c1_im_image = {48'd0,c1_im_q14[15:0]};
     c3_re_image = {48'd0,c3_re_q14[15:0]};
     c5_re_image = {48'd0,c5_re_q14[15:0]};
-    return {3'd1,c1_re_image,c1_im_image,c3_re_image,64'd0,
-            c5_re_image,64'd0};
+    return {3'd1,c1_re_image,c1_im_image,c3_re_image,{48'd0,c3_im_q14[15:0]},
+            c5_re_image,{48'd0,c5_im_q14[15:0]}};
   endfunction
 
   virtual task check_scenario_stream();
@@ -193,6 +209,8 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
         0: coeff_word={16'd0,c1_re_q14[15:0]};
         2: coeff_word={16'd0,c1_im_q14[15:0]};
         4: coeff_word={16'd0,c3_re_q14[15:0]};
+        6: coeff_word={16'd0,c3_im_q14[15:0]};
+        10: coeff_word={16'd0,c5_im_q14[15:0]};
         8: coeff_word={16'd0,c5_re_q14[15:0]};
         default: coeff_word=32'd0;
       endcase
@@ -209,7 +227,8 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
     bit [31:0] rdata;
     bit [386:0] expected_cfg_payload;
     bit drain_complete;
-    random_cfg_cg.sample(dpd_class_id,gain_class_id,input_profile_id);
+    if (!complex_coverage_case)
+      random_cfg_cg.sample(dpd_class_id,gain_class_id,input_profile_id);
     expected_cfg_payload=configured_payload();
     phase.raise_objection(this);
     fork
@@ -348,6 +367,17 @@ class thermo5_sku_axil_random_dpd_bittrue_test extends thermo5_sku_axil_nonlinea
             else
               `uvm_fatal("RANDOM_DPD_STATUS_COMMIT_STOP",
                 "Expected a checked COMMIT, STOP, and STATUS drain sequence")
+            if (complex_coverage_case) begin
+              // Return coefficients and counters to reset values in the same
+              // simulation, after the oracle and drain checks completed.
+              env.control.reset_both();
+              wait_axil_reset_release();
+              if (vif.cfg_active_payload!=={3'd1,64'h4000,64'd0,64'd0,64'd0,64'd0,64'd0})
+                `uvm_fatal("COMPLEX_DPD_RESET","Reset did not restore the active identity image")
+              for (int lane=0; lane<16; lane++)
+                if (vif.dpd_sample_count[lane]!==0)
+                  `uvm_fatal("COMPLEX_DPD_RESET","Reset did not clear a DPD sample counter")
+            end
             `uvm_info("SKU_PASS",scenario_pass_message(),UVM_NONE)
           end
         join

@@ -16,7 +16,10 @@ class thermo5_sku_axil_nonlinear_bittrue_test extends thermo5_sku_axil_nonlinear
     super.configure_case();
     cfg.expect_pa=1;
     cfg.frame_starts=cfg.core_words/56;
-    if ((cfg.core_words!=56) && (cfg.core_words!=112))
+    if ($test$plusargs("THERMO5_COMPLEX_DPD_COVERAGE")) begin
+      if (cfg.core_words<56 || cfg.core_words>2240 || (cfg.core_words%56)!=0)
+        `uvm_fatal("NONLINEAR_WORDS","Complex coverage needs 1 to 40 complete packets")
+    end else if ((cfg.core_words!=56) && (cfg.core_words!=112))
       `uvm_fatal("NONLINEAR_WORDS","Use CORE_WORDS=56 or CORE_WORDS=112")
     packet_beats=0;
     void'($value$plusargs("PACKET_BEATS=%d",packet_beats));
