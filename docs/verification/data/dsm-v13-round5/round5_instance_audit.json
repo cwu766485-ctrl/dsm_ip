@@ -1,0 +1,121 @@
+{
+  "status": "OPEN",
+  "scope": "Six fixed Product/AXI-Lite DUTs. Adjusted arithmetic uses audited URG counters.",
+  "applied_waivers": 11142,
+  "source_sha256": {
+    "rtl/gt/gt_tx_raw64_boundary.sv": "9db0a4c767f7c8e0f496357d9b19785380c46af4ce77f568e0acbeeca46f4a4e",
+    "rtl/tx_bandpass_if/tid32_cartesian_fs4_gt_tx.sv": "0ff8b1f6ddc0285bb61c068088b79dea3c0045402a7c0b451b78e9ea84cc19cf",
+    "rtl/tx_bandpass_if/tid32_mash11_weighted_pa_tx.sv": "4cde13b626fdc7133b2056645805ab02fae3436e3165a60b7487564099d39aee",
+    "rtl/tx_bandpass_if/tid32_cartesian_ef2_fs4_gt_tx.sv": "852e17a445889491b9ed4f04e94129df82224b68b92322b2edb4534bf7ccd584",
+    "rtl/tx_bandpass_if/tid32_thermo5_fs4_multipa_tx.sv": "65dbc541221b304778066365e5c1cac37a94c5e4bc680cc4ca451b734e262ea4",
+    "dv/uvm/tb/thermo5_sku_uvm_tb.sv": "f71dbbc27f5c5222afe3084459ec3ecdf4a999840fd3a9e766f40b2e116cc3fc",
+    "rtl/tx_bandpass_if/tid32_thermo5_axis_frontend_tx.sv": "e1ff7e7a59a322b4834fdec6e45c5be4ef0bea9fa7580ebce62ea45362e0e504",
+    "rtl/tx_bandpass_if/tid32_thermo5_frontend_tx.sv": "e881530aa651b24caf90f638897526f42d69bf4c3db6633560483d066b7ebda9",
+    "rtl/tx_bandpass_if/tid32_thermo5_axi_lite_axis_frontend_tx.sv": "413448944dcafb6a5f7c13864a06b4331f2b1ffa438ef19a3ca3c8092e35b916",
+    "rtl/dpd/dpd_memory_poly.v": "5818119d0b1f5c9fc43574c069319c3e6bd89282f932e4a08842d7a7f2c06156",
+    "rtl/dpd/dpd_vector16_memory_poly.sv": "09d03fa1f1112766604d8045bc031d4fdad4cd61a22d5eff67275d02cdc9b80a"
+  },
+  "ef2_properties_sha256": "605e2b05f9d5e0b8e928fe9d7d824b6a1e47feb8f9d18e08a65499060fe1605b",
+  "leading_gaps": [
+    {
+      "metric": "toggle",
+      "module": "dpd_memory_poly",
+      "missing": 68128
+    },
+    {
+      "metric": "toggle",
+      "module": "tid32_cartesian_ef2_fs4_gt_tx",
+      "missing": 4688
+    },
+    {
+      "metric": "toggle",
+      "module": "thermo5_dpd_axi_lite_cfg",
+      "missing": 3489
+    },
+    {
+      "metric": "toggle",
+      "module": "tid32_thermo5_axis_frontend_tx",
+      "missing": 2424
+    },
+    {
+      "metric": "toggle",
+      "module": "tid32_thermo5_frontend_tx",
+      "missing": 1419
+    },
+    {
+      "metric": "toggle",
+      "module": "dsm_frame_gain_vector",
+      "missing": 1356
+    },
+    {
+      "metric": "toggle",
+      "module": "dsm_axis14_to_core8_cdc",
+      "missing": 1302
+    },
+    {
+      "metric": "toggle",
+      "module": "tid32_thermo5_axi_lite_axis_frontend_tx",
+      "missing": 747
+    },
+    {
+      "metric": "toggle",
+      "module": "dpd_vector16_memory_poly",
+      "missing": 579
+    },
+    {
+      "metric": "toggle",
+      "module": "dsm_interp_x2_centered_cubic_vector",
+      "missing": 480
+    },
+    {
+      "metric": "line",
+      "module": "dpd_sat_signed",
+      "missing": 384
+    },
+    {
+      "metric": "line",
+      "module": "tid32_cartesian_ef2_fs4_gt_tx",
+      "missing": 328
+    },
+    {
+      "metric": "cond",
+      "module": "dpd_memory_poly",
+      "missing": 303
+    },
+    {
+      "metric": "line",
+      "module": "dpd_memory_poly",
+      "missing": 240
+    },
+    {
+      "metric": "cond",
+      "module": "tid32_cartesian_ef2_fs4_gt_tx",
+      "missing": 216
+    },
+    {
+      "metric": "cond",
+      "module": "dsm_interp_x2_centered_cubic_vector",
+      "missing": 213
+    },
+    {
+      "metric": "branch",
+      "module": "dpd_sat_signed",
+      "missing": 192
+    },
+    {
+      "metric": "toggle",
+      "module": "dpd_sat_signed",
+      "missing": 192
+    },
+    {
+      "metric": "toggle",
+      "module": "thermo5_vector_registered_ready_fifo",
+      "missing": 180
+    },
+    {
+      "metric": "branch",
+      "module": "tid32_cartesian_ef2_fs4_gt_tx",
+      "missing": 176
+    }
+  ]
+}

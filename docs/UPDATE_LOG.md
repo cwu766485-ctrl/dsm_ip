@@ -1,3 +1,12 @@
+# 2026-11-26 11:49 SGT - Round 5 code coverage follow-up
+
+- Added a checked arithmetic/transport replay, configuration-local URG
+  merge, instance denominator audit and scoped waiver ledger.
+- Verified 21 VCS cases and six URG merges. EF2 lookahead and parameter
+  guard assertions proved. 95% closure remains OPEN.
+- Evidence and scope are in `docs/dsm_v13_round5_code_coverage_followup.md`
+  and `docs/verification/data/dsm-v13-round5/`.
+
 # 2026-11-26 10:54 SGT - DSM V1.3 Round 5 baseline audit and history replay
 
 - Added module-aware audit, instance percentage export, preliminary parameter

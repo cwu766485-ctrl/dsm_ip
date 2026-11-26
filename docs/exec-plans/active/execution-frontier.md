@@ -1,5 +1,16 @@
 # Execution frontier
 
+## Current execution state: DSM V1.3 Round 5 code coverage follow-up (2026-11-26)
+
+**95% closure is OPEN.** The directed arithmetic and coefficient transport
+matrix passed 21 VCS checks and six cumulative URG merges. The instance
+audit reconciled raw URG counts and applied scoped static/fixture waivers
+to the adjusted ledger. EF1 and MASH AXI-Lite Line exceed 97% adjusted, and both Branch scores exceed 95%.
+EF2 arithmetic, interpolation conditions and DPD directional Toggle remain
+the largest groups to address. See `docs/dsm_v13_round5_code_coverage_followup.md`.
+The next validation step is to map each remaining arithmetic and counter
+predicate to a legal checked stimulus or conclusive proof.
+
 ## Current execution state: DSM V1.3 Round 5 code coverage (2026-11-26)
 
 Round 5 branch `work/dsm-v13-mash-uvm-round5` is based on Round 4

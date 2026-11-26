@@ -1,0 +1,26 @@
+{
+  "r5_ef2_params_fpv": {
+    "properties_sha256": "605e2b05f9d5e0b8e928fe9d7d824b6a1e47feb8f9d18e08a65499060fe1605b",
+    "properties": [
+      "[  0] proven                                  -  thermo5_ef2_product_params_harness.a_product_pair_lookahead_disabled",
+      "[  1] proven                                  -  thermo5_ef2_product_params_harness.a_product_parameter_guard_inactive",
+      "[  2] uncoverable                             -  thermo5_ef2_product_params_harness.c_invalid_parameter_guard",
+      "[  3] uncoverable                             -  thermo5_ef2_product_params_harness.c_pair_lookahead_arm_enabled"
+    ]
+  },
+  "r5_identity_fpv": {
+    "properties_sha256": "44fb5e0762d3a3cfbc9bd3959d4f89a71bd93af210bd3a397e094616388ce7e8",
+    "properties": [
+      "[   0] inconclusive(depth=525)                 -  thermo5_identity_saturation_harness.a_identity_i_no_negative_saturation",
+      "[   1] inconclusive(depth=525)                 -  thermo5_identity_saturation_harness.a_identity_i_no_positive_saturation",
+      "[   2] inconclusive(depth=516)                 -  thermo5_identity_saturation_harness.a_identity_q_no_negative_saturation",
+      "[   3] inconclusive(depth=516)                 -  thermo5_identity_saturation_harness.a_identity_q_no_positive_saturation",
+      "[   4] covered     (depth=1)                   -  thermo5_identity_saturation_harness.c_accept_input",
+      "[   5] inconclusive(depth=917)                 -  thermo5_identity_saturation_harness.c_i_negative_clamp_bin",
+      "[   6] inconclusive(depth=917)                 -  thermo5_identity_saturation_harness.c_i_positive_clamp_bin",
+      "[   7] covered     (depth=12)                  -  thermo5_identity_saturation_harness.c_produce_output",
+      "[   8] inconclusive(depth=577)                 -  thermo5_identity_saturation_harness.c_q_negative_clamp_bin",
+      "[   9] inconclusive(depth=577)                 -  thermo5_identity_saturation_harness.c_q_positive_clamp_bin"
+    ]
+  }
+}
